@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Securing Oracle Database User Accounts</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 743" />
+<meta name="dcterms.created" content="2013-11-26T15:10:6Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database 2 Day + Security Guide" />
+<meta name="dcterms.identifier" content="E10575-09" />
+<meta name="dcterms.isVersionOf" content="TDPSG" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2006, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="tdpsg_install_config.htm" title="Previous" type="text/html" />
+<link rel="Next" href="tdpsg_privileges.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10575.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">7/12</span> <!-- End Header -->
+<div id="TDPSG20000" class="chapter"><a id="BABDBGIJ"></a>
+<h1 class="chapter"><span class="secnum">3</span> Securing Oracle Database User Accounts</h1>
+<p>This chapter contains:<a id="ABC17774116"></a></p>
+<ul>
+<li>
+<p><a href="#BABHBBIA">About Securing Oracle Database User Accounts</a></p>
+</li>
+<li>
+<p><a href="#BABGEGFI">Predefined User Accounts Provided by Oracle Database</a></p>
+</li>
+<li>
+<p><a href="#BABBICGB">Expiring and Locking Database Accounts</a></p>
+</li>
+<li>
+<p><a href="#BEICECGF">Requirements for Creating Passwords</a></p>
+</li>
+<li>
+<p><a href="#BABJAEDF">Finding and Changing Default Passwords</a></p>
+</li>
+<li>
+<p><a href="#BABBDJBF">Guideline for Handling the Default Administrative User Passwords</a></p>
+</li>
+<li>
+<p><a href="#BABGCAAC">Guideline for Enforcing Password Management</a></p>
+</li>
+<li>
+<p><a href="#BABCABHH">Parameters Used to Secure User Accounts</a></p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink DBSEG003" href="../../network.112/e36292/authentication.htm#DBSEG003"><span class="italic">Oracle Database Security Guide</span></a> for detailed information about securing user accounts</div>
+<a id="BABHBBIA"></a>
+<div id="TDPSG20021" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">About Securing Oracle Database User Accounts</h2>
+<p>You can use many methods to secure database user accounts. For example, Oracle Database has a set of built-in protections for passwords. This chapter explains how you can safeguard default database accounts and passwords, and describes ways to manage database accounts.</p>
+<p><a class="olink ADMQS007" href="../../server.112/e10897/users_secure.htm#ADMQS007"><span class="italic">Oracle Database 2 Day DBA</span></a> describes <a id="sthref58"></a>the fundamentals of creating and administering user accounts, including how to manage user roles, what the administrative accounts are, and how to use profiles to establish a password policy.</p>
+<p>After you create user accounts, you can use the procedures in this section to further secure these accounts by following these methods:</p>
+<ul>
+<li>
+<p><span class="bold">Safeguarding predefined database accounts.</span> When you install Oracle Database, it creates a set of predefined accounts. You should secure these accounts as soon as possible by changing their passwords. You can use the same method to change all passwords, whether they are with regular user accounts, administrative accounts, or predefined accounts. This guide also provides guidelines on how to create the most secure passwords.</p>
+</li>
+<li>
+<p><span class="bold">Managing database accounts.</span> You can expire and lock database accounts.</p>
+</li>
+<li>
+<p><span class="bold">Managing passwords.</span> You can manage and protect passwords by setting initialization parameters. <a class="olink REFRN" href="../e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> describes the initialization parameters in detail.</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink DBSEG" href="../../network.112/e36292/toc.htm"><span class="italic">Oracle Database Security Guide</span></a> for detailed information about managing user accounts and authentication</p>
+</li>
+<li>
+<p><a href="#BABGEGFI">"Predefined User Accounts Provided by Oracle Database"</a> for a description of the predefined user accounts that are created when you install Oracle Database</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="BABGEGFI"></a>
+<div id="TDPSG20030" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Predefined User Accounts Provided by Oracle Database</h2>
+<p>When you install Oracle Database, the installation process creates a set of predefined accounts. These accounts are in the following categories:</p>
+<ul>
+<li>
+<p><a href="#BABGIBBA">Predefined Administrative Accounts</a></p>
+</li>
+<li>
+<p><a href="#BABEIIDI">Predefined Non-Administrative User Accounts</a></p>
+</li>
+<li>
+<p><a href="#BABCDJGA">Predefined Sample Schema User Accounts</a></p>
+</li>
+</ul>
+<a id="BABGIBBA"></a>
+<div id="TDPSG20301" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Predefined Administrative Accounts</h3>
+<p><a id="sthref59"></a>A default Oracle Database installation provides a set of predefined <a id="sthref60"></a><a id="sthref61"></a>administrative accounts. These are accounts that have special privileges required to administer areas of the database, such as the <code>CREATE ANY TABLE</code> or <code>ALTER SESSION</code> privilege, or <code>EXECUTE</code> privileges on packages owned by the <code>SYS</code> schema. The default tablespace for administrative accounts is either <code>SYSTEM</code> or <code>SYSAUX</code>.</p>
+<p>To protect these accounts from unauthorized access, the installation process expires and locks most of these accounts, except where noted in <a href="#BABJGDJF">Table 3-1</a>. As the database administrator, you are responsible for unlocking and resetting these accounts, as described in <a href="#BABBICGB">"Expiring and Locking Database Accounts"</a>.</p>
+<p><a href="#BABJGDJF">Table 3-1</a> lists the administrative user accounts provided by Oracle Database.</p>
+<div id="TDPSG94345" class="tblhruleformalwide">
+<p class="titleintable"><a id="sthref62"></a><a id="BABJGDJF"></a>Table 3-1 Predefined Oracle Database Administrative User Accounts</p>
+<table class="cellalignment1881" title="Predefined Oracle Database Administrative User Accounts" summary="Default Administratrative Accounts" dir="ltr">
+<thead>
+<tr class="cellalignment1875">
+<th class="cellalignment1882" id="r1c1-t4">User Account</th>
+<th class="cellalignment1882" id="r1c2-t4">Description</th>
+<th class="cellalignment1882" id="r1c3-t4">Status After Installation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r2c1-t4" headers="r1c1-t4">
+<p><code>ANONYMOUS</code><a id="sthref63"></a><a id="sthref64"></a></p>
+</td>
+<td class="cellalignment1883" headers="r2c1-t4 r1c2-t4">
+<p>Account that allows HTTP access to Oracle XML DB. It is used in place of the <code>APEX_PUBLIC_USER</code> account when the Embedded PL/SQL Gateway (EPG) is installed in the database.</p>
+<p>EPG is a Web server that can be used with Oracle Database. It provides the necessary infrastructure to create dynamic applications.</p>
+</td>
+<td class="cellalignment1883" headers="r2c1-t4 r1c3-t4">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r3c1-t4" headers="r1c1-t4">
+<p><code>CTXSYS</code><a id="sthref65"></a><a id="sthref66"></a></p>
+</td>
+<td class="cellalignment1883" headers="r3c1-t4 r1c2-t4">
+<p>The account used to administer Oracle Text. Oracle Text enables you to build text query applications and document classification applications. It provides indexing, word and theme searching, and viewing capabilities for text.</p>
+<p>See <a class="olink CCAPP1000" href="../../text.112/e24435/admin.htm#CCAPP1000"><span class="italic">Oracle Text Application Developer's Guide</span></a>.</p>
+</td>
+<td class="cellalignment1883" headers="r3c1-t4 r1c3-t4">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r4c1-t4" headers="r1c1-t4">
+<p><code>DBSNMP</code><a id="sthref67"></a><a id="sthref68"></a></p>
+</td>
+<td class="cellalignment1883" headers="r4c1-t4 r1c2-t4">
+<p>The account used by the Management Agent component of Oracle Enterprise Manager to monitor and manage the database.</p>
+<p>See <a class="olink OEMIG" href="http://www.oracle.com/pls/topic/lookup?ctx=db112&amp;id=OEMIG"><span class="italic">Oracle Enterprise Manager Grid Control Installation and Basic Configuration</span></a>.</p>
+</td>
+<td class="cellalignment1883" headers="r4c1-t4 r1c3-t4">
+<p>Open</p>
+<p>Password is created at installation or database creation time.</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r5c1-t4" headers="r1c1-t4">
+<p><code>EXFSYS</code><a id="sthref69"></a><a id="sthref70"></a></p>
+</td>
+<td class="cellalignment1883" headers="r5c1-t4 r1c2-t4">
+<p>The account used internally to access the <code>EXFSYS</code> schema, which is associated with the Rules Manager and Expression Filter feature. This feature enables you to build complex PL/SQL rules and expressions. The <code>EXFSYS</code> schema contains the Rules Manager and Expression Filter DDL, DML, and associated metadata.</p>
+<p>See <a class="olink EXPRN" href="../../appdev.112/e14919/toc.htm"><span class="italic">Oracle Database Rules Manager and Expression Filter Developer's Guide</span></a>.</p>
+</td>
+<td class="cellalignment1883" headers="r5c1-t4 r1c3-t4">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r6c1-t4" headers="r1c1-t4">
+<p><code>LBACSYS</code><a id="sthref71"></a><a id="sthref72"></a></p>
+</td>
+<td class="cellalignment1883" headers="r6c1-t4 r1c2-t4">
+<p>The account used to administer Oracle Label Security (OLS). It is created only when you install the Label Security custom option.</p>
+<p>See <a href="tdpsg_securing_data.htm#CHDBIIGG">"Enforcing Row-Level Security with Oracle Label Security"</a> and <a class="olink OLSAG038" href="../../network.112/e10745/olsoid.htm#OLSAG038"><span class="italic">Oracle Label Security Administrator's Guide</span></a>.</p>
+</td>
+<td class="cellalignment1883" headers="r6c1-t4 r1c3-t4">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r7c1-t4" headers="r1c1-t4">
+<p><code>MDSYS</code><a id="sthref73"></a><a id="sthref74"></a></p>
+</td>
+<td class="cellalignment1883" headers="r7c1-t4 r1c2-t4">
+<p>The Oracle Spatial and Oracle Multimedia Locator administrator account.</p>
+<p>See <a class="olink SPATL010" href="../../appdev.112/e11830/sdo_intro.htm#SPATL010"><span class="italic">Oracle Spatial Developer's Guide</span></a>.</p>
+</td>
+<td class="cellalignment1883" headers="r7c1-t4 r1c3-t4">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r8c1-t4" headers="r1c1-t4">
+<p><code>MGMT_VIEW</code><a id="sthref75"></a><a id="sthref76"></a></p>
+</td>
+<td class="cellalignment1883" headers="r8c1-t4 r1c2-t4">
+<p>An account used by Oracle Enterprise Manager Database Control.</p>
+</td>
+<td class="cellalignment1883" headers="r8c1-t4 r1c3-t4">
+<p>Open</p>
+<p>Password is randomly generated at installation or database creation time. Users do not need to know this password.</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r9c1-t4" headers="r1c1-t4">
+<p><code>OLAPSYS</code><a id="sthref77"></a><a id="sthref78"></a></p>
+</td>
+<td class="cellalignment1883" headers="r9c1-t4 r1c2-t4">
+<p>The account that owns the OLAP Catalog (CWMLite). This account has been deprecated, but is retained for backward compatibility.</p>
+</td>
+<td class="cellalignment1883" headers="r9c1-t4 r1c3-t4">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r10c1-t4" headers="r1c1-t4">
+<p><code>ORDDATA</code><a id="sthref79"></a><a id="sthref80"></a></p>
+</td>
+<td class="cellalignment1883" headers="r10c1-t4 r1c2-t4">
+<p><a class="olink IMDCM7150" href="../../appdev.112/e10778/ch_adm_over.htm#IMDCM7150"></a>This account contains the Oracle Multimedia DICOM data model. See <span class="italic">Oracle Multimedia DICOM Developer's Guide</span> for more information.</p>
+</td>
+<td class="cellalignment1883" headers="r10c1-t4 r1c3-t4">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r11c1-t4" headers="r1c1-t4">
+<p><code>OWBSYS</code><a id="sthref81"></a><a id="sthref82"></a></p>
+</td>
+<td class="cellalignment1883" headers="r11c1-t4 r1c2-t4">
+<p>The account for administrating the Oracle Warehouse Builder repository.</p>
+<p>Access this account during the installation process to define the base language of the repository and to define Warehouse Builder workspaces and users. A data warehouse is a relational or multidimensional database that is designed for query and analysis.</p>
+<p>See <a class="olink WBINS" href="../../owb.112/e17130/toc.htm"><span class="italic">Oracle Warehouse Builder Installation and Administration Guide</span></a>.</p>
+</td>
+<td class="cellalignment1883" headers="r11c1-t4 r1c3-t4">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r12c1-t4" headers="r1c1-t4">
+<p><code>ORDPLUGINS</code><a id="sthref83"></a><a id="sthref84"></a></p>
+</td>
+<td class="cellalignment1883" headers="r12c1-t4 r1c2-t4">
+<p>The Oracle Multimedia user. Plug-ins supplied by Oracle and third-party, format plug-ins are installed in this schema.</p>
+<p>Oracle Multimedia enables Oracle Database to store, manage, and retrieve images, audio, video, DICOM format medical images and other objects, or other heterogeneous media data integrated with other enterprise information.</p>
+<p>See <a class="olink IMURG2000" href="../../appdev.112/e10777/ch_appdev.htm#IMURG2000"><span class="italic">Oracle Multimedia User's Guide</span></a> and <a class="olink AIVUG" href="../../appdev.112/e10776/toc.htm"><span class="italic">Oracle Multimedia Reference</span></a>.</p>
+</td>
+<td class="cellalignment1883" headers="r12c1-t4 r1c3-t4">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r13c1-t4" headers="r1c1-t4">
+<p><code>ORDSYS</code><a id="sthref85"></a><a id="sthref86"></a></p>
+</td>
+<td class="cellalignment1883" headers="r13c1-t4 r1c2-t4">
+<p>The Oracle Multimedia administrator account.</p>
+<p>See <a class="olink IMURG2000" href="../../appdev.112/e10777/ch_appdev.htm#IMURG2000"><span class="italic">Oracle Multimedia User's Guide</span></a>, <a class="olink AIVUG" href="../../appdev.112/e10776/toc.htm"><span class="italic">Oracle Multimedia Reference</span></a>, and <a class="olink IMDCM" href="../../appdev.112/e10778/toc.htm"><span class="italic">Oracle Multimedia DICOM Developer's Guide</span></a>.</p>
+</td>
+<td class="cellalignment1883" headers="r13c1-t4 r1c3-t4">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r14c1-t4" headers="r1c1-t4">
+<p><code>OUTLN</code><a id="sthref87"></a><a id="sthref88"></a></p>
+</td>
+<td class="cellalignment1883" headers="r14c1-t4 r1c2-t4">
+<p>The account that supports plan stability. Plan stability prevents certain database environment changes from affecting the performance characteristics of applications by preserving execution plans in stored outlines. <code>OUTLN</code> acts as a role to centrally manage metadata associated with stored outlines.</p>
+<p>See <a class="olink PFGRF007" href="../../server.112/e41573/optplanmgmt.htm#PFGRF007"><span class="italic">Oracle Database Performance Tuning Guide</span></a>.</p>
+</td>
+<td class="cellalignment1883" headers="r14c1-t4 r1c3-t4">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r15c1-t4" headers="r1c1-t4">
+<p><code>SI_INFORMTN_SCHEMA</code><a id="sthref89"></a><a id="sthref90"></a></p>
+</td>
+<td class="cellalignment1883" headers="r15c1-t4 r1c2-t4">
+<p>The account that stores the information views for the SQL/MM Still Image Standard.</p>
+<p>See <a class="olink IMURG2000" href="../../appdev.112/e10777/ch_appdev.htm#IMURG2000"><span class="italic">Oracle Multimedia User's Guide</span></a> and <a class="olink AIVUG" href="../../appdev.112/e10776/toc.htm"><span class="italic">Oracle Multimedia Reference</span></a>.</p>
+</td>
+<td class="cellalignment1883" headers="r15c1-t4 r1c3-t4">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r16c1-t4" headers="r1c1-t4">
+<p><code>SYS</code><a id="sthref91"></a><a id="sthref92"></a></p>
+</td>
+<td class="cellalignment1883" headers="r16c1-t4 r1c2-t4">
+<p>An account used to perform database administration tasks.</p>
+<p>See <a class="olink ADMQS12003" href="../../server.112/e10897/users_secure.htm#ADMQS12003"><span class="italic">Oracle Database 2 Day DBA</span></a>.</p>
+</td>
+<td class="cellalignment1883" headers="r16c1-t4 r1c3-t4">
+<p>Open</p>
+<p>Password is created at installation or database creation time.</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r17c1-t4" headers="r1c1-t4">
+<p><code>SYSMAN</code><a id="sthref93"></a><a id="sthref94"></a></p>
+</td>
+<td class="cellalignment1883" headers="r17c1-t4 r1c2-t4">
+<p>The account used to perform Oracle Enterprise Manager database administration tasks. The <code>SYS</code> and <code>SYSTEM</code> accounts can also perform these tasks.</p>
+<p>See <a class="olink OEMIG" href="http://www.oracle.com/pls/topic/lookup?ctx=db112&amp;id=OEMIG"><span class="italic">Oracle Enterprise Manager Grid Control Installation and Basic Configuration</span></a>.</p>
+</td>
+<td class="cellalignment1883" headers="r17c1-t4 r1c3-t4">
+<p>Open</p>
+<p>Password is created at installation or database creation time.</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r18c1-t4" headers="r1c1-t4">
+<p><code>SYSTEM</code><a id="sthref95"></a><a id="sthref96"></a></p>
+</td>
+<td class="cellalignment1883" headers="r18c1-t4 r1c2-t4">
+<p>A default generic database administrator account for Oracle databases.</p>
+<p>For production systems, Oracle recommends creating individual database administrator accounts and not using the generic <code>SYSTEM</code> account for database administration operations.</p>
+<p>See <a class="olink ADMQS12003" href="../../server.112/e10897/users_secure.htm#ADMQS12003"><span class="italic">Oracle Database 2 Day DBA</span></a>.</p>
+</td>
+<td class="cellalignment1883" headers="r18c1-t4 r1c3-t4">
+<p>Open</p>
+<p>Password is created at installation or database creation time.</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r19c1-t4" headers="r1c1-t4">
+<p><code>WK_TEST</code><a id="sthref97"></a><a id="sthref98"></a></p>
+</td>
+<td class="cellalignment1883" headers="r19c1-t4 r1c2-t4">
+<p>The instance administrator for the default instance, <code>WK_INST</code>. After you unlock this account and assign this user a password, then you must also update the cached schema password using the administration tool Edit Instance Page.</p>
+<p>Ultra Search provides uniform search-and-location capabilities over multiple repositories, such as Oracle databases, other ODBC compliant databases, IMAP mail servers, HTML documents managed by a Web server, files on disk, and more.</p>
+<p>See <a class="olink ULTRA" href="http://www.oracle.com/pls/topic/lookup?ctx=db112&amp;id=ULTRA"><span class="italic">Oracle Ultra Search Administrator's Guide</span></a>.</p>
+</td>
+<td class="cellalignment1883" headers="r19c1-t4 r1c3-t4">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r20c1-t4" headers="r1c1-t4">
+<p><code>WKSYS</code><a id="sthref99"></a><a id="sthref100"></a></p>
+</td>
+<td class="cellalignment1883" headers="r20c1-t4 r1c2-t4">
+<p>An Ultra Search database super-user. <code>WKSYS</code> can grant super-user privileges to other users, such as <code>WK_TEST</code>. All Oracle Ultra Search database objects are installed in the <code>WKSYS</code> schema.</p>
+<p>See <a class="olink ULTRA" href="http://www.oracle.com/pls/topic/lookup?ctx=db112&amp;id=ULTRA"><span class="italic">Oracle Ultra Search Administrator's Guide</span></a>.</p>
+</td>
+<td class="cellalignment1883" headers="r20c1-t4 r1c3-t4">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r21c1-t4" headers="r1c1-t4">
+<p><code>WKPROXY</code><a id="sthref101"></a><a id="sthref102"></a></p>
+</td>
+<td class="cellalignment1883" headers="r21c1-t4 r1c2-t4">
+<p>An administrative account of Oracle9<span class="italic">i</span> Application Server Ultra Search.</p>
+<p>See <a class="olink ULTRA" href="http://www.oracle.com/pls/topic/lookup?ctx=db112&amp;id=ULTRA"><span class="italic">Oracle Ultra Search Administrator's Guide</span></a>.</p>
+</td>
+<td class="cellalignment1883" headers="r21c1-t4 r1c3-t4">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r22c1-t4" headers="r1c1-t4">
+<p><code>WMSYS</code><a id="sthref103"></a><a id="sthref104"></a></p>
+</td>
+<td class="cellalignment1883" headers="r22c1-t4 r1c2-t4">
+<p>The account used to store the metadata information for Oracle Workspace Manager.</p>
+<p>See <a class="olink ADWSM" href="../../appdev.112/e11826/toc.htm"><span class="italic">Oracle Database Workspace Manager Developer's Guide</span></a>.</p>
+</td>
+<td class="cellalignment1883" headers="r22c1-t4 r1c3-t4">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r23c1-t4" headers="r1c1-t4">
+<p><code>XDB</code><a id="sthref105"></a><a id="sthref106"></a></p>
+</td>
+<td class="cellalignment1883" headers="r23c1-t4 r1c2-t4">
+<p>The account used for storing Oracle XML DB data and metadata.</p>
+<p>Oracle XML DB provides high-performance XML storage and retrieval for Oracle Database data.</p>
+<p>See <a class="olink ADXDB" href="../../appdev.112/e23094/toc.htm"><span class="italic">Oracle XML DB Developer's Guide</span></a>.</p>
+</td>
+<td class="cellalignment1883" headers="r23c1-t4 r1c3-t4">
+<p>Expired and locked</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblhruleformalwide" -->
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If you create an Oracle Automatic Storage Management (Oracle ASM) instance, then the<a id="sthref107"></a><a id="sthref108"></a> <code>ASMSNMP</code> account is created. Oracle Enterprise Manager uses this account to monitor ASM instances to retrieve data from ASM-related data dictionary views. The <code>ASMSNMP</code> account status is set to <code>OPEN</code> upon creation, and it is granted the <code>SYSDBA</code> privilege. For more information, see <a class="olink OSTMG22700" href="../../server.112/e18951/asm_em.htm#OSTMG22700"><span class="italic">Oracle Automatic Storage Management Administrator's Guide</span></a>.</div>
+</div>
+<!-- class="sect2" -->
+<a id="BABEIIDI"></a>
+<div id="TDPSG20302" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Predefined Non-Administrative User Accounts</h3>
+<p><a id="sthref109"></a><a href="#BABGJDJC">Table 3-2</a> lists default non-administrative user accounts that are created when you install Oracle Database. Non-administrative user accounts only have the minimum privileges needed to perform their jobs. Their default tablespace is <code>USERS</code>.</p>
+<p>To protect these accounts from unauthorized access, the installation process locks and expires these accounts immediately after installation, except where noted in <a href="#BABGJDJC">Table 3-2</a>. As the database administrator, you are responsible for unlocking and resetting these accounts, as described in <a href="#BABBICGB">"Expiring and Locking Database Accounts"</a>.</p>
+<div id="TDPSG94346" class="tblhruleformalwide">
+<p class="titleintable"><a id="sthref110"></a><a id="BABGJDJC"></a>Table 3-2 Predefined Oracle Database Non-Administrative User Accounts</p>
+<table class="cellalignment1881" title="Predefined Oracle Database Non-Administrative User Accounts" summary="Non-Administrative User Accounts" dir="ltr">
+<thead>
+<tr class="cellalignment1875">
+<th class="cellalignment1882" id="r1c1-t6">User Account</th>
+<th class="cellalignment1882" id="r1c2-t6">Description</th>
+<th class="cellalignment1882" id="r1c3-t6">Status After Installation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r2c1-t6" headers="r1c1-t6">
+<p><code>APEX_PUBLIC_USER</code><a id="sthref111"></a><a id="sthref112"></a></p>
+</td>
+<td class="cellalignment1883" headers="r2c1-t6 r1c2-t6">
+<p>The Oracle Database Application Express account. Use this account to specify the Oracle schema used to connect to the database through the database access descriptor (DAD).</p>
+<p>Oracle Application Express is a rapid, Web application development tool for Oracle Database.</p>
+<p>See <a class="olink HTMDB04004" href="../../appdev.112/e11947/bldr_attr.htm#HTMDB04004"><span class="italic">Oracle Application Express Application Builder User's Guide</span></a>.</p>
+</td>
+<td class="cellalignment1883" headers="r2c1-t6 r1c3-t6">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r3c1-t6" headers="r1c1-t6">
+<p><code>DIP</code><a id="sthref113"></a><a id="sthref114"></a></p>
+</td>
+<td class="cellalignment1883" headers="r3c1-t6 r1c2-t6">
+<p>The Oracle Directory Integration and Provisioning (DIP) account that is installed with Oracle Label Security. This profile is created automatically as part of the installation process for Oracle Internet Directory-enabled Oracle Label Security.</p>
+<p>See <a class="olink OLSAG026" href="../../network.112/e10745/olsoid.htm#OLSAG026"><span class="italic">Oracle Label Security Administrator's Guide</span></a>.</p>
+</td>
+<td class="cellalignment1883" headers="r3c1-t6 r1c3-t6">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r4c1-t6" headers="r1c1-t6">
+<p><code>FLOWS_040100</code><a id="sthref115"></a><a id="sthref116"></a></p>
+</td>
+<td class="cellalignment1883" headers="r4c1-t6 r1c2-t6">
+<p>The account that owns most of the database objects created during the installation of Oracle Database Application Express. These objects include tables, views, triggers, indexes, packages, and so on.</p>
+<p>See <a class="olink HTMDB" href="../../appdev.112/e11947/toc.htm"><span class="italic">Oracle Application Express Application Builder User's Guide</span></a>.</p>
+</td>
+<td class="cellalignment1883" headers="r4c1-t6 r1c3-t6">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r5c1-t6" headers="r1c1-t6">
+<p><code>FLOWS_FILES</code><a id="sthref117"></a><a id="sthref118"></a></p>
+</td>
+<td class="cellalignment1883" headers="r5c1-t6 r1c2-t6">
+<p>The account that owns the database objects created during the installation of Oracle Database Application Express related to modplsql document conveyance, for example, file uploads and downloads. These objects include tables, views, triggers, indexes, packages, and so on.</p>
+<p>See <a class="olink HTMDB" href="../../appdev.112/e11947/toc.htm"><span class="italic">Oracle Application Express Application Builder User's Guide</span></a>.</p>
+</td>
+<td class="cellalignment1883" headers="r5c1-t6 r1c3-t6">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r6c1-t6" headers="r1c1-t6">
+<p><code>MDDATA</code><a id="sthref119"></a><a id="sthref120"></a></p>
+</td>
+<td class="cellalignment1883" headers="r6c1-t6 r1c2-t6">
+<p>The schema used by Oracle Spatial for storing Geocoder and router data.</p>
+<p>Oracle Spatial provides a SQL schema and functions that enable you to store, retrieve, update, and query collections of spatial features in an Oracle database.</p>
+<p>See <a class="olink SPATL010" href="../../appdev.112/e11830/sdo_intro.htm#SPATL010"><span class="italic">Oracle Spatial Developer's Guide</span></a>.</p>
+</td>
+<td class="cellalignment1883" headers="r6c1-t6 r1c3-t6">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r7c1-t6" headers="r1c1-t6">
+<p><code>ORACLE_OCM</code><a id="sthref121"></a><a id="sthref122"></a></p>
+</td>
+<td class="cellalignment1883" headers="r7c1-t6 r1c2-t6">
+<p>The account used with Oracle Configuration Manager. This feature enables you to associate the configuration information for the current Oracle Database instance with My Oracle Support<a id="sthref123"></a>. Then when you log a service request, it is associated with the database instance configuration information.</p>
+<p>See <span class="italic">Oracle Database Installation Guide</span> for your platform.</p>
+</td>
+<td class="cellalignment1883" headers="r7c1-t6 r1c3-t6">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r8c1-t6" headers="r1c1-t6">
+<p><code>SPATIAL_CSW_ADMIN_USR</code><a id="sthref124"></a><a id="sthref125"></a></p>
+</td>
+<td class="cellalignment1883" headers="r8c1-t6 r1c2-t6">
+<p>The Catalog Services for the Web (CSW) account. It is used by Oracle Spatial CSW Cache Manager to load all record-type metadata and record instances from the database into the main memory for the record types that are cached.</p>
+<p>See <a class="olink SPATL" href="../../appdev.112/e11830/toc.htm"><span class="italic">Oracle Spatial Developer's Guide</span></a>.</p>
+</td>
+<td class="cellalignment1883" headers="r8c1-t6 r1c3-t6">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r9c1-t6" headers="r1c1-t6">
+<p><code>SPATIAL_WFS_ADMIN_USR</code><a id="sthref126"></a><a id="sthref127"></a></p>
+</td>
+<td class="cellalignment1883" headers="r9c1-t6 r1c2-t6">
+<p>The Web Feature Service (WFS) account. It is used by Oracle Spatial WFS Cache Manager to load all feature type metadata and feature instances from the database into main memory for the feature types that are cached.</p>
+<p>See <a class="olink SPATL" href="../../appdev.112/e11830/toc.htm"><span class="italic">Oracle Spatial Developer's Guide</span></a>.</p>
+</td>
+<td class="cellalignment1883" headers="r9c1-t6 r1c3-t6">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r10c1-t6" headers="r1c1-t6">
+<p><code>XS$NULL</code><a id="sthref128"></a><a id="sthref129"></a></p>
+</td>
+<td class="cellalignment1883" headers="r10c1-t6 r1c2-t6">
+<p>An internal account that represents the absence of a user in a session. Because <code>XS$NULL</code> is not a user, this account can only be accessed by the Oracle Database instance. <code>XS$NULL</code> has no privileges and no one can authenticate as <code>XS$NULL</code>, nor can authentication credentials ever be assigned to <code>XS$NULL</code>.</p>
+</td>
+<td class="cellalignment1883" headers="r10c1-t6 r1c3-t6">
+<p>Expired and locked</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblhruleformalwide" --></div>
+<!-- class="sect2" -->
+<a id="BABCDJGA"></a>
+<div id="TDPSG20303" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Predefined Sample Schema User Accounts</h3>
+<p>If you install the sample schemas, which you must do to complete the examples in this guide, Oracle Database creates a set of sample user accounts. The sample schema user accounts are all non-administrative accounts, and their tablespace is <code>USERS</code>. <a id="sthref130"></a></p>
+<p>To protect these accounts from unauthorized access, the installation process locks and expires these accounts immediately after installation. As the database administrator, you are responsible for unlocking and resetting these accounts, as described in <a href="#BABBICGB">"Expiring and Locking Database Accounts"</a>. For more information about the sample schema accounts, see <a class="olink COMSC" href="../e10831/toc.htm"><span class="italic">Oracle Database Sample Schemas</span></a>.</p>
+<p><a href="#BABHFGJF">Table 3-3</a> lists the sample schema user accounts, which represent different divisions of a fictional company that manufactures various products.</p>
+<div id="TDPSG94347" class="tblhruleformalwide">
+<p class="titleintable"><a id="sthref131"></a><a id="BABHFGJF"></a>Table 3-3 Default Sample Schema User Accounts</p>
+<table class="cellalignment1881" title="Default Sample Schema User Accounts" summary="Default Sample Schema Accounts" dir="ltr">
+<thead>
+<tr class="cellalignment1875">
+<th class="cellalignment1882" id="r1c1-t7">User Account</th>
+<th class="cellalignment1882" id="r1c2-t7">Description</th>
+<th class="cellalignment1882" id="r1c3-t7">Status After Installation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r2c1-t7" headers="r1c1-t7">
+<p><code>BI</code><a id="sthref132"></a><a id="sthref133"></a></p>
+</td>
+<td class="cellalignment1883" headers="r2c1-t7 r1c2-t7">
+<p>The account that owns the <code>BI</code> (Business Intelligence) schema included in the Oracle Sample Schemas.</p>
+<p>See also <a class="olink WBDOD" href="../../owb.112/e10582/toc.htm"><span class="italic">Oracle Warehouse Builder Sources and Targets Guide</span></a>.</p>
+</td>
+<td class="cellalignment1883" headers="r2c1-t7 r1c3-t7">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r3c1-t7" headers="r1c1-t7">
+<p><code>HR</code><a id="sthref134"></a><a id="sthref135"></a></p>
+</td>
+<td class="cellalignment1883" headers="r3c1-t7 r1c2-t7">
+<p>The account used to manage the <code>HR</code> (Human Resources) schema. This schema stores information about the employees and the facilities of the company.</p>
+</td>
+<td class="cellalignment1883" headers="r3c1-t7 r1c3-t7">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r4c1-t7" headers="r1c1-t7">
+<p><code>OE</code><a id="sthref136"></a><a id="sthref137"></a></p>
+</td>
+<td class="cellalignment1883" headers="r4c1-t7 r1c2-t7">
+<p>The account used to manage the <code>OE</code> (Order Entry) schema. This schema stores product inventories and sales of the company's products through various channels.</p>
+</td>
+<td class="cellalignment1883" headers="r4c1-t7 r1c3-t7">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r5c1-t7" headers="r1c1-t7">
+<p><code>PM</code><a id="sthref138"></a><a id="sthref139"></a></p>
+</td>
+<td class="cellalignment1883" headers="r5c1-t7 r1c2-t7">
+<p>The account used to manage the <code>PM</code> (Product Media) schema. This schema contains descriptions and detailed information about each product sold by the company.</p>
+</td>
+<td class="cellalignment1883" headers="r5c1-t7 r1c3-t7">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r6c1-t7" headers="r1c1-t7">
+<p><code>IX</code><a id="sthref140"></a><a id="sthref141"></a></p>
+</td>
+<td class="cellalignment1883" headers="r6c1-t7 r1c2-t7">
+<p>The account used to manage the <code>IX</code> (Information Exchange) schema. This schema manages shipping through business-to-business (B2B) applications.</p>
+</td>
+<td class="cellalignment1883" headers="r6c1-t7 r1c3-t7">
+<p>Expired and locked</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r7c1-t7" headers="r1c1-t7">
+<p><code>SH</code><a id="sthref142"></a><a id="sthref143"></a></p>
+</td>
+<td class="cellalignment1883" headers="r7c1-t7 r1c2-t7">
+<p>The account used to manage the <code>SH</code> (Sales) schema. This schema stores business statistics to facilitate business decisions.</p>
+</td>
+<td class="cellalignment1883" headers="r7c1-t7 r1c3-t7">
+<p>Expired and locked</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblhruleformalwide" -->
+<p>In addition to the sample schema accounts, Oracle Database provides another sample schema account, <code>SCOTT</code><a id="sthref144"></a><a id="sthref145"></a>. The <code>SCOTT</code> schema contains the tables <code>EMP</code>, <code>DEPT</code>, <code>SALGRADE</code>, and <code>BONUS</code>. The <code>SCOTT</code> account is used in examples throughout the Oracle Database documentation set. When you install Oracle Database, the <code>SCOTT</code> account is locked and expired.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BABBICGB"></a>
+<div id="TDPSG20024" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Expiring and Locking Database Accounts</h2>
+<p>When you expire the password of a user, that password no longer exists. If you want to <span class="italic">unexpire</span> the password, you change the password of that account. Locking an account preserves the user password and other account information, but makes the account unavailable to anyone who tries to log in to the database using that account. Unlocking it makes the account available again.</p>
+<p><a class="olink ADMQS074" href="../../server.112/e10897/users_secure.htm#ADMQS074"><span class="italic">Oracle Database 2 Day DBA</span></a> explains <a id="sthref146"></a><a id="sthref147"></a><a id="sthref148"></a>how you can use Database Control to unlock database accounts. You also can use Database Control to expire or lock database accounts.</p>
+<p class="orderedlisttitle">To expire and lock a database account:&nbsp;</p>
+<ol>
+<li>
+<p>Start Database Control.</p>
+<p>See <a class="olink ADMQS033" href="../../server.112/e10897/em_manage.htm#ADMQS033"><span class="italic">Oracle Database 2 Day DBA</span></a> for instructions about how to start Database Control.</p>
+</li>
+<li>
+<p>Log in with administrative privileges.</p>
+<p>For example:</p>
+<img width="438" height="204" src="img/login.gif" alt="Description of login.gif follows" /><br />
+<a id="sthref150" href="img_text/login.htm">Description of the illustration login.gif</a><br />
+<br />
+<p>The Database Home page appears.</p>
+</li>
+<li>
+<p>Click <span class="bold">Server</span> to display the Server subpage.</p>
+</li>
+<li>
+<p>In the Security section, click <span class="bold">Users</span>.</p>
+<p>The Users page lists the user accounts created for the current database instance. The Account Status column indicates whether an account is expired, locked, or open.</p>
+</li>
+<li>
+<p>In the Select column, select the account you want to expire, and then click <span class="bold">Edit</span>.</p>
+<p>The Edit User page appears.</p>
+</li>
+<li>
+<p>Do one of the following:</p>
+<ul>
+<li>
+<p>To expire a password, click <span class="bold">Expire Password now</span>.</p>
+<p>To unexpire the password, enter a new password in the <span class="bold">Enter Password</span> and <span class="bold">Confirm Password</span> fields. See <a href="#BEICECGF">"Requirements for Creating Passwords"</a> for password requirements.</p>
+</li>
+<li>
+<p>To lock the account, select <span class="bold">Locked</span>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Click <span class="bold">Apply</span>.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect1" -->
+<a id="BEICECGF"></a>
+<div id="TDPSG20022" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Requirements for Creating Passwords</h2>
+<p>When <a id="sthref151"></a><a id="sthref152"></a><a id="sthref153"></a>you create a user account, Oracle Database assigns a default password policy for that user. The password policy defines rules for how the password should be created, such as a minimum number of characters, when it expires, and so on. You can strengthen passwords by using password policies.</p>
+<p>For greater security, follow these guidelines when you create passwords:</p>
+<ul>
+<li>
+<p>Make the password between 12 and 30 characters and numbers.</p>
+</li>
+<li>
+<p>Use mixed case letters and special characters in the password. (See <a class="olink DBSEG30324" href="../../network.112/e36292/authentication.htm#DBSEG30324"><span class="italic">Oracle Database Security Guide</span></a> for more information.)</p>
+</li>
+<li>
+<p>Use the database character set for the password's characters, which can include the underscore (<code>_</code>), dollar (<code>$</code>), and number sign (<code>#</code>) characters.</p>
+</li>
+<li>
+<p>Do not use an actual word for the entire password.</p>
+</li>
+</ul>
+<p><a class="olink DBSEG10005" href="../../network.112/e36292/guidelines.htm#DBSEG10005"><span class="italic">Oracle Database Security Guide</span></a> describes more ways that you can further secure passwords.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#BABJAEDF">"Finding and Changing Default Passwords"</a> for information about changing user passwords</p>
+</li>
+<li>
+<p><a href="#BABBICGB">"Expiring and Locking Database Accounts"</a> for information about locking accounts and expiring passwords</p>
+</li>
+<li>
+<p><a href="#BABGEGFI">"Predefined User Accounts Provided by Oracle Database"</a> a description of the predefined user accounts that are created when you install Oracle Database</p>
+</li>
+<li>
+<p><a class="olink ADMQS12044" href="../../server.112/e10897/users_secure.htm#ADMQS12044"><span class="italic">Oracle Database 2 Day DBA</span></a> for an introduction to password policies</p>
+</li>
+<li>
+<p><a class="olink DBSEG0032" href="../../network.112/e36292/authentication.htm#DBSEG0032"><span class="italic">Oracle Database Security Guide</span></a> for detailed information about managing passwords</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="BABJAEDF"></a>
+<div id="TDPSG20023" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Finding and Changing Default Passwords</h2>
+<p><a id="sthref154"></a>When you install Oracle Database, the default database user accounts, including administrative accounts, are created without default passwords. Except for the administrative accounts whose passwords you create during installation (such as user <code>SYS</code>), the default user accounts arrive locked with their passwords expired. If you have upgraded from a previous release of Oracle Database, you may have database accounts that still have default passwords. These are default accounts that are created when you create a database, such as the <code>HR</code>, <code>OE</code>, and <code>SCOTT</code> accounts.</p>
+<p>Security is most easily compromised when a default database user account still has a <a id="sthref155"></a><a id="sthref156"></a>default password <span class="italic">after installation</span>. This is particularly true for the user account <code>SCOTT</code>, which is a well known account that may be vulnerable to intruders. Find accounts that use default passwords and then change their passwords.</p>
+<p class="orderedlisttitle">To find and change default passwords:&nbsp;</p>
+<ol>
+<li>
+<p>Log into SQL*Plus with administrative privileges.</p>
+<pre>
+sqlplus system
+Enter password: <span class="italic">password</span>
+</pre></li>
+<li>
+<p>Select from the <code>DBA_USERS_WITH_DEFPWD</code> data dictionary view.<a id="sthref158"></a><a id="sthref159"></a></p>
+<pre>
+SELECT * FROM DBA_USERS_WITH_DEFPWD;
+</pre>
+<p>The <code>DBA_USERS_WITH_DEFPWD</code> lists the accounts that still have user default passwords. For example:</p>
+<pre>
+USERNAME
+------------
+SCOTT
+</pre></li>
+<li>
+<p>Change the password for the accounts the <code>DBA_USERS_WITH_DEFPWD</code> data dictionary view lists.</p>
+<p>For example, to change the password for user <code>SCOTT</code>, enter the following:</p>
+<pre>
+PASSWORD SCOTT
+Changing password for SCOTT
+New password: <span class="italic">password</span>
+Retype new password: <span class="italic">password</span>
+Password changed
+</pre>
+<p>Replace <code><span class="codeinlineitalic">password</span></code> with a password that is secure, according to the guidelines listed in <a href="#BEICECGF">"Requirements for Creating Passwords"</a>. For greater security, do not reuse the same password that was used in previous releases of Oracle Database.</p>
+<p>Alternatively, you can use the <code>ALTER USER</code> SQL statement to change the password:</p>
+<pre>
+ALTER USER SCOTT IDENTIFIED BY <span class="italic">password</span>;
+</pre></li>
+</ol>
+<p><a id="sthref160"></a>You can use Database Control to change a user account passwords (not just the default user account passwords) if you have administrative privileges. Individual users can also use Database Control to change their own passwords.</p>
+<p class="orderedlisttitle">To use Database Control to change the password of a database account: &nbsp;</p>
+<ol>
+<li>
+<p>Start Database Control.</p>
+<p>See <a class="olink ADMQS033" href="../../server.112/e10897/em_manage.htm#ADMQS033"><span class="italic">Oracle Database 2 Day DBA</span></a> for instructions about how to start Database Control.</p>
+</li>
+<li>
+<p>Enter an administrator user name and password (for example, <code>SYSTEM</code>), and then click <span class="bold">Login</span>.</p>
+</li>
+<li>
+<p>Click <span class="bold">Server</span> to display the Server subpage.</p>
+</li>
+<li>
+<p>In the Security section, click <span class="bold">Users</span>.</p>
+<p>The Users page lists the user accounts created for the current database instance. The Account Status column indicates whether an account is expired, locked, or open.</p>
+</li>
+<li>
+<p>In the Select column, select the account you want to change, and then click <span class="bold">Edit</span>.</p>
+<p>The Edit User page appears.</p>
+</li>
+<li>
+<p>Enter a new password in the <span class="bold">Enter Password</span> and <span class="bold">Confirm Password</span> fields.</p>
+</li>
+<li>
+<p>Click <span class="bold">Apply</span>.</p>
+</li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink DBSEG0032" href="../../network.112/e36292/authentication.htm#DBSEG0032"><span class="italic">Oracle Database Security Guide</span></a> for additional methods of configuring password protection</p>
+</li>
+<li>
+<p><a href="#BABGEGFI">"Predefined User Accounts Provided by Oracle Database"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="BABBDJBF"></a>
+<div id="TDPSG20025" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Guideline for Handling the Default Administrative User Passwords</h2>
+<p>You <a id="sthref162"></a><a id="sthref163"></a><a id="sthref164"></a>can use the same or different passwords for the <code>SYS</code>, <a id="sthref165"></a><a id="sthref166"></a><a id="sthref167"></a><a id="sthref168"></a><code>SYSTEM</code>, <a id="sthref169"></a><code>SYSMAN</code>, and <code>DBSNMP</code> administrative accounts. Oracle recommends that you use <a id="sthref170"></a><a id="sthref171"></a>different passwords for each. In any Oracle Database environment (production or test), assign strong, secure, and distinct passwords to these administrative accounts. If you use <a id="sthref172"></a>Database Configuration Assistant to create a new database, then it requires you to create passwords for the <code>SYS</code> and <code>SYSTEM</code> accounts.</p>
+<p>Do not use <a id="sthref173"></a>default passwords for any administrative accounts, including <a id="sthref174"></a><code>SYSMAN</code> and <a id="sthref175"></a><code>DBSNMP</code>. Oracle Database 11<span class="italic">g</span> Release 2 (11.2) and later does not install these accounts with default passwords, but if you have upgraded from an earlier release of Oracle Database, you may still have accounts that use default passwords. You should find and change these accounts by using the procedures in <a href="#BABJAEDF">"Finding and Changing Default Passwords"</a>.</p>
+<p>At the end of database creation, Database Configuration Assistant displays a page that requires you to enter and confirm new passwords for the <code>SYS</code> and <code>SYSTEM</code> user accounts.</p>
+<p>After installation, you can use Database Control to change the administrative user passwords. See <a href="#BABJAEDF">"Finding and Changing Default Passwords"</a> for more information on changing a password.</p>
+</div>
+<!-- class="sect1" -->
+<a id="BABGCAAC"></a>
+<div id="TDPSG20027" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Guideline for Enforcing Password Management</h2>
+<p>Apply basic <a id="sthref176"></a><a id="sthref177"></a>password <a id="sthref178"></a>management rules (such as password length, history, <a id="sthref179"></a><a id="sthref180"></a><a id="sthref181"></a>complexity, and so forth) to all user passwords. Oracle Database has password policies enabled for the default profile. <a href="#BEICECGF">"Requirements for Creating Passwords"</a> provides guidelines for creating password policies. <a href="#BABEIDCI">Table 3-4</a> lists initialization parameters that you can set to enforce password management.</p>
+<p>You can find information about user accounts by querying the <code><a id="sthref182"></a><a id="sthref183"></a><a id="sthref184"></a>DBA_USERS</code> view. The <code>DBA_USERS</code> view provides useful information such as the user account status, whether the account is locked, and password versions. You can query <code>DBA_USERS</code> as follows:</p>
+<pre>
+sqlplus system
+Enter password: <span class="italic">password</span>
+
+SQL&gt; SELECT * FROM DBA_USERS;
+</pre>
+<p>Oracle also recommends, if possible, using <a id="sthref185"></a>Oracle Advanced Security (an option to Oracle Database <a id="sthref186"></a>Enterprise Edition) with network authentication <a id="sthref187"></a><a id="sthref188"></a><a id="sthref189"></a><a id="sthref190"></a>services (such as <a id="sthref191"></a>Kerberos), <a id="sthref192"></a><a id="sthref193"></a><a id="sthref194"></a>token cards, smart cards, or X.509 certificates. These services provide <a id="sthref195"></a><a id="sthref196"></a>strong authentication of users, and provide better protection against unauthorized access to Oracle Database.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink DBSEG0032" href="../../network.112/e36292/authentication.htm#DBSEG0032"><span class="italic">Oracle Database Security Guide</span></a> for more information about password management</p>
+</li>
+<li>
+<p><a class="olink DBSEG20026" href="../../network.112/e36292/users.htm#DBSEG20026"><span class="italic">Oracle Database Security Guide</span></a> for additional views you can query to find information about users and profiles</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="BABCABHH"></a>
+<div id="TDPSG20029" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Parameters Used to Secure User Accounts</h2>
+<p><a href="#BABEIDCI">Table 3-4</a> lists initialization and profile parameters that you can set to better secure user accounts.</p>
+<div id="TDPSG94351" class="tblhruleformalwide">
+<p class="titleintable"><a id="sthref197"></a><a id="BABEIDCI"></a>Table 3-4 Initialization and Profile Parameters Used for User Account Security</p>
+<table class="cellalignment1881" title="Initialization and Profile Parameters Used for User Account Security" summary="Initialization Parameters Used for User Account Security" dir="ltr">
+<thead>
+<tr class="cellalignment1875">
+<th class="cellalignment1882" id="r1c1-t11">Parameter</th>
+<th class="cellalignment1882" id="r1c2-t11">Default Setting</th>
+<th class="cellalignment1882" id="r1c3-t11">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r2c1-t11" headers="r1c1-t11">
+<p><code>SEC_CASE_SENSITIVE_LOGON</code></p>
+</td>
+<td class="cellalignment1883" headers="r2c1-t11 r1c2-t11">
+<p><code>TRUE</code></p>
+</td>
+<td class="cellalignment1883" headers="r2c1-t11 r1c3-t11">
+<p>Controls case sensitivity in passwords. <code>TRUE</code> enables case sensitivity; <code>FALSE</code> disables it. <a id="sthref198"></a></p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r3c1-t11" headers="r1c1-t11">
+<p><code>SEC_MAX_FAILED_LOGIN_ATTEMPTS</code></p>
+</td>
+<td class="cellalignment1883" headers="r3c1-t11 r1c2-t11">
+<p>No default setting</p>
+</td>
+<td class="cellalignment1883" headers="r3c1-t11 r1c3-t11">
+<p>Sets the maximum number of times a user is allowed to fail when connecting to an Oracle Call Interface (OCI) application. <a id="sthref199"></a></p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r4c1-t11" headers="r1c1-t11">
+<p><code>FAILED_LOGIN_ATTEMPTS</code></p>
+</td>
+<td class="cellalignment1883" headers="r4c1-t11 r1c2-t11">
+<p><code>10</code></p>
+</td>
+<td class="cellalignment1883" headers="r4c1-t11 r1c3-t11">
+<p>Sets the maximum times a user login is allowed to fail before locking the account. <a id="sthref200"></a></p>
+<p><span class="bold">Note:</span> You also can set limits on the number of times an unauthorized user (possibly an intruder) attempts to log in to Oracle Call Interface applications by using the <code>SEC_MAX_FAILED_LOGIN_ATTEMPTS</code> initialization parameter.</p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r5c1-t11" headers="r1c1-t11">
+<p><code>PASSWORD_GRACE_TIME</code></p>
+</td>
+<td class="cellalignment1883" headers="r5c1-t11 r1c2-t11">
+<p><code>7</code></p>
+</td>
+<td class="cellalignment1883" headers="r5c1-t11 r1c3-t11">
+<p>Sets the number of days that a user has to change his or her password before it expires. <a id="sthref201"></a></p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r6c1-t11" headers="r1c1-t11">
+<p><code>PASSWORD_LIFE_TIME</code></p>
+</td>
+<td class="cellalignment1883" headers="r6c1-t11 r1c2-t11">
+<p><code>180</code></p>
+</td>
+<td class="cellalignment1883" headers="r6c1-t11 r1c3-t11">
+<p>Sets the number of days the user can use his or her current password.<a id="sthref202"></a></p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r7c1-t11" headers="r1c1-t11">
+<p><code>PASSWORD_LOCK_TIME</code></p>
+</td>
+<td class="cellalignment1883" headers="r7c1-t11 r1c2-t11">
+<p><code>1</code></p>
+</td>
+<td class="cellalignment1883" headers="r7c1-t11 r1c3-t11">
+<p>Sets the number of days an account will be locked after the specified number of consecutive failed login attempts.<a id="sthref203"></a></p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r8c1-t11" headers="r1c1-t11">
+<p><code>PASSWORD_REUSE_MAX</code></p>
+</td>
+<td class="cellalignment1883" headers="r8c1-t11 r1c2-t11">
+<p><code>UNLIMITED</code></p>
+</td>
+<td class="cellalignment1883" headers="r8c1-t11 r1c3-t11">
+<p>Specifies the number of password changes required before the current password can be reused. <a id="sthref204"></a></p>
+</td>
+</tr>
+<tr class="cellalignment1875">
+<td class="cellalignment1883" id="r9c1-t11" headers="r1c1-t11">
+<p><code>PASSWORD_REUSE_TIME</code></p>
+</td>
+<td class="cellalignment1883" headers="r9c1-t11 r1c2-t11">
+<p><code>UNLIMITED</code></p>
+</td>
+<td class="cellalignment1883" headers="r9c1-t11 r1c3-t11">
+<p>Specifies the number of days before which a password cannot be reused. <a id="sthref205"></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblhruleformalwide" -->
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You can use most of these parameters to create a user profile. See <a class="olink DBSEG30323" href="../../network.112/e36292/authentication.htm#DBSEG30323"><span class="italic">Oracle Database Security Guide</span></a> for more information about user profile settings.</div>
+<p>To modify an initialization parameter, see <a href="tdpsg_install_config.htm#CEGFIJIJ">"Modifying the Value of an Initialization Parameter"</a>.<a id="sthref206"></a> For detailed information about initialization parameters, see <a class="olink REFRN" href="../e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> and<a class="olink ADMIN00202" href="../../server.112/e25494/create.htm#ADMIN00202"><span class="italic">Oracle Database Administrator's Guide</span></a>.</p>
+</div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1874">
+<tr>
+<td class="cellalignment1883">
+<table class="cellalignment1879">
+<tr>
+<td class="cellalignment1878"><a href="tdpsg_install_config.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1878"><a href="tdpsg_privileges.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2006, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1885">
+<table class="cellalignment1877">
+<tr>
+<td class="cellalignment1878"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1878"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1878"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1878"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1878"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1878"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

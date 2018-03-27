@@ -1,0 +1,1790 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>OCI String Manipulation Functions</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1023" />
+<meta name="dcterms.created" content="2014-07-18T15:18:45Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Call Interface Programmer's Guide" />
+<meta name="dcterms.identifier" content="E10646-15" />
+<meta name="dcterms.isVersionOf" content="LNOCI" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1996, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="oci22glb002.htm" title="Previous" type="text/html" />
+<link rel="Next" href="oci22glb004.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10646.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">64/79</span> <!-- End Header --><a id="i530674"></a>
+<div id="LNOCI213" class="refsect1">
+<h1 class="refsect1">OCI String Manipulation Functions</h1>
+<p>Two types of data structures are supported for string manipulation:</p>
+<ul>
+<li>
+<p>Multibyte strings</p>
+</li>
+<li>
+<p>Wide-character strings</p>
+</li>
+</ul>
+<p>Multibyte strings are encoded in native Oracle character sets. Functions that operate on multibyte strings take the string as a whole unit with the length of the string calculated in bytes. Wide-character (<code>wchar</code>) string functions provide more flexibility in string manipulation. They support character-based and string-based operations with the length of the string calculated in characters.</p>
+<p>The wide-character data type is Oracle-specific and should not be confused with the <a id="sthref4972"></a><code>wchar_t</code> data type defined by the ANSI/ISO C standard. The Oracle wide-character data type is always 4 bytes in all operating systems, whereas the size of <code>wchar_t</code> depends on the implementation and the operating system. The Oracle wide-character data type normalizes multibyte characters so that they have a fixed width for easy processing. This guarantees no data loss for round-trip conversion between the Oracle wide-character set and the native character set.</p>
+<p>String manipulation can be classified into the following categories:</p>
+<ul>
+<li>
+<p>Conversion of strings between multibyte and wide character</p>
+</li>
+<li>
+<p>Character classifications</p>
+</li>
+<li>
+<p>Case conversion</p>
+</li>
+<li>
+<p>Calculations of display length</p>
+</li>
+<li>
+<p>General string manipulation, such as comparison, concatenation, and searching</p>
+</li>
+</ul>
+<p><a href="#g558635">Table 22-4</a> summarizes the OCI string manipulation functions, which are described in this section.</p>
+<div id="LNOCI17644" class="tblformalwide">
+<p class="titleintable"><a id="sthref4973"></a><a id="g558635"></a>Table 22-4 OCI String Manipulation Functions</p>
+<table class="cellalignment1011" title="OCI String Manipulation Functions " summary="This table is described in the preceding text" dir="ltr">
+<thead>
+<tr class="cellalignment1005">
+<th class="cellalignment1012" id="r1c1-t7">Function</th>
+<th class="cellalignment1012" id="r1c2-t7">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1005">
+<td class="cellalignment1013" id="r2c1-t7" headers="r1c1-t7">
+<p><a href="#i530495">"OCIMultiByteInSizeToWideChar()"</a></p>
+</td>
+<td class="cellalignment1013" headers="r2c1-t7 r1c2-t7">
+<p>Convert part of a multibyte string into the wide-character string</p>
+</td>
+</tr>
+<tr class="cellalignment1005">
+<td class="cellalignment1013" id="r3c1-t7" headers="r1c1-t7">
+<p><a href="#i530502">"OCIMultiByteStrCaseConversion()"</a></p>
+</td>
+<td class="cellalignment1013" headers="r3c1-t7 r1c2-t7">
+<p>Convert a multibyte string into the specified case and copies the result into the destination array</p>
+</td>
+</tr>
+<tr class="cellalignment1005">
+<td class="cellalignment1013" id="r4c1-t7" headers="r1c1-t7">
+<p><a href="#i530509">"OCIMultiByteStrcat()"</a></p>
+</td>
+<td class="cellalignment1013" headers="r4c1-t7 r1c2-t7">
+<p>Append a multibyte string to the destination string</p>
+</td>
+</tr>
+<tr class="cellalignment1005">
+<td class="cellalignment1013" id="r5c1-t7" headers="r1c1-t7">
+<p><a href="#i530516">"OCIMultiByteStrcmp()"</a></p>
+</td>
+<td class="cellalignment1013" headers="r5c1-t7 r1c2-t7">
+<p>Compare two multibyte strings by binary, linguistic, or case-insensitive comparison methods</p>
+</td>
+</tr>
+<tr class="cellalignment1005">
+<td class="cellalignment1013" id="r6c1-t7" headers="r1c1-t7">
+<p><a href="#i530523">"OCIMultiByteStrcpy()"</a></p>
+</td>
+<td class="cellalignment1013" headers="r6c1-t7 r1c2-t7">
+<p>Copy a multibyte string into the destination array. It returns the number of bytes copied.</p>
+</td>
+</tr>
+<tr class="cellalignment1005">
+<td class="cellalignment1013" id="r7c1-t7" headers="r1c1-t7">
+<p><a href="#i530530">"OCIMultiByteStrlen()"</a></p>
+</td>
+<td class="cellalignment1013" headers="r7c1-t7 r1c2-t7">
+<p>Return the number of bytes in a multibyte string</p>
+</td>
+</tr>
+<tr class="cellalignment1005">
+<td class="cellalignment1013" id="r8c1-t7" headers="r1c1-t7">
+<p><a href="#i530537">"OCIMultiByteStrncat()"</a></p>
+</td>
+<td class="cellalignment1013" headers="r8c1-t7 r1c2-t7">
+<p>Append, at most, <span class="italic">n</span> bytes from a multibyte string to the destination string</p>
+</td>
+</tr>
+<tr class="cellalignment1005">
+<td class="cellalignment1013" id="r9c1-t7" headers="r1c1-t7">
+<p><a href="#i530544">"OCIMultiByteStrncmp()"</a></p>
+</td>
+<td class="cellalignment1013" headers="r9c1-t7 r1c2-t7">
+<p>Compare two multibyte strings by binary, linguistic, or case-insensitive comparison methods. Each string is in the specified length</p>
+</td>
+</tr>
+<tr class="cellalignment1005">
+<td class="cellalignment1013" id="r10c1-t7" headers="r1c1-t7">
+<p><a href="#i532659">"OCIMultiByteStrncpy()"</a></p>
+</td>
+<td class="cellalignment1013" headers="r10c1-t7 r1c2-t7">
+<p>Copy a specified number of bytes of a multibyte string into the destination array</p>
+</td>
+</tr>
+<tr class="cellalignment1005">
+<td class="cellalignment1013" id="r11c1-t7" headers="r1c1-t7">
+<p><a href="#i530551">"OCIMultiByteStrnDisplayLength()"</a></p>
+</td>
+<td class="cellalignment1013" headers="r11c1-t7 r1c2-t7">
+<p>Return the number of display positions occupied by the multibyte string within the range of <span class="italic">n</span> bytes</p>
+</td>
+</tr>
+<tr class="cellalignment1005">
+<td class="cellalignment1013" id="r12c1-t7" headers="r1c1-t7">
+<p><a href="#i530558">"OCIMultiByteToWideChar()"</a></p>
+</td>
+<td class="cellalignment1013" headers="r12c1-t7 r1c2-t7">
+<p>Convert a <code>NULL</code>-terminated multibyte string into wide-character format</p>
+</td>
+</tr>
+<tr class="cellalignment1005">
+<td class="cellalignment1013" id="r13c1-t7" headers="r1c1-t7">
+<p><a href="#i530565">"OCIWideCharInSizeToMultiByte()"</a></p>
+</td>
+<td class="cellalignment1013" headers="r13c1-t7 r1c2-t7">
+<p>Convert part of a wide-character string to the multibyte string</p>
+</td>
+</tr>
+<tr class="cellalignment1005">
+<td class="cellalignment1013" id="r14c1-t7" headers="r1c1-t7">
+<p><a href="#i530572">"OCIWideCharMultiByteLength()"</a></p>
+</td>
+<td class="cellalignment1013" headers="r14c1-t7 r1c2-t7">
+<p>Determine the number of bytes required for a wide character in multibyte encoding</p>
+</td>
+</tr>
+<tr class="cellalignment1005">
+<td class="cellalignment1013" id="r15c1-t7" headers="r1c1-t7">
+<p><a href="#i530579">"OCIWideCharStrCaseConversion()"</a></p>
+</td>
+<td class="cellalignment1013" headers="r15c1-t7 r1c2-t7">
+<p>Convert a wide-character string into the specified case and copies the result into the destination array</p>
+</td>
+</tr>
+<tr class="cellalignment1005">
+<td class="cellalignment1013" id="r16c1-t7" headers="r1c1-t7">
+<p><a href="#i530586">"OCIWideCharStrcat()"</a></p>
+</td>
+<td class="cellalignment1013" headers="r16c1-t7 r1c2-t7">
+<p>Append a wide-character string to the destination string</p>
+</td>
+</tr>
+<tr class="cellalignment1005">
+<td class="cellalignment1013" id="r17c1-t7" headers="r1c1-t7">
+<p><a href="#i530593">"OCIWideCharStrchr()"</a></p>
+</td>
+<td class="cellalignment1013" headers="r17c1-t7 r1c2-t7">
+<p>Search for the first occurrence of a wide character in a string. Return a point to the wide character if the search is successful.</p>
+</td>
+</tr>
+<tr class="cellalignment1005">
+<td class="cellalignment1013" id="r18c1-t7" headers="r1c1-t7">
+<p><a href="#i530600">"OCIWideCharStrcmp()"</a></p>
+</td>
+<td class="cellalignment1013" headers="r18c1-t7 r1c2-t7">
+<p>Compare two wide-character strings by binary, linguistic, or case-insensitive comparison methods</p>
+</td>
+</tr>
+<tr class="cellalignment1005">
+<td class="cellalignment1013" id="r19c1-t7" headers="r1c1-t7">
+<p><a href="#i530607">"OCIWideCharStrcpy()"</a></p>
+</td>
+<td class="cellalignment1013" headers="r19c1-t7 r1c2-t7">
+<p>Copy a wide-character string into a destination array. Return the number of characters copied.</p>
+</td>
+</tr>
+<tr class="cellalignment1005">
+<td class="cellalignment1013" id="r20c1-t7" headers="r1c1-t7">
+<p><a href="#i530614">"OCIWideCharStrlen()"</a></p>
+</td>
+<td class="cellalignment1013" headers="r20c1-t7 r1c2-t7">
+<p>Return the number of characters in a wide-character string</p>
+</td>
+</tr>
+<tr class="cellalignment1005">
+<td class="cellalignment1013" id="r21c1-t7" headers="r1c1-t7">
+<p><a href="#i530621">"OCIWideCharStrncat()"</a></p>
+</td>
+<td class="cellalignment1013" headers="r21c1-t7 r1c2-t7">
+<p>Append, at most, <span class="italic">n</span> characters from a wide-character string to the destination string</p>
+</td>
+</tr>
+<tr class="cellalignment1005">
+<td class="cellalignment1013" id="r22c1-t7" headers="r1c1-t7">
+<p><a href="#i530628">"OCIWideCharStrncmp()"</a></p>
+</td>
+<td class="cellalignment1013" headers="r22c1-t7 r1c2-t7">
+<p>Compare two wide-character strings by binary, linguistic, or case-insensitive methods. Each string is a specified length.</p>
+</td>
+</tr>
+<tr class="cellalignment1005">
+<td class="cellalignment1013" id="r23c1-t7" headers="r1c1-t7">
+<p><a href="#i530635">"OCIWideCharStrncpy()"</a></p>
+</td>
+<td class="cellalignment1013" headers="r23c1-t7 r1c2-t7">
+<p>Copy, at most, <span class="italic">n</span> characters of a wide-character string into the destination array</p>
+</td>
+</tr>
+<tr class="cellalignment1005">
+<td class="cellalignment1013" id="r24c1-t7" headers="r1c1-t7">
+<p><a href="#i530642">"OCIWideCharStrrchr()"</a></p>
+</td>
+<td class="cellalignment1013" headers="r24c1-t7 r1c2-t7">
+<p>Search for the last occurrence of a character in a wide-character string</p>
+</td>
+</tr>
+<tr class="cellalignment1005">
+<td class="cellalignment1013" id="r25c1-t7" headers="r1c1-t7">
+<p><a href="#i530649">"OCIWideCharToLower()"</a></p>
+</td>
+<td class="cellalignment1013" headers="r25c1-t7 r1c2-t7">
+<p>Convert a specified wide character into the corresponding lowercase character</p>
+</td>
+</tr>
+<tr class="cellalignment1005">
+<td class="cellalignment1013" id="r26c1-t7" headers="r1c1-t7">
+<p><a href="#i530656">"OCIWideCharToMultiByte()"</a></p>
+</td>
+<td class="cellalignment1013" headers="r26c1-t7 r1c2-t7">
+<p>Convert a <code>NULL</code>-terminated wide-character string into a multibyte string</p>
+</td>
+</tr>
+<tr class="cellalignment1005">
+<td class="cellalignment1013" id="r27c1-t7" headers="r1c1-t7">
+<p><a href="#i530663">"OCIWideCharToUpper()"</a></p>
+</td>
+<td class="cellalignment1013" headers="r27c1-t7 r1c2-t7">
+<p>Convert a specified wide character into the corresponding uppercase character</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformalwide" -->
+<div id="LNOCI17645" class="refsect2"><a id="i530495"></a>
+<h2 class="refsect2"><a id="sthref4974"></a>OCIMultiByteInSizeToWideChar()</h2>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref4975"></a>Purpose</p>
+<p>Converts part of a multibyte string into the wide-character string.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref4976"></a>Syntax</p>
+<pre>
+sword OCIMultiByteInSizeToWideChar ( void          *hndl,
+                                     OCIWchar      *dst,
+                                     size_t        dstsz,
+                                     const OraText *src,
+                                     size_t        srcsz,
+                                     size_t        *rsize );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref4977"></a>Parameters</p>
+<dl>
+<dt>hndl (IN/OUT)</dt>
+<dd>
+<p>OCI environment or user session handle to determine the character set of the string.</p>
+</dd>
+<dt>dst (OUT)</dt>
+<dd>
+<p>Pointer to a destination buffer for <code>wchar</code>. It can be a <code>NULL</code> pointer when <code>dstsz</code> is zero.</p>
+</dd>
+<dt>dstsz (IN)</dt>
+<dd>
+<p>Destination buffer size in number of characters. If it is zero, then this function returns the number of characters needed for the conversion.</p>
+</dd>
+<dt>src (IN)</dt>
+<dd>
+<p>Source string to be converted.</p>
+</dd>
+<dt>srcsz (IN)</dt>
+<dd>
+<p>Length of source string in bytes.</p>
+</dd>
+<dt>rsize (OUT)</dt>
+<dd>
+<p>Number of characters written into the destination buffer, or number of characters for the converted string if <code>dstsz</code> is zero. If it is a <code>NULL</code> pointer, then nothing is returned.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref4978"></a>Comments</p>
+<p>This routine converts part of a multibyte string into the wide-character string. It converts as many complete characters as it can until it reaches the output buffer size limit or input buffer size limit or it reaches a <code>NULL</code> terminator in a source string. The output buffer is <code>NULL</code>-terminated if space permits. If <code>dstsz</code> is zero, then this function returns only the number of characters not including the ending <code>NULL</code> terminator needed for a converted string. If <code>OCI_UTF16ID</code> is specified for SQL <code>CHAR</code> data in the <a href="oci16rel001.htm#i562098">OCIEnvNlsCreate()</a> function, then this function produces an error.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref4979"></a>Returns</p>
+<p><code>OCI_SUCCESS</code>; <code>OCI_INVALID_HANDLE</code>; or <code>OCI_ERROR</code>.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref4980"></a>Related Functions</p>
+<p><a href="#i530558">OCIMultiByteToWideChar()</a></p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="LNOCI17646" class="refsect2"><a id="i530502"></a>
+<h2 class="refsect2"><a id="sthref4981"></a>OCIMultiByteStrCaseConversion()</h2>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref4982"></a>Purpose</p>
+<p>Converts the multibyte string pointed to by <code>srcstr</code> into uppercase or lowercase as specified by the flag and copies the result into the array pointed to by <code>dststr</code>.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref4983"></a>Syntax</p>
+<pre>
+size_t OCIMultiByteStrCaseConversion ( void           *hndl, 
+                                       OraText        *dststr, 
+                                       const OraText  *srcstr, 
+                                       ub4            flag );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref4984"></a>Parameters</p>
+<dl>
+<dt>hndl (IN/OUT)</dt>
+<dd>
+<p>OCI environment or user session handle.</p>
+</dd>
+<dt>dststr (OUT)</dt>
+<dd>
+<p>Pointer to destination array. The result string is <code>NULL</code>-terminated.</p>
+</dd>
+<dt>srcstr (IN)</dt>
+<dd>
+<p>Pointer to source string.</p>
+</dd>
+<dt>flag (IN)</dt>
+<dd>
+<p>Specify the case to which to convert:</p>
+</dd>
+</dl>
+<ul>
+<li>
+<p><code>OCI_NLS_UPPERCASE</code>: Convert to uppercase.</p>
+</li>
+<li>
+<p><code>OCI_NLS_LOWERCASE</code>: Convert to lowercase.</p>
+</li>
+</ul>
+<p>This flag can be used with <code>OCI_NLS_LINGUISTIC</code> to specify that the linguistic setting in the locale is used for case conversion.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref4985"></a>Comments</p>
+<p>If <code>OCI_UTF16ID</code> is specified for SQL <code>CHAR</code> data in the <code>OCIEnvNlsCreate()</code> function, then this function produces an error.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref4986"></a>Returns</p>
+<p>The number of bytes in the result string, not including the <code>NULL</code> terminator.</p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="LNOCI17647" class="refsect2"><a id="i530509"></a>
+<h2 class="refsect2"><a id="sthref4987"></a>OCIMultiByteStrcat()</h2>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref4988"></a>Purpose</p>
+<p>Appends a copy of the multibyte string pointed to by <code>srcstr</code> to the end of the string pointed to by <code>dststr</code>.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref4989"></a>Syntax</p>
+<pre>
+size_t OCIMultiByteStrcat ( void            *hndl, 
+                            OraText         *dststr, 
+                            const OraText   *srcstr );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref4990"></a>Parameters</p>
+<dl>
+<dt>hndl (IN/OUT)</dt>
+<dd>
+<p>OCI environment or user session handle to determine the character set.</p>
+</dd>
+<dt>dststr (IN/OUT)</dt>
+<dd>
+<p>Pointer to the destination multibyte string for appending. The output buffer is <code>NULL</code>-terminated.</p>
+</dd>
+<dt>srcstr (IN)</dt>
+<dd>
+<p>Pointer to the source string to append.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref4991"></a>Comments</p>
+<p>If <code>OCI_UTF16ID</code> is specified for SQL <code>CHAR</code> data in the <a href="oci16rel001.htm#i562098">OCIEnvNlsCreate()</a> function, then this function produces an error.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref4992"></a>Returns</p>
+<p>The number of bytes in the result string, not including the <code>NULL</code> terminator.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref4993"></a>Related Functions</p>
+<p><a href="#i530537">OCIMultiByteStrncat()</a></p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="LNOCI17648" class="refsect2"><a id="i530516"></a>
+<h2 class="refsect2"><a id="sthref4994"></a>OCIMultiByteStrcmp()</h2>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref4995"></a>Purpose</p>
+<p>Compares two multibyte strings by binary, linguistic, or case-insensitive comparison methods.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref4996"></a>Syntax</p>
+<pre>
+int OCIMultiByteStrcmp ( void            *hndl, 
+                         const OraText   *str1, 
+                         const OraText   *str2, 
+                         int             flag );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref4997"></a>Parameters</p>
+<dl>
+<dt>hndl (IN/OUT)</dt>
+<dd>
+<p>OCI environment or user session handle.</p>
+</dd>
+<dt>str1 (IN)</dt>
+<dd>
+<p>Pointer to a <code>NULL</code>-terminated string.</p>
+</dd>
+<dt>str2 (IN)</dt>
+<dd>
+<p>Pointer to a <code>NULL</code>-terminated string.</p>
+</dd>
+<dt>flag (IN)</dt>
+<dd>
+<p>It is used to decide the comparison method. It can take one of these values:</p>
+</dd>
+</dl>
+<ul>
+<li>
+<p><code>OCI_NLS_BINARY</code>: Binary comparison This is the default value.</p>
+</li>
+<li>
+<p><code>OCI_NLS_LINGUISTIC</code>: Linguistic comparison specified in the locale.</p>
+</li>
+</ul>
+<p>This flag can be used with <code>OCI_NLS_CASE_INSENSITIVE</code> for case-insensitive comparison. For example, use <code>OCI_NLS_LINGUISTIC|OCI_NLS_CASE_INSENSITIVE</code> to compare strings linguistically without regard to case.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref4998"></a>Comments</p>
+<p>If <code>OCI_UTF16ID</code> is specified for SQL <code>CHAR</code> data in the <a href="oci16rel001.htm#i562098">OCIEnvNlsCreate()</a> function, then this function produces an error.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref4999"></a>Returns</p>
+<p>The return values for the function are:</p>
+<ul>
+<li>
+<p>0, if <code>str1 = str2</code></p>
+</li>
+<li>
+<p>Positive, if <code>str1 &gt; str2</code></p>
+</li>
+<li>
+<p>Negative, if <code>str1 &lt; str2</code></p>
+</li>
+</ul>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5000"></a>Related Functions</p>
+<p><a href="#i530544">OCIMultiByteStrncmp()</a></p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="LNOCI17649" class="refsect2"><a id="i530523"></a>
+<h2 class="refsect2"><a id="sthref5001"></a>OCIMultiByteStrcpy()</h2>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5002"></a>Purpose</p>
+<p>Copies the multibyte string pointed to by <code>srcstr</code> into the array pointed to by <code>dststr</code>.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5003"></a>Syntax</p>
+<pre>
+size_t OCIMultiByteStrcpy ( void            *hndl, 
+                            OraText         *dststr, 
+                            const OraText   *srcstr );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5004"></a>Parameters</p>
+<dl>
+<dt>hndl (IN/OUT)</dt>
+<dd>
+<p>Pointer to the OCI environment or user session handle.</p>
+</dd>
+<dt>dststr (OUT)</dt>
+<dd>
+<p>Pointer to the destination buffer. The output buffer is <code>NULL</code>-terminated.</p>
+</dd>
+<dt>srcstr (IN)</dt>
+<dd>
+<p>Pointer to the source multibyte string.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5005"></a>Comments</p>
+<p>If <code>OCI_UTF16ID</code> is specified for SQL <code>CHAR</code> data in the <a href="oci16rel001.htm#i562098">OCIEnvNlsCreate()</a> function, then this function produces an error.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5006"></a>Returns</p>
+<p>The number of bytes copied, not including the <code>NULL</code> terminator.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5007"></a>Related Functions</p>
+<p><a href="#i532659">OCIMultiByteStrncpy()</a></p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="LNOCI17650" class="refsect2"><a id="i530530"></a>
+<h2 class="refsect2"><a id="sthref5008"></a>OCIMultiByteStrlen()</h2>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5009"></a>Purpose</p>
+<p>Returns the number of bytes in the multibyte string pointed to by <code>str</code>, not including the <code>NULL</code> terminator.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5010"></a>Syntax</p>
+<pre>
+size_t OCIMultiByteStrlen ( void           *hndl, 
+                            const OraText  *str );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5011"></a>Parameters</p>
+<dl>
+<dt>hndl (IN/OUT)</dt>
+<dd>
+<p>Pointer to the OCI environment or user session handle.</p>
+</dd>
+<dt>str (IN)</dt>
+<dd>
+<p>Pointer to the source multibyte string.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5012"></a>Comments</p>
+<p>If <code>OCI_UTF16ID</code> is specified for SQL <code>CHAR</code> data in the <a href="oci16rel001.htm#i562098">OCIEnvNlsCreate()</a> function, then this function produces an error.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5013"></a>Returns</p>
+<p>The number of bytes, not including the <code>NULL</code> terminator.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5014"></a>Related Functions</p>
+<p><a href="#i530614">OCIWideCharStrlen()</a></p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="LNOCI17651" class="refsect2"><a id="i530537"></a>
+<h2 class="refsect2"><a id="sthref5015"></a>OCIMultiByteStrncat()</h2>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5016"></a>Purpose</p>
+<p>Appends a specified number of bytes from a multibyte string to a destination string.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5017"></a>Syntax</p>
+<pre>
+size_t OCIMultiByteStrncat ( void            *hndl, 
+                             OraText         *dststr, 
+                             const OraText   *srcstr, 
+                             size_t          n );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5018"></a>Parameters</p>
+<dl>
+<dt>hndl (IN/OUT)</dt>
+<dd>
+<p>Pointer to OCI environment or user session handle.</p>
+</dd>
+<dt>dststr (IN/OUT)</dt>
+<dd>
+<p>Pointer to the destination multibyte string for appending.</p>
+</dd>
+<dt>srcstr (IN)</dt>
+<dd>
+<p>Pointer to the source multibyte string to append.</p>
+</dd>
+<dt>n (IN)</dt>
+<dd>
+<p>The number of bytes from <code>srcstr</code> to append.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5019"></a>Comments</p>
+<p>This function is similar to <a href="#i530509">OCIMultiByteStrcat()</a>. At most, <span class="italic">n</span> bytes from <code>srcstr</code> are appended to <code>dststr</code>. Note that the <code>NULL</code> terminator in <code>srcstr</code> stops appending, and the function appends as many character as possible within <code>n</code> bytes. The <code>dststr</code> parameter is <code>NULL</code>-terminated. If <code>OCI_UTF16ID</code> is specified for SQL <code>CHAR</code> data in the <a href="oci16rel001.htm#i562098">OCIEnvNlsCreate()</a> function, then this function produces an error.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5020"></a>Returns</p>
+<p>The number of bytes in the result string, not including the <code>NULL</code> terminator.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5021"></a>Related Functions</p>
+<p><a href="#i530509">OCIMultiByteStrcat()</a></p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="LNOCI17652" class="refsect2"><a id="i530544"></a>
+<h2 class="refsect2"><a id="sthref5022"></a>OCIMultiByteStrncmp()</h2>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5023"></a>Purpose</p>
+<p>Compares two multibyte strings by binary, linguistic, or case-insensitive comparison methods. A length is specified for each string.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5024"></a>Syntax</p>
+<pre>
+int OCIMultiByteStrncmp ( void           *hndl,
+                          const OraText  *str1,
+                          size_t         len1,
+                          OraText        *str2,
+                          size_t         len2,
+                          int            flag );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5025"></a>Parameters</p>
+<dl>
+<dt>hndl (IN/OUT)</dt>
+<dd>
+<p>OCI environment or user session handle.</p>
+</dd>
+<dt>str1 (IN)</dt>
+<dd>
+<p>Pointer to the first string.</p>
+</dd>
+<dt>len1 (IN)</dt>
+<dd>
+<p>The length of the first string to compare.</p>
+</dd>
+<dt>str2 (IN)</dt>
+<dd>
+<p>Pointer to the second string.</p>
+</dd>
+<dt>len2 (IN)</dt>
+<dd>
+<p>The length of the second string to compare.</p>
+</dd>
+<dt>flag (IN)</dt>
+<dd>
+<p>It is used to decide the comparison method. It can take one of these values:</p>
+</dd>
+</dl>
+<ul>
+<li>
+<p><code>OCI_NLS_BINARY</code>: Binary comparison. This is the default value.</p>
+</li>
+<li>
+<p><code>OCI_NLS_LINGUISTIC</code>: Linguistic comparison specified in the locale.</p>
+</li>
+</ul>
+<p>This flag can be used with <code>OCI_NLS_CASE_INSENSITIVE</code> for case-insensitive comparison. For example, use <code>OCI_NLS_LINGUISTIC|OCI_NLS_CASE_INSENSITIVE</code> to compare strings linguistically without regard to case.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5026"></a>Comments</p>
+<p>This function is similar to <a href="#i530516">OCIMultiByteStrcmp()</a>, except that, at most, <code>len1</code> bytes from <code>str1</code> and <code>len2</code> bytes from <code>str2</code> are compared. The <code>NULL</code> terminator is used in the comparison. If <code>OCI_UTF16ID</code> is specified for SQL <code>CHAR</code> data in the <a href="oci16rel001.htm#i562098">OCIEnvNlsCreate()</a> function, then this function produces an error.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5027"></a>Returns</p>
+<p>The return values for the function are:</p>
+<ul>
+<li>
+<p>0, if <code>str1</code> = <code>str2</code></p>
+</li>
+<li>
+<p>Positive, if <code>str1</code> &gt; <code>str2</code></p>
+</li>
+<li>
+<p>Negative, if <code>str1</code> &lt; <code>str2</code></p>
+</li>
+</ul>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5028"></a>Related Functions</p>
+<p><a href="#i530523">OCIMultiByteStrcpy()</a>, <a href="#i532659">OCIMultiByteStrncpy()</a></p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="LNOCI17653" class="refsect2"><a id="i532659"></a>
+<h2 class="refsect2"><a id="sthref5029"></a>OCIMultiByteStrncpy()</h2>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5030"></a>Purpose</p>
+<p>Copies a multibyte string into an array.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5031"></a>Syntax</p>
+<pre>
+size_t OCIMultiByteStrncpy ( void            *hndl, 
+                             OraText         *dststr, 
+                             const OraText   *srcstr, 
+                             size_t           n );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5032"></a>Parameters</p>
+<dl>
+<dt>hndl (IN/OUT)</dt>
+<dd>
+<p>Pointer to OCI environment or user session handle.</p>
+</dd>
+<dt>dststr (IN)</dt>
+<dd>
+<p>Pointer to the source multibyte string.</p>
+</dd>
+<dt>srcstr (OUT)</dt>
+<dd>
+<p>Pointer to the destination buffer.</p>
+</dd>
+<dt>n (IN)</dt>
+<dd>
+<p>The number of bytes from <code>srcstr</code> to copy.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5033"></a>Comments</p>
+<p>This function is similar to <a href="#i530523">OCIMultiByteStrcpy()</a>. At most, <span class="italic">n</span> bytes are copied from the array pointed to by <code>srcstr</code> to the array pointed to by <code>dststr</code>. Note that the <code>NULL</code> terminator in <code>srcstr</code> stops copying, and the function copies as many characters as possible within <code>n</code> bytes. The result string is <code>NULL</code>-terminated. If <code>OCI_UTF16ID</code> is specified for SQL <code>CHAR</code> data in the <a href="oci16rel001.htm#i562098">OCIEnvNlsCreate()</a> function, then this function produces an error.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5034"></a>Returns</p>
+<p>The number of bytes in the resulting string, not including the <code>NULL</code> terminator.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5035"></a>Related Functions</p>
+<p><a href="#i530523">OCIMultiByteStrcpy()</a></p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="LNOCI17654" class="refsect2"><a id="i530551"></a>
+<h2 class="refsect2"><a id="sthref5036"></a>OCIMultiByteStrnDisplayLength()</h2>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5037"></a>Purpose</p>
+<p>Returns the number of display positions occupied by the multibyte string within the range of <code>n</code> bytes.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5038"></a>Syntax</p>
+<pre>
+size_t OCIMultiByteStrnDisplayLength ( void            *hndl, 
+                                       const OraText   *str1, 
+                                       size_t          n );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5039"></a>Parameters</p>
+<dl>
+<dt>hndl (IN/OUT)</dt>
+<dd>
+<p>OCI environment or user session handle.</p>
+</dd>
+<dt>str1 (IN)</dt>
+<dd>
+<p>Pointer to a multibyte string.</p>
+</dd>
+<dt>n (IN)</dt>
+<dd>
+<p>The number of bytes to examine.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5040"></a>Comments</p>
+<p>If <code>OCI_UTF16ID</code> is specified for SQL <code>CHAR</code> data in the <a href="oci16rel001.htm#i562098">OCIEnvNlsCreate()</a> function, then this function produces an error.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5041"></a>Returns</p>
+<p>The number of display positions.</p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="LNOCI17655" class="refsect2"><a id="i530558"></a>
+<h2 class="refsect2"><a id="sthref5042"></a>OCIMultiByteToWideChar()</h2>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5043"></a>Purpose</p>
+<p>Converts an entire <code>NULL</code>-terminated string into the wide-character string.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5044"></a>Syntax</p>
+<pre>
+sword OCIMultiByteToWideChar ( void            *hndl, 
+                               OCIWchar        *dst, 
+                               const OraText   *src, 
+                               size_t          *rsize );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5045"></a>Parameters</p>
+<dl>
+<dt>hndl (IN/OUT)</dt>
+<dd>
+<p>OCI environment or user session handle to determine the character set of the string.</p>
+</dd>
+<dt>dst (OUT)</dt>
+<dd>
+<p>Destination buffer for <code>wchar</code>.</p>
+</dd>
+<dt>src (IN)</dt>
+<dd>
+<p>Source string to be converted.</p>
+</dd>
+<dt>rsize (OUT)</dt>
+<dd>
+<p>Number of characters converted, including <code>NULL</code> terminator. If it is a <code>NULL</code> pointer, then nothing is returned.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5046"></a>Comments</p>
+<p>The <code>wchar</code> output buffer is <code>NULL</code>-terminated. If <code>OCI_UTF16ID</code> is specified for SQL <code>CHAR</code> data in the <a href="oci16rel001.htm#i562098">OCIEnvNlsCreate()</a> function, then this function produces an error.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5047"></a>Returns</p>
+<p><code>OCI_SUCCESS</code>; <code>OCI_INVALID_HANDLE</code>; or <code>OCI_ERROR</code>.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5048"></a>Related Functions</p>
+<p><a href="#i530656">OCIWideCharToMultiByte()</a></p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="LNOCI17656" class="refsect2"><a id="i530565"></a>
+<h2 class="refsect2"><a id="sthref5049"></a>OCIWideCharInSizeToMultiByte()</h2>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5050"></a>Purpose</p>
+<p>Converts part of a wide-character string to multibyte format.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5051"></a>Syntax</p>
+<pre>
+sword OCIWideCharInSizeToMultiByte ( void             *hndl, 
+                                     OraText          *dst, 
+                                     size_t           dstsz, 
+                                     const OCIWchar   *src, 
+                                     size_t           srcsz, 
+                                     size_t           *rsize );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5052"></a>Parameters</p>
+<dl>
+<dt>hndl (IN/OUT)</dt>
+<dd>
+<p>OCI environment or user session handle to determine the character set of string.</p>
+</dd>
+<dt>dst (OUT)</dt>
+<dd>
+<p>Destination buffer for multibyte. It can be a <code>NULL</code> pointer if <code>dstsz</code> is zero.</p>
+</dd>
+<dt>dstsz (IN)</dt>
+<dd>
+<p>Destination buffer size in bytes. If it is zero, then the function returns the size in bytes need for converted string.</p>
+</dd>
+<dt>src (IN)</dt>
+<dd>
+<p>Source <code>wchar</code> string to be converted.</p>
+</dd>
+<dt>srcsz (IN)</dt>
+<dd>
+<p>Length of source string in characters.</p>
+</dd>
+<dt>rsize (OUT)</dt>
+<dd>
+<p>Number of bytes written into destination buffer, or number of bytes needed to store the converted string if <code>dstsz</code> is zero. If it is a <code>NULL</code> pointer, then nothing is returned.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5053"></a>Comments</p>
+<p>Converts part of a wide-character string into the multibyte format. It converts as many complete characters as it can until it reaches the output buffer size or the input buffer size or until it reaches a <code>NULL</code> terminator in the source string. The output buffer is <code>NULL</code>-terminated if space permits. If <code>dstsz</code> is zero, then the function returns the size in bytes, not including the <code>NULL</code> terminator needed to store the converted string. If <code>OCI_UTF16ID</code> is specified for SQL <code>CHAR</code> data in the <a href="oci16rel001.htm#i562098">OCIEnvNlsCreate()</a> function, then this function produces an error.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5054"></a>Returns</p>
+<p><code>OCI_SUCCESS</code>; <code>OCI_INVALID_HANDLE</code>; or <code>OCI_ERROR</code>.</p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="LNOCI17657" class="refsect2"><a id="i530572"></a>
+<h2 class="refsect2"><a id="sthref5055"></a>OCIWideCharMultiByteLength()</h2>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5056"></a>Purpose</p>
+<p>Determines the number of bytes required for a wide character in multibyte encoding.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5057"></a>Syntax</p>
+<pre>
+size_t OCIWideCharMultiByteLength ( void      *hndl, 
+                                    OCIWchar  wc );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5058"></a>Parameters</p>
+<dl>
+<dt>hndl (IN/OUT)</dt>
+<dd>
+<p>OCI environment or user session handle to determine the character set.</p>
+</dd>
+<dt>wc (IN)</dt>
+<dd>
+<p>The <code>wchar</code> character.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5059"></a>Comments</p>
+<p>If <code>OCI_UTF16ID</code> is specified for SQL <code>CHAR</code> data in <a href="oci16rel001.htm#i562098">OCIEnvNlsCreate()</a> function, then this function produces an error.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5060"></a>Returns</p>
+<p>The number of bytes required for the wide character.</p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="LNOCI17658" class="refsect2"><a id="i530579"></a>
+<h2 class="refsect2"><a id="sthref5061"></a>OCIWideCharStrCaseConversion()</h2>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5062"></a>Purpose</p>
+<p>Converts a wide-character string into a specified case and copies the result into the destination array.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5063"></a>Syntax</p>
+<pre>
+size_t OCIWideCharStrCaseConversion ( void              *hndl, 
+                                      OraText           *dststr, 
+                                      const OraText     *srcstr, 
+                                      ub4               flag );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5064"></a>Parameters</p>
+<dl>
+<dt>hndl (IN/OUT)</dt>
+<dd>
+<p>OCI environment or user session handle.</p>
+</dd>
+<dt>dststr (OUT)</dt>
+<dd>
+<p>Pointer to destination array. The result string is <code>NULL</code>-terminated.</p>
+</dd>
+<dt>srcstr (IN)</dt>
+<dd>
+<p>Pointer to source string.</p>
+</dd>
+<dt>flag (IN)</dt>
+<dd>
+<p>Specify the case to which to convert:</p>
+</dd>
+</dl>
+<ul>
+<li>
+<p><code>OCI_NLS_UPPERCASE</code>: Convert to uppercase.</p>
+</li>
+<li>
+<p><code>OCI_NLS_LOWERCASE</code>: Convert to lowercase.</p>
+</li>
+</ul>
+<p>This flag can be used with <code>OCI_NLS_LINGUISTIC</code> to specify that the linguistic setting in the locale is used for case conversion.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5065"></a>Comments</p>
+<p>Converts the wide-character string pointed to by <code>srcstr</code> into uppercase or lowercase as specified by the flag and copies the result into the array pointed to by <code>dststr</code>. If <code>OCI_UTF16ID</code> is specified for SQL <code>CHAR</code> data in the <a href="oci16rel001.htm#i562098">OCIEnvNlsCreate()</a> function, then this function produces an error.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5066"></a>Returns</p>
+<p>The number of bytes in the result string, not including the <code>NULL</code> terminator.</p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="LNOCI17659" class="refsect2"><a id="i530586"></a>
+<h2 class="refsect2"><a id="sthref5067"></a>OCIWideCharStrcat()</h2>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5068"></a>Purpose</p>
+<p>Appends the wide-character string pointed to by <code>wsrcstr</code> to the wide-character string pointed to by <code>wdststr</code>.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5069"></a>Syntax</p>
+<pre>
+size_t OCIWideCharStrcat ( void             *hndl, 
+                           OCIWchar         *wdststr, 
+                           const OCIWchar   *wsrcstr );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5070"></a>Parameters</p>
+<dl>
+<dt>hndl (IN/OUT)</dt>
+<dd>
+<p>OCI environment or user session handle to determine the character set.</p>
+</dd>
+<dt>wdststr (IN/OUT)</dt>
+<dd>
+<p>Pointer to the destination <code>wchar</code> string. The output buffer is <code>NULL</code>-terminated.</p>
+</dd>
+<dt>wsrcstr (IN)</dt>
+<dd>
+<p>Pointer to the source wide-character string to append.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5071"></a>Comments</p>
+<p>If <code>OCI_UTF16ID</code> is specified for SQL <code>CHAR</code> data in the <a href="oci16rel001.htm#i562098">OCIEnvNlsCreate()</a> function, then this function produces an error.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5072"></a>Returns</p>
+<p>The number of characters in the result string, not including the <code>NULL</code> terminator.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5073"></a>Related Functions</p>
+<p><a href="#i530621">OCIWideCharStrncat()</a></p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="LNOCI17660" class="refsect2"><a id="i530593"></a>
+<h2 class="refsect2"><a id="sthref5074"></a>OCIWideCharStrchr()</h2>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5075"></a>Purpose</p>
+<p>Searches for the first occurrence of a specified character in a wide-character string.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5076"></a>Syntax</p>
+<pre>
+OCIWchar *OCIWideCharStrchr ( void             *hndl, 
+                              const OCIWchar   *wstr, 
+                              OCIWchar         wc );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5077"></a>Parameters</p>
+<dl>
+<dt>hndl (IN/OUT)</dt>
+<dd>
+<p>OCI environment or user session handle to determine the character set.</p>
+</dd>
+<dt>wstr (IN)</dt>
+<dd>
+<p>Pointer to the <code>wchar</code> string to search.</p>
+</dd>
+<dt>wc (IN)</dt>
+<dd>
+<p>The <code>wchar</code> to search for.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5078"></a>Comments</p>
+<p>If <code>OCI_UTF16ID</code> is specified for SQL <code>CHAR</code> data in the <a href="oci16rel001.htm#i562098">OCIEnvNlsCreate()</a> function, then this function produces an error.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5079"></a>Returns</p>
+<p>A <code>wchar</code> pointer if successful; otherwise, a <code>NULL</code> pointer.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5080"></a>Related Functions</p>
+<p><a href="#i530642">OCIWideCharStrrchr()</a></p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="LNOCI17661" class="refsect2"><a id="i530600"></a>
+<h2 class="refsect2"><a id="sthref5081"></a>OCIWideCharStrcmp()</h2>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5082"></a>Purpose</p>
+<p>Compares two wide-character strings by binary (based on <code>wchar</code> encoding value), linguistic, or case-insensitive comparison methods.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5083"></a>Syntax</p>
+<pre>
+int OCIWideCharStrcmp ( void             *hndl, 
+                        const OCIWchar   *wstr1, 
+                        const OCIWchar   *wstr2, 
+                        int              flag );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5084"></a>Parameters</p>
+<dl>
+<dt>hndl (IN/OUT)</dt>
+<dd>
+<p>OCI environment or user session handle to determine the character set.</p>
+</dd>
+<dt>wstr1 (IN)</dt>
+<dd>
+<p>Pointer to a <code>NULL</code>-terminated <code>wchar</code> string.</p>
+</dd>
+<dt>wstr2 (IN)</dt>
+<dd>
+<p>Pointer to a <code>NULL</code>-terminated <code>wchar</code> string.</p>
+</dd>
+<dt>flag (IN)</dt>
+<dd>
+<p>Used to decide the comparison method. It can take one of these values:</p>
+</dd>
+</dl>
+<ul>
+<li>
+<p><code>OCI_NLS_BINARY</code>: Binary comparison. This is the default value.</p>
+</li>
+<li>
+<p><code>OCI_NLS_LINGUISTIC</code>: Linguistic comparison specified in the locale definition.</p>
+</li>
+</ul>
+<p>This flag can be used with <code>OCI_NLS_CASE_INSENSITIVE</code> for case-insensitive comparison. For example, use <code>OCI_NLS_LINGUISTIC|OCI_NLS_CASE_INSENSITIVE</code> to compare strings linguistically without regard to case.</p>
+<p>The UNICODE_BINARY sort method cannot be used with <code>OCIWideCharStrcmp()</code> to perform a linguistic comparison of supplied wide-character arguments.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5085"></a>Comments</p>
+<p>If <code>OCI_UTF16ID</code> is specified for SQL <code>CHAR</code> data in the <a href="oci16rel001.htm#i562098">OCIEnvNlsCreate()</a> function, then this function produces an error.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5086"></a>Returns</p>
+<p>The return values for the function are:</p>
+<ul>
+<li>
+<p>0, if <code>wstr1 = wstr2</code></p>
+</li>
+<li>
+<p>Positive, if <code>wstr1 &gt; wstr2</code></p>
+</li>
+<li>
+<p>Negative, if <code>wstr1 &lt; wstr2</code></p>
+</li>
+</ul>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5087"></a>Related Functions</p>
+<p><a href="#i530628">OCIWideCharStrncmp()</a></p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="LNOCI17662" class="refsect2"><a id="i530607"></a>
+<h2 class="refsect2"><a id="sthref5088"></a>OCIWideCharStrcpy()</h2>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5089"></a>Purpose</p>
+<p>Copies a wide-character string into an array.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5090"></a>Syntax</p>
+<pre>
+size_t OCIWideCharStrcpy ( void             *hndl, 
+                           OCIWchar         *wdststr, 
+                           const OCIWchar   *wsrcstr );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5091"></a>Parameters</p>
+<dl>
+<dt>hndl (IN/OUT)</dt>
+<dd>
+<p>OCI environment or user session handle to determine the character set.</p>
+</dd>
+<dt>wdststr (OUT)</dt>
+<dd>
+<p>Pointer to the destination <code>wchar</code> buffer. The result string is <code>NULL</code>-terminated.</p>
+</dd>
+<dt>wsrcstr (IN)</dt>
+<dd>
+<p>Pointer to the source <code>wchar</code> string.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5092"></a>Comments</p>
+<p>If <code>OCI_UTF16ID</code> is specified for SQL <code>CHAR</code> data in the <a href="oci16rel001.htm#i562098">OCIEnvNlsCreate()</a> function, then this function produces an error.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5093"></a>Returns</p>
+<p>The number of characters copied, not including the <code>NULL</code> terminator.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5094"></a>Related Functions</p>
+<p><a href="#i530635">OCIWideCharStrncpy()</a></p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="LNOCI17663" class="refsect2"><a id="i530614"></a>
+<h2 class="refsect2"><a id="sthref5095"></a>OCIWideCharStrlen()</h2>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5096"></a>Purpose</p>
+<p>Returns the number of characters in a wide-character string.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5097"></a>Syntax</p>
+<pre>
+size_t OCIWideCharStrlen ( void             *hndl, 
+                           const OCIWchar   *wstr );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5098"></a>Parameters</p>
+<dl>
+<dt>hndl (IN/OUT)</dt>
+<dd>
+<p>OCI environment or user session handle to determine the character set.</p>
+</dd>
+<dt>wstr (IN)</dt>
+<dd>
+<p>Pointer to the source <code>wchar</code> string.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5099"></a>Comments</p>
+<p>Returns the number of characters in the <code>wchar</code> string pointed to by <code>wstr</code>, not including the <code>NULL</code> terminator. If <code>OCI_UTF16ID</code> is specified for SQL <code>CHAR</code> data in the <a href="oci16rel001.htm#i562098">OCIEnvNlsCreate()</a> function, then this function produces an error.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5100"></a>Returns</p>
+<p>The number of characters, not including the <code>NULL</code> terminator.</p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="LNOCI17664" class="refsect2"><a id="i530621"></a>
+<h2 class="refsect2"><a id="sthref5101"></a>OCIWideCharStrncat()</h2>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5102"></a>Purpose</p>
+<p>Appends, at most, <span class="italic">n</span> characters from a wide-character string to the destination.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5103"></a>Syntax</p>
+<pre>
+size_t OCIWideCharStrncat ( void             *hndl, 
+                            OCIWchar         *wdststr, 
+                            const OCIWchar   *wsrcstr, 
+                            size_t           n );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5104"></a>Parameters</p>
+<dl>
+<dt>hndl (IN/OUT)</dt>
+<dd>
+<p>OCI environment or user session handle to determine the character set.</p>
+</dd>
+<dt>wdststr (IN/OUT)</dt>
+<dd>
+<p>Pointer to the destination <code>wchar</code> string.</p>
+</dd>
+<dt>wsrcstr (IN)</dt>
+<dd>
+<p>Pointer to the source <code>wchar</code> string.</p>
+</dd>
+<dt>n (IN)</dt>
+<dd>
+<p>Number of characters from <code>wsrcstr</code> to append.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5105"></a>Comments</p>
+<p>This function is similar to <a href="#i530586">OCIWideCharStrcat()</a>. At most, <span class="italic">n</span> characters from <code>wsrcstr</code> are appended to <code>wdststr</code>. Note that the <code>NULL</code> terminator in <code>wsrcstr</code> stops appending. The <code>wdststr</code> parameter is <code>NULL</code>-terminated. If <code>OCI_UTF16ID</code> is specified for SQL <code>CHAR</code> data in the <a href="oci16rel001.htm#i562098">OCIEnvNlsCreate()</a> function, then this function produces an error.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5106"></a>Returns</p>
+<p>The number of characters in the result string, not including the <code>NULL</code> terminator.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5107"></a>Related Functions</p>
+<p><a href="#i530586">OCIWideCharStrcat()</a></p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="LNOCI17665" class="refsect2"><a id="i530628"></a>
+<h2 class="refsect2"><a id="sthref5108"></a>OCIWideCharStrncmp()</h2>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5109"></a>Purpose</p>
+<p>Compares two wide-character strings by binary, linguistic, or case-sensitive methods. Each string has a specified length.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5110"></a>Syntax</p>
+<pre>
+int OCIWideCharStrncmp ( void                *hndl, 
+                         const OCIWchar      *wstr1, 
+                         size_t              len1, 
+                         const OCIWchar      *wstr2, 
+                         size_t              len2, 
+                         int                 flag );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5111"></a>Parameters</p>
+<dl>
+<dt>hndl (IN/OUT)</dt>
+<dd>
+<p>OCI environment or user session handle to determine the character set.</p>
+</dd>
+<dt>wstr1 (IN)</dt>
+<dd>
+<p>Pointer to the first <code>wchar</code> string.</p>
+</dd>
+<dt>len1 (IN)</dt>
+<dd>
+<p>The length from the first string for comparison.</p>
+</dd>
+<dt>wstr2 (IN)</dt>
+<dd>
+<p>Pointer to the second <code>wchar</code> string.</p>
+</dd>
+<dt>len2 (IN)</dt>
+<dd>
+<p>The length from the second string for comparison.</p>
+</dd>
+<dt>flag (IN)</dt>
+<dd>
+<p>It is used to decide the comparison method. It can take one of these values:</p>
+</dd>
+</dl>
+<ul>
+<li>
+<p><code>OCI_NLS_BINARY</code>: For the binary comparison, this is default value.</p>
+</li>
+<li>
+<p><code>OCI_NLS_LINGUISTIC</code>: For the linguistic comparison specified in the locale.</p>
+</li>
+</ul>
+<p>This flag can be used with <code>OCI_NLS_CASE_INSENSITIVE</code> for case-insensitive comparison. For example, use <code>OCI_NLS_LINGUISTIC</code>|<code>OCI_NLS_CASE_INSENSITIVE</code> to compare strings linguistically without regard to case.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5112"></a>Comments</p>
+<p>This function is similar to <a href="#i530600">OCIWideCharStrcmp()</a>. It compares two wide-character strings by binary, linguistic, or case-insensitive comparison methods. At most, <code>len1</code> bytes from <code>wstr1</code> and <code>len2</code> bytes from <code>wstr2</code> are compared. The <code>NULL</code> terminator is used in the comparison. If <code>OCI_UTF16ID</code> is specified for SQL <code>CHAR</code> data in the <a href="oci16rel001.htm#i562098">OCIEnvNlsCreate()</a> function, then this function produces an error.</p>
+<p>The UNICODE_BINARY sort method cannot be used with <code>OCIWideCharStrncmp()</code> to perform a linguistic comparison of supplied wide-character arguments.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5113"></a>Returns</p>
+<p>The return values for the function are:</p>
+<ul>
+<li>
+<p>0, if <code>wstr1 = wstr2</code></p>
+</li>
+<li>
+<p>Positive, if <code>wstr1 &gt; wstr2</code></p>
+</li>
+<li>
+<p>Negative, if <code>wstr1 &lt; wstr2</code></p>
+</li>
+</ul>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5114"></a>Related Functions</p>
+<p><a href="#i530600">OCIWideCharStrcmp()</a></p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="LNOCI17666" class="refsect2"><a id="i530635"></a>
+<h2 class="refsect2"><a id="sthref5115"></a>OCIWideCharStrncpy()</h2>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5116"></a>Purpose</p>
+<p>Copies, at most, <span class="italic">n</span> characters from a wide-character string into a destination.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5117"></a>Syntax</p>
+<pre>
+size_t OCIWideCharStrncpy ( void             *hndl, 
+                            OCIWchar         *wdststr, 
+                            const OCIWchar   *wsrcstr, 
+                            size_t           n );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5118"></a>Parameters</p>
+<dl>
+<dt>hndl (IN/OUT)</dt>
+<dd>
+<p>OCI environment or user session handle to determine the character set.</p>
+</dd>
+<dt>wdststr (OUT)</dt>
+<dd>
+<p>Pointer to the destination <code>wchar</code> buffer.</p>
+</dd>
+<dt>wsrcstr (IN)</dt>
+<dd>
+<p>Pointer to the source <code>wchar</code> string.</p>
+</dd>
+<dt>n (IN)</dt>
+<dd>
+<p>Number of characters from <code>wsrcstr</code> to copy.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5119"></a>Comments</p>
+<p>This function is similar to <a href="#i530607">OCIWideCharStrcpy()</a>, except that, at most, <span class="italic">n</span> characters are copied from the array pointed to by <code>wsrcstr</code> to the array pointed to by <code>wdststr</code>. Note that the <code>NULL</code> terminator in <code>wdststr</code> stops copying, and the result string is <code>NULL</code>-terminated. If <code>OCI_UTF16ID</code> is specified for SQL <code>CHAR</code> data in the <a href="oci16rel001.htm#i562098">OCIEnvNlsCreate()</a> function, then this function produces an error.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5120"></a>Returns</p>
+<p>The number of characters copied, not including the <code>NULL</code> terminator.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5121"></a>Related Functions</p>
+<p><a href="#i530607">OCIWideCharStrcpy()</a></p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="LNOCI17667" class="refsect2"><a id="i530642"></a>
+<h2 class="refsect2"><a id="sthref5122"></a>OCIWideCharStrrchr()</h2>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5123"></a>Purpose</p>
+<p>Searches for the last occurrence of a character in a wide-character string.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5124"></a>Syntax</p>
+<pre>
+OCIWchar *OCIWideCharStrrchr ( void              *hndl, 
+                               const OCIWchar    *wstr, 
+                               OCIWchar          wc );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5125"></a>Parameters</p>
+<dl>
+<dt>hndl (IN/OUT)</dt>
+<dd>
+<p>OCI environment or user session handle to determine the character set.</p>
+</dd>
+<dt>wstr (IN)</dt>
+<dd>
+<p>Pointer to the <code>wchar</code> string to search in.</p>
+</dd>
+<dt>wc (IN)</dt>
+<dd>
+<p>The <code>wchar</code> to search for.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5126"></a>Comments</p>
+<p>Searches for the last occurrence of <code>wc</code> in the <code>wchar</code> string pointed to by <code>wstr</code>. If <code>OCI_UTF16ID</code> is specified for SQL <code>CHAR</code> data in the <a href="oci16rel001.htm#i562098">OCIEnvNlsCreate()</a> function, then this function produces an error.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5127"></a>Returns</p>
+<p>The <code>wchar</code> pointer if successful; otherwise, a <code>NULL</code> pointer.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5128"></a>Related Functions</p>
+<p><a href="#i530593">OCIWideCharStrchr()</a></p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="LNOCI17668" class="refsect2"><a id="i530649"></a>
+<h2 class="refsect2"><a id="sthref5129"></a>OCIWideCharToLower()</h2>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5130"></a>Purpose</p>
+<p>Converts the wide-character string specified by <code>wc</code> into the corresponding lowercase character, if it exists, in the specified locale. If no corresponding lowercase character exists, then it returns <code>wc</code> itself.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5131"></a>Syntax</p>
+<pre>
+OCIWchar OCIWideCharToLower ( void        *hndl, 
+                              OCIWchar    wc );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5132"></a>Parameters</p>
+<dl>
+<dt>hndl (IN/OUT)</dt>
+<dd>
+<p>OCI environment or user session handle to determine the character set.</p>
+</dd>
+<dt>wc (IN)</dt>
+<dd>
+<p>The <code>wchar</code> for lowercase conversion.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5133"></a>Comments</p>
+<p>If <code>OCI_UTF16ID</code> is specified for SQL <code>CHAR</code> data in the <a href="oci16rel001.htm#i562098">OCIEnvNlsCreate()</a> function, then this function produces an error.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5134"></a>Returns</p>
+<p>A <code>wchar</code>.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5135"></a>Related Functions</p>
+<p><a href="#i530663">OCIWideCharToUpper()</a></p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="LNOCI17669" class="refsect2"><a id="i530656"></a>
+<h2 class="refsect2"><a id="sthref5136"></a>OCIWideCharToMultiByte()</h2>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5137"></a>Purpose</p>
+<p>Converts an entire <code>NULL</code>-terminated wide-character string into a multibyte string.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5138"></a>Syntax</p>
+<pre>
+sword OCIWideCharToMultiByte ( void             *hndl, 
+                               OraText          *dst, 
+                               const OCIWchar   *src, 
+                               size_t           *rsize );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5139"></a>Parameters</p>
+<dl>
+<dt>hndl (IN/OUT)</dt>
+<dd>
+<p>OCI environment or user session handle to determine the character set of the string.</p>
+</dd>
+<dt>dst (OUT)</dt>
+<dd>
+<p>Destination buffer for a multibyte string. The output buffer is <code>NULL</code>-terminated.</p>
+</dd>
+<dt>src (IN)</dt>
+<dd>
+<p>Source <code>wchar</code> string to be converted.</p>
+</dd>
+<dt>rsize (OUT)</dt>
+<dd>
+<p>Number of bytes written into destination buffer. If it is a <code>NULL</code> pointer, then nothing is returned.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5140"></a>Comments</p>
+<p>If <code>OCI_UTF16ID</code> is specified for SQL <code>CHAR</code> data in the <a href="oci16rel001.htm#i562098">OCIEnvNlsCreate()</a> function, then this function produces an error.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5141"></a>Returns</p>
+<p><code>OCI_SUCCESS</code>; <code>OCI_INVALID_HANDLE</code>; or <code>OCI_ERROR</code>.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5142"></a>Related Functions</p>
+<p><a href="#i530558">OCIMultiByteToWideChar()</a></p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="LNOCI17670" class="refsect2"><a id="i530663"></a>
+<h2 class="refsect2"><a id="sthref5143"></a>OCIWideCharToUpper()</h2>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5144"></a>Purpose</p>
+<p>Converts the wide-character string specified by <code>wc</code> into the corresponding uppercase character, if it exists, in the specified locale. If no corresponding uppercase character exists, then it returns <code>wc</code> itself.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5145"></a>Syntax</p>
+<pre>
+OCIWchar OCIWideCharToUpper ( void      *hndl, 
+                              OCIWchar  wc );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5146"></a>Parameters</p>
+<dl>
+<dt>hndl (IN/OUT)</dt>
+<dd>
+<p>OCI environment or user session handle to determine the character set.</p>
+</dd>
+<dt>wc (IN)</dt>
+<dd>
+<p>The <code>wchar</code> for uppercase conversion.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5147"></a>Comments</p>
+<p>If <code>OCI_UTF16ID</code> is specified for SQL <code>CHAR</code> data in the <a href="oci16rel001.htm#i562098">OCIEnvNlsCreate()</a> function, then this function produces an error.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5148"></a>Returns</p>
+<p>A <code>wchar</code>.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref5149"></a>Related Functions</p>
+<p><a href="#i530649">OCIWideCharToLower()</a></p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" --></div>
+<!-- class="refsect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1004">
+<tr>
+<td class="cellalignment1013">
+<table class="cellalignment1009">
+<tr>
+<td class="cellalignment1008"><a href="oci22glb002.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1008"><a href="oci22glb004.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1996, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1015">
+<table class="cellalignment1007">
+<tr>
+<td class="cellalignment1008"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1008"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1008"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1008"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1008"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1008"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

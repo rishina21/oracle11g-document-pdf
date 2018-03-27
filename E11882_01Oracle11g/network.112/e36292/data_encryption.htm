@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Developing Applications Using the&nbsp;Data&nbsp;Encryption API</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1090" />
+<meta name="dcterms.created" content="2017-01-17T12:37:48Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Security Guide" />
+<meta name="dcterms.identifier" content="E36292-09" />
+<meta name="dcterms.isVersionOf" content="DBSEG" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2006, 2017,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="vpd.htm" title="Previous" type="text/html" />
+<link rel="Next" href="auditing.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e36292.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">15/19</span> <!-- End Header -->
+<div id="DBSEG008" class="chapter"><a id="CHDGIGJG"></a>
+<h1 class="chapter"><span class="secnum">8</span> Developing Applications Using the&nbsp;Data&nbsp;Encryption API</h1>
+<p>This chapter contains:</p>
+<ul>
+<li>
+<p><a href="#CHDFHECJ">Security Problems That Encryption Does Not Solve</a></p>
+</li>
+<li>
+<p><a href="#CHDBGEJF">Data Encryption Challenges</a></p>
+</li>
+<li>
+<p><a href="#CHDIIJAF">Storing Data Encryption by Using the DBMS_CRYPTO Package</a></p>
+</li>
+<li>
+<p><a href="#CHDHGIAH">Examples of Using the Data Encryption API</a></p>
+</li>
+<li>
+<p><a href="#CHDFBBED">Finding Information About Encrypted Data</a></p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink TDPSG40045" href="../../server.112/e10575/tdpsg_network_secure.htm#TDPSG40045"><span class="italic">Oracle Database 2 Day + Security Guide</span></a> for an introduction to network encryption</p>
+</li>
+<li>
+<p><a class="olink ASOAG600" href="../../network.112/e40393/asotrans.htm#ASOAG600"><span class="italic">Oracle Database Advanced Security Administrator's Guide</span></a> for information about using transparent data encryption and tablespace encryption</p>
+</li>
+</ul>
+</div>
+<a id="CHDFHECJ"></a>
+<div id="DBSEG80083" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Security Problems That Encryption Does Not Solve</h2>
+<p><a id="sthref1472"></a>While there are many good reasons to encrypt data, there are many reasons not to encrypt data. Encryption does not solve all security problems, and may make some problems worse. The following sections describe some misconceptions about encryption of stored data:</p>
+<ul>
+<li>
+<p><a href="#i1006159">Principle 1: Encryption Does Not Solve Access Control Problems</a></p>
+</li>
+<li>
+<p><a href="#i1006179">Principle 2: Encryption Does Not Protect Against a Malicious Database Administrator</a></p>
+</li>
+<li>
+<p><a href="#i1006212">Principle 3: Encrypting Everything Does Not Make Data Secure</a></p>
+</li>
+</ul>
+<a id="i1006159"></a>
+<div id="DBSEG314" class="sect2">
+<h3 class="sect2">Principle 1: Encryption Does Not Solve Access Control Problems</h3>
+<p><a id="sthref1473"></a><a id="sthref1474"></a>Most organizations need to limit data access to users who need to see this data. For example, a human resources system may limit employees to viewing only their own employment records, while allowing managers of employees to see the employment records of subordinates. Human resource specialists may also need to see employee records for multiple employees.</p>
+<p>Typically, you can use access control mechanisms to address security policies that limit data access to those with a need to see it. Oracle Database has provided strong, independently evaluated access control mechanisms for many years. It enables access control enforcement to a fine level of granularity through Virtual Private Database.</p>
+<p>Because human resource records are considered sensitive information, it is tempting to think that all information should be encrypted for better security. However, encryption cannot enforce granular access control, and it may hinder data access. For example, an employee, his manager, and a human resources clerk may all need to access an employee record. If all employee data is encrypted, then all three must be able to access the data in unencrypted form. Therefore, the employee, the manager and the human resources clerk would have to share the same encryption key to decrypt the data. Encryption would, therefore, not provide any additional security in the sense of better access control, and the encryption might hinder the proper or efficient functioning of the application. An additional issue is that it is difficult to securely transmit and share encryption keys among multiple users of a system.</p>
+<p>A basic principle behind encrypting stored data is that it must not interfere with access control. For example, a user who has the <code dir="ltr">SELECT</code> privilege on <code dir="ltr">emp</code> should not be limited by the encryption mechanism from seeing all the data he is otherwise allowed to see. Similarly, there is little benefit to encrypting part of a table with one key and part of a table with another key if users need to see all encrypted data in the table. In this case, encryption adds to the overhead of decrypting the data before users can read it. If access controls are implemented well, then encryption adds little additional security within the database itself. A user who has privileges to access data within the database has no more nor any less privileges as a result of encryption. Therefore, you should never use encryption to solve access control problems.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1006179"></a>
+<div id="DBSEG315" class="sect2">
+<h3 class="sect2">Principle 2: Encryption Does Not Protect Against a Malicious Database Administrator</h3>
+<p><a id="sthref1475"></a><a id="sthref1476"></a>Some <a id="sthref1477"></a><a id="sthref1478"></a><a id="sthref1479"></a>organizations, concerned that a malicious user might gain elevated (database administrator) privileges by guessing a password, like the idea of encrypting stored data to protect against this threat. However, the correct solution to this problem is to protect the database administrator account, and to change default passwords for other privileged accounts. The easiest way to break into a database is by using a default password for a privileged account that an administrator allowed to remain unchanged. One example is <code dir="ltr">SYS</code>/<code dir="ltr">CHANGE_ON_INSTALL</code>.</p>
+<p>While there are many destructive things a malicious user can do to a database after gaining the <code dir="ltr">DBA</code> privilege, encryption will not protect against many of them. Examples include corrupting or deleting data, exporting user data to the file system to email the data back to himself to run a password cracker on it, and so on.</p>
+<p>Some organizations are concerned that database administrators, typically having all privileges, are able to see all data in the database. These organizations feel that the database administrators should administer the database, but should not be able to see the data that the database contains. Some organizations are also concerned about concentrating so much privilege in one person, and would prefer to partition the DBA function, or enforce two-person access rules.</p>
+<p>It is tempting to think that encrypting all data (or significant amounts of data) will solve these problems, but there are better ways to protect against these threats. For example, Oracle Database supports limited partitioning of <code dir="ltr">DBA</code> privileges. Oracle Database provides native support for <code dir="ltr">SYSDBA</code> and <code dir="ltr">SYSOPER</code> users. <code dir="ltr">SYSDBA</code> has all privileges, but <code dir="ltr">SYSOPER</code> has a limited privilege set (such as startup and shutdown of the database).</p>
+<p>Furthermore, you can create smaller roles encompassing several system privileges. A <code dir="ltr">jr_dba</code> role might not include all system privileges, but only those appropriate to a junior database administrator (such as <code dir="ltr">CREATE TABLE</code>, <code dir="ltr">CREATE USER</code>, and so on).</p>
+<p>Oracle Database also enables auditing the actions taken by <code dir="ltr">SYS</code> (or <code dir="ltr">SYS</code>-privileged users) and storing that audit trail in a secure operating system location. Using this model, a separate auditor who has root privileges on the operating system can audit all actions by <code dir="ltr">SYS</code>, enabling the auditor to hold all database administrators accountable for their actions.</p>
+<p>See <a href="auditing.htm#BCGEHHCA">"Auditing SYS Administrative Users"</a> for information about ways to audit database administrators.</p>
+<p>You can also fine-tune the access and control that database administrators have by using Oracle Database Vault. See <a class="olink DVADM" href="../../server.112/e23090/toc.htm"><span class="italic">Oracle Database Vault Administrator's Guide</span></a> for more information.</p>
+<p>The database administrator function is a trusted position. Even organizations with the most sensitive data, such as intelligence agencies, do not typically partition the database administrator function. Instead, they manage their database administrators strongly, because it is a position of trust. Periodic auditing can help to uncover inappropriate activities.</p>
+<p>Encryption of stored data must not interfere with the administration of the database, because otherwise, larger security issues can result. For example, if by encrypting data you corrupt the data, then you create a security problem, the data itself cannot be interpreted, and it may not be recoverable.</p>
+<p>You can use encryption to limit the ability of a database administrator or other privileged user to see data in the database. However, it is not a substitute for managing the database administrator privileges properly, or for controlling the use of powerful system privileges. If untrustworthy users have significant privileges, then they can pose multiple threats to an organization, some of them far more significant than viewing unencrypted credit card numbers.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1006212"></a>
+<div id="DBSEG316" class="sect2">
+<h3 class="sect2">Principle 3: Encrypting Everything Does Not Make Data Secure</h3>
+<p><a id="sthref1480"></a><a id="sthref1481"></a>A common error is to think that if encrypting some data strengthens security, then encrypting everything makes all data secure.</p>
+<p>As the discussion of the previous two principles illustrates, encryption does not address access control issues well, and it is important that encryption not interfere with normal access controls. Furthermore, encrypting an entire production database means that all data must be decrypted to be read, updated, or deleted. Encryption is inherently a performance-intensive operation; encrypting all data will significantly affect performance.</p>
+<p>Availability is a key aspect of security. If encrypting data makes data unavailable, or adversely affects availability by reducing performance, then encrypting everything will create a new security problem. Availability is also adversely affected by the database being inaccessible when encryption keys are changed, as good security practices require on a regular basis. When the keys are to be changed, the database is inaccessible while data is decrypted and reencrypted with a new key or keys.</p>
+<p>There may be advantages to encrypting data stored off-line. For example, an organization may store backups for a period of 6 months to a year off-line, in a remote location. Of course, the first line of protection is to secure the facility storing the data, by establishing physical access controls. Encrypting this data before it is stored may provide additional benefits. Because it is not being accessed on-line, performance need not be a consideration. While an Oracle database does not provide this capability, there are vendors who provide encryption services. Before embarking on large-scale encryption of backup data, organizations considering this approach should thoroughly test the process. It is essential to verify that data encrypted before off-line storage can be decrypted and re-imported successfully.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDBGEJF"></a>
+<div id="DBSEG317" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Data Encryption Challenges</h2>
+<p><a id="sthref1482"></a>In cases where encryption can provide additional security, there are some associated technical challenges, as described in the following sections:</p>
+<ul>
+<li>
+<p><a href="#i1006350">Encrypting Indexed Data</a></p>
+</li>
+<li>
+<p><a href="#i1006367">Generating Encryption Keys</a></p>
+</li>
+<li>
+<p><a href="#i1006384">Transmitting Encryption Keys</a></p>
+</li>
+<li>
+<p><a href="#i1006395">Storing Encryption Keys</a></p>
+</li>
+<li>
+<p><a href="#i1006457">Changing Encryption Keys</a></p>
+</li>
+<li>
+<p><a href="#i1006468">Encrypting Binary Large Objects</a></p>
+</li>
+</ul>
+<a id="i1006350"></a>
+<div id="DBSEG318" class="sect2">
+<h3 class="sect2">Encrypting Indexed Data</h3>
+<p><a id="sthref1483"></a><a id="sthref1484"></a>Special difficulties arise when encrypted data is indexed. For example, suppose a company uses a national identity number, such as the U.S. Social Security number (SSN), as the employee number for its employees. The company considers employee numbers to be sensitive data, and, therefore, wants to encrypt data in the <code dir="ltr">employee_number</code> column of the <code dir="ltr">employees</code> table. Because <code dir="ltr">employee_number</code> contains unique values, the database designers want to have an index on it for better performance.</p>
+<p>However, if <code dir="ltr">DBMS_CRYPTO</code> or the <code dir="ltr">DBMS_OBFUSCATION_TOOLKIT</code> (or another mechanism) is used to encrypt data in a column, then an index on that column will also contain encrypted values. Although an index can be used for equality checking (for example, <code dir="ltr">SELECT * FROM emp WHERE employee_number = '987654321'</code>), if the index on that column contains encrypted values, then the index is essentially unusable for any other purpose. You should not encrypt indexed data.</p>
+<p>Oracle recommends that you do not use national identity numbers as unique IDs. Instead, use the <code dir="ltr">CREATE SEQUENCE</code> statement to generate unique identity numbers. Reasons to avoid using national identity numbers are as follows:</p>
+<ul>
+<li>
+<p>There are privacy issues associated with overuse of national identity numbers (for example, identity theft).</p>
+</li>
+<li>
+<p>Sometimes national identity numbers can have duplicates, as with U.S. Social Security numbers.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="i1006367"></a>
+<div id="DBSEG319" class="sect2">
+<h3 class="sect2">Generating Encryption Keys</h3>
+<p><a id="sthref1485"></a><a id="sthref1486"></a>Encrypted data is only as secure as the key used for encrypting it. An encryption key must be securely generated using secure cryptographic key generation. Oracle Database provides support for secure random number generation, with the <code dir="ltr">RANDOMBYTES</code> function of <code dir="ltr">DBMS_CRYPTO</code>. (This function replaces the capabilities provided by the <code dir="ltr">GetKey</code> procedure of the earlier <code dir="ltr">DBMS_OBFUSCATION_TOOLKIT</code>.) <code dir="ltr">DBMS_CRYPTO</code> calls the secure random number generator (RNG) previously certified by RSA Security.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Do not use the <code dir="ltr">DBMS_RANDOM</code> package. The <code dir="ltr">DBMS_RANDOM</code> package generates pseudo-random numbers, which, as Randomness Recommendations for Security (RFC-1750) states that using pseudo-random processes to generate secret quantities can result in pseudo-security.</div>
+<p>Be sure to provide the correct number of bytes when you encrypt a key value. For example, you must provide a 16-byte key for the <code dir="ltr">ENCRYPT_AES128</code> encryption algorithm.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1006384"></a>
+<div id="DBSEG320" class="sect2">
+<h3 class="sect2">Transmitting Encryption Keys</h3>
+<p><a id="sthref1487"></a><a id="sthref1488"></a>If the encryption key is to be passed by the application to the database, then you must encrypt it. Otherwise, an intruder could get access to the key as it is being transmitted. Network encryption, such as that provided by Oracle Advanced Security, protects all data in transit from modification or interception, including cryptographic keys.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1006395"></a>
+<div id="DBSEG321" class="sect2">
+<h3 class="sect2">Storing Encryption Keys</h3>
+<p><a id="sthref1489"></a><a id="sthref1490"></a>Storing encryption keys is one of the most important, yet difficult, aspects of encryption. To recover data encrypted with a symmetric key, the key must be accessible to an authorized application or user seeking to decrypt the data. At the same time, the key must be inaccessible to someone who is maliciously trying to access encrypted data that he is not supposed to see.</p>
+<p>The options available to a developer are:</p>
+<ul>
+<li>
+<p><a href="#i1006989">Storing the Encryption Keys in the Database</a></p>
+</li>
+<li>
+<p><a href="#i1006993">Storing the Encryption Keys in the Operating System</a></p>
+</li>
+<li>
+<p><a href="#i1006999">Users Managing Their Own Encryption Keys</a></p>
+</li>
+<li>
+<p><a href="#BABIJFAF">Using Transparent Database Encryption and Tablespace Encryption</a></p>
+</li>
+</ul>
+<a id="i1006989"></a>
+<div id="DBSEG322" class="sect3">
+<h4 class="sect3">Storing the Encryption Keys in the Database</h4>
+<p>Storing the keys in the database cannot always provide infallible security if you are trying to protect against the database administrator accessing encrypted data. An all-privileged database administrator could still access tables containing encryption keys. However, it can often provide good security against the casual curious user or against someone compromising the database file on the operating system.</p>
+<p>As a trivial example, suppose you create a table (<code dir="ltr">EMP</code>) that contains employee data. You want to encrypt the employee Social Security number (SSN) stored in one of the columns. You could encrypt employee SSN using a key that is stored in a separate column. However, anyone with <code dir="ltr">SELECT</code> access on the entire table could retrieve the encryption key and decrypt the matching SSN.</p>
+<p>While this encryption scheme seems easily defeated, with a little more effort you can create a solution that is much harder to break. For example, you could encrypt the SSN using a technique that performs some additional data transformation on the <code dir="ltr">employee_number</code> before using it to encrypt the SSN. This technique might be as simple as using an <code dir="ltr">XOR</code> operation on the <code dir="ltr">employee_number</code> and the birth date of the employee to determine the validity of the values.</p>
+<p>As additional protection, PL/SQL source code performing encryption can be wrapped, (using the <code dir="ltr">WRAP</code> utility) which obfuscates (scrambles) the code. The <code dir="ltr">WRAP</code> utility processes an input SQL file and obfuscates the PL/SQL units in it. For example, the following command uses the <code dir="ltr">keymanage.sql</code> file as the input:</p>
+<pre dir="ltr">
+wrap iname=/mydir/keymanage.sql
+</pre>
+<p>A developer can subsequently have a function in the package call the <code dir="ltr">DBMS_OBFUSCATION_TOOLKIT</code> with the key contained in the wrapped package.</p>
+<p>Oracle Database enables you to obfuscate dynamically generated PL/SQL code. The <code dir="ltr">DBMS_DDL</code> package contains two subprograms that allow you to obfuscate dynamically generated PL/SQL program units. For example, the following block uses the <code dir="ltr">DBMS_DDL.CREATE_WRAPPED</code> procedure to wrap dynamically generated PL/SQL code.</p>
+<pre dir="ltr">
+BEGIN
+......
+SYS.DBMS_DDL.CREATE_WRAPPED(<span class="italic">function_returning_PLSQL_code</span>());
+......
+END;
+</pre>
+<p>While wrapping is not unbreakable, it makes it harder for an intruder to get access to the encryption key. Even in cases where a different key is supplied for each encrypted data value, you should not embed the key value within a package. Instead, wrap the package that performs the key management (that is, data transformation or padding).</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink LNPLS016" href="../../appdev.112/e25519/wrap.htm#LNPLS016"><span class="italic">Oracle Database PL/SQL Language Reference</span></a> for additional information about the <code dir="ltr">WRAP</code> command line utility and the <code dir="ltr">DBMS_DDL</code> subprograms for dynamic wrapping</div>
+<p>An alternative to wrapping the data is to have a separate table in which to store the encryption key and to envelope the call to the keys table with a procedure. The key table can be joined to the data table using a primary key to foreign key relationship. For example, <code dir="ltr">employee_number</code> is the primary key in the <code dir="ltr">employees</code> table that stores employee information and the encrypted SSN. The <code dir="ltr">employee_number</code> column is a foreign key to the <code dir="ltr">ssn_keys</code> table that stores the encryption keys for the employee SSN. The key stored in the <code dir="ltr">ssn_keys</code> table can also be transformed before use (by using an <code dir="ltr">XOR</code> operation), so the key itself is not stored unencrypted. If you wrap the procedure, then that can hide the way in which the keys are transformed before use.</p>
+<p>The strengths of this approach are:</p>
+<ul>
+<li>
+<p>Users who have direct table access cannot see the sensitive data unencrypted, nor can they retrieve the keys to decrypt the data.</p>
+</li>
+<li>
+<p>Access to decrypted data can be controlled through a procedure that selects the encrypted data, retrieves the decryption key from the key table, and transforms it before it can be used to decrypt the data.</p>
+</li>
+<li>
+<p>The data transformation algorithm is hidden from casual snooping by wrapping the procedure, which obfuscates the procedure code.</p>
+</li>
+<li>
+<p><code dir="ltr">SELECT</code> access to both the data table and the keys table does not guarantee that the user with this access can decrypt the data, because the key is transformed before use.</p>
+</li>
+</ul>
+<p>The weakness to this approach is that a user who has <code dir="ltr">SELECT</code> access to both the key table and the data table, and who can derive the key transformation algorithm, can break the encryption scheme.</p>
+<p>The preceding approach is not infallible, but it is adequate to protect against easy retrieval of sensitive information stored in clear text.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i1006993"></a>
+<div id="DBSEG323" class="sect3">
+<h4 class="sect3">Storing the Encryption Keys in the Operating System</h4>
+<p>Storing keys in a flat<a id="sthref1491"></a> file in the operating system is another option. Oracle Database enables you to make callouts from PL/SQL, which you could use to retrieve encryption keys. However, if you store keys in the operating system and make callouts to it, then your data is only as secure as the protection on the operating system. If your primary security concern is that the database can be broken into from the operating system, then storing the keys in the operating system makes it easier for an intruder to retrieve encrypted data than storing the keys in the database itself.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i1006999"></a>
+<div id="DBSEG324" class="sect3">
+<h4 class="sect3">Users Managing Their Own Encryption Keys</h4>
+<p>Having the user supply the key assumes the user will be responsible with the key. Considering that 40 percent of help desk calls are from users who have forgotten their passwords, <a id="sthref1492"></a>you can see the risks of having users manage encryption keys. In all likelihood, users will either forget an encryption key, or write the key down, which then creates a security weakness. If a user forgets an encryption key or leaves the company, then your data is not recoverable.</p>
+<p>If you do decide to have user-supplied or user-managed keys, then you need to ensure you are using network encryption so that the key is not passed from the client to the server in the clear. You also must develop key archive mechanisms, which is also a difficult security problem. Key archives and backdoors create the security weaknesses that encryption is attempting to solve.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BABIJFAF"></a>
+<div id="DBSEG77325" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Using Transparent Database Encryption and Tablespace Encryption</h4>
+<p><a id="sthref1493"></a><a id="sthref1494"></a>Transparent database encryption and <a id="sthref1495"></a><a id="sthref1496"></a>tablespace encryption provide secure encryption with automatic key management for the encrypted tables and tablespaces. If the application requires protection of sensitive column data stored on the media, then these two types of encryption are a simple and fast way of achieving this.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ASOAG600" href="../../network.112/e40393/asotrans.htm#ASOAG600"><span class="italic">Oracle Database Advanced Security Administrator's Guide</span></a> for more information about transparent data encryption</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1006457"></a>
+<div id="DBSEG326" class="sect2">
+<h3 class="sect2">Changing Encryption Keys</h3>
+<p><a id="sthref1497"></a>Prudent security practice dictates that you periodically change encryption keys. For stored data, this requires periodically unencrypting the data, and reencrypting it with another well-chosen key. You would most likely change the encryption key while the data is not being accessed, which creates another challenge. This is especially true for a Web-based application encrypting credit card numbers, because you do not want to shut down the entire application while you switch encryption keys.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1006468"></a>
+<div id="DBSEG327" class="sect2">
+<h3 class="sect2">Encrypting Binary Large Objects</h3>
+<p><a id="sthref1498"></a><a id="sthref1499"></a>Certain data types require more work to encrypt. For example, Oracle Database supports storage of binary large objects (BLOBs), which stores very large objects (for example, multiple gigabytes) in the database. A BLOB can be either stored internally as a column, or stored in an external<a id="sthref1500"></a> file.</p>
+<p>For an example of using <code dir="ltr">DBMS_CRYPTO</code> on BLOB data, see <a href="#BABECEEB">"Example of Encryption and Decryption Procedures for BLOB Data"</a>.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDIIJAF"></a>
+<div id="DBSEG80084" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Storing Data Encryption by Using the DBMS_CRYPTO Package</h2>
+<p>The <code dir="ltr"><a id="sthref1501"></a><a id="sthref1502"></a>DBMS_CRYPTO</code> package provides several ways to address the security issues that were discussed. (For backward compatibility, <code dir="ltr"><a id="sthref1503"></a>DBMS_OBFUSCATION_TOOLKIT</code> is also provided.)</p>
+<p>While encryption is not the ideal solution for addressing several security threats, it is clear that selectively encrypting sensitive data before storage in the database does improve security. Examples of such data could include:</p>
+<ul>
+<li>
+<p>Credit card numbers</p>
+</li>
+<li>
+<p>National identity numbers</p>
+</li>
+</ul>
+<p>Oracle Database provides the PL/SQL package <code dir="ltr"><a id="sthref1504"></a><a id="sthref1505"></a>DBMS_CRYPTO</code> to encrypt and decrypt stored data. This package supports several industry-standard encryption and hashing algorithms, including the Advanced Encryption Standard (AES) encryption algorithm. AES was approved by the National Institute of Standards and Technology (NIST) to replace the Data Encryption Standard (DES).</p>
+<p>The <code dir="ltr">DBMS_CRYPTO</code> package enables encryption and decryption for common Oracle Database data types, including <code dir="ltr">RAW</code> and large objects (LOBs), such as images and sound. Specifically, it supports BLOBs and CLOBs. In addition, it provides Globalization Support for encrypting data across different database character sets.</p>
+<p>The following cryptographic algorithms are supported:</p>
+<ul>
+<li>
+<p>Data Encryption Standard (DES), Triple DES (3DES, 2-key)</p>
+</li>
+<li>
+<p>Advanced Encryption Standard (AES)</p>
+</li>
+<li>
+<p>SHA-1 Cryptographic Hash</p>
+</li>
+<li>
+<p>SHA-1 Message Authentication Code (MAC)</p>
+</li>
+</ul>
+<p>Block cipher modifiers are also provided with <code dir="ltr">DBMS_CRYPTO</code>. You can choose from several padding options, including Public Key Cryptographic Standard (PKCS) #5, and from four block cipher chaining modes, including Cipher Block Chaining (CBC). Padding must be done in multiples of eight bytes.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+<ul>
+<li>
+<p>DES is no longer recommended by the National Institute of Standards and Technology (NIST).</p>
+</li>
+<li>
+<p>Usage of SHA-1 is more secure than MD5.</p>
+</li>
+<li>
+<p>Keyed MD5 is not vulnerable.</p>
+</li>
+</ul>
+</div>
+<p><a href="#g1009632">Table 8-1</a> compares the <code dir="ltr">DBMS_CRYPTO</code> package features to the other PL/SQL encryption package, the <code dir="ltr">DBMS_OBFUSCATION_TOOLKIT</code>.</p>
+<div id="DBSEG328" class="tblhruleformalwidemax">
+<p class="titleintable"><a id="sthref1506"></a><a id="g1009632"></a>Table 8-1 DBMS_CRYPTO and DBMS_OBFUSCATION_TOOLKIT Feature Comparison</p>
+<table class="cellalignment2250" title="DBMS_CRYPTO and DBMS_OBFUSCATION_TOOLKIT Feature Comparison" summary="This table compares the features of the DBMS_CRYPTO package with the features of the DBMS_OBFUSCATION_TOOLKIT package." dir="ltr">
+<thead>
+<tr class="cellalignment2244">
+<th class="cellalignment2251" id="r1c1-t7">Package Feature</th>
+<th class="cellalignment2251" id="r1c2-t7">DBMS_CRYPTO</th>
+<th class="cellalignment2251" id="r1c3-t7">DBMS_OBFUSCATION_TOOLKIT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2244">
+<td class="cellalignment2252" id="r2c1-t7" headers="r1c1-t7">
+<p>Cryptographic algorithms</p>
+</td>
+<td class="cellalignment2252" headers="r2c1-t7 r1c2-t7">
+<p>DES, 3DES, AES, RC4, 3DES_2KEY</p>
+</td>
+<td class="cellalignment2252" headers="r2c1-t7 r1c3-t7">
+<p>DES, 3DES</p>
+</td>
+</tr>
+<tr class="cellalignment2244">
+<td class="cellalignment2252" id="r3c1-t7" headers="r1c1-t7">
+<p>Padding forms</p>
+</td>
+<td class="cellalignment2252" headers="r3c1-t7 r1c2-t7">
+<p>PKCS5, zeroes</p>
+</td>
+<td class="cellalignment2252" headers="r3c1-t7 r1c3-t7">
+<p>None supported</p>
+</td>
+</tr>
+<tr class="cellalignment2244">
+<td class="cellalignment2252" id="r4c1-t7" headers="r1c1-t7">
+<p>Block cipher chaining modes</p>
+</td>
+<td class="cellalignment2252" headers="r4c1-t7 r1c2-t7">
+<p>CBC, CFB, ECB, OFB</p>
+</td>
+<td class="cellalignment2252" headers="r4c1-t7 r1c3-t7">
+<p>CBC</p>
+</td>
+</tr>
+<tr class="cellalignment2244">
+<td class="cellalignment2252" id="r5c1-t7" headers="r1c1-t7">
+<p>Cryptographic hash algorithms</p>
+</td>
+<td class="cellalignment2252" headers="r5c1-t7 r1c2-t7">
+<p>SHA-1, MD4, MD5</p>
+</td>
+<td class="cellalignment2252" headers="r5c1-t7 r1c3-t7">
+<p>MD5</p>
+</td>
+</tr>
+<tr class="cellalignment2244">
+<td class="cellalignment2252" id="r6c1-t7" headers="r1c1-t7">
+<p>Keyed hash (MAC) algorithms</p>
+</td>
+<td class="cellalignment2252" headers="r6c1-t7 r1c2-t7">
+<p>HMAC_MD5, HMAC_SH1</p>
+</td>
+<td class="cellalignment2252" headers="r6c1-t7 r1c3-t7">
+<p>None supported</p>
+</td>
+</tr>
+<tr class="cellalignment2244">
+<td class="cellalignment2252" id="r7c1-t7" headers="r1c1-t7">
+<p>Cryptographic pseudo-random number generator</p>
+</td>
+<td class="cellalignment2252" headers="r7c1-t7 r1c2-t7">
+<p><code dir="ltr">RAW</code>, <code dir="ltr">NUMBER</code>, <code dir="ltr">BINARY_INTEGER</code></p>
+</td>
+<td class="cellalignment2252" headers="r7c1-t7 r1c3-t7">
+<p><code dir="ltr">RAW</code>, <code dir="ltr">VARCHAR2</code></p>
+</td>
+</tr>
+<tr class="cellalignment2244">
+<td class="cellalignment2252" id="r8c1-t7" headers="r1c1-t7">
+<p>Database types</p>
+</td>
+<td class="cellalignment2252" headers="r8c1-t7 r1c2-t7">
+<p><code dir="ltr">RAW</code>, <code dir="ltr">CLOB</code>, <code dir="ltr">BLOB</code></p>
+</td>
+<td class="cellalignment2252" headers="r8c1-t7 r1c3-t7">
+<p><code dir="ltr">RAW</code>, <code dir="ltr">VARCHAR2</code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblhruleformalwidemax" -->
+<p><code dir="ltr">DBMS_CRYPTO</code> is intended to replace the <code dir="ltr">OBFUSCATION_TOOLKIT</code> package, because it is easier to use and supports a range of algorithms that accommodate both new and existing systems. Although 3DES_2KEY and MD4 are provided for backward compatibility, you achieve better security using 3DES, AES, or SHA-1. Therefore, 3DES_2KEY is not recommended.</p>
+<p>The <code dir="ltr">DBMS_CRYPTO</code> package includes cryptographic checksum capabilities (MD5), which are useful for comparisons, and the ability to generate a secure random number (the <code dir="ltr">RANDOMBYTES</code> function). Secure random number generation is an important part of cryptography; predictable keys are easily guessed keys; and easily guessed keys may lead to easy decryption of data. Most cryptanalysis is done by finding weak keys or poorly stored keys, rather than through brute force analysis (cycling through all possible keys).</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Do not use <code dir="ltr">DBMS_RANDOM</code>, because it is unsuitable for cryptographic key generation<a id="sthref1507"></a>.</div>
+<p>Key management is programmatic. That is, the application (or caller of the function) must supply the encryption key. This means that the application developer must find a way of storing and retrieving keys securely. The relative strengths and weaknesses of various key management techniques are discussed in the sections that follow. The <code dir="ltr">DBMS_OBFUSCATION_TOOLKIT</code> package, which can handle both string and raw data, requires the submission of a 64-bit key. The DES algorithm itself has an effective key length of 56-bits.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The <code dir="ltr">DBMS_OBFUSCATION_TOOLKIT</code> is granted to <code dir="ltr">PUBLIC</code> by default. Oracle recommends that you revoke this grant.
+<p>While the <code dir="ltr">DBMS_OBFUSCATION_TOOLKIT</code> package can take either <code dir="ltr">VARCHAR2</code> or <code dir="ltr">RAW</code> data types, it is preferable to use the <code dir="ltr">RAW</code> data type for keys and encrypted data. Storing encrypted data as <code dir="ltr">VARCHAR2</code> can cause problems if it passes through Globalization Support routines. For example, when transferring a database to another database that uses another character set.</p>
+<p>To convert between <code dir="ltr">VARCHAR2</code> and <code dir="ltr">RAW</code> data types, use the <code dir="ltr">CAST_TO_RAW</code> and <code dir="ltr">CAST_TO_VARCHAR2</code> functions of the <code dir="ltr">UTL_RAW</code> package.</p>
+</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ARPLS664" href="../../appdev.112/e40758/d_crypto.htm#ARPLS664"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for detailed information about the <code dir="ltr">DBMS_CRYPTO</code> package</p>
+</li>
+<li>
+<p><a class="olink ARPLS028" href="../../appdev.112/e40758/d_obtool.htm#ARPLS028"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for detailed information about the <code dir="ltr">OBFUSCATION_TOOLKIT</code> package</p>
+</li>
+<li>
+<p><a class="olink ARPLS072" href="../../appdev.112/e40758/u_raw.htm#ARPLS072"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for detailed information about the <code dir="ltr">UTL_RAW</code> package</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="CHDHGIAH"></a>
+<div id="DBSEG80087" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Examples of Using the Data Encryption API</h2>
+<p>This section contains:</p>
+<ul>
+<li>
+<p><a href="#i1006479">Example of a Data Encryption Procedure</a></p>
+</li>
+<li>
+<p><a href="#CHDBGJFE">Example of AES 256-Bit Data Encryption and Decryption Procedures</a></p>
+</li>
+<li>
+<p><a href="#BABECEEB">Example of Encryption and Decryption Procedures for BLOB Data</a></p>
+</li>
+</ul>
+<a id="i1006479"></a>
+<div id="DBSEG335" class="sect2">
+<h3 class="sect2">Example of a Data Encryption Procedure</h3>
+<p><a id="sthref1508"></a><a id="sthref1509"></a><a id="sthref1510"></a>The following sample PL/SQL program (<code dir="ltr">dbms_crypto.sql</code>) shows how to encrypt data. This example code performs the following actions:</p>
+<ul>
+<li>
+<p>Encrypts a string (<code dir="ltr">VARCHAR2</code> type) using DES after first converting it into the <code dir="ltr">RAW</code> data type.</p>
+<p>This step is necessary because encrypt and decrypt functions and procedures in <code dir="ltr">DBMS_CRYPTO</code> package work on the <code dir="ltr">RAW</code> data type only, unlike functions and packages in the <code dir="ltr">DBMS_OBFUSCATION_TOOLKIT</code> package.</p>
+</li>
+<li>
+<p>Shows how to create a 160-bit hash using SHA-1 algorithm.</p>
+</li>
+<li>
+<p>Demonstrates how MAC, a key-dependent one-way hash, can be computed using the MD5 algorithm.</p>
+</li>
+</ul>
+<p>The <code dir="ltr">dbms_crypto.sql</code> procedure follows:</p>
+<pre dir="ltr">
+DECLARE
+    input_string     VARCHAR2(16) := 'tigertigertigert';
+    raw_input        RAW(128) :=
+UTL_RAW.CAST_TO_RAW(CONVERT(input_string,'AL32UTF8','US7ASCII'));
+    key_string       VARCHAR2(8)  := 'scottsco';
+    raw_key          RAW(128) :=
+UTL_RAW.CAST_TO_RAW(CONVERT(key_string,'AL32UTF8','US7ASCII'));
+    encrypted_raw    RAW(2048);
+    encrypted_string VARCHAR2(2048);
+    decrypted_raw    RAW(2048);
+    decrypted_string VARCHAR2(2048); 
+<span class="bold">-- Begin testing Encryption:</span> 
+BEGIN
+    dbms_output.put_line('&gt; Input String                     : ' || 
+    CONVERT(UTL_RAW.CAST_TO_VARCHAR2(raw_input),'US7ASCII','AL32UTF8'));
+    dbms_output.put_line('&gt; ========= BEGIN TEST Encrypt =========');
+    encrypted_raw := dbms_crypto.Encrypt(
+        src =&gt; raw_input, 
+        typ =&gt; DBMS_CRYPTO.DES_CBC_PKCS5, 
+        key =&gt; raw_key);
+        dbms_output.put_line('&gt; Encrypted hex value              : ' || 
+        rawtohex(UTL_RAW.CAST_TO_RAW(encrypted_raw)));
+decrypted_raw := dbms_crypto.Decrypt(
+        src =&gt; encrypted_raw, 
+        typ =&gt; DBMS_CRYPTO.DES_CBC_PKCS5, 
+        key =&gt; raw_key);
+    decrypted_string := 
+    CONVERT(UTL_RAW.CAST_TO_VARCHAR2(decrypted_raw),'US7ASCII','AL32UTF8');
+dbms_output.put_line('&gt; Decrypted string output          : ' || 
+        decrypted_string);
+if input_string = decrypted_string THEN
+    dbms_output.put_line('&gt; String DES Encyption and Decryption successful');
+END if;
+dbms_output.put_line('');
+dbms_output.put_line('&gt; ========= BEGIN TEST Hash =========');
+    encrypted_raw := dbms_crypto.Hash(
+        src =&gt; raw_input, 
+        typ =&gt; DBMS_CRYPTO.HASH_SH1);
+dbms_output.put_line('&gt; Hash value of input string       : ' || 
+        rawtohex(UTL_RAW.CAST_TO_RAW(encrypted_raw)));
+dbms_output.put_line('&gt; ========= BEGIN TEST Mac =========');
+    encrypted_raw := dbms_crypto.Mac(
+        src =&gt; raw_input, 
+        typ =&gt; DBMS_CRYPTO.HMAC_MD5, 
+        key =&gt; raw_key);
+dbms_output.put_line('&gt; Message Authentication Code      : ' || 
+        rawtohex(UTL_RAW.CAST_TO_RAW(encrypted_raw)));
+dbms_output.put_line('');
+dbms_output.put_line('&gt; End of DBMS_CRYPTO tests  ');
+END;
+/
+</pre></div>
+<!-- class="sect2" -->
+<a id="CHDBGJFE"></a>
+<div id="DBSEG336" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Example of AES 256-Bit Data Encryption and Decryption Procedures</h3>
+<p><a id="sthref1511"></a>The following PL/SQL block shows how to encrypt and decrypt a predefined variable named <code dir="ltr">input_string</code> using the AES 256-bit algorithm with Cipher Block Chaining and PKCS #5 padding.</p>
+<pre dir="ltr">
+declare
+   input_string       VARCHAR2 (200) := 'Secret Message';
+   output_string      VARCHAR2 (200);
+   encrypted_raw      RAW (2000);             <span class="italic">-- stores encrypted binary text</span>
+   decrypted_raw      RAW (2000);             <span class="italic">-- stores decrypted binary text</span>
+   num_key_bytes      NUMBER := 256/8;        <span class="italic">-- key length 256 bits (32 bytes)</span>
+   key_bytes_raw      RAW (32);               <span class="italic">-- stores 256-bit encryption key </span>
+   encryption_type    PLS_INTEGER :=          <span class="italic">-- total encryption type</span>
+                            DBMS_CRYPTO.ENCRYPT_AES256
+                          + DBMS_CRYPTO.CHAIN_CBC
+                          + DBMS_CRYPTO.PAD_PKCS5;
+begin
+   DBMS_OUTPUT.PUT_LINE ('Original string: ' || input_string);
+   key_bytes_raw := DBMS_CRYPTO.RANDOMBYTES (num_key_bytes);
+   encrypted_raw := DBMS_CRYPTO.ENCRYPT
+      (
+         src =&gt; UTL_I18N.STRING_TO_RAW (input_string, 'AL32UTF8'),
+         typ =&gt; encryption_type,
+         key =&gt; key_bytes_raw
+      );
+<span class="bold">    -- The encrypted value in the encrypted_raw variable can be used here:</span>
+   decrypted_raw := DBMS_CRYPTO.DECRYPT
+      (
+         src =&gt; encrypted_raw,
+         typ =&gt; encryption_type,
+         key =&gt; key_bytes_raw
+      );
+   output_string := UTL_I18N.RAW_TO_CHAR (decrypted_raw, 'AL32UTF8');
+   DBMS_OUTPUT.PUT_LINE ('Decrypted string: ' || output_string);
+end;
+</pre></div>
+<!-- class="sect2" -->
+<a id="BABECEEB"></a>
+<div id="DBSEG337" class="sect2">
+<h3 class="sect2">Example of Encryption and Decryption Procedures for BLOB Data</h3>
+<p><a id="sthref1512"></a>The following sample PL/SQL program (<code dir="ltr">blob_test.sql</code>) shows how to encrypt and decrypt BLOB data. This example code does the following, and prints out its progress (or problems) at each step:</p>
+<ul>
+<li>
+<p>Creates a table for the BLOB column</p>
+</li>
+<li>
+<p>Inserts the raw values into that table</p>
+</li>
+<li>
+<p>Encrypts the raw data</p>
+</li>
+<li>
+<p>Decrypts the encrypted data</p>
+</li>
+</ul>
+<p>The <code dir="ltr">blob_test.sql</code> procedure follows:</p>
+<pre dir="ltr">
+<span class="bold">-- 1. Create a table for BLOB column:</span>
+create table table_lob (id number, loc blob);
+
+<span class="bold">-- 2. Insert 3 empty lobs for src/enc/dec:</span>
+insert into table_lob values (1, EMPTY_BLOB());
+insert into table_lob values (2, EMPTY_BLOB());
+insert into table_lob values (3, EMPTY_BLOB());
+
+set echo on
+set serveroutput on
+
+declare
+    srcdata    RAW(1000);
+    srcblob    BLOB;
+    encrypblob BLOB;
+    encrypraw  RAW(1000);
+    encrawlen  BINARY_INTEGER;
+    decrypblob BLOB;
+    decrypraw  RAW(1000);
+    decrawlen  BINARY_INTEGER;
+    
+    leng       INTEGER;
+
+begin
+    
+    -- RAW input data 16 bytes
+    srcdata := hextoraw('6D6D6D6D6D6D6D6D6D6D6D6D6D6D6D6D');
+    
+    dbms_output.put_line('---');
+    dbms_output.put_line('input is ' || srcdata);
+    dbms_output.put_line('---');
+    
+    -- select empty lob locators for src/enc/dec
+    select loc into srcblob from table_lob where id = 1;
+    select loc into encrypblob from table_lob where id = 2;
+    select loc into decrypblob from table_lob where id = 3;
+    
+    dbms_output.put_line('Created Empty LOBS');
+    dbms_output.put_line('---');
+    
+    leng := DBMS_LOB.GETLENGTH(srcblob);
+    IF leng IS NULL THEN
+        dbms_output.put_line('Source BLOB Len NULL ');
+    ELSE
+        dbms_output.put_line('Source BLOB Len ' || leng);
+    END IF;
+    
+    leng := DBMS_LOB.GETLENGTH(encrypblob);
+    IF leng IS NULL THEN
+        dbms_output.put_line('Encrypt BLOB Len NULL ');
+    ELSE
+        dbms_output.put_line('Encrypt BLOB Len ' || leng);
+    END IF;
+    
+    leng := DBMS_LOB.GETLENGTH(decrypblob);
+    IF leng IS NULL THEN
+        dbms_output.put_line('Decrypt  BLOB Len NULL ');
+    ELSE
+        dbms_output.put_line('Decrypt BLOB Len ' || leng);
+    END IF;
+    
+   <span class="bold"> -- 3. Write source raw data into blob:</span>
+    DBMS_LOB.OPEN (srcblob, DBMS_LOB.lob_readwrite);
+    DBMS_LOB.WRITEAPPEND (srcblob, 16, srcdata);
+    DBMS_LOB.CLOSE (srcblob);
+    
+    dbms_output.put_line('Source raw data written to source blob');
+    dbms_output.put_line('---');
+    
+    leng := DBMS_LOB.GETLENGTH(srcblob);
+    IF leng IS NULL THEN
+        dbms_output.put_line('source BLOB Len NULL ');
+    ELSE
+        dbms_output.put_line('Source BLOB Len ' || leng);
+    END IF;
+    
+    /*
+    * Procedure Encrypt
+    * Arguments: srcblob -&gt; Source BLOB
+    *            encrypblob -&gt; Output BLOB for encrypted data
+    *            DBMS_CRYPTO.AES_CBC_PKCS5 -&gt; Algo : AES
+    *                                         Chaining : CBC
+    *                                         Padding : PKCS5
+    *            256 bit key for AES passed as RAW
+    *                -&gt;
+    hextoraw('000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F')
+    *            IV (Initialization Vector) for AES algo passed as RAW
+    *                -&gt; hextoraw('00000000000000000000000000000000')
+    */
+    
+    DBMS_CRYPTO.Encrypt(encrypblob,
+                srcblob,
+                DBMS_CRYPTO.AES_CBC_PKCS5,
+                hextoraw ('000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F'),
+                hextoraw('00000000000000000000000000000000'));
+    
+    
+    dbms_output.put_line('Encryption Done');
+    dbms_output.put_line('---');
+    
+    leng := DBMS_LOB.GETLENGTH(encrypblob);
+    IF leng IS NULL THEN
+        dbms_output.put_line('Encrypt BLOB Len NULL');
+    ELSE
+        dbms_output.put_line('Encrypt BLOB Len ' || leng);
+    END IF;
+    
+   <span class="bold"> -- 4. Read encrypblob to a raw:</span>
+    encrawlen := 999;
+    
+    DBMS_LOB.OPEN (encrypblob, DBMS_LOB.lob_readwrite);
+    DBMS_LOB.READ (encrypblob, encrawlen, 1, encrypraw);
+    DBMS_LOB.CLOSE (encrypblob);
+    
+    dbms_output.put_line('Read encrypt blob to a raw');
+    dbms_output.put_line('---');
+    
+    dbms_output.put_line('Encrypted data is (256 bit key) ' || encrypraw);
+    dbms_output.put_line('---');
+    
+    /*
+    * Procedure Decrypt
+    * Arguments: encrypblob -&gt; Encrypted BLOB to decrypt
+    *            decrypblob -&gt; Output BLOB for decrypted data in RAW
+    *            DBMS_CRYPTO.AES_CBC_PKCS5 -&gt; Algo : AES
+    *                                         Chaining : CBC
+    *                                         Padding : PKCS5
+    *            256 bit key for AES passed as RAW (same as used during Encrypt)
+    *                -&gt;
+    hextoraw('000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F')
+    *            IV (Initialization Vector) for AES algo passed as RAW (same as
+                 used during Encrypt)
+    *                -&gt; hextoraw('00000000000000000000000000000000')
+    */
+    
+    DBMS_CRYPTO.Decrypt(decrypblob,
+                encrypblob,
+                DBMS_CRYPTO.AES_CBC_PKCS5,
+                hextoraw
+           ('000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F'),
+                hextoraw('00000000000000000000000000000000'));
+    
+    leng := DBMS_LOB.GETLENGTH(decrypblob);
+    IF leng IS NULL THEN
+        dbms_output.put_line('Decrypt BLOB Len NULL');
+    ELSE
+        dbms_output.put_line('Decrypt BLOB Len ' || leng);
+    END IF;
+    
+    -- Read decrypblob to a raw
+    decrawlen := 999;
+    
+    DBMS_LOB.OPEN (decrypblob, DBMS_LOB.lob_readwrite);
+    DBMS_LOB.READ (decrypblob, decrawlen, 1, decrypraw);
+    DBMS_LOB.CLOSE (decrypblob);
+    
+    dbms_output.put_line('Decrypted data is (256 bit key) ' || decrypraw);
+    dbms_output.put_line('---');
+    
+    DBMS_LOB.OPEN (srcblob, DBMS_LOB.lob_readwrite);
+    DBMS_LOB.TRIM (srcblob, 0);
+    DBMS_LOB.CLOSE (srcblob);
+    
+    DBMS_LOB.OPEN (encrypblob, DBMS_LOB.lob_readwrite);
+    DBMS_LOB.TRIM (encrypblob, 0);
+    DBMS_LOB.CLOSE (encrypblob);
+    
+    DBMS_LOB.OPEN (decrypblob, DBMS_LOB.lob_readwrite);
+    DBMS_LOB.TRIM (decrypblob, 0);
+    DBMS_LOB.CLOSE (decrypblob);
+    
+end;
+/
+
+truncate table table_lob;
+drop table table_lob;
+</pre></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDFBBED"></a>
+<div id="DBSEG338" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Finding Information About Encrypted Data</h2>
+<p><a href="#CHDGJHEG">Table 8-2</a> <a id="sthref1513"></a><a id="sthref1514"></a>lists data dictionary views that you can query to access information about encrypted data. See <a class="olink REFRN" href="../../server.112/e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for detailed information about these views.</p>
+<div id="DBSEG339" class="tblhruleformalwide">
+<p class="titleintable"><a id="sthref1515"></a><a id="CHDGJHEG"></a>Table 8-2 Data Dictionary Views That Display Information about Encrypted Data</p>
+<table class="cellalignment2250" title="Data Dictionary Views That Display Information about Encrypted Data" summary="Encryption Views" dir="ltr">
+<thead>
+<tr class="cellalignment2244">
+<th class="cellalignment2251" id="r1c1-t11">View</th>
+<th class="cellalignment2251" id="r1c2-t11">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2244">
+<td class="cellalignment2252" id="r2c1-t11" headers="r1c1-t11">
+<p><code dir="ltr">ALL_ENCRYPTED_COLUMNS</code></p>
+</td>
+<td class="cellalignment2252" headers="r2c1-t11 r1c2-t11">
+<p>Describes encryption algorithm information for all encrypted columns in all tables accessible to the user</p>
+</td>
+</tr>
+<tr class="cellalignment2244">
+<td class="cellalignment2252" id="r3c1-t11" headers="r1c1-t11">
+<p><code dir="ltr">DBA_ENCRYPTED_COLUMNS</code></p>
+</td>
+<td class="cellalignment2252" headers="r3c1-t11 r1c2-t11">
+<p>Describes encryption algorithm information for all encrypted columns in the database</p>
+</td>
+</tr>
+<tr class="cellalignment2244">
+<td class="cellalignment2252" id="r4c1-t11" headers="r1c1-t11">
+<p><code dir="ltr">USER_ENCRYPTED_COLUMNS</code></p>
+</td>
+<td class="cellalignment2252" headers="r4c1-t11 r1c2-t11">
+<p>Describes encryption algorithm information for all encrypted columns in all tables in the schema of the user</p>
+</td>
+</tr>
+<tr class="cellalignment2244">
+<td class="cellalignment2252" id="r5c1-t11" headers="r1c1-t11">
+<p><code dir="ltr">V$ENCRYPTED_TABLESPACES</code></p>
+</td>
+<td class="cellalignment2252" headers="r5c1-t11 r1c2-t11">
+<p>Displays information about the tablespaces that are encrypted</p>
+</td>
+</tr>
+<tr class="cellalignment2244">
+<td class="cellalignment2252" id="r6c1-t11" headers="r1c1-t11">
+<p><code dir="ltr">V$ENCRYPTION_WALLET</code></p>
+</td>
+<td class="cellalignment2252" headers="r6c1-t11 r1c2-t11">
+<p>Displays information on the status of the wallet and the wallet location for transparent data encryption</p>
+</td>
+</tr>
+<tr class="cellalignment2244">
+<td class="cellalignment2252" id="r7c1-t11" headers="r1c1-t11">
+<p><code dir="ltr">V$RMAN_ENCRYPTION_ALGORITHMS</code></p>
+</td>
+<td class="cellalignment2252" headers="r7c1-t11 r1c2-t11">
+<p>Displays supported encryption algorithms.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblhruleformalwide" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment2243">
+<tr>
+<td class="cellalignment2252">
+<table class="cellalignment2248">
+<tr>
+<td class="cellalignment2247"><a href="vpd.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment2247"><a href="auditing.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2006, 2017,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment2254">
+<table class="cellalignment2246">
+<tr>
+<td class="cellalignment2247"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment2247"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment2247"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment2247"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment2247"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment2247"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

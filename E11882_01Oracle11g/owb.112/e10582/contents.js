@@ -1,0 +1,15 @@
+var chapters = [
+  { topic: "chapter", section: "1", title: "Connecting to Sources and Targets in Oracle Warehouse Builder", anchor: "WBDOD10501", file: "intro_sources_targets.htm" },
+  { topic: "chapter", section: "2", title: "Connecting to Data Sources and Importing Metadata", anchor: "WBDOD10502", file: "importing_metadata.htm" },
+  { topic: "chapter", section: "3", title: "Using Flat Files as Sources or Targets", anchor: "WBDOD10503", file: "defining_flatfiles.htm" },
+  { topic: "chapter", section: "4", title: "Connecting to Non-Oracle Data Sources Through Gateways", anchor: "WBDOD90597", file: "gateways_connection.htm" },
+  { topic: "chapter", section: "5", title: "Connecting to Microsoft Data Sources Through ODBC Connection", anchor: "WBDOD10508", file: "loading_ms_data.htm" },
+  { topic: "chapter", section: "6", title: "Connecting to Data Sources Through JDBC", anchor: "WBDOD10505", file: "jdbc_connection.htm" },
+  { topic: "chapter", section: "7", title: "Extracting Data from SAP Applications", anchor: "WBDOD30500", file: "sap_integrate.htm" },
+  { topic: "chapter", section: "8", title: "Integrating with Oracle ERP Applications", anchor: "WBDOD10506", file: "integrating_apps.htm" },
+  { topic: "chapter", section: "9", title: "Importing Oracle Warehouse Builder Data into Business Intelligence Applications", anchor: "WBDOD10510", file: "business_intelligence.htm" },
+  { topic: "chapter", section: "10", title: "Importing Design Definitions from Oracle Designer", anchor: "WBDOD10504", file: "imp_thirdparty_design.htm" },
+  { topic: "chapter", section: "11", title: "Creating New Platforms", anchor: "CHDHEGEX", file: "platform_extensions.htm" },
+  { topic: "chapter", section: "12", title: "Using Code Templates to Load and Transfer Data", anchor: "WBDOD90618", file: "code_templates.htm" },
+  { topic: "chapter", section: "13", title: "Importing and Publishing Web Services", anchor: "WBDOD10509", file: "web_services.htm" },
+  { } ];

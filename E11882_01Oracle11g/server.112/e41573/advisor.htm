@@ -1,0 +1,2477 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>SQL Access Advisor</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1023" />
+<meta name="dcterms.created" content="2014-06-30T4:25:7Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Performance Tuning Guide" />
+<meta name="dcterms.identifier" content="E41573-04" />
+<meta name="dcterms.isVersionOf" content="PFGRF" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2000, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="sql_tune.htm" title="Previous" type="text/html" />
+<link rel="Next" href="hintsref.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e41573.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">26/31</span> <!-- End Header -->
+<div id="PFGRF008" class="chapter"><a id="i1008370"></a>
+<h1 class="chapter"><span class="secnum">18</span> SQL Access Advisor</h1>
+<p>This chapter illustrates how to use SQL Access Advisor, which is a tuning tool that provides advice on improving the performance of a database through partitioning, materialized views, indexes, and materialized view logs. The chapter contains the following sections:</p>
+<ul>
+<li>
+<p><a href="#CHDEEBAI">Overview of SQL Access Advisor</a></p>
+</li>
+<li>
+<p><a href="#i1026391">Using SQL Access Advisor</a></p>
+</li>
+<li>
+<p><a href="#i1018993">Tuning Materialized Views for Fast Refresh and Query Rewrite</a></p>
+</li>
+</ul>
+<a id="CHDEEBAI"></a>
+<div id="PFGRF94876" class="sect1">
+<h2 class="sect1"><span class="secnum">18.1</span> Overview of SQL Access Advisor</h2>
+<p><a id="sthref1400"></a>Materialized views, partitions, and indexes are essential when tuning a database to achieve optimum performance for complex, data-intensive queries. <a id="sthref1401"></a><a id="sthref1402"></a><a id="sthref1403"></a>SQL Access Advisor helps you achieve your performance goals by recommending the proper set of materialized views, materialized view logs, partitions, and indexes for a given workload. Understanding and using these structures is essential when optimizing SQL as they can result in significant performance improvements in data retrieval. The advantages, however, do not come without a cost. Creation and maintenance of these objects can be time consuming, and space requirements can be significant. In particular, partitioning of an unpartitioned base table is a complex operation that must be planned carefully.</p>
+<p>SQL Access Advisor index recommendations include bitmap, function-based, and B-tree indexes. A bitmap index offers a reduced response time for many types of ad hoc queries and reduced storage requirements compared to other indexing techniques. Bitmap indexes are most commonly used in a data warehouse to index unique or near-unique keys. SQL Access Advisor materialized view recommendations include fast refreshable and full refreshable MVs, for either general rewrite or exact text match rewrite.</p>
+<p>SQL Access Advisor, using the <code>TUNE_MVIEW</code> procedure, also recommends how to optimize materialized views so that they can be fast refreshable and take advantage of general query rewrite.</p>
+<p>In addition, SQL Access Advisor can recommend partitioning on an existing unpartitioned base table to improve performance. Furthermore, it may recommend new indexes and materialized views that are themselves partitioned. While creating new partitioned indexes and materialized view is no different from the unpartitioned case, partitioning existing base tables should be executed with care. This is especially true when indexes, views, constraints, or triggers are defined on the table. See <a href="#CHDCAEIF">"Special Considerations when Script Includes Partitioning Recommendations"</a> for a list of issues involving base table partitioning for performing this task online.</p>
+<p>You can run SQL Access Advisor from Oracle Enterprise Manager (accessible from the Advisor Central page) using SQL Access Advisor Wizard or by invoking the <code>DBMS_ADVISOR</code> package. The <code>DBMS_ADVISOR</code> package consists of a collection of analysis and advisory functions and procedures callable from any PL/SQL program.</p>
+<p><a href="#i1033349">Figure 18-1</a> illustrates how SQL Access Advisor recommends access structures for a given workload obtained from a user-defined table or the SQL cache. If a workload is not provided, then it can generate and use a hypothetical workload also, provided the user schema contains dimensions defined by the <code>CREATE</code> <code>DIMENSION</code> keyword.</p>
+<div id="PFGRF94877" class="figure">
+<p class="titleinfigure"><a id="i1033349"></a>Figure 18-1 Materialized Views and SQL Access Advisor</p>
+<img width="470" height="384" src="img/pfgrf225.gif" alt="Description of Figure 18-1 follows" /><br />
+<a id="sthref1404" href="img_text/pfgrf225.htm">Description of "Figure 18-1 Materialized Views and SQL Access Advisor"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>Using SQL Access Advisor in Enterprise Manager or API, you can do the following:</p>
+<ul>
+<li>
+<p>Recommend materialized views and indexes based on collected, user-supplied, or hypothetical workload information.</p>
+</li>
+<li>
+<p>Recommend partitioning of tables, indexes, and materialized views.</p>
+</li>
+<li>
+<p>Mark, update, and remove recommendations.</p>
+</li>
+</ul>
+<p>In addition, you can use SQL Access Advisor API to do the following:</p>
+<ul>
+<li>
+<p>Perform a quick tune using a single SQL statement.</p>
+</li>
+<li>
+<p>Show how to make a materialized view fast refreshable.</p>
+</li>
+<li>
+<p>Show how to change a materialized view so that general query rewrite is possible.</p>
+</li>
+</ul>
+<p>To make recommendations, SQL Access Advisor relies on structural statistics about table and index cardinalities of dimension level columns, <code>JOIN</code> <code>KEY</code> columns, and fact table key columns. You can gather either exact or estimated statistics with the&nbsp;<code><a id="sthref1405"></a><a id="sthref1406"></a>DBMS_STATS</code> package. Because gathering statistics is time-consuming and full statistical accuracy is not required, it is generally preferable to estimate statistics. Without gathering statistics on a given table, queries referencing this table are marked as invalid in the workload, resulting in no recommendations being made for those queries. It is also recommended that all existing indexes and materialized views have been analyzed. See <a class="olink ARPLS" href="../../appdev.112/e40758/toc.htm"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information about the <code>DBMS_STATS</code> package.</p>
+<div id="PFGRF94878" class="sect2"><a id="sthref1407"></a>
+<h3 class="sect2"><span class="secnum">18.1.1</span> Overview of Using SQL Access Advisor</h3>
+<p>An easy way to use SQL Access Advisor is to invoke its wizard, which is available in Enterprise Manager from the Advisor Central page. If you prefer to use SQL Access Advisor through the <code>DBMS_ADVISOR</code> package, then this section describes the basic components and the sequence in which you must call the procedures.</p>
+<p>This section describes the four steps in generating a set of recommendations:</p>
+<ul>
+<li>
+<p><a href="#i1026051">Create a task</a></p>
+</li>
+<li>
+<p><a href="#BABHBGCJ">Define the workload</a></p>
+</li>
+<li>
+<p><a href="#BABIBDGC">Generate the recommendations</a></p>
+</li>
+<li>
+<p><a href="#BABCCEBC">View and implement the recommendations</a></p>
+</li>
+</ul>
+<a id="i1026051"></a>
+<dl>
+<dd><a id="PFGRF95258"></a><a id="sthref1408"></a></dd>
+<dt class="seghead">Step 1&nbsp;&nbsp;&nbsp;Create a task</dt>
+<dd>
+<p>An <span class="bold">advisor task</span> is a container in the data dictionary that stores the inputs to and the results of an intelligent advisor analysis run. All information relating to the recommendation operation, including the results, resides in the task.</p>
+<p><a id="sthref1409"></a>Before SQL Access Advisor can make <a id="sthref1410"></a>recommendations, you must create a task using either of the following:</p>
+<ul>
+<li>
+<p>The wizard in Oracle Enterprise Manager or the <code>DBMS_ADVISOR.QUICK_TUNE</code> procedure, which creates the task automatically</p>
+</li>
+<li>
+<p>The <code>DBMS_ADVISOR.CREATE_TASK</code> procedure</p>
+</li>
+</ul>
+<p>You can control what a task does by defining parameters for the task using the <code>DBMS_ADVISOR</code>.<code>SET_TASK_PARAMETER</code> procedure.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#CHDBDGBC">"Creating Tasks"</a></div>
+</dd>
+<dd><a id="PFGRF95259"></a><a id="BABHBGCJ"></a></dd>
+<dt class="seghead">Step 2&nbsp;&nbsp;&nbsp;Define the workload</dt>
+<dd>
+<p>A <span class="bold">workload</span> consists of one or more SQL statements, plus statistics and attributes that fully describe each statement. A <span class="bold">full workload</span> contains all SQL statements from a target business application. A <span class="bold">partial workload</span> contains a subset of SQL statements. The difference is that for full workloads SQL Access Advisor may recommend dropping unused materialized views and indexes.</p>
+<p>You cannot use SQL Access Advisor without a workload. A workload may contain a variety of statements. SQL Access Advisor ranks the entries according to a specific statistic, business importance, or combination of the two, which enables the advisor to process the most important SQL statements first.</p>
+<p>SQL Access Advisor may require particular attributes to be present in a valid workload. Although the advisor can perform analysis when items are missing, the quality of the recommendations may be lower. For example, SQL Access Advisor requires a workload to contain a SQL query and the user who ran the query, with other attributes as optional. However, if the workload also contains I/O and CPU data, then SQL Access Advisor can better evaluate statement efficiency.</p>
+<p>The database stores a workload as a SQL tuning set. You can access the workload with the <code>DBMS_SQLTUNE</code> package and share it among many Advisor tasks. Because the workload is independent, you must link it to a task using the <code>DBMS_ADVISOR.ADD_STS_REF</code> procedure. After this link has been established, you cannot delete or modify the workload until all advisor tasks have removed their dependency on the workload. A workload reference is removed when a user deletes a parent advisor task or manually removes the workload reference from the task by using the <code>DBMS_ADVISOR.DELETE_STS_REF</code> procedure.</p>
+<p>You can create a hypothetical workload from a schema by analyzing dimensions and constraints. For best results, provide a workload as a SQL tuning set. The <code>DBMS_SQLTUNE</code> package provides several helper functions that can create SQL tuning sets from common workload sources, such as the SQL cache, a user-defined workload stored in a table, and a hypothetical workload.</p>
+<p>At the time the recommendations are generated, you can apply a filter to the workload to restrict what is analyzed. This restriction provides the ability to generate different sets of recommendations based on different workload scenarios. SQL Access Advisor parameters control the recommendation process and customization of the workload. These parameters control various aspects of the process, such as the type of recommendation required and the naming conventions for what it recommends.</p>
+<p>To set these parameters, use the <code>SET_TASK_PARAMETER</code> procedure. Parameters are persistent in that they remain set for the life span of the task. When a parameter value is set using <code>SET_TASK_PARAMETER</code>, it does not change until you make another call to this procedure.</p>
+</dd>
+<dd><a id="PFGRF95260"></a><a id="BABIBDGC"></a></dd>
+<dt class="seghead">Step 3&nbsp;&nbsp;&nbsp;Generate the recommendations</dt>
+<dd>
+<p>After a task <a id="sthref1411"></a>exists and a workload is linked to the task and the appropriate parameters are set, you can generate recommendations using the <code>DBMS_ADVISOR.EXECUTE_TASK</code> procedure. These recommendations are stored in SQL Access Advisor Repository.</p>
+<p>The recommendation process generates several recommendations. Each recommendation specifies one or more actions. For example, a recommendation could be to create several materialized view logs, create a materialized view, and then analyze it to gather statistics.</p>
+<p>A task recommendation can range from a simple suggestion to a complex solution that requires partitioning a set of existing base tables and implementing a set of database objects such as indexes, materialized views, and materialized view logs. When an advisor task is executed, SQL Access Advisor carefully analyzes collected data and user-adjusted task parameters. It then forms a structured recommendation that the user can view and implement.</p>
+<p>See <a href="#CHDFBEJF">"Generating Recommendations"</a> for more information about generating recommendations.</p>
+</dd>
+<dd><a id="PFGRF95261"></a><a id="BABCCEBC"></a></dd>
+<dt class="seghead">Step 4&nbsp;&nbsp;&nbsp;View and implement the recommendations</dt>
+<dd>
+<p>You can view the recommendations from SQL Access Advisor in either of the following ways:</p>
+<ul>
+<li>
+<p>Using the catalog views</p>
+</li>
+<li>
+<p>Generating a script using the <code>DBMS_ADVISOR.GET_TASK_SCRIPT</code> procedure</p>
+</li>
+</ul>
+<p>In Enterprise Manager, you may display the recommendations after SQL Access Advisor process has completed. See <a href="#CHDJIGCD">"Viewing Recommendations"</a> for a description of using the catalog views to view the recommendations. See <a href="#CHDEEADC">"Generating SQL Scripts"</a> to see how to create a script.</p>
+<p>You need not accept all recommendations. You can mark the ones to be included in the recommendation script. However, when base table partitioning is recommended, some recommendations depend on others. For example, you cannot implement a local index if you do not also implement the partitioning recommendation on the index base table.</p>
+<p>The final step is then implementing the recommendations and verifying that query performance has improved.</p>
+</dd>
+</dl>
+<a id="i1025377"></a>
+<div id="PFGRF94879" class="sect3">
+<h4 class="sect3"><span class="secnum">18.1.1.1</span> SQL Access Advisor Repository</h4>
+<p>All the information needed and generated by SQL Access Advisor resides in the Advisor repository, which is a part of the database dictionary. The benefits of using the repository are that it:</p>
+<ul>
+<li>
+<p>Collects a complete workload for SQL Access Advisor.</p>
+</li>
+<li>
+<p>Supports historical data.</p>
+</li>
+<li>
+<p>Is managed by the server.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1026391"></a>
+<div id="PFGRF94880" class="sect1">
+<h2 class="sect1"><span class="secnum">18.2</span> Using SQL Access Advisor</h2>
+<p>This section discusses general information about, and the steps needed to use, SQL Access Advisor, and includes:</p>
+<ul>
+<li>
+<p><a href="#i1027518">Steps for Using SQL Access Advisor</a></p>
+</li>
+<li>
+<p><a href="#i1024040">Privileges Needed to Use SQL Access Advisor</a></p>
+</li>
+<li>
+<p><a href="#CHDDEJGI">Setting Up Tasks and Templates</a></p>
+</li>
+<li>
+<p><a href="#CHDDEACD">SQL Access Advisor Workloads</a></p>
+</li>
+<li>
+<p><a href="#i1009077">Working with Recommendations</a></p>
+</li>
+<li>
+<p><a href="#CHDJJCFD">Performing a Quick Tune</a></p>
+</li>
+<li>
+<p><a href="#i1009145">Managing Tasks</a></p>
+</li>
+<li>
+<p><a href="#i1022958">Using SQL Access Advisor Constants</a></p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink TDPPT171" href="../../server.112/e10822/tdppt_sqlopt.htm#TDPPT171"><span class="italic">Oracle Database 2 Day + Performance Tuning Guide</span></a> for information about using SQL Access Advisor with Oracle Enterprise Manager</div>
+<a id="i1027518"></a>
+<div id="PFGRF94881" class="sect2">
+<h3 class="sect2"><span class="secnum">18.2.1</span> Steps for Using SQL Access Advisor</h3>
+<p><a href="#i1026151">Figure 18-2</a> illustrates the steps in using SQL Access Advisor and an overview of all parameters in SQL Access Advisor and when it is appropriate to use them.</p>
+<div id="PFGRF94882" class="figure">
+<p class="titleinfigure"><a id="i1026151"></a>Figure 18-2 SQL Access Advisor Flowchart</p>
+<img width="660" height="446" src="img/dwhsg131.gif" alt="Description of Figure 18-2 follows" /><br />
+<a id="sthref1412" href="img_text/dwhsg131.htm">Description of "Figure 18-2 SQL Access Advisor Flowchart"</a><br />
+<br /></div>
+<!-- class="figure" --></div>
+<!-- class="sect2" -->
+<a id="i1024040"></a>
+<div id="PFGRF94883" class="sect2">
+<h3 class="sect2"><span class="secnum">18.2.2</span> Privileges Needed to Use SQL Access Advisor</h3>
+<p>You must have th<a id="sthref1413"></a><a id="sthref1414"></a>e <code>ADVISOR</code> privilege to manage or use SQL Access Advisor. When processing a workload, SQL Access Advisor attempts to validate each statement to identify table and column references. The database achieves validation by processing each statement as if it were being executed by the statement's original user.</p>
+<p>If the user does not have <code>SELECT</code> privileges to a particular table, then SQL Access Advisor bypasses the statement referencing the table. This behavior can cause many statements to be excluded from analysis. If SQL Access Advisor excludes all statements in a workload, then the workload is invalid. SQL Access Advisor returns the following message:</p>
+<pre>
+QSM-00774, there are no SQL statements to process for task TASK_NAME
+</pre>
+<p>To avoid missing critical workload queries, the current database user must have <code>SELECT</code> privileges on the tables targeted for materialized view analysis. For these tables, these <code>SELECT</code> privileges cannot be obtained through a role.</p>
+<p>Additionally, you must have the <code>ADMINISTER SQL TUNING SET</code> privilege to create and manage workloads in SQL tuning set objects. To run the Advisor on SQL tuning sets owned by other users, you must have the <code>ADMINISTER ANY SQL TUNING SET</code> privilege.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDDEJGI"></a>
+<div id="PFGRF94884" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">18.2.3</span> Setting Up Tasks and Templates</h3>
+<p>This section discusses the following aspects of setting up tasks and templates:</p>
+<ul>
+<li>
+<p><a href="#CHDBDGBC">Creating Tasks</a></p>
+</li>
+<li>
+<p><a href="#CHDDJFIJ">Using Templates</a></p>
+</li>
+<li>
+<p><a href="#CHDIEBIF">Creating Templates</a></p>
+</li>
+</ul>
+<a id="CHDBDGBC"></a>
+<div id="PFGRF94885" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">18.2.3.1</span> Creating Tasks</h4>
+<p>In the task, you define what the advisor must analyze and the location of the analysis results. A user can create any number of tasks, each with its own specialization. All are based on the same Advisor task model and share the same repository.</p>
+<p>You create a task using the <code>CREATE_TASK</code> procedure. The syntax is as follows:</p>
+<pre>
+DBMS_ADVISOR.CREATE_TASK (
+   advisor_name          IN VARCHAR2,
+   task_id               OUT NUMBER,
+   task_name             IN OUT VARCHAR2,
+   task_desc             IN VARCHAR2 := NULL,
+   template              IN VARCHAR2 := NULL,
+   is_template           IN VARCHAR2 := 'FALSE',
+   how_created           IN VARCHAR2 := NULL); 
+</pre>
+<p>The following illustrates an example of using this procedure:</p>
+<pre>
+VARIABLE task_id NUMBER;
+VARIABLE task_name VARCHAR2(255);
+EXECUTE :task_name := 'MYTASK';
+EXECUTE DBMS_ADVISOR.CREATE_TASK ('SQL Access Advisor', :task_id, :task_name);
+</pre>
+<p>See <a class="olink ARPLS350" href="../../appdev.112/e40758/d_advis.htm#ARPLS350"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information regarding the <code>CREATE_TASK</code> procedure and its parameters.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CHDDJFIJ"></a>
+<div id="PFGRF94886" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">18.2.3.2</span> Using Templates</h4>
+<p>When <a id="sthref1415"></a><a id="sthref1416"></a>an ideal configuration for a task or workload has been identified, you can save this configuration as a template on which to base future tasks and workloads.</p>
+<p>A template enables you to set up any number of tasks or workloads that can serve as intelligent starting points or templates for future task creation. By setting up a template, you can save time when performing tuning analysis. This approach also enables you to custom fit a tuning analysis to the business operation.</p>
+<p>To create a task from a template, you specify the template to be used when a new task is created. At that time, SQL Access Advisor copies the data and parameter settings from the template into the newly created task. You can also set an existing task to be a template by setting the template attribute when creating the task or later using the <code>UPDATE_TASK_ATTRIBUTE</code> procedure.</p>
+<p>To use a task as a template, you tell SQL Access Advisor to use a task when a new task is created. At that time, SQL Access Advisor copies the task template's data and parameter settings into the newly created task. You can also set an existing task to be a template by setting the template attribute at the command line or in Enterprise Manager.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CHDIEBIF"></a>
+<div id="PFGRF94887" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">18.2.3.3</span> Creating Templates</h4>
+<p>You can create a template as in the following example.</p>
+<ol>
+<li>
+<p>Create a template called <code>MY_TEMPLATE</code>.</p>
+<pre>
+VARIABLE template_id NUMBER;
+VARIABLE template_name VARCHAR2(255);
+EXECUTE :template_name := 'MY_TEMPLATE';
+EXECUTE DBMS_ADVISOR.CREATE_TASK('SQL Access Advisor',:template_id, -
+                                 :template_name, is_template =&gt; 'TRUE');
+</pre></li>
+<li>
+<p>Set template parameters. For example, the following sets the naming conventions for recommended indexes and materialized views and the default tablespaces:</p>
+<pre>
+-- set naming conventions for recommended indexes/mvs
+EXECUTE DBMS_ADVISOR.SET_TASK_PARAMETER ( -
+   :template_name, 'INDEX_NAME_TEMPLATE', 'SH_IDX$$_&lt;SEQ&gt;');
+
+EXECUTE DBMS_ADVISOR.SET_TASK_PARAMETER ( -
+   :template_name, 'MVIEW_NAME_TEMPLATE', 'SH_MV$$_&lt;SEQ&gt;');
+
+-- set default tablespace for recommended indexes/mvs
+EXECUTE DBMS_ADVISOR.SET_TASK_PARAMETER ( -
+   :template_name, 'DEF_INDEX_TABLESPACE', 'SH_INDEXES');
+
+EXECUTE DBMS_ADVISOR.SET_TASK_PARAMETER ( -
+   :template_name, 'DEF_MVIEW_TABLESPACE', 'SH_MVIEWS');
+</pre></li>
+<li>
+<p>This template can now be used as a starting point to create a task as follows:</p>
+<pre>
+VARIABLE task_id NUMBER;
+VARIABLE task_name VARCHAR2(255);
+EXECUTE :task_name := 'MYTASK';
+EXECUTE DBMS_ADVISOR.CREATE_TASK('SQL Access Advisor', :task_id, -
+                                 :task_name, template=&gt;'MY_TEMPLATE');
+</pre>
+<p>The following example uses a pre-defined template <code>SQLACCESS_WAREHOUSE</code>. See <a href="#g1067770">Table 18-3</a> for more information.</p>
+<pre>
+EXECUTE DBMS_ADVISOR.CREATE_TASK('SQL Access Advisor', -
+   :task_id, :task_name,  template=&gt;'SQLACCESS_WAREHOUSE');
+</pre></li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CHDDEACD"></a>
+<div id="PFGRF94888" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">18.2.4</span> SQL Access Advisor Workloads</h3>
+<p>SQL Access Advisor supports different types of workloads, and this section discusses the following aspects of managing workloads:</p>
+<ul>
+<li>
+<p><a href="#CHDFGABJ">SQL Tuning Set Workloads</a></p>
+</li>
+<li>
+<p><a href="#CHDEAECD">Using SQL Tuning Sets</a></p>
+</li>
+<li>
+<p><a href="#CHDECBEC">Linking Tasks and Workloads</a></p>
+</li>
+</ul>
+<a id="CHDFGABJ"></a>
+<div id="PFGRF94889" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">18.2.4.1</span> SQL Tuning Set Workloads</h4>
+<p>The input workload source for SQL Access Advisor is the SQL tuning set. An important benefit of using a SQL tuning set is that because it is stored as a separate entity, it can easily be shared among many Advisor tasks. After a SQL tuning set object has been referenced by an Advisor task, it cannot be deleted or modified until all Advisor tasks have removed their dependency on the data. A workload reference is removed when a parent Advisor task is deleted or when the workload reference is manually removed from the Advisor task by the user.</p>
+<p>SQL Access Advisor performs best when a workload based on actual usage is available. You can store multiple workloads in the form of SQL tuning sets, so that you can view the different uses of a real-world data warehousing or transaction-processing environment over a long period and across the life cycle of database instance startup and shutdown.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CHDEAECD"></a>
+<div id="PFGRF94890" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">18.2.4.2</span> Using SQL Tuning Sets</h4>
+<p>The SQL tuning set workload is implemented using the <code>DBMS_SQLTUNE</code> package. See <a class="olink PFGRF" href="toc.htm"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for a description on creating and managing SQL tuning sets.</p>
+<p>To transition existing SQL Workload objects to a SQL tuning set, the <code>DBMS_ADVISOR</code> package provides a procedure to copy SQL Workload data to a user-designated SQL tuning set. Note that, to use this procedure, the user must have the required SQL tuning set privileges and the required <code>ADVISOR</code> privilege.</p>
+<p>The syntax is as follows:</p>
+<pre>
+DBMS_ADVISOR.COPY_SQLWKLD_TO_STS (
+   workload_name        IN VARCHAR2,
+   sts_name             IN VARCHAR2,
+   import_mode          IN VARCHAR2 := 'NEW');
+</pre>
+<p>The following example illustrates its usage:</p>
+<pre>
+EXECUTE DBMS_ADVISOR.COPY_SQLWKLD_TO_STS('MYWORKLOAD','MYSTS','NEW');
+</pre>
+<p>See <a class="olink ARPLS" href="../../appdev.112/e40758/toc.htm"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information regarding the <code>COPY_SQLWKLD_TO_STS</code> procedure and its parameters.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CHDECBEC"></a>
+<div id="PFGRF94891" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">18.2.4.3</span> Linking Tasks and Workloads</h4>
+<p>Before the recommendation process can begin, you must link the task to a SQL tuning set. You achieve this goal by using the <code>ADD_STS_REF</code> procedure and using their respective names to link the task and a Tuning Set. This procedure establishes a link between the Advisor task and a Tuning Set. And, after a connection has been defined, the SQL tuning set is protected from removal or update. The syntax is as follows:</p>
+<pre>
+DBMS_ADVISOR.ADD_STS_REF (task_name IN VARCHAR2,
+ 
+sts_owner IN VARCHAR2,
+sts_name  IN VARCHAR2);
+</pre>
+<p>The <code>sts_owner</code> parameter may be null, in which case the STS is assumed to be owned by the current user.</p>
+<p>The following example links the <code>MYTASK</code> task created to the current user's <code>MYWORKLOAD</code> SQL tuning set:</p>
+<pre>
+EXECUTE DBMS_ADVISOR.ADD_STS_REF('MYTASK', null, 'MYWORKLOAD');
+</pre>
+<p>See <a class="olink ARPLS" href="../../appdev.112/e40758/toc.htm"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information regarding the <code>ADD_STS_REF</code> procedure and its parameters.</p>
+<div id="PFGRF94892" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref1417"></a>
+<h5 class="sect4"><span class="secnum">18.2.4.3.1</span> Removing a Link Between a SQL Tuning Set Workload and a Task</h5>
+<p>Before you can delete a task or a SQL tuning set workload, if it is linked to a workload or task respectively, then the link between the task and the workload must be removed using the <code>DELETE_STS_REF</code> procedure. The following example deletes the link between task <code>MYTASK</code> and the current user's SQL tuning set <code>MYWORKLOAD</code>:</p>
+<pre>
+EXECUTE DBMS_ADVISOR.DELETE_STS_REF('MYTASK', null, 'MYWORKLOAD');
+</pre></div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1009077"></a>
+<div id="PFGRF94893" class="sect2">
+<h3 class="sect2"><span class="secnum">18.2.5</span> Working with Recommendations</h3>
+<p>This section discusses the following aspects of working with recommendations:</p>
+<ul>
+<li>
+<p><a href="#CHDHBIHH">Recommendations and Actions</a></p>
+</li>
+<li>
+<p><a href="#CHDDIIBB">Recommendation Options</a></p>
+</li>
+<li>
+<p><a href="#CHDHJAJE">Evaluation Mode</a></p>
+</li>
+<li>
+<p><a href="#CHDJDJIC">View Intermediate Results During Recommendation Analysis</a></p>
+</li>
+<li>
+<p><a href="#CHDFBEJF">Generating Recommendations</a></p>
+</li>
+<li>
+<p><a href="#CHDJIGCD">Viewing Recommendations</a></p>
+</li>
+<li>
+<p><a href="#CHDFFJJE">Stopping the Recommendation Process</a></p>
+</li>
+<li>
+<p><a href="#CHDBICCF">Marking Recommendations</a></p>
+</li>
+<li>
+<p><a href="#CHDJFGFH">Modifying Recommendations</a></p>
+</li>
+<li>
+<p><a href="#CHDEEADC">Generating SQL Scripts</a></p>
+</li>
+<li>
+<p><a href="#CHDCAEIF">Special Considerations when Script Includes Partitioning Recommendations</a></p>
+</li>
+<li>
+<p><a href="#CHDHHEGD">When Recommendations are no Longer Required</a></p>
+</li>
+</ul>
+<a id="CHDHBIHH"></a>
+<div id="PFGRF94894" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">18.2.5.1</span> Recommendations and Actions</h4>
+<p>SQL Access Advisor makes several recommendations, each of which contains one or more individual actions. In general, each recommendation provides a benefit for one query or a set of queries. All individual actions in a recommendation must be implemented together to achieve the full benefit. Recommendations can share actions.</p>
+<p>For example, a <code>CREATE</code> <code>INDEX</code> statement could provide a benefit for several queries, but some of those queries might benefit from an additional <code>CREATE</code> <code>MATERIALIZED</code> <code>VIEW</code> statement. In that case, the advisor would generate two recommendations: one for the set of queries that require only the index, and another one for the set of queries that require both the index and the materialized view to run optimally.</p>
+<p>The partition recommendation is a special type of recommendation. When SQL Access Advisor determines that partitioning a specified base table would improve workload performance, the advisor adds a partition action to every recommendation containing a query referencing the base table. This technique ensures that index and materialized view recommendations are implemented on the correctly partitioned tables.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CHDDIIBB"></a>
+<div id="PFGRF94895" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">18.2.5.2</span> Recommendation Options</h4>
+<p>Before the advisor can generate recommendations, you must first define the parameters for the task using the <code>SET_TASK_PARAMETER</code> procedure. If parameters are not defined, then the database uses the defaults.</p>
+<p>You can set task parameters by using the <code>SET_TASK_PARAMETER</code> procedure. The syntax is as follows.</p>
+<pre>
+DBMS_ADVISOR.SET_TASK_PARAMETER (
+   task_name           IN VARCHAR2,
+   parameter           IN VARCHAR2,
+   value               IN [VARCHAR2 | NUMBER]);
+</pre>
+<p>There are many task parameters and, to help identify the relevant ones, they have been grouped into categories in <a href="#i1039272">Table 18-1</a>. Note that all task parameters for workload filtering have been deprecated.</p>
+<div id="PFGRF94896" class="tblformalwidemax">
+<p class="titleintable"><a id="sthref1418"></a><a id="sthref1419"></a>Table 18-1 <a id="i1039272"></a><span class="bolditalic">Types of Advisor Task Parameters And Their Uses</span></p>
+<table class="cellalignment1691" title="Types of Advisor Task Parameters And Their Uses" summary="Types of Advisor Task Paramters And Their Uses" dir="ltr">
+<thead>
+<tr class="cellalignment1680">
+<th class="cellalignment1687" id="r1c1-t4">Workload Filtering</th>
+<th class="cellalignment1687" id="r1c2-t4">Task Configuration</th>
+<th class="cellalignment1687" id="r1c3-t4">Schema Attributes</th>
+<th class="cellalignment1687" id="r1c4-t4">Recommendation Options</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r2c1-t4" headers="r1c1-t4">
+<p><code>END_TIME</code></p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t4 r1c2-t4">
+<p><code>DAYS_TO_EXPIRE</code></p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t4 r1c3-t4">
+<p><code>DEF_INDEX_OWNER</code></p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t4 r1c4-t4">
+<p><code>ANALYSIS_SCOPE</code></p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r3c1-t4" headers="r1c1-t4">
+<p><code>INVALID_ACTION_LIST</code></p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t4 r1c2-t4">
+<p><code>JOURNALING</code></p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t4 r1c3-t4">
+<p><code>DEF_INDEX_TABLESPACE</code></p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t4 r1c4-t4">
+<p><code>COMPATIBILITY</code></p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r4c1-t4" headers="r1c1-t4">
+<p><code>INVALID_MODULE_LIST</code></p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t4 r1c2-t4">
+<p><code>REPORT_DATE_FORMAT</code></p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t4 r1c3-t4">
+<p><code>DEF_MVIEW_OWNER</code></p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t4 r1c4-t4">
+<p><code>CREATION_COST</code></p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r5c1-t4" headers="r1c1-t4">
+<p><code>INVALID_SQLSTRING_LIMIT</code></p>
+</td>
+<td class="cellalignment1688" headers="r5c1-t4 r1c2-t4">&nbsp;</td>
+<td class="cellalignment1688" headers="r5c1-t4 r1c3-t4">
+<p><code>DEF_MVIEW_TABLESPACE</code></p>
+</td>
+<td class="cellalignment1688" headers="r5c1-t4 r1c4-t4">
+<p><code>DML_VOLATILITY</code></p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r6c1-t4" headers="r1c1-t4">
+<p><code>INVALID_TABLE_LIST</code></p>
+</td>
+<td class="cellalignment1688" headers="r6c1-t4 r1c2-t4">&nbsp;</td>
+<td class="cellalignment1688" headers="r6c1-t4 r1c3-t4">
+<p><code>DEF_MVLOG_TABLESPACE</code></p>
+</td>
+<td class="cellalignment1688" headers="r6c1-t4 r1c4-t4">
+<p><code>LIMIT_PARTITION_SCHEMES</code></p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r7c1-t4" headers="r1c1-t4">
+<p><code>INVALID_USERNAME_LIST</code></p>
+</td>
+<td class="cellalignment1688" headers="r7c1-t4 r1c2-t4">&nbsp;</td>
+<td class="cellalignment1688" headers="r7c1-t4 r1c3-t4">
+<p><code>DEF_PARTITION_TABLESPACE</code></p>
+</td>
+<td class="cellalignment1688" headers="r7c1-t4 r1c4-t4">
+<p><code>MODE</code></p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r8c1-t4" headers="r1c1-t4">
+<p><code>RANKING_MEASURE</code></p>
+</td>
+<td class="cellalignment1688" headers="r8c1-t4 r1c2-t4">&nbsp;</td>
+<td class="cellalignment1688" headers="r8c1-t4 r1c3-t4">
+<p><code>INDEX_NAME_TEMPLATE</code></p>
+</td>
+<td class="cellalignment1688" headers="r8c1-t4 r1c4-t4">
+<p><code>PARTITIONING_TYPES</code></p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r9c1-t4" headers="r1c1-t4">
+<p><code>SQL_LIMIT</code></p>
+</td>
+<td class="cellalignment1688" headers="r9c1-t4 r1c2-t4">&nbsp;</td>
+<td class="cellalignment1688" headers="r9c1-t4 r1c3-t4">
+<p><code>MVIEW_NAME_TEMPLATE</code></p>
+</td>
+<td class="cellalignment1688" headers="r9c1-t4 r1c4-t4">
+<p><code>REFRESH_MODE</code></p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r10c1-t4" headers="r1c1-t4">
+<p><code>START_TIME</code></p>
+</td>
+<td class="cellalignment1688" headers="r10c1-t4 r1c2-t4">&nbsp;</td>
+<td class="cellalignment1688" headers="r10c1-t4 r1c3-t4">&nbsp;</td>
+<td class="cellalignment1688" headers="r10c1-t4 r1c4-t4">
+<p><code>STORAGE_CHANGE</code></p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r11c1-t4" headers="r1c1-t4">
+<p><code>TIME_LIMIT</code></p>
+</td>
+<td class="cellalignment1688" headers="r11c1-t4 r1c2-t4">
+<pre>
+</pre></td>
+<td class="cellalignment1688" headers="r11c1-t4 r1c3-t4">
+<pre>
+</pre></td>
+<td class="cellalignment1688" headers="r11c1-t4 r1c4-t4">
+<p><code>USE_SEPARATE_TABLESPACES</code></p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r12c1-t4" headers="r1c1-t4">
+<p><code>VALID_ACTION_LIST</code></p>
+</td>
+<td class="cellalignment1688" headers="r12c1-t4 r1c2-t4">&nbsp;</td>
+<td class="cellalignment1688" headers="r12c1-t4 r1c3-t4">
+<pre>
+</pre></td>
+<td class="cellalignment1688" headers="r12c1-t4 r1c4-t4">
+<p><code>WORKLOAD_SCOPE</code></p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r13c1-t4" headers="r1c1-t4">
+<p><code>VALID_MODULE_LIST</code></p>
+</td>
+<td class="cellalignment1688" headers="r13c1-t4 r1c2-t4">
+<pre>
+</pre></td>
+<td class="cellalignment1688" headers="r13c1-t4 r1c3-t4">
+<pre>
+</pre></td>
+<td class="cellalignment1688" headers="r13c1-t4 r1c4-t4">
+<pre>
+</pre></td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r14c1-t4" headers="r1c1-t4">
+<p><code>VALID_SQLSTRING_LIST</code></p>
+</td>
+<td class="cellalignment1688" headers="r14c1-t4 r1c2-t4">
+<pre>
+</pre></td>
+<td class="cellalignment1688" headers="r14c1-t4 r1c3-t4">
+<pre>
+</pre></td>
+<td class="cellalignment1688" headers="r14c1-t4 r1c4-t4">
+<pre>
+</pre></td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r15c1-t4" headers="r1c1-t4">
+<p><code>VALID_TABLE_LIST</code></p>
+</td>
+<td class="cellalignment1688" headers="r15c1-t4 r1c2-t4">&nbsp;</td>
+<td class="cellalignment1688" headers="r15c1-t4 r1c3-t4">&nbsp;</td>
+<td class="cellalignment1688" headers="r15c1-t4 r1c4-t4">&nbsp;</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r16c1-t4" headers="r1c1-t4">
+<p><code>VALID_USERNAME_LIST</code></p>
+</td>
+<td class="cellalignment1688" headers="r16c1-t4 r1c2-t4">
+<pre>
+</pre></td>
+<td class="cellalignment1688" headers="r16c1-t4 r1c3-t4">
+<pre>
+</pre></td>
+<td class="cellalignment1688" headers="r16c1-t4 r1c4-t4">
+<pre>
+</pre></td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformalwidemax" -->
+<p>In the following example, set the storage change of task <code>MYTASK</code> to 100 MB. This indicates 100 MB of additional space for recommendations. A zero value indicates that no additional space can be allocated. A negative value indicates that the advisor must attempt to trim the current space utilization by the specified amount.</p>
+<pre>
+EXECUTE DBMS_ADVISOR.SET_TASK_PARAMETER('MYTASK','STORAGE_CHANGE', 100000000);
+</pre>
+<p>In the following example, set the <code>VALID_TABLE_LIST</code> parameter to filter out all queries that do no consist of tables <code>SH.SALES</code> and <code>SH.CUSTOMERS</code>.</p>
+<pre>
+EXECUTE DBMS_ADVISOR.SET_TASK_PARAMETER ( -
+   'MYTASK', 'VALID_TABLE_LIST', 'SH.SALES, SH.CUSTOMERS');
+</pre>
+<p>See <a class="olink ARPLS350" href="../../appdev.112/e40758/d_advis.htm#ARPLS350"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information regarding the <code>SET_TASK_PARAMETER</code> procedure and its parameters.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CHDHJAJE"></a>
+<div id="PFGRF94897" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">18.2.5.3</span> Evaluation Mode</h4>
+<p>SQL Access Advisor operates in two modes: problem-solving and evaluation. By default, SQL Access Advisor attempts to solve access method problems by looking for enhancements to index structures, partitions, materialized views, and materialized view logs. For example, a problem-solving run may recommend creating a new index, adding a new column to a materialized view log, and so on.</p>
+<p>When performing evaluation only, SQL Access Advisor comments only on which access structures the supplied workload will use. An evaluation-only run may only produce recommendations such as retaining an index, retaining a materialized view, and so on. The evaluation mode can be useful to see exactly which indexes and materialized views a workload is using. SQL Access Advisor does not evaluate the performance impact of existing base table partitioning.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CHDJDJIC"></a>
+<div id="PFGRF94898" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">18.2.5.4</span> View Intermediate Results During Recommendation Analysis</h4>
+<p>SQL Access Advisor now can see intermediate results during the analysis operation. Previously, results of an analysis operation were unavailable until the processing had completed or was interrupted by the user. Now, the user may access results in the corresponding recommendation and action tables even while SQL Access Advisor task is still executing. The benefit is that long running tasks can provide evidence that may allow the user to accept the current results by interrupting the task rather than waiting for a lengthy execution to complete.</p>
+<p>To accept the current set of recommendations, the user must interrupt the task. This interruption signals SQL Access Advisor to stop processing and marks the task as <code>INTERRUPTED</code>. At that point, the user may update recommendation attributes and generate scripts. Alternatively, the user can allow SQL Access Advisor to complete the recommendation process.</p>
+<p>Note that intermediate results represent recommendations for the workload contents up to that point in time. If it is critical that the recommendations be sensitive to the entire workload, then Oracle recommends that you allow the task execution to complete normally. Additionally, recommendations made by the advisor early in the recommendation process do not contain any base table partitioning recommendations. The partitioning analysis requires a substantial part of the workload to be processed before it can determine whether partitioning would be beneficial. Therefore, if SQL Access Advisor detects a benefit, then only later intermediate results contain base table partitioning recommendations.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CHDFBEJF"></a>
+<div id="PFGRF94899" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">18.2.5.5</span> Generating Recommendations</h4>
+<p>You can generate recommendations by using the <code>EXECUTE_TASK</code> procedure with your task name. After the procedure finishes, you can check the <code>DBA_ADVISOR_LOG</code> table for the actual execution status and the number of recommendations and actions that have been produced. You can query recommendations by task name in <code>{DBA, USER}_ADVISOR_RECOMMENDATIONS</code>. You can view the actions for these recommendations by task in <code>{DBA, USER}_ADVISOR_ACTIONS.</code></p>
+<div id="PFGRF94900" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref1420"></a>
+<h5 class="sect4"><span class="secnum">18.2.5.5.1</span> EXECUTE_TASK Procedure</h5>
+<p>This procedu<a id="sthref1421"></a><a id="sthref1422"></a>re performs SQL Access Advisor analysis or evaluation for the specified task. Task execution is a synchronous operation, so control is not returned to the user until the operation has completed, or a user-interrupt was detected. Upon return or execution of the task, you can check the <code>DBA_ADVISOR_LOG</code> table for the actual execution status.</p>
+<p>Running <code>EXECUTE_TASK</code> generates recommendations, where a recommendation comprises one or more actions, such as creating a materialized view log and a materialized view. The syntax is as follows:</p>
+<pre>
+DBMS_ADVISOR.EXECUTE_TASK (task_name   IN VARCHAR2);
+</pre>
+<p>The following illustrates an example of using this procedure:</p>
+<pre>
+EXECUTE DBMS_ADVISOR.EXECUTE_TASK('MYTASK');
+</pre>
+<p>See <a class="olink ARPLS350" href="../../appdev.112/e40758/d_advis.htm#ARPLS350"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information regarding the <code>EXECUTE_TASK</code> procedure and its parameters.</p>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<a id="CHDJIGCD"></a>
+<div id="PFGRF94901" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">18.2.5.6</span> Viewing Recommendations</h4>
+<p>You can view each recommendation generated by SQL Access Advisor using several catalog views, such as <code>(</code><code>DBA</code>, <code>USER)_ADVISOR_RECOMMENDATIONS</code>. However, it is easier to use the <code>GET_TASK_SCRIPT</code> procedure or use SQL Access Advisor in Enterprise Manager, which graphically displays the recommendations and provides hyperlinks to quickly see which SQL statements benefit from a recommendation. Each recommendation produced by SQL Access Advisor is linked to the SQL statement it benefits.</p>
+<p>The following shows the recommendation (<code>rec_id</code>) produced by an Advisor run, with their rank and total benefit. The rank is a measure of the importance of the queries that the recommendation helps. The benefit is the total improvement in execution cost (in terms of optimizer cost) of all the queries using the recommendation.</p>
+<pre>
+VARIABLE workload_name VARCHAR2(255); 
+VARIABLE task_name VARCHAR2(255);
+EXECUTE :task_name := 'MYTASK';
+EXECUTE :workload_name := 'MYWORKLOAD'; 
+
+SELECT REC_ID, RANK, BENEFIT
+FROM USER_ADVISOR_RECOMMENDATIONS WHERE TASK_NAME = :task_name;
+
+    REC_ID       RANK    BENEFIT
+---------- ---------- ----------
+         1          2       2754
+         2          3       1222
+         3          1       5499
+         4          4        594
+</pre>
+<p>To identify which query benefits from which recommendation, you can use the views <code>DBA_*</code> and <code>USER_ADVISOR_SQLA_WK_STMTS</code>. The precost and postcost numbers are in terms of the estimated optimizer cost (shown in <code>EXPLAIN</code> <code>PLAN</code>) without and with the recommended access structure changes, respectively. To see recommendations for each query, issue the following statement:</p>
+<pre>
+SELECT sql_id, rec_id, precost, postcost,
+       (precost-postcost)*100/precost AS percent_benefit
+FROM USER_ADVISOR_SQLA_WK_STMTS
+WHERE TASK_NAME = :task_name AND workload_name = :workload_name;
+
+    SQL_ID     REC_ID    PRECOST   POSTCOST PERCENT_BENEFIT
+---------- ---------- ---------- ---------- ---------------
+       121          1       3003        249      91.7082917
+       122          2       1404        182       87.037037
+       123          3       5503          4      99.9273124
+       124          4        730        136       81.369863
+</pre>
+<p>Each recommendation consists of one or more actions, which must be implemented together to realize the benefit provided by the recommendation. SQL Access Advisor produces the following types of actions:</p>
+<ul>
+<li>
+<p><code>PARTITION</code> <code>BASE</code> <code>TABLE</code></p>
+</li>
+<li>
+<p><code>CREATE|DROP|RETAIN MATERIALIZED VIEW</code></p>
+</li>
+<li>
+<p><code>CREATE|ALTER|RETAIN MATERIALIZED VIEW LOG</code></p>
+</li>
+<li>
+<p><code>CREATE|DROP|RETAIN INDEX</code></p>
+</li>
+<li>
+<p><code>GATHER STATS</code></p>
+</li>
+</ul>
+<p>The <code>PARTITION</code> <code>BASE</code> <code>TABLE</code> action partitions an existing unpartitioned base table. The <code>CREATE</code> actions corresponds to new access structures. <code>RETAIN</code> recommendations indicate that existing access structures must be kept. <code>DROP</code> recommendations are only produced if the <code>WORKLOAD_SCOPE</code> parameter is set to <code>FULL</code>. The <code>GATHER</code> <code>STATS</code> action generates a call to <code>DBMS_STATS</code> procedure to gather statistics on a newly generated access structure. Note that multiple recommendations may refer to the same action. However, when generating a script for the recommendation, you only see each action once.</p>
+<p>In the following example, you can see how many distinct actions there are for this set of recommendations.</p>
+<pre>
+SELECT 'Action Count', COUNT(DISTINCT action_id) cnt
+FROM USER_ADVISOR_ACTIONS WHERE task_name = :task_name;
+
+'ACTIONCOUNT        CNT
+------------   --------
+Action Count         20
+
+-- see the actions for each recommendations
+SELECT rec_id, action_id, SUBSTR(command,1,30) AS command
+FROM user_advisor_actions WHERE task_name = :task_name
+ORDER BY rec_id, action_id;
+
+    REC_ID  ACTION_ID COMMAND
+---------- ---------- ------------------------------
+         1          5 CREATE MATERIALIZED VIEW LOG
+         1          6 ALTER MATERIALIZED VIEW LOG
+         1          7 CREATE MATERIALIZED VIEW LOG
+         1          8 ALTER MATERIALIZED VIEW LOG
+         1          9 CREATE MATERIALIZED VIEW LOG
+         1         10 ALTER MATERIALIZED VIEW LOG
+         1         11 CREATE MATERIALIZED VIEW
+         1         12 GATHER TABLE STATISTICS
+         1         19 CREATE INDEX
+         1         20 GATHER INDEX STATISTICS
+         2          5 CREATE MATERIALIZED VIEW LOG
+         2          6 ALTER MATERIALIZED VIEW LOG
+         2          9 CREATE MATERIALIZED VIEW LOG
+         ...
+    
+</pre>
+<p>Each action has several attributes that pertain to the properties of the access structure. The name and tablespace for each access structure when applicable are placed in <code>attr1</code> and <code>attr2</code> respectively. The space occupied by each new access structure is in <code>num_attr1</code>. All other attributes are different for each action.</p>
+<p><a href="#CHDBHDJG">Table 18-2</a> maps SQL Access Advisor action information to the corresponding column in <code>DBA_ADVISOR_ACTIONS</code>. In the table, "MV" refers to a materialized view.</p>
+<div id="PFGRF94902" class="tblformalwide">
+<p class="titleintable"><a id="sthref1423"></a><a id="CHDBHDJG"></a>Table 18-2 SQL Access Advisor Action Attributes</p>
+<table class="cellalignment1691" title="SQL Access Advisor Action Attributes" summary="SQLAccess Advisor Action Attributes" dir="ltr">
+<thead>
+<tr class="cellalignment1680">
+<th class="cellalignment1687" id="r1c1-t5"><br /></th>
+<th class="cellalignment1687" id="r1c2-t5">ATTR1</th>
+<th class="cellalignment1687" id="r1c3-t5">ATTR2</th>
+<th class="cellalignment1687" id="r1c4-t5">ATTR3</th>
+<th class="cellalignment1687" id="r1c5-t5">ATTR4</th>
+<th class="cellalignment1687" id="r1c6-t5">ATTR5</th>
+<th class="cellalignment1687" id="r1c7-t5">ATTR6</th>
+<th class="cellalignment1687" id="r1c8-t5">NUM_ATTR1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r2c1-t5" headers="r1c1-t5">
+<p><code>CREATE</code> <code>INDEX</code></p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t5 r1c2-t5">
+<p>Index name</p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t5 r1c3-t5">
+<p>Index tablespace</p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t5 r1c4-t5">
+<p>Target table</p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t5 r1c5-t5">
+<p><code>BITMAP</code> or <code>BTREE</code></p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t5 r1c6-t5">
+<p>Index column list / expression</p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t5 r1c7-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t5 r1c8-t5">
+<p>Storage size in bytes for the index</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r3c1-t5" headers="r1c1-t5">
+<p><code>CREATE</code> <code>MATERIALIZED</code> <code>VIEW</code></p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t5 r1c2-t5">
+<p>MV name</p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t5 r1c3-t5">
+<p>MV tablespace</p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t5 r1c4-t5">
+<p><code>REFRESH</code> <code>COMPLETE</code> <code>REFRESH</code> <code>FAST</code>, <code>REFRESH</code> <code>FORCE</code>, <code>NEVER</code> <code>REFRESH</code></p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t5 r1c5-t5">
+<p><code>ENABLE</code> <code>QUERY</code> <code>REWRITE</code>, <code>DISABLE QUERY</code> <code>REWRITE</code></p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t5 r1c6-t5">
+<p>SQL <code>SELECT</code> statement</p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t5 r1c7-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t5 r1c8-t5">
+<p>Storage size in bytes for the MV</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r4c1-t5" headers="r1c1-t5">
+<p><code>CREATE</code> <code>MATERIALIZED</code> <code>VIEW</code> <code>LOG</code></p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t5 r1c2-t5">
+<p>Target table name</p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t5 r1c3-t5">
+<p>MV log tablespace</p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t5 r1c4-t5">
+<p><code>ROWID</code> <code>PRIMARY</code> <code>KEY</code>, <code>SEQUENCE</code> <code>OBJECT</code> <code>ID</code></p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t5 r1c5-t5">
+<p><code>INCLUDING</code> <code>NEW</code> <code>VALUES</code>, <code>EXCLUDING</code> <code>NEW</code> <code>VALUES</code></p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t5 r1c6-t5">
+<p>Table column list</p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t5 r1c7-t5">
+<p>Partitioning subclauses</p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t5 r1c8-t5">
+<p>Unused</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r5c1-t5" headers="r1c1-t5">
+<p><code>CREATE</code> <code>REWRITE</code> <code>EQUIVALENCE</code></p>
+</td>
+<td class="cellalignment1688" headers="r5c1-t5 r1c2-t5">
+<p>Name of equivalence</p>
+</td>
+<td class="cellalignment1688" headers="r5c1-t5 r1c3-t5">
+<p>Checksum value</p>
+</td>
+<td class="cellalignment1688" headers="r5c1-t5 r1c4-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r5c1-t5 r1c5-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r5c1-t5 r1c6-t5">
+<p>Source SQL statement</p>
+</td>
+<td class="cellalignment1688" headers="r5c1-t5 r1c7-t5">
+<p>Equivalent SQL statement</p>
+</td>
+<td class="cellalignment1688" headers="r5c1-t5 r1c8-t5">
+<p>Unused</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r6c1-t5" headers="r1c1-t5">
+<p><code>DROP</code> <code>INDEX</code></p>
+</td>
+<td class="cellalignment1688" headers="r6c1-t5 r1c2-t5">
+<p>Index name</p>
+</td>
+<td class="cellalignment1688" headers="r6c1-t5 r1c3-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r6c1-t5 r1c4-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r6c1-t5 r1c5-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r6c1-t5 r1c6-t5">
+<p>Index columns</p>
+</td>
+<td class="cellalignment1688" headers="r6c1-t5 r1c7-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r6c1-t5 r1c8-t5">
+<p>Storage size in bytes for the index</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r7c1-t5" headers="r1c1-t5">
+<p><code>DROP</code> <code>MATERIALIZED</code> <code>VIEW</code></p>
+</td>
+<td class="cellalignment1688" headers="r7c1-t5 r1c2-t5">
+<p>MV name</p>
+</td>
+<td class="cellalignment1688" headers="r7c1-t5 r1c3-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r7c1-t5 r1c4-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r7c1-t5 r1c5-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r7c1-t5 r1c6-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r7c1-t5 r1c7-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r7c1-t5 r1c8-t5">
+<p>Storage size in bytes for the MV</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r8c1-t5" headers="r1c1-t5">
+<p><code>DROP</code> <code>MATERIALIZED</code> <code>VIEW</code> <code>LOG</code></p>
+</td>
+<td class="cellalignment1688" headers="r8c1-t5 r1c2-t5">
+<p>Target table name</p>
+</td>
+<td class="cellalignment1688" headers="r8c1-t5 r1c3-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r8c1-t5 r1c4-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r8c1-t5 r1c5-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r8c1-t5 r1c6-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r8c1-t5 r1c7-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r8c1-t5 r1c8-t5">
+<p>Unused</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r9c1-t5" headers="r1c1-t5">
+<p><code>PARTITION</code> <code>TABLE</code></p>
+</td>
+<td class="cellalignment1688" headers="r9c1-t5 r1c2-t5">
+<p>Table name</p>
+</td>
+<td class="cellalignment1688" headers="r9c1-t5 r1c3-t5">
+<p><code>RANGE</code>, <code>INTERVAL</code>, <code>LIST</code>, <code>HASH</code>, <code>RANGE-HASH</code>, <code>RANGE-LIST</code></p>
+</td>
+<td class="cellalignment1688" headers="r9c1-t5 r1c4-t5">
+<p>Partition key for partitioning (column name or list of column names)</p>
+</td>
+<td class="cellalignment1688" headers="r9c1-t5 r1c5-t5">
+<p>Partition key for subpartitioning (column name or list of column names)</p>
+</td>
+<td class="cellalignment1688" headers="r9c1-t5 r1c6-t5">
+<p>SQL <code>PARTITION</code> clause</p>
+</td>
+<td class="cellalignment1688" headers="r9c1-t5 r1c7-t5">
+<p>SQL <code>SUBPARTITION</code> clause</p>
+</td>
+<td class="cellalignment1688" headers="r9c1-t5 r1c8-t5">
+<p>Unused</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r10c1-t5" headers="r1c1-t5">
+<p><code>PARTITION</code> <code>INDEX</code></p>
+</td>
+<td class="cellalignment1688" headers="r10c1-t5 r1c2-t5">
+<p>Index name</p>
+</td>
+<td class="cellalignment1688" headers="r10c1-t5 r1c3-t5">
+<p><code>LOCAL</code>, <code>RANGE</code>, <code>HASH</code></p>
+</td>
+<td class="cellalignment1688" headers="r10c1-t5 r1c4-t5">
+<p>Partition key for partitioning (list of column names)</p>
+</td>
+<td class="cellalignment1688" headers="r10c1-t5 r1c5-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r10c1-t5 r1c6-t5">
+<p>SQL <code>PARTITION</code> clause</p>
+</td>
+<td class="cellalignment1688" headers="r10c1-t5 r1c7-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r10c1-t5 r1c8-t5">
+<p>Unused</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r11c1-t5" headers="r1c1-t5">
+<p><code>PARTITION</code> <code>ON</code> <code>MATERIALIZED</code> <code>VIEW</code></p>
+</td>
+<td class="cellalignment1688" headers="r11c1-t5 r1c2-t5">
+<p>MV name</p>
+</td>
+<td class="cellalignment1688" headers="r11c1-t5 r1c3-t5">
+<p><code>RANGE</code>, <code>INTERVAL</code>, <code>LIST</code>, <code>HASH</code>, <code>RANGE-HASH</code>, <code>RANGE-LIST</code></p>
+</td>
+<td class="cellalignment1688" headers="r11c1-t5 r1c4-t5">
+<p>Partition key for partitioning (column name or list of column names)</p>
+</td>
+<td class="cellalignment1688" headers="r11c1-t5 r1c5-t5">
+<p>Partition key for subpartitioning (column name or list of column names)</p>
+</td>
+<td class="cellalignment1688" headers="r11c1-t5 r1c6-t5">
+<p>SQL <code>SUBPARTITION</code> clause</p>
+</td>
+<td class="cellalignment1688" headers="r11c1-t5 r1c7-t5">
+<p>SQL <code>SUBPARTITION</code> clause</p>
+</td>
+<td class="cellalignment1688" headers="r11c1-t5 r1c8-t5">
+<p>Unused</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r12c1-t5" headers="r1c1-t5">
+<p><code>RETAIN</code> <code>INDEX</code></p>
+</td>
+<td class="cellalignment1688" headers="r12c1-t5 r1c2-t5">
+<p>Index name</p>
+</td>
+<td class="cellalignment1688" headers="r12c1-t5 r1c3-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r12c1-t5 r1c4-t5">
+<p>Target table</p>
+</td>
+<td class="cellalignment1688" headers="r12c1-t5 r1c5-t5">
+<p><code>BITMAP</code> or <code>BTREE</code></p>
+</td>
+<td class="cellalignment1688" headers="r12c1-t5 r1c6-t5">
+<p>Index columns</p>
+</td>
+<td class="cellalignment1688" headers="r12c1-t5 r1c7-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r12c1-t5 r1c8-t5">
+<p>Storage size in bytes for the index</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r13c1-t5" headers="r1c1-t5">
+<p><code>RETAIN</code> <code>MATERIALIZED</code> <code>VIEW</code></p>
+</td>
+<td class="cellalignment1688" headers="r13c1-t5 r1c2-t5">
+<p>MV name</p>
+</td>
+<td class="cellalignment1688" headers="r13c1-t5 r1c3-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r13c1-t5 r1c4-t5">
+<p><code>REFRESH</code> <code>COMPLETE</code> or <code>REFRESH</code> <code>FAST</code></p>
+</td>
+<td class="cellalignment1688" headers="r13c1-t5 r1c5-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r13c1-t5 r1c6-t5">
+<p>SQL <code>SELECT</code> statement</p>
+</td>
+<td class="cellalignment1688" headers="r13c1-t5 r1c7-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r13c1-t5 r1c8-t5">
+<p>Storage size in bytes for the MV</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r14c1-t5" headers="r1c1-t5">
+<p><code>RETAIN</code> <code>MATERIALIZED</code> <code>VIEW</code> <code>LOG</code></p>
+</td>
+<td class="cellalignment1688" headers="r14c1-t5 r1c2-t5">
+<p>Target table name</p>
+</td>
+<td class="cellalignment1688" headers="r14c1-t5 r1c3-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r14c1-t5 r1c4-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r14c1-t5 r1c5-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r14c1-t5 r1c6-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r14c1-t5 r1c7-t5">
+<p>Unused</p>
+</td>
+<td class="cellalignment1688" headers="r14c1-t5 r1c8-t5">
+<p>Unused</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformalwide" -->
+<p>The following PL/SQL procedure can print some of the attributes of the recommendations.</p>
+<pre>
+CONNECT SH/SH;
+CREATE OR REPLACE PROCEDURE show_recm (in_task_name IN VARCHAR2) IS 
+CURSOR curs IS
+  SELECT DISTINCT action_id, command, attr1, attr2, attr3, attr4
+  FROM user_advisor_actions
+  WHERE task_name = in_task_name
+  ORDER BY action_id;
+  v_action        number;
+  v_command     VARCHAR2(32);
+  v_attr1       VARCHAR2(4000);
+  v_attr2       VARCHAR2(4000);
+  v_attr3       VARCHAR2(4000);
+  v_attr4       VARCHAR2(4000);
+  v_attr5       VARCHAR2(4000);
+BEGIN
+  OPEN curs;
+  DBMS_OUTPUT.PUT_LINE('=========================================');
+  DBMS_OUTPUT.PUT_LINE('Task_name = ' || in_task_name);
+  LOOP
+     FETCH curs INTO  
+       v_action, v_command, v_attr1, v_attr2, v_attr3, v_attr4 ;
+   EXIT when curs%NOTFOUND;
+   DBMS_OUTPUT.PUT_LINE('Action ID: ' || v_action);
+   DBMS_OUTPUT.PUT_LINE('Command : ' || v_command);
+   DBMS_OUTPUT.PUT_LINE('Attr1 (name)      : ' || SUBSTR(v_attr1,1,30));
+   DBMS_OUTPUT.PUT_LINE('Attr2 (tablespace): ' || SUBSTR(v_attr2,1,30));
+   DBMS_OUTPUT.PUT_LINE('Attr3             : ' || SUBSTR(v_attr3,1,30));
+   DBMS_OUTPUT.PUT_LINE('Attr4             : ' || v_attr4);
+   DBMS_OUTPUT.PUT_LINE('Attr5             : ' || v_attr5);
+   DBMS_OUTPUT.PUT_LINE('----------------------------------------');  
+   END LOOP;   
+   CLOSE curs;      
+   DBMS_OUTPUT.PUT_LINE('=========END RECOMMENDATIONS============');
+END show_recm;
+/
+-- see what the actions are using sample procedure
+set serveroutput on size 99999
+EXECUTE show_recm(:task_name);
+A fragment of a sample output from this procedure is as follows:
+Task_name = MYTASK
+Action ID: 1
+Command : CREATE MATERIALIZED VIEW LOG 
+Attr1 (name)      : "SH"."CUSTOMERS"
+Attr2 (tablespace):
+Attr3             : ROWID, SEQUENCE
+Attr4             :  INCLUDING NEW VALUES
+Attr5             :
+----------------------------------------
+..
+----------------------------------------
+Action ID: 15
+Command : CREATE MATERIALIZED VIEW
+Attr1 (name)      : "SH"."SH_MV$$_0004"
+Attr2 (tablespace): "SH_MVIEWS"
+Attr3             : REFRESH FAST WITH ROWID
+Attr4             : ENABLE QUERY REWRITE
+Attr5             :
+----------------------------------------
+..
+----------------------------------------
+Action ID: 19
+Command : CREATE INDEX
+Attr1 (name)      : "SH"."SH_IDX$$_0013"
+Attr2 (tablespace): "SH_INDEXES"
+Attr3             : "SH"."SH_MV$$_0002"
+Attr4             : BITMAP
+Attr5             :
+</pre>
+<p>See <a class="olink ARPLS020" href="../../appdev.112/e40758/d_lob.htm#ARPLS020"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for details regarding <code>Attr5</code> and <code>Attr6</code>.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CHDFFJJE"></a>
+<div id="PFGRF94903" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">18.2.5.7</span> Stopping the Recommendation Process</h4>
+<p>If <a id="sthref1424"></a>SQL Access Advisor takes too long to make its recommendations using the procedure <code>EXECUTE_TASK</code>, then you can stop it by calling the <code>CANCEL_TASK</code> procedure and passing in the <code>task_name</code> for this recommendation process. If you use <code>CANCEL_TASK</code>, then SQL Access Advisor makes no recommendations. Therefore, if recommendations are required, consider using the <code>INTERRUPT_TASK</code> procedure.</p>
+<div id="PFGRF94904" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref1425"></a>
+<h5 class="sect4"><span class="secnum">18.2.5.7.1</span> Interrupting Tasks</h5>
+<p>The <code>INTERRUPT_TASK</code> procedure causes an Advisor operation to terminate as if it has reached its normal end. As a result, the user can see any recommendations that have been formed up to the point of the interrupt.</p>
+<p>An interrupted task cannot be restarted. The syntax is as follows:</p>
+<pre>
+DBMS_ADVISOR.INTERRUPT_TASK (task_name IN VARCHAR2);
+</pre>
+<p>The following illustrates an example of using this procedure:</p>
+<pre>
+EXECUTE DBMS_ADVISOR.INTERRUPT_TASK ('MY_TASK');
+</pre></div>
+<!-- class="sect4" -->
+<div id="PFGRF94905" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref1426"></a>
+<h5 class="sect4"><span class="secnum">18.2.5.7.2</span> Canceling Tasks</h5>
+<p>The <code>CANCEL_TASK</code> procedure causes a currently executing operation to terminate. An Advisor operation may take a few seconds to respond to this request. Because all Advisor task procedures are synchronous, to cancel an operation, you must use a separate database session.</p>
+<p>A cancel command effective restores the task to its condition before the start of the canceled operation. Therefore, a canceled task or data object cannot be restarted (but you can reset the task using <code>DBMS_ADVISOR.RESET_TASK</code> and then executing it again). Its syntax is as follows:</p>
+<pre>
+DBMS_ADVISOR.CANCEL_TASK (task_name   IN  VARCHAR2);
+</pre>
+<p>The following illustrates an example of using this procedure:</p>
+<pre>
+EXECUTE DBMS_ADVISOR.CANCEL_TASK('MYTASK');
+</pre>
+<p>See <a class="olink ARPLS350" href="../../appdev.112/e40758/d_advis.htm#ARPLS350"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information regarding the <code>CANCEL_TASK</code> procedure and its parameters.</p>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<a id="CHDBICCF"></a>
+<div id="PFGRF94906" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">18.2.5.8</span> Marking Recommendations</h4>
+<p>By default, all SQL Access Advisor recommendations are ready to be implemented, however, the user can choose to skip or exclude selected recommendations by using the <code>MARK_RECOMMENDATION</code> procedure. <code>MARK_RECOMMENDATION</code> allows the user to annotate a recommendation with a <code>REJECT</code> or <code>IGNORE</code> setting, which causes the <code>GET_TASK_SCRIPT</code> to skip it when producing the implementation procedure. The syntax is as follows:</p>
+<pre>
+DBMS_ADVISOR.MARK_RECOMMENDATION (
+   task_name          IN VARCHAR2
+   id                 IN NUMBER,
+   action             IN VARCHAR2);
+</pre>
+<p>The following example marks a recommendation with ID 2 as <code>REJECT</code>. This recommendation and any dependent recommendations do not appear in the script.</p>
+<pre>
+EXECUTE DBMS_ADVISOR.MARK_RECOMMENDATION('MYTASK', 2, 'REJECT');
+</pre>
+<p>If the Advisor makes a recommendation to partition one or multiple previously unpartitioned base tables, then consider carefully before skipping this recommendation. Changing a table's partitioning scheme affects the cost of all queries, indexes, and materialized views defined on that table. Therefore, if you skip the partitioning recommendation, then the Advisor's remaining recommendations on this table are no longer optimal. To see recommendations on your workload that do not contain partitioning, reset the advisor task and rerun it with the <code>ANALYSIS_SCOPE</code> parameter changed to exclude partitioning recommendations.</p>
+<p>See <a class="olink ARPLS350" href="../../appdev.112/e40758/d_advis.htm#ARPLS350"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information regarding the <code>MARK_RECOMMENDATIONS</code> procedure and its parameters.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CHDJFGFH"></a>
+<div id="PFGRF94907" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">18.2.5.9</span> Modifying Recommendations</h4>
+<p>Using the <code>UPDATE_REC_ATTRIBUTES</code> procedure, SQL Access Advisor names and assigns ownership to new objects such as indexes and materialized views during the analysis operation. However, it does not necessarily choose appropriate names, so you may manually set the owner, name, and tablespace values for new objects. For recommendations referencing existing database objects, owner and name values cannot be changed. The syntax is as follows:</p>
+<pre>
+DBMS_ADVISOR.UPDATE_REC_ATTRIBUTES (
+   task_name            IN VARCHAR2
+   rec_id               IN NUMBER,
+   action_id            IN NUMBER,
+   attribute_name       IN VARCHAR2,
+   value                IN VARCHAR2);
+</pre>
+<p>The <code>attribute_name</code> parameter can take the following values:</p>
+<ul>
+<li>
+<p><code>OWNER</code></p>
+<p>Specifies the owner name of the recommended object.</p>
+</li>
+<li>
+<p><code>NAME</code></p>
+<p>Specifies the name of the recommended object.</p>
+</li>
+<li>
+<p><code>TABLESPACE</code></p>
+<p>Specifies the tablespace of the recommended object.</p>
+</li>
+</ul>
+<p>The following example modifies the attribute <code>TABLESPACE</code> for recommendation ID 1, action ID 1 to <code>SH_MVIEWS</code>.</p>
+<pre>
+EXECUTE DBMS_ADVISOR.UPDATE_REC_ATTRIBUTES('MYTASK', 1, 1, - 
+                                           'TABLESPACE', 'SH_MVIEWS');
+</pre>
+<p>See <a class="olink ARPLS65163" href="../../appdev.112/e40758/d_advis.htm#ARPLS65163"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information regarding the <code>UPDATE_REC_ATTRIBUTES</code> procedure and its parameters.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CHDEEADC"></a>
+<div id="PFGRF94908" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">18.2.5.10</span> Generating SQL Scripts</h4>
+<p>An alternative to querying the metadata to see the recommendations is to create a script of the SQL statements for the recommendations, using the procedure <code>GET_TASK_SCRIPT</code>. The resulting script is an executable SQL file that can contain <code>DROP</code>, <code>CREATE</code>, and <code>ALTER</code> statements. For new objects, the names of the materialized views, materialized view logs, and indexes are auto-generated by using the user-specified name template. You should review the generated SQL script before attempting to execute it.</p>
+<p>There are several task parameters that control the naming conventions (<code>MVIEW_NAME_TEMPLATE</code> and <code>INDEX_NAME_TEMPLATE</code>), the owner for these new objects (<code>DEF_INDEX_OWNER</code> and <code>DEF_MVIEW_OWNER</code>), and the tablespaces (<code>DEF_MVIEW_TABLESPACE</code> and <code>DEF_INDEX_TABLESPACE</code>).</p>
+<p>The following example shows how to generate a CLOB containing the script for the recommendations:</p>
+<pre>
+EXECUTE DBMS_ADVISOR.CREATE_FILE(DBMS_ADVISOR.GET_TASK_SCRIPT('MYTASK'),
+               'ADVISOR_RESULTS', 'advscript.sql'); 
+</pre>
+<p>To save the script to a file, a directory path must be supplied so that the procedure <code>CREATE_FILE</code> knows where to store the script. In addition, read and write privileges must be granted on this directory. The following example shows how to save an advisor script <code>CLOB</code> to a file:</p>
+<pre>
+-- create a directory and grant permissions to read/write to it
+CONNECT SH/SH;
+CREATE DIRECTORY ADVISOR_RESULTS AS '/mydir';
+GRANT READ ON DIRECTORY ADVISOR_RESULTS TO PUBLIC;
+GRANT WRITE ON DIRECTORY ADVISOR_RESULTS TO PUBLIC;
+</pre>
+<p>The following is a fragment of a script generated by this procedure. The script also includes PL/SQL calls to gather statistics on the recommended access structures and marks the recommendations as <code>IMPLEMENTED</code> at the end:</p>
+<pre>
+Rem  Access Advisor V11.1.0.0.0 - Production
+Rem  
+Rem  Username:        SH
+Rem  Task:            MYTASK
+Rem  Execution date:  15/08/2006 11:35
+Rem  
+set feedback 1
+set linesize 80
+set trimspool on
+set tab off
+set pagesize 60
+whenever sqlerror CONTINUE
+
+CREATE MATERIALIZED VIEW LOG ON "SH"."PRODUCTS"
+    WITH ROWID, SEQUENCE("PROD_ID","PROD_SUBCATEGORY")
+    INCLUDING NEW VALUES;
+ALTER MATERIALIZED VIEW LOG FORCE ON "SH"."PRODUCTS"
+    ADD ROWID, SEQUENCE("PROD_ID","PROD_SUBCATEGORY")
+    INCLUDING NEW VALUES;
+..
+CREATE MATERIALIZED VIEW "SH"."MV$$_00510002"
+    REFRESH FAST WITH ROWID
+    ENABLE QUERY REWRITE
+    AS SELECT SH.CUSTOMERS.CUST_STATE_PROVINCE C1, COUNT(*) M1 FROM
+SH.CUSTOMERS WHERE (SH.CUSTOMERS.CUST_STATE_PROVINCE = 'CA') GROUP
+BY SH.CUSTOMERS.CUST_STATE_PROVINCE;
+BEGIN
+  DBMS_STATS.GATHER_TABLE_STATS('"SH"', '"MV$$_00510002"', NULL, 
+     DBMS_STATS.AUTO_SAMPLE_SIZE);
+END;
+/
+..
+CREATE BITMAP INDEX "SH"."MV$$_00510004_IDX$$_00510013"
+    ON "SH"."MV$$_00510004" ("C4");
+whenever sqlerror EXIT SQL.SQLCODE
+BEGIN
+  DBMS_ADVISOR.MARK_RECOMMENDATION('"MYTASK"',1,'IMPLEMENTED');
+  DBMS_ADVISOR.MARK_RECOMMENDATION('"MYTASK"',2,'IMPLEMENTED');
+  DBMS_ADVISOR.MARK_RECOMMENDATION('"MYTASK"',3,'IMPLEMENTED');
+  DBMS_ADVISOR.MARK_RECOMMENDATION('"MYTASK"',4,'IMPLEMENTED');
+END;
+/
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1"><span class="bold">See Also</span>:</p>
+<a class="olink SQLRF" href="../e41084/toc.htm"><span class="italic">Oracle Database SQL Language Reference</span></a> for <code>CREATE</code> <code>DIRECTORY</code> syntax and <a class="olink ARPLS350" href="../../appdev.112/e40758/d_advis.htm#ARPLS350"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for detailed information about the <code>GET_TASK_SCRIPT</code> procedure</div>
+</div>
+<!-- class="sect3" -->
+<a id="CHDCAEIF"></a>
+<div id="PFGRF94909" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">18.2.5.11</span> Special Considerations when Script Includes Partitioning Recommendations</h4>
+<p>The Advisor may recommend partitioning an existing unpartitioned base table to improve query performance. When the Advisor implementation script contains partition recommendations, you must take note of the following issues:</p>
+<ul>
+<li>
+<p>Partitioning an existing table is a complex and extensive operation, which may take considerably longer than implementing a new index or materialized view. Sufficient time should be reserved for implementing this recommendation.</p>
+</li>
+<li>
+<p>While index and materialized view recommendations are easy to reverse by deleting the index or view, a table, after being partitioned, cannot easily be restored to its original state. Therefore, ensure that you back up the database before executing a script containing partition recommendations.</p>
+</li>
+<li>
+<p>While repartitioning a base table, SQL Access Advisor scripts make a temporary copy of the original table, which occupies the same amount of space as the original table. Therefore, the repartitioning process requires sufficient free disk space for another copy of the largest table to be repartitioned. You must ensure that such space is available before running the implementation script.</p>
+<p>The partition implementation script attempts to migrate dependent objects such as indexes, materialized views, and constraints. However, some object cannot be automatically migrated. For example, PL/SQL stored procedures defined against a repartitioned base table typically become invalid and must be recompiled.</p>
+</li>
+<li>
+<p>If you decide not to implement a partition recommendation that the advisor has made, then note that all other recommendations on the same table in the same script (such as <code>CREATE</code> <code>INDEX</code> and <code>CREATE</code> <code>MATERIALIZED</code> <code>VIEW</code> recommendations) are dependent on the partitioning recommendation. To obtain accurate recommendations, you should not simply remove the partition recommendation from the script. Rather, rerun the advisor with partitioning disabled (for example, by setting parameter <code>ANALYSIS_SCOPE</code> to a value that does not include the keyword <code>TABLE</code>).</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SQLRF" href="../e41084/toc.htm"><span class="italic">Oracle Database SQL Language Reference</span></a> for <code>CREATE</code> <code>DIRECTORY</code> syntax and <a class="olink ARPLS" href="../../appdev.112/e40758/toc.htm"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for detailed information about the <code>GET_TASK_SCRIPT</code> procedure.</div>
+</div>
+<!-- class="sect3" -->
+<a id="CHDHHEGD"></a>
+<div id="PFGRF94910" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">18.2.5.12</span> When Recommendations are no Longer Required</h4>
+<p>The <code>RESET_TASK</code> procedure resets a task to its initial starting point. This has the effect of removing all recommendations, and intermediate data from the task. The actual task status is set to <code>INITIAL</code>. The syntax is as follows:</p>
+<pre>
+DBMS_ADVISOR.RESET_TASK (task_name     IN VARCHAR2);
+</pre>
+<p>The following illustrates an example of using this procedure:</p>
+<pre>
+EXECUTE DBMS_ADVISOR.RESET_TASK('MYTASK');
+</pre>
+<p>See <a class="olink ARPLS65143" href="../../appdev.112/e40758/d_advis.htm#ARPLS65143"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information regarding the <code>RESET_TASK</code> procedure and its parameters.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CHDJJCFD"></a>
+<div id="PFGRF94911" class="sect2">
+<h3 class="sect2"><span class="secnum">18.2.6</span> Performing a Quick Tune</h3>
+<p>To tune a single SQL statement, the <code>QUICK_TUNE</code> procedure accepts as its input a <code>task_name</code> and a SQL statement. The procedure creates a task and workload and executes this task. There is no difference in the results from using <code>QUICK_TUNE</code>. They are exactly the same as those from using <code>EXECUTE_TASK</code>, but this approach is easier to use when there is only a single SQL statement to be tuned. The syntax is as follows:</p>
+<pre>
+DBMS_ADVISOR.QUICK_TUNE (
+   advisor_name           IN VARCHAR2,
+   task_name              IN VARCHAR2,
+   attr1                  IN CLOB,
+   attr2                  IN VARCHAR2 := NULL,
+   attr3                  IN NUMBER := NULL,
+   task_or_template       IN VARCHAR2 := NULL);
+</pre>
+<p>The following example shows how to quick tune a single SQL statement:</p>
+<pre>
+VARIABLE task_name VARCHAR2(255);
+VARIABLE sql_stmt VARCHAR2(4000);
+EXECUTE :sql_stmt := 'SELECT COUNT(*) FROM customers 
+                      WHERE cust_state_province =''CA''';
+EXECUTE :task_name  := 'MY_QUICKTUNE_TASK';
+EXECUTE DBMS_ADVISOR.QUICK_TUNE(DBMS_ADVISOR.SQLACCESS_ADVISOR,
+              :task_name, :sql_stmt);
+</pre>
+<p>See <a class="olink ARPLS350" href="../../appdev.112/e40758/d_advis.htm#ARPLS350"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information regarding the <code>QUICK_TUNE</code> procedure and its parameters.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1009145"></a>
+<div id="PFGRF94912" class="sect2">
+<h3 class="sect2"><span class="secnum">18.2.7</span> Managing Tasks</h3>
+<p>Every time recommendations are generated, tasks are created. Unless you perform maintenance on these tasks, they grow over time and occupy storage space. You may want to keep some tasks and prevent their accidental deletion. Therefore, you can perform several management operations on tasks:</p>
+<ul>
+<li>
+<p><a href="#i1021750">Updating Task Attributes</a></p>
+</li>
+<li>
+<p><a href="#i1021794">Deleting Tasks</a></p>
+</li>
+<li>
+<p><a href="#CHDIAGFG">Setting the DAYS_TO_EXPIRE Parameter</a></p>
+</li>
+</ul>
+<a id="i1021750"></a>
+<div id="PFGRF94913" class="sect3">
+<h4 class="sect3"><span class="secnum">18.2.7.1</span> Updating Task Attributes</h4>
+<p>Using the <code>UPDATE_TASK_ATTRIBUTES</code> procedure, you can:</p>
+<ul>
+<li>
+<p>Change the name of a task.</p>
+</li>
+<li>
+<p>Give a task a description.</p>
+</li>
+<li>
+<p>Set the task to be read-only so it cannot be changed.</p>
+</li>
+<li>
+<p>Make the task a template upon which you can define other tasks.</p>
+</li>
+<li>
+<p>Changes various attributes of a task or a task template.</p>
+</li>
+</ul>
+<p>The syntax is as follows:</p>
+<pre>
+DBMS_ADVISOR.UPDATE_TASK_ATTRIBUTES (
+   task_name          IN VARCHAR2
+   new_name           IN VARCHAR2 := NULL,
+   description        IN VARCHAR2 := NULL,
+   read_only          IN VARCHAR2 := NULL,
+   is_template        IN VARCHAR2 := NULL,
+   how_created        IN VARCHAR2 := NULL);
+</pre>
+<p>The following example updates the name of an task <code>MYTASK</code> to <code>TUNING1</code>:</p>
+<pre>
+EXECUTE DBMS_ADVISOR.UPDATE_TASK_ATTRIBUTES('MYTASK', 'TUNING1');
+</pre>
+<p>The following example marks the task <code>TUNING1</code> to read-only</p>
+<pre>
+EXECUTE DBMS_ADVISOR.UPDATE_TASK_ATTRIBUTES('TUNING1', read_only =&gt; 'TRUE');
+</pre>
+<p>The following example marks the task <code>MYTASK</code> as a template.</p>
+<pre>
+EXECUTE DBMS_ADVISOR.UPDATE_TASK_ATTRIBUTES('TUNING1', is_template=&gt;'TRUE');
+</pre>
+<p>See <a class="olink ARPLS350" href="../../appdev.112/e40758/d_advis.htm#ARPLS350"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information regarding the <code>UPDATE_TASK_ATTRIBUTES</code> procedure and its parameters.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i1021794"></a>
+<div id="PFGRF94914" class="sect3">
+<h4 class="sect3"><span class="secnum">18.2.7.2</span> Deleting Tasks</h4>
+<p>The <code>DELETE_TASK</code> procedure deletes existing Advisor tasks from the repository. The syntax is as follows:</p>
+<pre>
+DBMS_ADVISOR.DELETE_TASK (task_name  IN VARCHAR2);
+</pre>
+<p>The following illustrates an example of using this procedure:</p>
+<pre>
+EXECUTE DBMS_ADVISOR.DELETE_TASK('MYTASK');
+</pre>
+<p>See <a class="olink ARPLS350" href="../../appdev.112/e40758/d_advis.htm#ARPLS350"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information regarding the <code>DELETE_TASK</code> procedure and its parameters.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CHDIAGFG"></a>
+<div id="PFGRF94915" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">18.2.7.3</span> Setting the DAYS_TO_EXPIRE Parameter</h4>
+<p>When a task or workload object is created, the parameter <code>DAYS_TO_EXPIRE</code> is set to 30. The value indicates the number of days until the task or object is automatically deleted by the system. To save a task or workload indefinitely, set the <code>DAYS_TO_EXPIRE</code> parameter to <code>ADVISOR_UNLIMITED</code>.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1022958"></a>
+<div id="PFGRF94916" class="sect2">
+<h3 class="sect2"><span class="secnum">18.2.8</span> Using SQL Access Advisor Constants</h3>
+<p>You can use<a id="sthref1427"></a> the constants shown in <a href="#g1067770">Table 18-3</a> with SQL Access Advisor.</p>
+<div id="PFGRF94917" class="tblformalwidemax">
+<p class="titleintable"><a id="sthref1428"></a><a id="g1067770"></a>Table 18-3 SQL Access Advisor Constants</p>
+<table class="cellalignment1691" title="SQL Access Advisor Constants" summary="SQLAccess Advisor Constants" dir="ltr">
+<thead>
+<tr class="cellalignment1680">
+<th class="cellalignment1687" id="r1c1-t8">Constant</th>
+<th class="cellalignment1687" id="r1c2-t8">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r2c1-t8" headers="r1c1-t8">
+<pre>
+ADVISOR_ALL
+</pre></td>
+<td class="cellalignment1688" headers="r2c1-t8 r1c2-t8">
+<p>A value that indicates all possible values. For string parameters, this value is equivalent to the wildcard <code>%</code> character.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r3c1-t8" headers="r1c1-t8">
+<pre>
+ADVISOR_CURRENT
+</pre></td>
+<td class="cellalignment1688" headers="r3c1-t8 r1c2-t8">
+<p>Indicates the current time or active set of elements. Typically, this is used in time parameters.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r4c1-t8" headers="r1c1-t8">
+<pre>
+ADVISOR_DEFAULT
+</pre></td>
+<td class="cellalignment1688" headers="r4c1-t8 r1c2-t8">
+<p>Indicates the default value. Typically used when setting task or workload parameters.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r5c1-t8" headers="r1c1-t8">
+<pre>
+ADVISOR_UNLIMITED
+</pre></td>
+<td class="cellalignment1688" headers="r5c1-t8 r1c2-t8">
+<p>A value that represents an unlimited numeric value.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r6c1-t8" headers="r1c1-t8">
+<pre>
+ADVISOR_UNUSED
+</pre></td>
+<td class="cellalignment1688" headers="r6c1-t8 r1c2-t8">
+<p>A value that represents an unused entity. When a parameter is set to <code>ADVISOR_UNUSED</code>, it has no effect on the current operation. A typical use for this constant is to set a parameter as unused for its dependent operations.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r7c1-t8" headers="r1c1-t8">
+<pre>
+SQLACCESS_GENERAL
+</pre></td>
+<td class="cellalignment1688" headers="r7c1-t8 r1c2-t8">
+<p>Specifies the name of a default SQL Access general-purpose task template. This template sets the <code>DML_VOLATILITY</code> task parameter to <code>TRUE</code> and <code>ANALYSIS_SCOPE</code> to <code>INDEX</code>, <code>MVIEW</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r8c1-t8" headers="r1c1-t8">
+<pre>
+SQLACCESS_OLTP
+</pre></td>
+<td class="cellalignment1688" headers="r8c1-t8 r1c2-t8">
+<p>Specifies the name of a default SQL Access OLTP task template. This template sets the <code>DML_VOLATILITY</code> task parameter to <code>TRUE</code> and <code>ANALYSIS_SCOPE</code> to <code>INDEX</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r9c1-t8" headers="r1c1-t8">
+<pre>
+SQLACCESS_WAREHOUSE
+</pre></td>
+<td class="cellalignment1688" headers="r9c1-t8 r1c2-t8">
+<p>Specifies the name of a default SQL Access warehouse task template. This template sets the <code>DML_VOLATILITY</code> task parameter to <code>FALSE</code> and <code>EXECUTION_TYPE</code> to <code>INDEX</code>, <code>MVIEW</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r10c1-t8" headers="r1c1-t8">
+<pre>
+SQLACCESS_ADVISOR
+</pre></td>
+<td class="cellalignment1688" headers="r10c1-t8 r1c2-t8">
+<p>Contains the formal name of SQL Access Advisor. You can specify this name when procedures require the Advisor name as an argument.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformalwidemax" --></div>
+<!-- class="sect2" -->
+<div id="PFGRF94918" class="sect2"><a id="sthref1429"></a>
+<h3 class="sect2"><span class="secnum">18.2.9</span> Examples of Using SQL Access Advisor</h3>
+<p>This section illustrates some typical scenarios for using SQL Access Advisor. Oracle Database provides a script that contains this chapter's examples, <code>aadvdemo.sql</code>.</p>
+<a id="i1039571"></a>
+<div id="PFGRF94919" class="sect3">
+<h4 class="sect3"><span class="secnum">18.2.9.1</span> Recommendations From a User-Defined Workload</h4>
+<p>The following example imports workload from a user-defined table, <code>SH.USER_WORKLOAD</code>. It then creates a task called <code>MYTASK</code>, sets the storage budget to 100 MB, and runs the task. A PL/SQL procedure prints the recommendations. Finally, the example generates a script that you can use to implement the recommendations.</p>
+<dl>
+<dd><a id="PFGRF95262"></a><a id="sthref1430"></a></dd>
+<dt class="seghead">Step 1&nbsp;&nbsp;&nbsp;Prepare the USER_WORKLOAD table</dt>
+<dd>
+<p>Load the <code>USER_WORKLOAD</code> table with SQL statements as follows:</p>
+<pre>
+CONNECT SH/SH;
+-- aggregation with selection
+INSERT INTO user_workload (username, module, action, priority, sql_text)
+VALUES ('SH', 'Example1', 'Action', 2, 
+'SELECT   t.week_ending_day, p.prod_subcategory, 
+          SUM(s.amount_sold) AS dollars, s.channel_id, s.promo_id
+ FROM sales s, times t, products p WHERE s.time_id = t.time_id
+ AND s.prod_id = p.prod_id AND s.prod_id &gt; 10 AND s.prod_id &lt; 50
+ GROUP BY t.week_ending_day, p.prod_subcategory, 
+          s.channel_id, s.promo_id')
+/
+
+-- aggregation with selection
+INSERT INTO user_workload (username, module, action, priority, sql_text)
+VALUES ('SH', 'Example1', 'Action', 2, 
+ 'SELECT   t.calendar_month_desc, SUM(s.amount_sold) AS dollars
+  FROM     sales s , times t
+  WHERE    s.time_id = t.time_id
+  AND    s.time_id between TO_DATE(''01-JAN-2000'', ''DD-MON-YYYY'')
+                       AND TO_DATE(''01-JUL-2000'', ''DD-MON-YYYY'')
+GROUP BY t.calendar_month_desc')
+/
+
+--Load all SQL queries.
+INSERT INTO user_workload (username, module, action, priority, sql_text)
+VALUES ('SH', 'Example1', 'Action', 2, 
+'SELECT ch.channel_class, c.cust_city, t.calendar_quarter_desc,
+   SUM(s.amount_sold) sales_amount
+FROM sales s, times t, customers c, channels ch
+WHERE s.time_id = t.time_id AND s.cust_id = c.cust_id
+AND s.channel_id = ch.channel_id AND c.cust_state_province = ''CA''
+AND   ch.channel_desc IN (''Internet'',''Catalog'')
+AND   t.calendar_quarter_desc IN (''1999-Q1'',''1999-Q2'')
+GROUP BY ch.channel_class, c.cust_city, t.calendar_quarter_desc')
+/
+
+-- order by
+INSERT INTO user_workload (username, module, action, priority, sql_text)
+VALUES ('SH', 'Example1', 'Action', 2, 
+  'SELECT c.country_id, c.cust_city, c.cust_last_name
+FROM customers c WHERE c.country_id IN (52790, 52789)
+ORDER BY c.country_id, c.cust_city, c.cust_last_name')
+/
+COMMIT;
+
+CONNECT SH/SH;
+set serveroutput on;
+
+VARIABLE task_id NUMBER;
+VARIABLE task_name VARCHAR2(255);
+VARIABLE workload_name VARCHAR2(255);
+</pre></dd>
+<dd><a id="PFGRF95263"></a><a id="sthref1431"></a></dd>
+<dt class="seghead">Step 2&nbsp;&nbsp;&nbsp;Create a SQL tuning set named MYWORKLOAD</dt>
+<dd>
+<pre>
+EXECUTE :workload_name := 'MYWORKLOAD';
+EXECUTE DBMS_SQLTUNE.CREATE_SQLSET(:workload_name, 'test purposeV);
+</pre></dd>
+<dd><a id="PFGRF95264"></a><a id="sthref1432"></a></dd>
+<dt class="seghead">Step 3&nbsp;&nbsp;&nbsp;Load the SQL tuning set from the user-defined table SH.USER_WORKLOAD</dt>
+<dd>
+<pre>
+DECLARE
+  sqlset_cur DBMS_SQLTUNE.SQLSET_CURSOR;    /*a sqlset cursor variable*/
+BEGIN
+OPEN  sqlset_cur FOR
+  SELECT
+    SQLSET_ROW(null, sql_text, null, null, username, null,
+     null, 0,0,0,0,0,0,0,0,0,null, 0,0,0,0)
+   AS ROW
+  FROM USER_WORKLOAD;
+DBMS_SQLTUNE.LOAD_SQLSET(:workload_name, sqlset_cur);
+END;
+</pre></dd>
+<dd><a id="PFGRF95265"></a><a id="sthref1433"></a></dd>
+<dt class="seghead">Step 4&nbsp;&nbsp;&nbsp;Create a task named MYTASK</dt>
+<dd>
+<pre>
+EXECUTE :task_name := 'MYTASK';
+</pre>
+<pre>
+EXECUTE DBMS_ADVISOR.CREATE_TASK('SQL Access Advisor', :task_id, :task_name);
+</pre></dd>
+<dd><a id="PFGRF95266"></a><a id="sthref1434"></a></dd>
+<dt class="seghead">Step 5&nbsp;&nbsp;&nbsp;Set task parameters</dt>
+<dd>
+<pre>
+EXECUTE DBMS_ADVISOR.SET_TASK_PARAMETER(:task_name, 'STORAGE_CHANGE', 100);
+</pre>
+<pre>
+EXECUTE DBMS_ADVISOR.SET_TASK_PARAMETER(:task_name, 'ANALYSIS_SCOPE, INDEX');
+</pre></dd>
+<dd><a id="PFGRF95267"></a><a id="sthref1435"></a></dd>
+<dt class="seghead">Step 6&nbsp;&nbsp;&nbsp;Create a link between the SQL tuning set and the task</dt>
+<dd>
+<pre>
+EXECUTE DBMS_ADVISOR.ADD_STS_REF(:task_name, :workload_name);
+</pre></dd>
+<dd><a id="PFGRF95268"></a><a id="sthref1436"></a></dd>
+<dt class="seghead">Step 7&nbsp;&nbsp;&nbsp;Execute the task</dt>
+<dd>
+<pre>
+EXECUTE DBMS_ADVISOR.EXECUTE_TASK(:task_name);
+</pre></dd>
+<dd><a id="PFGRF95269"></a><a id="sthref1437"></a></dd>
+<dt class="seghead">Step 8&nbsp;&nbsp;&nbsp;View the recommendations</dt>
+<dd>
+<pre>
+-- See the number of recommendations and the status of the task.
+</pre>
+<pre>
+SELECT rec_id, rank, benefit
+FROM user_advisor_recommendations WHERE task_name = :task_name;
+</pre>
+<p>See <a href="#CHDJIGCD">"Viewing Recommendations"</a> or <a href="#CHDEEADC">"Generating SQL Scripts"</a> for further details.</p>
+<pre>
+-- See recommendation for each query.
+SELECT sql_id, rec_id, precost, postcost,
+      (precost-postcost)*100/precost AS percent_benefit
+FROM user_advisor_sqla_wk_stmts
+WHERE task_name = :task_name AND workload_name = :workload_name;
+
+-- See the actions for each recommendations.
+SELECT rec_id, action_id, SUBSTR(command,1,30) AS command
+FROM user_advisor_actions
+WHERE task_name = :task_name
+ORDER BY rec_id, action_id;
+
+-- See what the actions are using sample procedure.
+SET SERVEROUTPUT ON SIZE 99999
+EXECUTE show_recm(:task_name);
+</pre></dd>
+<dd><a id="PFGRF95270"></a><a id="sthref1438"></a></dd>
+<dt class="seghead">Step 9&nbsp;&nbsp;&nbsp;Generate a script to Implement the recommendations</dt>
+<dd>
+<pre>
+EXECUTE DBMS_ADVISOR.CREATE_FILE(DBMS_ADVISOR.GET_TASK_SCRIPT(:task_name),
+                                 'ADVISOR_RESULTS', 'Example1_script.sql');
+</pre></dd>
+</dl>
+</div>
+<!-- class="sect3" -->
+<div id="PFGRF94920" class="sect3"><a id="sthref1439"></a>
+<h4 class="sect3"><span class="secnum">18.2.9.2</span> Generate Recommendations Using a Task Template</h4>
+<p>The following example creates a template and then uses it to create a task. It then uses this task to generate recommendations from a user-defined table, similar to <a href="#i1039571">"Recommendations From a User-Defined Workload"</a>.</p>
+<pre>
+CONNECT SH/SH;
+VARIABLE template_id NUMBER;
+VARIABLE template_name VARCHAR2(255);
+</pre>
+<dl>
+<dd><a id="PFGRF95271"></a><a id="sthref1440"></a></dd>
+<dt class="seghead">Step 1&nbsp;&nbsp;&nbsp;Create a template called MY_TEMPLATE</dt>
+<dd>
+<pre>
+EXECUTE :template_name := 'MY_TEMPLATE';
+</pre>
+<pre>
+EXECUTE DBMS_ADVISOR.CREATE_TASK ( -
+   'SQL Access Advisor',:template_id, :template_name, is_template=&gt;'TRUE');
+</pre></dd>
+<dd><a id="PFGRF95272"></a><a id="sthref1441"></a></dd>
+<dt class="seghead">Step 2&nbsp;&nbsp;&nbsp;Set template parameters</dt>
+<dd>
+<p>Set naming conventions for recommended indexes and materialized views.</p>
+<pre>
+EXECUTE DBMS_ADVISOR.SET_TASK_PARAMETER ( -
+   :template_name,  'INDEX_NAME_TEMPLATE', 'SH_IDX$$_&lt;SEQ&gt;');
+EXECUTE DBMS_ADVISOR.SET_TASK_PARAMETER ( -
+   :template_name, 'MVIEW_NAME_TEMPLATE', 'SH_MV$$_&lt;SEQ&gt;');
+
+--Set default owners for recommended indexes/materialized views.
+EXECUTE DBMS_ADVISOR.SET_TASK_PARAMETER ( -
+   :template_name, 'DEF_INDEX_OWNER', 'SH');
+EXECUTE DBMS_ADVISOR.SET_TASK_PARAMETER ( -
+   :template_name, 'DEF_MVIEW_OWNER', 'SH');
+
+--Set default tablespace for recommended indexes/materialized views.
+EXECUTE DBMS_ADVISOR.SET_TASK_PARAMETER ( -
+   :template_name, 'DEF_INDEX_TABLESPACE', 'SH_INDEXES');
+EXECUTE DBMS_ADVISOR.SET_TASK_PARAMETER ( -
+   :template_name, 'DEF_MVIEW_TABLESPACE', 'SH_MVIEWS');
+</pre></dd>
+<dd><a id="PFGRF95273"></a><a id="sthref1442"></a></dd>
+<dt class="seghead">Step 3&nbsp;&nbsp;&nbsp;Create a task using the template</dt>
+<dd>
+<pre>
+VARIABLE task_id NUMBER;
+</pre>
+<pre>
+VARIABLE task_name VARCHAR2(255);
+EXECUTE :task_name := 'MYTASK';
+EXECUTE DBMS_ADVISOR.CREATE_TASK ( -
+   'SQL Access Advisor', :task_id, :task_name, template =&gt; 'MY_TEMPLATE');
+
+--See the parameter settings for task
+SELECT parameter_name, parameter_value
+FROM user_advisor_parameters
+WHERE task_name = :task_name AND (parameter_name LIKE '%MVIEW%' 
+   OR parameter_name LIKE '%INDEX%');
+</pre></dd>
+<dd><a id="PFGRF95274"></a><a id="sthref1443"></a></dd>
+<dt class="seghead">Step 4&nbsp;&nbsp;&nbsp;Create a SQL tuning set named MYWORKLOAD</dt>
+<dd>
+<pre>
+EXECUTE :workload_name := 'MYWORKLOAD';
+EXECUTE DBMS_SQLTUNE.CREATE_SQLSET(:workload_name, 'test_purpose');
+</pre></dd>
+<dd><a id="PFGRF95275"></a><a id="sthref1444"></a></dd>
+<dt class="seghead">Step 5&nbsp;&nbsp;&nbsp;Load the SQL tuning set from the user-defined table SH.USER_WORKLOAD</dt>
+<dd>
+<pre>
+DECLARE
+   sqlset_cur DBMS_SQLTUNE.SQLSET_CURSOR;  /*a sqlset cursor variable*/
+BEGIN
+OPEN sqlset_cur FOR
+   SELECT
+   SQLSET_ROW(null,sql_text,null,null,username, null, null, 0,0,0,0,0,0,0,0,0,
+      null,0,0,00) AS row
+   FROM user_workload;
+DBMS_SQLTUNE.LOAD_SQLSET(:workload_name, sqlsetcur);
+END;
+</pre></dd>
+<dd><a id="PFGRF95276"></a><a id="sthref1445"></a></dd>
+<dt class="seghead">Step 6&nbsp;&nbsp;&nbsp;Create a link between the workload and the task</dt>
+<dd>
+<pre>
+EXECUTE DBMS_ADVISOR.ADD_STS_REF(:task_name, :workload_name);
+</pre></dd>
+<dd><a id="PFGRF95277"></a><a id="sthref1446"></a></dd>
+<dt class="seghead">Step 7&nbsp;&nbsp;&nbsp;Execute the task</dt>
+<dd>
+<pre>
+EXECUTE DBMS_ADVISOR.EXECUTE_TASK(:task_name);
+</pre></dd>
+<dd><a id="PFGRF95278"></a><a id="sthref1447"></a></dd>
+<dt class="seghead">Step 8&nbsp;&nbsp;&nbsp;Generate a script</dt>
+<dd>
+<pre>
+EXECUTE DBMS_ADVISOR.CREATE_FILE(DBMS_ADVISOR.GET_TASK_SCRIPT(:task_name),-
+</pre>
+<pre>
+                                 'ADVISOR_RESULTS', 'Example2_script.sql');
+</pre></dd>
+</dl>
+</div>
+<!-- class="sect3" -->
+<div id="PFGRF94921" class="sect3"><a id="sthref1448"></a>
+<h4 class="sect3"><span class="secnum">18.2.9.3</span> Evaluate Current Usage of Indexes and Materialized Views</h4>
+<p>This example illustrates how you can use SQL Access Advisor to evaluate the utilization of existing indexes and materialized views. We assume the workload is loaded into <code>USER_WORKLOAD</code> table as in <a href="#i1039571">"Recommendations From a User-Defined Workload"</a>. The indexes and materialized views that the given workload are using appear as <code>RETAIN</code> actions in SQL Access Advisor recommendations.</p>
+<pre>
+VARIABLE task_id NUMBER;
+VARIABLE task_name VARCHAR2(255);
+VARIABLE workload_name VARCHAR2(255);
+</pre>
+<dl>
+<dd><a id="PFGRF95279"></a><a id="sthref1449"></a></dd>
+<dt class="seghead">Step 1&nbsp;&nbsp;&nbsp;Create a SQL tuning set named WORKLOAD</dt>
+<dd>
+<pre>
+EXECUTE :workload_name := 'MYWORKLOAD';
+</pre>
+<pre>
+EXECUTE DBMS_SQLTUNE.CREATE_SQLSET(:workload_name, 'test_purpose');
+</pre></dd>
+<dd><a id="PFGRF95280"></a><a id="sthref1450"></a></dd>
+<dt class="seghead">Step 2&nbsp;&nbsp;&nbsp;Load the SQL tuning set from the user-defined table SH.USER_WORKLOAD</dt>
+<dd>
+<pre>
+DECLARE
+  sqlset_cur DBMS_SQLTUNE.SQLSET_CURSOR;  /*a sqlset cursor variable*/
+BEGIN
+OPEN sqlset_cur FOR
+SELECT
+  SQLSET_ROW(null,sql_text,null,null,username, null, null, 0,0,0,0,0,0,0,0,0,
+   null, 0,0,0,0)
+    AS ROW
+  FROM user_workload;
+DBMS_SQLTUNE.LOAD_SQLSET(:workload_name, :sqlsetcur);
+END;
+</pre></dd>
+<dd><a id="PFGRF95281"></a><a id="sthref1451"></a></dd>
+<dt class="seghead">Step 3&nbsp;&nbsp;&nbsp;Create a task named MY_EVAL_TASK</dt>
+<dd>
+<pre>
+EXECUTE :task_name := 'MY_EVAL_TASK';
+</pre>
+<pre>
+EXECUTE DBMS_ADVISOR.CREATE_TASK ('SQL Access Advisor', :task_id, :task_name);
+</pre></dd>
+<dd><a id="PFGRF95282"></a><a id="sthref1452"></a></dd>
+<dt class="seghead">Step 4&nbsp;&nbsp;&nbsp;Create a link between workload and task</dt>
+<dd>
+<pre>
+EXECUTE DBMS_ADVISOR.ADD_STS_REF(:task_name, :workload_name);
+</pre></dd>
+<dd><a id="PFGRF95283"></a><a id="sthref1453"></a></dd>
+<dt class="seghead">Step 5&nbsp;&nbsp;&nbsp;Set task parameters to indicate EVALUATION ONLY task</dt>
+<dd>
+<pre>
+EXECUTE DBMS_ADVISOR.SET_TASK_PARAMETER (:task_name, 'EVALUATION_ONLY', 'TRUE');
+</pre></dd>
+<dd><a id="PFGRF95284"></a><a id="sthref1454"></a></dd>
+<dt class="seghead">Step 6&nbsp;&nbsp;&nbsp;Execute the task</dt>
+<dd>
+<pre>
+EXECUTE DBMS_ADVISOR.EXECUTE_TASK(:task_name);
+</pre></dd>
+<dd><a id="PFGRF95285"></a><a id="sthref1455"></a></dd>
+<dt class="seghead">Step 7&nbsp;&nbsp;&nbsp;View evaluation results</dt>
+<dd>
+<pre>
+--See the number of recommendations and the status of the task.
+</pre>
+<pre>
+SELECT rec_id, rank, benefit
+FROM user_advisor_recommendations WHERE task_name = :task_name;
+
+--See the actions for each recommendation.
+SELECT rec_id, action_id, SUBSTR(command,1,30) AS command, attr1 AS name
+FROM user_advisor_actions WHERE task_name = :task_name
+ORDER BY rec_id, action_id;
+</pre></dd>
+</dl>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1018993"></a>
+<div id="PFGRF94922" class="sect1">
+<h2 class="sect1"><span class="secnum">18.3</span> Tuning Materialized Views for Fast Refresh and Query Rewrite</h2>
+<p>Several <code>DBMS_MVIEW</code> <a id="sthref1456"></a><a id="sthref1457"></a><a id="sthref1458"></a>procedures can help you create materialized views that are optimized for fast refresh and query rewrite. The <code>EXPLAIN_MVIEW</code> procedure can tell you whether a materialized view is fast refreshable or eligible for general query rewrite. <code>EXPLAIN_REWRITE</code> tells you whether query rewrite will occur. However, neither procedure tells you how to achieve fast refresh or query rewrite.</p>
+<p>To further facilitate the use of materialized views, the <code><a id="sthref1459"></a><a id="sthref1460"></a>TUNE_MVIEW</code> procedure shows you how to optimize your <code>CREATE</code> <code>MATERIALIZED</code> <code>VIEW</code> statement and to meet other requirements such as materialized view log and rewrite equivalence relationship for fast refresh and general query rewrite. <code>TUNE_MVIEW</code> analyzes and processes the <code>CREATE</code> <code>MATERIALIZED</code> <code>VIEW</code> statement and generates two sets of output results: one for the materialized view implementation and the other for undoing the <code>CREATE</code> <code>MATERIALIZED</code> <code>VIEW</code> operations. You can access the two sets of output results through views or the external script files created by SQL Access Advisor. These external script files are ready to execute to implement the materialized view.</p>
+<p>With the <code>TUNE_MVIEW</code> procedure, you no longer require a detailed understanding of materialized views to create a materialized view in an application because the materialized view and its required components (such as a materialized view log) are created correctly through the procedure.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ARPLS" href="../../appdev.112/e40758/toc.htm"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for detailed information about the <code>TUNE_MVIEW</code> procedure</div>
+<a id="i1021249"></a>
+<div id="PFGRF94923" class="sect2">
+<h3 class="sect2"><span class="secnum">18.3.1</span> DBMS_ADVISOR.TUNE_MVIEW Procedure</h3>
+<p><a id="i1041765"></a>This section discusses the following information:</p>
+<ul>
+<li>
+<p><a href="#i1038234">TUNE_MVIEW Syntax and Operations</a></p>
+</li>
+<li>
+<p><a href="#i1038256">Accessing TUNE_MVIEW Output Results</a></p>
+</li>
+</ul>
+<a id="i1038234"></a>
+<div id="PFGRF94924" class="sect3">
+<h4 class="sect3"><span class="secnum">18.3.1.1</span> TUNE_MVIEW Syntax and Operations</h4>
+<p>The syntax for <code>TUNE_MVIEW</code> is as follows:</p>
+<pre>
+DBMS_ADVISOR.TUNE_MVIEW (
+  task_name IN OUT VARCHAR2, mv_create_stmt IN [CLOB | VARCHAR2])
+</pre>
+<p>The <code>TUNE_MVIEW</code> procedure takes two input parameters: <code>task_name</code> and <code>mv_create_stmt</code>. <code>task_name</code> is a user-provided task identifier used to access the output results. <code>mv_create_stmt</code> is a complete <code>CREATE</code> <code>MATERIALIZED</code> <code>VIEW</code> statement that is to be tuned. If the input <code>CREATE</code> <code>MATERIALIZED</code> <code>VIEW</code> statement does not have the clauses of <code>REFRESH</code> <code>FAST</code> or <code>ENABLE</code> <code>QUERY</code> <code>REWRITE</code>, or both, then <code>TUNE_MVIEW</code> uses the default clauses <code>REFRESH</code> <code>FORCE</code> and <code>DISABLE</code> <code>QUERY</code> <code>REWRITE</code> to tune the statement to be fast refreshable if possible or only complete refreshable otherwise.</p>
+<p>The <code>TUNE_MVIEW</code> procedure handles a broad range of <code>CREATE</code> <code>MATERIALIZED</code> <code>VIEW</code> statements that can have arbitrary defining queries in them. The defining query could be a simple <code>SELECT</code> statement or a complex query with set operators or inline views. When the defining query of the materialized view contains the clause <code>REFRESH</code> <code>FAST</code>, <code>TUNE_MVIEW</code> analyzes the query and checks to see if it is fast refreshable. If it is fast refreshable, the procedure returns a message saying "the materialized view is optimal and cannot be further tuned." Otherwise, the <code>TUNE_MVIEW</code> procedure starts the tuning work on the given statement.</p>
+<p>The <code>TUNE_MVIEW</code> procedure can generate the output statements that correct the defining query by adding extra columns such as required aggregate columns or fix the materialized view logs so that <code>FAST</code> <code>REFRESH</code> is possible. In the case of a complex defining query, the <code>TUNE_MVIEW</code> procedure may decompose the query and generates two or more fast refreshable materialized views or restate the materialized view in a way to fulfill fast refresh requirements as much as possible. The <code>TUNE_MVIEW</code> procedure supports defining queries with the following complex query constructs:</p>
+<ul>
+<li>
+<p>Set operators (<code>UNION</code>, <code>UNION</code> <code>ALL</code>, <code>MINUS</code>, and <code>INTERSECT</code>)</p>
+</li>
+<li>
+<p><code>COUNT</code> <code>DISTINCT</code></p>
+</li>
+<li>
+<p><code>SELECT</code> <code>DISTINCT</code></p>
+</li>
+<li>
+<p>Inline views</p>
+</li>
+</ul>
+<p>When the <code>ENABLE</code> <code>QUERY</code> <code>REWRITE</code> clause is specified, <code>TUNE_MVIEW</code> also fixes the statement using a process similar to <code>REFRESH</code> <code>FAST</code>. The procedure redefines the materialized view so that as many of the advanced forms of query rewrite are possible.</p>
+<p>The <code>TUNE_MVIEW</code> procedure generates two sets of output results as executable statements. One set of the output (<code>IMPLEMENTATION</code>) is for implementing materialized views and required components such as materialized view logs or rewrite equivalences to achieve fast refreshability and query rewritablity as much as possible. The other set of the output (<code>UNDO</code>) is for dropping the materialized views and the rewrite equivalences in case you decide they are not required.</p>
+<p>The output statements for the <code>IMPLEMENTATION</code> process include:</p>
+<ul>
+<li>
+<p><code>CREATE</code> <code>MATERIALIZED</code> <code>VIEW</code> <code>LOG</code> statements: creates any missing materialized view logs required for fast refresh.</p>
+</li>
+<li>
+<p><code>ALTER</code> <code>MATERIALIZED</code> <code>VIEW</code> <code>LOG</code> <code>FORCE</code> statements: fixes any materialized view log related requirements such as missing filter columns, sequence, and so on, required for fast refresh.</p>
+</li>
+<li>
+<p>One or more <code>CREATE</code> <code>MATERIALIZED</code> <code>VIEW</code> statements: In the case of one output statement, the original defining query is directly restated and transformed. Simple query transformation could be just adding required columns. For example, add rowid column for materialized join view and add aggregate column for materialized aggregate view. In the case of decomposition, multiple <code>CREATE</code> <code>MATERIALIZED</code> <code>VIEW</code> statements are generated and form a nested materialized view hierarchy in which one or more submaterialized views are referenced by a new top-level materialized view modified from the original statement. This is to achieve fast refresh and query rewrite as much as possible. Submaterialized views are often fast refreshable.</p>
+</li>
+<li>
+<p><code>BUILD_SAFE_REWRITE_EQUIVALENCE</code> statement: enables the rewrite of top-level materialized views using submaterialized views. It is required to enable query rewrite when a composition occurs.</p>
+</li>
+</ul>
+<p>Note that the decomposition result implies no sharing of submaterialized views. That is, in the case of decomposition, the <code>TUNE_MVIEW</code> output always contains new submaterialized view. It does not reference existing materialized views.</p>
+<p>The output statements for the <code>UNDO</code> process include:</p>
+<ul>
+<li>
+<p><code>DROP</code> <code>MATERIALIZED</code> <code>VIEW</code> statements to reverse the materialized view creations (including submaterialized views) in the <code>IMPLEMENTATION</code> process.</p>
+</li>
+<li>
+<p><code>DROP_REWRITE_EQUIVALENCE</code> statement to remove the rewrite equivalence relationship built in the <code>IMPLEMENTATION</code> process if needed.</p>
+</li>
+</ul>
+<p>Note that the <code>UNDO</code> process does not include the statement to drop materialized view logs. Many different materialized views can share materialized view logs. Some of these logs may reside on remote Oracle database instances.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i1038256"></a>
+<div id="PFGRF94925" class="sect3">
+<h4 class="sect3"><span class="secnum">18.3.1.2</span> Accessing TUNE_MVIEW Output Results</h4>
+<p>There are two ways to access <code>TUNE_MVIEW</code> output results:</p>
+<ul>
+<li>
+<p>Script generation using <code>DBMS_ADVISOR.GET_TASK_SCRIPT</code> function and <code>DBMS_ADVISOR.CREATE_FILE</code> procedure.</p>
+</li>
+<li>
+<p>Use <code>USER_TUNE_MVIEW</code> or <code>DBA_TUNE_MVIEW</code> views.</p>
+</li>
+</ul>
+<div id="PFGRF94926" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref1461"></a>
+<h5 class="sect4"><span class="secnum">18.3.1.2.1</span> USER_TUNE_MVIEW and DBA_TUNE_MVIEW Views</h5>
+<p>After executing <code>TUNE_MVIEW</code>, the results are output into SQL Access Advisor repository tables and are accessible through the data dictionary views <code>USER_TUNE_MVIEW</code> and <code>DBA_TUNE_MVIEW</code>. See <a class="olink REFRN" href="../e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for further details.</p>
+</div>
+<!-- class="sect4" -->
+<div id="PFGRF94927" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref1462"></a>
+<h5 class="sect4"><span class="secnum">18.3.1.2.2</span> Script Generation DBMS_ADVISOR Function and Procedure</h5>
+<p>The most straightforward method for generating the execution scripts for a recommendation is to use the procedure <code>DBMS_ADVISOR.GET_TASK_SCRIPT</code>. The following is a simple example. First, you must define a directory in which to store the results:</p>
+<pre>
+CREATE DIRECTORY TUNE_RESULTS AS  '/tmp/script_dir';
+GRANT READ, WRITE ON DIRECTORY TUNE_RESULTS TO PUBLIC;
+</pre>
+<p>Now generate both the implementation and undo scripts and place them in <code>/tmp/script_dir/mv_create.sql</code> and <code>/tmp/script_dir/mv_undo.sql</code>, respectively.</p>
+<pre>
+EXECUTE DBMS_ADVISOR.CREATE_FILE(DBMS_ADVISOR.GET_TASK_SCRIPT(:task_name),- 
+      'TUNE_RESULTS', 'mv_create.sql'); 
+EXECUTE DBMS_ADVISOR.CREATE_FILE(DBMS_ADVISOR.GET_TASK_SCRIPT(:task_name, - 
+      'UNDO'), 'TUNE_RESULTS', 'mv_undo.sql');
+</pre>
+<p>Now let us review some examples using the <code>TUNE_MVIEW</code> procedure.</p>
+<div id="PFGRF94928" class="example">
+<p class="titleinexample"><a id="sthref1463"></a>Example 18-1 Optimizing the Defining Query for Fast Refresh</p>
+<p>This example shows how <code>TUNE_MVIEW</code> changes the defining query to be fast refreshable. A <code>CREATE</code> <code>MATERIALIZED</code> <code>VIEW</code> statement is defined in variable <code>create_mv_ddl</code>, which includes a <code>FAST</code> <code>REFRESH</code> clause. Its defining query contains a single query block in which an aggregate column, <code>SUM(s.amount_sold)</code>, does not have the required aggregate columns to support fast refresh. If you execute the <code>TUNE_MVIEW</code> statement with this <code>MATERIALIZED</code> <code>VIEW</code> <code>CREATE</code> statement, then the resulting materialized view recommendation is fast refreshable:</p>
+<pre>
+VARIABLE task_cust_mv VARCHAR2(30);
+VARIABLE create_mv_ddl VARCHAR2(4000);
+EXECUTE :task_cust_mv := 'cust_mv';
+
+EXECUTE :create_mv_ddl := '
+CREATE MATERIALIZED VIEW cust_mv
+REFRESH FAST
+DISABLE QUERY REWRITE AS
+SELECT s.prod_id, s.cust_id, SUM(s.amount_sold) sum_amount
+FROM sales s, customers cs
+WHERE s.cust_id = cs.cust_id
+GROUP BY s.prod_id, s.cust_id';
+
+EXECUTE DBMS_ADVISOR.TUNE_MVIEW(:task_cust_mv, :create_mv_ddl);
+</pre>
+<p>The original defining query of <code>cust_mv</code> has been modified by adding aggregate columns to be fast refreshable.</p>
+<p>The output from <code>TUNE_MVIEW</code> includes an optimized materialized view defining query as follows:</p>
+<pre>
+CREATE MATERIALIZED VIEW SH.CUST_MV
+REFRESH FAST WITH ROWID
+DISABLE QUERY REWRITE AS
+SELECT SH.SALES.PROD_ID C1, SH.CUSTOMERS.CUST_ID C2,
+          SUM("SH"."SALES"."AMOUNT_SOLD") M1,
+          COUNT("SH"."SALES"."AMOUNT_SOLD") M2,
+          COUNT(*) M3
+     FROM SH.SALES, SH.CUSTOMERS
+     WHERE SH.CUSTOMERS.CUST_ID = SH.SALES.CUST_ID
+     GROUP BY SH.SALES.PROD_ID, SH.CUSTOMERS.CUST_ID;
+</pre>
+<p>The <code>UNDO</code> output is as follows:</p>
+<pre>
+DROP MATERIALIZED VIEW SH.CUST_MV;
+</pre></div>
+<!-- class="example" -->
+<div id="PFGRF94929" class="example">
+<p class="titleinexample"><a id="sthref1464"></a>Example 18-2 Access IMPLEMENTATION Output Through USER_TUNE_MVIEW View</p>
+<pre>
+SELECT STATEMENT FROM USER_TUNE_MVIEW
+WHERE TASK_NAME= :task_cust_mv AND SCRIPT_TYPE='IMPLEMENTATION';
+</pre></div>
+<!-- class="example" -->
+<div id="PFGRF94930" class="example">
+<p class="titleinexample"><a id="sthref1465"></a>Example 18-3 Save IMPLEMENTATION Output in a Script File</p>
+<pre>
+CREATE DIRECTORY TUNE_RESULTS AS '/myscript'
+GRANT READ, WRITE ON DIRECTORY TUNE_RESULTS TO PUBLIC;
+
+EXECUTE DBMS_ADVISOR.CREATE_FILE(DBMS_ADVISOR.GET_TASK_SCRIPT(:task_cust_mv), -
+   'TUNE_RESULTS', 'mv_create.sql');
+</pre></div>
+<!-- class="example" -->
+<div id="PFGRF94931" class="example">
+<p class="titleinexample"><a id="sthref1466"></a>Example 18-4 Enable Query Rewrite by Creating Multiple Materialized Views</p>
+<p>This example decomposes a materialized view's defining query with set operators <code>UNION</code>, which is not supported by query rewrite, into several submaterialized views, making query rewrite possible. The input detail tables are <code>sales</code>, <code>customers</code>, and <code>countries</code>. These tables do not have materialized view logs.First, you must execute the <code>TUNE_MVIEW</code> statement with the <code>CREATE</code> <code>MATERIALIZED</code> <code>VIEW</code> statement defined in the variable <code>create_mv_ddl</code>.</p>
+<pre>
+EXECUTE :task_cust_mv := 'cust_mv2';
+
+EXECUTE :create_mv_ddl := '
+CREATE MATERIALIZED VIEW cust_mv
+ENABLE QUERY REWRITE AS
+SELECT s.prod_id, s.cust_id, COUNT(*) cnt, SUM(s.amount_sold) sum_amount
+FROM sales s, customers cs, countries cn
+WHERE s.cust_id = cs.cust_id AND cs.country_id = cn.country_id
+AND cn.country_name IN (''USA'',''Canada'')
+GROUP BY s.prod_id, s.cust_id
+UNION
+SELECT s.prod_id, s.cust_id, COUNT(*) cnt, SUM(s.amount_sold) sum_amount
+FROM sales s, customers cs
+WHERE s.cust_id = cs.cust_id AND s.cust_id IN (1005,1010,1012)
+GROUP BY s.prod_id, s.cust_id';
+</pre>
+<p>The materialized view defining query contains a <code>UNION</code> set operator that does not support general query rewrite. If it is decomposed into multiple materialized views, however, then query rewrite is possible. To support general query rewrite, the database decomposes the <code>MATERIALIZED</code> <code>VIEW</code> defining query.</p>
+<pre>
+EXECUTE DBMS_ADVISOR.TUNE_MVIEW(:task_cust_mv, :create_mv_ddl);
+</pre>
+<p>The following recommendation from <code>TUNE_MVIEW</code> contains the materialized view logs and multiple materialized view:</p>
+<pre>
+CREATE MATERIALIZED VIEW LOG ON "SH"."CUSTOMERS" 
+WITH ROWID, SEQUENCE("CUST_ID")
+    INCLUDING NEW VALUES;
+
+ALTER MATERIALIZED VIEW LOG FORCE ON
+    "SH"."CUSTOMERS"
+    ADD ROWID, SEQUENCE("CUST_ID")
+    INCLUDING NEW VALUES;
+
+CREATE MATERIALIZED VIEW LOG ON
+    "SH"."SALES"
+    WITH ROWID, SEQUENCE("PROD_ID","CUST_ID","AMOUNT_SOLD")
+    INCLUDING NEW VALUES;
+
+ALTER MATERIALIZED VIEW LOG FORCE ON
+    "SH"."SALES"
+    ADD ROWID, SEQUENCE("PROD_ID","CUST_ID","AMOUNT_SOLD")
+    INCLUDING NEW VALUES;
+
+CREATE MATERIALIZED VIEW LOG ON
+    "SH"."COUNTRIES"
+    WITH ROWID, SEQUENCE("COUNTRY_ID","COUNTRY_NAME")
+    INCLUDING NEW VALUES;
+
+ALTER MATERIALIZED VIEW LOG FORCE ON
+    "SH"."COUNTRIES"
+    ADD ROWID, SEQUENCE("COUNTRY_ID","COUNTRY_NAME")
+    INCLUDING NEW VALUES;
+
+ALTER MATERIALIZED VIEW LOG FORCE ON
+    "SH"."CUSTOMERS"
+    ADD ROWID, SEQUENCE("CUST_ID","COUNTRY_ID")
+    INCLUDING NEW VALUES;
+
+ALTER MATERIALIZED VIEW LOG FORCE ON
+    "SH"."SALES"
+    ADD ROWID, SEQUENCE("PROD_ID","CUST_ID","AMOUNT_SOLD")
+    INCLUDING NEW VALUES;
+
+CREATE MATERIALIZED VIEW SH.CUST_MV$SUB1
+    REFRESH FAST WITH ROWID ON COMMIT
+    ENABLE QUERY REWRITE
+    AS SELECT SH.SALES.PROD_ID C1, SH.CUSTOMERS.CUST_ID C2,
+ SUM("SH"."SALES"."AMOUNT_SOLD")
+        M1, COUNT("SH"."SALES"."AMOUNT_SOLD") M2, COUNT(*) M3 FROM SH.SALES,
+        SH.CUSTOMERS WHERE SH.CUSTOMERS.CUST_ID = SH.SALES.CUST_ID AND
+ (SH.SALES.CUST_ID IN (1012, 1010, 1005)) 
+GROUP BY SH.SALES.PROD_ID, SH.CUSTOMERS.CUST_ID;
+
+CREATE MATERIALIZED VIEW SH.CUST_MV$SUB2
+    REFRESH FAST WITH ROWID ON COMMIT
+    ENABLE QUERY REWRITE
+    AS SELECT SH.SALES.PROD_ID C1, SH.CUSTOMERS.CUST_ID C2,
+      SH.COUNTRIES.COUNTRY_NAME  C3, SUM("SH"."SALES"."AMOUNT_SOLD") M1, COUNT("SH"."SALES".
+"AMOUNT_SOLD")
+        M2, COUNT(*) M3 FROM SH.SALES, SH.CUSTOMERS, SH.COUNTRIES WHERE
+ SH.CUSTOMERS.CUST_ID        = SH.SALES.CUST_ID AND SH.COUNTRIES.COUNTRY_ID = SH.CUSTOMERS.COUNTRY_ID
+        AND (SH.COUNTRIES.COUNTRY_NAME IN ('USA', 'Canada')) GROUP BY
+ SH.SALES.PROD_ID,
+        SH.CUSTOMERS.CUST_ID, SH.COUNTRIES.COUNTRY_NAME;
+
+CREATE MATERIALIZED VIEW SH.CUST_MV
+    REFRESH FORCE WITH ROWID
+    ENABLE QUERY REWRITE
+    AS  (SELECT "CUST_MV$SUB2"."C1" "PROD_ID","CUST_MV$SUB2"."C2" 
+"CUST_ID",SUM("CUST_MV$SUB2"."M3")
+        "CNT",SUM("CUST_MV$SUB2"."M1") "SUM_AMOUNT" FROM "SH"."CUST_MV$SUB2"
+        "CUST_MV$SUB2" GROUP BY "CUST_MV$SUB2"."C1","CUST_MV$SUB2"."C2")UNION
+        (SELECT "CUST_MV$SUB1"."C1" "PROD_ID","CUST_MV$SUB1"."C2" 
+"CUST_ID",SUM("CUST_MV$SUB1"."M3")
+        "CNT",SUM("CUST_MV$SUB1"."M1") "SUM_AMOUNT" FROM "SH"."CUST_MV$SUB1"
+        "CUST_MV$SUB1" GROUP BY "CUST_MV$SUB1"."C1","CUST_MV$SUB1"."C2");
+
+BEGIN
+DBMS_ADVANCED_REWRITE.BUILD_SAFE_REWRITE_EQUIVALENCE ('SH.CUST_MV$RWEQ',
+  'SELECT s.prod_id, s.cust_id, COUNT(*) cnt,
+          SUM(s.amount_sold) sum_amount
+   FROM sales s, customers cs, countries cn
+   WHERE s.cust_id = cs.cust_id AND cs.country_id = cn.country_id
+         AND cn.country_name IN (''USA'',''Canada'')
+   GROUP BY s.prod_id, s.cust_id
+   UNION
+   SELECT s.prod_id, s.cust_id, COUNT(*) cnt,
+          SUM(s.amount_sold) sum_amount
+   FROM sales s, customers cs
+   WHERE s.cust_id = cs.cust_id AND s.cust_id IN (1005,1010,1012)
+   GROUP BY s.prod_id, s.cust_id',
+  '(SELECT "CUST_MV$SUB2"."C3" "PROD_ID","CUST_MV$SUB2"."C2" "CUST_ID",
+           SUM("CUST_MV$SUB2"."M3") "CNT",
+           SUM("CUST_MV$SUB2"."M1") "SUM_AMOUNT" 
+    FROM "SH"."CUST_MV$SUB2" "CUST_MV$SUB2"
+    GROUP BY "CUST_MV$SUB2"."C3","CUST_MV$SUB2"."C2")
+   UNION
+   (SELECT "CUST_MV$SUB1"."C2" "PROD_ID","CUST_MV$SUB1"."C1" "CUST_ID",
+           "CUST_MV$SUB1"."M3" "CNT","CUST_MV$SUB1"."M1" "SUM_AMOUNT"
+    FROM "SH"."CUST_MV$SUB1" "CUST_MV$SUB1")',-1553577441)
+END;
+/;
+</pre>
+<p>The <code>DROP</code> output is as follows:</p>
+<pre>
+DROP MATERIALIZED VIEW SH.CUST_MV$SUB1
+DROP MATERIALIZED VIEW SH.CUST_MV$SUB2
+DROP MATERIALIZED VIEW SH.CUST_MV
+DBMS_ADVANCED_REWRITE.DROP_REWRITE_EQUIVALENCE('SH.CUST_MV$RWEQ')
+</pre>
+<p>The original defining query of <code>cust_mv</code> has been decomposed into two submaterialized views seen as <code>cust_mv$SUB1</code> and <code>cust_mv$SUB2</code>. One additional column <code>COUNT(amount_sold)</code> has been added in <code>cust_mv$SUB1</code> to make that materialized view fast refreshable.</p>
+<p>The original defining query of <code>cust_mv</code> has been modified to query the two submaterialized views instead where both submaterialized views are fast refreshable and support general query rewrite.</p>
+<p>The required materialized view logs are added to enable fast refresh of the submaterialized views. Note that, for each detail table, two materialized view log statements are generated: one is the <code>CREATE</code> <code>MATERIALIZED</code> <code>VIEW</code> statement and the other is an <code>ALTER</code> <code>MATERIALIZED</code> <code>VIEW</code> <code>FORCE</code> statement. The statements ensure that you can run the <code>CREATE</code> script multiple times.</p>
+<p>The <code>BUILD_SAFE_REWRITE_EQUIVALENCE</code> statement is to connect the old defining query to the defining query of the new top-level materialized view. It ensures that query rewrite uses the new top-level materialized view to answer the query.</p>
+</div>
+<!-- class="example" -->
+<div id="PFGRF94932" class="example">
+<p class="titleinexample"><a id="sthref1467"></a>Example 18-5 Access IMPLEMENTATION Output Through USER_TUNE_MVIEW View</p>
+<pre>
+SELECT * FROM USER_TUNE_MVIEW
+WHERE TASK_NAME='cust_mv2'
+AND SCRIPT_TYPE='IMPLEMENTATION';
+</pre></div>
+<!-- class="example" -->
+<div id="PFGRF94933" class="example">
+<p class="titleinexample"><a id="sthref1468"></a>Example 18-6 Save IMPLEMENTATION Output in a Script File</p>
+<p>The following statements save the <code>IMPLEMENTATION</code> output in a script file located at <code>/myscript/mv_create2.sql</code>:</p>
+<pre>
+CREATE DIRECTORY TUNE_RESULTS AS '/myscript'
+GRANT READ, WRITE ON DIRECTRY TUNE_RESULTS TO PUBLIC;
+EXECUTE DBMS_ADVISOR.CREATE_FILE(DBMS_ADVISOR.GET_TASK_SCRIPT('cust_mv2'),
+   'TUNE_RESULTS', 'mv_create2.sql');
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<div id="PFGRF94934" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1469"></a>
+<h4 class="sect3"><span class="secnum">18.3.1.3</span> Fast Refreshable with Optimized Sub-Materialized View</h4>
+<p>The example illustrates how <code>TUNE_MVIEW</code> can optimize the materialized view so that fast refresh is possible. In the example, the materialized view's defining query with set operators is transformed into one sub-materialized view and one top-level materialized view. The subselect queries in the original defining query are of similar shape and their predicate expressions are combined.</p>
+<p>The materialized view defining query contains a <code>UNION</code> set-operator so that the materialized view itself is not fast-refreshable. However, you can combine two subselect queries in the materialized view defining query into one single query.</p>
+<div id="PFGRF94935" class="example">
+<p class="titleinexample"><a id="sthref1470"></a>Example 18-7 Optimized Sub-Materialized View for Fast Refresh</p>
+<pre>
+EXECUTE :task_cust_mv := 'cust_mv3';
+</pre></div>
+<!-- class="example" -->
+<pre>
+EXECUTE :create_mv_ddl := '
+
+CREATE MATERIALIZED VIEW cust_mv
+REFRESH FAST ON DEMAND
+ENABLE QUERY REWRITE AS
+SELECT s.prod_id, s.cust_id, COUNT(*) cnt, SUM(s.amount_sold) sum_amount
+FROM sales s, customers cs
+WHERE s.cust_id = cs.cust_id AND s.cust_id IN (2005,1020)
+GROUP BY s.prod_id, s.cust_id UNION
+SELECT s.prod_id, s.cust_id, COUNT(*) cnt, SUM(s.amount_sold) sum_amount
+FROM sales s, customers cs -
+WHERE s.cust_id = cs.cust_id AND s.cust_id IN (1005,1010,1012)
+GROUP BY s.prod_id, s.cust_id';
+
+EXECUTE DBMS_ADVISOR.TUNE_MVIEW(:task_cust_mv, :create_mv_ddl);
+</pre>
+<p>The following recommendation will be made by <code>TUNE_MVIEW</code> with an optimized submaterialized view combining the two subselect queries. The submaterialized view is referenced by a new top-level materialized view as follows:</p>
+<pre>
+CREATE MATERIALIZED VIEW LOG ON "SH"."SALES" 
+  WITH ROWID, SEQUENCE ("PROD_ID","CUST_ID","AMOUNT_SOLD")
+  INCLUDING NEW VALUES
+
+ALTER MATERIALIZED VIEW LOG FORCE ON "SH"."SALES"
+  ADD ROWID, SEQUENCE ("PROD_ID","CUST_ID","AMOUNT_SOLD")
+  INCLUDING NEW VALUES
+
+CREATE MATERIALIZED VIEW LOG ON "SH"."CUSTOMERS" 
+  WITH ROWID, SEQUENCE ("CUST_ID")  INCLUDING NEW VALUES
+
+ALTER MATERIALIZED VIEW LOG FORCE ON "SH"."CUSTOMERS"
+  ADD ROWID, SEQUENCE ("CUST_ID")  INCLUDING NEW VALUES
+
+CREATE MATERIALIZED VIEW SH.CUST_MV$SUB1
+  REFRESH FAST WITH ROWID
+  ENABLE QUERY REWRITE AS
+  SELECT SH.SALES.CUST_ID C1, SH.SALES.PROD_ID C2, 
+    SUM("SH"."SALES"."AMOUNT_SOLD") M1, 
+    COUNT("SH"."SALES"."AMOUNT_SOLD")M2, COUNT(*) M3 
+    FROM SH.CUSTOMERS, SH.SALES
+    WHERE SH.SALES.CUST_ID = SH.CUSTOMERS.CUST_ID AND
+    (SH.SALES.CUST_ID IN (2005, 1020, 1012, 1010, 1005))
+    GROUP BY SH.SALES.CUST_ID, SH.SALES.PROD_ID
+
+CREATE MATERIALIZED VIEW SH.CUST_MV 
+  REFRESH FORCE WITH ROWID ENABLE QUERY REWRITE AS
+  (SELECT "CUST_MV$SUB1"."C2" "PROD_ID","CUST_MV$SUB1"."C1" "CUST_ID",
+    "CUST_MV$SUB1"."M3" "CNT","CUST_MV$SUB1"."M1" "SUM_AMOUNT" 
+    FROM "SH"."CUST_MV$SUB1" "CUST_MV$SUB1" 
+    WHERE "CUST_MV$SUB1"."C1"=2005 OR "CUST_MV$SUB1"."C1"=1020)
+    UNION 
+    (SELECT "CUST_MV$SUB1"."C2" "PROD_ID","CUST_MV$SUB1"."C1" "CUST_ID",
+      "CUST_MV$SUB1"."M3" "CNT","CUST_MV$SUB1"."M1" "SUM_AMOUNT" 
+      FROM "SH"."CUST_MV$SUB1" "CUST_MV$SUB1" 
+      WHERE "CUST_MV$SUB1"."C1"=1012 OR "CUST_MV$SUB1"."C1"=1010 OR 
+            "CUST_MV$SUB1"."C1"=1005)
+      
+DBMS_ADVANCED_REWRITE.BUILD_SAFE_REWRITE_EQUIVALENCE ('SH.CUST_MV$RWEQ',
+      'SELECT s.prod_id, s.cust_id, COUNT(*) cnt, 
+       SUM(s.amount_sold) sum_amount
+       FROM sales s, customers cs
+       WHERE s.cust_id = cs.cust_id AND s.cust_id IN (2005,1020)
+       GROUP BY s.prod_id, s.cust_id UNION
+       SELECT s.prod_id, s.cust_id, COUNT(*) cnt,
+       SUM(s.amount_sold) sum_amount
+       FROM sales s, customers cs
+       WHERE s.cust_id = cs.cust_id AND s.cust_id IN (1005,1010,1012)
+       GROUP BY s.prod_id, s.cust_id',
+      '(SELECT "CUST_MV$SUB1"."C2" "PROD_ID",
+        "CUST_MV$SUB1"."C1" "CUST_ID",
+        "CUST_MV$SUB1"."M3" "CNT","CUST_MV$SUB1"."M1" "SUM_AMOUNT" 
+        FROM "SH"."CUST_MV$SUB1" "CUST_MV$SUB1" 
+        WHERE "CUST_MV$SUB1"."C1"=2005OR "CUST_MV$SUB1"."C1"=1020)
+       UNION
+       (SELECT "CUST_MV$SUB1"."C2" "PROD_ID",
+        "CUST_MV$SUB1"."C1" "CUST_ID",
+        "CUST_MV$SUB1"."M3" "CNT","CUST_MV$SUB1"."M1" "SUM_AMOUNT"
+        FROM "SH"."CUST_MV$SUB1" "CUST_MV$SUB1" 
+        WHERE "CUST_MV$SUB1"."C1"=1012 OR "CUST_MV$SUB1"."C1"=1010 OR
+              "CUST_MV$SUB1"."C1"=1005)',
+      1811223110);
+</pre>
+<p>The original defining query of <code>cust_mv</code> has been optimized by combining the predicate of the two subselect queries in the sub-materialized view <code>CUST_MV$SUB1</code>. The required materialized view logs are also added to enable fast refresh of the submaterialized views.</p>
+<p>The <code>DROP</code> output is as follows:</p>
+<pre>
+DROP MATERIALIZED VIEW SH.CUST_MV$SUB1
+DROP MATERIALIZED VIEW SH.CUST_MV
+DBMS_ADVANCED_REWRITE.DROP_REWRITE_EQUIVALENCE('SH.CUST_MV$RWEQ');
+</pre>
+<p>The following statements save the <code>IMPLEMENTATION</code> output in a script file located at <code>/myscript/mv_create3.sql</code>:</p>
+<pre>
+CREATE DIRECTORY TUNE_RESULTS AS '/myscript'
+GRANT READ, WRITE ON DIRECTORY TUNE_RESULTS TO PUBLIC;
+EXECUTE DBMS_ADVISOR.CREATE_FILE(DBMS_ADVISOR.GET_TASK_SCRIPT('cust_mv3'),
+   'TUNE_RESULTS', 'mv_create3.sql');
+</pre></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1679">
+<tr>
+<td class="cellalignment1688">
+<table class="cellalignment1684">
+<tr>
+<td class="cellalignment1683"><a href="sql_tune.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1683"><a href="hintsref.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2000, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1690">
+<table class="cellalignment1682">
+<tr>
+<td class="cellalignment1683"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1683"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1683"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1683"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1683"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1683"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Moving Large Volumes of Data Using Transportable Modules</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 037" />
+<meta name="dcterms.created" content="2011-09-21T18:21:36Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Warehouse Builder Data Modeling, ETL, and Data Quality Guide" />
+<meta name="dcterms.identifier" content="E10935-05" />
+<meta name="dcterms.isVersionOf" content="WBETL" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2000, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="design_webservices.htm" title="Previous" type="text/html" />
+<link rel="Next" href="part_3.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10935.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">22/37</span> <!-- End Header --><a id="CEGBJCGC"></a><a id="WBETL17000"></a>
+<h1 class="chapter"><span class="secnum">17</span> Moving Large Volumes of Data Using Transportable Modules</h1>
+<p>Oracle Warehouse Builder enables you to build and publish an enterprise data warehouse in stages. You can improve the performance and manageability of the data warehouse.</p>
+<p>Oracle Warehouse Builder mappings access remote data through database links. Processing overhead and network delays make this data access process slower than local data access by the mappings. You can use one of the following strategies to speed up data access:</p>
+<ul>
+<li>
+<p>Create a transportable module to copy remote objects (tables, views, materialized views, and so on) from a source database into a target database. The mappings in the target data warehouse can then access data locally.</p>
+</li>
+<li>
+<p>Data can be partially processed in the source database and then the preprocessed data can be copied, using a transportable module, from source to target database for final loading into the data warehouse.</p>
+</li>
+</ul>
+<p>A transportable module functions like a shipping service that moves a package of objects from one site to another at the fastest possible speed.</p>
+<p><span class="bold">Note:</span> To use transportable modules, ensure that your organization has licensed the Oracle Warehouse Builder Enterprise ETL Option.</p>
+<p>The chapter contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#CHDFEIFE">"About Transportable Modules"</a></p>
+</li>
+<li>
+<p><a href="#CIHBGECI">"Benefits of Using Transportable Modules"</a></p>
+</li>
+<li>
+<p><a href="#CIHJAADA">"Instructions for Using Transportable Modules"</a></p>
+</li>
+<li>
+<p><a href="#CIHIDEFH">"Editing Transportable Modules"</a></p>
+</li>
+</ul>
+<a id="CHDFEIFE"></a><a id="WBETL17020"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">About Transportable Modules</h2>
+<p>Transportable modules enables you to rapidly copy a group of related database objects from one database to another.</p>
+<p>Using the Design Center, you first create a transportable module, and specify the source database location and the target database location. Then, you select the database objects to be included in the transportable module. The metadata of the selected objects are imported from the source database into the transportable module. The metadata is stored in the workspace. To physically move the data and metadata from source into target, you must configure and deploy the transportable module to the target location. During deployment, both data and metadata are extracted from the source database and created in the target database.</p>
+<p>A combination of the following technologies enables the movement of data and metadata:</p>
+<ul>
+<li>
+<p>Oracle Data Pump</p>
+</li>
+<li>
+<p>Transportable Tablespace</p>
+</li>
+<li>
+<p>DBMS_FILE_TRANSFER</p>
+</li>
+<li>
+<p>Binary FTP</p>
+</li>
+<li>
+<p>Local file copy</p>
+</li>
+<li>
+<p>code generation and deployment</p>
+</li>
+</ul>
+<p>You can configure transportable modules to influence which technologies are used.</p>
+<p>You can add the following source objects to transportable modules:</p>
+<ul>
+<li>
+<p>Tablespaces</p>
+</li>
+<li>
+<p>Schemas</p>
+</li>
+<li>
+<p>Tables</p>
+</li>
+<li>
+<p>Views</p>
+</li>
+<li>
+<p>Sequences</p>
+</li>
+<li>
+<p>Materialized Views</p>
+</li>
+<li>
+<p>PL/SQL Functions, Procedures, and Packages</p>
+</li>
+<li>
+<p>Object Types</p>
+</li>
+<li>
+<p>Varying Array Types (Varrays)</p>
+</li>
+<li>
+<p>Nested Table Types</p>
+</li>
+</ul>
+<p>The traditional Extract, Transform, and Load (ETL) process extracts data from remote databases through multiple remote accesses using database links.</p>
+<p><a href="#CIHDHHEE">Figure 17-1</a> displays the traditional extraction of data from remote databases.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CIHDHHEE"></a>Figure 17-1 Extraction Of Data From Remote Databases Through Multiple Remote Accesses Using Database Links</p>
+<img width="449" height="129" src="img/transmod1.gif" alt="Description of Figure 17-1 follows" /><br />
+<a id="sthref1696" href="img_text/transmod1.htm">Description of "Figure 17-1 Extraction Of Data From Remote Databases Through Multiple Remote Accesses Using Database Links"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>During remote accesses using database links, significant performance degradation occurs due to serial queries and serial DMLs, and network latencies. The performance degradation appears more if the same source tables are accessed multiple times.</p>
+<p>In the transportable module architecture, all the source objects needed by the mappings are bundled and moved to the target during a deployment. The transportable modules deployment uses Oracle Data Pump, FTP, and Oracle transportable table space to achieve very high transportation performance. This transportation absorbs the cost of the network delays. After deployment, mappings access data locally, which can easily benefit from parallel queries and parallel DMLs. Repeated accesses to the same data increases the performance benefit of transportable modules.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CIHGBFFE"></a>Figure 17-2 Transportable Modules Deployment</p>
+<img width="436" height="134" src="img/transmod2.gif" alt="Description of Figure 17-2 follows" /><br />
+<a id="sthref1697" href="img_text/transmod2.htm">Description of "Figure 17-2 Transportable Modules Deployment"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>Using transportable modules, data warehouse loadings become more manageable. The source database must be shut down only for a short period for the transportable module to complete the deployment. Users of the source database do not have to wait until the entire data is loaded into the data warehouse. For example, if you are using the transportable tablespace implementation, transportable modules can copy a tablespace of 20 GB in about five minutes, resulting in a down time of five minutes in the source database.</p>
+<p>Data copied into the target database is a snapshot of the information present in the source database. You use the same to create a data versioning system. Advanced users can create streams on the transported tables for capturing real-time changes from the source. The transported tables can also be copied into larger tables as a partition.</p>
+<p>In a multidepartmental enterprise environment, the target database may actually be an operational data store that is used for intermediate reporting and updating purposes. This target database could in turn, serve as a source to the next stage of data collection. You can use the transportable modules at multiple stages, along the path on which the data is moved before it is stored in the data warehouse.</p>
+<p>Transportable modules can also be used for publishing data marts. A data mart is normally a portion of a larger data warehouse for single or departmental access. At times, creating a data mart amounts to copying what has been collected and processed in the data warehouse. A transportable module can be created to perform this task. You can also use the same transportable module to deploy a data mart to multiple locations.</p>
+<p><a href="#CIHGJJCE">Figure 17-3</a> displays a transportable module used for publishing for data marts.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CIHGJJCE"></a>Figure 17-3 Data Marts in a Data Warehouse</p>
+<img width="404" height="289" src="img/transmod3.gif" alt="Transportable module is publishing data marts." /><br />
+<a id="sthref1698" href="img_text/transmod3.htm">Description of "Figure 17-3 Data Marts in a Data Warehouse"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>Because a transportable module deploys a snapshot of the source database objects, you use the deployment time to track the version of the data marts.</p>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1699"></a>
+<h3 class="sect2">About Transportable Modules and Oracle Database Technology<a id="sthref1700"></a></h3>
+<p>Transportable modules work by leveraging technology in Oracle Warehouse Builder plus technology in the Oracle Database. A transportable module replicates parts of a source database into a target database. The parts of the source database that can be replicated include tablespaces, tables, indexes, constraints, and other relational objects.</p>
+<p>Depending on the database version, the Oracle Database replicates the tablespace. When you transport data between two releases of Oracle8<span class="italic">i</span> databases or between two releases of Oracle9<span class="italic">i</span> databases, the database calls the Oracle transportable tablespaces functionality. When you transport data between two Oracle 10<span class="italic">g</span> databases, the database calls the Oracle Data Pump functionality.</p>
+<p>In the case of Oracle Database 10<span class="italic">g</span> and Oracle Data Pump, you can transport tables without transporting their tablespaces. For example, if your table is 100 KB and its tablespace size is 10MB, then you can deploy the table without deploying the entire tablespace. Only Oracle Data Pump provides the option to copy an entire schema. For Oracle 10<span class="italic">g</span> release database, you specify either data pump or transportable tablespaces during configuration as described in <a href="#CIHGHIIJ">"Configuring a Transportable Module"</a>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+For more information about transportable tablespace and Data Pump, see the Oracle Database 11<span class="italic">g</span> documentation.</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CIHBGECI"></a><a id="WBETL17021"></a>
+<div class="sect1">
+<h2 class="sect1">Benefits of Using Transportable Modules</h2>
+<p>Before the introduction of transportable modules, the most scalable data transportation method relied on moving flat files containing raw data. This method required data to be unloaded or exported into files from the source database, and then these files were loaded or imported into the target database. The transportable modules method entirely bypasses the unload and reload steps and gives you access to the Oracle Database technologies Transportable Tablespaces and Data Pump.</p>
+<p class="subhead2"><a id="sthref1701"></a>High Performance Data Extraction</p>
+<p>Transportable modules reduce the need for mappings to access data remotely. If you have large volumes of data on remote computers, then use transportable modules to quickly replicate the source onto the Oracle target database. Oracle Warehouse Builder mappings can then directly access a local copy of the data. In addition, because the source becomes part of the target, you can perform the ETL operations directly on the source data.</p>
+<p class="subhead2"><a id="sthref1702"></a>Distribute and Archive Data Marts</p>
+<p>A central data warehouse handles ETL processing while dependent data marts are read-only. You can use transportable modules to copy from a read-only data mart to multiple departmental databases. In this way, you can use your central data warehouse to periodically publish new data marts and then replace old data marts by dropping the old tablespace and importing a new one. Because duplication and distribution takes relatively less time, you can publish and distribute a data mart for daily analytical or business operations.</p>
+<p class="subhead2"><a id="sthref1703"></a>Archive Sources</p>
+<p>You can set the source tablespaces to read-only mode and then export them to a target. All the data files are copied, creating a consistent snapshot of the source database at a given time. This copy can then be archived. The archived data can be restored in the source and target databases.</p>
+</div>
+<!-- class="sect1" -->
+<a id="CIHJAADA"></a><a id="WBETL17022"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Instructions for Using Transportable Modules<a id="sthref1704"></a><a id="sthref1705"></a></h2>
+<p class="subhead2"><a id="sthref1706"></a>Before You Begin</p>
+<p>Ensure that you can connect to source and target databases as a user with the necessary roles and privileges as described in <a href="#WBETL17024">"Verifying the Requirements for Using Transportable Modules"</a>.</p>
+<p>Ensure that your organization has licensed the Warehouse Builder Enterprise ETL Option.</p>
+<p><span class="bold">To use transportable modules, refer to the following sections:</span></p>
+<p><span class="bold">Note to Database Administrators:</span> Step <a href="#BHBGHGJF">1</a> of these instructions requires some powerful database roles and privileges. Step <a href="#BHBHIIBB">3</a> requires knowledge of schema passwords. Depending on security considerations, you can enable developers to perform Step <a href="#BHBHIIBB">3</a> or restrict it to database administrators only.</p>
+<ol>
+<li>
+<p><a id="BHBGHGJF"></a><a href="#CIHBEFJE">"Specifying Locations for Transportable Modules"</a></p>
+<p>Ensure to successfully test these connections before proceeding to the next step.</p>
+</li>
+<li>
+<p><a href="#CIHFIBHA">"Creating a Transportable Module"</a></p>
+</li>
+<li>
+<p><a id="BHBHIIBB"></a><a href="#CIHGHIIJ">"Configuring a Transportable Module"</a></p>
+</li>
+<li>
+<p><a href="#CIHHAABA">Generating and Deploying a Transportable Module</a></p>
+</li>
+<li>
+<p><a href="#CHDJEDGA">Designing Mappings that Access Data through Transportable Modules</a></p>
+</li>
+<li>
+<p><a href="#CIHIDEFH">"Editing Transportable Modules"</a></p>
+</li>
+</ol>
+<a id="WBETL17024"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Verifying the Requirements for Using Transportable Modules</h3>
+<p>When creating a Transportable Module source location, the source location user must possess specific roles and/or privileges depending on the version of the source database.</p>
+<ul>
+<li>
+<p>If the source database is earlier than Oracle 10<span class="italic">g</span>, then the <code>SYSDBA</code> privilege is required for the source location user.</p>
+</li>
+<li>
+<p>If the source database is Oracle 10<span class="italic">g</span>, then the <code>SYSDBA</code> privilege is not required, but the following must be assigned to the source location user.</p>
+<ul>
+<li>
+<p>CONNECT role</p>
+</li>
+<li>
+<p>EXP_FULL_DATABASE role</p>
+</li>
+<li>
+<p>ALTER TABLESPACE privilege</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>When creating a Transportable Module target location, the target location user must possess specific roles and/or privileges depending on the version of the target database.</p>
+<ul>
+<li>
+<p>If the target database is earlier than Oracle 10<span class="italic">g</span>, then the <code>SYSDBA</code> privilege is required for the target location user.</p>
+</li>
+<li>
+<p>If the target database is Oracle 10<span class="italic">g</span>, then the <code>SYSDBA</code> privilege is not required but the following must be assigned to the target location user.</p>
+<ul>
+<li>
+<p>CONNECT role with admin option</p>
+</li>
+<li>
+<p>RESOURCE role with admin option</p>
+</li>
+<li>
+<p>IMP_FULL_DATABASE role</p>
+</li>
+<li>
+<p>ALTER TABLESPACE privilege</p>
+</li>
+<li>
+<p>EXECUTE_CATALOG_ROLE with admin option</p>
+</li>
+<li>
+<p>CREATE MATERIALIZED VIEW privilege with admin option</p>
+</li>
+<li>
+<p>CREATE ANY DIRECTORY privilege</p>
+</li>
+</ul>
+</li>
+</ul>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Transportable Module source and target location users must be assigned many powerful roles and privileges in order for the transportable modules to read objects from the source database and for creating objects in the target database. In a production environment, if necessary, the DBA may choose to create the transportable module source and target locations (using the Locations Navigator) for the data warehouse developers, and conceal the passwords.</div>
+<p>The following is a SQL script for the DBA to assign source location users the required roles and privileges in the source database:</p>
+<pre>
+grant connect to &lt;TM src location user&gt;;
+grant exp_full_database,alter tablespace to &lt;TM src location user&gt;;
+</pre>
+<p>The following is a SQL script for the DBA to assign target location users the required roles and privileges in the target database:</p>
+<pre>
+grant connect,resource to &lt;TM tgt location user&gt; with admin option;
+grant imp_full_database,alter tablespace to &lt;TM tgt location user&gt;;
+grant execute_catalog_role to &lt;TM tgt location user&gt; with admin option;
+grant create materialized view to &lt;TM tgt location user&gt; with admin option;
+grant create any directory to &lt;TM tgt location user&gt;;
+</pre></div>
+<!-- class="sect2" -->
+<a id="CIHBEFJE"></a>
+<div class="sect2">
+<h3 class="sect2">Specifying Locations for Transportable Modules</h3>
+<p><a id="sthref1707"></a><a id="sthref1708"></a>Before you create a transportable module, first define its source and target locations in the Location Navigator. Each transportable module can have only one source and one target location.</p>
+<p><span class="bold">To specify a transportable module location:</span></p>
+<ol>
+<li>
+<p>In the Locations Navigator, expand the <span class="bold">Locations</span> node.</p>
+</li>
+<li>
+<p>Expand the <span class="bold">Databases</span> node.</p>
+</li>
+<li>
+<p>Right-click either the <span class="bold">Transportable Modules Source Locations</span> or <span class="bold">Transportable Modules Target Locations</span> node and then select <span class="bold">New.</span></p>
+<p>Oracle Warehouse Builder displays a dialog box for specifying the connection information for the source or target location.</p>
+</li>
+<li>
+<p>The instructions for defining source and target locations are the same except that you do not specify optional FTP connection details for targets. Follow the instructions in <a href="#CHDIJFFF">"Transportable Module Source Location Information"</a> to specify the connection information and then test the connection.</p>
+</li>
+</ol>
+<a id="CHDIJFFF"></a>
+<div class="sect3">
+<h4 class="sect3">Transportable Module Source Location Information</h4>
+<p>Oracle Warehouse Builder first uses this connection information to import metadata for the transportable module from the source computer into the workspace. During deployment, the connection information is used to move data from the source to the target.</p>
+<p class="subhead2"><a id="sthref1709"></a>Name</p>
+<p>A name for the location of the source or target database.</p>
+<p class="subhead2"><a id="sthref1710"></a>Description</p>
+<p>An optional description for the location.</p>
+<p class="subhead2"><a id="sthref1711"></a>User Name/Password</p>
+<p>Oracle Warehouse Builder uses the database user name and password to retrieve the metadata of the source objects you want to include in the transportable module. Oracle Warehouse Builder also uses this information during deployment to perform transportable tablespace or data pump operations.</p>
+<p>To access databases for use with transportable modules, you must ensure that the user has the necessary database roles and privileges as described in <a href="#WBETL17024">"Verifying the Requirements for Using Transportable Modules"</a>.</p>
+<p class="subhead2"><a id="sthref1712"></a>Host</p>
+<p>Host name of the computer on which the database is installed.</p>
+<p class="subhead2"><a id="sthref1713"></a>Port</p>
+<p>Port number of the computer on which the database is installed.</p>
+<p class="subhead2"><a id="sthref1714"></a>Service</p>
+<p>Service name of the computer on which the database is installed.</p>
+<p class="subhead2"><a id="sthref1715"></a>Version</p>
+<p>Choose the Oracle Database release number from the list.</p>
+<p class="subhead2"><a id="sthref1716"></a>FTP User Name/Password (Optional)</p>
+<p>Specify FTP account credentials if you intend to use Oracle Transportable Tablespace as the method for transporting data. FTP credentials are not required if you do not plan to configure the Transportable Tablespace method.</p>
+<p>You can leave the FTP account credentials blank, if you configure to use the Transportable Tablespace, but both source and target databases are located in the same computer, or both source and target can access shared disk volumes. Without the FTP credentials, an attempt is made to perform a plain copy of the source files from the source directory to target directory.</p>
+<p class="subhead2"><a id="sthref1717"></a>Test Connection</p>
+<p>Click <span class="bold">Test Connection</span> to validate the connection information. Oracle Warehouse Builder attempts to connect to the source database and, if applicable, to the FTP service on the source computer. A success message is displayed only after both credentials are validated.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CIHFIBHA"></a>
+<div class="sect2">
+<h3 class="sect2">Creating a Transportable Module</h3>
+<p><span class="bold">To create a transportable module:</span></p>
+<ol>
+<li>
+<p>From the Projects Navigator, expand the <span class="bold">Databases</span> node.</p>
+</li>
+<li>
+<p>Right-click the <span class="bold">Transportable Modules</span> node and select <span class="bold">New</span>.</p>
+<p>The Welcome page of the Create Transportable Module Wizard is displayed.</p>
+</li>
+<li>
+<p>The wizard guides you through the following tasks:</p>
+<p><a href="#CIHGHDBD">"Describing the Transportable Module"</a></p>
+<p><a href="#CIHJBGEC">"Selecting the Source Location"</a></p>
+<p><a href="#BHBCJGAD">"Selecting the Target Location"</a></p>
+<p><a href="#CIHFJCJD">"Selecting Tablespaces and Schema Objects to Import"</a></p>
+<p><a href="#CIHGHEEC">"Reviewing the Transportable Module Definitions"</a></p>
+</li>
+</ol>
+<a id="CIHGHDBD"></a>
+<div class="sect3">
+<h4 class="sect3">Describing the Transportable Module</h4>
+<p>On the Name and Description page, type a name and optional description for the transportable module.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CIHJBGEC"></a>
+<div class="sect3">
+<h4 class="sect3">Selecting the Source Location</h4>
+<p>Although you can create a new source location from the wizard page, it is recommended that you define locations for transportable modules before starting the wizard as described in <a href="#CHDIJFFF">"Transportable Module Source Location Information"</a>.</p>
+<p>When you select an existing location, the wizard tests the connection and does not enable you to proceed until you specify a location with a valid connection.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BHBCJGAD"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Selecting the Target Location</h4>
+<p>Select a target location from the list. If no target locations are displayed, then click <span class="bold">New</span> and define a target location as described in <a href="#CHDIJFFF">"Transportable Module Source Location Information"</a>.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CIHFJCJD"></a>
+<div class="sect3">
+<h4 class="sect3">Selecting Tablespaces and Schema Objects to Import</h4>
+<p>Use the Define Contents page to select tablespaces and schema objects to include in the transportable module. On the left pane, <a href="#BHBJEDHC">"Available Database Objects"</a> lists all source tablespaces, schemas, and available schema objects. On the right pane, Selected Database Objects displays the objects after you select and move the objects.</p>
+<p>Expand the tablespaces to display the schemas in each tablespace and the objects in each schema. Non-tablespace schema objects such as views and sequences are also listed under their respective schema owners, even though these objects are not stored in the tablespace. To select multiple objects at the same time, hold down the Ctrl key while selecting them. You can include the following types of objects in transportable modules:</p>
+<ul>
+<li>
+<p>Tables</p>
+</li>
+<li>
+<p>Views</p>
+</li>
+<li>
+<p>Materialized Views</p>
+</li>
+<li>
+<p>Sequences</p>
+</li>
+<li>
+<p>PL/SQL Functions, Procedures, and Packages</p>
+</li>
+<li>
+<p>Object Types, Varray Types, and Nested Tables Types</p>
+</li>
+</ul>
+<p>Select the tablespaces and schema objects from the Available Database Objects field and click the arrow buttons in the center to move the objects to the Selected Database Objects field.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BHBJEDHC"></a>
+<div class="sect3">
+<h4 class="sect3">Available Database Objects</h4>
+<p>You can view the number of data files and their total size by placing your mouse over a node. The wizard displays the information in a tooltip.</p>
+<p><a href="#CIHBHAFD">Figure 17-4</a> displays the wizard with the tooltip.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CIHBHAFD"></a>Figure 17-4 Viewing the Number of Data Files and Total Size</p>
+<img width="610" height="462" src="img/trans_mod_imp_filtr_mousovr.gif" alt="This illustration is described in the surrounding text." /><br />
+<a id="sthref1718" href="img_text/trans_mod_imp_filtr_mousovr.htm">Description of "Figure 17-4 Viewing the Number of Data Files and Total Size"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<div class="sect4"><a id="sthref1719"></a>
+<h5 class="sect4">Finding Objects in the Available Database Object List:</h5>
+<p>Click the flashlight icon to find source data objects by type or name. In the <span class="bold">Object</span> field, type a name or pattern by which to filter your search, using the % character as a wildcard. From the <span class="bold">Type</span> list, indicate the object type you are searching. Check the required box to perform the search by name or by description.</p>
+<p>For example, type 'T%' in the Object field, select tablespaces from the Type field, and click <span class="bold">Find Next.</span> The cursor on the Available Database Objects navigation tree selects the name of the first tablespace that starts with a 'T.' If that is not the tablespace you want to select, then click <span class="bold">Find Next</span> to find the next tablespace. During this searching process, the navigation tree expands all the schema names and displays all the tablespaces.</p>
+<div class="infoboxnotealso">
+<p class="notep1">Tip:</p>
+When searching for schema level objects such as tables, it is recommended that you select a tablespace or schema from the navigation tree before starting the search. This prevents a search over all tablespaces and significantly reduces the search time.</div>
+</div>
+<!-- class="sect4" -->
+<div class="sect4"><a id="sthref1720"></a>
+<h5 class="sect4">Filtering the Available Database Objects List:</h5>
+<p>You can double-click a schema node or any of the nodes in the schema to type in a filter pattern. For example, if you type T% and click <span class="bold">OK,</span> the navigation tree displays only those objects that start with the letter T. The filter criteria is displayed with the object name in the navigation tree, providing a helpful hint of which object types have filters applied.</p>
+<p><a href="#BHBGEFBE">Figure 17-5</a> displays the Define Contents page with a schema selected.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="BHBGEFBE"></a>Figure 17-5 Schema Node Selected on Define Contents Page</p>
+<img width="610" height="462" src="img/trans_mod_import_filter.gif" alt="This illustration is described in the surrounding text." /><br />
+<a id="sthref1721" href="img_text/trans_mod_import_filter.htm">Description of "Figure 17-5 Schema Node Selected on Define Contents Page"</a><br />
+<br /></div>
+<!-- class="figure" --></div>
+<!-- class="sect4" -->
+<div class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref1722"></a>
+<h5 class="sect4">Objects Not Available for Inclusion in Transportable Modules</h5>
+<p>If you select items that cannot be included in a transportable module, then a dialog box is displayed listing items that cannot be included and describing why.</p>
+<p><a href="#BHBJDBDG">Figure 17-6</a> displays the Import Filter dialog box.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="BHBJDBDG"></a>Figure 17-6 Import Filter Dialog Box</p>
+<img width="580" height="360" src="img/tmod_import_filter_reasons.gif" alt="This illustration is described in the surrounding text." /><br />
+<a id="sthref1723" href="img_text/tmod_import_filter_reasons.htm">Description of "Figure 17-6 Import Filter Dialog Box"</a><br />
+<br /></div>
+<!-- class="figure" --></div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<a id="CIHGHEEC"></a>
+<div class="sect3">
+<h4 class="sect3">Reviewing the Transportable Module Definitions</h4>
+<p><a id="sthref1724"></a><a id="sthref1725"></a>Review the summary information and click <span class="bold">Finish</span> to import the metadata of the selected tablespace and schema objects.</p>
+<p>After the transportable module is created in your workspace, you can locate it on the Projects Navigator under the Transportable Modules node. Expand the tree to display the imported definitions.</p>
+<p>Oracle Warehouse Builder creates separate modules for separate schemas. The schema names on the Projects Navigator mirror the schema names in your source database.</p>
+<p>Because the objects contained in a transportable module mirror the source database, you cannot edit these objects using the user interface. If the source database changes, then you can reimport the objects. To delete objects from the transportable module, then right-click the object and select <span class="bold">Delete.</span> This action deletes the object from the definition of the transportable module but does not effect the underlying source database.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CIHGHIIJ"></a>
+<div class="sect2">
+<h3 class="sect2">Configuring a Transportable Module</h3>
+<p><a id="sthref1726"></a><a id="sthref1727"></a>In the Projects Navigator, right-click a transportable module and select <span class="bold">Configure</span> to configure it for deployment to the target database. You set configuration parameters at the following levels:</p>
+<ul>
+<li>
+<p><a href="#BHBEHBIH">"Transportable Module Configuration Properties"</a></p>
+</li>
+<li>
+<p><a href="#BHBFHDBJ">"Schema Configuration Properties"</a></p>
+</li>
+<li>
+<p><a href="#BHBJCBGD">"Target DataFile Configuration Properties"</a></p>
+</li>
+<li>
+<p><a href="#BHBJEFCJ">"Tablespace Configuration Properties"</a></p>
+</li>
+</ul>
+<p>For most used cases, you can accept the default settings for all the configuration parameters except <a href="#BHBGGHGD">"Password"</a> setting. You must specify a password for each target schema. If the schema exists in the target, then specify an existing password. If the schema does not exist, then the schema can be created with the password you provide.</p>
+<p>Depending on your company security polices, knowledge of schema passwords may be restricted to database administrators only. In that case, the database administrator must specify the password for each schema. Alternatively, developers can define new passwords for new schemas if the target has no existing schemas that match source schemas.</p>
+<a id="BHBEHBIH"></a>
+<div class="sect3">
+<h4 class="sect3">Transportable Module Configuration Properties</h4>
+<p>Set the following run time parameters for the transportable module:</p>
+<p class="subhead2"><a id="sthref1728"></a>Target Operating System Type</p>
+<p>Select the type of operating system for the target. For versions earlier than Oracle Database 10<span class="italic">g</span>, the type of operating system on the target computer must be the same as the source computer. For versions Oracle Database 10<span class="italic">g</span> or higher, you can deploy to any operating system from any operating system.</p>
+<p class="subhead2"><a id="BHBJHHJD"></a>Work Directory</p>
+<p>You should create a directory on the target computer dedicated to the deployment of transportable modules. This dedicated directory stores files generated at run time including temporary files, scripts, log files, and transportable tablespace data files. If you do not create a dedicated directory and type its full path as the <span class="bold">Work Directory,</span> then the generated files are saved under the run time home directory.</p>
+<p class="subhead2"><a id="sthref1729"></a>What to Deploy</p>
+<p><a id="sthref1730"></a>Oracle Warehouse Builder enables you to select whether you want to deploy only the tables in your transportable module or all the related catalog objects, such as views and sequences, as well. Select the <span class="bold">TABLES_ONLY</span> to deploy only tables. Otherwise, select the <span class="bold">ALL_OBJECTS</span>.</p>
+<p>Use the <span class="bold">TABLES_ONLY</span> option to refresh the data in a transportable module. If you had previously deployed a transportable module with the <span class="bold">ALL_OBJECTS</span> option and want to replace only the tablespace from the same source, then redeploy the transportable module with the <span class="bold">TABLES_ONLY</span> option. The deployment drops the existing tablespace in the target, inserts the new one, and then recompiles the previously deployed metadata.</p>
+<p>Similarly, if you previously deployed the transportable module using Data Pump, then the redeployment only modifies the tables in the transportable module.</p>
+<p class="subhead2"><a id="CIHGIGCH"></a>Transport Tablespace</p>
+<p>By default, this setting is enabled and the tablespaces are transported. If you enable this setting, then also specify the settings under <a href="#BHBJCBGD">"Target DataFile Configuration Properties"</a>.</p>
+<p>If both the source and target databases are Oracle 10<span class="italic">g</span> or higher, then consider disabling this setting. For example, if your table is 100 KB and its tablespace size is 10 MB, then you can deploy the table without deploying the entire tablespace. When you disable <span class="bold">Transport Tablespace,</span> Oracle Data Pump is used to deploy the table and you can specify the <a href="#CFIGFBAG">"Table Exists Action"</a> setting.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If source or target location is not Oracle 10<span class="italic">g</span>, the Transport Tablespace option is selected by default. In that case, Transportable Tablespace is the only implementation method for data movement. If both source and target locations are Oracle 10<span class="italic">g</span>, then you can deselect Transport Tablespace and use Data Pump.</div>
+<p>If Transport Tablespace is selected, then there are further restrictions, depending on the versions of the source and target locations, as described in <a href="#CFIJCACJ">Table 17-1</a>. When planning for data replications, take these restrictions into consideration. In general, Oracle Database 10<span class="italic">g</span> Release 2, is the preferred target database.</p>
+<div class="tblformal">
+<p class="titleintable"><a id="sthref1731"></a><a id="CFIJCACJ"></a>Table 17-1 Requirements for Replicating Data Between Database Versions</p>
+<table class="cellalignment2975" title="Requirements for Replicating Data Between Database Versions" summary="This table describes the requirements for replicating data between database versions." dir="ltr">
+<thead>
+<tr class="cellalignment2969">
+<th class="cellalignment2976" id="r1c1-t6">Source location</th>
+<th class="cellalignment2976" id="r1c2-t6">Target location</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r2c1-t6" headers="r1c1-t6">
+<p>10<span class="italic">g</span></p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t6 r1c2-t6">
+<p>Targeting another Oracle 10<span class="italic">g</span> location requires that both databases must have the same character set and the same national character set.</p>
+<p>Targeting an Oracle8<span class="italic">i</span> or Oracle9<span class="italic">i</span> location is not possible.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r3c1-t6" headers="r1c1-t6">
+<p>9<span class="italic">i</span></p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t6 r1c2-t6">
+<p>Targeting an Oracle9<span class="italic">i</span> or Oracle Database 10<span class="italic">g</span> location requires that both databases must have the same character set, the same national character set, and both databases must be on the same operating system platform.</p>
+<p>Targeting an Oracle8<span class="italic">i</span> or Oracle9<span class="italic">i</span> location is not possible.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r4c1-t6" headers="r1c1-t6">
+<p>8<span class="italic">i</span></p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t6 r1c2-t6">
+<p>Targeting an Oracle8<span class="italic">i</span>, Oracle9<span class="italic">i</span>, or Oracle Database 10<span class="italic">g</span> requires all of the following:</p>
+<ul>
+<li>
+<p>Both source and target databases must have the same character set.</p>
+</li>
+<li>
+<p>Both source and target databases must have the same national character set.</p>
+</li>
+<li>
+<p>Both source and target databases must be on the same operating system platform.</p>
+</li>
+<li>
+<p>Both source and target databases must have the same block size.</p>
+</li>
+<li>
+<p>Cannot change schema names during transporting tablespaces.</p>
+</li>
+<li>
+<p>Cannot change tablespace names during transporting tablespaces.</p>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" --></div>
+<!-- class="sect3" -->
+<a id="BHBFHDBJ"></a>
+<div class="sect3">
+<h4 class="sect3">Schema Configuration Properties</h4>
+<p>Set the following schema parameters for the transportable module:</p>
+<p class="subhead2"><a id="sthref1732"></a>Target Schema Name</p>
+<p>This property enables you to change the name of the source schema when it is deployed to the target. Select the Default or click the Ellipsis button to type the new name for your schema in the target and click <span class="bold">OK.</span> For example, you can change SCOTT to SCOTT1.</p>
+<p class="subhead2"><a id="BHBGGHGD"></a>Password</p>
+<p>For existing schemas, type a valid password for the schema. For schemas to be created, Oracle Warehouse Builder creates the schema with the password you provide.</p>
+<p class="subhead2"><a id="sthref1733"></a>Default Tablespace</p>
+<p>Specify the default tablespace to be used when creating the target schema. If you leave this setting blank, then the default specified by the target is used.</p>
+<p class="subhead2"><a id="BHBEFBAJ"></a>Schema Exists Action</p>
+<p>Specify what action should be taken if the schema exists in the target. The default value is Skip.</p>
+<p class="subhead2"><a id="BHBBHDED"></a>Schema Does Not Exist Action</p>
+<p>Specify what action should be taken if the schema does not exist in the target. The default value is Create.</p>
+<p class="subhead2"><a id="CFIGFBAG"></a>Table Exists Action</p>
+<p>When <a href="#CIHGIGCH">"Transport Tablespace"</a> is disabled, use this property to specify what action should be taken if the table exists in the target. The default value is Skip.</p>
+<p class="subhead2"><a id="CIHBAHJI"></a>Copy Source Schema</p>
+<p>When you use Oracle Data Pump by deselecting <a href="#CIHGIGCH">"Transport Tablespace"</a>, you can select this option to copy the entire source schema into the target.</p>
+<p class="subhead2"><a id="BHBFJFAD"></a>Parallel</p>
+<p>When you use Oracle Data Pump by deselecting <a href="#CIHGIGCH">"Transport Tablespace"</a>, specify the maximum number of processes for the Oracle Database to use for carrying out the transfer of data.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BHBJCBGD"></a>
+<div class="sect3">
+<h4 class="sect3">Target DataFile Configuration Properties</h4>
+<p>You must set the following data file parameters for the transportable module:</p>
+<p class="subhead2"><a id="sthref1734"></a>Directory</p>
+<p>Indicate the directory where you want the data file to be stored on your target computer. If you leave the directory unspecified, then the data file is stored in the <a href="#BHBJHHJD">"Work Directory"</a>.</p>
+<p class="subhead2"><a id="sthref1735"></a>File Name</p>
+<p>Specify the name of the data file to be created in the target computer. You can use this parameter to rename the data file. Accept the DEFAULT to persist the data file name from the source database or click the Ellipsis button to type a new name for the data file, and click <span class="bold">OK.</span></p>
+<p class="subhead2"><a id="sthref1736"></a>Overwrite</p>
+<p>If this parameter is selected, then the existing data file is overwritten. Otherwise, the deployment is terminated if an existing data file is found.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BHBJEFCJ"></a>
+<div class="sect3">
+<h4 class="sect3">Tablespace Configuration Properties</h4>
+<p>When you enable <a href="#CIHGIGCH">"Transport Tablespace"</a>, set the following tablespace parameters for the transportable module:</p>
+<p class="subhead2"><a id="sthref1737"></a>Tablespace Name</p>
+<p>If you are using a database before Oracle Database 10<span class="italic">g</span>, then the target tablespace name must be the same as your source tablespace name. For such cases, this field is read-only. If a tablespace with the same name exists in your target database, then the run time operation first drops the existing tablespace, and replaces it with the new one.</p>
+<p>If you are using Oracle Database 10<span class="italic">g</span> or higher, then you can change the target tablespace name.</p>
+<p class="subhead2"><a id="sthref1738"></a>Drop Existing Tablespace</p>
+<p>If this setting is selected, the existing tablespace is dropped and re-created in the target. By default, this setting is not selected and prevents you from deleting the tablespace in the target in the tablespace with the same name exists. In this case, the deployment process stops with an error.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CIHHAABA"></a>
+<div class="sect2">
+<h3 class="sect2">Generating and Deploying a Transportable Module</h3>
+<p><a id="sthref1739"></a><a id="sthref1740"></a><a id="sthref1741"></a><a id="sthref1742"></a>When you deploy a transportable module, the Control Center displays the transportable module as including all the tables while the other catalog objects such as views are displayed separately. When you select a deploy action for the transportable module, the Control Center sets the associated catalog objects to the same deploy action.</p>
+<p>During deployment of a transportable module, there are two ways for users to monitor the deployment progress. The first way is by the use of the Job Details window. The status line is instantly refreshed with the most up-to-date status. The message box immediately above the status line shows all the messages logged so far.</p>
+<p>Another way of observing the progress is by viewing the log file that the transportable module deployment process generates. The transportable module log file is created in the Work Directory that the user has configured. The name of the file is The <code>TM Name.log</code>, for example <code>TM1.log</code> if the name of the transportable module is <code>TM1</code>. This file is a plain text file containing the same messages that you can see in the message box in the Job Details window. <a href="#CIHEFCAB">Example 17-1</a> shows the contents of a transportable module log file.</p>
+<p>Currently, there are a total of 16 steps to view the log files. Some steps may be skipped depending on the user configurations, and some steps may contain error messages that transportable module considers ignorable, such as failures in creating referential constraints due to referenced tables not found errors. This log file contains important information. It must be carefully examined during and after the transportable module deployment completes.</p>
+<div class="example">
+<p class="titleinexample"><a id="CIHEFCAB"></a>Example 17-1 Log file containing important information</p>
+<pre>
+step1 begin: making connection to target db ...
+step1 end: connected to target
+Target OWB_HOME = /data/oracle/ora1010
+step2 begin: making connection to source db...
+step2 end: skipped.
+step3 begin: making source tablespaces read only...
+step3 end: skipped.
+step4 begin: exporting tts...
+step4 end: skipped.
+step 5 begin: checking for existing datafiles on target...
+step5 end: skipped.
+step 6 begin: drop existing tablespaces
+step6 end: skipped.
+step7 begin: transporting datafiles...
+step7 end: skipped.
+step8 begin: managing schemas/users ...
+step8 end: completed setting up target schemas
+step9 begin: drop non-table schema objects...
+step9 end: nothing to drop.
+step10 begin: converting datafiles...
+step10 end: skipped.
+step 11 begin: importing tts ...
+find or create a usable dblink to source.
+step11 end: importing tts is not requested by user.
+step 11 end: import tts is successful
+step 12 begin: restore source tablespaces original status ...
+step12 end: skipped.
+step13 end: skipped.
+step14 begin: non-tts import ...
+
+Import: Release 10.1.0.4.0 - Production on Tuesday, 04 April, 2006 10:43
+Copyright (c) 2003, Oracle.  All rights reserved.
+
+Username: 
+Connected to: Oracle Database 10<span class="italic">g</span> Enterprise Edition Release 10.1.0.4.0 - Production
+With the Partitioning, OLAP and Data Mining options
+Starting "TMTGT_U"."SYS_IMPORT_TABLE_02":  TMTGT_U/********@(DESCRIPTION=(ADDRESS=(HOST=LOCALHOST)(PROTOCOL=tcp)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=ORA1010.US.ORACLE.COM))) parfile=/home/ygong/tmdir/TM1_imptts.par 
+Estimate in progress using BLOCKS method...
+Processing object type TABLE_EXPORT/TABLE/TBL_TABLE_DATA/TABLE/TABLE_DATA
+Total estimation using BLOCKS method: 64 KB
+Processing object type TABLE_EXPORT/TABLE/TABLE
+. . imported "TMU1"."TA"                                      2 rows
+Processing object type TABLE_EXPORT/TABLE/STATISTICS/TABLE_STATISTICS
+Processing object type TABLE_EXPORT/TABLE/CONSTRAINT/REF_CONSTRAINT
+ORA-39083: Object type REF_CONSTRAINT failed to create with error:
+ORA-00942: table or view does not exist
+Failing sql is:
+ALTER TABLE "TMU1"."TA" ADD CONSTRAINT "TA_T1_FK" FOREIGN KEY ("C") REFERENCES "TMU1"."T1" ("C") ENABLE
+
+Job "TMTGT_U"."SYS_IMPORT_TABLE_02" completed with 1 error(s) at 10:44
+step14: import has failures.
+step14 end: non-tts import completed with warnings
+step15 end: create flat file directories skipped.
+step16 end: transporting flat files skipped.
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" -->
+<a id="CHDJEDGA"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Designing Mappings that Access Data through Transportable Modules</h3>
+<p><a id="sthref1743"></a><a id="sthref1744"></a>After you successfully deploy a transportable module, you can use the objects in the transportable module in ETL designs. When you add source and target operators to a mapping, you can select objects from the transportable module folder.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CIHIDEFH"></a><a id="WBETL17023"></a>
+<div class="sect1">
+<h2 class="sect1">Editing Transportable Modules</h2>
+<p><a id="sthref1745"></a><a id="sthref1746"></a>A transportable module is located under the transportable modules node within the Databases node on the Projects Navigator.</p>
+<p>You can edit a transportable module by right-clicking the name of the transportable module from the Projects Navigator and selecting <span class="bold">Open</span>. Oracle Warehouse Builder displays the Edit Transportable Module dialog box containing four tabs.</p>
+<div class="sect2"><a id="sthref1747"></a>
+<h3 class="sect2">Name</h3>
+<p>From the Name tab, you can edit the name and description of the transportable module.</p>
+</div>
+<!-- class="sect2" -->
+<div class="sect2"><a id="sthref1748"></a>
+<h3 class="sect2">Source Location</h3>
+<p>Oracle Warehouse Builder uses this connection information to access the source computer and import the metadata into its workspace. Oracle Warehouse Builder also uses this information during run time to move the tablespace data from the source to the target.</p>
+<p>The Source Database tab is read-only. Once you have imported tablespace definitions from a source computer, you cannot change the location information.</p>
+</div>
+<!-- class="sect2" -->
+<div class="sect2"><a id="sthref1749"></a>
+<h3 class="sect2">Tablespaces</h3>
+<p>The Tablespaces tab displays the tablespaces to be transported and their size. This tab is read-only. You can also view the tablespace size for individual data files in a tablespace. For details, see <a href="#CIHIAJIB">"Viewing Tablespace Properties"</a>.</p>
+</div>
+<!-- class="sect2" -->
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1750"></a>
+<h3 class="sect2">Target Locations</h3>
+<p>Displays the available and selected target locations. You can move a location from Available Locations to Selected Locations, or configure a new location.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CIHIAJIB"></a>
+<div class="sect2">
+<h3 class="sect2">Viewing Tablespace Properties</h3>
+<p>You can view the properties of a tablespace by right-clicking the name of the tablespace from the Projects Navigator and selecting <span class="bold">Open</span>. Oracle Warehouse Builder opens the Edit Tablespace dialog box. This property sheet displays the size of individual data files in a tablespace. It has two tabs, Name and Source Datafiles.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CIHIBHCJ"></a>
+<div class="sect2">
+<h3 class="sect2">Reimporting Metadata into a Transportable Module</h3>
+<p>If your source data has changed since you last created a transportable module, then you can reimport the metadata to update your workspace definitions. When you open the Reimport dialog box, the source location you specified while creating the transportable module is stored and the source objects are displayed.</p>
+<p><span class="bold">To reimport transportable module definitions:</span></p>
+<ol>
+<li>
+<p>From the Projects Navigator, right-click the <span class="bold">Transportable Modules</span> name and select <span class="bold">Reimport</span>.</p>
+<p>The Re-create Transportable Module dialog box is displayed.</p>
+</li>
+<li>
+<p>From the Available Database Objects column, select the objects you want to reimport.</p>
+<p>The database objects that have been previously imported into the workspace are listed in bold. You can also choose to import new definitions.</p>
+</li>
+<li>
+<p>Use the arrow buttons to move the objects to the Selected Database Objects column, and click <span class="bold">OK.</span></p>
+</li>
+</ol>
+<p>Oracle Warehouse Builder reimports existing definitions and creates new ones. The transportable module reflects the changes and updates after the reimport is completed.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment2968">
+<tr>
+<td class="cellalignment2977">
+<table class="cellalignment2973">
+<tr>
+<td class="cellalignment2972"><a href="design_webservices.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment2972"><a href="part_3.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2000, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment2980">
+<table class="cellalignment2971">
+<tr>
+<td class="cellalignment2972"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment2972"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment2972"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment2972"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment2972"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment2972"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

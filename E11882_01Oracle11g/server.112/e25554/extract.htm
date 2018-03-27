@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Extraction in Data Warehouses</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 070" />
+<meta name="dcterms.created" content="2013-07-04T23:23:17Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Data Warehousing Guide" />
+<meta name="dcterms.identifier" content="E25554-02" />
+<meta name="dcterms.isVersionOf" content="DWHSG" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2001, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="ettover.htm" title="Previous" type="text/html" />
+<link rel="Next" href="transport.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e25554.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">21/35</span> <!-- End Header --><a id="g1008480"></a><a id="DWHSG012"></a><a id="i1006528"></a>
+<h1 class="chapter"><span class="secnum">13</span> Extraction in Data Warehouses</h1>
+<p>This chapter discusses extraction, which is the process of taking data from an operational system and moving it to your data warehouse or staging system. The chapter discusses:</p>
+<ul>
+<li>
+<p><a href="#CHDGGFEA">Overview of Extraction in Data Warehouses</a></p>
+</li>
+<li>
+<p><a href="#i1006206">Introduction to Extraction Methods in Data Warehouses</a></p>
+</li>
+<li>
+<p><a href="#i1006347">Data Warehousing Extraction Examples</a></p>
+</li>
+</ul>
+<a id="CHDGGFEA"></a><a id="DWHSG8278"></a>
+<div class="sect1">
+<h2 class="sect1">Overview of Extraction in Data Warehouses</h2>
+<p><a id="sthref345"></a>Extraction is the operation of extracting data from a source system for further use in a data warehouse environment. This is the first step of the ETL process. After the extraction, this data can be transformed and loaded into the data warehouse.</p>
+<p><a id="sthref346"></a>The source systems for a data warehouse are typically transaction processing applications. For example, one of the source systems for a sales analysis data warehouse might be an order entry system that records all of the current order activities.</p>
+<p>Designing and creating the extraction process is often one of the most time-consuming tasks in the ETL process and, indeed, in the entire data warehousing process. The source systems might be very complex and poorly documented, and thus determining which data needs to be extracted can be difficult. The data has to be extracted normally not only once, but several times in a periodic manner to supply all changed data to the data warehouse and keep it up-to-date. Moreover, the source system typically cannot be modified, nor can its performance or availability be adjusted, to accommodate the needs of the data warehouse extraction process.</p>
+<p>These are important considerations for extraction and ETL in general. This chapter, however, focuses on the technical considerations of having different kinds of sources and extraction methods. It assumes that the data warehouse team has already identified the data that will be extracted, and discusses common techniques used for extracting data from source databases.</p>
+<p>Designing this process means making decisions about the following two main aspects:</p>
+<ul>
+<li>
+<p>Which extraction method do I choose?</p>
+<p>This influences the source system, the transportation process, and the time needed for refreshing the warehouse.</p>
+</li>
+<li>
+<p>How do I provide the extracted data for further processing?</p>
+<p>This influences the transportation method, and the need for cleaning and transforming the data.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect1" -->
+<a id="i1006206"></a><a id="DWHSG8279"></a>
+<div class="sect1">
+<h2 class="sect1">Introduction to Extraction Methods in Data Warehouses</h2>
+<p>The extraction method you should choose is highly dependent on the source system and also from the business needs in the target data warehouse environment. Very often, there is no possibility to add additional logic to the source systems to enhance an incremental extraction of data due to the performance or the increased workload of these systems. Sometimes even the customer is not allowed to add anything to an out-of-the-box application system.</p>
+<a id="DWHSG8280"></a>
+<div class="sect2"><a id="sthref347"></a>
+<h3 class="sect2">Logical Extraction Methods</h3>
+<p>There are two types of <a id="sthref348"></a>logical extraction:</p>
+<ul>
+<li>
+<p><a href="#i1006222">Full Extraction</a></p>
+</li>
+<li>
+<p><a href="#CIHDIDGH">Incremental Extraction</a></p>
+</li>
+</ul>
+<a id="i1006222"></a><a id="DWHSG8281"></a>
+<div class="sect3">
+<h4 class="sect3">Full Extraction</h4>
+<p>The data is extracted completely from the source system. Because this extraction reflects all the data currently available on the source system, there's no need to keep track of changes to the data source since the last successful extraction. The source data will be provided as-is and no additional logical information (for example, timestamps) is necessary on the source site. An example for a full extraction may be an export file of a distinct table or a remote SQL statement scanning the complete source table.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CIHDIDGH"></a><a id="DWHSG8282"></a>
+<div class="sect3">
+<h4 class="sect3">Incremental Extraction</h4>
+<p>At a specific point in time, only t<a id="sthref349"></a>he data that has changed since a well-defined event back in history is extracted. This event may be the last time of extraction or a more complex business event like the last booking day of a fiscal period. To identify this delta change there must be a possibility to identify all the changed information since this specific time event. This information can be either provided by the source data itself such as an application column, reflecting the last-changed timestamp or a change table where an appropriate additional mechanism keeps track of the changes besides the originating transactions. In most cases, using the latter method means adding extraction logic to the source system.</p>
+<p>Many data warehouses do not use any change-capture techniques as part of the extraction process. Instead, entire tables from the source systems are extracted to the data warehouse or staging area, and these tables are compared with a previous extract from the source system to identify the changed data. This approach may not have significant impact on the source systems, but it clearly can place a considerable burden on the data warehouse processes, particularly if the data volumes are large.</p>
+<p>Oracle's Change Data Capture (CDC) mechanism can extract and maintain such delta information. See <a href="cdc.htm#g1044340">Chapter 17, "Change Data Capture"</a> for further details about the Change Data Capture framework.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1006239"></a><a id="DWHSG8283"></a>
+<div class="sect2">
+<h3 class="sect2">Physical Extraction Methods</h3>
+<p>Depending on the chosen logical extraction method and the capabilities and restrictions on the source side, the extracted data can be physically extracted by two mechanisms. The data can either be extracted online from the source system or from an offline structure. <a id="sthref350"></a>Such an offline structure might already exist or it might be generated by an extraction routine.</p>
+<p>There are the following methods of physical extraction:</p>
+<ul>
+<li>
+<p><a href="#i1006252">Online Extraction</a></p>
+</li>
+<li>
+<p><a href="#i1006257">Offline Extraction</a></p>
+</li>
+</ul>
+<a id="i1006252"></a><a id="DWHSG8284"></a>
+<div class="sect3">
+<h4 class="sect3">Online Extraction</h4>
+<p>The data is extracted directly from the source system itself<a id="sthref351"></a>. The extraction process can connect directly to the source system to access the source tables themselves or to an intermediate system that stores the data in a preconfigured manner (for example, snapshot logs or change tables). Note that the intermediate system is not necessarily physically different from the source system.</p>
+<p>With online extractions, you must consider whether the distributed transactions are using original source objects or prepared source objects.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i1006257"></a><a id="DWHSG8285"></a>
+<div class="sect3">
+<h4 class="sect3">Offline Extraction</h4>
+<p>The data is not extracted directly from the source system but is staged explicitly outside the original source system. The data already has an existing structure (for example, redo logs, archive logs or transportable tablespaces) or was created by an extraction routine.</p>
+<p>You should consider the following structures:</p>
+<ul>
+<li>
+<p>Flat files</p>
+<p>Data in a defined, generic format. Additional information about the source object is necessary for further processing.</p>
+</li>
+<li>
+<p>Dump files</p>
+<p>Oracle-specific format. Information about the containing objects may or may not be included, depending on the chosen utility.</p>
+</li>
+<li>
+<p>Redo and archive logs</p>
+<p>Information is in a special, additional dump file.</p>
+</li>
+<li>
+<p>Transportable tablespaces</p>
+<p><a id="sthref352"></a><a id="sthref353"></a>A powerful way to extract and move large volumes of data between Oracle databases. A more detailed example of using this feature to extract and transport data is provided in <a href="transport.htm#g1007787">Chapter 14, "Transportation in Data Warehouses"</a>. Oracle recommends that you use transportable tablespaces whenever possible, because they can provide considerable advantages in performance and manageability over other extraction techniques.</p>
+<p>See <a class="olink SUTIL" href="../e22490/toc.htm"><span class="italic">Oracle Database Utilities</span></a> for more information on using export/import.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1006288"></a><a id="DWHSG8286"></a>
+<div class="sect2">
+<h3 class="sect2">Change Data Capture</h3>
+<p>An important considera<a id="sthref354"></a>tion for extraction is incremental extraction, also called Change Data Capture. If a data warehouse extracts data from an operational system on a nightly basis, then the data warehouse requires only the data that has changed since the last extraction (that is, the data that has been modified in the past 24 hours). Change Data Capture is also the key-enabling technology for providing near real-time, or on-time, data warehousing.</p>
+<p>When it is possible to efficiently identify and extract only the most recently changed data, the extraction process (and all downstream operations in the ETL process) can be much more efficient, because it must extract a much smaller volume of data. Unfortunately, for many source systems, identifying the recently modified data may be difficult or intrusive to the operation of the system. Change Data Capture is typically the most challenging technical issue in data extraction.</p>
+<p>Because change data capture is often desirable as part of the extraction process and it might not be possible to use the Change Data Capture mechanism, this section describes several techniques for implementing a self-developed change capture on Oracle Database source systems:</p>
+<ul>
+<li>
+<p><a href="#i1006316">Timestamps</a></p>
+</li>
+<li>
+<p><a href="#i1006334">Partitioning</a></p>
+</li>
+<li>
+<p><a href="#i1006338">Triggers</a></p>
+</li>
+</ul>
+<p>These techniques are based upon the characteristics of the source systems, or may require modifications to the source systems. Thus, each of these techniques must be carefully evaluated by the owners of the source system prior to implementation.</p>
+<p>Each of these techniques can work in conjunction with the data extraction technique discussed previously. For example, timestamps can be used whether the data is being unloaded to a file or accessed through a distributed query. See <a href="cdc.htm#g1044340">Chapter 17, "Change Data Capture"</a> for further details.</p>
+<a id="i1006316"></a><a id="DWHSG8287"></a>
+<div class="sect3">
+<h4 class="sect3">Timestamps</h4>
+<p><a id="sthref355"></a>The tables in some operational systems have timestamp columns. The timestamp specifies the time and date that a given row was last modified. If the tables in an operational system have columns containing timestamps, then the latest data can easily be identified using the timestamp columns. For example, the following query might be useful for extracting today's data from an <code>orders</code> table:</p>
+<pre>
+SELECT * FROM orders 
+WHERE TRUNC(CAST(order_date AS date),'dd') = 
+  TO_DATE(SYSDATE,'dd-mon-yyyy');
+</pre>
+<p>If the timestamp information is not available in an operational source system, you are not always able to modify the system to include timestamps. Such modification would require, first, modifying the operational system's tables to include a new timestamp column and then creating a trigger to update the timestamp column following every operation that modifies a given row.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i1006334"></a><a id="DWHSG8288"></a>
+<div class="sect3">
+<h4 class="sect3">Partitioning</h4>
+<p><a id="sthref356"></a>Some source systems might use range partitioning, such that the source tables are partitioned along a date key, which allows for easy identification of new data. For example, if you are extracting from an <code>orders</code> table, and the <code>orders</code> table is partitioned by week, then it is easy to identify the current week's data.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i1006338"></a><a id="DWHSG8289"></a>
+<div class="sect3">
+<h4 class="sect3">Triggers</h4>
+<p><a id="sthref357"></a>Triggers can be created in operational systems to keep track of recently updated records. They can then be used in conjunction with timestamp columns to identify the exact time and date when a given row was last modified. You do this by creating a trigger on each source table that requires change data capture. Following each DML statement that is executed on the source table, this trigger updates the timestamp column with the current time. Thus, the timestamp column provides the exact time and date when a given row was last modified.</p>
+<p>A similar internalized trigger-based technique is used for Oracle <a id="sthref358"></a>materialized view logs. These logs are used by materialized views to identify changed data, and these logs are accessible to end users. However, the format of the materialized view logs is not documented and might change over time.</p>
+<p>If you want to use a trigger-based mechanism, use synchronous change data capture. It is recommended that you use synchronous <a id="sthref359"></a>Change Data Capture for trigger based change capture, because CDC provides an externalized interface for accessing the change information and provides a framework for maintaining the distribution of this information to various clients.</p>
+<p>Materialized view logs rely on triggers, but they provide an advantage in that the creation and maintenance of this change-data system is largely managed by the database.</p>
+<p>However, Oracle recommends the usage of synchronous Change Data Capture for trigger-based change capture, since CDC provides an externalized interface for accessing the change information and provides a framework for maintaining the distribution of this information to various clients</p>
+<p>Trigger-based techniques might affect performance on the source systems, and this impact should be carefully considered prior to implementation on a production source system.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006347"></a><a id="DWHSG8290"></a>
+<div class="sect1">
+<h2 class="sect1">Data Warehousing Extraction Examples</h2>
+<p>You can extract data in two ways:</p>
+<ul>
+<li>
+<p><a href="#i1006358">Extraction Using Data Files</a></p>
+</li>
+<li>
+<p><a href="#i1006436">Extraction Through Distributed Operations</a></p>
+</li>
+</ul>
+<a id="i1006358"></a><a id="DWHSG8291"></a>
+<div class="sect2">
+<h3 class="sect2">Extraction Using Data Files</h3>
+<p><a id="sthref360"></a>Most database systems provide mechanisms for exporting or unloading data from the internal database format into flat files. Extracts from mainframe systems often use COBOL programs, but many databases, and third-party software vendors, provide export or unload utilities.</p>
+<p>Data extraction does not necessarily mean that entire database structures are unloaded in flat files. In many cases, it may be appropriate to unload entire database tables or objects. In other cases, it may be more appropriate to unload only a subset of a given table such as the changes on the source system since the last extraction or the results of joining multiple tables together. Different extraction techniques vary in their capabilities to support these two scenarios.</p>
+<p>When the source system is an Oracle database, several alternatives are available for extracting data into files:</p>
+<ul>
+<li>
+<p><a href="#CIHGCGGA">Extracting into Flat Files Using SQL*Plus</a></p>
+</li>
+<li>
+<p><a href="#i1006412">Extracting into Flat Files Using OCI or Pro*C Programs</a></p>
+</li>
+<li>
+<p><a href="#CIHHGCEA">Exporting into Export Files Using the Export Utility</a></p>
+</li>
+<li>
+<p><a href="#i1006793">Extracting into Export Files Using External Tables</a></p>
+</li>
+</ul>
+<a id="CIHGCGGA"></a><a id="DWHSG8292"></a>
+<div class="sect3">
+<h4 class="sect3">Extracting into Flat Files Using SQL*Plus</h4>
+<p><a id="sthref361"></a>The most basic technique for extracting data is to execute a SQL query in SQL*Plus and direct the output of the query to a file. For example, to extract a flat file, <code>country_city.log</code>, with the pipe sign as delimiter between column values, containing a list of the cities in the US in the tables <code>countries</code> and <code>customers</code>, the following SQL script could be run:</p>
+<pre>
+SET echo off SET pagesize 0 SPOOL country_city.log
+SELECT distinct t1.country_name ||'|'|| t2.cust_city  
+FROM countries t1, customers t2 WHERE t1.country_id = t2.country_id 
+AND t1.country_name= 'United States of America';
+SPOOL off
+</pre>
+<p>The exact format of the output file can be specified using SQL*Plus system variables.</p>
+<p>This extraction technique offers the advantage of storing the result in a customized format. Note that, using the external table data pump unload facility, you can also extract the result of an arbitrary SQL operation. The example previously extracts the results of a join.</p>
+<p>This extraction technique can be parallelized by initiating multiple, concurrent SQL*Plus sessions, each session running a separate query representing a different portion of the data to be extracted. For example, suppose that you wish to extract data from an <code>orders</code> table, and that the <code>orders</code> table has been range partitioned by month, with partitions <code>orders_jan1998</code>, <code>orders_feb1998</code>, and so on. To extract a single year of data from the <code>orders</code> table, you could initiate 12 concurrent SQL*Plus sessions, each extracting a single partition. The SQL script for one such session could be:</p>
+<pre>
+SPOOL order_jan.dat
+SELECT * FROM orders PARTITION (orders_jan1998);
+SPOOL OFF
+</pre>
+<p>These 12 SQL*Plus processes would concurrently spool data to 12 separate files. You can then concatenate them if necessary (using operating system utilities) following the extraction. If you are planning to use SQL*Loader for loading into the target, these 12 files can be used as is for a parallel load with 12 SQL*Loader sessions. See <a href="transport.htm#g1007787">Chapter 14, "Transportation in Data Warehouses"</a> for an example.</p>
+<p>Even if the <code>orders</code> table is not partitioned, it is still possible to parallelize the extraction either based on logical or physical criteria. The logical method is based on logical ranges of column values, for example:</p>
+<pre>
+SELECT ... WHERE order_date
+BETWEEN TO_DATE('01-JAN-99') AND TO_DATE('31-JAN-99');
+</pre>
+<p>The physical method is based on a range of values. By viewing the data dictionary, it is possible to identify the Oracle Database data blocks that make up the <code>orders</code> table. Using this information, you could then derive a set of rowid-range queries for extracting data from the <code>orders</code> table:</p>
+<pre>
+SELECT * FROM orders WHERE rowid BETWEEN <span class="italic">value1</span> and <span class="italic">value2</span>;
+</pre>
+<p>Parallelizing the extraction of complex SQL queries is sometimes possible, although the process of breaking a single complex query into multiple components can be challenging. In particular, the coordination of independent processes to guarantee a globally consistent view can be difficult. Unlike the SQL*Plus approach, using the external table data pump unload functionality provides transparent parallel capabilities.</p>
+<p>Note that all parallel techniques can use considerably more CPU and I/O resources on the source system, and the impact on the source system should be evaluated before parallelizing any extraction technique.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i1006412"></a><a id="DWHSG8293"></a>
+<div class="sect3">
+<h4 class="sect3">Extracting into Flat Files Using OCI or Pro*C Programs</h4>
+<p><a id="sthref362"></a><a id="sthref363"></a>OCI programs (or other programs using Oracle call interfaces, such as Pro*C programs), can also be used to extract data. These techniques typically provide improved performance over the SQL*Plus approach, although they also require additional programming. Like the SQL*Plus approach, an OCI program can extract the results of any SQL query. Furthermore, the parallelization techniques described for the SQL*Plus approach can be readily applied to OCI programs as well.</p>
+<p>When using OCI or SQL*Plus for extraction, you need additional information besides the data itself. At minimum, you need information about the extracted columns. It is also helpful to know the extraction format, which might be the separator between distinct columns.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CIHHGCEA"></a><a id="DWHSG8294"></a>
+<div class="sect3">
+<h4 class="sect3">Exporting into Export Files Using the Export Utility</h4>
+<p><a id="sthref364"></a>The Export utility allows tables (including data) to be exported into Oracle Database export files. Unlike the SQL*Plus and OCI approaches, which describe the extraction of the results of a SQL statement, Export provides a mechanism for extracting database objects. Thus, Export differs from the previous approaches in several important ways:</p>
+<ul>
+<li>
+<p>The export files contain metadata as well as data. An export file contains not only the raw data of a table, but also information on how to re-create the table, potentially including any indexes, constraints, grants, and other attributes associated with that table.</p>
+</li>
+<li>
+<p>A single export file may contain a subset of a single object, many database objects, or even an entire schema.</p>
+</li>
+<li>
+<p>Export cannot be directly used to export the results of a complex SQL query. Export can be used only to extract subsets of distinct database objects.</p>
+</li>
+<li>
+<p>The output of the Export utility must be processed using the Import utility.</p>
+</li>
+</ul>
+<p>Oracle provides the original Export and Import utilities for backward compatibility and the data pump export/import infrastructure for high-performant, scalable and parallel extraction. See <a class="olink SUTIL" href="../e22490/toc.htm"><span class="italic">Oracle Database Utilities</span></a> for further details.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i1006793"></a><a id="DWHSG8295"></a>
+<div class="sect3">
+<h4 class="sect3">Extracting into Export Files Using External Tables</h4>
+<p>In addition to the Export Utility, you can use external tables to extract the results from any <code>SELECT</code> operation. The data is stored in the platform independent, Oracle-internal data pump format and can be processed as regular external table on the target system. The following example extracts the result of a join operation in parallel into the four specified files. The only allowed external table type for extracting data is the Oracle-internal format <code>ORACLE_DATAPUMP</code>.</p>
+<pre>
+CREATE DIRECTORY def_dir AS '/net/dlsun48/private/hbaer/WORK/FEATURES/et';
+DROP TABLE extract_cust;
+CREATE TABLE extract_cust
+ORGANIZATION EXTERNAL
+(TYPE ORACLE_DATAPUMP DEFAULT DIRECTORY def_dir ACCESS PARAMETERS
+(NOBADFILE NOLOGFILE)
+LOCATION ('extract_cust1.exp', 'extract_cust2.exp', 'extract_cust3.exp',
+          'extract_cust4.exp'))
+PARALLEL 4 REJECT LIMIT UNLIMITED AS
+SELECT  c.*, co.country_name, co.country_subregion, co.country_region 
+FROM customers c, countries co where co.country_id=c.country_id;
+</pre>
+<p>The total number of extraction files specified limits the maximum degree of parallelism for the write operation. Note that the parallelizing of the extraction does not automatically parallelize the <code>SELECT</code> portion of the statement.</p>
+<p>Unlike using any kind of export/import, the metadata for the external table is not part of the created files when using the external table data pump unload. To extract the appropriate metadata for the external table, use the <code>DBMS_METADATA</code> package, as illustrated in the following statement:</p>
+<pre>
+SET LONG 2000
+SELECT DBMS_METADATA.GET_DDL('TABLE','EXTRACT_CUST') FROM DUAL;
+</pre></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1006436"></a><a id="DWHSG8296"></a>
+<div class="sect2">
+<h3 class="sect2">Extraction Through Distributed Operations</h3>
+<p><a id="sthref365"></a>Using distributed-query technology, one Oracle database can directly query tables located in various different source systems, such as another Oracle database or a legacy system connected with the Oracle gateway technology. Specifically, a data warehouse or staging database can directly access tables and data located in a connected source system. Gateways are another form of distributed-query technology. Gateways allow an Oracle database (such as a data warehouse) to access database tables stored in remote, non-Oracle databases. This is the simplest method for moving data between two Oracle databases because it combines the extraction and transformation into a single step, and requires minimal programming. However, this is not always feasible.</p>
+<p>Suppose that you wanted to extract a list of employee names with department names from a source database and store this data into the data warehouse. Using an Oracle Net connection and distributed-query technology, this can be achieved using a single SQL statement:</p>
+<pre>
+CREATE TABLE country_city AS SELECT distinct t1.country_name, t2.cust_city
+FROM countries@source_db t1, customers@source_db t2
+WHERE t1.country_id = t2.country_id 
+AND t1.country_name='United States of America';
+</pre>
+<p>This statement creates a local table in a data mart, <code>country_city</code>, and populates it with data from the <code>countries</code> and <code>customers</code> tables on the source system.</p>
+<p>This technique is ideal for moving small volumes of data. However, the data is transported from the source system to the data warehouse through a single Oracle Net connection. Thus, the scalability of this technique is limited. For larger data volumes, file-based data extraction and transportation techniques are often more scalable and thus more appropriate.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink HETER" href="../../server.112/e11050/toc.htm"><span class="italic">Oracle Database Heterogeneous Connectivity Administrator's Guide</span></a> for more information regarding distributed queries</p>
+</li>
+<li>
+<p><a class="olink CNCPT" href="../e40540/toc.htm"><span class="italic">Oracle Database Concepts</span></a> for more information regarding distributed queries</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1371">
+<tr>
+<td class="cellalignment1378">
+<table class="cellalignment1376">
+<tr>
+<td class="cellalignment1375"><a href="ettover.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1375"><a href="transport.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2001, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1380">
+<table class="cellalignment1374">
+<tr>
+<td class="cellalignment1375"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1375"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1375"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1375"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1375"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1375"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

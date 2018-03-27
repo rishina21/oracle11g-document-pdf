@@ -1,0 +1,2529 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Using EXPLAIN PLAN</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1023" />
+<meta name="dcterms.created" content="2014-06-30T4:25:6Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Performance Tuning Guide" />
+<meta name="dcterms.identifier" content="E41573-04" />
+<meta name="dcterms.isVersionOf" content="PFGRF" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2000, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="optimops.htm" title="Previous" type="text/html" />
+<link rel="Next" href="stats.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e41573.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">20/31</span> <!-- End Header -->
+<div id="PFGRF009" class="chapter"><a id="g42231"></a> <a id="i19260"></a>
+<h1 class="chapter"><span class="secnum">12</span> Using EXPLAIN PLAN</h1>
+<p>This chapter introduces execution plans, describes the SQL statement <code>EXPLAIN</code> <code>PLAN</code>, and explains how to interpret its output. This chapter also provides procedures for managing outlines to control application performance characteristics.</p>
+<p>This chapter contains the following sections:</p>
+<ul>
+<li>
+<p><a href="#i3305">Understanding EXPLAIN PLAN</a></p>
+</li>
+<li>
+<p><a href="#i21501">The PLAN_TABLE Output Table</a></p>
+</li>
+<li>
+<p><a href="#i17492">Running EXPLAIN PLAN</a></p>
+</li>
+<li>
+<p><a href="#i16938">Displaying PLAN_TABLE Output</a></p>
+</li>
+<li>
+<p><a href="#i16971">Reading EXPLAIN PLAN Output</a></p>
+</li>
+<li>
+<p><a href="#i26005">Viewing Parallel Execution with EXPLAIN PLAN</a></p>
+</li>
+<li>
+<p><a href="#i26143">Viewing Bitmap Indexes with EXPLAIN PLAN</a></p>
+</li>
+<li>
+<p><a href="#CHDCGHDG">Viewing Result Cache with EXPLAIN PLAN</a></p>
+</li>
+<li>
+<p><a href="#i26093">Viewing Partitioned Objects with EXPLAIN PLAN</a></p>
+</li>
+<li>
+<p><a href="#i18300">PLAN_TABLE Columns</a></p>
+<div class="infoboxnotealso">
+<p class="notep1"><span class="bold">See Also</span>:</p>
+<ul>
+<li>
+<p><a class="olink SQLRF" href="../e41084/toc.htm"><span class="italic">Oracle Database SQL Language Reference</span></a> for the syntax of the <code>EXPLAIN</code> <code>PLAN</code> statement</p>
+</li>
+<li>
+<p><a href="optimops.htm#g92116">Chapter 11, "The Query Optimizer"</a></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+<a id="i3305"></a>
+<div id="PFGRF94665" class="sect1">
+<h2 class="sect1"><span class="secnum">12.1</span> Understanding EXPLAIN PLAN</h2>
+<p>The <code>EXPLAIN</code> <code>PLAN</code> statement displays execution plans chosen by the optimizer for <code>SELECT</code>, <code>UPDATE</code>, <code>INSERT</code>, and <code>DELETE</code> statements. A statement execution plan is the sequence of operations that the database performs to run the statement.</p>
+<p>The <span class="bold">row source tree</span> is the core of the execution plan. The tree shows the following information:</p>
+<ul>
+<li>
+<p>An ordering of the tables referenced by the statement</p>
+</li>
+<li>
+<p>An access method for each table mentioned in the statement</p>
+</li>
+<li>
+<p>A join method for tables affected by join operations in the statement</p>
+</li>
+<li>
+<p>Data operations like filter, sort, or aggregation</p>
+</li>
+</ul>
+<p>In addition to the row source tree, the plan table contains information about the following:</p>
+<ul>
+<li>
+<p>Optimization, such as the cost and cardinality of each operation</p>
+</li>
+<li>
+<p>Partitioning, such as the set of accessed partitions</p>
+</li>
+<li>
+<p>Parallel execution, such as the distribution method of join inputs</p>
+</li>
+</ul>
+<p>The <code>EXPLAIN</code> <code>PLAN</code> results let you determine whether the optimizer selects a particular execution plan, such as, nested loops join. The results also help you to understand the optimizer decisions, such as why the optimizer chose a nested loops join instead of a hash join, and lets you understand the performance of a query.</p>
+<div id="PFGRF94666" class="sect2"><a id="sthref1015"></a>
+<h3 class="sect2"><span class="secnum">12.1.1</span> How Execution Plans Can Change</h3>
+<p>With the query optimizer, execution plans can and do change as the underlying optimizer inputs change. <code>EXPLAIN</code> <code>PLAN</code> output shows how Oracle Database would run the SQL statement when the statement was explained. This plan can differ from the actual execution plan a SQL statement because of differences in the execution environment and explain plan environment.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+To avoid possible SQL performance regression that may result from execution plan changes, consider using SQL plan management.</div>
+<p>Execution plans can differ due to the following:</p>
+<ul>
+<li>
+<p><a href="#i18891">Different Schemas</a></p>
+</li>
+<li>
+<p><a href="#i16344">Different Costs</a></p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="optplanmgmt.htm#BABEAFGG">Chapter 15, "Using SQL Plan Management"</a>.</div>
+<a id="i18891"></a>
+<div id="PFGRF94667" class="sect3">
+<h4 class="sect3"><span class="secnum">12.1.1.1</span> Different Schemas</h4>
+<ul>
+<li>
+<p>The execution and explain plan occur on different databases.</p>
+</li>
+<li>
+<p>The user explaining the statement is different from the user running the statement. Two users might be pointing to different objects in the same database, resulting in different execution plans.</p>
+</li>
+<li>
+<p>Schema changes (usually changes in indexes) between the two operations.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<a id="i16344"></a>
+<div id="PFGRF94668" class="sect3">
+<h4 class="sect3"><span class="secnum">12.1.1.2</span> Different Costs</h4>
+<p>Even if the schemas are the same, the optimizer can choose different execution plans when the costs are different. Some factors that affect the costs include the following:</p>
+<ul>
+<li>
+<p>Data volume and statistics</p>
+</li>
+<li>
+<p>Bind variable types and values</p>
+</li>
+<li>
+<p>Initialization parameters set globally or at session level</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<div id="PFGRF94669" class="sect2"><a id="sthref1016"></a>
+<h3 class="sect2"><span class="secnum">12.1.2</span> Minimizing Throw-Away</h3>
+<p>Examining an explain plan lets you look for throw-away in cases such as the following:</p>
+<ul>
+<li>
+<p>Full scans</p>
+</li>
+<li>
+<p>Unselective range scans</p>
+</li>
+<li>
+<p>Late predicate filters</p>
+</li>
+<li>
+<p>Wrong join order</p>
+</li>
+<li>
+<p>Late filter operations</p>
+</li>
+</ul>
+<p>For example, in the following explain plan, the last step is a very unselective range scan that is executed 76563 times, accesses 11432983 rows, throws away 99% of them, and retains 76563 rows. Why access 11432983 rows to realize that only 76563 rows are needed?</p>
+<div id="PFGRF94670" class="example">
+<p class="titleinexample"><a id="sthref1017"></a>Example 12-1 Looking for Throw-Away in an Explain Plan</p>
+<pre>
+Rows      Execution Plan
+--------  ----------------------------------------------------
+      12  SORT AGGREGATE
+       2   SORT GROUP BY
+   76563    NESTED LOOPS
+   76575     NESTED LOOPS
+      19      TABLE ACCESS FULL CN_PAYRUNS_ALL
+   76570      TABLE ACCESS BY INDEX ROWID CN_POSTING_DETAILS_ALL
+   76570       INDEX RANGE SCAN (object id 178321)
+   76563     TABLE ACCESS BY INDEX ROWID CN_PAYMENT_WORKSHEETS_ALL
+11432983      INDEX RANGE SCAN (object id 186024)
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" -->
+<div id="PFGRF94671" class="sect2"><a id="sthref1018"></a>
+<h3 class="sect2"><span class="secnum">12.1.3</span> Looking Beyond Execution Plans</h3>
+<p>The execution plan operation alone cannot differentiate between well-tuned statements and those that perform poorly. For example, an <code>EXPLAIN</code> <code>PLAN</code> output that shows that a statement uses an index does not necessarily mean that the statement runs efficiently. Sometimes indexes are extremely inefficient. In this case, you should examine the following:</p>
+<ul>
+<li>
+<p>The columns of the index being used</p>
+</li>
+<li>
+<p>Their selectivity (fraction of table being accessed)</p>
+</li>
+</ul>
+<p>It is best to use <code>EXPLAIN</code> <code>PLAN</code> to determine an access plan, and then later prove that it is the optimal plan through testing. When evaluating a plan, examine the statement's actual resource consumption.</p>
+<div id="PFGRF94672" class="sect3"><a id="sthref1019"></a>
+<h4 class="sect3"><span class="secnum">12.1.3.1</span> Using V$SQL_PLAN Views</h4>
+<p><a id="sthref1020"></a>In addition to running the <code>EXPLAIN</code> <code>PLAN</code> command and displaying the plan, you can use the <code>V$SQL_PLAN</code> views to display the execution plan of a SQL statement:</p>
+<p>After the statement has executed, you can display the plan by querying the <code>V$SQL_PLAN</code> view. <code>V$SQL_PLAN</code> contains the execution plan for every statement stored in the shared SQL area. Its definition is similar to the <code>PLAN_TABLE</code>. See <a href="#i18300">"PLAN_TABLE Columns"</a>.</p>
+<p>The advantage of <code>V$SQL_PLAN</code> over <code>EXPLAIN</code> <code>PLAN</code> is that you do not need to know the compilation environment that was used to execute a particular statement. For <code>EXPLAIN</code> <code>PLAN</code>, you would need to set up an identical environment to get the same plan when executing the statement.</p>
+<p><a id="sthref1021"></a>The <code>V$SQL_PLAN_STATISTICS</code> view provides the actual execution statistics for every operation in the plan, such as the number of output rows and elapsed time. All statistics, except the number of output rows, are cumulative. For example, the statistics for a join operation also includes the statistics for its two inputs. The statistics in <code>V$SQL_PLAN_STATISTICS</code> are available for cursors that have been compiled with the <code>STATISTICS_LEVEL</code> initialization parameter set to <code>ALL</code>.</p>
+<p>The <a id="sthref1022"></a><code>V$SQL_PLAN_STATISTICS_ALL</code> view enables side by side comparisons of the estimates that the optimizer provides for the number of rows and elapsed time. This view combines both <code>V$SQL_PLAN</code> and <code>V$SQL_PLAN_STATISTICS</code> information for every cursor.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="instance_tune.htm#CACGEEIF">"Real-Time SQL Monitoring"</a> for information about the <code>V$SQL_PLAN_MONITOR</code> view</p>
+</li>
+<li>
+<p><a class="olink REFRN30250" href="../../server.112/e40402/dynviews_3054.htm#REFRN30250"><span class="italic">Oracle Database Reference</span></a> for more information about <code>V$SQL_PLAN</code> views</p>
+</li>
+<li>
+<p><a class="olink REFRN10214" href="../../server.112/e40402/initparams254.htm#REFRN10214"><span class="italic">Oracle Database Reference</span></a> for information about the <code>STATISTICS_LEVEL</code> initialization parameter</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i25909"></a>
+<div id="PFGRF94673" class="sect2">
+<h3 class="sect2"><span class="secnum">12.1.4</span> EXPLAIN PLAN Restrictions</h3>
+<p>Oracle Database does not support <code><a id="sthref1023"></a>EXPLAIN</code> <code>PLAN</code> for statements performing implicit type conversion of date bind variables. With bind variables in general, the <code>EXPLAIN</code> <code>PLAN</code> output might not represent the real execution plan.</p>
+<p>From the text of a SQL statement, <code>TKPROF</code> cannot determine the types of the bind variables. It assumes that the type is <code>CHARACTER</code>, and gives an error message if this is not the case. You can avoid this limitation by putting appropriate type conversions in the SQL statement.</p>
+<div class="infoboxnotealso">
+<p class="notep1"><span class="bold">See Also</span>:</p>
+<a href="sqltrace.htm#g33356">Chapter 21, "Using Application Tracing Tools"</a></div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i21501"></a>
+<div id="PFGRF94674" class="sect1">
+<h2 class="sect1"><span class="secnum">12.2</span> The PLAN_TABLE Output Table</h2>
+<p><a id="sthref1024"></a><a id="sthref1025"></a>The <code>PLAN_TABLE</code> is automatically created as a public synonym to a global temporary table. This temporary table holds the output of <code>EXPLAIN</code> <code>PLAN</code> statements for all users. <code>PLAN_TABLE</code> is the default sample output table into which the <code>EXPLAIN</code> <code>PLAN</code> statement inserts rows describing execution plans. See <a href="#i18300">"PLAN_TABLE Columns"</a> for a description of the columns in the table.</p>
+<p>While a <code>PLAN_TABLE</code> table is automatically set up for each user, you can use the SQL script <code>catplan.sql</code> to manually create the global temporary table and the <code>PLAN_TABLE</code> synonym. The name and location of this script depends on your operating system. On UNIX and Linux, the script is located in the <code>$ORACLE_HOME/rdbms/admin</code> directory.</p>
+<p><a id="sthref1026"></a>For example, start a SQL*Plus session, connect with <code>SYSDBA</code> privileges, and run the script as follows:</p>
+<pre>
+@$ORACLE_HOME/rdbms/admin/catplan.sql
+</pre>
+<p>Oracle recommends that you drop and rebuild your local <code>PLAN_TABLE</code> table after upgrading the version of the database because the columns might change. This can cause scripts to fail or cause <code>TKPROF</code> to fail, if you are specifying the table.</p>
+<p>If you do not want to use the name <code>PLAN_TABLE</code>, create a new synonym after running the <code>catplan.sql</code> script. For example:</p>
+<pre>
+CREATE OR REPLACE PUBLIC SYNONYM my_plan_table for plan_table$
+</pre></div>
+<!-- class="sect1" -->
+<a id="i17492"></a>
+<div id="PFGRF94676" class="sect1">
+<h2 class="sect1"><span class="secnum">12.3</span> Running EXPLAIN PLAN</h2>
+<p>To explain a SQL statement, use the <code>EXPLAIN</code> <code>PLAN</code> <code>FOR</code> clause immediately before the statement. For example:</p>
+<pre>
+EXPLAIN PLAN FOR
+  SELECT last_name FROM employees;
+</pre>
+<p>This explains the plan into the <code>PLAN_TABLE</code> table. You can then select the execution plan from <code>PLAN_TABLE</code>. See <a href="#i16938">"Displaying PLAN_TABLE Output"</a>.</p>
+<div id="PFGRF94677" class="sect2"><a id="sthref1027"></a>
+<h3 class="sect2"><span class="secnum">12.3.1</span> Identifying Statements for EXPLAIN PLAN</h3>
+<p>With multiple statements, you can specify a statement identifier and use that to identify your specific execution plan. Before using <code>SET</code> <code>STATEMENT</code> <code>ID</code>, remove any existing rows for that statement ID.</p>
+<p>In <a href="#i24641">Example 12-2</a>, <code>st1</code> is specified as the statement identifier:</p>
+<div id="PFGRF94678" class="example">
+<p class="titleinexample"><a id="i24641"></a>Example 12-2 Using EXPLAIN PLAN with the STATEMENT ID Clause</p>
+<pre>
+EXPLAIN PLAN
+  SET STATEMENT_ID = 'st1' FOR
+SELECT last_name FROM employees;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" -->
+<div id="PFGRF94679" class="sect2"><a id="sthref1028"></a>
+<h3 class="sect2"><span class="secnum">12.3.2</span> Specifying Different Tables for EXPLAIN PLAN</h3>
+<p>You can specify the <code>INTO</code> clause to specify a different table.</p>
+<div id="PFGRF94680" class="example">
+<p class="titleinexample"><a id="sthref1029"></a>Example 12-3 Using EXPLAIN PLAN with the INTO Clause</p>
+<pre>
+EXPLAIN PLAN
+  INTO my_plan_table
+ FOR
+SELECT last_name FROM employees;
+</pre>
+<p>You can specify a statement ID when using the <code>INTO</code> clause.</p>
+<pre>
+EXPLAIN PLAN
+   SET STATEMENT_ID = 'st1'
+   INTO my_plan_table
+ FOR
+SELECT last_name FROM employees;
+</pre></div>
+<!-- class="example" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SQLRF" href="../e41084/toc.htm"><span class="italic">Oracle Database SQL Language Reference</span></a> for a complete description of <code>EXPLAIN</code> <code>PLAN</code> syntax.</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i16938"></a>
+<div id="PFGRF94681" class="sect1">
+<h2 class="sect1"><span class="secnum">12.4</span> Displaying PLAN_TABLE Output</h2>
+<p><a id="sthref1030"></a>After you have explained the plan, use the following SQL scripts or PL/SQL package provided by Oracle Database to display the most recent plan table output:</p>
+<ul>
+<li>
+<p><code><a id="sthref1031"></a>UTLXPLS</code>.<code>SQL</code></p>
+<p>This script displays the plan table output for serial processing. <a href="optimops.htm#i73898">Example 11-14, "EXPLAIN PLAN Output"</a> is an example of the plan table output when using the <code>UTLXPLS</code>.<code>SQL</code> script.</p>
+</li>
+<li>
+<p><code><a id="sthref1032"></a>UTLXPLP</code>.<code>SQL</code></p>
+<p>This script displays the plan table output including parallel execution columns.</p>
+</li>
+<li>
+<p><code><a id="sthref1033"></a>DBMS_XPLAN.DISPLAY</code> table function</p>
+<p>This function accepts options for displaying the plan table output. You can specify:</p>
+<ul>
+<li>
+<p>A plan table name if you are using a table different than <code>PLAN_TABLE</code></p>
+</li>
+<li>
+<p>A statement ID if you have set a statement ID with the <code>EXPLAIN</code> <code>PLAN</code></p>
+</li>
+<li>
+<p>A format option that determines the level of detail: <code>BASIC</code>, <code>SERIAL</code>, and <code>TYPICAL</code>, <code>ALL</code>,</p>
+</li>
+</ul>
+<p>Some examples of the use of <code>DBMS_XPLAN</code> to display <code>PLAN_TABLE</code> output are:</p>
+<pre>
+SELECT PLAN_TABLE_OUTPUT FROM TABLE(DBMS_XPLAN.DISPLAY());
+
+SELECT PLAN_TABLE_OUTPUT 
+  FROM TABLE(DBMS_XPLAN.DISPLAY('MY_PLAN_TABLE', 'st1','TYPICAL'));
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ARPLS378" href="../../appdev.112/e40758/d_xplan.htm#ARPLS378"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information on the <code>DBMS_XPLAN</code> package</div>
+</li>
+</ul>
+<div id="PFGRF94682" class="sect2"><a id="sthref1034"></a>
+<h3 class="sect2"><span class="secnum">12.4.1</span> Customizing PLAN_TABLE Output</h3>
+<p>If you have specified a statement identifier, then you can write your own script to query the <code>PLAN_TABLE</code>. For example:</p>
+<ul>
+<li>
+<p>Start with ID = 0 and given <code>STATEMENT_ID</code>.</p>
+</li>
+<li>
+<p>Use the <code>CONNECT</code> <code>BY</code> clause to walk the tree from parent to child, the join keys being <code>STATEMENT_ID</code> = <code>PRIOR</code> <code>STATEMENT_ID</code> and <code>PARENT_ID</code> = <code>PRIOR</code> <code>ID</code>.</p>
+</li>
+<li>
+<p>Use the pseudo-column <code>LEVEL</code> (associated with <code>CONNECT</code> <code>BY</code>) to indent the children.</p>
+<pre>
+SELECT cardinality "Rows",
+   lpad(' ',level-1)||operation||' '||options||' '||object_name "Plan"
+  FROM PLAN_TABLE
+CONNECT BY prior id = parent_id
+        AND prior statement_id = statement_id
+  START WITH id = 0
+        AND statement_id = 'st1'
+  ORDER BY id;
+
+   Rows Plan
+------- ----------------------------------------
+        SELECT STATEMENT
+         TABLE ACCESS FULL EMPLOYEES
+</pre>
+<p>The <code>NULL</code> in the <code>Rows</code> column indicates that the optimizer does not have any statistics on the table. Analyzing the table shows the following:</p>
+<pre>
+   Rows Plan
+------- ----------------------------------------
+  16957 SELECT STATEMENT
+  16957  TABLE ACCESS FULL EMPLOYEES
+</pre>
+<p>You can also select the <code>COST</code>. This is useful for comparing execution plans or for understanding why the optimizer chooses one execution plan over another.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+These simplified examples are not valid for recursive&nbsp;SQL.</div>
+</li>
+</ul>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i16971"></a>
+<div id="PFGRF94683" class="sect1">
+<h2 class="sect1"><span class="secnum">12.5</span> Reading EXPLAIN PLAN Output</h2>
+<p>This section uses <code>EXPLAIN</code> <code>PLAN</code> examples to illustrate execution plans. The statement in <a href="#i28423">Example 12-4</a> displays the execution plans.</p>
+<div id="PFGRF94684" class="example">
+<p class="titleinexample"><a id="i28423"></a>Example 12-4 Statement to display the EXPLAIN PLAN</p>
+<pre>
+SELECT PLAN_TABLE_OUTPUT 
+  FROM TABLE(DBMS_XPLAN.DISPLAY(NULL, '<span class="italic">statement_id</span>','BASIC'));
+</pre>
+<p>Examples of the output from this statement are shown in <a href="#i28490">Example 12-5</a> and <a href="#i28494">Example 12-6</a>.</p>
+</div>
+<!-- class="example" -->
+<div id="PFGRF94685" class="example">
+<p class="titleinexample"><a id="i28490"></a>Example 12-5 EXPLAIN PLAN for Statement ID ex_plan1</p>
+<pre>
+EXPLAIN PLAN 
+  SET statement_id = 'ex_plan1' FOR
+SELECT phone_number FROM employees
+ WHERE phone_number LIKE '650%';
+
+---------------------------------------
+| Id  | Operation         | Name      |
+---------------------------------------
+|   0 | SELECT STATEMENT  |           |
+|   1 |  TABLE ACCESS FULL| EMPLOYEES |
+---------------------------------------
+</pre>
+<p>This plan shows execution of a <code>SELECT</code> statement. The table <code>employees</code> is accessed using a full table scan.</p>
+</div>
+<!-- class="example" -->
+<ul>
+<li>
+<p>Every row in the table <code>employees</code> is accessed, and the <code>WHERE</code> clause criteria is evaluated for every row.</p>
+</li>
+<li>
+<p>The <code>SELECT</code> statement returns the rows meeting the <code>WHERE</code> clause criteria.</p>
+</li>
+</ul>
+<div id="PFGRF94686" class="example">
+<p class="titleinexample"><a id="i28494"></a>Example 12-6 EXPLAIN PLAN for Statement ID ex_plan2</p>
+<pre>
+EXPLAIN PLAN 
+  SET statement_id = 'ex_plan2' FOR
+SELECT last_name FROM employees
+ WHERE last_name LIKE 'Pe%';
+
+SELECT PLAN_TABLE_OUTPUT 
+  FROM TABLE(DBMS_XPLAN.DISPLAY(NULL, 'ex_plan2','BASIC'));
+
+----------------------------------------
+| Id  | Operation        | Name        |
+----------------------------------------
+|   0 | SELECT STATEMENT |             |
+|   1 |  INDEX RANGE SCAN| EMP_NAME_IX |
+----------------------------------------
+</pre>
+<p>This plan shows execution of a <code>SELECT</code> statement.</p>
+</div>
+<!-- class="example" -->
+<ul>
+<li>
+<p>The database range scans <code>EMP_NAME_IX</code> to evaluate the <code>WHERE</code> clause criteria.</p>
+</li>
+<li>
+<p>The <code>SELECT</code> statement returns rows satisfying the <code>WHERE</code> clause conditions.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect1" -->
+<a id="i26005"></a>
+<div id="PFGRF94687" class="sect1">
+<h2 class="sect1"><span class="secnum">12.6</span> Viewing Parallel Execution with EXPLAIN PLAN</h2>
+<p>Tuning a parallel query begins much like a non-parallel query tuning exercise by choosing the driving table. However, the rules governing the choice are different. In the non-parallel case, the best driving table is typically the one that produces fewest number of rows after limiting conditions are applied. The small number of rows are joined to larger tables using non-unique indexes. For example, consider a table hierarchy consisting of <code>CUSTOMER</code>, <code>ACCOUNT</code>, and <code>TRANSACTION</code>.</p>
+<div id="PFGRF94688" class="figure">
+<p class="titleinfigure"><a id="sthref1035"></a>Figure 12-1 A Table Hierarchy</p>
+<img width="496" height="112" src="img/pfgrf211.gif" alt="Description of Figure 12-1 follows" /><br />
+<a id="sthref1036" href="img_text/pfgrf211.htm">Description of "Figure 12-1 A Table Hierarchy"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p><code>CUSTOMER</code> is the smallest table while <code>TRANSACTION</code> is the largest. A typical OLTP query might retrieve transaction information about a specific customer's account. The query would drive from the <code>CUSTOMER</code> table. The goal in this case is to minimize logical I/O, which typically minimizes other critical resources including physical I/O and CPU time.</p>
+<p>For parallel queries, the choice of the driving table is usually the largest table because the database can use parallel query. It would not be efficient to use parallel query in this case because only a few rows from each table are ultimately accessed. However, what if it were necessary to identify all customers that had transactions of a certain type last month? It would be more efficient to drive from the <code>TRANSACTION</code> table because there are no limiting conditions on the customer table. The database would join rows from the <code>TRANSACTION</code> table to the <code>ACCOUNT</code> table, and finally to the <code>CUSTOMER</code> table. In this case, the indexes used on the <code>ACCOUNT</code> and <code>CUSTOMER</code> table are probably highly selective primary key or unique indexes, rather than non-unique indexes used in the first query. Because the <code>TRANSACTION</code> table is large and the column is un-selective, it would be beneficial to utilize parallel query driving from the <code>TRANSACTION</code> table.</p>
+<p>Parallel operations include:</p>
+<ul>
+<li>
+<p><code>PARALLEL_TO_PARALLEL</code></p>
+</li>
+<li>
+<p><code>PARALLEL_TO_SERIAL</code></p>
+<p>A <code>PARALLEL_TO_SERIAL</code> operation which is always the step that occurs when rows from a parallel operation are consumed by the query coordinator. Another type of operation that does not occur in this query is a <code>SERIAL</code> operation. If these types of operations occur, then consider making them parallel operations to improve performance because they too are potential bottlenecks.</p>
+</li>
+<li>
+<p><code>PARALLEL_FROM_SERIAL</code></p>
+</li>
+<li>
+<p><code>PARALLEL_TO_PARALLEL</code></p>
+<p><code>PARALLEL_TO_PARALLEL</code> operations generally produce the best performance as long as the workloads in each step are relatively equivalent.</p>
+</li>
+<li>
+<p><code>PARALLEL_COMBINED_WITH_CHILD</code></p>
+</li>
+<li>
+<p><code>PARALLEL_COMBINED_WITH_PARENT</code></p>
+<p>A <code>PARALLEL_COMBINED_WITH_PARENT</code> operation occurs when the database performs the step simultaneously with the parent step.</p>
+</li>
+</ul>
+<p>If a parallel step produces many rows, then the QC may not be able to consume the rows as fast as they are produced. Little can be done to improve this situation.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+See the <code>OTHER_TAG</code> column in <a href="#g30946">Table 12-1, "PLAN_TABLE Columns"</a></div>
+<a id="i26038"></a>
+<div id="PFGRF94689" class="sect2">
+<h3 class="sect2"><span class="secnum">12.6.1</span> Viewing Parallel Queries with EXPLAIN PLAN</h3>
+<p>When using <code>EXPLAIN</code> <code>PLAN</code> with parallel queries, the database compiles and executes one parallel plan. This plan is derived from the serial plan by allocating row sources specific to the parallel support in the QC plan. The table queue row sources (<code>PX</code> <code>Send</code> and <code>PX</code> <code>Receive</code>), the granule iterator, and buffer sorts, required by the two slave set PQ model, are directly inserted into the parallel plan. This plan is the exact same plan for all the slaves if executed in parallel or for the QC if executed in serial.</p>
+<p><a href="#i29224">Example 12-7</a> is a simple query for illustrating an <code>EXPLAIN</code> <code>PLAN</code> for a parallel query.</p>
+<div id="PFGRF94690" class="example">
+<p class="titleinexample"><a id="i29224"></a>Example 12-7 Parallel Query Explain Plan</p>
+<pre>
+CREATE TABLE emp2 AS SELECT * FROM employees;
+ALTER TABLE emp2 PARALLEL 2;
+
+EXPLAIN PLAN FOR
+  SELECT SUM(salary) FROM emp2 GROUP BY department_id;
+SELECT PLAN_TABLE_OUTPUT FROM TABLE(DBMS_XPLAN.DISPLAY());
+</pre>
+<pre>
+--------------------------------------------------------------------------------------------------------
+| Id  | Operation                | Name     | Rows  | Bytes | Cost (%CPU) |    TQ  |IN-OUT| PQ Distrib |
+--------------------------------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT         |          |   107 |  2782 |     3 (34)  |        |      |            |
+|   1 |  PX COORDINATOR          |          |       |       |             |        |      |            |
+|   2 |   PX SEND QC (RANDOM)    | :TQ10001 |   107 |  2782 |     3 (34)  |  Q1,01 | P-&gt;S | QC (RAND)  |
+|   3 |    HASH GROUP BY         |          |   107 |  2782 |     3 (34)  |  Q1,01 | PCWP |            |
+|   4 |     PX RECEIVE           |          |   107 |  2782 |     3 (34)  |  Q1,01 | PCWP |            |
+|   5 |      PX SEND HASH        | :TQ10000 |   107 |  2782 |     3 (34)  |  Q1,00 | P-&gt;P | HASH       |
+|   6 |       HASH GROUP BY      |          |   107 |  2782 |     3 (34)  |  Q1,00 | PCWP |            |
+|   7 |        PX BLOCK ITERATOR |          |   107 |  2782 |     2 (0)   |  Q1,00 | PCWP |            |
+|   8 |         TABLE ACCESS FULL| EMP2     |   107 |  2782 |     2 (0)   |  Q1,00 | PCWP |            |
+--------------------------------------------------------------------------------------------------------
+</pre>
+<p>The table <code>EMP2</code> is scanned in parallel by one set of slaves while the aggregation for the <code>GROUP</code> <code>BY</code> is done by the second set. The <code>PX</code> <code>BLOCK</code> <code>ITERATOR</code> row source represents the splitting up of the table <code>EMP2</code> into pieces so as to divide the scan workload between the parallel scan slaves. The <code>PX</code> <code>SEND</code> and <code>PX</code> <code>RECEIVE</code> row sources represent the pipe that connects the two slave sets as rows flow up from the parallel scan, get repartitioned through the <code>HASH</code> table queue, and then read by and aggregated on the top slave set. The <code>PX</code> <code>SEND</code> <code>QC</code> row source represents the aggregated values being sent to the QC in random (RAND) order. The <code>PX</code> <code>COORDINATOR</code> row source represents the QC or Query Coordinator which controls and schedules the parallel plan appearing below it in the plan tree.</p>
+</div>
+<!-- class="example" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i26143"></a>
+<div id="PFGRF94691" class="sect1">
+<h2 class="sect1"><span class="secnum">12.7</span> Viewing Bitmap Indexes with EXPLAIN PLAN</h2>
+<p>Index row sources using bitmap indexes appear in the <code>EXPLAIN</code> <code>PLAN</code> output with the word <code>BITMAP</code> indicating the type of the index. Consider the sample query and plan in <a href="#i26149">Example 12-8</a>.</p>
+<div id="PFGRF94692" class="example">
+<p class="titleinexample"><a id="i26149"></a>Example 12-8 EXPLAIN PLAN with Bitmap Indexes</p>
+<pre>
+EXPLAIN PLAN FOR
+</pre>
+<pre>
+SELECT * FROM t
+WHERE c1 = 2 
+AND c2 &lt;&gt; 6 
+OR c3 BETWEEN 10 AND 20;
+</pre>
+<pre>
+SELECT STATEMENT
+   TABLE ACCESS T BY INDEX ROWID
+      BITMAP CONVERSION TO ROWID
+         BITMAP OR
+            BITMAP MINUS
+               BITMAP MINUS
+                  BITMAP INDEX C1_IND SINGLE VALUE
+                  BITMAP INDEX C2_IND SINGLE VALUE
+               BITMAP INDEX C2_IND SINGLE VALUE
+            BITMAP MERGE
+               BITMAP INDEX C3_IND RANGE SCAN
+</pre>
+<p>In this example, the predicate <code>c1</code>=<code>2</code> yields a bitmap from which a subtraction can take place. From this bitmap, the bits in the bitmap for <code>c2</code> = <code>6</code> are subtracted. Also, the bits in the bitmap for <code>c2</code> <code>IS</code> <code>NULL</code> are subtracted, explaining why there are two <code>MINUS</code> row sources in the plan. The <code>NULL</code> subtraction is necessary for semantic correctness unless the column has a <code>NOT</code> <code>NULL</code> constraint. The <code>TO</code> <code>ROWIDS</code> option generates the rowids necessary for the table access.</p>
+</div>
+<!-- class="example" -->
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Queries using bitmap join index indicate the bitmap join index access path. The operation for bitmap join index is the same as bitmap index.</div>
+</div>
+<!-- class="sect1" -->
+<a id="CHDCGHDG"></a>
+<div id="PFGRF94693" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">12.8</span> Viewing Result Cache with EXPLAIN PLAN</h2>
+<p>When your query contains the <code>result_cache</code> hint, the <code>ResultCache</code> operator is inserted into the execution plan.</p>
+<p>For example, consider the query:</p>
+<pre>
+select /*+ result_cache */ deptno, avg(sal) 
+from emp 
+group by deptno;
+</pre>
+<p>To view the <code>EXPLAIN PLAN</code> for this query, use the command:</p>
+<pre>
+EXPLAIN PLAN FOR 
+select /*+ result_cache */ deptno, avg(sal) 
+from emp 
+group by deptno;
+</pre>
+<pre>
+select PLAN_TABLE_OUTPUT from TABLE (DBMS_XPLAN.DISPLAY());
+</pre>
+<p>The <code>EXPLAIN PLAN</code> output for this query should look similar to the following:</p>
+<pre>
+---------------------------------------------------------------------------------------------
+| Id  | Operation           | Name                        |Rows |Bytes |Cost(%CPU)|Time     |
+---------------------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT    |                             | 11  | 77   |  4 (25)  | 00:00:01|
+|   1 |  RESULT CACHE       |b06ppfz9pxzstbttpbqyqnfbmy   |     |      |          |         |
+|   2 |   HASH GROUP BY     |                             | 11  | 77   |  4 (25)  | 00:00:01|
+|   3 |    TABLE ACCESS FULL| EMP                         |107  | 749  |  3 (0)   | 00:00:01|
+---------------------------------------------------------------------------------------------
+</pre>
+<p>In this <code>EXPLAIN PLAN</code>, the <code>ResultCache</code> operator is identified by its <code>CacheId</code>, which is <code>b06ppfz9pxzstbttpbqyqnfbmy</code>. You can now run a query on the <code>V$RESULT_CACHE_OBJECTS</code> view by using this <code>CacheId</code>.</p>
+</div>
+<!-- class="sect1" -->
+<a id="i26093"></a>
+<div id="PFGRF94694" class="sect1">
+<h2 class="sect1"><span class="secnum">12.9</span> Viewing Partitioned Objects with EXPLAIN PLAN</h2>
+<p><a id="sthref1037"></a><a id="sthref1038"></a>Use <code>EXPLAIN</code> <code>PLAN</code> to see how Oracle Database accesses partitioned objects for specific queries.</p>
+<p><a id="sthref1039"></a><a id="sthref1040"></a>Partitions accessed after pruning are shown in the <code>PARTITION</code> <code>START</code> and <code>PARTITION</code> <code>STOP</code> columns. The row source name for the range partition is <code>PARTITION</code> <code>RANGE</code>. For <a id="sthref1041"></a><a id="sthref1042"></a>hash partitions, the row source name is <code>PARTITION</code> <code>HASH</code>.</p>
+<p>A join is implemented using partial partition-wise join if the <code>DISTRIBUTION</code> column of the plan table of one of the joined tables contains <code>PARTITION</code>(<code>KEY</code>). Partial partition-wise join is possible if one of the joined tables is partitioned on its join column and the table is parallelized.</p>
+<p>A join is implemented using full partition-wise join if the partition row source appears before the join row source in the <code>EXPLAIN</code> <code>PLAN</code> output. Full partition-wise joins are possible only if both joined tables are equi-partitioned on their respective join columns. Examples of execution plans for several types of partitioning follow.</p>
+<div id="PFGRF94695" class="sect2"><a id="sthref1043"></a>
+<h3 class="sect2"><span class="secnum">12.9.1</span> Examples of Displaying Range and Hash Partitioning with EXPLAIN PLAN</h3>
+<p><a id="sthref1044"></a><a id="sthref1045"></a><a id="sthref1046"></a>Consider the following table, <code>emp_range</code>, partitioned by range on <code>hire_date</code> to illustrate how pruning is displayed. Assume that the tables <code>employees</code> and <code>departments</code> from the Oracle Database sample schema exist.</p>
+<pre>
+CREATE TABLE emp_range 
+PARTITION BY RANGE(hire_date) 
+( 
+PARTITION emp_p1 VALUES LESS THAN (TO_DATE('1-JAN-1992','DD-MON-YYYY')),
+PARTITION emp_p2 VALUES LESS THAN (TO_DATE('1-JAN-1994','DD-MON-YYYY')),
+PARTITION emp_p3 VALUES LESS THAN (TO_DATE('1-JAN-1996','DD-MON-YYYY')),
+PARTITION emp_p4 VALUES LESS THAN (TO_DATE('1-JAN-1998','DD-MON-YYYY')),
+PARTITION emp_p5 VALUES LESS THAN (TO_DATE('1-JAN-2001','DD-MON-YYYY')) 
+) 
+AS SELECT * FROM employees; 
+</pre>
+<p>For the first example, consider the following statement:</p>
+<pre>
+EXPLAIN PLAN FOR 
+  SELECT * FROM emp_range; 
+</pre>
+<p>Oracle Database displays something similar to the following:</p>
+<pre>
+---------------------------------------------------------------------------------
+| Id  | Operation           | Name      | Rows  | Bytes | Cost  | Pstart| Pstop |
+---------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT    |           |   105 | 13965 |     2 |       |       |
+|   1 |  PARTITION RANGE ALL|           |   105 | 13965 |     2 |     1 |     5 |
+|   2 |   TABLE ACCESS FULL | EMP_RANGE |   105 | 13965 |     2 |     1 |     5 |
+---------------------------------------------------------------------------------
+</pre>
+<p>The database creates a partition row source on top of the table access row source. It iterates over the set of partitions to be accessed. <a id="sthref1047"></a>In this example, the partition iterator covers all partitions (option <code>ALL</code>), because a <a id="sthref1048"></a>predicate <a id="sthref1049"></a>was not used for pruning. The <code>PARTITION_START</code> and <code>PARTITION</code>_<code>STOP</code> columns of the <code>PLAN_TABLE</code> show access to all partitions from 1 to 5.</p>
+<p>For the next example, consider the following statement:</p>
+<pre>
+EXPLAIN PLAN FOR 
+  SELECT * FROM emp_range 
+  WHERE hire_date &gt;= TO_DATE('1-JAN-1996','DD-MON-YYYY');
+
+--------------------------------------------------------------------------------------
+| Id  | Operation                | Name      | Rows  | Bytes | Cost  | Pstart| Pstop |
+--------------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT         |           |     3 |   399 |     2 |       |       |
+|   1 |  PARTITION RANGE ITERATOR|           |     3 |   399 |     2 |     4 |     5 |
+|*  2 |   TABLE ACCESS FULL      | EMP_RANGE |     3 |   399 |     2 |     4 |     5 |
+--------------------------------------------------------------------------------------
+</pre>
+<p>In the previous example, the partition row source iterates from partition 4 to 5 because the database prunes the other partitions using a predicate on <code>hire_date</code>.</p>
+<p>Finally, consider the following statement:</p>
+<pre>
+EXPLAIN PLAN FOR 
+  SELECT * FROM emp_range 
+  WHERE hire_date &lt; TO_DATE('1-JAN-1992','DD-MON-YYYY'); 
+
+------------------------------------------------------------------------------------
+| Id  | Operation              | Name      | Rows  | Bytes | Cost  | Pstart| Pstop |
+------------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT       |           |     1 |   133 |     2 |       |       |
+|   1 |  PARTITION RANGE SINGLE|           |     1 |   133 |     2 |     1 |     1 |
+|*  2 |   TABLE ACCESS FULL    | EMP_RANGE |     1 |   133 |     2 |     1 |     1 |
+------------------------------------------------------------------------------------
+</pre>
+<p>In the previous example, only partition 1 is accessed and known at compile time; thus, there is no need for a partition row source.</p>
+<div id="PFGRF94696" class="sect3"><a id="sthref1050"></a>
+<h4 class="sect3"><span class="secnum">12.9.1.1</span> Plans for Hash Partitioning</h4>
+<p>Oracle Database displays the same information for hash partitioned objects, except the partition row source name is <code>PARTITION</code> <code>HASH</code> instead of <code>PARTITION</code> <code>RANGE</code>. Also, with hash partitioning, pruning is only possible using equality or <code>IN</code>-list predicates.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<div id="PFGRF94697" class="sect2"><a id="sthref1051"></a>
+<h3 class="sect2"><span class="secnum">12.9.2</span> Examples of Pruning Information with Composite Partitioned Objects</h3>
+<p><a id="sthref1052"></a>To illustrate <a id="sthref1053"></a>how Oracle Database displays pruning information for composite partitioned objects, consider the table <code>emp_comp</code> that is range partitioned on <code>hiredate</code> and subpartitioned by hash on <code>deptno</code>.</p>
+<pre>
+CREATE TABLE emp_comp PARTITION BY RANGE(hire_date) 
+      SUBPARTITION BY HASH(department_id) SUBPARTITIONS 3 
+( 
+PARTITION emp_p1 VALUES LESS THAN (TO_DATE('1-JAN-1992','DD-MON-YYYY')),
+PARTITION emp_p2 VALUES LESS THAN (TO_DATE('1-JAN-1994','DD-MON-YYYY')),
+PARTITION emp_p3 VALUES LESS THAN (TO_DATE('1-JAN-1996','DD-MON-YYYY')),
+PARTITION emp_p4 VALUES LESS THAN (TO_DATE('1-JAN-1998','DD-MON-YYYY')),
+PARTITION emp_p5 VALUES LESS THAN (TO_DATE('1-JAN-2001','DD-MON-YYYY')) 
+) 
+AS SELECT * FROM employees; 
+</pre>
+<p>For the first example, consider the following statement:</p>
+<pre>
+EXPLAIN PLAN FOR 
+  SELECT * FROM emp_comp; 
+
+--------------------------------------------------------------------------------
+| Id  | Operation           | Name     | Rows  | Bytes | Cost  | Pstart| Pstop |
+--------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT    |          | 10120 |  1314K|    78 |       |       |
+|   1 |  PARTITION RANGE ALL|          | 10120 |  1314K|    78 |     1 |     5 |
+|   2 |   PARTITION HASH ALL|          | 10120 |  1314K|    78 |     1 |     3 |
+|   3 |    TABLE ACCESS FULL| EMP_COMP | 10120 |  1314K|    78 |     1 |    15 |
+--------------------------------------------------------------------------------
+</pre>
+<p>This example shows the plan when Oracle Database accesses all subpartitions of all partitions of a composite object. The database uses two partition row sources for this purpose: a range partition row source to iterate over the partitions and a hash partition row source to iterate over the subpartitions of each accessed partition.</p>
+<p>In the following example, the range partition row source iterates from partition 1 to 5, because the database performs no pruning. Within each partition, the hash partition row source iterates over subpartitions 1 to 3 of the current partition. As a result, the table access row source accesses subpartitions 1 to 15. In other words, it accesses all subpartitions of the composite object.</p>
+<pre>
+EXPLAIN PLAN FOR 
+  SELECT * FROM emp_comp 
+  WHERE hire_date = TO_DATE('15-FEB-1998', 'DD-MON-YYYY'); 
+
+-----------------------------------------------------------------------------------
+| Id  | Operation              | Name     | Rows  | Bytes | Cost  | Pstart| Pstop |
+-----------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT       |          |    20 |  2660 |    17 |       |       |
+|   1 |  PARTITION RANGE SINGLE|          |    20 |  2660 |    17 |     5 |     5 |
+|   2 |   PARTITION HASH ALL   |          |    20 |  2660 |    17 |     1 |     3 |
+|*  3 |    TABLE ACCESS FULL   | EMP_COMP |    20 |  2660 |    17 |    13 |    15 |
+-----------------------------------------------------------------------------------
+</pre>
+<p>In the previous example, only the last partition, partition 5, is accessed. This partition is known at compile time, so the database does not need to show it in the plan. The hash partition row source shows accessing of all subpartitions within that partition; that is, subpartitions 1 to 3, which translates into subpartitions 13 to 15 of the <code>emp_comp</code> table.</p>
+<p>Now consider the following statement:</p>
+<pre>
+EXPLAIN PLAN FOR 
+  SELECT * FROM emp_comp WHERE department_id = 20; 
+
+-----------------------------------------------------------------------------------
+| Id  | Operation              | Name     | Rows  | Bytes | Cost  | Pstart| Pstop |
+-----------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT       |          |   101 | 13433 |    78 |       |       |
+|   1 |  PARTITION RANGE ALL   |          |   101 | 13433 |    78 |     1 |     5 |
+|   2 |   PARTITION HASH SINGLE|          |   101 | 13433 |    78 |     3 |     3 |
+|*  3 |    TABLE ACCESS FULL   | EMP_COMP |   101 | 13433 |    78 |       |       |
+-----------------------------------------------------------------------------------
+</pre>
+<p>In the previous example, the predicate <code>deptno</code> = 20 enables pruning on the hash dimension within each partition, so Oracle Database only needs to access a single subpartition. The number of that subpartition is known at compile time, so the hash partition row source is not needed.</p>
+<p>Finally, consider the following statement:</p>
+<pre>
+VARIABLE dno NUMBER; 
+EXPLAIN PLAN FOR 
+  SELECT * FROM emp_comp WHERE department_id = :dno; 
+
+-----------------------------------------------------------------------------------
+| Id  | Operation              | Name     | Rows  | Bytes | Cost  | Pstart| Pstop |
+-----------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT       |          |   101 | 13433 |    78 |       |       |
+|   1 |  PARTITION RANGE ALL   |          |   101 | 13433 |    78 |     1 |     5 |
+|   2 |   PARTITION HASH SINGLE|          |   101 | 13433 |    78 |   KEY |   KEY |
+|*  3 |    TABLE ACCESS FULL   | EMP_COMP |   101 | 13433 |    78 |       |       |
+-----------------------------------------------------------------------------------
+</pre>
+<p>The last two examples are the same, except that <code>deptno</code> = 20 has been replaced by <code>department_id</code> = :<code>dno</code>. In this last case, the subpartition number is unknown at compile time, and a hash partition row source is allocated. The option is <code>SINGLE</code> for that row source, because Oracle Database accesses only one subpartition within each partition. The <code>PARTITION</code>_<code>START</code> and <code>PARTITION</code>_<code>STOP</code> is set to <code>KEY</code>, which means that Oracle Database determines the number of subpartitions at run time.</p>
+</div>
+<!-- class="sect2" -->
+<div id="PFGRF94698" class="sect2"><a id="sthref1054"></a>
+<h3 class="sect2"><span class="secnum">12.9.3</span> Examples of Partial Partition-Wise Joins</h3>
+<p><a id="sthref1055"></a>In the following <a id="sthref1056"></a><a id="sthref1057"></a>example, <code>emp_range_did</code> is joined on the partitioning column <code>department_id</code> and is parallelized. This enables use of partial partition-wise join, because the <code>dept2</code> table is not partitioned. Oracle Database dynamically partitions the dept2 table before the join.</p>
+<div id="PFGRF94699" class="example">
+<p class="titleinexample"><a id="i29869"></a>Example 12-9 Partial Partition-Wise Join with Range Partition</p>
+<pre>
+CREATE TABLE dept2 AS SELECT * FROM departments;
+ALTER TABLE dept2 PARALLEL 2;
+
+CREATE TABLE emp_range_did PARTITION BY RANGE(department_id)
+   (PARTITION emp_p1 VALUES LESS THAN (150),
+    PARTITION emp_p5 VALUES LESS THAN (MAXVALUE) )
+  AS SELECT * FROM employees;
+
+ALTER TABLE emp_range_did PARALLEL 2;
+
+EXPLAIN PLAN FOR 
+SELECT /*+ PQ_DISTRIBUTE(d NONE PARTITION) ORDERED */ e.last_name, 
+                     d.department_name 
+   FROM emp_range_did e , dept2 d 
+   WHERE e.department_id = d.department_id ;
+</pre>
+<pre>
+-------------------------------------------------------------------------------------------------------------
+| Id| Operation                    |Name         |Rows | Bytes |Cost|Pstart|Pstop|   TQ  |IN-OUT|PQ Distrib |
+-------------------------------------------------------------------------------------------------------------
+|  0| SELECT STATEMENT             |             | 284 | 16188 |  6 |      |     |       |      |            
+|  1|  PX COORDINATOR              |             |     |       |    |      |     |       |      |           |
+|  2|   PX SEND QC (RANDOM)        |:TQ10001     | 284 | 16188 |  6 |      |     | Q1,01 | P-&gt;S | QC (RAND) |
+|* 3|    HASH JOIN                 |             | 284 | 16188 |  6 |      |     | Q1,01 | PCWP |           |
+|  4|     PX PARTITION RANGE ALL   |             | 284 |  7668 |  2 |    1 |   2 | Q1,01 | PCWC |           |
+|  5|      TABLE ACCESS FULL       |EMP_RANGE_DID| 284 |  7668 |  2 |    1 |   2 | Q1,01 | PCWP |           |
+|  6|     BUFFER SORT              |             |     |       |    |      |     | Q1,01 | PCWC |           |
+|  7|      PX RECEIVE              |             |  21 |   630 |  2 |      |     | Q1,01 | PCWP |           |
+|  8|       PX SEND PARTITION (KEY)|:TQ10000     |  21 |   630 |  2 |      |     |       | S-&gt;P |PART (KEY) |
+|  9|        TABLE ACCESS FULL     |DEPT2        |  21 |   630 |  2 |      |     |       |      |           |
+------------------------------------------------------------------------------------------------------------
+</pre>
+<p>The execution plan shows that the table <code>dept2</code> is scanned serially and all rows with the same partitioning column value of <code>emp_range_did</code> (<code>department_id</code>) are sent through a <code>PART</code> (<code>KEY</code>), or partition key, table queue to the same slave doing the partial partition-wise join.</p>
+<p>In the following example, <code>emp_comp</code> is joined on the partitioning column and is parallelized. This enables use of partial partition-wise join, because the <code>dept2</code> table is not partitioned. The database dynamically partitions the <code>dept2</code> table before the join.</p>
+</div>
+<!-- class="example" -->
+<div id="PFGRF94700" class="example">
+<p class="titleinexample"><a id="i29880"></a>Example 12-10 Partial Partition-Wise Join with Composite Partition</p>
+<pre>
+ALTER TABLE emp_comp PARALLEL 2; 
+
+EXPLAIN PLAN FOR 
+SELECT /*+ PQ_DISTRIBUTE(d NONE PARTITION) ORDERED */ e.last_name, 
+         d.department_name 
+  FROM emp_comp e, dept2 d 
+ WHERE e.department_id = d.department_id;
+SELECT PLAN_TABLE_OUTPUT FROM TABLE(DBMS_XPLAN.DISPLAY());
+</pre>
+<pre>
+-------------------------------------------------------------------------------------------------------------
+| Id | Operation                   | Name    | Rows | Bytes | Cost |Pstart|Pstop|    TQ  |IN-OUT| PQ Distrib |
+-------------------------------------------------------------------------------------------------------------
+|  0 | SELECT STATEMENT            |         |  445 | 17800 |    5 |      |     |        |      |           |
+|  1 |  PX COORDINATOR             |         |      |       |      |      |     |        |      |           |
+|  2 |   PX SEND QC (RANDOM)       |:TQ10001 |  445 | 17800 |    5 |      |     |  Q1,01 | P-&gt;S | QC (RAND) |
+|* 3 |    HASH JOIN                |         |  445 | 17800 |    5 |      |     |  Q1,01 | PCWP |           |
+|  4 |     PX PARTITION RANGE ALL  |         |  107 |  1070 |    3 |    1 |   5 |  Q1,01 | PCWC |           |
+|  5 |      PX PARTITION HASH ALL  |         |  107 |  1070 |    3 |    1 |   3 |  Q1,01 | PCWC |           |
+|  6 |       TABLE ACCESS FULL     |EMP_COMP |  107 |  1070 |    3 |    1 |  15 |  Q1,01 | PCWP |           |
+|  7 |     PX RECEIVE              |         |   21 |   630 |    1 |      |     |  Q1,01 | PCWP |           |
+|  8 |      PX SEND PARTITION (KEY)|:TQ10000 |   21 |   630 |    1 |      |     |  Q1,00 | P-&gt;P |PART (KEY) |
+|  9 |       PX BLOCK ITERATOR     |         |   21 |   630 |    1 |      |     |  Q1,00 | PCWC |           |
+| 10 |        TABLE ACCESS FULL    |DEPT2    |   21 |   630 |    1 |      |     |  Q1,00 | PCWP |           |
+-------------------------------------------------------------------------------------------------------------
+</pre>
+<p>The plan shows that the optimizer selects partial partition-wise join from one of two columns. The <code>PX</code> <code>SEND</code> node type is <code>PARTITION</code>(<code>KEY</code>) and the PQ Distrib column contains the text <code>PART</code> (<code>KEY</code>), or partition key. This implies that the table <code>dept2</code> is re-partitioned based on the join column <code>department_id</code> to be sent to the parallel slaves executing the scan of <code>EMP_COMP</code> and the join.</p>
+<p>Note that in both <a href="#i29869">Example 12-9</a> and <a href="#i29880">Example 12-10</a> the <code>PQ_DISTRIBUTE</code> hint explicitly forces a partial partition-wise join because the query optimizer could have chosen a different plan based on cost in this query.</p>
+</div>
+<!-- class="example" --></div>
+<!-- class="sect2" -->
+<div id="PFGRF94701" class="sect2"><a id="sthref1058"></a>
+<h3 class="sect2"><span class="secnum">12.9.4</span> Examples of Full Partition-wise Joins<a id="sthref1059"></a><a id="sthref1060"></a><a id="sthref1061"></a></h3>
+<p><a id="sthref1062"></a>In the <a id="sthref1063"></a>following <a id="sthref1064"></a>example, <code>emp_comp</code> and <code>dept_hash</code> are joined on their hash partitioning columns. This enables use of full partition-wise join. The <code>PARTITION</code> <code>HASH</code> row source appears on top of the join row source in the plan table output.</p>
+<p>The <code>PX</code> <code>PARTITION</code> <code>HASH</code> row source appears on top of the join row source in the plan table output while the <code>PX</code> <code>PARTITION</code> <code>RANGE</code> row source appears over the scan of <code>emp_comp</code>. Each parallel slave performs the join of an entire hash partition of <code>emp_comp</code> with an entire partition of <code>dept_hash</code>.</p>
+<div id="PFGRF94702" class="example">
+<p class="titleinexample"><a id="sthref1065"></a>Example 12-11 Full Partition-Wise Join</p>
+<pre>
+CREATE TABLE dept_hash
+   PARTITION BY HASH(department_id)
+   PARTITIONS 3
+   PARALLEL 2
+   AS SELECT * FROM departments;
+
+EXPLAIN PLAN FOR SELECT /*+ PQ_DISTRIBUTE(e NONE NONE) ORDERED */ e.last_name,
+       d.department_name
+  FROM emp_comp e, dept_hash d
+ WHERE e.department_id = d.department_id;
+</pre>
+<pre>
+-------------------------------------------------------------------------------------------------------------
+| Id | Operation                  | Name      | Rows |Bytes |Cost |Pstart|Pstop |   TQ  |IN-OUT| PQ Distrib |
+-------------------------------------------------------------------------------------------------------------
+|  0 | SELECT STATEMENT           |           |  106 | 2544 |   8 |      |      |       |      |            |
+|  1 |  PX COORDINATOR            |           |      |      |     |      |      |       |      |            |
+|  2 |   PX SEND QC (RANDOM)      | :TQ10000  |  106 | 2544 |   8 |      |      | Q1,00 | P-&gt;S | QC (RAND)  |
+|  3 |    PX PARTITION HASH ALL   |           |  106 | 2544 |   8 |    1 |    3 | Q1,00 | PCWC |            |
+|* 4 |     HASH JOIN              |           |  106 | 2544 |   8 |      |      | Q1,00 | PCWP |            |
+|  5 |      PX PARTITION RANGE ALL|           |  107 | 1070 |   3 |    1 |    5 | Q1,00 | PCWC |            |
+|  6 |       TABLE ACCESS FULL    | EMP_COMP  |  107 | 1070 |   3 |    1 |   15 | Q1,00 | PCWP |            |
+|  7 |      TABLE ACCESS FULL     | DEPT_HASH |   27 |  378 |   4 |    1 |    3 | Q1,00 | PCWP |            |
+-------------------------------------------------------------------------------------------------------------
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" -->
+<div id="PFGRF94703" class="sect2"><a id="sthref1066"></a>
+<h3 class="sect2"><span class="secnum">12.9.5</span> Examples of INLIST ITERATOR and EXPLAIN PLAN</h3>
+<p>An <code><a id="sthref1067"></a>INLIST</code> <code>ITERATOR</code> operation appears in the <code>EXPLAIN</code> <code>PLAN</code> output if an index implements an <code><a id="sthref1068"></a>IN</code>-list predicate. For example:</p>
+<pre>
+SELECT * FROM emp WHERE empno IN (7876, 7900, 7902);
+</pre>
+<p>The <code>EXPLAIN</code> <code>PLAN</code> output appears as follows:</p>
+<pre>
+OPERATION          OPTIONS           OBJECT_NAME
+----------------   ---------------   -------------- 
+SELECT STATEMENT
+INLIST ITERATOR
+TABLE ACCESS       BY ROWID          EMP
+INDEX              RANGE SCAN        EMP_EMPNO
+</pre>
+<p>The <code>INLIST</code> <code>ITERATOR</code> operation iterates over the next operation in the plan for each value in the <code>IN</code>-list predicate. For partitioned tables and indexes, the three possible types of <code>IN</code>-list columns are described in the following sections.</p>
+<div id="PFGRF94704" class="sect3"><a id="sthref1069"></a>
+<h4 class="sect3"><span class="secnum">12.9.5.1</span> When the IN-List Column is an Index Column</h4>
+<p>If the <code>IN</code>-list column <code>empno</code> is an index column but not a partition column, then the plan is as follows (the <code>IN</code>-list operator appears before the table operation but after the partition operation):</p>
+<pre>
+OPERATION        OPTIONS              OBJECT_NAME PARTITION_START PARTITION_STOP
+---------------- ------------         ----------- --------------- -------------- 
+SELECT STATEMENT 
+PARTITION RANGE  ALL                               KEY(INLIST)     KEY(INLIST)
+INLIST ITERATOR
+TABLE ACCESS     BY LOCAL INDEX ROWID EMP          KEY(INLIST)     KEY(INLIST)
+INDEX            RANGE SCAN           EMP_EMPNO    KEY(INLIST)     KEY(INLIST)
+</pre>
+<p>The <code>KEY</code>(<code>INLIST</code>) designation for the partition start and stop keys specifies that an <code>IN</code>-list predicate appears on the index start and stop keys.</p>
+</div>
+<!-- class="sect3" -->
+<div id="PFGRF94705" class="sect3"><a id="sthref1070"></a>
+<h4 class="sect3"><span class="secnum">12.9.5.2</span> When the IN-List Column is an Index and a Partition Column</h4>
+<p>If <code>empno</code> is an indexed and a partition column, then the plan contains an <code>INLIST</code> <code>ITERATOR</code> operation before the partition operation:</p>
+<pre>
+OPERATION        OPTIONS              OBJECT_NAME PARTITION_START PARTITION_STOP
+---------------- ------------         ----------- --------------- --------------
+SELECT STATEMENT
+INLIST ITERATOR
+PARTITION RANGE  ITERATOR                         KEY(INLIST)     KEY(INLIST)
+TABLE ACCESS     BY LOCAL INDEX ROWID EMP         KEY(INLIST)     KEY(INLIST)
+INDEX            RANGE SCAN           EMP_EMPNO   KEY(INLIST)     KEY(INLIST)
+</pre></div>
+<!-- class="sect3" -->
+<div id="PFGRF94706" class="sect3"><a id="sthref1071"></a>
+<h4 class="sect3"><span class="secnum">12.9.5.3</span> When the IN-List Column is a Partition Column</h4>
+<p>If <code>empno</code> is a partition column and no indexes exist, then no <code>INLIST</code> <code>ITERATOR</code> operation is allocated:</p>
+<pre>
+OPERATION         OPTIONS        OBJECT_NAME   PARTITION_START   PARTITION_STOP
+----------------  ------------   -----------   ---------------   --------------
+SELECT STATEMENT
+PARTITION RANGE   INLIST                       KEY(INLIST)       KEY(INLIST)
+TABLE ACCESS      FULL           EMP           KEY(INLIST)       KEY(INLIST)
+</pre>
+<p>If <code>emp_empno</code> is a <a id="sthref1072"></a>bitmap index, then the plan is as follows:</p>
+<pre>
+OPERATION          OPTIONS           OBJECT_NAME
+----------------   ---------------   -------------- 
+SELECT STATEMENT
+INLIST ITERATOR
+TABLE ACCESS       BY INDEX ROWID    EMP
+BITMAP CONVERSION  TO ROWIDS
+BITMAP INDEX       SINGLE VALUE      EMP_EMPNO
+</pre></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<div id="PFGRF94707" class="sect2"><a id="sthref1073"></a>
+<h3 class="sect2"><span class="secnum">12.9.6</span> Example of Domain Indexes and EXPLAIN PLAN</h3>
+<p><a id="sthref1074"></a>You can also use <code><a id="sthref1075"></a>EXPLAIN</code> <code>PLAN</code> to derive user-defined CPU and I/O costs for domain indexes. <code>EXPLAIN</code> <code>PLAN</code> displays these statistics in the <code>OTHER</code> column of <code>PLAN_TABLE</code>.</p>
+<p>For example, assume table <code>emp</code> has user-defined operator <code>CONTAINS</code> with a domain index <code>emp_resume</code> on the <code>resume</code> column, and the index type of <code>emp_resume</code> supports the operator <code>CONTAINS</code>. You explain the plan for the following query:</p>
+<pre>
+SELECT * FROM emp WHERE CONTAINS(resume, 'Oracle') = 1 
+</pre>
+<p>The database could display the following plan:</p>
+<pre>
+OPERATION            OPTIONS      OBJECT_NAME     OTHER 
+-----------------    -----------  ------------    ----------------
+SELECT STATEMENT 
+TABLE ACCESS         BY ROWID     EMP
+DOMAIN INDEX                      EMP_RESUME      CPU: 300, I/O: 4
+</pre></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i18300"></a>
+<div id="PFGRF94708" class="sect1">
+<h2 class="sect1"><span class="secnum">12.10</span> PLAN_TABLE Columns</h2>
+<p>The <code>PLAN_TABLE</code> used by the <code>EXPLAIN</code> <code>PLAN</code> statement contains the columns listed in <a href="#g30946">Table 12-1</a>.</p>
+<div id="PFGRF94709" class="tblformalwide">
+<p class="titleintable"><a id="sthref1076"></a><a id="g30946"></a>Table 12-1 PLAN_TABLE Columns</p>
+<table class="cellalignment1691" title="PLAN_TABLE Columns" summary="This table describes the columns in the PLAN_TABLE used by the EXPLAIN PLAN statement." dir="ltr">
+<thead>
+<tr class="cellalignment1680">
+<th class="cellalignment1687" id="r1c1-t12">Column</th>
+<th class="cellalignment1687" id="r1c2-t12">Type</th>
+<th class="cellalignment1687" id="r1c3-t12">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r2c1-t12" headers="r1c1-t12">
+<p><code>STATEMENT_ID</code></p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t12 r1c2-t12">
+<p><code>VARCHAR2(30)</code></p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t12 r1c3-t12">
+<p><a id="sthref1077"></a><a id="sthref1078"></a>Value of the optional <code>STATEMENT_ID</code> parameter specified in the <code>EXPLAIN</code> <code>PLAN</code> statement.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r3c1-t12" headers="r1c1-t12">
+<p><code>PLAN_ID</code></p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t12 r1c2-t12">
+<p><code>NUMBER</code></p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t12 r1c3-t12">
+<p>Unique identifier of a plan in the database.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r4c1-t12" headers="r1c1-t12">
+<p><code>TIMESTAMP</code></p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t12 r1c2-t12">
+<p><code>DATE</code></p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t12 r1c3-t12">
+<p><a id="sthref1079"></a><a id="sthref1080"></a>Date and time when the <code>EXPLAIN</code> <code>PLAN</code> statement was generated.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r5c1-t12" headers="r1c1-t12">
+<p><code>REMARKS</code></p>
+</td>
+<td class="cellalignment1688" headers="r5c1-t12 r1c2-t12">
+<p><code>VARCHAR2(80)</code></p>
+</td>
+<td class="cellalignment1688" headers="r5c1-t12 r1c3-t12">
+<p><a id="sthref1081"></a><a id="sthref1082"></a>Any comment (of up to 80 bytes) you want to associate with each step of the explained plan. This column indicates whether the database used an outline or SQL profile for the query.</p>
+<p>If you need to add or change a remark on any row of the <code>PLAN_TABLE</code>, then use the <code>UPDATE</code> statement to modify the rows of the <code>PLAN_TABLE</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r6c1-t12" headers="r1c1-t12">
+<p><code>OPERATION</code></p>
+</td>
+<td class="cellalignment1688" headers="r6c1-t12 r1c2-t12">
+<p><code>VARCHAR2(30)</code></p>
+</td>
+<td class="cellalignment1688" headers="r6c1-t12 r1c3-t12">
+<p><a id="sthref1083"></a><a id="sthref1084"></a>Name of the internal operation performed in this step. In the first row generated for a statement, the column contains one of the following values:</p>
+<ul>
+<li>
+<p>DELETE STATEMENT</p>
+</li>
+<li>
+<p>INSERT STATEMENT</p>
+</li>
+<li>
+<p>SELECT STATEMENT</p>
+</li>
+<li>
+<p>UPDATE STATEMENT</p>
+</li>
+</ul>
+<p>See <a href="#i23461">Table 12-3</a> for more information on values for this column.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r7c1-t12" headers="r1c1-t12">
+<p><code>OPTIONS</code></p>
+</td>
+<td class="cellalignment1688" headers="r7c1-t12 r1c2-t12">
+<p><code>VARCHAR2(225)</code></p>
+</td>
+<td class="cellalignment1688" headers="r7c1-t12 r1c3-t12">
+<p><a id="sthref1085"></a><a id="sthref1086"></a>A variation on the operation described in the <code>OPERATION</code> column.</p>
+<p>See <a href="#i23461">Table 12-3</a> for more information on values for this column.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r8c1-t12" headers="r1c1-t12">
+<p><code>OBJECT_NODE</code></p>
+</td>
+<td class="cellalignment1688" headers="r8c1-t12 r1c2-t12">
+<p><code>VARCHAR2(128)</code></p>
+</td>
+<td class="cellalignment1688" headers="r8c1-t12 r1c3-t12">
+<p><a id="sthref1087"></a><a id="sthref1088"></a>Name of the database link used to reference the object (a table name or view name). For local queries using parallel execution, this column describes the order in which the database consumes output from operations.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r9c1-t12" headers="r1c1-t12">
+<p><code>OBJECT_OWNER</code></p>
+</td>
+<td class="cellalignment1688" headers="r9c1-t12 r1c2-t12">
+<p><code>VARCHAR2(30)</code></p>
+</td>
+<td class="cellalignment1688" headers="r9c1-t12 r1c3-t12">
+<p><a id="sthref1089"></a><a id="sthref1090"></a>Name of the user who owns the schema containing the table or index.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r10c1-t12" headers="r1c1-t12">
+<p><code>OBJECT_NAME</code></p>
+</td>
+<td class="cellalignment1688" headers="r10c1-t12 r1c2-t12">
+<p><code>VARCHAR2(30)</code></p>
+</td>
+<td class="cellalignment1688" headers="r10c1-t12 r1c3-t12">
+<p><a id="sthref1091"></a><a id="sthref1092"></a>Name of the table or index.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r11c1-t12" headers="r1c1-t12">
+<p><code>OBJECT_ALIAS</code></p>
+</td>
+<td class="cellalignment1688" headers="r11c1-t12 r1c2-t12">
+<p><code>VARCHAR2(65)</code></p>
+</td>
+<td class="cellalignment1688" headers="r11c1-t12 r1c3-t12">
+<p>Unique alias of a table or view in a SQL statement. For indexes, it is the object alias of the underlying table.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r12c1-t12" headers="r1c1-t12">
+<p><code>OBJECT_INSTANCE</code></p>
+</td>
+<td class="cellalignment1688" headers="r12c1-t12 r1c2-t12">
+<p><code>NUMERIC</code></p>
+</td>
+<td class="cellalignment1688" headers="r12c1-t12 r1c3-t12">
+<p><a id="sthref1093"></a><a id="sthref1094"></a>Number corresponding to the ordinal position of the object as it appears in the original statement. The numbering proceeds from left to right, outer to inner for the original statement text. View expansion results in unpredictable numbers.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r13c1-t12" headers="r1c1-t12">
+<p><code>OBJECT_TYPE</code></p>
+</td>
+<td class="cellalignment1688" headers="r13c1-t12 r1c2-t12">
+<p><code>VARCHAR2(30)</code></p>
+</td>
+<td class="cellalignment1688" headers="r13c1-t12 r1c3-t12">
+<p><a id="sthref1095"></a><a id="sthref1096"></a>Modifier that provides descriptive information about the object; for example, <code>NON</code>-<code>UNIQUE</code> for indexes.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r14c1-t12" headers="r1c1-t12">
+<p><code>OPTIMIZER</code></p>
+</td>
+<td class="cellalignment1688" headers="r14c1-t12 r1c2-t12">
+<p><code>VARCHAR2(255)</code></p>
+</td>
+<td class="cellalignment1688" headers="r14c1-t12 r1c3-t12">
+<p><a id="sthref1097"></a><a id="sthref1098"></a>Current mode of the optimizer.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r15c1-t12" headers="r1c1-t12">
+<p><code>SEARCH_COLUMNS</code></p>
+</td>
+<td class="cellalignment1688" headers="r15c1-t12 r1c2-t12">
+<p><code>NUMBERIC</code></p>
+</td>
+<td class="cellalignment1688" headers="r15c1-t12 r1c3-t12">
+<p><a id="sthref1099"></a><a id="sthref1100"></a>Not currently used.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r16c1-t12" headers="r1c1-t12">
+<p><code>ID</code></p>
+</td>
+<td class="cellalignment1688" headers="r16c1-t12 r1c2-t12">
+<p><code>NUMERIC</code></p>
+</td>
+<td class="cellalignment1688" headers="r16c1-t12 r1c3-t12">
+<p><a id="sthref1101"></a><a id="sthref1102"></a>A number assigned to each step in the execution plan.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r17c1-t12" headers="r1c1-t12">
+<p><code>PARENT_ID</code></p>
+</td>
+<td class="cellalignment1688" headers="r17c1-t12 r1c2-t12">
+<p><code>NUMERIC</code></p>
+</td>
+<td class="cellalignment1688" headers="r17c1-t12 r1c3-t12">
+<p><a id="sthref1103"></a><a id="sthref1104"></a>The ID of the next execution step that operates on the output of the <code>ID</code> step.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r18c1-t12" headers="r1c1-t12">
+<p><code>DEPTH</code></p>
+</td>
+<td class="cellalignment1688" headers="r18c1-t12 r1c2-t12">
+<p><code>NUMERIC</code></p>
+</td>
+<td class="cellalignment1688" headers="r18c1-t12 r1c3-t12">
+<p>Depth of the operation in the row source tree that the plan represents. The value can be used for indenting the rows in a plan table report.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r19c1-t12" headers="r1c1-t12">
+<p><code>POSITION</code></p>
+</td>
+<td class="cellalignment1688" headers="r19c1-t12 r1c2-t12">
+<p><code>NUMERIC</code></p>
+</td>
+<td class="cellalignment1688" headers="r19c1-t12 r1c3-t12">
+<p><a id="sthref1105"></a><a id="sthref1106"></a>For the first row of output, this indicates the optimizer's estimated cost of executing the statement. For the other rows, it indicates the position relative to the other children of the same parent.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r20c1-t12" headers="r1c1-t12">
+<p><code>COST</code></p>
+</td>
+<td class="cellalignment1688" headers="r20c1-t12 r1c2-t12">
+<p><code>NUMERIC</code></p>
+</td>
+<td class="cellalignment1688" headers="r20c1-t12 r1c3-t12">
+<p><a id="sthref1107"></a><a id="sthref1108"></a>Cost of the operation as estimated by the optimizer's query approach. Cost is not determined for table access operations. The value of this column does not have any particular unit of measurement; it is merely a weighted value used to compare costs of execution plans. The value of this column is a function of the <code>CPU_COST</code> and <code>IO_COST</code> columns.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r21c1-t12" headers="r1c1-t12">
+<p><code>CARDINALITY</code></p>
+</td>
+<td class="cellalignment1688" headers="r21c1-t12 r1c2-t12">
+<p><code>NUMERIC</code></p>
+</td>
+<td class="cellalignment1688" headers="r21c1-t12 r1c3-t12">
+<p><a id="sthref1109"></a><a id="sthref1110"></a>Estimate by the query optimization approach of the number of rows accessed by the operation.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r22c1-t12" headers="r1c1-t12">
+<p><code>BYTES</code></p>
+</td>
+<td class="cellalignment1688" headers="r22c1-t12 r1c2-t12">
+<p><code>NUMERIC</code></p>
+</td>
+<td class="cellalignment1688" headers="r22c1-t12 r1c3-t12">
+<p><a id="sthref1111"></a><a id="sthref1112"></a>Estimate by the query optimization approach of the number of bytes accessed by the operation.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r23c1-t12" headers="r1c1-t12">
+<p><code>OTHER_TAG</code></p>
+</td>
+<td class="cellalignment1688" headers="r23c1-t12 r1c2-t12">
+<p><code>VARCHAR2(255)</code></p>
+</td>
+<td class="cellalignment1688" headers="r23c1-t12 r1c3-t12">
+<p><a id="sthref1113"></a><a id="sthref1114"></a>Describes the contents of the <code>OTHER</code> column. Values are:</p>
+<ul>
+<li>
+<p><code>SERIAL</code> (blank): Serial execution. Currently, SQL is not loaded in the <code>OTHER</code> column for this case.</p>
+</li>
+<li>
+<p><code>SERIAL_FROM_REMOTE</code> <code>(S&nbsp;-&gt;&nbsp;R)</code>: Serial execution at a remote site.</p>
+</li>
+<li>
+<p><code>PARALLEL_FROM_SERIAL (S&nbsp;-&gt;&nbsp;P)</code>: Serial execution. Output of step is partitioned or broadcast to parallel execution servers.</p>
+</li>
+<li>
+<p><code>PARALLEL_TO_SERIAL (P&nbsp;-&gt;&nbsp;S)</code>: Parallel execution. Output of step is returned to serial QC process.</p>
+</li>
+<li>
+<p><code>PARALLEL_TO_PARALLEL (P&nbsp;-&gt;&nbsp;P)</code>: Parallel execution. Output of step is repartitioned to second set of parallel execution servers.</p>
+</li>
+<li>
+<p><code>PARALLEL_COMBINED_WITH_PARENT (PWP)</code>: Parallel execution; Output of step goes to next step in same parallel process. No interprocess communication to parent.</p>
+</li>
+<li>
+<p><code>PARALLEL_COMBINED_WITH_CHILD (PWC)</code>: Parallel execution. Input of step comes from prior step in same parallel process. No interprocess communication from child.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r24c1-t12" headers="r1c1-t12">
+<p><code>PARTITION_START</code></p>
+</td>
+<td class="cellalignment1688" headers="r24c1-t12 r1c2-t12">
+<p><code>VARCHAR2(255)</code></p>
+</td>
+<td class="cellalignment1688" headers="r24c1-t12 r1c3-t12">
+<p><a id="sthref1115"></a><a id="sthref1116"></a>Start partition of a range of accessed partitions. It can take one of the following values:</p>
+<p><span class="italic">n</span> indicates that the start partition has been identified by the SQL compiler, and its partition number is given by <span class="italic">n</span>.</p>
+<p><code>KEY</code> indicates that the start partition is identified at run time from partitioning key values.</p>
+<p><code>ROW</code> <code>REMOVE_LOCATION</code> indicates that the database computes the start partition (same as the stop partition) at run time from the location of each retrieved record. The record location is obtained by a user or from a global index.</p>
+<p><code>INVALID</code> indicates that the range of accessed partitions is empty.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r25c1-t12" headers="r1c1-t12">
+<p><code>PARTITION_STOP</code></p>
+</td>
+<td class="cellalignment1688" headers="r25c1-t12 r1c2-t12">
+<p><code>VARCHAR2(255)</code></p>
+</td>
+<td class="cellalignment1688" headers="r25c1-t12 r1c3-t12">
+<p><a id="sthref1117"></a><a id="sthref1118"></a>Stop partition of a range of accessed partitions. It can take one of the following values:</p>
+<p><span class="italic">n</span> indicates that the stop partition has been identified by the SQL compiler, and its partition number is given by <span class="italic">n</span>.</p>
+<p><code>KEY</code> indicates that the stop partition is identified at run time from partitioning key values.</p>
+<p><code>ROW</code> <code>REMOVE_LOCATION</code> indicates that the database computes the stop partition (same as the start partition) at run time from the location of each retrieved record. The record location is obtained by a user or from a global index.</p>
+<p><code>INVALID</code> indicates that the range of accessed partitions is empty.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r26c1-t12" headers="r1c1-t12">
+<p><code>PARTITION_ID</code></p>
+</td>
+<td class="cellalignment1688" headers="r26c1-t12 r1c2-t12">
+<p><code>NUMERIC</code></p>
+</td>
+<td class="cellalignment1688" headers="r26c1-t12 r1c3-t12">
+<p><a id="sthref1119"></a><a id="sthref1120"></a>Step that has computed the pair of values of the <code>PARTITION_START</code> and <code>PARTITION_STOP</code> columns.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r27c1-t12" headers="r1c1-t12">
+<p><code>OTHER</code></p>
+</td>
+<td class="cellalignment1688" headers="r27c1-t12 r1c2-t12">
+<p><code>LONG</code></p>
+</td>
+<td class="cellalignment1688" headers="r27c1-t12 r1c3-t12">
+<p><a id="sthref1121"></a><a id="sthref1122"></a>Other information that is specific to the execution step that a user might find useful. See the <code>OTHER_TAG</code> column.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r28c1-t12" headers="r1c1-t12">
+<p><code>DISTRIBUTION</code></p>
+</td>
+<td class="cellalignment1688" headers="r28c1-t12 r1c2-t12">
+<p><code>VARCHAR2(30)</code></p>
+</td>
+<td class="cellalignment1688" headers="r28c1-t12 r1c3-t12">
+<p><a id="sthref1123"></a><a id="sthref1124"></a>Method used to distribute rows from producer query servers to consumer query servers.</p>
+<p>See <a href="#g31094">Table 12-2</a> for more information on the possible values for this column. For more information about consumer and producer query servers, see <a class="olink DWHSG" href="../e25554/toc.htm"><span class="italic">Oracle Database Data Warehousing Guide</span></a>.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r29c1-t12" headers="r1c1-t12">
+<p><code>CPU_COST</code></p>
+</td>
+<td class="cellalignment1688" headers="r29c1-t12 r1c2-t12">
+<p><code>NUMERIC</code></p>
+</td>
+<td class="cellalignment1688" headers="r29c1-t12 r1c3-t12">
+<p>CPU cost of the operation as estimated by the query optimizer's approach. The value of this column is proportional to the number of machine cycles required for the operation. For statements that use the rule-based approach, this column is null.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r30c1-t12" headers="r1c1-t12">
+<p><code>IO_COST</code></p>
+</td>
+<td class="cellalignment1688" headers="r30c1-t12 r1c2-t12">
+<p><code>NUMERIC</code></p>
+</td>
+<td class="cellalignment1688" headers="r30c1-t12 r1c3-t12">
+<p>I/O cost of the operation as estimated by the query optimizer's approach. The value of this column is proportional to the number of data blocks read by the operation. For statements that use the rule-based approach, this column is null.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r31c1-t12" headers="r1c1-t12">
+<p><code>TEMP_SPACE</code></p>
+</td>
+<td class="cellalignment1688" headers="r31c1-t12 r1c2-t12">
+<p><code>NUMERIC</code></p>
+</td>
+<td class="cellalignment1688" headers="r31c1-t12 r1c3-t12">
+<p>Temporary space, in bytes, used by the operation as estimated by the query optimizer's approach. For statements that use the rule-based approach, or for operations that do not use any temporary space, this column is null.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r32c1-t12" headers="r1c1-t12">
+<p><code>ACCESS_PREDICATES</code></p>
+</td>
+<td class="cellalignment1688" headers="r32c1-t12 r1c2-t12">
+<p><code>VARCHAR2(4000)</code></p>
+</td>
+<td class="cellalignment1688" headers="r32c1-t12 r1c3-t12">
+<p>Predicates used to locate rows in an access structure. For example, start or stop predicates for an index range scan.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r33c1-t12" headers="r1c1-t12">
+<p><code>FILTER_PREDICATES</code></p>
+</td>
+<td class="cellalignment1688" headers="r33c1-t12 r1c2-t12">
+<p><code>VARCHAR2(4000)</code></p>
+</td>
+<td class="cellalignment1688" headers="r33c1-t12 r1c3-t12">
+<p>Predicates used to filter rows before producing them.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r34c1-t12" headers="r1c1-t12">
+<p><code>PROJECTION</code></p>
+</td>
+<td class="cellalignment1688" headers="r34c1-t12 r1c2-t12">
+<p><code>VARCHAR2(4000)</code></p>
+</td>
+<td class="cellalignment1688" headers="r34c1-t12 r1c3-t12">
+<p>Expressions produced by the operation.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r35c1-t12" headers="r1c1-t12">
+<p><code>TIME</code></p>
+</td>
+<td class="cellalignment1688" headers="r35c1-t12 r1c2-t12">
+<p><code>NUMBER(20,2)</code></p>
+</td>
+<td class="cellalignment1688" headers="r35c1-t12 r1c3-t12">
+<p>Elapsed time in seconds of the operation as estimated by query optimization. For statements that use the rule-based approach, this column is null.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r36c1-t12" headers="r1c1-t12">
+<p><code>QBLOCK_NAME</code></p>
+</td>
+<td class="cellalignment1688" headers="r36c1-t12 r1c2-t12">
+<p><code>VARCHAR2(30)</code></p>
+</td>
+<td class="cellalignment1688" headers="r36c1-t12 r1c3-t12">
+<p>Name of the query block, either system-generated or defined by the user with the <code>QB_NAME</code> hint.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformalwide" -->
+<p><a href="#g31094">Table 12-2</a> describes the values that can appear in the <code>DISTRIBUTION</code> column:</p>
+<div id="PFGRF94710" class="tblformalwide">
+<p class="titleintable"><a id="sthref1125"></a><a id="g31094"></a>Table 12-2 Values of DISTRIBUTION Column of the PLAN_TABLE</p>
+<table class="cellalignment1691" title="Values of DISTRIBUTION Column of the PLAN_TABLE" summary="This table describes the values that can appear in the DISTRIBUTION column of the PLAN_TABLE." dir="ltr">
+<thead>
+<tr class="cellalignment1680">
+<th class="cellalignment1687" id="r1c1-t13">DISTRIBUTION Text</th>
+<th class="cellalignment1687" id="r1c2-t13">Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r2c1-t13" headers="r1c1-t13">
+<p><code><a id="sthref1126"></a><a id="sthref1127"></a><a id="sthref1128"></a><a id="sthref1129"></a><a id="sthref1130"></a>PARTITION (ROWID)</code></p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t13 r1c2-t13">
+<p>Maps rows to query servers based on the partitioning of a table or index using the rowid of the row to <code>UPDATE</code>/<code>DELETE</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r3c1-t13" headers="r1c1-t13">
+<p><code>PARTITION (KEY)</code></p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t13 r1c2-t13">
+<p>Maps rows to query servers based on the partitioning of a table or index using a set of columns. Used for partial partition-wise join, <code>PARALLEL</code> <code>INSERT</code>, <code>CREATE</code> <code>TABLE</code> <code>AS</code> <code>SELECT</code> of a partitioned table, and <code>CREATE</code> <code>PARTITIONED</code> <code>GLOBAL</code> <code>INDEX</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r4c1-t13" headers="r1c1-t13">
+<p><code>HASH</code></p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t13 r1c2-t13">
+<p>Maps rows to query servers using a hash function on the join key. Used for <code>PARALLEL</code> <code>JOIN</code> or <code>PARALLEL</code> <code>GROUP</code> <code>BY</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r5c1-t13" headers="r1c1-t13">
+<p><code>RANGE</code></p>
+</td>
+<td class="cellalignment1688" headers="r5c1-t13 r1c2-t13">
+<p>Maps rows to query servers using ranges of the sort key. Used when the statement contains an <code>ORDER</code> <code>BY</code> clause.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r6c1-t13" headers="r1c1-t13">
+<p><code>ROUND-ROBIN</code></p>
+</td>
+<td class="cellalignment1688" headers="r6c1-t13 r1c2-t13">
+<p>Randomly maps rows to query servers.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r7c1-t13" headers="r1c1-t13">
+<p><code>BROADCAST</code></p>
+</td>
+<td class="cellalignment1688" headers="r7c1-t13 r1c2-t13">
+<p>Broadcasts the rows of the entire table to each query server. Used for a parallel join when one table is very small compared to the other.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r8c1-t13" headers="r1c1-t13">
+<p><code>QC (ORDER)</code></p>
+</td>
+<td class="cellalignment1688" headers="r8c1-t13 r1c2-t13">
+<p>The QC consumes the input in order, from the first to the last query server. Used when the statement contains an <code>ORDER</code> <code>BY</code> clause.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r9c1-t13" headers="r1c1-t13">
+<p><code>QC (RANDOM)</code></p>
+</td>
+<td class="cellalignment1688" headers="r9c1-t13 r1c2-t13">
+<p>The QC consumes the input randomly. Used when the statement does not have an <code>ORDER</code> <code>BY</code> clause.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformalwide" -->
+<p><a href="#i23461">Table 12-3</a> lists each combination of <code>OPERATION<a id="sthref1131"></a></code> and <code>OPTIONS</code> produced by the <code>EXPLAIN</code> <code>PLAN</code> statement and its meaning within an execution plan.</p>
+<div id="PFGRF94711" class="tblformalwide">
+<p class="titleintable"><a id="sthref1132"></a><a id="sthref1133"></a>Table 12-3 <a id="i23461"></a><span class="bolditalic">OPERATION and OPTIONS Values Produced by EXPLAIN PLAN</span></p>
+<table class="cellalignment1691" title="OPERATION and OPTIONS Values Produced by EXPLAIN PLAN" summary="This table lists each combination of the OPERATION and OPTIONS columns of the PLAN_TABLE and their meaning within an execution plan." dir="ltr">
+<thead>
+<tr class="cellalignment1680">
+<th class="cellalignment1687" id="r1c1-t14">Operation</th>
+<th class="cellalignment1687" id="r1c2-t14">Option</th>
+<th class="cellalignment1687" id="r1c3-t14">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r2c1-t14" headers="r1c1-t14">
+<p><code>AND-EQUAL</code></p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t14 r1c2-t14">&nbsp;</td>
+<td class="cellalignment1688" headers="r2c1-t14 r1c3-t14">
+<p>Operation accepting multiple sets of rowids, returning the intersection of the sets, eliminating duplicates. Used for the single-column indexes access path.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r3c1-t14" headers="r1c1-t14">
+<p><code>BITMAP</code></p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t14 r1c2-t14">
+<p><code>CONVERSION</code></p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t14 r1c3-t14">
+<p><code>TO ROWIDS</code> converts bitmap representations to actual rowids that can be used to access the table.</p>
+<p><code>FROM ROWIDS</code> converts the rowids to a bitmap representation.</p>
+<p><code>COUNT</code> returns the number of rowids if the actual values are not needed.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r4c1-t14" headers="r1c1-t14">
+<p><code>BITMAP</code></p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t14 r1c2-t14">
+<p><code>INDEX</code></p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t14 r1c3-t14">
+<p><code>SINGLE VALUE</code> looks up the bitmap for a single key value in the index.</p>
+<p><code>RANGE SCAN</code> retrieves bitmaps for a key value range.</p>
+<p><code>FULL SCAN</code> performs a full scan of a bitmap index if there is no start or stop key.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r5c1-t14" headers="r1c1-t14">
+<p><code>BITMAP</code></p>
+</td>
+<td class="cellalignment1688" headers="r5c1-t14 r1c2-t14">
+<p><code>MERGE</code></p>
+</td>
+<td class="cellalignment1688" headers="r5c1-t14 r1c3-t14">
+<p>Merges several bitmaps resulting from a range scan into one bitmap.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r6c1-t14" headers="r1c1-t14">
+<p><code>BITMAP</code></p>
+</td>
+<td class="cellalignment1688" headers="r6c1-t14 r1c2-t14">
+<p><code>MINUS</code></p>
+</td>
+<td class="cellalignment1688" headers="r6c1-t14 r1c3-t14">
+<p>Subtracts bits of one bitmap from another. Row source is used for negated predicates. Can be used only if there are nonnegated predicates yielding a bitmap from which the subtraction can take place. An example appears in <a href="#i26143">"Viewing Bitmap Indexes with EXPLAIN PLAN"</a>.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r7c1-t14" headers="r1c1-t14">
+<p><code>BITMAP</code></p>
+</td>
+<td class="cellalignment1688" headers="r7c1-t14 r1c2-t14">
+<p><code>OR</code></p>
+</td>
+<td class="cellalignment1688" headers="r7c1-t14 r1c3-t14">
+<p>Computes the bitwise <code>OR</code> of two bitmaps.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r8c1-t14" headers="r1c1-t14">
+<p><code>BITMAP</code></p>
+</td>
+<td class="cellalignment1688" headers="r8c1-t14 r1c2-t14">
+<p><code>AND</code></p>
+</td>
+<td class="cellalignment1688" headers="r8c1-t14 r1c3-t14">
+<p>Computes the bitwise <code>AND</code> of two bitmaps.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r9c1-t14" headers="r1c1-t14">
+<p><code>BITMAP</code></p>
+</td>
+<td class="cellalignment1688" headers="r9c1-t14 r1c2-t14">
+<p><code>KEY ITERATION</code></p>
+</td>
+<td class="cellalignment1688" headers="r9c1-t14 r1c3-t14">
+<p>Takes each row from a table row source and finds the corresponding bitmap from a bitmap index. This set of bitmaps are then merged into one bitmap in a following <code>BITMAP</code> <code>MERGE</code> operation.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r10c1-t14" headers="r1c1-t14">
+<p><code>CONNECT BY</code></p>
+</td>
+<td class="cellalignment1688" headers="r10c1-t14 r1c2-t14">&nbsp;</td>
+<td class="cellalignment1688" headers="r10c1-t14 r1c3-t14">
+<p>Retrieves rows in hierarchical order for a query containing a <code>CONNECT BY</code> clause.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r11c1-t14" headers="r1c1-t14">
+<p><code>CONCATENATION</code></p>
+</td>
+<td class="cellalignment1688" headers="r11c1-t14 r1c2-t14">&nbsp;</td>
+<td class="cellalignment1688" headers="r11c1-t14 r1c3-t14">
+<p>Operation accepting multiple sets of rows returning the union-all of the sets.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r12c1-t14" headers="r1c1-t14">
+<p><code>COUNT</code></p>
+</td>
+<td class="cellalignment1688" headers="r12c1-t14 r1c2-t14">&nbsp;</td>
+<td class="cellalignment1688" headers="r12c1-t14 r1c3-t14">
+<p>Operation counting the number of rows selected from a table.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r13c1-t14" headers="r1c1-t14">
+<p><code>COUNT</code></p>
+</td>
+<td class="cellalignment1688" headers="r13c1-t14 r1c2-t14">
+<p><code>STOPKEY</code></p>
+</td>
+<td class="cellalignment1688" headers="r13c1-t14 r1c3-t14">
+<p>Count operation where the number of rows returned is limited by the <code>ROWNUM</code> expression in the <code>WHERE</code> clause.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r14c1-t14" headers="r1c1-t14">
+<p><code>CUBE SCAN</code></p>
+</td>
+<td class="cellalignment1688" headers="r14c1-t14 r1c2-t14">&nbsp;</td>
+<td class="cellalignment1688" headers="r14c1-t14 r1c3-t14">
+<p>Uses inner joins for all cube access.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r15c1-t14" headers="r1c1-t14">
+<p><code>CUBE SCAN</code></p>
+</td>
+<td class="cellalignment1688" headers="r15c1-t14 r1c2-t14">
+<p><code>PARTIAL OUTER</code></p>
+</td>
+<td class="cellalignment1688" headers="r15c1-t14 r1c3-t14">
+<p>Uses an outer join for at least one dimension, and inner joins for the other dimensions.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r16c1-t14" headers="r1c1-t14">
+<p><code>CUBE SCAN</code></p>
+</td>
+<td class="cellalignment1688" headers="r16c1-t14 r1c2-t14">
+<p><code>OUTER</code></p>
+</td>
+<td class="cellalignment1688" headers="r16c1-t14 r1c3-t14">
+<p>Uses outer joins for all cube access.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r17c1-t14" headers="r1c1-t14">
+<p><code>DOMAIN INDEX</code></p>
+</td>
+<td class="cellalignment1688" headers="r17c1-t14 r1c2-t14">&nbsp;</td>
+<td class="cellalignment1688" headers="r17c1-t14 r1c3-t14">
+<p>Retrieval of one or more rowids from a domain index. The options column contain information supplied by a user-defined domain index cost function, if any.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r18c1-t14" headers="r1c1-t14">
+<p><code>FILTER</code></p>
+</td>
+<td class="cellalignment1688" headers="r18c1-t14 r1c2-t14">&nbsp;</td>
+<td class="cellalignment1688" headers="r18c1-t14 r1c3-t14">
+<p>Operation accepting a set of rows, eliminates some of them, and returns the rest.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r19c1-t14" headers="r1c1-t14">
+<p><code>FIRST ROW</code></p>
+</td>
+<td class="cellalignment1688" headers="r19c1-t14 r1c2-t14">&nbsp;</td>
+<td class="cellalignment1688" headers="r19c1-t14 r1c3-t14">
+<p>Retrieval of only the first row selected by a query.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r20c1-t14" headers="r1c1-t14">
+<p><code>FOR UPDATE</code></p>
+</td>
+<td class="cellalignment1688" headers="r20c1-t14 r1c2-t14">&nbsp;</td>
+<td class="cellalignment1688" headers="r20c1-t14 r1c3-t14">
+<p>Operation retrieving and locking the rows selected by a query containing a <code>FOR</code> <code>UPDATE</code> clause.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r21c1-t14" headers="r1c1-t14">
+<p><code>HASH</code></p>
+</td>
+<td class="cellalignment1688" headers="r21c1-t14 r1c2-t14">
+<p><code>GROUP BY</code></p>
+</td>
+<td class="cellalignment1688" headers="r21c1-t14 r1c3-t14">
+<p>Operation hashing a set of rows into groups for a query with a <code>GROUP</code> <code>BY</code> clause.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r22c1-t14" headers="r1c1-t14">
+<p><code>HASH</code></p>
+</td>
+<td class="cellalignment1688" headers="r22c1-t14 r1c2-t14">
+<p><code>GROUP BY PIVOT</code></p>
+</td>
+<td class="cellalignment1688" headers="r22c1-t14 r1c3-t14">
+<p>Operation hashing a set of rows into groups for a query with a <code>GROUP</code> <code>BY</code> clause. The <code>PIVOT</code> option indicates a pivot-specific optimization for the <code>HASH GROUP BY</code> operator.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r23c1-t14" headers="r1c1-t14">
+<p><code>HASH JOIN</code></p>
+<p>(These are join operations.)</p>
+</td>
+<td class="cellalignment1688" headers="r23c1-t14 r1c2-t14">&nbsp;</td>
+<td class="cellalignment1688" headers="r23c1-t14 r1c3-t14">
+<p>Operation joining two sets of rows and returning the result. This join method is useful for joining large data sets of data (DSS, Batch). The join condition is an efficient way of accessing the second table.</p>
+<p>Query optimizer uses the smaller of the two tables/data sources to build a hash table on the join key in memory. Then it scans the larger table, probing the hash table to find the joined rows.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r24c1-t14" headers="r1c1-t14">
+<p><code>HASH JOIN</code></p>
+</td>
+<td class="cellalignment1688" headers="r24c1-t14 r1c2-t14">
+<p><code>ANTI</code></p>
+</td>
+<td class="cellalignment1688" headers="r24c1-t14 r1c3-t14">
+<p>Hash (left) antijoin</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r25c1-t14" headers="r1c1-t14">
+<p><code>HASH JOIN</code></p>
+</td>
+<td class="cellalignment1688" headers="r25c1-t14 r1c2-t14">
+<p><code>SEMI</code></p>
+</td>
+<td class="cellalignment1688" headers="r25c1-t14 r1c3-t14">
+<p>Hash (left) semijoin</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r26c1-t14" headers="r1c1-t14">
+<p><code>HASH JOIN</code></p>
+</td>
+<td class="cellalignment1688" headers="r26c1-t14 r1c2-t14">
+<p><code>RIGHT ANTI</code></p>
+</td>
+<td class="cellalignment1688" headers="r26c1-t14 r1c3-t14">
+<p>Hash right antijoin</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r27c1-t14" headers="r1c1-t14">
+<p><code>HASH JOIN</code></p>
+</td>
+<td class="cellalignment1688" headers="r27c1-t14 r1c2-t14">
+<p><code>RIGHT SEMI</code></p>
+</td>
+<td class="cellalignment1688" headers="r27c1-t14 r1c3-t14">
+<p>Hash right semijoin</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r28c1-t14" headers="r1c1-t14">
+<p><code>HASH JOIN</code></p>
+</td>
+<td class="cellalignment1688" headers="r28c1-t14 r1c2-t14">
+<p><code>OUTER</code></p>
+</td>
+<td class="cellalignment1688" headers="r28c1-t14 r1c3-t14">
+<p>Hash (left) outer join</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r29c1-t14" headers="r1c1-t14">
+<p><code>HASH JOIN</code></p>
+</td>
+<td class="cellalignment1688" headers="r29c1-t14 r1c2-t14">
+<p><code>RIGHT OUTER</code></p>
+</td>
+<td class="cellalignment1688" headers="r29c1-t14 r1c3-t14">
+<p>Hash right outer join</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r30c1-t14" headers="r1c1-t14">
+<p><code>INDEX</code></p>
+<p>(These are access methods.)</p>
+</td>
+<td class="cellalignment1688" headers="r30c1-t14 r1c2-t14">
+<p><code>UNIQUE SCAN</code></p>
+</td>
+<td class="cellalignment1688" headers="r30c1-t14 r1c3-t14">
+<p>Retrieval of a single rowid from an index.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r31c1-t14" headers="r1c1-t14">
+<p><code>INDEX</code></p>
+</td>
+<td class="cellalignment1688" headers="r31c1-t14 r1c2-t14">
+<p><code>RANGE SCAN</code></p>
+</td>
+<td class="cellalignment1688" headers="r31c1-t14 r1c3-t14">
+<p>Retrieval of one or more rowids from an index. Indexed values are scanned in ascending order.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r32c1-t14" headers="r1c1-t14">
+<p><code>INDEX</code></p>
+</td>
+<td class="cellalignment1688" headers="r32c1-t14 r1c2-t14">
+<p><code>RANGE SCAN DESCENDING</code></p>
+</td>
+<td class="cellalignment1688" headers="r32c1-t14 r1c3-t14">
+<p>Retrieval of one or more rowids from an index. Indexed values are scanned in descending order.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r33c1-t14" headers="r1c1-t14">
+<p><code>INDEX</code></p>
+</td>
+<td class="cellalignment1688" headers="r33c1-t14 r1c2-t14">
+<p><code>FULL SCAN</code></p>
+</td>
+<td class="cellalignment1688" headers="r33c1-t14 r1c3-t14">
+<p>Retrieval of all rowids from an index when there is no start or stop key. Indexed values are scanned in ascending order.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r34c1-t14" headers="r1c1-t14">
+<p><code>INDEX</code></p>
+</td>
+<td class="cellalignment1688" headers="r34c1-t14 r1c2-t14">
+<p><code>FULL SCAN DESCENDING</code></p>
+</td>
+<td class="cellalignment1688" headers="r34c1-t14 r1c3-t14">
+<p>Retrieval of all rowids from an index when there is no start or stop key. Indexed values are scanned in descending order.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r35c1-t14" headers="r1c1-t14">
+<p><code>INDEX</code></p>
+</td>
+<td class="cellalignment1688" headers="r35c1-t14 r1c2-t14">
+<p><code>FAST FULL SCAN</code></p>
+</td>
+<td class="cellalignment1688" headers="r35c1-t14 r1c3-t14">
+<p>Retrieval of all rowids (and column values) using multiblock reads. No sorting order can be defined. Compares to a full table scan on only the indexed columns. Only available with the cost based optimizer.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r36c1-t14" headers="r1c1-t14">
+<p><code>INDEX</code></p>
+</td>
+<td class="cellalignment1688" headers="r36c1-t14 r1c2-t14">
+<p><code>SKIP SCAN</code></p>
+</td>
+<td class="cellalignment1688" headers="r36c1-t14 r1c3-t14">
+<p>Retrieval of rowids from a concatenated index without using the leading column(s) in the index. Only available with the cost based optimizer.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r37c1-t14" headers="r1c1-t14">
+<p><code>INLIST ITERATOR</code></p>
+</td>
+<td class="cellalignment1688" headers="r37c1-t14 r1c2-t14">&nbsp;</td>
+<td class="cellalignment1688" headers="r37c1-t14 r1c3-t14">
+<p>Iterates over the next operation in the plan for each value in the <code>IN</code>-list predicate.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r38c1-t14" headers="r1c1-t14">
+<p><code>INTERSECTION</code></p>
+</td>
+<td class="cellalignment1688" headers="r38c1-t14 r1c2-t14">&nbsp;</td>
+<td class="cellalignment1688" headers="r38c1-t14 r1c3-t14">
+<p>Operation accepting two sets of rows and returning the intersection of the sets, eliminating duplicates.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r39c1-t14" headers="r1c1-t14">
+<p><code>MERGE JOIN</code></p>
+<p>(These are join operations.)</p>
+</td>
+<td class="cellalignment1688" headers="r39c1-t14 r1c2-t14">&nbsp;</td>
+<td class="cellalignment1688" headers="r39c1-t14 r1c3-t14">
+<p>Operation accepting two sets of rows, each sorted by a specific value, combining each row from one set with the matching rows from the other, and returning the result.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r40c1-t14" headers="r1c1-t14">
+<p><code>MERGE JOIN</code></p>
+</td>
+<td class="cellalignment1688" headers="r40c1-t14 r1c2-t14">
+<p><code>OUTER</code></p>
+</td>
+<td class="cellalignment1688" headers="r40c1-t14 r1c3-t14">
+<p>Merge join operation to perform an outer join statement.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r41c1-t14" headers="r1c1-t14">
+<p><code>MERGE JOIN</code></p>
+</td>
+<td class="cellalignment1688" headers="r41c1-t14 r1c2-t14">
+<p><code>ANTI</code></p>
+</td>
+<td class="cellalignment1688" headers="r41c1-t14 r1c3-t14">
+<p>Merge antijoin.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r42c1-t14" headers="r1c1-t14">
+<p><code>MERGE JOIN</code></p>
+</td>
+<td class="cellalignment1688" headers="r42c1-t14 r1c2-t14">
+<p><code>SEMI</code></p>
+</td>
+<td class="cellalignment1688" headers="r42c1-t14 r1c3-t14">
+<p>Merge semijoin.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r43c1-t14" headers="r1c1-t14">
+<p><code>MERGE JOIN</code></p>
+</td>
+<td class="cellalignment1688" headers="r43c1-t14 r1c2-t14">
+<p><code>CARTESIAN</code></p>
+</td>
+<td class="cellalignment1688" headers="r43c1-t14 r1c3-t14">
+<p>Can result from 1 or more of the tables not having any join conditions to any other tables in the statement. Can occur even with a join and it may not be flagged as <code>CARTESIAN</code> in the plan.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r44c1-t14" headers="r1c1-t14">
+<p><code>CONNECT BY</code></p>
+</td>
+<td class="cellalignment1688" headers="r44c1-t14 r1c2-t14">&nbsp;</td>
+<td class="cellalignment1688" headers="r44c1-t14 r1c3-t14">
+<p>Retrieval of rows in hierarchical order for a query containing a <code>CONNECT</code> <code>BY</code> clause.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r45c1-t14" headers="r1c1-t14">
+<p><code>MAT_VIEW REWITE ACCESS</code></p>
+<p>(These are access methods.)</p>
+</td>
+<td class="cellalignment1688" headers="r45c1-t14 r1c2-t14">
+<p><code>FULL</code></p>
+</td>
+<td class="cellalignment1688" headers="r45c1-t14 r1c3-t14">
+<p>Retrieval of all rows from a materialized view.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r46c1-t14" headers="r1c1-t14">
+<p><code>MAT_VIEW REWITE ACCESS</code></p>
+</td>
+<td class="cellalignment1688" headers="r46c1-t14 r1c2-t14">
+<p><code>SAMPLE</code></p>
+</td>
+<td class="cellalignment1688" headers="r46c1-t14 r1c3-t14">
+<p>Retrieval of sampled rows from a materialized view.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r47c1-t14" headers="r1c1-t14">
+<p><code>MAT_VIEW REWITE ACCESS</code></p>
+</td>
+<td class="cellalignment1688" headers="r47c1-t14 r1c2-t14">
+<p><code>CLUSTER</code></p>
+</td>
+<td class="cellalignment1688" headers="r47c1-t14 r1c3-t14">
+<p>Retrieval of rows from a materialized view based on a value of an indexed cluster key.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r48c1-t14" headers="r1c1-t14">
+<p><code>MAT_VIEW REWITE ACCESS</code></p>
+</td>
+<td class="cellalignment1688" headers="r48c1-t14 r1c2-t14">
+<p><code>HASH</code></p>
+</td>
+<td class="cellalignment1688" headers="r48c1-t14 r1c3-t14">
+<p>Retrieval of rows from materialized view based on hash cluster key value.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r49c1-t14" headers="r1c1-t14">
+<p><code>MAT_VIEW REWITE ACCESS</code></p>
+</td>
+<td class="cellalignment1688" headers="r49c1-t14 r1c2-t14">
+<p><code>BY ROWID RANGE</code></p>
+</td>
+<td class="cellalignment1688" headers="r49c1-t14 r1c3-t14">
+<p>Retrieval of rows from a materialized view based on a rowid range.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r50c1-t14" headers="r1c1-t14">
+<p><code>MAT_VIEW REWITE ACCESS</code></p>
+</td>
+<td class="cellalignment1688" headers="r50c1-t14 r1c2-t14">
+<p><code>SAMPLE BY ROWID RANGE</code></p>
+</td>
+<td class="cellalignment1688" headers="r50c1-t14 r1c3-t14">
+<p>Retrieval of sampled rows from a materialized view based on a rowid range.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r51c1-t14" headers="r1c1-t14">
+<p>MAT_VIEW REWITE ACCESS</p>
+</td>
+<td class="cellalignment1688" headers="r51c1-t14 r1c2-t14">
+<p><code>BY USER ROWID</code></p>
+</td>
+<td class="cellalignment1688" headers="r51c1-t14 r1c3-t14">
+<p>If the materialized view rows are located using user-supplied rowids.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r52c1-t14" headers="r1c1-t14">
+<p><code>MAT_VIEW REWITE ACCESS</code></p>
+</td>
+<td class="cellalignment1688" headers="r52c1-t14 r1c2-t14">
+<p><code>BY INDEX ROWID</code></p>
+</td>
+<td class="cellalignment1688" headers="r52c1-t14 r1c3-t14">
+<p>If the materialized view is nonpartitioned and rows are located using index(es).</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r53c1-t14" headers="r1c1-t14">
+<p><code>MAT_VIEW REWITE ACCESS</code></p>
+</td>
+<td class="cellalignment1688" headers="r53c1-t14 r1c2-t14">
+<p><code>BY GLOBAL INDEX ROWID</code></p>
+</td>
+<td class="cellalignment1688" headers="r53c1-t14 r1c3-t14">
+<p>If the materialized view is partitioned and rows are located using only global indexes.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r54c1-t14" headers="r1c1-t14">
+<p><code>MAT_VIEW REWITE ACCESS</code></p>
+</td>
+<td class="cellalignment1688" headers="r54c1-t14 r1c2-t14">
+<p><code>BY LOCAL INDEX ROWID</code></p>
+</td>
+<td class="cellalignment1688" headers="r54c1-t14 r1c3-t14">
+<p>If the materialized view is partitioned and rows are located using one or more local indexes and possibly some global indexes.</p>
+<p>Partition Boundaries:</p>
+<p>The partition boundaries might have been computed by:</p>
+<p>A previous <code>PARTITION</code> step, in which case the <code>PARTITION_START</code> and <code>PARTITION_STOP</code> column values replicate the values present in the <code>PARTITION</code> step, and the <code>PARTITION_ID</code> contains the ID of the <code>PARTITION</code> step. Possible values for <code>PARTITION_START</code> and <code>PARTITION_STOP</code> are <code>NUMBER</code>(n), <code>KEY</code>, <code>INVALID</code>.</p>
+<p>The <code>MAT_VIEW REWRITE ACCESS</code> or <code>INDEX</code> step itself, in which case the <code>PARTITION_ID</code> contains the <code>ID</code> of the step. Possible values for <code>PARTITION_START</code> and <code>PARTITION_STOP</code> are <code>NUMBER</code>(n), <code>KEY</code>, <code>ROW</code> <code>REMOVE_LOCATION</code> (<code>MAT_VIEW REWRITE</code> <code>ACCESS</code> only), and <code>INVALID</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r55c1-t14" headers="r1c1-t14">
+<p><code>MINUS</code></p>
+</td>
+<td class="cellalignment1688" headers="r55c1-t14 r1c2-t14">&nbsp;</td>
+<td class="cellalignment1688" headers="r55c1-t14 r1c3-t14">
+<p>Operation accepting two sets of rows and returning rows appearing in the first set but not in the second, eliminating duplicates.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r56c1-t14" headers="r1c1-t14">
+<p><code>NESTED LOOPS</code></p>
+<p>(These are join operations.)</p>
+</td>
+<td class="cellalignment1688" headers="r56c1-t14 r1c2-t14">&nbsp;</td>
+<td class="cellalignment1688" headers="r56c1-t14 r1c3-t14">
+<p>Operation accepting two sets of rows, an outer set and an inner set. Oracle Database compares each row of the outer set with each row of the inner set, returning rows that satisfy a condition. This join method is useful for joining small subsets of data (OLTP). The join condition is an efficient way of accessing the second table.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r57c1-t14" headers="r1c1-t14">
+<p><code>NESTED LOOPS</code></p>
+</td>
+<td class="cellalignment1688" headers="r57c1-t14 r1c2-t14">
+<p><code>OUTER</code></p>
+</td>
+<td class="cellalignment1688" headers="r57c1-t14 r1c3-t14">
+<p>Nested loops operation to perform an outer join statement.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r58c1-t14" headers="r1c1-t14">
+<p><code>PARTITION</code></p>
+</td>
+<td class="cellalignment1688" headers="r58c1-t14 r1c2-t14">&nbsp;</td>
+<td class="cellalignment1688" headers="r58c1-t14 r1c3-t14">
+<p>Iterates over the next operation in the plan for each partition in the range given by the <code>PARTITION_START</code> and <code>PARTITION_STOP</code> columns. <code>PARTITION</code> describes partition boundaries applicable to a single partitioned object (table or index) or to a set of equi-partitioned objects (a partitioned table and its local indexes). The partition boundaries are provided by the values of <code>PARTITION_START</code> and <code>PARTITION_STOP</code> of the <code>PARTITION</code>. Refer to <a href="#g30946">Table 12-1</a> for valid values of partition start and stop.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r59c1-t14" headers="r1c1-t14">
+<p><code>PARTITION</code></p>
+</td>
+<td class="cellalignment1688" headers="r59c1-t14 r1c2-t14">
+<p><code>SINGLE</code></p>
+</td>
+<td class="cellalignment1688" headers="r59c1-t14 r1c3-t14">
+<p>Access one partition.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r60c1-t14" headers="r1c1-t14">
+<p><code>PARTITION</code></p>
+</td>
+<td class="cellalignment1688" headers="r60c1-t14 r1c2-t14">
+<p><code>ITERATOR</code></p>
+</td>
+<td class="cellalignment1688" headers="r60c1-t14 r1c3-t14">
+<p>Access many partitions (a subset).</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r61c1-t14" headers="r1c1-t14">
+<p><code>PARTITION</code></p>
+</td>
+<td class="cellalignment1688" headers="r61c1-t14 r1c2-t14">
+<p><code>ALL</code></p>
+</td>
+<td class="cellalignment1688" headers="r61c1-t14 r1c3-t14">
+<p>Access all partitions.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r62c1-t14" headers="r1c1-t14">
+<p><code>PARTITION</code></p>
+</td>
+<td class="cellalignment1688" headers="r62c1-t14 r1c2-t14">
+<p><code>INLIST</code></p>
+</td>
+<td class="cellalignment1688" headers="r62c1-t14 r1c3-t14">
+<p>Similar to iterator, but based on an <code>IN</code>-list predicate.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r63c1-t14" headers="r1c1-t14">
+<p><code>PARTITION</code></p>
+</td>
+<td class="cellalignment1688" headers="r63c1-t14 r1c2-t14">
+<p><code>INVALID</code></p>
+</td>
+<td class="cellalignment1688" headers="r63c1-t14 r1c3-t14">
+<p>Indicates that the partition set to be accessed is empty.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r64c1-t14" headers="r1c1-t14">
+<p><code>PX</code> <code>ITERATOR</code></p>
+</td>
+<td class="cellalignment1688" headers="r64c1-t14 r1c2-t14">
+<p><code>BLOCK</code>, <code>CHUNK</code></p>
+</td>
+<td class="cellalignment1688" headers="r64c1-t14 r1c3-t14">
+<p>Implements the division of an object into block or chunk ranges among a set of parallel slaves.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r65c1-t14" headers="r1c1-t14">
+<p><code>PX</code> <code>COORDINATOR</code></p>
+</td>
+<td class="cellalignment1688" headers="r65c1-t14 r1c2-t14">&nbsp;</td>
+<td class="cellalignment1688" headers="r65c1-t14 r1c3-t14">
+<p>Implements the Query Coordinator which controls, schedules, and executes the parallel plan below it using parallel query slaves. It also represents a serialization point, as the end of the part of the plan executed in parallel and always has a <code>PX</code> <code>SEND</code> <code>QC</code> operation below it.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r66c1-t14" headers="r1c1-t14">
+<p><code>PX</code> <code>PARTITION</code></p>
+</td>
+<td class="cellalignment1688" headers="r66c1-t14 r1c2-t14">&nbsp;</td>
+<td class="cellalignment1688" headers="r66c1-t14 r1c3-t14">
+<p>Same semantics as the regular <code>PARTITION</code> operation except that it appears in a parallel plan.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r67c1-t14" headers="r1c1-t14">
+<p><code>PX</code> <code>RECEIVE</code></p>
+</td>
+<td class="cellalignment1688" headers="r67c1-t14 r1c2-t14">&nbsp;</td>
+<td class="cellalignment1688" headers="r67c1-t14 r1c3-t14">
+<p>Shows the consumer/receiver slave node reading repartitioned data from a send/producer (QC or slave) executing on a PX SEND node. This information was formerly displayed into the <code>DISTRIBUTION</code> column. See <a href="#g31094">Table 12-2</a>.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r68c1-t14" headers="r1c1-t14">
+<p><code>PX</code> <code>SEND</code></p>
+</td>
+<td class="cellalignment1688" headers="r68c1-t14 r1c2-t14">
+<p><code>QC</code> <code>(RANDOM), HASH</code>, <code>RANGE</code></p>
+</td>
+<td class="cellalignment1688" headers="r68c1-t14 r1c3-t14">
+<p>Implements the distribution method taking place between two parallel set of slaves. Shows the boundary between two slave sets and how data is repartitioned on the send/producer side (QC or side. This information was formerly displayed into the <code>DISTRIBUTION</code> column. See <a href="#g31094">Table 12-2</a>.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r69c1-t14" headers="r1c1-t14">
+<p><code>REMOTE</code></p>
+</td>
+<td class="cellalignment1688" headers="r69c1-t14 r1c2-t14">&nbsp;</td>
+<td class="cellalignment1688" headers="r69c1-t14 r1c3-t14">
+<p>Retrieval of data from a remote database.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r70c1-t14" headers="r1c1-t14">
+<p><code>SEQUENCE</code></p>
+</td>
+<td class="cellalignment1688" headers="r70c1-t14 r1c2-t14">&nbsp;</td>
+<td class="cellalignment1688" headers="r70c1-t14 r1c3-t14">
+<p>Operation involving accessing values of a sequence.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r71c1-t14" headers="r1c1-t14">
+<p><code>SORT</code></p>
+</td>
+<td class="cellalignment1688" headers="r71c1-t14 r1c2-t14">
+<p><code>AGGREGATE</code></p>
+</td>
+<td class="cellalignment1688" headers="r71c1-t14 r1c3-t14">
+<p>Retrieval of a single row that is the result of applying a group function to a group of selected rows.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r72c1-t14" headers="r1c1-t14">
+<p><code>SORT</code></p>
+</td>
+<td class="cellalignment1688" headers="r72c1-t14 r1c2-t14">
+<p><code>UNIQUE</code></p>
+</td>
+<td class="cellalignment1688" headers="r72c1-t14 r1c3-t14">
+<p>Operation sorting a set of rows to eliminate duplicates.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r73c1-t14" headers="r1c1-t14">
+<p><code>SORT</code></p>
+</td>
+<td class="cellalignment1688" headers="r73c1-t14 r1c2-t14">
+<p><code>GROUP</code> <code>BY</code></p>
+</td>
+<td class="cellalignment1688" headers="r73c1-t14 r1c3-t14">
+<p>Operation sorting a set of rows into groups for a query with a <code>GROUP</code> <code>BY</code> clause.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r74c1-t14" headers="r1c1-t14">
+<p><code>SORT</code></p>
+</td>
+<td class="cellalignment1688" headers="r74c1-t14 r1c2-t14">
+<p><code>GROUP BY PIVOT</code></p>
+</td>
+<td class="cellalignment1688" headers="r74c1-t14 r1c3-t14">
+<p>Operation sorting a set of rows into groups for a query with a <code>GROUP</code> <code>BY</code> clause. The <code>PIVOT</code> option indicates a pivot-specific optimization for the <code>SORT GROUP BY</code> operator.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r75c1-t14" headers="r1c1-t14">
+<p><code>SORT</code></p>
+</td>
+<td class="cellalignment1688" headers="r75c1-t14 r1c2-t14">
+<p><code>JOIN</code></p>
+</td>
+<td class="cellalignment1688" headers="r75c1-t14 r1c3-t14">
+<p>Operation sorting a set of rows before a merge-join.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r76c1-t14" headers="r1c1-t14">
+<p><code>SORT</code></p>
+</td>
+<td class="cellalignment1688" headers="r76c1-t14 r1c2-t14">
+<p><code>ORDER BY</code></p>
+</td>
+<td class="cellalignment1688" headers="r76c1-t14 r1c3-t14">
+<p>Operation sorting a set of rows for a query with an <code>ORDER</code> <code>BY</code> clause.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r77c1-t14" headers="r1c1-t14">
+<p><code>TABLE ACCESS</code></p>
+<p>(These are access methods.)</p>
+</td>
+<td class="cellalignment1688" headers="r77c1-t14 r1c2-t14">
+<p><code>FULL</code></p>
+</td>
+<td class="cellalignment1688" headers="r77c1-t14 r1c3-t14">
+<p>Retrieval of all rows from a table.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r78c1-t14" headers="r1c1-t14">
+<p><code>TABLE ACCESS</code></p>
+</td>
+<td class="cellalignment1688" headers="r78c1-t14 r1c2-t14">
+<p><code>SAMPLE</code></p>
+</td>
+<td class="cellalignment1688" headers="r78c1-t14 r1c3-t14">
+<p>Retrieval of sampled rows from a table.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r79c1-t14" headers="r1c1-t14">
+<p><code>TABLE ACCESS</code></p>
+</td>
+<td class="cellalignment1688" headers="r79c1-t14 r1c2-t14">
+<p><code>CLUSTER</code></p>
+</td>
+<td class="cellalignment1688" headers="r79c1-t14 r1c3-t14">
+<p>Retrieval of rows from a table based on a value of an indexed cluster key.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r80c1-t14" headers="r1c1-t14">
+<p><code>TABLE ACCESS</code></p>
+</td>
+<td class="cellalignment1688" headers="r80c1-t14 r1c2-t14">
+<p><code>HASH</code></p>
+</td>
+<td class="cellalignment1688" headers="r80c1-t14 r1c3-t14">
+<p>Retrieval of rows from table based on hash cluster key value.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r81c1-t14" headers="r1c1-t14">
+<p><code>TABLE ACCESS</code></p>
+</td>
+<td class="cellalignment1688" headers="r81c1-t14 r1c2-t14">
+<p><code>BY ROWID RANGE</code></p>
+</td>
+<td class="cellalignment1688" headers="r81c1-t14 r1c3-t14">
+<p>Retrieval of rows from a table based on a rowid range.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r82c1-t14" headers="r1c1-t14">
+<p><code>TABLE ACCESS</code></p>
+</td>
+<td class="cellalignment1688" headers="r82c1-t14 r1c2-t14">
+<p><code>SAMPLE BY ROWID RANGE</code></p>
+</td>
+<td class="cellalignment1688" headers="r82c1-t14 r1c3-t14">
+<p>Retrieval of sampled rows from a table based on a rowid range.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r83c1-t14" headers="r1c1-t14">
+<p><code>TABLE ACCESS</code></p>
+</td>
+<td class="cellalignment1688" headers="r83c1-t14 r1c2-t14">
+<p><code>BY USER ROWID</code></p>
+</td>
+<td class="cellalignment1688" headers="r83c1-t14 r1c3-t14">
+<p>If the table rows are located using user-supplied rowids.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r84c1-t14" headers="r1c1-t14">
+<p><code>TABLE ACCESS</code></p>
+</td>
+<td class="cellalignment1688" headers="r84c1-t14 r1c2-t14">
+<p><code>BY INDEX ROWID</code></p>
+</td>
+<td class="cellalignment1688" headers="r84c1-t14 r1c3-t14">
+<p>If the table is nonpartitioned and rows are located using index(es).</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r85c1-t14" headers="r1c1-t14">
+<p><code>TABLE ACCESS</code></p>
+</td>
+<td class="cellalignment1688" headers="r85c1-t14 r1c2-t14">
+<p><code>BY GLOBAL INDEX ROWID</code></p>
+</td>
+<td class="cellalignment1688" headers="r85c1-t14 r1c3-t14">
+<p>If the table is partitioned and rows are located using only global indexes.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r86c1-t14" headers="r1c1-t14">
+<p><code>TABLE ACCESS</code></p>
+</td>
+<td class="cellalignment1688" headers="r86c1-t14 r1c2-t14">
+<p><code>BY LOCAL INDEX ROWID</code></p>
+</td>
+<td class="cellalignment1688" headers="r86c1-t14 r1c3-t14">
+<p>If the table is partitioned and rows are located using one or more local indexes and possibly some global indexes.</p>
+<p>Partition Boundaries:</p>
+<p>The partition boundaries might have been computed by:</p>
+<p>A previous <code>PARTITION</code> step, in which case the <code>PARTITION_START</code> and <code>PARTITION_STOP</code> column values replicate the values present in the <code>PARTITION</code> step, and the <code>PARTITION_ID</code> contains the ID of the <code>PARTITION</code> step. Possible values for <code>PARTITION_START</code> and <code>PARTITION_STOP</code> are <code>NUMBER</code>(n), <code>KEY</code>, <code>INVALID</code>.</p>
+<p>The <code>TABLE</code> <code>ACCESS</code> or <code>INDEX</code> step itself, in which case the <code>PARTITION_ID</code> contains the <code>ID</code> of the step. Possible values for <code>PARTITION_START</code> and <code>PARTITION_STOP</code> are <code>NUMBER</code>(n), <code>KEY</code>, <code>ROW</code> <code>REMOVE_LOCATION</code> (<code>TABLE</code> <code>ACCESS</code> only), and <code>INVALID</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r87c1-t14" headers="r1c1-t14">
+<p><code>TRANSPOSE</code></p>
+</td>
+<td class="cellalignment1688" headers="r87c1-t14 r1c2-t14">&nbsp;</td>
+<td class="cellalignment1688" headers="r87c1-t14 r1c3-t14">
+<p>Operation evaluating a <code>PIVOT</code> operation by transposing the results of <code>GROUP BY</code> to produce the final pivoted data.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r88c1-t14" headers="r1c1-t14">
+<p><code>UNION</code></p>
+</td>
+<td class="cellalignment1688" headers="r88c1-t14 r1c2-t14">&nbsp;</td>
+<td class="cellalignment1688" headers="r88c1-t14 r1c3-t14">
+<p>Operation accepting two sets of rows and returns the union of the sets, eliminating duplicates.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r89c1-t14" headers="r1c1-t14">
+<p><code>UNPIVOT</code></p>
+</td>
+<td class="cellalignment1688" headers="r89c1-t14 r1c2-t14">&nbsp;</td>
+<td class="cellalignment1688" headers="r89c1-t14 r1c3-t14">
+<p>Operation that rotates data from columns into rows.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r90c1-t14" headers="r1c1-t14">
+<p><code>VIEW</code></p>
+</td>
+<td class="cellalignment1688" headers="r90c1-t14 r1c2-t14">&nbsp;</td>
+<td class="cellalignment1688" headers="r90c1-t14 r1c3-t14">
+<p>Operation performing a view's query and then returning the resulting rows to another operation.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformalwide" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink REFRN29510" href="../../server.112/e40402/statviews_5152.htm#REFRN29510"><span class="italic">Oracle Database Reference</span></a> for more information on <code>PLAN_TABLE</code></div>
+</div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1679">
+<tr>
+<td class="cellalignment1688">
+<table class="cellalignment1684">
+<tr>
+<td class="cellalignment1683"><a href="optimops.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1683"><a href="stats.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2000, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1690">
+<table class="cellalignment1682">
+<tr>
+<td class="cellalignment1683"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1683"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1683"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1683"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1683"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1683"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Managing Automated Database Maintenance Tasks</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1055" />
+<meta name="dcterms.created" content="2015-05-05T8:27:37Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Administrator's Guide" />
+<meta name="dcterms.identifier" content="E25494-07" />
+<meta name="dcterms.isVersionOf" content="ADMIN" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2001, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="part6.htm" title="Previous" type="text/html" />
+<link rel="Next" href="dbrm.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e25494.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">36/49</span> <!-- End Header -->
+<div id="ADMIN0235" class="chapter"><a id="BABJIJFC"></a>
+<h1 class="chapter"><span class="secnum">26</span> Managing Automated Database Maintenance Tasks</h1>
+<p>Oracle Database has automated several common maintenance tasks typically performed by database administrators. These automated maintenance tasks are performed when the system load is expected to be light. You can enable and disable individual maintenance tasks, and can configure when these tasks run and what resource allocations they are allotted.</p>
+<p>In this chapter:</p>
+<ul>
+<li>
+<p><a href="#CIHGDCEH">About Automated Maintenance Tasks</a></p>
+</li>
+<li>
+<p><a href="#BABHBFJB">About Maintenance Windows</a></p>
+</li>
+<li>
+<p><a href="#CIHGGBEG">Configuring Automated Maintenance Tasks</a></p>
+</li>
+<li>
+<p><a href="#CIHCDBEC">Configuring Maintenance Windows</a></p>
+</li>
+<li>
+<p><a href="#BABHEFEH">Configuring Resource Allocations for Automated Maintenance Tasks</a></p>
+</li>
+<li>
+<p><a href="#CIHJJDBB">Automated Maintenance Tasks Reference</a></p>
+</li>
+</ul>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+This chapter explains how to administer automated maintenance tasks using PL/SQL packages. An easier way is to use the graphical interface of Enterprise Manager.
+<p>To manage automatic maintenance tasks with Enterprise Manager:</p>
+<ol>
+<li>
+<p>Access the Database Home Page.</p>
+<p>See <a class="olink ADMQS033" href="../../server.112/e10897/em_manage.htm#ADMQS033"><span class="italic">Oracle Database 2 Day DBA</span></a> or the Oracle Enterprise Manager Grid Control online help for instructions.</p>
+</li>
+<li>
+<p>On the Database Home Page, click <span class="bold">Server</span> to display the Server page.</p>
+</li>
+<li>
+<p>Under the Oracle Scheduler section, click <span class="bold">Automated Maintenance Tasks</span> to configure maintenance tasks, or <span class="bold">Windows</span> to configure maintenance windows.</p>
+</li>
+</ol>
+</div>
+<a id="CIHGDCEH"></a>
+<div id="ADMIN12331" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">About Automated Maintenance Tasks</h2>
+<p><a id="sthref2731"></a>Automated maintenance tasks are tasks that are started automatically at regular intervals to perform maintenance operations on the database. An example is a task that gathers statistics on schema objects for the query optimizer. Automated maintenance tasks run in <span class="italic"><a id="sthref2732"></a>maintenance windows</span>, which are predefined time intervals that are intended to occur during a period of low system load. You can customize maintenance windows based on the resource usage patterns of your database, or disable certain default windows from running. You can also create your own maintenance windows.</p>
+<p>Oracle Database has three predefined <a id="sthref2733"></a>automated maintenance tasks:</p>
+<ul>
+<li>
+<p><span class="bold">Automatic Optimizer Statistics Collection&mdash;</span>Collects optimizer statistics for all schema objects in the database for which there are no statistics or only stale statistics. The statistics gathered by this task are used by the SQL query optimizer to improve the performance of SQL execution.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink PFGRF027" href="../../server.112/e41573/autostat.htm#PFGRF027"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for more information on automatic statistics collection</div>
+</li>
+<li>
+<p><span class="bold">Automatic Segment Advisor</span>&mdash;Identifies segments that have space available for reclamation, and makes recommendations on how to defragment those segments.</p>
+<p>You can also run the Segment Advisor manually to obtain more up-to-the-minute recommendations or to obtain recommendations on segments that the Automatic Segment Advisor did not examine for possible space reclamation.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="schema.htm#CHDHBHAB">"Using the Segment Advisor"</a> for more information.</div>
+</li>
+<li>
+<p><span class="bold">Automatic SQL Tuning Advisor&mdash;</span>Examines the performance of high-load SQL statements, and makes recommendations on how to tune those statements. You can configure this advisor to automatically implement SQL profile recommendations.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink PFGRF028" href="../../server.112/e41573/sql_tune.htm#PFGRF028"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for more information on SQL Tuning Advisor</div>
+</li>
+</ul>
+<p>By default, all three automated maintenance tasks are configured to run in all maintenance windows.</p>
+</div>
+<!-- class="sect1" -->
+<a id="BABHBFJB"></a>
+<div id="ADMIN11836" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">About Maintenance Windows <a id="sthref2734"></a><a id="sthref2735"></a></h2>
+<p><a id="sthref2736"></a>A <span class="bold">maintenance window</span> is a contiguous time interval during which automated maintenance tasks are run. Maintenance windows are Oracle Scheduler windows that belong to the window group named <code dir="ltr">MAINTENANCE_WINDOW_GROUP</code>. A Scheduler window can be a simple repeating interval (such as "between midnight and 6 a.m., every Saturday"), or a more complex interval (such as "between midnight and 6 a.m., on the last workday of every month, excluding company holidays").</p>
+<p>When a maintenance window opens, Oracle Database creates an Oracle Scheduler job for each maintenance task that is scheduled to run in that window. <a id="sthref2737"></a>Each job is assigned a job name that is generated at run time. All automated maintenance task job names begin with <code dir="ltr">ORA$AT</code>. For example, the job for the Automatic Segment Advisor might be called <code dir="ltr">ORA$AT_SA_SPC_SY_26</code>. When an automated maintenance task job finishes, it is deleted from the Oracle Scheduler job system. However, the job can still be found in the Scheduler job history.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+To view job history, you must log in as the <code dir="ltr">SYS</code> user.</div>
+<p>In the case of a very long maintenance window, all automated maintenance tasks except Automatic SQL Tuning Advisor are restarted every four hours. This feature ensures that maintenance tasks are run regularly, regardless of window size.</p>
+<p>The framework of automated maintenance tasks relies on maintenance windows being defined in the database. <a href="#CIHGCBBF">Table 26-1</a> lists the maintenance windows that are automatically defined with each new Oracle Database installation.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="schedover.htm#BGBJHJDC">"About Jobs and Supporting Scheduler Objects"</a> for more information on windows and groups.</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="CIHGGBEG"></a>
+<div id="ADMIN12332" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Configuring Automated Maintenance Tasks</h2>
+<p>To enable or disable specific maintenance tasks in any subset of maintenance windows, you can use the <code dir="ltr">DBMS_AUTO_TASK_ADMIN</code> PL/SQL package.</p>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#CIHIECAB">Enabling and Disabling Maintenance Tasks for all Maintenance Windows</a></p>
+</li>
+<li>
+<p><a href="#CIHCIEGE">Enabling and Disabling Maintenance Tasks for Specific Maintenance Windows</a></p>
+</li>
+</ul>
+<a id="CIHIECAB"></a>
+<div id="ADMIN12333" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Enabling and Disabling Maintenance Tasks for all Maintenance Windows</h3>
+<p><a id="sthref2738"></a>You can disable a particular automated maintenance task for all maintenance windows with a single operation. You do so by calling the <code dir="ltr">DISABLE</code> procedure of the <code dir="ltr">DBMS_AUTO_TASK_ADMIN</code> PL/SQL package without supplying the <code dir="ltr">window_name</code> argument. For example, you can completely disable the Automatic SQL Tuning Advisor task as follows:</p>
+<pre dir="ltr">
+BEGIN
+  dbms_auto_task_admin.disable(
+    client_name =&gt; 'sql tuning advisor',
+    operation   =&gt; NULL,
+    window_name =&gt; NULL);
+END;
+/
+</pre>
+<p>To enable this maintenance task again, use the <code dir="ltr">ENABLE</code> procedure, as follows:</p>
+<pre dir="ltr">
+BEGIN
+  dbms_auto_task_admin.enable(
+    client_name =&gt; 'sql tuning advisor',
+    operation   =&gt; NULL,
+    window_name =&gt; NULL);
+END;
+/
+</pre>
+<p>The task names to use for the <code dir="ltr">client_name</code> argument are listed in the <code dir="ltr">DBA_AUTOTASK_CLIENT</code> database dictionary view.</p>
+<p>To enable or disable all automated maintenance tasks for all windows, call the <code dir="ltr">ENABLE</code> or <code dir="ltr">DISABLE</code> procedure with no arguments.</p>
+<pre dir="ltr">
+EXECUTE DBMS_AUTO_TASK_ADMIN.DISABLE;
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#CIHHFBIH">"Automated Maintenance Tasks Database Dictionary Views"</a></p>
+</li>
+<li>
+<p><a class="olink ARPLS032" href="../../appdev.112/e40758/d_autotaskadm.htm#ARPLS032"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information on the <code dir="ltr">DBMS_AUTO_TASK_ADMIN</code> PL/SQL package.</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="CIHCIEGE"></a>
+<div id="ADMIN12497" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Enabling and Disabling Maintenance Tasks for Specific Maintenance Windows</h3>
+<p><a id="sthref2739"></a>By default, all maintenance tasks run in all predefined maintenance windows. You can disable a maintenance task for a specific window. The following example disables the Automatic SQL Tuning Advisor from running in the window <code dir="ltr">MONDAY_WINDOW</code>:</p>
+<pre dir="ltr">
+BEGIN
+  dbms_auto_task_admin.disable(
+    client_name =&gt; 'sql tuning advisor', 
+    operation   =&gt; NULL, 
+    window_name =&gt; 'MONDAY_WINDOW');
+END;
+/
+</pre></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CIHCDBEC"></a>
+<div id="ADMIN12335" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Configuring Maintenance Windows</h2>
+<p>You may want to adjust the predefined maintenance windows to a time suitable to your database environment or create a new maintenance window. You can customize maintenance windows using the <code dir="ltr">DBMS_SCHEDULER</code> PL/SQL package.</p>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#CIHBIGBF">Modifying a Maintenance Window</a></p>
+</li>
+<li>
+<p><a href="#CIHBHJBC">Creating a New Maintenance Window</a></p>
+</li>
+<li>
+<p><a href="#CIHBGBED">Removing a Maintenance Window</a></p>
+</li>
+</ul>
+<a id="CIHBIGBF"></a>
+<div id="ADMIN12336" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Modifying a Maintenance Window</h3>
+<p><a id="sthref2740"></a>The <code dir="ltr">DBMS_SCHEDULER</code> PL/SQL package includes a <code dir="ltr">SET_ATTRIBUTE</code> procedure for modifying the attributes of a window. For example, the following script changes the duration of the maintenance window <code dir="ltr">SATURDAY_WINDOW</code> to 4 hours:</p>
+<pre dir="ltr">
+BEGIN
+  dbms_scheduler.disable(
+    name  =&gt; 'SATURDAY_WINDOW');
+  dbms_scheduler.set_attribute(
+    name      =&gt; 'SATURDAY_WINDOW',
+    attribute =&gt; 'DURATION',
+    value     =&gt; numtodsinterval(4, 'hour'));
+  dbms_scheduler.enable(
+    name =&gt; 'SATURDAY_WINDOW');
+END;
+/
+</pre>
+<p>Note that you must use the <code dir="ltr">DBMS_SCHEDULER.DISABLE</code> subprogram to disable the window before making changes to it, and then re-enable the window with <code dir="ltr">DBMS_SCHEDULER.ENABLE</code> when you are finished. If you change a window when it is currently open, the change does not take effect until the next time the window opens.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="scheduse.htm#i1010604">"Managing Job Scheduling and Job Priorities with Windows"</a> for more information about modifying windows.</div>
+</div>
+<!-- class="sect2" -->
+<a id="CIHBHJBC"></a>
+<div id="ADMIN12337" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Creating a New Maintenance Window</h3>
+<p><a id="sthref2741"></a>To create a new maintenance window, you must create an Oracle Scheduler window object and then add it to the window group <code dir="ltr">MAINTENANCE_WINDOW_GROUP</code>. You use the <code dir="ltr">DBMS_SCHEDULER</code>.<code dir="ltr">CREATE_WINDOW</code> package procedure to create the window, and the <code dir="ltr">DBMS_SCHEDULER</code>.<code dir="ltr">ADD_GROUP_MEMBER</code> procedure to add the new window to the window group.</p>
+<p>The following example creates a maintenance window named <code dir="ltr">EARLY_MORNING_WINDOW</code>. This window runs for one hour daily between 5 a.m. and 6 a.m.</p>
+<pre dir="ltr">
+BEGIN
+  dbms_scheduler.create_window(
+    window_name     =&gt; 'EARLY_MORNING_WINDOW',
+    duration        =&gt;  numtodsinterval(1, 'hour'),
+    resource_plan   =&gt; 'DEFAULT_MAINTENANCE_PLAN',
+    repeat_interval =&gt; 'FREQ=DAILY;BYHOUR=5;BYMINUTE=0;BYSECOND=0');
+  dbms_scheduler.add_group_member(
+    group_name  =&gt; 'MAINTENANCE_WINDOW_GROUP',
+    member      =&gt; 'EARLY_MORNING_WINDOW');
+END;
+/
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="scheduse.htm#i1009193">"Creating Windows"</a></p>
+</li>
+<li>
+<p><a class="olink ARPLS72235" href="../../appdev.112/e40758/d_sched.htm#ARPLS72235"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for information on the <code dir="ltr">DBMS_SCHEDULER</code> package</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="CIHBGBED"></a>
+<div id="ADMIN12338" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Removing a Maintenance Window</h3>
+<p><a id="sthref2742"></a>To remove an existing maintenance window, remove it from the <code dir="ltr">MAINTENANCE_WINDOW_GROUP</code> window group. The window continues to exist but no longer runs automated maintenance tasks. Any other Oracle Scheduler jobs assigned to this window continue to run as usual.</p>
+<p>The following example removes <code dir="ltr">EARLY_MORNING_WINDOW</code> from the window group:</p>
+<pre dir="ltr">
+BEGIN
+  DBMS_SCHEDULER.REMOVE_GROUP_MEMBER(
+    group_name  =&gt; 'MAINTENANCE_WINDOW_GROUP',
+    member      =&gt; 'EARLY_MORNING_WINDOW');
+END;
+/
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="scheduse.htm#i1014033">"Removing a Member from a Window Group"</a></p>
+</li>
+<li>
+<p><a href="scheduse.htm#i1013593">"Dropping Windows"</a></p>
+</li>
+<li>
+<p><a class="olink ARPLS72235" href="../../appdev.112/e40758/d_sched.htm#ARPLS72235"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for information on the <code dir="ltr">DBMS_SCHEDULER</code> package</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BABHEFEH"></a>
+<div id="ADMIN11840" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Configuring Resource Allocations for Automated Maintenance Tasks<a id="sthref2743"></a><a id="sthref2744"></a></h2>
+<p>This section contains the following topics on resource allocation for maintenance windows:</p>
+<ul>
+<li>
+<p><a href="#CIHFBCGH">About Resource Allocations for Automated Maintenance Tasks</a></p>
+</li>
+<li>
+<p><a href="#CIHHJJFH">Changing Resource Allocations for Automated Maintenance Tasks</a></p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="dbrm.htm#g1021210">Chapter 27, "Managing Resources with Oracle Database Resource Manager"</a></div>
+<a id="CIHFBCGH"></a>
+<div id="ADMIN12339" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">About Resource Allocations for Automated Maintenance Tasks</h3>
+<p><a id="sthref2745"></a>By default, all predefined maintenance windows use the resource plan <code dir="ltr">DEFAULT_MAINTENANCE_PLAN</code>. Automated maintenance tasks run under its subplan <code dir="ltr">ORA$AUTOTASK_SUB_PLAN</code>. This subplan divides its portion of total resource allocation equally among the maintenance tasks.</p>
+<p><a id="sthref2746"></a><code dir="ltr">DEFAULT_MAINTENANCE_PLAN</code> defines the following resource allocations:</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="Resource allocations for DEFAULT_MAINTENANCE_PLAN" summary="This table describes the resource allocation of DEFAULT_MAINTENANCE_PLAN. Column 1 lists the consumer group, columns 2-4 show the amount of CPU granted to each level (level1, level 2, and level3, respectively)." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t13">Consumer Group/subplan</th>
+<th class="cellalignment1334" id="r1c2-t13">Level 1</th>
+<th class="cellalignment1334" id="r1c3-t13">Level 2</th>
+<th class="cellalignment1334" id="r1c4-t13">Maximum Utilization Limit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t13" headers="r1c1-t13"><code dir="ltr">ORA$AUTOTASK_SUB_PLAN</code></td>
+<td class="cellalignment1335" headers="r2c1-t13 r1c2-t13">-</td>
+<td class="cellalignment1335" headers="r2c1-t13 r1c3-t13">25%</td>
+<td class="cellalignment1335" headers="r2c1-t13 r1c4-t13">90</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t13" headers="r1c1-t13"><code dir="ltr">ORA$DIAGNOSTICS</code></td>
+<td class="cellalignment1335" headers="r3c1-t13 r1c2-t13">-</td>
+<td class="cellalignment1335" headers="r3c1-t13 r1c3-t13">5%</td>
+<td class="cellalignment1335" headers="r3c1-t13 r1c4-t13">90</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t13" headers="r1c1-t13"><code dir="ltr">OTHER_GROUPS</code></td>
+<td class="cellalignment1335" headers="r4c1-t13 r1c2-t13">-</td>
+<td class="cellalignment1335" headers="r4c1-t13 r1c3-t13">70%</td>
+<td class="cellalignment1335" headers="r4c1-t13 r1c4-t13">&nbsp;</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r5c1-t13" headers="r1c1-t13"><code dir="ltr">SYS_GROUP</code></td>
+<td class="cellalignment1335" headers="r5c1-t13 r1c2-t13">75%</td>
+<td class="cellalignment1335" headers="r5c1-t13 r1c3-t13">-</td>
+<td class="cellalignment1335" headers="r5c1-t13 r1c4-t13">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" -->
+<p>In this plan, any sessions in the <code dir="ltr">SYS_GROUP</code> consumer group get priority. (Sessions in this group are sessions created by user accounts <code dir="ltr">SYS</code> and <code dir="ltr">SYSTEM</code>.) Any resource allocation that is unused by sessions in <code dir="ltr">SYS_GROUP</code> is then shared by sessions belonging to the other consumer groups and subplans in the plan. Of that allocation, 25% goes to maintenance tasks, 5% goes to background processes performing diagnostic operations, and 70% goes to user sessions. The maximum utilization limit for <code dir="ltr">ORA$AUTOTASK_SUB_PLAN</code> and <code dir="ltr">ORA$DIAGNOSTICS</code> is 90. Therefore, even if the CPU is idle, this group/plan cannot be allocated more than 90% of the CPU resources.</p>
+<p>To reduce or increase resource allocation to the automated maintenance tasks, you make adjustments to <code dir="ltr">DEFAULT_MAINTENANCE_PLAN</code>. See <a href="#CIHHJJFH">"Changing Resource Allocations for Automated Maintenance Tasks"</a> for more information.</p>
+<p>Note that as with any resource plan, the portion of an allocation that is not used by a consumer group or subplan is available for other consumer groups or subplans. Note also that the Database Resource Manager does not begin to limit resource allocations according to resource plans until 100% of CPU is being used.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Although <code dir="ltr">DEFAULT_MAINTENANCE_PLAN</code> is the default, you can assign any resource plan to any maintenance window. If you do change a maintenance window resource plan, ensure that you include the subplan <code dir="ltr">ORA$AUTOTASK_SUB_PLAN</code> and the consumer group <code dir="ltr">ORA$DIAGNOSTICS</code> in the new plan.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="dbrm.htm#g1021210">Chapter 27, "Managing Resources with Oracle Database Resource Manager"</a> for more information on resource plans.</div>
+</div>
+<!-- class="sect2" -->
+<a id="CIHHJJFH"></a>
+<div id="ADMIN12341" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Changing Resource Allocations for Automated Maintenance Tasks</h3>
+<p>To change the resource allocation for automated maintenance tasks within a maintenance window, you must change the percentage of resources allocated to the subplan <code dir="ltr">ORA$AUTOTASK_SUB_PLAN</code> in the resource plan for that window. (By default, the resource plan for each predefined maintenance window is <code dir="ltr">DEFAULT_MAINTENANCE_PLAN</code>.) You must also adjust the resource allocation for one or more other subplans or consumer groups in the window's resource plan such that the resource allocation at the top level of the plan adds up to 100%. For information on changing resource allocations, see <a href="dbrm.htm#g1021210">Chapter 27, "Managing Resources with Oracle Database Resource Manager"</a>.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CIHJJDBB"></a>
+<div id="ADMIN12342" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Automated Maintenance Tasks Reference</h2>
+<p>This section contains the following reference topics for automated maintenance tasks:</p>
+<ul>
+<li>
+<p><a href="#CIHJHGCA">Predefined Maintenance Windows</a></p>
+</li>
+<li>
+<p><a href="#CIHHFBIH">Automated Maintenance Tasks Database Dictionary Views</a></p>
+</li>
+</ul>
+<a id="CIHJHGCA"></a>
+<div id="ADMIN12343" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Predefined Maintenance Windows</h3>
+<p><a id="sthref2747"></a>By default there are seven predefined maintenance windows, each one representing a day of the week. The weekend maintenance windows, <code dir="ltr">SATURDAY_WINDOW</code> and <code dir="ltr">SUNDAY_WINDOW</code>, are longer in duration than the weekday maintenance windows. The window group <code dir="ltr">MAINTENANCE_WINDOW_GROUP</code> consists of these seven windows. The list of predefined maintenance windows is given in <a href="#CIHGCBBF">Table 26-1</a>.</p>
+<div id="ADMIN13071" class="tblruleformal">
+<p class="titleintable"><a id="sthref2748"></a><a id="CIHGCBBF"></a>Table 26-1 Predefined Maintenance Windows</p>
+<table class="cellalignment1333" title="Predefined Maintenance Windows" summary="This table has two columns: Window Name and Description" dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t16">Window Name</th>
+<th class="cellalignment1334" id="r1c2-t16">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t16" headers="r1c1-t16">
+<p><code dir="ltr">MONDAY_WINDOW</code></p>
+</td>
+<td class="cellalignment1335" headers="r2c1-t16 r1c2-t16">
+<p>Starts at 10 p.m. on Monday and ends at 2 a.m.</p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t16" headers="r1c1-t16">
+<p><code dir="ltr">TUESDAY_WINDOW</code></p>
+</td>
+<td class="cellalignment1335" headers="r3c1-t16 r1c2-t16">
+<p>Starts at 10 p.m. on Tuesday and ends at 2 a.m.</p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t16" headers="r1c1-t16">
+<p><code dir="ltr">WEDNESDAY_WINDOW</code></p>
+</td>
+<td class="cellalignment1335" headers="r4c1-t16 r1c2-t16">
+<p>Starts at 10 p.m. on Wednesday and ends at 2 a.m.</p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r5c1-t16" headers="r1c1-t16">
+<p><code dir="ltr">THURSDAY_WINDOW</code></p>
+</td>
+<td class="cellalignment1335" headers="r5c1-t16 r1c2-t16">
+<p>Starts at 10 p.m. on Thursday and ends at 2 a.m.</p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r6c1-t16" headers="r1c1-t16">
+<p><code dir="ltr">FRIDAY_WINDOW</code></p>
+</td>
+<td class="cellalignment1335" headers="r6c1-t16 r1c2-t16">
+<p>Starts at 10 p.m. on Friday and ends at 2 a.m.</p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r7c1-t16" headers="r1c1-t16">
+<p><code dir="ltr">SATURDAY_WINDOW</code></p>
+</td>
+<td class="cellalignment1335" headers="r7c1-t16 r1c2-t16">
+<p>Starts at 6 a.m. on Saturday and is 20 hours long.</p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r8c1-t16" headers="r1c1-t16">
+<p><code dir="ltr">SUNDAY_WINDOW</code></p>
+</td>
+<td class="cellalignment1335" headers="r8c1-t16 r1c2-t16">
+<p>Starts at 6 a.m. on Sunday and is 20 hours long.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformal" --></div>
+<!-- class="sect2" -->
+<a id="CIHHFBIH"></a>
+<div id="ADMIN12344" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Automated Maintenance Tasks Database Dictionary Views</h3>
+<p><a href="#CIHIBBGD">Table 26-2</a> displays information about database dictionary views for automated maintenance tasks:</p>
+<div id="ADMIN13072" class="tblformal">
+<p class="titleintable"><a id="sthref2749"></a><a id="CIHIBBGD"></a>Table 26-2 Automated Maintenance Tasks Database Dictionary Views</p>
+<table class="cellalignment1338" title="Automated Maintenance Tasks Database Dictionary Views" summary="This table contains two columns, View Name and Description." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t17">View Name</th>
+<th class="cellalignment1334" id="r1c2-t17">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t17" headers="r1c1-t17">
+<p><code dir="ltr">DBA_AUTOTASK_CLIENT_JOB</code></p>
+</td>
+<td class="cellalignment1335" headers="r2c1-t17 r1c2-t17">
+<p>Contains information about currently running Scheduler jobs created for automated maintenance tasks. It provides information about some objects targeted by those jobs, as well as some additional statistics from previous instantiations of the same task. Some of this additional data is taken from generic Scheduler views.</p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t17" headers="r1c1-t17">
+<p><code dir="ltr">DBA_AUTOTASK_CLIENT</code></p>
+</td>
+<td class="cellalignment1335" headers="r3c1-t17 r1c2-t17">
+<p>Provides statistical data for each automated maintenance task over 7-day and 30-day periods.</p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t17" headers="r1c1-t17">
+<p><code dir="ltr">DBA_AUTOTASK_JOB_HISTORY</code></p>
+</td>
+<td class="cellalignment1335" headers="r4c1-t17 r1c2-t17">
+<p>Lists the history of automated maintenance task job runs. Jobs are added to this view after they finish executing.</p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r5c1-t17" headers="r1c1-t17">
+<p><code dir="ltr">DBA_AUTOTASK_WINDOW_CLIENTS</code></p>
+</td>
+<td class="cellalignment1335" headers="r5c1-t17 r1c2-t17">
+<p>Lists the windows that belong to <code dir="ltr">MAINTENANCE_WINDOW_GROUP</code>, along with the Enabled or Disabled status for the window for each maintenance task. Primarily used by Enterprise Manager.</p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r6c1-t17" headers="r1c1-t17">
+<p><code dir="ltr">DBA_AUTOTASK_CLIENT_HISTORY</code></p>
+</td>
+<td class="cellalignment1335" headers="r6c1-t17 r1c2-t17">
+<p>Provides per-window history of job execution counts for each automated maintenance task. This information is viewable in the Job History page of Enterprise Manager.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="dbrm.htm#i1008772">"Resource Manager Data Dictionary Views"</a> for column descriptions for views.</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1326">
+<tr>
+<td class="cellalignment1335">
+<table class="cellalignment1331">
+<tr>
+<td class="cellalignment1330"><a href="part6.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1330"><a href="dbrm.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2001, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1337">
+<table class="cellalignment1329">
+<tr>
+<td class="cellalignment1330"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1330"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1330"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1330"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1330"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1330"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

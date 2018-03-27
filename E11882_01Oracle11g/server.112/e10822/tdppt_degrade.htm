@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Resolving Performance Degradation Over Time</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 040" />
+<meta name="dcterms.created" content="2011-11-21T13:27:42Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database 2 Day + Performance Tuning Guide" />
+<meta name="dcterms.identifier" content="E10822-04" />
+<meta name="dcterms.isVersionOf" content="TDPPT" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2007, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="tdppt_transient.htm" title="Previous" type="text/html" />
+<link rel="Next" href="tdppt_partfour.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10822.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">16/21</span> <!-- End Header --><a id="BABEIEDD"></a><a id="TDPPT089"></a>
+<h1 class="chapter"><span class="secnum">8</span> Resolving Performance Degradation Over Time</h1>
+<p>Performance degradation of the database occurs when your database was performing optimally in the past, such as 6 months ago, but has gradually degraded to a point where it becomes noticeable to the users. The <a id="sthref277"></a><a id="sthref278"></a><a id="sthref279"></a><a id="sthref280"></a>Automatic Workload Repository (AWR) Compare Periods report enables you to compare database performance between two periods of time.</p>
+<p>While an AWR report shows AWR data between two snapshots (or two points in time), the AWR Compare Periods report shows the difference between two periods (or two AWR reports, which totals four snapshots). Using the AWR Compare Periods report helps you to identify detailed performance attributes and configuration settings that differ between two time periods. The two time periods selected for the AWR Compare Periods report can be of different durations. The report normalizes the statistics by the amount of time spent on the database for each time period and presents statistical data ordered by the largest difference between the periods.</p>
+<p>For example, a batch workload that historically completed in the maintenance window between 10:00 p.m. and midnight is currently showing poor performance and completing at 2 a.m. You can generate an AWR Compare Periods report from 10:00 p.m. to midnight on a day when performance was good and from 10:00 a.m. to 2 a.m. on a day when performance was poor. The comparison of these reports should identify configuration settings, workload profile, and statistics that were different in these two time periods. Based on the differences identified, you can more easily diagnose the cause of the performance degradation.</p>
+<p>This chapter contains the following sections:</p>
+<ul>
+<li>
+<p><a href="#CACEAHIJ">Managing Baselines</a></p>
+</li>
+<li>
+<p><a href="#CACGCJDC">Running the AWR Compare Periods Reports</a></p>
+</li>
+<li>
+<p><a href="#BABBIDDA">Using the AWR Compare Periods Reports</a></p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="tdppt_method.htm#CAEICJEI">"Gathering Database Statistics Using the Automatic Workload Repository"</a></p>
+</li>
+</ul>
+</div>
+<a id="CACEAHIJ"></a><a id="TDPPT230"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Managing Baselines</h2>
+<p>Baselines<a id="sthref281"></a><a id="sthref282"></a> are an effective way to diagnose performance problems. AWR<a id="sthref283"></a> supports the capture of baseline data by enabling you to specify and preserve a pair or a range of snapshots as a baseline. The snapshots contained in a baseline are excluded from the automatic AWR purging process and are retained indefinitely.</p>
+<p>A moving window baseline corresponds to all AWR data that exists within the AWR retention period. Oracle Database automatically maintains a system-defined moving window baseline. The default size of the window is the current AWR retention period, which by default is 8 days.</p>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#CIHDHEAA">Creating a Baseline</a></p>
+</li>
+<li>
+<p><a href="#CACBFCFE">Deleting a Baseline</a></p>
+</li>
+<li>
+<p><a href="#CACDAEHC">Computing Threshold Statistics for Baselines</a></p>
+</li>
+<li>
+<p><a href="#CACDACHD">Setting Metric Thresholds for Baselines</a></p>
+</li>
+</ul>
+<a id="CIHDHEAA"></a><a id="TDPPT231"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Creating a Baseline</h3>
+<p>Before creating a baseline, carefully consider the time period you choose as a baseline because it should represent the database operating at an optimal level. In the future, you can compare these baselines with other baselines or snapshots captured during periods of poor performance to analyze performance degradation over time.</p>
+<p>You can create the following types of baseline:</p>
+<ul>
+<li>
+<p><a href="#CACJEBCE">Creating a Single Baseline</a></p>
+</li>
+<li>
+<p><a href="#CACDCGGH">Creating a Repeating Baseline</a></p>
+</li>
+</ul>
+<a id="CACJEBCE"></a><a id="TDPPT232"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Creating a Single Baseline</h4>
+<p>A single baseline is captured at a single, fixed time interval. For example, a single baseline may be captured on February 5, 2009 from 5:00 p.m. to 8:00 p.m.</p>
+<p>You can choose future start and end times to create a baseline that captures future database activity. If both the start time and the end time are in the future, then a baseline template with the same name as the baseline will also be created. A <a id="sthref284"></a>baseline template is a specification that enables Oracle Database to automatically generate a baseline for a future time period.</p>
+<p class="orderedlisttitle">To create a single baseline:&nbsp;</p>
+<ol>
+<li>
+<p>From the Database Home page, click <span class="bold">Server</span>.</p>
+<p>The Server page appears.</p>
+</li>
+<li>
+<p><a id="sthref286"></a>Under Statistics Management, click <span class="bold">AWR Baselines</span>.</p>
+<p>The AWR Baselines page appears with a list of existing baselines displayed.</p>
+<img width="760" height="209" src="img/awr_baselines.gif" alt="Description of awr_baselines.gif follows" /><br />
+<a id="sthref287" href="img_text/awr_baselines.htm">Description of the illustration awr_baselines.gif</a><br />
+<br /></li>
+<li>
+<p>Click <span class="bold">Create</span>.</p>
+<p>The Create Baseline: Baseline Interval Type page appears.</p>
+</li>
+<li>
+<p>Select <span class="bold">Single</span>.</p>
+<img width="650" height="168" src="img/baseline_interval_single.gif" alt="Description of baseline_interval_single.gif follows" /><br />
+<a id="sthref288" href="img_text/baseline_interval_single.htm">Description of the illustration baseline_interval_single.gif</a><br />
+<br /></li>
+<li>
+<p>Click <span class="bold">Continue</span>.</p>
+<p>The Create Baseline: Single Baseline page appears.</p>
+<img width="1020" height="510" src="img/create_baseline_single.gif" alt="Description of create_baseline_single.gif follows" /><br />
+<a id="sthref289" href="img_text/create_baseline_single.htm">Description of the illustration create_baseline_single.gif</a><br />
+<br /></li>
+<li>
+<p>In the <span class="bold">Baseline Name</span> field, enter a name for the baseline.</p>
+</li>
+<li>
+<p>Under Baseline Interval, select whether to use a snapshot range or a time range for the baseline. Do one of the following:</p>
+<ul>
+<li>
+<p>To use a range, select <span class="bold">Snapshot Range</span>. Complete the following steps:</p>
+<ul>
+<li>
+<p>Under Select Time Period, select a start time for the baseline by selecting <span class="bold">Period Start Time</span> and the snapshot icon below the Active Sessions chart that corresponds to the desired start time.</p>
+</li>
+<li>
+<p>Select an end time for the baseline by selecting <span class="bold">Period End Time</span> and the snapshot icon below the Active Sessions chart that corresponds to the desired end time.</p>
+</li>
+<li>
+<p>Optionally, to view older snapshots that are not displayed below the Active Sessions chart, expand <span class="bold">Change Chart Time Period</span>. Enter the desired start date in the <span class="bold">Chart Start Date</span> field and the desired end date in the <span class="bold">Chart End Date</span> field, and click <span class="bold">Go</span>.</p>
+</li>
+</ul>
+<p>In this example, a snapshot range on February 5, 2009 from 3:10 p.m. to 3:30 p.m. is selected.</p>
+<img width="1000" height="332" src="img/baseline_snapshot_range.gif" alt="Description of baseline_snapshot_range.gif follows" /><br />
+<a id="sthref290" href="img_text/baseline_snapshot_range.htm">Description of the illustration baseline_snapshot_range.gif</a><br />
+<br /></li>
+<li>
+<p>To use a time range, select <span class="bold">Time Range</span>. Complete the following steps:</p>
+<ul>
+<li>
+<p>In the <span class="bold">Start Time</span> fields, select a start time for the baseline.</p>
+</li>
+<li>
+<p>In the <span class="bold">End Time</span> fields, select an end time for the baseline.</p>
+</li>
+</ul>
+<p>In the following example, a time range from 3:10 p.m. to 3:30 p.m. on February 6, 2009 is selected.</p>
+<img width="685" height="64" src="img/create_baseline_time_range.gif" alt="Description of create_baseline_time_range.gif follows" /><br />
+<a id="sthref291" href="img_text/create_baseline_time_range.htm">Description of the illustration create_baseline_time_range.gif</a><br />
+<br /></li>
+</ul>
+</li>
+<li>
+<p>Click <span class="bold">Finish</span>.</p>
+<p>The AWR Baselines page reappears with the newly created baseline displayed.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<a id="CACDCGGH"></a><a id="TDPPT233"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Creating a Repeating Baseline</h4>
+<p>A repeating baseline is a baseline that repeats during a time interval over a specific period. For example, a repeating baseline may repeat every Monday from 8:00 a.m. to 10:00 a.m. from February 6, 2009 to February 6, 2010.</p>
+<p class="orderedlisttitle">To create a repeating baseline:&nbsp;</p>
+<ol>
+<li>
+<p>From the Database Home page, click <span class="bold">Server</span>.</p>
+<p>The Server page appears.</p>
+</li>
+<li>
+<p>Under Statistics Management, click <span class="bold">AWR Baselines</span>.</p>
+<p>The AWR Baselines page appears with a list of existing baselines displayed.</p>
+</li>
+<li>
+<p>Click <span class="bold">Create</span>.</p>
+<p>The Create Baseline: Baseline Interval Type page appears.</p>
+</li>
+<li>
+<p>Select <span class="bold">Repeating</span> and then click <span class="bold">Continue</span>.</p>
+<p>The Create Baseline: Repeating Baseline Template page appears.</p>
+</li>
+<li>
+<p>In the <span class="bold">Baseline Name Prefix</span> field, enter a name prefix for the baseline.</p>
+</li>
+<li>
+<p>Under Baseline Time Period, specify the time of the day that you want the baseline to begin collecting AWR data and the duration of the baseline collection.</p>
+</li>
+<li>
+<p>Under Frequency, do one of the following:</p>
+<ul>
+<li>
+<p>Select <span class="bold">Daily</span> if you want the baseline to repeat on a daily basis.</p>
+</li>
+<li>
+<p>Select <span class="bold">Weekly</span> if you want the baseline to repeat on a weekly basis, and then select the day of the week on which the baseline will repeat.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Under Interval of Baseline Creation, complete the following steps:</p>
+<ol>
+<li>
+<p>In the <span class="bold">Start Time</span> fields, select a date and time in the future when the data collection should begin.</p>
+</li>
+<li>
+<p>In the <span class="bold">End Time</span> fields, select a date and time in the future when the data collection should end.</p>
+</li>
+</ol>
+</li>
+<li>
+<p>Under Purge Policy, enter the number of days to retain captured baselines.</p>
+</li>
+<li>
+<p>Click <span class="bold">Finish</span>.</p>
+<p>A baseline template with the same name as the baseline name prefix will be created. A <a id="sthref293"></a>baseline template is a specification that enables Oracle Database to automatically generate a baseline for a future time period.</p>
+<p>This example creates a baseline that repeats weekly on Mondays from 8:00 a.m. to 10:00 a.m. from February 6, 2009 to February 6, 2010. Every captured baseline expires after 30 days.</p>
+<img width="775" height="408" src="img/create_baseline_repeating.gif" alt="Description of create_baseline_repeating.gif follows" /><br />
+<a id="sthref294" href="img_text/create_baseline_repeating.htm">Description of the illustration create_baseline_repeating.gif</a><br />
+<br /></li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CACBFCFE"></a><a id="TDPPT234"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Deleting a Baseline</h3>
+<p><a id="sthref295"></a>To conserve storage space, you may want to periodically delete unused baselines stored in the database.</p>
+<p class="orderedlisttitle">To delete a baseline:&nbsp;</p>
+<ol>
+<li>
+<p>From the Database Home page, click <span class="bold">Server</span>.</p>
+<p>The Server page appears.</p>
+</li>
+<li>
+<p>Under Statistics Management, click <span class="bold">AWR Baselines</span>.</p>
+<p>The AWR Baselines page appears with a list of existing baselines displayed.</p>
+</li>
+<li>
+<p>Select a baseline and click <span class="bold">Delete</span>.</p>
+<p>The Confirmation page appears.</p>
+</li>
+<li>
+<p>Select whether to purge the underlying data associated with the baseline.</p>
+<p>The underlying data includes the individual snapshots preserved in the baseline and any statistics that are computed for the baseline. Do one of the following:</p>
+<ul>
+<li>
+<p>To delete the underlying data, select <span class="bold">Purge the underlying data associated with the baseline</span>.</p>
+</li>
+<li>
+<p>To preserve the underlying data, select <span class="bold">Do not purge the underlying data associated with the baseline</span>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Click <span class="bold">Yes</span>.</p>
+<p>The AWR Baselines page reappears. A message informs you that the baseline was deleted successfully.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="CACDAEHC"></a><a id="TDPPT235"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Computing Threshold Statistics for Baselines</h3>
+<p><a id="sthref297"></a>Computing threshold statistics for baselines enables you to graphically display the computed statistics in the charts on the Performance page.</p>
+<p class="orderedlisttitle">To compute threshold statistics for baselines:&nbsp;</p>
+<ol>
+<li>
+<p>From the Database Home page, click <span class="bold">Server</span>.</p>
+<p>The Server page appears.</p>
+</li>
+<li>
+<p>Under Statistics Management, click <span class="bold">AWR Baselines</span>.</p>
+<p>The AWR Baselines page appears with a list of existing baselines displayed.</p>
+</li>
+<li>
+<p>Select the baseline for which you want to compute statistics.</p>
+<p>Select a baseline that does not already have computed statistics. These baselines are identified by No in the Statistics Computed column.</p>
+</li>
+<li>
+<p>From the Actions list, select <span class="bold">Schedule Statistics Computation</span>, and then click <span class="bold">Go</span>.</p>
+<p>The Compute Threshold Statistics page appears.</p>
+<p>This example computes statistics for the baseline <code>BASELINE_THU_1530</code>.</p>
+<img width="654" height="447" src="img/compute_threshold_stats.gif" alt="Description of compute_threshold_stats.gif follows" /><br />
+<a id="sthref299" href="img_text/compute_threshold_stats.htm">Description of the illustration compute_threshold_stats.gif</a><br />
+<br /></li>
+<li>
+<p>In the <span class="bold">Name</span> field, enter a name for the task.</p>
+<p>Alternatively, you can choose to use the system-generated name.</p>
+</li>
+<li>
+<p>In the <span class="bold">Description</span> field, enter a description for the task.</p>
+<p>Alternatively, you can choose to use the system-generated description.</p>
+</li>
+<li>
+<p>Under Start, do one of the following:</p>
+<ul>
+<li>
+<p>Select <span class="bold">Immediately</span> to run the task immediately after it has been submitted.</p>
+</li>
+<li>
+<p>Select <span class="bold">Later</span> to run the task at a later time as specified using the Date and Time fields.</p>
+</li>
+</ul>
+<p>This computation is resource-intensive, so you may want to schedule it to run during off-peak hours.</p>
+</li>
+<li>
+<p>Click <span class="bold">Submit</span>.</p>
+<p>The AWR Baselines page appears. A message informs you that statistics computation has been scheduled for the selected baseline.</p>
+</li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="tdppt_realtime.htm#CBBIGBHH">"Customizing the Database Performance Page"</a> for information about displaying computed statistics on the Performance page</p>
+</li>
+<li>
+<p><a class="olink ADMQS10142" href="../../server.112/e10897/montune.htm#ADMQS10142"><span class="italic">Oracle Database 2 Day DBA</span></a> for information about thresholds and how to manage them</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="CACDACHD"></a><a id="TDPPT332"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Setting Metric Thresholds for Baselines</h3>
+<p>As explained in <a href="tdppt_alerts.htm#BEIJHEAI">"Setting Metric Thresholds for Performance Alerts"</a>, a <a id="sthref300"></a>metric is the rate of change in a cumulative statistic. Alerts notify you when particular metric thresholds are crossed. When the metric thresholds are crossed, the system is in an undesirable state. You can edit the threshold settings for baseline metrics.</p>
+<p>You can create the following types of baseline:</p>
+<ul>
+<li>
+<p><a href="#CACGHFHA">Setting Metric Thresholds for the Default Moving Baseline</a></p>
+</li>
+<li>
+<p><a href="#CACCDAEF">Setting Metric Thresholds for Selected Baselines</a></p>
+</li>
+</ul>
+<a id="CACGHFHA"></a><a id="TDPPT333"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Setting Metric Thresholds for the Default Moving Baseline</h4>
+<p>This section describes the easiest technique for setting the metric thresholds for the default moving baseline. You can choose a group of basic metric threshold settings based on common database workload profiles such as OLTP, data warehousing, and OLTP with nighttime batch jobs. After choosing a workload profile, you can expand or change the threshold values as needed.</p>
+<p class="orderedlisttitle">To set metric thresholds for the default moving baseline:&nbsp;</p>
+<ol>
+<li>
+<p>On the Database Home page, under Related Links, click <span class="bold">Baseline Metric Thresholds</span>.</p>
+<p>The Threshold Configuration tab of the Baseline Metric Thresholds page appears.</p>
+</li>
+<li>
+<p>Click <span class="bold">Quick Configuration</span>.</p>
+<p>The Quick Configuration: Baseline Metric Thresholds page appears.</p>
+</li>
+<li>
+<p>In <span class="bold">Workload Profile</span>, select one of the following options, depending on how you are using the database:</p>
+<ul>
+<li>
+<p><span class="bold">Primarily OLTP (pure transaction processing 24 hours a day)</span></p>
+</li>
+<li>
+<p><span class="bold">Primarily Data Warehousing (query and load intensive)</span></p>
+</li>
+<li>
+<p><span class="bold">Alternating (OLTP during the daytime and batch during the nighttime)</span></p>
+</li>
+</ul>
+<p>In this example, select <span class="bold">Primarily OLTP</span>.</p>
+</li>
+<li>
+<p>Click <span class="bold">Continue</span>.</p>
+<p>The Quick Configuration: Review OLTP Threshold Settings page appears.</p>
+<img width="640" height="421" src="img/threshold_quick.gif" alt="Description of threshold_quick.gif follows" /><br />
+<a id="sthref302" href="img_text/threshold_quick.htm">Description of the illustration threshold_quick.gif</a><br />
+<br /></li>
+<li>
+<p>Review the metric threshold settings and then click <span class="bold">Finish</span>.</p>
+<p>You are returned to the Baseline Metric Thresholds page, with the Threshold Configuration tab selected. The metric threshold settings are displayed.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<a id="CACCDAEF"></a><a id="TDPPT334"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Setting Metric Thresholds for Selected Baselines</h4>
+<p>This section explains how to select a baseline and edit its thresholds. You can configure the type of threshold, for example, whether it is based on significance levels, percentage of maximum values, or fixed values. You can also configure the threshold levels that determine when the database generates critical alerts and warnings.</p>
+<p>You can edit thresholds for the default moving baseline or a baseline that you created in the AWR Baselines page. You can select a baseline in the Edit Thresholds page after you have scheduled statistics computation from the AWR Baselines page and the statistics have finished computing on the static baseline.</p>
+<p class="orderedlisttitle">To set a metric threshold for a selected moving baseline:&nbsp;</p>
+<ol>
+<li>
+<p>On the Database Home page, under Related Links, click <span class="bold">Baseline Metric Thresholds</span>.</p>
+<p>The Threshold Configuration tab of the Baseline Metric Thresholds page appears.</p>
+</li>
+<li>
+<p>In the View list, select <span class="bold">Basic Metrics</span>.</p>
+<p>The Baseline Metric Thresholds page appears.</p>
+</li>
+<li>
+<p>In the <span class="bold">Category/Name</span> column, click the link for the metric whose threshold you want to set or change.</p>
+<p>For example, click <span class="bold">Number of Transactions (per second)</span>.</p>
+<p>The Edit Thresholds: Number of Transactions (per second) appears.</p>
+<img width="793" height="512" src="img/edit_thresholds.gif" alt="Description of edit_thresholds.gif follows" /><br />
+<a id="sthref304" href="img_text/edit_thresholds.htm">Description of the illustration edit_thresholds.gif</a><br />
+<br />
+<p>The charts on this page provide simple and detailed views of metric activity for a 24-hour period. In the top simple chart, click a day to view the value of the metric plotted against a 24-hour period.</p>
+</li>
+<li>
+<p>Under <span class="bold">AWR Baseline</span>, in the Name list, select either the default <span class="bold">SYSTEM_MOVING_WINDOW</span> or the name of a baseline created in the AWR Baselines page.</p>
+<p>A baseline appears in the AWR Baseline list after you have scheduled statistics computation from the AWR Baselines page and the statistics have finished computing on the static baseline.</p>
+<p>In this example, <span class="bold">BASELINE_THU_1530</span> is selected.</p>
+<p>The page refreshes to show the charts for the baseline that you selected.</p>
+</li>
+<li>
+<p>In the Threshold Settings section, complete the following steps to change the settings:</p>
+<ol>
+<li>
+<p>In <span class="bold">Threshold Type</span>, leave <span class="bold">Significance Level</span> selected.</p>
+</li>
+<li>
+<p>In <span class="bold">Critical</span>, select <span class="bold">Extreme</span>.</p>
+</li>
+<li>
+<p>In <span class="bold">Warning</span>, select <span class="bold">Very High</span>.</p>
+</li>
+<li>
+<p>In <span class="bold">Occurrences</span>, leave the current value.</p>
+</li>
+</ol>
+</li>
+<li>
+<p>Click <span class="bold">Apply Thresholds</span>.</p>
+<p>You are returned to the Baseline Metric Thresholds page. This page shows the altered metric threshold settings.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CACGCJDC"></a><a id="TDPPT091"></a>
+<div class="sect1">
+<h2 class="sect1">Running the AWR Compare Periods Reports</h2>
+<p>This section describes how to run the AWR Compare Periods reports using Enterprise Manager.</p>
+<p>You can use AWR Compare Periods reports to compare the database performance between two time periods by:</p>
+<ul>
+<li>
+<p><a href="#CACBGDCI">Comparing a Baseline to Another Baseline or Pair of Snapshots</a></p>
+</li>
+<li>
+<p><a href="#CACDFJFC">Comparing Two Pairs of Snapshots</a></p>
+</li>
+</ul>
+<a id="CACBGDCI"></a><a id="TDPPT137"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Comparing a Baseline to Another Baseline or Pair of Snapshots</h3>
+<p>When performance degradation occurs over time, you can run the AWR Compare Periods report to compare the degraded performance, captured as a new baseline or a pair of snapshots, to an existing baseline. You must have a baseline that represents the system operating at an optimal level. If an existing baseline is unavailable, then compare database performance between two periods of time using two arbitrary pairs of snapshots, as described in <a href="#CACDFJFC">"Comparing Two Pairs of Snapshots"</a>.</p>
+<p class="orderedlisttitle">To compare a baseline to another baseline<a id="sthref306"></a><a id="sthref307"></a>:&nbsp;</p>
+<ol>
+<li>
+<p>From the Database Home page, click <span class="bold">Server</span>.</p>
+<p>The Server subpage appears.</p>
+</li>
+<li>
+<p>Under Statistics Management, click <span class="bold">Automatic Workload Repository</span>.</p>
+<p>The Automatic Workload Repository page appears.</p>
+<img width="342" height="229" src="img/awr1.gif" alt="Description of awr1.gif follows" /><br />
+<a id="sthref308" href="img_text/awr1.htm">Description of the illustration awr1.gif</a><br />
+<br /></li>
+<li>
+<p>Under Manage Snapshots and Baselines, click the link next to <span class="bold">Baselines</span>.</p>
+<p>The AWR Baselines page appears.</p>
+</li>
+<li>
+<p>Complete the following steps:</p>
+<ol>
+<li>
+<p>Select the baseline to use for the report.</p>
+<p>At least one existing baseline must be available.</p>
+</li>
+<li>
+<p>From the Actions list, select <span class="bold">Compare Periods</span> and click <span class="bold">Go</span>.</p>
+</li>
+</ol>
+<p>The Compare Periods: Second Period Start page appears. Under First Period, the selected baseline is displayed.</p>
+<p>In this example, the baseline named <code>BASELINE_THU_1530</code> is selected.</p>
+<img width="646" height="86" src="img/baseline_first_period.gif" alt="Description of baseline_first_period.gif follows" /><br />
+<a id="sthref309" href="img_text/baseline_first_period.htm">Description of the illustration baseline_first_period.gif</a><br />
+<br /></li>
+<li>
+<p>Compare the baseline selected in the first period to another baseline or a pair of snapshots. Do one of the following:</p>
+<ul>
+<li>
+<p>To compare to another baseline, select <span class="bold">Select a Baseline</span> and the baseline you want to use in the second period, and then click <span class="bold">Next</span>.</p>
+<p>The Compare Periods: Review page appears. Go to Step <a href="#CACEFBFG">7</a>.</p>
+</li>
+<li>
+<p>To compare to a pair of snapshots, select <span class="bold">Select Beginning Snapshot</span> and the beginning snapshot to use in the second period, and then click <span class="bold">Next</span>.</p>
+<p>This example selects snapshot 18, taken on February 5, 2009 at 5:00 p.m.</p>
+<img width="554" height="401" src="img/awr_snapshot2_begin2.gif" alt="Description of awr_snapshot2_begin2.gif follows" /><br />
+<a id="sthref310" href="img_text/awr_snapshot2_begin2.htm">Description of the illustration awr_snapshot2_begin2.gif</a><br />
+<br />
+<p>The Compare Periods: Second Period End appears. Proceed to the next step.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Select the ending snapshot for the snapshot period that will be included in the report and then click <span class="bold">Next</span>.</p>
+<p>In this example, snapshot 24, taken on Feb 5, 2009 at 6:00 p.m., is selected.</p>
+<img width="610" height="295" src="img/awr_snapshot2_end2.gif" alt="Description of awr_snapshot2_end2.gif follows" /><br />
+<a id="sthref311" href="img_text/awr_snapshot2_end2.htm">Description of the illustration awr_snapshot2_end2.gif</a><br />
+<br />
+<p>The Compare Periods: Review page appears.</p>
+<img width="627" height="263" src="img/awr2_review.gif" alt="Description of awr2_review.gif follows" /><br />
+<a id="sthref312" href="img_text/awr2_review.htm">Description of the illustration awr2_review.gif</a><br />
+<br /></li>
+<li>
+<p><a id="CACEFBFG"></a>Review the periods to be included in the report and then click <span class="bold">Finish</span>.</p>
+<p>The Compare Periods: Results page appears.</p>
+<p>Data from the selected periods appears under the General subpage. You can view data per second or per transaction by selecting an option from the View Data list.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If the time periods have different lengths, then the data is normalized over database time before calculating the difference so that periods of different lengths can be compared.</div>
+<p>In this example, almost every metric shows that more resources were consumed in the first period. The bar graphs indicate the proportions of the values in the two periods. The absence of bars indicates equivalent values. The report for this example shows significantly more database block changes per second and parse time in the first period than in the second.</p>
+<img width="875" height="565" src="img/awr2_results_general.gif" alt="Description of awr2_results_general.gif follows" /><br />
+<a id="sthref313" href="img_text/awr2_results_general.htm">Description of the illustration awr2_results_general.gif</a><br />
+<br /></li>
+<li>
+<p>Click <span class="bold">Report</span> to view the report.</p>
+<p>The Processing: View Report page appears while the report is being generated. After it completes, the report will appear. To change periods, click <span class="bold">Change Periods</span>. To save the report as an HTML file<a id="sthref314"></a>, click <span class="bold">Save to File</span>.</p>
+</li>
+<li>
+<p>Optionally, do the following:</p>
+<ul>
+<li>
+<p>To change periods, click <span class="bold">Change Periods</span>.</p>
+</li>
+<li>
+<p>To save the report as an HTML file<a id="sthref315"></a>, click <span class="bold">Save to File</span>.</p>
+</li>
+</ul>
+</li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#CIHDHEAA">"Creating a Baseline"</a></p>
+</li>
+<li>
+<p><a href="#BABBIDDA">"Using the AWR Compare Periods Reports"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref316"></a>
+<h3 class="sect2">Comparing Current System Performance to a Baseline Period</h3>
+<p><a id="sthref317"></a>You may have noticed a performance change on a production system and would like to know why, or you may have implemented a change to a production system and want to know the effect of the change, such as increased concurrency waits.</p>
+<p>The Compare Period ADDM compares the performance of the database server in two time periods, and returns a report describing the performance changes and the root origin of the changes. The Advisor can analyze any Oracle RDBMS version 10.2.0.4 or greater monitored by Cloud Control. The following procedure explains how to initiate a report from the Compare Period ADDM.</p>
+<ol>
+<li>
+<p>From the Performance menu, select <span class="bold">AWR</span>, then <span class="bold">Compare Period ADDM</span>.</p>
+</li>
+<li>
+<p>From the Compare Period Report page, specify the desired comparison and base periods:</p>
+<ul>
+<li>
+<p><span class="bold">Comparison Period</span> &mdash; Generally represents an improperly functioning time period. However, you could also use the advisor to understand why performance has improved now when compared with an earlier time period.</p>
+</li>
+<li>
+<p><span class="bold">Base Period</span> &mdash; Represents a known (baseline or reference) period in which the database is functioning properly. You should select a base period in which the performance was acceptable, and the workload was as similar or identical as possible.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Click <span class="bold">Run</span> to display the Database Compare Period Report.</p>
+</li>
+<li>
+<p>Examine the sections of the report to understand the performance change between the two periods and the cause of the change:</p>
+<ul>
+<li>
+<p><span class="bold">Overview</span></p>
+<p>This portion of the report shows SQL commonality, which is the comparability between the base and comparison periods based on the average resource consumption of the SQL statements common to both periods.</p>
+<p>A commonality value of 100% means that the workload "signature" in both time periods is identical. A commonality of 100% is expected for this use case, because the workload being replayed is the same (assuming that you are not using replay filters). A value of 0% means that the two time periods have no items in common for the specific workload dimension.</p>
+<p>Commonality is based on the type of input (that is, which SQL is executing) as well as the load of the executing SQL statements. Consequently, SQL statements running in only one time period, but not consuming significant time, do not affect commonality. Therefore, two workloads could have a commonality of 100% even if some SQL statements are running only in one of the two periods, provided that these SQL statements do not consume significant resources.</p>
+</li>
+<li>
+<p><span class="bold">Configuration</span></p>
+<p>The information displayed shows base period and comparison period values for various parameters categorized by instance, host, and database.</p>
+</li>
+<li>
+<p><span class="bold">Findings</span></p>
+<p>The findings can show performance improvements and identify the major performance differences caused by system changes. For negative outcomes, if you understand and remove the cause, the negative outcome can be eliminated.</p>
+<p>The values shown for the Base Period and Comparison Period represent performance with regard to database time.</p>
+<p>The Change Impact value represents a measurement of the scale of a change in performance from one time period to another. It is applicable to issues or items measured by the total database time they consumed in each time period. The absolute values are sorted in descending order.</p>
+<p>If the value is positive, an improvement has occurred, and if the value is negative, a regression has occurred. For instance, a change impact of -200% means that period 2 is three times as slow as period 1.</p>
+<p>You can run performance tuning tools, such as ADDM and the SQL Tuning Advisor, to fix issues in the comparison period to improve general system performance.</p>
+</li>
+<li>
+<p><span class="bold">Resources</span></p>
+<p>The information shown here provides a summary of the division of database time for both time periods, and shows the resource usage for CPU, memory, I/O, and interconnect (Oracle RAC only).</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Based on your observations, decide how to proceed to resolve performance regressions, then implement your action plan.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="CACDFJFC"></a><a id="TDPPT138"></a>
+<div class="sect2">
+<h3 class="sect2">Comparing Two Pairs of Snapshots</h3>
+<p>If an existing baseline is unavailable, then you can compare database performance by using two arbitrary pairs of snapshots. Use one pair taken when the database is performing optimally, and another pair when the database is performing poorly. At least four existing snapshots must be available.</p>
+<p class="orderedlisttitle">To compare performance using two pairs of snapshots:&nbsp;</p>
+<ol>
+<li>
+<p>From the Database Home page, click <span class="bold">Server</span>.</p>
+<p>The Server page appears.</p>
+</li>
+<li>
+<p><a id="sthref319"></a><a id="sthref320"></a>Under Statistics Management, click <span class="bold">Automatic Workload Repository</span>.</p>
+<p>The Automatic Workload Repository page appears.</p>
+<img width="342" height="229" src="img/awr1.gif" alt="Description of awr1.gif follows" /><br />
+<a id="sthref321" href="img_text/awr1.htm">Description of the illustration awr1.gif</a><br />
+<br /></li>
+<li>
+<p>Under Manage Snapshots and Baselines, click the link next to <span class="bold">Snapshots</span>.</p>
+<p>The Snapshots page appears.</p>
+</li>
+<li>
+<p>From the Go To Time list, select the time for the starting snapshot and then click <span class="bold">Go</span>.</p>
+<p>This action filters the snapshots<a id="sthref322"></a> and displays only the snapshot taken at the start of the comparison period. The time in this example is at 2 p.m. on February 5.</p>
+<img width="360" height="64" src="img/awr_gototime_1.gif" alt="Description of awr_gototime_1.gif follows" /><br />
+<a id="sthref323" href="img_text/awr_gototime_1.htm">Description of the illustration awr_gototime_1.gif</a><br />
+<br /></li>
+<li>
+<p>Under Select Beginning Snapshot, select the starting point for the first snapshot period to be included in the report.</p>
+<p>In this example, snapshot 1 is selected.</p>
+<img width="685" height="94" src="img/awr_snapshot1_begin.gif" alt="Description of awr_snapshot1_begin.gif follows" /><br />
+<a id="sthref324" href="img_text/awr_snapshot1_begin.htm">Description of the illustration awr_snapshot1_begin.gif</a><br />
+<br /></li>
+<li>
+<p>From the Actions list, select <span class="bold">Compare Periods</span> and click <span class="bold">Go</span>.</p>
+<p>The Compare Periods: First Period End page appears.</p>
+</li>
+<li>
+<p>Select the ending point for the first snapshot period to be included in the report and click <span class="bold">Next</span>.</p>
+<p>In this example, snapshot 8, taken on February 5 at 3:20:10 p.m., is selected.</p>
+<img width="704" height="183" src="img/awr_snapshot1_end.gif" alt="Description of awr_snapshot1_end.gif follows" /><br />
+<a id="sthref325" href="img_text/awr_snapshot1_end.htm">Description of the illustration awr_snapshot1_end.gif</a><br />
+<br />
+<p>The Compare Periods: Second Period Start page appears.</p>
+</li>
+<li>
+<p>Select the starting point for the second snapshot period to be included in the report and click <span class="bold">Next</span>. This snapshot is the third of four.</p>
+<p>In this example, snapshot 20, taken on February 5 at 5:20 p.m., is selected.</p>
+<p>The Compare Periods: Second Period End page appears.</p>
+</li>
+<li>
+<p>Select the end point for the second period that will be included in the report and click <span class="bold">Next</span>.</p>
+<p>In this example, snapshot 26, taken on February 5 at 6:20 p.m., is selected.</p>
+<p>The Compare Periods: Review page appears.</p>
+<img width="631" height="190" src="img/awr_review.gif" alt="Description of awr_review.gif follows" /><br />
+<a id="sthref326" href="img_text/awr_review.htm">Description of the illustration awr_review.gif</a><br />
+<br /></li>
+<li>
+<p>Review the selected periods to be included in the report and then click <span class="bold">Finish</span>.</p>
+<p>The Compare Periods: Results page appears.</p>
+<p>Data from the selected periods appears under the General subpage. You can view data per second or per transaction by selecting an option from the View Data list.</p>
+<p>In the following example, the first period shows more database activity, especially in parse time and physical reads, than the second period.</p>
+<img width="781" height="701" src="img/awr_results_general.gif" alt="Description of awr_results_general.gif follows" /><br />
+<a id="sthref327" href="img_text/awr_results_general.htm">Description of the illustration awr_results_general.gif</a><br />
+<br /></li>
+<li>
+<p>To view the report, click the <span class="bold">Report</span> tab.</p>
+<p>The Processing: View Report page appears while the report is being generated. After it completes, the report will appear.</p>
+</li>
+<li>
+<p>Optionally, do the following:</p>
+<ul>
+<li>
+<p>To change periods, click <span class="bold">Change Periods</span>.</p>
+</li>
+<li>
+<p>To save the report as an HTML file<a id="sthref328"></a>, click <span class="bold">Save to File</span>.</p>
+</li>
+</ul>
+</li>
+</ol>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BABBIDDA"></a><a id="TDPPT092"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Using the AWR Compare Periods Reports</h2>
+<p>After an AWR Compare Periods report<a id="sthref329"></a> is generated for the time periods you want to compare, you can use it to analyze performance degradation. To learn how to create the report, see <a href="#CACGCJDC">"Running the AWR Compare Periods Reports"</a>.</p>
+<p><a href="#BABIEEAI">Figure 8-1</a> shows a portion of an AWR Compare Periods report.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="BABIEEAI"></a><a id="TDPPT428"></a>Figure 8-1 AWR Compare Periods Report</p>
+<img width="738" height="840" src="img/awr_report.gif" alt="Description of Figure 8-1 follows" /><br />
+<a id="sthref330" href="img_text/awr_report.htm">Description of "Figure 8-1 AWR Compare Periods Report"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>The AWR Compare Periods report is divided into the following sections:</p>
+<ul>
+<li>
+<p><a href="#BABCIIDG">Summary of the AWR Compare Periods Report</a></p>
+</li>
+<li>
+<p><a href="#CACHEAIB">Details of the AWR Compare Periods Report</a></p>
+</li>
+<li>
+<p><a href="#CACDDCGJ">Supplemental Information in the AWR Compare Periods Report</a></p>
+</li>
+</ul>
+<a id="BABCIIDG"></a><a id="TDPPT093"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Summary of the AWR Compare Periods Report</h3>
+<p>The report summary<a id="sthref331"></a> is at the beginning of the AWR Compare Periods report, and summarizes information about the snapshot sets and loads used in the report. The report summary contains the following sections:</p>
+<ul>
+<li>
+<p><a href="#BABJAEHE">Snapshot Sets</a></p>
+</li>
+<li>
+<p><a href="#BABCIGFB">Load Profile</a></p>
+</li>
+<li>
+<p><a href="#BABECFAH">Top Timed Events</a></p>
+</li>
+<li>
+<p><a href="#BABFJCFI">Host Configuration Comparison</a></p>
+</li>
+<li>
+<p><a href="#CACCGGJJ">System Configuration Comparison</a></p>
+</li>
+</ul>
+<a id="BABJAEHE"></a><a id="TDPPT094"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Snapshot Sets</h4>
+<p>The Snapshot Sets section displays information about the snapshot sets used for this report, such as instance, host, and snapshot information.</p>
+<p>In the example shown in <a href="#BABIEEAI">Figure 8-1</a>, the first snapshot period corresponds to the time when performance was stable on February 5 from 5:00 p.m. to 6:00 p.m. The second snapshot period corresponds to the time when performance degradation occurred on the same day from 6:00 p.m. to 7:00 p.m.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BABCIGFB"></a><a id="TDPPT096"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Load Profile</h4>
+<p>The Load Profile section compares the loads used in the two snapshot sets. Differences in the loads are quantified as percentages in the %Diff column.</p>
+<img width="506" height="417" src="img/awr_load_profile.gif" alt="Description of awr_load_profile.gif follows" /><br />
+<a id="sthref332" href="img_text/awr_load_profile.htm">Description of the illustration awr_load_profile.gif</a><br />
+<br />
+<p>In this example, the DB time per second was 36% higher in the second period. CPU time per second was 100% higher.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BABECFAH"></a><a id="TDPPT097"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Top Timed Events</h4>
+<p>The Top 5 Timed Events section is one of the most useful sections in the report. This section displays the five timed events or operations that consumed the highest percentage of total DB time in each of the snapshot sets.</p>
+<img width="696" height="233" src="img/awr_top5_timed_events.gif" alt="Description of awr_top5_timed_events.gif follows" /><br />
+<a id="sthref333" href="img_text/awr_top5_timed_events.htm">Description of the illustration awr_top5_timed_events.gif</a><br />
+<br />
+<p>In this example, CPU time is about twice as much in the second period than in the first. The number of waits for TM locks in the second period is about eight times the number in the first.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BABFJCFI"></a><a id="TDPPT095"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Host Configuration Comparison</h4>
+<p>The Host Configuration Comparison section compares the host configurations used in the two snapshot sets. For example, the report compares physical memory and number of CPUs. Differences in the configurations are quantified as percentages in the %Diff column.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CACCGGJJ"></a><a id="TDPPT314"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">System Configuration Comparison</h4>
+<p>The System Configuration Comparison section compares the database configurations used in the two snapshot sets. For example, the report compares the SGA and log buffer size. Differences in the configurations are quantified as percentages in the %Diff column.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CACHEAIB"></a><a id="TDPPT315"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Details of the AWR Compare Periods Report</h3>
+<p>The details<a id="sthref334"></a> section follows the summary of the AWR Compare Periods report, and provides statistics about the snapshot sets and loads used in the report. For example, the section includes statistics for database time, wait events, SQL execution time, and instance activity.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CACDDCGJ"></a><a id="TDPPT319"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Supplemental Information in the AWR Compare Periods Report</h3>
+<p>The supplemental information<a id="sthref335"></a> is at the end of the AWR Compare Periods report, and provides additional information about initialization parameters and SQL statements. The init.ora Parameters section<a id="sthref336"></a> lists all the initialization parameter values for the first snapshot set. The Complete List of SQL Text section lists each statement by SQL ID and shows the text of the SQL statement.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1738">
+<tr>
+<td class="cellalignment1745">
+<table class="cellalignment1743">
+<tr>
+<td class="cellalignment1742"><a href="tdppt_transient.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1742"><a href="tdppt_partfour.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2007, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1747">
+<table class="cellalignment1741">
+<tr>
+<td class="cellalignment1742"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1742"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1742"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1742"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1742"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1742"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

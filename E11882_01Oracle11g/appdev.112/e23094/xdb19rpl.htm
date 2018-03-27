@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Accessing the Repository using PL/SQL</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 748" />
+<meta name="description" content="This manual describes Oracle XML&nbsp;DB. It includes guidelines and examples for storing, generating, accessing, searching, validating, transforming, evolving, and indexing XML data in Oracle Database." />
+<meta name="dcterms.created" content="2014-02-20T9:56:17Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="XML DB Developer's Guide" />
+<meta name="dcterms.identifier" content="E23094-04" />
+<meta name="dcterms.isVersionOf" content="ADXDB" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2002, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="xdb18res.htm" title="Previous" type="text/html" />
+<link rel="Next" href="xdb21sec.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e23094.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">38/54</span> <!-- End Header -->
+<div id="ADXDB2300" class="chapter"><a id="g1031289"></a>
+<h1 class="chapter"><span class="secnum">26</span> Accessing the Repository using PL/SQL</h1>
+<p>This chapter describes the Oracle XML&nbsp;DB resource application program interface (API) for PL/SQL (PL/SQL package <code>DBMS_XDB</code>). It contains these topics:</p>
+<ul>
+<li>
+<p><a href="#CHDFHEFG">Overview of PL/SQL Package DBMS_XDB</a></p>
+</li>
+<li>
+<p><a href="#i1028077">DBMS_XDB: Resource Management</a></p>
+</li>
+<li>
+<p><a href="#i1028081">DBMS_XDB: ACL-Based Security Management</a></p>
+</li>
+<li>
+<p><a href="#i1028085">DBMS_XDB: Configuration Management</a></p>
+</li>
+</ul>
+<a id="CHDFHEFG"></a>
+<div id="ADXDB5439" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Overview of PL/SQL Package <a id="sthref1533"></a><a id="sthref1534"></a>DBMS_XDB</h2>
+<p>PL/SQL package <code>DBMS_XDB</code> is the Oracle XML&nbsp;DB resource application program interface (API) for PL/SQL. It is also known as the PL/SQL <span class="italic">foldering</span> API. This API provides functions and procedures to access and manage Oracle XML&nbsp;DB Repository resources using PL/SQL. It includes methods for managing resource security and Oracle XML&nbsp;DB configuration.</p>
+<p>Oracle XML&nbsp;DB Repository is modeled on XML, and provides a database file system for any data. The repository maps path names (or URLs) onto database objects of <code>XMLType</code> and provides management facilities for these objects.</p>
+<p>PL/SQL package <code>DBMS_XDB</code> is an API that you can use to manage all of the following:</p>
+<ul>
+<li>
+<p>Oracle XML&nbsp;DB resources</p>
+</li>
+<li>
+<p>Oracle XML&nbsp;DB security based on access control lists (ACLs). An ACL is a list of access control entries (ACEs) that determines which principals (users and roles) have access to which resources</p>
+</li>
+<li>
+<p>Oracle XML&nbsp;DB configuration</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ARPLS371" href="../../appdev.112/e40758/d_xdb.htm#ARPLS371"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a></p>
+</li>
+<li>
+<p><a href="xdb01int.htm#CHDCDBFI">"APIs for XML"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="i1028077"></a>
+<div id="ADXDB5440" class="sect1">
+<h2 class="sect1">DBMS_XDB: <a id="sthref1535"></a>Resource Management</h2>
+<p><a href="#CHDIAHGI">Table 26-1</a> describes <code>DBMS_XDB</code> Oracle XML&nbsp;DB resource management functions and procedures.</p>
+<div id="ADXDB5441" class="tblhruleformalwide">
+<p class="titleintable"><a id="sthref1536"></a><a id="CHDIAHGI"></a>Table 26-1 DBMS_XDB Resource Management Functions and Procedures</p>
+<table class="cellalignment1032" title="DBMS_XDB Resource Management Functions and Procedures" summary="This table describes DBMS_XDB resource management methods." dir="ltr">
+<thead>
+<tr class="cellalignment1020">
+<th class="cellalignment1027" id="r1c1-t3">Function/Procedure</th>
+<th class="cellalignment1027" id="r1c2-t3">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r2c1-t3" headers="r1c1-t3">
+<p><code>appendResourceMetadata</code></p>
+</td>
+<td class="cellalignment1028" headers="r2c1-t3 r1c2-t3">
+<p>Add user-defined metadata to a resource.</p>
+</td>
+</tr>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r3c1-t3" headers="r1c1-t3">
+<p><code>createFolder</code></p>
+</td>
+<td class="cellalignment1028" headers="r3c1-t3 r1c2-t3">
+<p>Create a new folder resource.</p>
+</td>
+</tr>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r4c1-t3" headers="r1c1-t3">
+<p><code>createOIDPath</code></p>
+</td>
+<td class="cellalignment1028" headers="r4c1-t3 r1c2-t3">
+<p>Create a virtual path to a resource, based on its object identifier (OID).</p>
+</td>
+</tr>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r5c1-t3" headers="r1c1-t3">
+<p><code>createResource</code></p>
+</td>
+<td class="cellalignment1028" headers="r5c1-t3 r1c2-t3">
+<p>Create a new file resource.</p>
+</td>
+</tr>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r6c1-t3" headers="r1c1-t3">
+<p><code>deleteResource</code></p>
+</td>
+<td class="cellalignment1028" headers="r6c1-t3 r1c2-t3">
+<p>Delete a resource from the repository.</p>
+</td>
+</tr>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r7c1-t3" headers="r1c1-t3">
+<p><code>deleteResourceMetadata</code></p>
+</td>
+<td class="cellalignment1028" headers="r7c1-t3 r1c2-t3">
+<p>Delete specific user-defined metadata from a resource.</p>
+</td>
+</tr>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r8c1-t3" headers="r1c1-t3">
+<p><code>existsResource</code></p>
+</td>
+<td class="cellalignment1028" headers="r8c1-t3 r1c2-t3">
+<p>Indicate whether or not a resource exists, given its absolute path.</p>
+</td>
+</tr>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r9c1-t3" headers="r1c1-t3">
+<p><code>getLockToken</code></p>
+</td>
+<td class="cellalignment1028" headers="r9c1-t3 r1c2-t3">
+<p>Return a resource lock token for the current user, given a path to the resource.</p>
+</td>
+</tr>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r10c1-t3" headers="r1c1-t3">
+<p><code>getResOID</code></p>
+</td>
+<td class="cellalignment1028" headers="r10c1-t3 r1c2-t3">
+<p>Return the object identifier (OID) of a resource, given its absolute path.</p>
+</td>
+</tr>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r11c1-t3" headers="r1c1-t3">
+<p><code>getXDB_tablespace</code></p>
+</td>
+<td class="cellalignment1028" headers="r11c1-t3 r1c2-t3">
+<p>Return the current tablespace of database schema (user account) <code><a id="sthref1537"></a><a id="sthref1538"></a><a id="sthref1539"></a>XDB</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r12c1-t3" headers="r1c1-t3">
+<p><code>link</code></p>
+</td>
+<td class="cellalignment1028" headers="r12c1-t3 r1c2-t3">
+<p>Create a link to an existing resource.</p>
+</td>
+</tr>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r13c1-t3" headers="r1c1-t3">
+<pre>
+lockResource
+</pre></td>
+<td class="cellalignment1028" headers="r13c1-t3 r1c2-t3">
+<p>Obtain a WebDAV-style lock on a resource, given a path to the resource.</p>
+</td>
+</tr>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r14c1-t3" headers="r1c1-t3">
+<p><code>purgeResourceMetadata</code></p>
+</td>
+<td class="cellalignment1028" headers="r14c1-t3 r1c2-t3">
+<p>Delete all user-defined metadata from a resource.</p>
+</td>
+</tr>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r15c1-t3" headers="r1c1-t3">
+<p><code>renameResource</code></p>
+</td>
+<td class="cellalignment1028" headers="r15c1-t3 r1c2-t3">
+<p>Rename a resource.</p>
+</td>
+</tr>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r16c1-t3" headers="r1c1-t3">
+<p><code>unlockResource</code></p>
+</td>
+<td class="cellalignment1028" headers="r16c1-t3 r1c2-t3">
+<p>Unlock a resource, given its lock token and path.</p>
+</td>
+</tr>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r17c1-t3" headers="r1c1-t3">
+<p><code>updateResourceMetadata</code></p>
+</td>
+<td class="cellalignment1028" headers="r17c1-t3 r1c2-t3">
+<p>Modify user-defined resource metadata.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblhruleformalwide" -->
+<div class="infoboxnotealso">
+<p class="notep1">Tip:</p>
+For optimal perfo<a id="sthref1540"></a>rmance of queries on repository resources, gather statistics for the optimizer using procedure <code><a id="sthref1541"></a><a id="sthref1542"></a>DBMS_XDB_ADMIN.gatherRepositoryStats</code> after resource creation. You need the <code>XDBADMIN</code> role with privilege <code>ANALYZE ANY</code> or the <code>DBA</code> role to use <code>gatherRepositoryStats</code>.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ARPLS371" href="../../appdev.112/e40758/d_xdb.htm#ARPLS371"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a></div>
+<p>The examples in this section illustrate the use of these functions and procedures.</p>
+<p><a href="#i1028471">Example 26-1</a> uses package <code>DBMS_XDB</code> to manage repository resources. It creates the following:</p>
+<ul>
+<li>
+<p>a folder, <code>mydocs</code>, under folder <code>/public</code></p>
+</li>
+<li>
+<p>two file resources, <code>emp_selby.xml</code> and <code>emp_david.xml</code></p>
+</li>
+<li>
+<p>two links to the file resources, <code>person_selby.xml</code> and <code>person_david.xml</code></p>
+</li>
+</ul>
+<p>It then deletes each of the newly created resources and links. The folder contents are deleted before the folder itself.</p>
+<div id="ADXDB5442" class="example">
+<p class="titleinexample"><a id="i1028471"></a>Example 26-1 Managing Resources using DBMS_XDB</p>
+<pre>
+DECLARE
+  retb BOOLEAN;
+BEGIN
+  retb := DBMS_XDB.createfolder('/public/mydocs');
+  retb := DBMS_XDB.createresource('/public/mydocs/emp_selby.xml',
+                                  '&lt;emp_name&gt;selby&lt;/emp_name&gt;');
+  retb := DBMS_XDB.createresource('/public/mydocs/emp_david.xml',
+                                  '&lt;emp_name&gt;david&lt;/emp_name&gt;');
+END;
+/
+PL/SQL procedure successfully completed.
+ 
+CALL DBMS_XDB.link('/public/mydocs/emp_selby.xml',
+                   '/public/mydocs',
+                   'person_selby.xml');
+Call completed.
+ 
+CALL DBMS_XDB.link('/public/mydocs/emp_david.xml',
+                   '/public/mydocs',
+                   'person_david.xml');
+Call completed.
+ 
+CALL DBMS_XDB.deleteresource('/public/mydocs/emp_selby.xml');
+Call completed.
+ 
+CALL DBMS_XDB.deleteresource('/public/mydocs/person_selby.xml');
+Call completed.
+ 
+CALL DBMS_XDB.deleteresource('/public/mydocs/emp_david.xml');
+Call completed.
+ 
+CALL DBMS_XDB.deleteresource('/public/mydocs/person_david.xml');
+Call completed.
+ 
+CALL DBMS_XDB.deleteresource('/public/mydocs');
+Call completed.
+</pre></div>
+<!-- class="example" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="xdb_repos_meta.htm#CIAIGHHG">Chapter 29, "User-Defined Repository Metadata"</a> for examples using <code>appendResourceMetadata</code> and <code>deleteResourceMetadata</code></div>
+</div>
+<!-- class="sect1" -->
+<a id="i1028081"></a>
+<div id="ADXDB5443" class="sect1">
+<h2 class="sect1">DBMS_XDB: ACL-Based Security Management</h2>
+<p><a href="#g1029223">Table 26-2</a> lists the <code>DBMS_XDB</code> Oracle XML&nbsp;DB ACL- based security management functions and procedures.</p>
+<div id="ADXDB5444" class="tblhruleformal">
+<p class="titleintable"><a id="sthref1543"></a><a id="g1029223"></a>Table 26-2 DBMS_XDB: Security Management Procedures and Functions</p>
+<table class="cellalignment1032" title="DBMS_XDB: Security Management Procedures and Functions" summary="This table describes DBMS_XDB security management methods." dir="ltr">
+<thead>
+<tr class="cellalignment1020">
+<th class="cellalignment1027" id="r1c1-t7">Function/Procedure</th>
+<th class="cellalignment1027" id="r1c2-t7">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r2c1-t7" headers="r1c1-t7">
+<p><code>ACLCheckPrivileges</code></p>
+</td>
+<td class="cellalignment1028" headers="r2c1-t7 r1c2-t7">
+<p>Checks the access privileges granted to the current user by an ACL.</p>
+</td>
+</tr>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r3c1-t7" headers="r1c1-t7">
+<p><code>changePrivileges</code></p>
+</td>
+<td class="cellalignment1028" headers="r3c1-t7 r1c2-t7">
+<p>Adds an ACE to a resource ACL.</p>
+</td>
+</tr>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r4c1-t7" headers="r1c1-t7">
+<p><code>checkPrivileges</code></p>
+</td>
+<td class="cellalignment1028" headers="r4c1-t7 r1c2-t7">
+<p>Checks the access privileges granted to the current user for a resource.</p>
+</td>
+</tr>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r5c1-t7" headers="r1c1-t7">
+<p><code>getACLDocument</code></p>
+</td>
+<td class="cellalignment1028" headers="r5c1-t7 r1c2-t7">
+<p>Retrieves the ACL document that protects a resource, given the path name of the resource.</p>
+</td>
+</tr>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r6c1-t7" headers="r1c1-t7">
+<p><code>getPrivileges</code></p>
+</td>
+<td class="cellalignment1028" headers="r6c1-t7 r1c2-t7">
+<p>Returns all privileges granted to the current user for a resource.</p>
+</td>
+</tr>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r7c1-t7" headers="r1c1-t7">
+<p><code>setACL</code></p>
+</td>
+<td class="cellalignment1028" headers="r7c1-t7 r1c2-t7">
+<p>Sets the ACL on a resource.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblhruleformal" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ARPLS371" href="../../appdev.112/e40758/d_xdb.htm#ARPLS371"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a></p>
+</li>
+<li>
+<p><a class="olink ADXDK" href="../e23582/toc.htm"><span class="italic">Oracle XML Developer's Kit Programmer's Guide</span></a></p>
+</li>
+</ul>
+</div>
+<p>The examples in this section illustrate the use of these functions and procedures.</p>
+<p>In <a href="#i1028509">Example 26-2</a>, database user <code>HR</code> creates two resources: a folder, <code>/public/mydocs</code>, with a file in it, <code>emp_selby.xml</code>. Procedure <code>getACLDocument</code> is called on the file resource, showing that the <code>&lt;principal&gt;</code> user for the document is <code>PUBLIC</code>.</p>
+<div id="ADXDB5445" class="example">
+<p class="titleinexample"><a id="i1028509"></a>Example 26-2 Using DBMS_XDB.GETACLDOCUMENT</p>
+<pre>
+CONNECT hr
+Enter password: <span class="italic">password</span>
+
+Connected.
+
+DECLARE
+  retb BOOLEAN;
+BEGIN
+  retb := DBMS_XDB.createFolder('/public/mydocs');
+  retb := DBMS_XDB.createResource('/public/mydocs/emp_selby.xml',
+                                  '&lt;emp_name&gt;selby&lt;/emp_name&gt;');
+END;
+/
+PL/SQL procedure successfully completed.
+ 
+SELECT XMLSerialize(DOCUMENT
+                    DBMS_XDB.<span class="bold">getACLDocument</span>('/public/mydocs/emp_selby.xml')
+                    AS CLOB)
+  FROM DUAL;
+ 
+XMLSERIALIZE(DOCUMENTDBMS_XDB.GETACLDOCUMENT('/PUBLIC/MYDOCS/EMP_SELBY.XML')ASCL
+--------------------------------------------------------------------------------
+&lt;acl description="Public:All privileges to PUBLIC" xmlns="http://xmlns.oracle.co
+m/xdb/acl.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaL
+ocation="http://xmlns.oracle.com/xdb/acl.xsd                           http://xm
+lns.oracle.com/xdb/acl.xsd" shared="true"&gt;
+  &lt;ace&gt;
+    &lt;grant&gt;true&lt;/grant&gt;
+    &lt;principal&gt;<span class="bold">PUBLIC</span>&lt;/principal&gt;
+    &lt;privilege&gt;
+      &lt;all/&gt;
+    &lt;/privilege&gt;
+  &lt;/ace&gt;
+&lt;/acl&gt;
+ 
+1 row selected.
+</pre></div>
+<!-- class="example" -->
+<p>In <a href="#BHBEHIFI">Example 26-3</a>, the system manager connects and uses procedure <code>setACL</code> to give the owner (database schema <code>HR</code>) all privileges on the file resource created in <a href="#i1028509">Example 26-2</a>. Procedure <code>getACLDocument</code> then shows that the <code>&lt;principal&gt;</code> user is <code>dav:owner</code>, the owner (<code>HR</code>).</p>
+<div id="ADXDB5446" class="example">
+<p class="titleinexample"><a id="BHBEHIFI"></a>Example 26-3 Using DBMS_XDB.SETACL</p>
+<pre>
+CONNECT SYSTEM
+Enter password: <span class="italic">password</span>
+
+Connected.
+ 
+-- Give all privileges to owner, HR.
+CALL DBMS_XDB.<span class="bold">setACL</span>('/public/mydocs/emp_selby.xml',
+                     '/sys/acls/<span class="bold">all_owner_acl</span>.xml');
+Call completed.
+COMMIT;
+Commit complete.
+
+SELECT XMLSerialize(DOCUMENT
+                    DBMS_XDB.<span class="bold">getACLDocument</span>('/public/mydocs/emp_selby.xml')
+                    AS CLOB)
+  FROM DUAL;
+
+XMLSERIALIZE(DOCUMENTDBMS_XDB.GETACLDOCUMENT('/PUBLIC/MYDOCS/EMP_SELBY.XML')ASCL
+--------------------------------------------------------------------------------
+&lt;acl description="Private:All privileges to OWNER only and not accessible to oth
+ers" xmlns="http://xmlns.oracle.com/xdb/acl.xsd" xmlns:dav="DAV:" xmlns:xsi="htt
+p://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.oracle.
+com/xdb/acl.xsd http://xmlns.oracle.com/xdb/acl.xsd" shared="true"&gt;
+  &lt;ace&gt;
+    &lt;grant&gt;true&lt;/grant&gt;
+    &lt;principal&gt;<span class="bold">dav:owner</span>&lt;/principal&gt;
+    &lt;privilege&gt;
+      &lt;all/&gt;
+    &lt;/privilege&gt;
+  &lt;/ace&gt;
+&lt;/acl&gt;
+ 
+1 row selected.
+</pre></div>
+<!-- class="example" -->
+<p>In <a href="#BHBFGHDC">Example 26-4</a>, user <code>HR</code> connects and uses function <code>changePrivileges</code> to add a new access control entry (ACE) to the ACL, which gives all privileges on resource <code>emp_selby.xml</code> to user <code>oe</code>. Procedure <code>getACLDocument</code> shows that the new ACE was added to the ACL.</p>
+<div id="ADXDB5447" class="example">
+<p class="titleinexample"><a id="BHBFGHDC"></a>Example 26-4 Using DBMS_XDB.CHANGEPRIVILEGES</p>
+<pre>
+CONNECT hr
+Enter password: <span class="italic">password</span>
+
+Connected.
+
+SET SERVEROUTPUT ON
+
+-- Add an ACE giving privileges to user OE
+DECLARE
+  r        PLS_INTEGER;
+  ace      XMLType;
+  ace_data VARCHAR2(2000);
+BEGIN
+  ace_data := '&lt;ace xmlns="http://xmlns.oracle.com/xdb/acl.xsd"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://xmlns.oracle.com/xdb/acl.xsd
+                                        http://xmlns.oracle.com/xdb/acl.xsd
+                                        DAV:http://xmlns.oracle.com/xdb/dav.xsd"&gt;
+                 &lt;principal&gt;<span class="bold">OE</span>&lt;/principal&gt;
+                 &lt;grant&gt;true&lt;/grant&gt;
+                 &lt;privilege&gt;&lt;<span class="bold">all/&gt;</span>&lt;/privilege&gt;
+               &lt;/ace&gt;';
+  ace := XMLType.createXML(ace_data);
+  r := DBMS_XDB.<span class="bold">changePrivileges</span>('/public/mydocs/emp_selby.xml', ace);
+END;
+/
+ 
+PL/SQL procedure successfully completed.
+
+COMMIT;
+
+SELECT XMLSerialize(DOCUMENT
+                    DBMS_XDB.<span class="bold">getACLDocument</span>('/public/mydocs/emp_selby.xml')
+                    AS CLOB)
+  FROM DUAL;
+ 
+XMLSERIALIZE(DOCUMENTDBMS_XDB.GETACLDOCUMENT('/PUBLIC/MYDOCS/EMP_SELBY.XML')ASCL
+--------------------------------------------------------------------------------
+&lt;acl description="Private:All privileges to OWNER only and not accessible to oth
+ers" xmlns="http://xmlns.oracle.com/xdb/acl.xsd" xmlns:dav="DAV:" xmlns:xsi="htt
+p://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.oracle.
+com/xdb/acl.xsd                           http://xmlns.oracle.com/xdb/acl.xsd" <span class="bold">s</span>
+<span class="bold">hared="false"</span>&gt;
+  &lt;ace&gt;
+    &lt;grant&gt;true&lt;/grant&gt;
+    &lt;principal&gt;dav:owner&lt;/principal&gt;
+    &lt;privilege&gt;
+      &lt;all/&gt;
+    &lt;/privilege&gt;
+  &lt;/ace&gt;
+  <span class="bold">&lt;ace&gt;</span>
+    <span class="bold">&lt;grant&gt;true&lt;/grant&gt;</span>
+    <span class="bold">&lt;principal&gt;OE&lt;/principal&gt;</span>
+    <span class="bold">&lt;privilege&gt;</span>
+      <span class="bold">&lt;all/&gt;</span>
+    <span class="bold">&lt;/privilege&gt;</span>
+  <span class="bold">&lt;/ace&gt;</span>
+&lt;/acl&gt;
+ 
+1 row selected.
+</pre></div>
+<!-- class="example" -->
+<p>In <a href="#BHBIEDGA">Example 26-5</a>, user <code>oe</code> connects and calls <code>DBMS_XDB.getPrivileges</code>, which shows all of the privileges granted to user <code>oe</code> on resource <code>emp_selby.xml</code>.</p>
+<div id="ADXDB5448" class="example">
+<p class="titleinexample"><a id="BHBIEDGA"></a>Example 26-5 Using DBMS_XDB.GETPRIVILEGES</p>
+<pre>
+CONNECT oe
+Enter password: <span class="italic">password</span>
+
+Connected.
+
+SELECT XMLSerialize(DOCUMENT
+                    DBMS_XDB.<span class="bold">getPrivileges</span>('/public/mydocs/emp_selby.xml')
+                    AS CLOB)
+  FROM DUAL;
+ 
+XMLSERIALIZE(DOCUMENTDBMS_XDB.GETPRIVILEGES('/PUBLIC/MYDOCS/EMP_SELBY.XML')ASCLO
+--------------------------------------------------------------------------------
+&lt;privilege xmlns="http://xmlns.oracle.com/xdb/acl.xsd" xmlns:xsi="http://www.w3.
+org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.oracle.com/xdb/acl
+.xsd http://xmlns.oracle.com/xdb/acl.xsd DAV: http://xmlns.oracle.com/xdb/dav.xs
+d" xmlns:xdbacl="http://xmlns.oracle.com/xdb/acl.xsd" xmlns:dav="DAV:"&gt;
+  &lt;read-properties/&gt;
+  &lt;read-contents/&gt;
+  &lt;write-config/&gt;
+  &lt;link/&gt;
+  &lt;unlink/&gt;
+  &lt;read-acl/&gt;
+  &lt;write-acl-ref/&gt;
+  &lt;update-acl/&gt;
+  &lt;resolve/&gt;
+  &lt;link-to/&gt;
+  &lt;unlink-from/&gt;
+  &lt;dav:lock/&gt;
+  &lt;dav:unlock/&gt;
+  &lt;dav:write-properties/&gt;
+  &lt;dav:write-content/&gt;
+  &lt;dav:execute/&gt;
+  &lt;dav:take-ownership/&gt;
+  &lt;dav:read-current-user-privilege-set/&gt;
+&lt;/privilege&gt;
+ 
+1 row selected.
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect1" -->
+<a id="i1028085"></a>
+<div id="ADXDB5449" class="sect1">
+<h2 class="sect1">DBMS_XDB: Configuration Management</h2>
+<p><a href="#g1029248">Table 26-3</a> lists the <code>DBMS_XDB</code> Oracle XML&nbsp;DB configuration management functions and procedures.</p>
+<div id="ADXDB5450" class="tblhruleformalwide">
+<p class="titleintable"><a id="sthref1544"></a><a id="g1029248"></a>Table 26-3 DBMS_XDB: Configuration Management Functions and Procedures</p>
+<table class="cellalignment1032" title="DBMS_XDB: Configuration Management Functions and Procedures" summary="This table describes DBMS_XDB configuration management methods." dir="ltr">
+<thead>
+<tr class="cellalignment1020">
+<th class="cellalignment1027" id="r1c1-t9">Function/Procedure</th>
+<th class="cellalignment1027" id="r1c2-t9">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r2c1-t9" headers="r1c1-t9">
+<p><code>cfg_get</code></p>
+</td>
+<td class="cellalignment1028" headers="r2c1-t9 r1c2-t9">
+<p>Returns the configuration information for the current session.</p>
+</td>
+</tr>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r3c1-t9" headers="r1c1-t9">
+<p><code>cfg_refresh</code></p>
+</td>
+<td class="cellalignment1028" headers="r3c1-t9 r1c2-t9">
+<p>Refreshes the session configuration information using the current Oracle XML&nbsp;DB configuration file, <code>xdbconfig.xml</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r4c1-t9" headers="r1c1-t9">
+<p><code>cfg_update</code></p>
+</td>
+<td class="cellalignment1028" headers="r4c1-t9 r1c2-t9">
+<p>Updates the Oracle XML&nbsp;DB configuration information. This writes the configuration file, <code>xdbconfig.xml</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r5c1-t9" headers="r1c1-t9">
+<p><code>getFTPPort</code></p>
+</td>
+<td class="cellalignment1028" headers="r5c1-t9 r1c2-t9">
+<p>Returns the current FTP port number.</p>
+</td>
+</tr>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r6c1-t9" headers="r1c1-t9">
+<p><code>getHTTPPort</code></p>
+</td>
+<td class="cellalignment1028" headers="r6c1-t9 r1c2-t9">
+<p>Returns the current HTTP port number.</p>
+</td>
+</tr>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r7c1-t9" headers="r1c1-t9">
+<p><code>setFTPPort</code></p>
+</td>
+<td class="cellalignment1028" headers="r7c1-t9 r1c2-t9">
+<p>Sets the Oracle XML&nbsp;DB FTP port to the specified port number.</p>
+</td>
+</tr>
+<tr class="cellalignment1020">
+<td class="cellalignment1028" id="r8c1-t9" headers="r1c1-t9">
+<p><code>setHTTPPort</code></p>
+</td>
+<td class="cellalignment1028" headers="r8c1-t9 r1c2-t9">
+<p>Sets the Oracle XML&nbsp;DB HTTP port to the specified port number.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblhruleformalwide" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ARPLS371" href="../../appdev.112/e40758/d_xdb.htm#ARPLS371"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a></div>
+<p>The examples in this section illustrate the use of these functions and procedures.</p>
+<p><a href="#i1028520">Example 26-6</a> uses function <code>cfg_get</code> to retrieve the Oracle XML&nbsp;DB configuration file, <code>xdbconfig.xml</code>.</p>
+<div id="ADXDB5451" class="example">
+<p class="titleinexample"><a id="i1028520"></a>Example 26-6 Using DBMS_XDB.CFG_GET</p>
+<pre>
+CONNECT SYSTEM
+Enter password: <span class="italic">password</span>
+
+Connected.
+
+SELECT DBMS_XDB.cfg_get() FROM DUAL;
+ 
+DBMS_XDB.CFG_GET()
+--------------------------------------------------------------------------------
+&lt;xdbconfig xmlns="http://xmlns.oracle.com/xdb/xdbconfig.xsd" xmlns:xsi="http://w
+ww.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.oracle.com/x
+db/xdbconfig.xsd                                     http://xmlns.oracle.com/xdb
+/xdbconfig.xsd"&gt;
+  &lt;sysconfig&gt;
+    &lt;acl-max-age&gt;19&lt;/acl-max-age&gt;
+    &lt;acl-cache-size&gt;32&lt;/acl-cache-size&gt;
+    &lt;invalid-pathname-chars/&gt;
+    &lt;case-sensitive&gt;true&lt;/case-sensitive&gt;
+    &lt;call-timeout&gt;6000&lt;/call-timeout&gt;
+    &lt;max-link-queue&gt;65536&lt;/max-link-queue&gt;
+    &lt;max-session-use&gt;100&lt;/max-session-use&gt;
+    &lt;persistent-sessions&gt;false&lt;/persistent-sessions&gt;
+    &lt;default-lock-timeout&gt;3600&lt;/default-lock-timeout&gt;
+    &lt;xdbcore-logfile-path&gt;/sys/log/xdblog.xml&lt;/xdbcore-logfile-path&gt;
+    &lt;xdbcore-log-level&gt;0&lt;/xdbcore-log-level&gt;
+    &lt;resource-view-cache-size&gt;1048576&lt;/resource-view-cache-size&gt;
+    &lt;protocolconfig&gt;
+      &lt;common&gt;
+        <span class="bold">. . .</span>
+      &lt;/common&gt;
+      &lt;ftpconfig&gt;
+        <span class="bold">. . .</span>
+      &lt;/ftpconfig&gt;
+      &lt;httpconfig&gt;
+        &lt;http-port&gt;0&lt;/http-port&gt;
+        &lt;http-listener&gt;local_listener&lt;/http-listener&gt;
+        &lt;http-protocol&gt;tcp&lt;/http-protocol&gt;
+        &lt;max-http-headers&gt;64&lt;/max-http-headers&gt;
+        &lt;max-header-size&gt;16384&lt;/max-header-size&gt;
+        &lt;max-request-body&gt;2000000000&lt;/max-request-body&gt;
+        &lt;session-timeout&gt;6000&lt;/session-timeout&gt;
+        &lt;server-name&gt;XDB HTTP Server&lt;/server-name&gt;
+        &lt;logfile-path&gt;/sys/log/httplog.xml&lt;/logfile-path&gt;
+        &lt;log-level&gt;0&lt;/log-level&gt;
+        &lt;servlet-realm&gt;Basic realm=&amp;quot;XDB&amp;quot;&lt;/servlet-realm&gt;
+        &lt;webappconfig&gt;
+        <span class="bold">. . .</span>
+        &lt;/webappconfig&gt;
+        &lt;authentication&gt;
+        <span class="bold">. . .</span>
+        &lt;/authentication&gt;
+    &lt;/protocolconfig&gt;
+    &lt;xdbcore-xobmem-bound&gt;1024&lt;/xdbcore-xobmem-bound&gt;
+    &lt;xdbcore-loadableunit-size&gt;16&lt;/xdbcore-loadableunit-size&gt;
+    &lt;acl-evaluation-method&gt;ace-order&lt;/acl-evaluation-method&gt;
+  &lt;/sysconfig&gt;
+&lt;/xdbconfig&gt;
+ 
+1 row selected.
+</pre></div>
+<!-- class="example" -->
+<p><a href="#BHBEDCGF">Example 26-7</a> illustrates the use of procedure <code>cfg_update</code>. The current configuration is retrieved as an <code>XMLType</code> instance and modified. It is then rewritten using <code>cfg_update</code>.</p>
+<div id="ADXDB5452" class="example">
+<p class="titleinexample"><a id="BHBEDCGF"></a>Example 26-7 Using DBMS_XDB.CFG_UPDATE</p>
+<pre>
+DECLARE
+  configxml    SYS.XMLType;
+  configxml2   SYS.XMLType;
+BEGIN
+  -- Get the current configuration
+  configxml := DBMS_XDB.cfg_get();
+ 
+  -- Modify the configuration
+  SELECT updateXML(
+           configxml,
+           '/xdbconfig/sysconfig/protocolconfig/httpconfig/http-port/text()',
+           '<span class="bold">8000</span>',
+           'xmlns="http://xmlns.oracle.com/xdb/xdbconfig.xsd"')
+    INTO configxml2 FROM DUAL;
+ 
+  -- Update the configuration to use the modified version
+  DBMS_XDB.<span class="bold">cfg_update</span>(configxml2);
+END;
+/
+ 
+PL/SQL procedure successfully completed.
+
+SELECT DBMS_XDB.cfg_get() FROM DUAL;
+ 
+DBMS_XDB.CFG_GET()
+--------------------------------------------------------------------------------
+&lt;xdbconfig xmlns="http://xmlns.oracle.com/xdb/xdbconfig.xsd" xmlns:xsi="http://w
+ww.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.oracle.com/x
+db/xdbconfig.xsd http://xmlns.oracle.com/xdb/xdbconfig.xsd"&gt;
+  &lt;sysconfig&gt;
+    &lt;acl-max-age&gt;15&lt;/acl-max-age&gt;
+    &lt;acl-cache-size&gt;32&lt;/acl-cache-size&gt;
+    &lt;invalid-pathname-chars/&gt;
+    &lt;case-sensitive&gt;true&lt;/case-sensitive&gt;
+    &lt;call-timeout&gt;6000&lt;/call-timeout&gt;
+    &lt;max-link-queue&gt;65536&lt;/max-link-queue&gt;
+    &lt;max-session-use&gt;100&lt;/max-session-use&gt;
+    &lt;persistent-sessions&gt;false&lt;/persistent-sessions&gt;
+    &lt;default-lock-timeout&gt;3600&lt;/default-lock-timeout&gt;
+    &lt;xdbcore-logfile-path&gt;/sys/log/xdblog.xml&lt;/xdbcore-logfile-path&gt;
+    &lt;resource-view-cache-size&gt;1048576&lt;/resource-view-cache-size&gt;
+    &lt;protocolconfig&gt;
+      &lt;common&gt;
+      <span class="bold">. . .</span>
+      &lt;/common&gt;
+      &lt;ftpconfig&gt;
+      <span class="bold">. . .</span>
+      &lt;/ftpconfig&gt;
+      &lt;httpconfig&gt;
+        &lt;http-port&gt;<span class="bold">8000</span>&lt;/http-port&gt;
+        <span class="bold">. . .</span>
+      &lt;/httpconfig&gt;
+    &lt;/protocolconfig&gt;
+    &lt;xdbcore-xobmem-bound&gt;1024&lt;/xdbcore-xobmem-bound&gt;
+    &lt;xdbcore-loadableunit-size&gt;16&lt;/xdbcore-loadableunit-size&gt;
+    &lt;acl-evaluation-method&gt;ace-order&lt;/acl-evaluation-method&gt;
+&lt;/xdbconfig&gt;
+ 
+1 row selected.
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1019">
+<tr>
+<td class="cellalignment1028">
+<table class="cellalignment1024">
+<tr>
+<td class="cellalignment1023"><a href="xdb18res.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1023"><a href="xdb21sec.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2002, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1030">
+<table class="cellalignment1022">
+<tr>
+<td class="cellalignment1023"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1023"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1023"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1023"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1023"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1023"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

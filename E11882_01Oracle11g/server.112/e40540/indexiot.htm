@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Indexes and Index-Organized Tables</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1056" />
+<meta name="dcterms.created" content="2015-05-25T13:34:1Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Concepts" />
+<meta name="dcterms.identifier" content="E40540-04" />
+<meta name="dcterms.isVersionOf" content="CNCPT" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1993, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="tablecls.htm" title="Previous" type="text/html" />
+<link rel="Next" href="schemaob.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e40540.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">7/30</span> <!-- End Header -->
+<div id="CNCPT721" class="chapter"><a id="BABHJAJF"></a>
+<h1 class="chapter"><span class="secnum">3</span> Indexes and Index-Organized Tables</h1>
+<p>This chapter discusses indexes, which are schema objects that can speed access to table rows, and index-organized tables, which are tables stored in an index structure.</p>
+<p>This chapter contains the following sections:</p>
+<ul>
+<li>
+<p><a href="#i5671">Overview of Indexes</a></p>
+</li>
+<li>
+<p><a href="#CBBJEBIH">Overview of Index-Organized Tables</a></p>
+</li>
+</ul>
+<a id="i5671"></a>
+<div id="CNCPT811" class="sect1">
+<h2 class="sect1">Overview of Indexes</h2>
+<p><a id="sthref259"></a>An <span class="bold">index</span> is an optional structure, associated with a table or <a href="glossary.htm#CHDJGGGF"><span class="xrefglossterm">table cluster</span></a>, that can sometimes speed data access. By creating an <a href="glossary.htm#i432409"><span class="xrefglossterm">index</span></a> on one or more columns of a table, you gain the ability in some cases to retrieve a small set of randomly distributed rows from the table. Indexes are one of many means of reducing disk I/O.</p>
+<p><a id="sthref260"></a><a id="sthref261"></a><a id="sthref262"></a>If a heap-organized table has no indexes, then the database must perform a <a href="glossary.htm#CHDCGIFF"><span class="xrefglossterm">full table scan</span></a> to find a value. For example, without an index, a <a href="glossary.htm#CHDGABIG"><span class="xrefglossterm">query</span></a> of location <code dir="ltr">2700</code> in the <code dir="ltr">hr.departments</code> table requires the database to search every row in every table block for this value. This approach does not scale well as data volumes increase.</p>
+<p>For an analogy, suppose an HR manager has a shelf of cardboard boxes. Folders containing employee information are inserted randomly in the boxes. The folder for employee Whalen (ID 200) is 10 folders up from the bottom of box 1, whereas the folder for King (ID 100) is at the bottom of box 3. To locate a folder, the manager looks at every folder in box 1 from bottom to top, and then moves from box to box until the folder is found. To speed access, the manager could create an index that sequentially lists every employee ID with its folder location:</p>
+<pre dir="ltr">
+ID 100: Box 3, position 1 (bottom)
+ID 101: Box 7, position 8 
+ID 200: Box 1, position 10
+.
+.
+.
+</pre>
+<p>Similarly, the manager could create separate indexes for employee last names, department IDs, and so on.</p>
+<p>In general, consider creating an index on a column in any of the following situations:</p>
+<ul>
+<li>
+<p>The indexed columns are queried frequently and return a small percentage of the total number of rows in the table.</p>
+</li>
+<li>
+<p>A referential <a href="glossary.htm#i432442"><span class="xrefglossterm">integrity constraint</span></a> exists on the indexed column or columns. The index is a means to avoid a full table <a id="sthref263"></a><a href="glossary.htm#CHDHFEFB"><span class="xrefglossterm">lock</span></a> that would otherwise be required if you update the parent table <a id="sthref264"></a><a href="glossary.htm#i432585"><span class="xrefglossterm">primary key</span></a>, merge into the parent table, or delete from the parent table.</p>
+</li>
+<li>
+<p>A unique key constraint will be placed on the table and you want to manually specify the index and all index options.</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="datainte.htm#g20134">Chapter 5, "Data Integrity"</a></div>
+<div id="CNCPT1895" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref265"></a>
+<h3 class="sect2">Index Characteristics</h3>
+<p>Indexes are <a id="sthref266"></a>schema objects that are logically and physically independent of the data in the objects with which they are associated. Thus, an index can be dropped or created without physically affecting the table for the index.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If you drop an index, then applications still work. However, access of previously indexed data can be slower.</div>
+<p>The absence or presence of an index does not require a change in the wording of any SQL statement. An index is a <a id="sthref267"></a>fast <a href="glossary.htm#CHDGDGEA"><span class="xrefglossterm">access path</span></a> to a single row of data. It affects only the speed of execution. Given a data value that has been indexed, the index points directly to the location of the rows containing that value.</p>
+<p>The database automatically maintains and uses indexes after they are created. The database also automatically reflects changes to data, such as adding, updating, and deleting rows, in all relevant indexes with no additional actions required by users. Retrieval performance of indexed data remains almost constant, even as rows are inserted. However, the presence of many indexes on a table degrades <a href="glossary.htm#i432381"><span class="xrefglossterm">DML</span></a> performance because the database must also update the indexes.</p>
+<p>Indexes have the following properties:</p>
+<ul>
+<li>
+<p>Usability</p>
+<p>Indexes are usable (default) or unusable. An <span class="bold">unusable index</span> is not maintained by <a id="sthref268"></a>DML operations and is ignored by the <a id="sthref269"></a><a href="glossary.htm#CHDGHIIF"><span class="xrefglossterm">optimizer</span></a>. An unusable index can improve the performance of bulk loads. Instead of dropping an index and later re-creating it, you can make the index unusable and then rebuild it. Unusable indexes and index partitions do not consume space. When you make a usable index unusable, the database drops its index <a href="glossary.htm#i432714"><span class="xrefglossterm">segment</span></a>.</p>
+</li>
+<li>
+<p>Visibility</p>
+<p>Indexes are visible (default) or invisible. <a id="sthref270"></a><a id="sthref271"></a>An <span class="bold">invisible index</span> is maintained by <a id="sthref272"></a>DML operations and is not used by default by the optimizer<a id="sthref273"></a>. Making an index invisible is an alternative to making it unusable or dropping it. Invisible indexes are especially useful for testing the removal of an index before dropping it or using indexes temporarily without affecting the overall application.</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="sqllangu.htm#i8709">"Overview of the Optimizer"</a></p>
+</li>
+<li>
+<p><a class="olink ADMQS083" href="../../server.112/e10897/schema.htm#ADMQS083"><span class="italic">Oracle Database 2 Day DBA</span></a> and <a class="olink ADMIN016" href="../../server.112/e25494/indexes.htm#ADMIN016"><span class="italic">Oracle Database Administrator's Guide</span></a> to learn how to manage indexes</p>
+</li>
+<li>
+<p><a class="olink PFGRF004" href="../../server.112/e41573/data_acc.htm#PFGRF004"><span class="italic">Oracle Database Performance Tuning Guide</span></a> to learn how to tune indexes</p>
+</li>
+</ul>
+</div>
+<div id="CNCPT1159" class="sect3"><a id="sthref274"></a>
+<h4 class="sect3">Keys and Columns</h4>
+<p>A <span class="bold">key</span> is a set of columns or <a id="sthref275"></a><a id="sthref276"></a><a href="glossary.htm#CHDGHBJB"><span class="xrefglossterm">expressions</span></a> on which you can build an index.<a id="sthref277"></a><a id="sthref278"></a> Although the terms are often used interchangeably, indexes and keys are different. <span class="bold">Indexes</span> are structures stored in the database that users manage using SQL statements. Keys are strictly a logical concept.</p>
+<p><a id="sthref279"></a>The following statement creates an index on the <code dir="ltr">customer_id</code> column of the sample table <code dir="ltr">oe.orders</code>:</p>
+<pre dir="ltr">
+CREATE INDEX ord_customer_ix ON orders (customer_id);
+</pre>
+<p>In the preceding statement, the <code dir="ltr">customer_id</code> column is the index key. The index itself is named <code dir="ltr">ord_customer_ix</code>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Primary and unique keys automatically have indexes, but you might want to create an index on a <a id="sthref280"></a><a href="glossary.htm#i996900"><span class="xrefglossterm">foreign key</span></a>.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SQLRF01209" href="../../server.112/e41084/statements_5012.htm#SQLRF01209"><span class="italic">Oracle Database SQL Language Reference</span></a> <code dir="ltr">CREATE INDEX</code> syntax and semantics</div>
+</div>
+<!-- class="sect3" -->
+<div id="CNCPT88833" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref281"></a>
+<h4 class="sect3">Composite Indexes</h4>
+<p><a id="sthref282"></a><a id="sthref283"></a>A <span class="bold">composite index</span>, also called a <span class="bold">concatenated index</span>, is an index on multiple columns in a table. Columns in a composite index should appear in the order that makes the most sense for the queries that will retrieve data and need not be adjacent in the table.<a id="sthref284"></a><a id="sthref285"></a><a id="sthref286"></a><a id="sthref287"></a><a id="sthref288"></a><a id="sthref289"></a></p>
+<p>Composite indexes can speed retrieval of data for <code dir="ltr">SELECT</code> statements in which the <code dir="ltr">WHERE</code> clause references all or the leading portion of the columns in the composite index. Therefore, the order of the columns used in the definition is important. In general, the most commonly accessed columns go first.</p>
+<p><a id="sthref290"></a>For example, suppose an application frequently queries the <code dir="ltr">last_name</code>, <code dir="ltr">job_id</code>, and <code dir="ltr">salary</code> columns in the <code dir="ltr">employees</code> table. Also assume that <code dir="ltr">last_name</code> has high <a href="glossary.htm#CHDGHIDF"><span class="xrefglossterm">cardinality</span></a>, which means that the number of distinct values is large compared to the number of table rows. You create an index with the following column order:</p>
+<pre dir="ltr">
+CREATE INDEX employees_ix
+   ON employees (last_name, job_id, salary);
+</pre>
+<p>Queries that access all three columns, only the <code dir="ltr">last_name</code> column, or only the <code dir="ltr">last_name</code> and <code dir="ltr">job_id</code> columns use this index. In this example, queries that do not access the <code dir="ltr">last_name</code> column do not use the index.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+In some cases, such as when the leading column has very low cardinality, the database may use a skip scan of this index (see <a href="#CHDHGIHA">"Index Skip Scan"</a>).</div>
+<p>Multiple indexes can exist for the same table if the permutation of columns differs for each index. You can create multiple indexes using the same columns if you specify distinctly different permutations of the columns. For example, the following SQL statements specify valid permutations:</p>
+<pre dir="ltr">
+CREATE INDEX employee_idx1 ON employees (last_name, job_id);
+CREATE INDEX employee_idx2 ON employees (job_id, last_name);
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink PFGRF94776" href="../../server.112/e41573/data_acc.htm#PFGRF94776"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for more information about using composite indexes</div>
+</div>
+<!-- class="sect3" -->
+<a id="CHDHCICB"></a>
+<div id="CNCPT1157" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Unique and Nonunique Indexes</h4>
+<p><a id="sthref291"></a><a id="sthref292"></a><a id="sthref293"></a><a id="sthref294"></a>Indexes can be <span class="bold">unique</span> or nonunique. Unique indexes guarantee that no two rows of a table have duplicate values in the key column or columns. For example, no two employees can have the same employee ID. Thus, in a unique index, one <a id="sthref295"></a><a href="glossary.htm#CHDEFIHG"><span class="xrefglossterm">rowid</span></a> exists for each data value. The data in the leaf blocks is sorted only by key.</p>
+<p>Nonunique indexes permit duplicates values in the indexed column or columns. For example, the <code dir="ltr">first_name</code> column of the <code dir="ltr">employees</code> table may contain multiple <code dir="ltr">Mike</code> values. For a nonunique index, the rowid is included in the key in sorted order, so nonunique indexes are sorted by the index key and rowid (ascending).</p>
+<p>Oracle Database does not index table rows in which all key columns are <a id="sthref296"></a><a href="glossary.htm#i432506"><span class="xrefglossterm">null</span></a>, except for bitmap indexes or when the cluster key column value is null.</p>
+</div>
+<!-- class="sect3" -->
+<div id="CNCPT88834" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref297"></a>
+<h4 class="sect3">Types of Indexes</h4>
+<p><a id="sthref298"></a>Oracle Database provides several indexing schemes, which provide complementary performance functionality. The indexes can be categorized as follows:</p>
+<ul>
+<li>
+<p>B-tree indexes</p>
+<p>These indexes are the standard index type. They are excellent for primary key and highly-selective indexes. Used as concatenated indexes, B-tree indexes can retrieve data sorted by the indexed columns. B-tree indexes have the following subtypes:</p>
+<ul>
+<li>
+<p>Index-organized tables</p>
+<p>An index-organized table differs from a heap-organized because the data is itself the index. See <a href="#CBBJEBIH">"Overview of Index-Organized Tables"</a>.</p>
+</li>
+<li>
+<p>Reverse key indexes</p>
+<p>In this type of index, the bytes of the index key are reversed, for example, 103 is stored as 301. The reversal of bytes spreads out inserts into the index over many blocks. See <a href="#CBBFDEAJ">"Reverse Key Indexes"</a>.</p>
+</li>
+<li>
+<p>Descending indexes</p>
+<p>This type of index stores data on a particular column or columns in descending order. See <a href="#CBBFFFFG">"Ascending and Descending Indexes"</a>.</p>
+</li>
+<li>
+<p>B-tree cluster indexes</p>
+<p>This type of index is used to index a table cluster key. Instead of pointing to a row, the key points to the block that contains rows related to the cluster key. See <a href="tablecls.htm#CFABHBAG">"Overview of Indexed Clusters"</a>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Bitmap and bitmap join indexes</p>
+<p>In a bitmap index, an index entry uses a bitmap to point to multiple rows. In contrast, a B-tree index entry points to a single row. A bitmap join index is a bitmap index for the join of two or more tables. See <a href="#CBBFJFDD">"Bitmap Indexes"</a>.</p>
+</li>
+<li>
+<p>Function-based indexes</p>
+<p>This type of index includes columns that are either transformed by a function, such as the <code dir="ltr">UPPER</code> function, or included in an expression. B-tree or bitmap indexes can be function-based. See <a href="#CBBGIIFB">"Function-Based Indexes"</a>.</p>
+</li>
+<li>
+<p>Application domain indexes</p>
+<p>This type of index is created by a user for data in an application-specific domain. The physical index need not use a traditional index structure and can be stored either in the Oracle database as tables or externally as a file. See <a href="#CBBFEBGI">"Application Domain Indexes"</a>.</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink PFGRF004" href="../../server.112/e41573/data_acc.htm#PFGRF004"><span class="italic">Oracle Database Performance Tuning Guide</span></a> to learn about different index types</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CBBECABB"></a>
+<div id="CNCPT1170" class="sect2">
+<h3 class="sect2">B-Tree Indexes</h3>
+<p><a id="sthref299"></a><a id="sthref300"></a>B-trees, short for <span class="bold">balanced trees</span>, are the most common type of database index. A B-tree index is an ordered list of values divided into ranges. By associating a key with a row or range of rows, B-trees provide excellent retrieval performance for a wide range of queries, including exact match and range searches.</p>
+<p><a href="#i5765">Figure 3-1</a> illustrates the structure of a B-tree index. The example shows an index on the <code dir="ltr">department_id</code> column, which is a foreign key column in the <code dir="ltr">employees</code> table.</p>
+<div id="CNCPT88835" class="figure">
+<p class="titleinfigure"><a id="i5765"></a>Figure 3-1 Internal Structure of a B-tree Index</p>
+<img width="662" height="474" src="img/cncpt244.gif" alt="Description of Figure 3-1 follows" /><br />
+<a id="sthref301" href="img_text/cncpt244.htm">Description of "Figure 3-1 Internal Structure of a B-tree Index"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<div id="CNCPT88836" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref302"></a>
+<h4 class="sect3">Branch Blocks and Leaf Blocks</h4>
+<p><a id="sthref303"></a><a id="sthref304"></a><a id="sthref305"></a><a id="sthref306"></a>A B-tree index has two types of blocks: <span class="bold">branch blocks</span> for searching and <span class="bold">leaf blocks</span> that store values. The upper-level branch blocks of a B-tree index contain index data that points to lower-level index blocks. In <a href="#i5765">Figure 3-1</a>, the root branch block has an entry <code dir="ltr">0-40</code>, which points to the leftmost block in the next branch level. This branch block contains entries such as <code dir="ltr">0-10</code> and <code dir="ltr">11-19</code>. Each of these entries points to a leaf block that contains key values that fall in the range.</p>
+<p>A B-tree index is balanced because all leaf blocks automatically stay at the same depth. Thus, retrieval of any record from anywhere in the index takes approximately the same amount of time. <a id="sthref307"></a><a id="sthref308"></a>The <span class="bold">height</span> of the index is the number of blocks required to go from the root block to a leaf block. <a id="sthref309"></a>The <span class="bold">branch level</span> is the height minus 1. In <a href="#i5765">Figure 3-1</a>, the index has a height of 3 and a branch level of 2.</p>
+<p>Branch blocks store the minimum key <a id="sthref310"></a>prefix needed to make a branching decision between two keys. This technique enables the database to fit as much data as possible on each branch block. The branch blocks contain a pointer to the child block containing the key. The number of keys and pointers is limited by the block size.</p>
+<p>The leaf blocks contain every indexed data value and a corresponding rowid used to locate the actual row. Each entry is sorted by (key, rowid). Within a leaf block, a key and rowid is linked to its left and right sibling entries. The leaf blocks themselves are also doubly linked. In <a href="#i5765">Figure 3-1</a> the leftmost leaf block (<code dir="ltr">0-10</code>) is linked to the second leaf block (<code dir="ltr">11-19</code>).</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Indexes in columns with character data are based on the binary values of the characters in the database character set.</div>
+</div>
+<!-- class="sect3" -->
+<a id="CHDEGIHF"></a>
+<div id="CNCPT88837" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Index Scans</h4>
+<p><a id="sthref311"></a><a id="sthref312"></a>In an <span class="bold">index scan</span>, the database retrieves a row by traversing the index, using the indexed column values specified by the statement. If the database scans the index for a value, then it will find this value in <span class="italic">n</span> I/Os where <span class="italic">n</span> is the height of the B-tree index. This is the basic principle behind Oracle Database indexes.</p>
+<p>If a SQL statement accesses only indexed columns, then the database reads values directly from the index rather than from the table. If the statement accesses columns in addition to the indexed columns, then the database uses rowids to find the rows in the table. Typically, the database retrieves table data by alternately reading an index block and then a table block.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink PFGRF94611" href="../../server.112/e41573/optimops.htm#PFGRF94611"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for detailed information about index scans</div>
+<div id="CNCPT88838" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref313"></a>
+<h5 class="sect4">Full Index Scan</h5>
+<p><a id="sthref314"></a><a id="sthref315"></a>In a <span class="bold">full index scan</span>, the database reads the entire index in order. A full index scan is available if a <a id="sthref316"></a><a id="sthref317"></a><a href="glossary.htm#CHDGAHDF"><span class="xrefglossterm">predicate</span></a> (<code dir="ltr">WHERE</code> clause) in the SQL statement references a column in the index, and in some circumstances when no predicate is specified. A full scan can eliminate sorting because the data is ordered by index key.</p>
+<p>Suppose that an application runs the following query:</p>
+<pre dir="ltr">
+SELECT department_id, last_name, salary 
+FROM   employees
+WHERE  salary &gt; 5000 
+ORDER BY department_id, last_name;
+</pre>
+<p>Also assume that <code dir="ltr">department_id</code>, <code dir="ltr">last_name</code>, and <code dir="ltr">salary</code> are a composite key in an index. Oracle Database performs a full scan of the index, reading it in sorted order (ordered by department ID and last name) and filtering on the salary attribute. In this way, the database scans a set of data smaller than the <code dir="ltr">employees</code> table, which contains more columns than are included in the query, and avoids sorting the data.</p>
+<p>For example, the full scan could read the index entries as follows:</p>
+<pre dir="ltr">
+<a id="CBBICHJE"></a>
+50,Atkinson,2800,rowid
+60,Austin,4800,rowid
+70,Baer,10000,rowid
+80,Abel,11000,rowid
+80,Ande,6400,rowid
+110,Austin,7200,rowid
+.
+.
+.
+</pre></div>
+<!-- class="sect4" -->
+<div id="CNCPT88839" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref318"></a>
+<h5 class="sect4">Fast Full Index Scan</h5>
+<p>A <span class="bold">fast full index scan</span> <a id="sthref319"></a><a id="sthref320"></a>is a full index scan in which the database accesses the data in the index itself without accessing the table, and the database reads the index blocks in no particular order.</p>
+<p>Fast full index scans are an alternative to <a id="sthref321"></a>a <a href="glossary.htm#CHDCGIFF"><span class="xrefglossterm">full table scan</span></a> when both of the following conditions are met:</p>
+<ul>
+<li>
+<p>The index must contain all columns needed for the query.</p>
+</li>
+<li>
+<p>A row containing all nulls must not appear in the query result set. For this result to be guaranteed, at least one column in the index must have either:</p>
+<ul>
+<li>
+<p>A <code dir="ltr">NOT NULL</code> constraint</p>
+</li>
+<li>
+<p>A predicate applied to it that prevents nulls from being considered in the query result set</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>For example, an application issues the following query, which does not include an <code dir="ltr">ORDER BY</code> clause:</p>
+<pre dir="ltr">
+SELECT last_name, salary
+FROM   employees;
+</pre>
+<p>The <code dir="ltr">last_name</code> column has a not null constraint. If the last name and salary are a composite key in an index, then a fast full index scan can read the index entries to obtain the requested information:</p>
+<pre dir="ltr">
+Baida,2900,rowid
+Zlotkey,10500,rowid
+Austin,7200,rowid
+Baer,10000,rowid
+Atkinson,2800,rowid
+Austin,4800,rowid
+.
+.
+.
+</pre></div>
+<!-- class="sect4" -->
+<a id="BABHDGHB"></a>
+<div id="CNCPT88840" class="sect4"><!-- infolevel="all" infotype="General" -->
+<h5 class="sect4">Index Range Scan</h5>
+<p>An <span class="bold">index range scan</span> <a id="sthref322"></a>is an ordered scan of an index that has the following characteristics:</p>
+<ul>
+<li>
+<p>One or more leading columns of an index are specified in conditions. A <span class="bold">condition</span> specifies a combination of one or more expressions and<a id="sthref323"></a><a id="sthref324"></a> logical (Boolean) <a href="glossary.htm#CHDJCEGF"><span class="xrefglossterm">operators</span></a> and returns a value of <code dir="ltr">TRUE</code>, <code dir="ltr">FALSE</code>, or <code dir="ltr">UNKNOWN</code>.</p>
+</li>
+<li>
+<p>0, 1, or more values are possible for an index key.</p>
+</li>
+</ul>
+<p>The database commonly uses an index range scan to access selective data. <a id="sthref325"></a><a id="sthref326"></a>The <a href="glossary.htm#CHDFBHAH"><span class="xrefglossterm">selectivity</span></a> is the percentage of rows in the table that the query selects, with 0 meaning no rows and 1 meaning all rows. Selectivity is tied to a query <a href="glossary.htm#CHDGAHDF"><span class="xrefglossterm">predicate</span></a>, such as <code dir="ltr">WHERE last_name LIKE 'A%'</code>, or a combination of predicates. A predicate becomes more selective as the value approaches 0 and less selective (or more unselective) as the value approaches 1.</p>
+<p>For example, a user queries employees whose last names begin with <code dir="ltr">A</code>. Assume that the <code dir="ltr">last_name</code> column is indexed, with entries as follows:</p>
+<pre dir="ltr">
+Abel,rowid
+Ande,rowid
+Atkinson,rowid
+Austin,rowid
+Austin,rowid
+Baer,rowid
+.
+.
+.
+</pre>
+<p>The database could use a range scan because the <code dir="ltr">last_name</code> column is specified in the predicate and multiples rowids are possible for each index key. For example, two employees are named Austin, so two rowids are associated with the key <code dir="ltr">Austin</code>.</p>
+<p>An index range scan can be bounded on both sides, as in a query for departments with IDs between 10 and 40, or bounded on only one side, as in a query for IDs over 40. To scan the index, the database moves backward or forward through the leaf blocks. For example, a scan for IDs between 10 and 40 locates the first index leaf block that contains the lowest key value that is 10 or greater. The scan then proceeds horizontally through the linked list of leaf nodes until it locates a value greater than 40.</p>
+</div>
+<!-- class="sect4" -->
+<div id="CNCPT88841" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref327"></a>
+<h5 class="sect4">Index Unique Scan</h5>
+<p>In contrast to an index range scan, <a id="sthref328"></a><a id="sthref329"></a>an <span class="bold">index unique scan</span> must have either 0 or 1 rowid associated with an index key. The database performs a unique scan when a predicate references all of the columns in a <code dir="ltr">UNIQUE</code> index key using an equality operator. An index unique scan stops processing as soon as it finds the first record because no second record is possible.</p>
+<p>As an illustration, suppose that a user runs the following query:</p>
+<pre dir="ltr">
+SELECT *
+FROM   employees
+WHERE  employee_id = 5;
+</pre>
+<p>Assume that the <code dir="ltr">employee_id</code> column is the primary key and is indexed with entries as follows:</p>
+<pre dir="ltr">
+1,rowid
+2,rowid
+4,rowid
+5,rowid
+6,rowid
+.
+.
+.
+</pre>
+<p>In this case, the database can use an index unique scan to locate the rowid for the employee whose ID is 5.</p>
+</div>
+<!-- class="sect4" -->
+<a id="CHDHGIHA"></a>
+<div id="CNCPT88842" class="sect4"><!-- infolevel="all" infotype="General" -->
+<h5 class="sect4">Index Skip Scan</h5>
+<p>An <span class="bold">index skip scan</span> <a id="sthref330"></a><a id="sthref331"></a>uses logical subindexes of a composite index. The database "skips" through a single index as if it were searching separate indexes. Skip scanning is beneficial if there are few distinct values in the leading column of a composite index and many distinct values in the nonleading key of the index.</p>
+<p>The database may choose an index skip scan when the leading column of the composite index is not specified in a query predicate. For example, assume that you run the following query for a customer in the <code dir="ltr">sh.customers</code> table:</p>
+<pre dir="ltr">
+SELECT * FROM sh.customers WHERE cust_email = 'Abbey@company.com';
+</pre>
+<p>The <code dir="ltr">customers</code> table has a column <code dir="ltr">cust_gender</code> whose values are either <code dir="ltr">M</code> or <code dir="ltr">F</code>. Assume that a composite index exists on the columns (<code dir="ltr">cust_gender</code>, <code dir="ltr">cust_email</code>). <a href="#CBBIFEAH">Example 3-1</a> shows a portion of the index entries.</p>
+<div id="CNCPT88843" class="example">
+<p class="titleinexample"><a id="CBBIFEAH"></a>Example 3-1 Composite Index Entries</p>
+<pre dir="ltr">
+F,Wolf@company.com,rowid
+F,Wolsey@company.com,rowid
+F,Wood@company.com,rowid
+F,Woodman@company.com,rowid
+F,Yang@company.com,rowid
+F,Zimmerman@company.com,rowid
+M,Abbassi@company.com,rowid
+M,Abbey@company.com,rowid
+</pre></div>
+<!-- class="example" -->
+<p>The database can use a skip scan of this index even though <code dir="ltr">cust_gender</code> is not specified in the <code dir="ltr">WHERE</code> clause.</p>
+<p>In a skip scan, the number of logical subindexes is determined by the number of distinct values in the leading column. In <a href="#CBBIFEAH">Example 3-1</a>, the leading column has two possible values. The database logically splits the index into one subindex with the key <code dir="ltr">F</code> and a second subindex with the key <code dir="ltr">M</code>.</p>
+<p>When searching for the record for the customer whose email is <code dir="ltr">Abbey@company.com</code>, the database searches the subindex with the value <code dir="ltr">F</code> first and then searches the subindex with the value <code dir="ltr">M</code>. Conceptually, the database processes the query as follows:</p>
+<pre dir="ltr">
+SELECT * FROM sh.customers WHERE cust_gender = 'F' 
+  AND cust_email = 'Abbey@company.com'
+UNION ALL
+SELECT * FROM sh.customers WHERE cust_gender = 'M'
+  AND cust_email = 'Abbey@company.com';
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink PFGRF10105" href="../../server.112/e41573/optimops.htm#PFGRF10105"><span class="italic">Oracle Database Performance Tuning Guide</span></a> to learn more about skip scans</div>
+</div>
+<!-- class="sect4" -->
+<div id="CNCPT89180" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref332"></a>
+<h5 class="sect4">Index Clustering Factor</h5>
+<p>The <span class="bold"><a href="glossary.htm#BGBJGGJI"><span class="xrefglossterm">index clustering factor</span></a></span> measures row order in relation to an indexed value such as employee last name. The more order that exists in row storage for this value, the lower the clustering factor.</p>
+<p>The clustering factor is useful as a rough measure of the number of I/Os required to read an entire table by means of an index:</p>
+<ul>
+<li>
+<p>If the clustering factor is high, then Oracle Database performs a relatively high number of I/Os during a large index range scan. The index entries point to random table blocks, so the database may have to read and reread the same blocks over and over again to retrieve the data pointed to by the index.</p>
+</li>
+<li>
+<p>If the clustering factor is low, then Oracle Database performs a relatively low number of I/Os during a large index range scan. The index keys in a range tend to point to the same data block, so the database does not have to read and reread the same blocks over and over.</p>
+</li>
+</ul>
+<p>The clustering factor is relevant for index scans because it can show:</p>
+<ul>
+<li>
+<p>Whether the database will use an index for large range scans</p>
+</li>
+<li>
+<p>The degree of table organization in relation to the index key</p>
+</li>
+<li>
+<p>Whether you should consider using an index-organized table, partitioning, or table cluster if rows must be ordered by the index key</p>
+</li>
+</ul>
+<p>For example, assume that the <code dir="ltr">employees</code> table fits into two data blocks. <a href="#CHDEIDBA">Table 3-1</a> depicts the rows in the two data blocks (the ellipses indicate data that is not shown).</p>
+<div id="CNCPT89181" class="tblruleformal">
+<p class="titleintable"><a id="sthref333"></a><a id="CHDEIDBA"></a>Table 3-1 Contents of Two Data Blocks in the Employees Table</p>
+<table class="cellalignment1460" title="Contents of Two Data Blocks in the Employees Table" summary="Compares the contents of two data blocks" dir="ltr">
+<thead>
+<tr class="cellalignment1449">
+<th class="cellalignment1459" id="r1c1-t13">Data Block 1</th>
+<th class="cellalignment1459" id="r1c2-t13">Data Block 2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1449">
+<td class="cellalignment1455" id="r2c1-t13" headers="r1c1-t13">
+<pre dir="ltr">
+100   Steven    <span class="bold">King</span>       SKING    ...  
+156   Janette   <span class="bold">King</span>       JKING    ...
+115   Alexander <span class="bold">Khoo</span>       AKHOO    ...
+.
+.
+.
+116   Shelli    <span class="bold">Baida</span>      SBAIDA   ...
+204   Hermann   <span class="bold">Baer</span>       HBAER    ...
+105   David     <span class="bold">Austin</span>     DAUSTIN  ...
+130   Mozhe     <span class="bold">Atkinson</span>   MATKINSO ...
+166   Sundar    <span class="bold">Ande</span>       SANDE    ...
+174   Ellen     <span class="bold">Abel</span>       EABEL    ...
+</pre></td>
+<td class="cellalignment1455" headers="r2c1-t13 r1c2-t13">
+<pre dir="ltr">
+ 
+
+
+149   Eleni     <span class="bold">Zlotkey</span>    EZLOTKEY  ...
+200   Jennifer  <span class="bold">Whalen</span>     JWHALEN   ...
+.
+.
+.
+137   Renske    <span class="bold">Ladwig</span>     RLADWIG  ...
+173   Sundita   <span class="bold">Kumar</span>      SKUMAR   ...
+101   Neena     <span class="bold">Kochar</span>     NKOCHHAR ...
+</pre></td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformal" -->
+<p>Rows are stored in the blocks in order of last name (shown in bold). For example, the bottom row in data block 1 describes Abel, the next row up describes Ande, and so on alphabetically until the top row in block 1 for Steven King. The bottom row in block 2 describes Kochar, the next row up describes Kumar, and so on alphabetically until the last row in the block for Zlotkey.</p>
+<p>Assume that an index exists on the last name column. Each name entry corresponds to a rowid. Conceptually, the index entries would look as follows:</p>
+<pre dir="ltr">
+Abel,block1row1
+Ande,block1row2
+Atkinson,block1row3
+Austin,block1row4
+Baer,block1row5
+.
+.
+.
+</pre>
+<p>Assume that a separate index exists on the employee ID column. Conceptually, the index entries might look as follows, with employee IDs distributed in almost random locations throughout the two blocks:</p>
+<pre dir="ltr">
+100,block1row50
+101,block2row1
+102,block1row9
+103,block2row19
+104,block2row39
+105,block1row4
+.
+.
+.
+</pre>
+<p><a href="#CHDGAIIF">Example 3-2</a> queries the <code dir="ltr">ALL_INDEXES</code> view for the clustering factor for these two indexes. The clustering factor for <code dir="ltr">EMP_NAME_IX</code> is low, which means that adjacent index entries in a single leaf block tend to point to rows in the same data blocks. The clustering factor for <code dir="ltr">EMP_EMP_ID_PK</code> is high, which means that adjacent index entries in the same leaf block are much less likely to point to rows in the same data blocks.</p>
+<div id="CNCPT89182" class="example">
+<p class="titleinexample"><a id="CHDGAIIF"></a>Example 3-2 Clustering Factor</p>
+<pre dir="ltr">
+SQL&gt; SELECT INDEX_NAME, CLUSTERING_FACTOR 
+  2  FROM ALL_INDEXES 
+  3  WHERE INDEX_NAME IN ('EMP_NAME_IX','EMP_EMP_ID_PK');
+ 
+INDEX_NAME           CLUSTERING_FACTOR
+-------------------- -----------------
+EMP_EMP_ID_PK                       19
+EMP_NAME_IX                          2
+</pre></div>
+<!-- class="example" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink REFRN20088" href="../../server.112/e40402/statviews_1109.htm#REFRN20088"><span class="italic">Oracle Database Reference</span></a> to learn about <code dir="ltr">ALL_INDEXES</code></div>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<a id="CBBFDEAJ"></a>
+<div id="CNCPT1181" class="sect3">
+<h4 class="sect3">Reverse Key Indexes</h4>
+<p>A <span class="bold">reverse key index</span> is a type of <a id="sthref334"></a><a id="sthref335"></a><a id="sthref336"></a>B-tree <a id="sthref337"></a>index that physically reverses the bytes of each index key while keeping the column order. For example, if the index key is <code dir="ltr">20</code>, and if the two bytes stored for this key in hexadecimal are <code dir="ltr">C1,15</code> in a standard B-tree index, then a reverse key index stores the bytes as <code dir="ltr">15,C1</code>.</p>
+<p>Reversing the key solves the problem of contention for leaf blocks in the right side of a B-tree index. This problem can be especially acute in an <a id="sthref338"></a>Oracle Real Application Clusters (Oracle RAC) database in which multiple instances repeatedly modify the same block. For example, in an <code dir="ltr">orders</code> table the primary keys for orders are sequential. One instance in the cluster adds order 20, while another adds 21, with each instance writing its key to the same leaf block on the right-hand side of the index.</p>
+<p>In a reverse key index, the reversal of the byte order distributes inserts across all leaf keys in the index. For example, keys such as 20 and 21 that would have been adjacent in a standard key index are now stored far apart in separate blocks. Thus, I/O for insertions of sequential keys is more evenly distributed.</p>
+<p>Because the data in the index is not sorted by column key when it is stored, the reverse key arrangement eliminates the ability to run an index range scanning query in some cases. For example, if a user issues a query for order IDs greater than 20, then the database cannot start with the block containing this ID and proceed horizontally through the leaf blocks.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink PFGRF94117" href="../../server.112/e41573/design.htm#PFGRF94117"><span class="italic">Oracle Database Performance Tuning Guide</span></a> to learn about design considerations for reverse key indexes</div>
+</div>
+<!-- class="sect3" -->
+<a id="CBBFFFFG"></a>
+<div id="CNCPT88844" class="sect3">
+<h4 class="sect3">Ascending and Descending Indexes</h4>
+<p><a id="sthref339"></a><a id="sthref340"></a><a id="sthref341"></a><a id="sthref342"></a>In an <span class="bold">ascending index</span>, Oracle Database stores data in ascending order. By default, character data is ordered by the binary values contained in each byte of the value, numeric data from smallest to largest number, and date from earliest to latest value.</p>
+<p><a id="sthref343"></a>For an example of an ascending index, consider the following SQL statement:</p>
+<pre dir="ltr">
+CREATE INDEX emp_deptid_ix ON hr.employees(department_id); 
+</pre>
+<p>Oracle Database sorts the <code dir="ltr">hr.employees</code> table on the <code dir="ltr">department_id</code> column. It loads the ascending index with the <code dir="ltr">department_id</code> and corresponding rowid values in ascending order, starting with <code dir="ltr">0</code>. When it uses the index, Oracle Database searches the sorted <code dir="ltr">department_id</code> values and uses the associated rowids to locate rows having the requested <code dir="ltr">department_id</code> value.</p>
+<p>By specifying the <code dir="ltr">DESC</code> keyword in the <code dir="ltr">CREATE INDEX</code> statement, you can create a <span class="bold">descending index</span>. In this case, the index stores data on a specified column or columns in descending order. If the index in <a href="#i5765">Figure 3-1</a> on the <code dir="ltr">employees.department_id</code> column were descending, then the leaf blocking containing <code dir="ltr">250</code> would be on the left side of the tree and block with <code dir="ltr">0</code> on the right. The default search through a descending index is from highest to lowest value.</p>
+<p><a id="sthref344"></a>Descending indexes are useful when a query sorts some columns ascending and others descending. For an example, assume that you create a composite index on the <code dir="ltr">last_name</code> and <code dir="ltr">department_id</code> columns as follows:</p>
+<pre dir="ltr">
+CREATE INDEX emp_name_dpt_ix ON hr.employees(last_name ASC, department_id DESC); 
+</pre>
+<p>If a user queries <code dir="ltr">hr.employees</code> for last names in ascending order (A to Z) and department IDs in descending order (high to low), then the database can use this index to retrieve the data and avoid the extra step of sorting it.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink PFGRF94617" href="../../server.112/e41573/optimops.htm#PFGRF94617"><span class="italic">Oracle Database Performance Tuning Guide</span></a> to learn more about ascending and descending index searches</p>
+</li>
+<li>
+<p><a class="olink SQLRF53994" href="../../server.112/e41084/statements_5012.htm#SQLRF53994"><span class="italic">Oracle Database SQL Language Reference</span></a> for descriptions of the <code dir="ltr">ASC</code> and <code dir="ltr">DESC</code> options of <code dir="ltr">CREATE INDEX</code></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect3" -->
+<div id="CNCPT1177" class="sect3"><a id="sthref345"></a>
+<h4 class="sect3">Key Compression</h4>
+<p>Oracle Database can <a id="sthref346"></a><a id="sthref347"></a><a id="sthref348"></a><a id="sthref349"></a>use <a href="glossary.htm#CHDHGEIH"><span class="xrefglossterm">key compression</span></a> to compress portions of the primary key column values in a <a id="sthref350"></a>B-tree index or an index-organized table. Key compression can greatly reduce the space consumed by the index.</p>
+<p>In general, index keys have two pieces, a <span class="bold">grouping piece</span> and a <span class="bold">unique piece</span>. Key compression breaks the index key into <a id="sthref351"></a>a <span class="bold">prefix</span> <span class="bold">entry</span>, which is the grouping piece, and a <span class="bold">suffix</span> <span class="bold">entry</span>, which is the unique or nearly unique piece. The database achieves compression by sharing the prefix entries among the suffix entries in an index block.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If a key is not defined to have a unique piece, then the database provides one by appending a rowid to the grouping piece.</div>
+<p>By default, the prefix of a unique index consists of all key columns excluding the last one, whereas the prefix of a nonunique index consists of all key columns. For example, suppose that you create a composite index on the <code dir="ltr">oe.orders</code> table as follows:</p>
+<pre dir="ltr">
+CREATE INDEX orders_mod_stat_ix ON orders ( order_mode, order_status );
+</pre>
+<p>Many repeated values occur in the <code dir="ltr">order_mode</code> and <code dir="ltr">order_status</code> columns. An index block may have entries as shown in <a href="#CBBEJIJB">Example 3-3</a>.</p>
+<div id="CNCPT88845" class="example">
+<p class="titleinexample"><a id="CBBEJIJB"></a>Example 3-3 Index Entries in Orders Table</p>
+<pre dir="ltr">
+online,0,AAAPvCAAFAAAAFaAAa
+online,0,AAAPvCAAFAAAAFaAAg
+online,0,AAAPvCAAFAAAAFaAAl
+online,2,AAAPvCAAFAAAAFaAAm
+online,3,AAAPvCAAFAAAAFaAAq
+online,3,AAAPvCAAFAAAAFaAAt
+</pre></div>
+<!-- class="example" -->
+<p>In <a href="#CBBEJIJB">Example 3-3</a>, the key prefix would consist of a <a id="sthref352"></a>concatenation of the <code dir="ltr">order_mode</code> and <code dir="ltr">order_status</code> values. If this index were created with default key compression, then duplicate key prefixes such as <code dir="ltr">online</code>,<code dir="ltr">0</code> and <code dir="ltr">online</code>,<code dir="ltr">2</code> would be compressed. Conceptually, the database achieves compression as shown in the following example:</p>
+<pre dir="ltr">
+<a id="CBBHADFH"></a>
+online,0
+AAAPvCAAFAAAAFaAAa
+AAAPvCAAFAAAAFaAAg
+AAAPvCAAFAAAAFaAAl
+online,2
+AAAPvCAAFAAAAFaAAm
+online,3
+AAAPvCAAFAAAAFaAAq
+AAAPvCAAFAAAAFaAAt
+</pre>
+<p>Suffix entries form the compressed version of index rows. Each suffix entry references a prefix entry, which is stored in the same index block as the suffix entry.</p>
+<p>Alternatively, you could specify a prefix length when creating a compressed <a id="sthref353"></a>index. For example, if you specified prefix length <code dir="ltr">1</code>, then the prefix would be <code dir="ltr">order_mode</code> and the suffix would be <code dir="ltr">order_status,rowid</code>. For the values in <a href="#CBBEJIJB">Example 3-3</a>, the index would factor out duplicate occurrences of <code dir="ltr">online</code> as follows:</p>
+<pre dir="ltr">
+online
+0,AAAPvCAAFAAAAFaAAa
+0,AAAPvCAAFAAAAFaAAg
+0,AAAPvCAAFAAAAFaAAl
+2,AAAPvCAAFAAAAFaAAm
+3,AAAPvCAAFAAAAFaAAq
+3,AAAPvCAAFAAAAFaAAt
+</pre>
+<p>The index stores a specific prefix once per leaf block at most. Only keys in the leaf blocks of a B-tree index are compressed. In the branch blocks the key suffix can be truncated, but the key is not compressed.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ADMIN11692" href="../../server.112/e25494/tables.htm#ADMIN11692"><span class="italic">Oracle Database Administrator's Guide</span></a> to learn how to use compressed indexes</p>
+</li>
+<li>
+<p><a class="olink VLDBG1111" href="../../server.112/e25523/part_admin001.htm#VLDBG1111"><span class="italic">Oracle Database VLDB and Partitioning Guide</span></a> to learn how to use key compression for partitioned indexes</p>
+</li>
+<li>
+<p><a class="olink SQLRF53999" href="../../server.112/e41084/statements_5012.htm#SQLRF53999"><span class="italic">Oracle Database SQL Language Reference</span></a> for descriptions of the <code dir="ltr"><span class="codeinlineitalic">key_compression</span></code> clause of <code dir="ltr">CREATE INDEX</code></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CBBFJFDD"></a>
+<div id="CNCPT1182" class="sect2">
+<h3 class="sect2">Bitmap Indexes</h3>
+<p><a id="sthref354"></a><a id="sthref355"></a>In a <span class="bold">bitmap index</span>, the database stores a bitmap for each index key. In a conventional B-tree index, one index entry points to a single row. In a bitmap index, each index key stores pointers to multiple rows.</p>
+<p>Bitmap indexes are primarily designed for <a id="sthref356"></a>data warehousing or environments in which queries reference many columns in an ad hoc fashion.<a id="sthref357"></a><a id="sthref358"></a><a id="sthref359"></a> Situations that may call for a bitmap index include:</p>
+<ul>
+<li>
+<p>The indexed columns have <a id="sthref360"></a><a id="sthref361"></a>low <span class="bold">cardinality</span>, that is, the number of distinct values is small compared to the number of table rows.</p>
+</li>
+<li>
+<p>The indexed table is either read-only or not subject to significant modification by DML statements.</p>
+</li>
+</ul>
+<p>For a data warehouse example, the <code dir="ltr">sh.customers</code> table has a <code dir="ltr">cust_gender</code> column with only two possible values: <code dir="ltr">M</code> and <code dir="ltr">F</code>. Suppose that queries for the number of customers of a particular gender are common. In this case, the <code dir="ltr">customers.cust_gender</code> column would be a candidate for a bitmap index.</p>
+<p>Each bit in the bitmap corresponds to a possible rowid. If the bit is set, then the row with the corresponding rowid contains the key value. A mapping function converts the bit position to an actual rowid, so the bitmap index provides the same functionality as a B-tree index although it uses a different internal representation.</p>
+<p>If the indexed column in a single row is updated, then the database <a id="sthref362"></a><a id="sthref363"></a><a href="glossary.htm#CHDHEBFJ"><span class="xrefglossterm">locks</span></a> the index key entry (for example, <code dir="ltr">M</code> or <code dir="ltr">F</code>) and not the individual bit mapped to the updated row. Because a key points to many rows, <a id="sthref364"></a>DML on indexed data typically locks all of these rows. For this reason, bitmap indexes are not appropriate for many <a href="glossary.htm#CHDBBEFA"><span class="xrefglossterm">OLTP</span></a> applications.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink PFGRF94788" href="../../server.112/e41573/data_acc.htm#PFGRF94788"><span class="italic">Oracle Database Performance Tuning Guide</span></a> to learn how to use bitmap indexes for performance</p>
+</li>
+<li>
+<p><a class="olink DWHSG8130" href="../../server.112/e25554/indexes.htm#DWHSG8130"><span class="italic">Oracle Database Data Warehousing Guide</span></a> to learn how to use bitmap indexes in a data warehouse</p>
+</li>
+</ul>
+</div>
+<div id="CNCPT88846" class="sect3"><a id="sthref365"></a>
+<h4 class="sect3">Bitmap Indexes on a Single Table</h4>
+<p><a id="sthref366"></a><a href="#CBBEGBJF">Example 3-4</a> shows a query of the <code dir="ltr">sh.customers</code> table. Some columns in this table are candidates for a bitmap index.</p>
+<div id="CNCPT88847" class="example">
+<p class="titleinexample"><a id="CBBEGBJF"></a>Example 3-4 Query of customers Table</p>
+<pre dir="ltr">
+SQL&gt; SELECT cust_id, cust_last_name, cust_marital_status, cust_gender
+  2  FROM   sh.customers 
+  3  WHERE  ROWNUM &lt; 8 ORDER BY cust_id;
+ 
+   CUST_ID CUST_LAST_ CUST_MAR C
+---------- ---------- -------- -
+         1 Kessel              M
+         2 Koch                F
+         3 Emmerson            M
+         4 Hardy               M
+         5 Gowen               M
+         6 Charles    single   F
+         7 Ingram     single   F
+ 
+7 rows selected.
+</pre></div>
+<!-- class="example" -->
+<p>The <code dir="ltr">cust_marital_status</code> and <code dir="ltr">cust_gender</code> columns have low cardinality, whereas <code dir="ltr">cust_id</code> and <code dir="ltr">cust_last_name</code> do not. Thus, bitmap indexes may be appropriate on <code dir="ltr">cust_marital_status</code> and <code dir="ltr">cust_gender</code>. A bitmap index is probably not useful for the other columns. Instead, a unique B-tree index on these columns would likely provide the most efficient representation and retrieval.</p>
+<p><a href="#CBBGCGFC">Table 3-2</a> illustrates the bitmap index for the <code dir="ltr">cust_gender</code> column output shown in <a href="#CBBEGBJF">Example 3-4</a>. It consists of two separate bitmaps, one for each gender.</p>
+<div id="CNCPT88848" class="tblruleformal">
+<p class="titleintable"><a id="sthref367"></a><a id="CBBGCGFC"></a>Table 3-2 Sample Bitmap</p>
+<table class="cellalignment1460" title="Sample Bitmap" summary="Sample bitmap for bitmap index" dir="ltr">
+<thead>
+<tr class="cellalignment1449">
+<th class="cellalignment1459" id="r1c1-t20">Value</th>
+<th class="cellalignment1459" id="r1c2-t20">Row 1</th>
+<th class="cellalignment1459" id="r1c3-t20">Row 2</th>
+<th class="cellalignment1459" id="r1c4-t20">Row 3</th>
+<th class="cellalignment1459" id="r1c5-t20">Row 4</th>
+<th class="cellalignment1459" id="r1c6-t20">Row 5</th>
+<th class="cellalignment1459" id="r1c7-t20">Row 6</th>
+<th class="cellalignment1459" id="r1c8-t20">Row 7</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1449">
+<td class="cellalignment1455" id="r2c1-t20" headers="r1c1-t20">
+<p><code dir="ltr">M</code></p>
+</td>
+<td class="cellalignment1455" headers="r2c1-t20 r1c2-t20">
+<p>1</p>
+</td>
+<td class="cellalignment1455" headers="r2c1-t20 r1c3-t20">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r2c1-t20 r1c4-t20">
+<p>1</p>
+</td>
+<td class="cellalignment1455" headers="r2c1-t20 r1c5-t20">
+<p>1</p>
+</td>
+<td class="cellalignment1455" headers="r2c1-t20 r1c6-t20">
+<p>1</p>
+</td>
+<td class="cellalignment1455" headers="r2c1-t20 r1c7-t20">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r2c1-t20 r1c8-t20">
+<p>0</p>
+</td>
+</tr>
+<tr class="cellalignment1449">
+<td class="cellalignment1455" id="r3c1-t20" headers="r1c1-t20">
+<p><code dir="ltr">F</code></p>
+</td>
+<td class="cellalignment1455" headers="r3c1-t20 r1c2-t20">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r3c1-t20 r1c3-t20">
+<p>1</p>
+</td>
+<td class="cellalignment1455" headers="r3c1-t20 r1c4-t20">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r3c1-t20 r1c5-t20">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r3c1-t20 r1c6-t20">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r3c1-t20 r1c7-t20">
+<p>1</p>
+</td>
+<td class="cellalignment1455" headers="r3c1-t20 r1c8-t20">
+<p>1</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformal" -->
+<p>A mapping function converts each bit in the bitmap to a rowid of the <code dir="ltr">customers</code> table. Each bit value depends on the values of the corresponding row in the table. For example, the bitmap for the <code dir="ltr">M</code> value contains a <code dir="ltr">1</code> as its first bit because the gender is <code dir="ltr">M</code> in the first row of the <code dir="ltr">customers</code> table. The bitmap <code dir="ltr">cust_gender='M'</code> has a <code dir="ltr">0</code> for its the bits in rows 2, 6, and 7 because these rows do not contain <code dir="ltr">M</code> as their value.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Bitmap indexes can include keys that consist entirely of null values, unlike B-tree indexes. Indexing nulls can be useful for some SQL statements, such as queries with the aggregate function <code dir="ltr">COUNT</code>.</div>
+<p>An analyst investigating demographic trends of the customers may ask, "How many of our female customers are single or divorced?" This question corresponds to the following SQL query:</p>
+<pre dir="ltr">
+SELECT COUNT(*) 
+FROM   customers  
+WHERE  cust_gender = 'F' 
+AND    cust_marital_status IN ('single', 'divorced'); 
+</pre>
+<p>Bitmap indexes can process this query efficiently by counting the number of <code dir="ltr">1</code> values in the resulting bitmap, as illustrated in <a href="#CBBGEJDG">Table 3-3</a>. To identify the customers who satisfy the criteria, Oracle Database can use the resulting bitmap to access the table.</p>
+<div id="CNCPT88849" class="tblruleformal">
+<p class="titleintable"><a id="sthref368"></a><a id="CBBGEJDG"></a>Table 3-3 Sample Bitmap</p>
+<table class="cellalignment1460" title="Sample Bitmap" summary="Sample bitmap for bitmap index" dir="ltr">
+<thead>
+<tr class="cellalignment1449">
+<th class="cellalignment1459" id="r1c1-t22">Value</th>
+<th class="cellalignment1459" id="r1c2-t22">Row 1</th>
+<th class="cellalignment1459" id="r1c3-t22">Row 2</th>
+<th class="cellalignment1459" id="r1c4-t22">Row 3</th>
+<th class="cellalignment1459" id="r1c5-t22">Row 4</th>
+<th class="cellalignment1459" id="r1c6-t22">Row 5</th>
+<th class="cellalignment1459" id="r1c7-t22">Row 6</th>
+<th class="cellalignment1459" id="r1c8-t22">Row 7</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1449">
+<td class="cellalignment1455" id="r2c1-t22" headers="r1c1-t22">
+<p><code dir="ltr">M</code></p>
+</td>
+<td class="cellalignment1455" headers="r2c1-t22 r1c2-t22">
+<p>1</p>
+</td>
+<td class="cellalignment1455" headers="r2c1-t22 r1c3-t22">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r2c1-t22 r1c4-t22">
+<p>1</p>
+</td>
+<td class="cellalignment1455" headers="r2c1-t22 r1c5-t22">
+<p>1</p>
+</td>
+<td class="cellalignment1455" headers="r2c1-t22 r1c6-t22">
+<p>1</p>
+</td>
+<td class="cellalignment1455" headers="r2c1-t22 r1c7-t22">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r2c1-t22 r1c8-t22">
+<p>0</p>
+</td>
+</tr>
+<tr class="cellalignment1449">
+<td class="cellalignment1455" id="r3c1-t22" headers="r1c1-t22">
+<p><code dir="ltr">F</code></p>
+</td>
+<td class="cellalignment1455" headers="r3c1-t22 r1c2-t22">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r3c1-t22 r1c3-t22">
+<p>1</p>
+</td>
+<td class="cellalignment1455" headers="r3c1-t22 r1c4-t22">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r3c1-t22 r1c5-t22">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r3c1-t22 r1c6-t22">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r3c1-t22 r1c7-t22">
+<p>1</p>
+</td>
+<td class="cellalignment1455" headers="r3c1-t22 r1c8-t22">
+<p>1</p>
+</td>
+</tr>
+<tr class="cellalignment1449">
+<td class="cellalignment1455" id="r4c1-t22" headers="r1c1-t22">
+<p><code dir="ltr">single</code></p>
+</td>
+<td class="cellalignment1455" headers="r4c1-t22 r1c2-t22">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r4c1-t22 r1c3-t22">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r4c1-t22 r1c4-t22">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r4c1-t22 r1c5-t22">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r4c1-t22 r1c6-t22">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r4c1-t22 r1c7-t22">
+<p>1</p>
+</td>
+<td class="cellalignment1455" headers="r4c1-t22 r1c8-t22">
+<p>1</p>
+</td>
+</tr>
+<tr class="cellalignment1449">
+<td class="cellalignment1455" id="r5c1-t22" headers="r1c1-t22">
+<p><code dir="ltr">divorced</code></p>
+</td>
+<td class="cellalignment1455" headers="r5c1-t22 r1c2-t22">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r5c1-t22 r1c3-t22">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r5c1-t22 r1c4-t22">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r5c1-t22 r1c5-t22">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r5c1-t22 r1c6-t22">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r5c1-t22 r1c7-t22">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r5c1-t22 r1c8-t22">
+<p>0</p>
+</td>
+</tr>
+<tr class="cellalignment1449">
+<td class="cellalignment1455" id="r6c1-t22" headers="r1c1-t22">
+<p><code dir="ltr">single</code> or <code dir="ltr">divorced</code>, and <code dir="ltr">F</code></p>
+</td>
+<td class="cellalignment1455" headers="r6c1-t22 r1c2-t22">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r6c1-t22 r1c3-t22">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r6c1-t22 r1c4-t22">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r6c1-t22 r1c5-t22">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r6c1-t22 r1c6-t22">
+<p>0</p>
+</td>
+<td class="cellalignment1455" headers="r6c1-t22 r1c7-t22">
+<p>1</p>
+</td>
+<td class="cellalignment1455" headers="r6c1-t22 r1c8-t22">
+<p>1</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformal" -->
+<p>Bitmap indexing efficiently merges indexes that correspond to several conditions in a <code dir="ltr">WHERE</code> clause. Rows that satisfy some, but not all, conditions are filtered out before the table itself is accessed. This technique improves response time, often dramatically.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BABEDJAB"></a>
+<div id="CNCPT1188" class="sect3">
+<h4 class="sect3">Bitmap Join Indexes</h4>
+<p><a id="sthref369"></a><a id="sthref370"></a>A <span class="bold">bitmap join index</span> is a bitmap index for <a id="sthref371"></a><a id="sthref372"></a>the <a href="glossary.htm#CHDGBDJE"><span class="xrefglossterm">join</span></a> of two or more tables. For each value in a table column, the index stores the rowid of the corresponding row in the indexed table. In contrast, a standard bitmap index is created on a single table.</p>
+<p>A bitmap join index is an efficient means of reducing the volume of data that must be joined by performing restrictions in advance. For an example of when a bitmap join index would be useful, assume that users often query the number of employees with a particular job type. A typical query might look as follows:</p>
+<pre dir="ltr">
+SELECT COUNT(*) 
+FROM   employees, jobs 
+WHERE  employees.job_id = jobs.job_id 
+AND    jobs.job_title = 'Accountant';
+</pre>
+<p>The preceding query would typically use an index on <code dir="ltr">jobs.job_title</code> to retrieve the rows for <code dir="ltr">Accountant</code> and then the job ID, and an index on <code dir="ltr">employees.job_id</code> to find the matching rows. To retrieve the data from the index itself rather than from a scan of the tables, you could create a bitmap join index as follows:</p>
+<pre dir="ltr">
+CREATE BITMAP INDEX employees_bm_idx 
+ON     employees (jobs.job_title) 
+FROM   employees, jobs
+WHERE  employees.job_id = jobs.job_id;
+</pre>
+<p>As illustrated in <a href="#CBBDIJFJ">Figure 3-2</a>, the index key is <code dir="ltr">jobs.job_title</code> and the indexed table is <code dir="ltr">employees</code>.</p>
+<div id="CNCPT88850" class="figure">
+<p class="titleinfigure"><a id="CBBDIJFJ"></a>Figure 3-2 Bitmap Join Index</p>
+<img width="600" height="432" src="img/cncpt239.gif" alt="Description of Figure 3-2 follows" /><br />
+<a id="sthref373" href="img_text/cncpt239.htm">Description of "Figure 3-2 Bitmap Join Index"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>Conceptually, <code dir="ltr">employees_bm_idx</code> is an index of the <code dir="ltr">jobs.title</code> column in the SQL query shown in <a href="#CHDDCAAA">Example 3-5</a> (sample output included). The <code dir="ltr">job_title</code> key in the index points to rows in the <code dir="ltr">employees</code> table. A query of the number of accountants can use the index to avoid accessing the <code dir="ltr">employees</code> and <code dir="ltr">jobs</code> tables because the index itself contains the requested information.</p>
+<div id="CNCPT89157" class="example">
+<p class="titleinexample"><a id="CHDDCAAA"></a>Example 3-5 Join of employees and jobs Tables</p>
+<pre dir="ltr">
+SELECT jobs.job_title AS "jobs.job_title", employees.rowid AS "employees.rowid"
+FROM   employees, jobs
+WHERE  employees.job_id = jobs.job_id
+ORDER BY job_title;
+ 
+jobs.job_title                      employees.rowid
+----------------------------------- ------------------
+Accountant                          AAAQNKAAFAAAABSAAL
+Accountant                          AAAQNKAAFAAAABSAAN
+Accountant                          AAAQNKAAFAAAABSAAM
+Accountant                          AAAQNKAAFAAAABSAAJ
+Accountant                          AAAQNKAAFAAAABSAAK
+Accounting Manager                  AAAQNKAAFAAAABTAAH
+Administration Assistant            AAAQNKAAFAAAABTAAC
+Administration Vice President       AAAQNKAAFAAAABSAAC
+Administration Vice President       AAAQNKAAFAAAABSAAB
+.
+.
+.
+</pre></div>
+<!-- class="example" -->
+<p>In a data warehouse, <a id="sthref374"></a>the <a href="glossary.htm#CHDFHCEC"><span class="xrefglossterm">join condition</span></a> is <a id="sthref375"></a>an <span class="bold">equijoin</span> (it uses the equality operator) between the primary key columns of the dimension tables and the foreign key columns in the fact table. Bitmap join indexes are sometimes much more efficient in storage than materialized join views, an alternative for materializing joins in advance.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink DWHSG8140" href="../../server.112/e25554/indexes.htm#DWHSG8140"><span class="italic">Oracle Database Data Warehousing Guide</span></a> for more information on bitmap join indexes</div>
+</div>
+<!-- class="sect3" -->
+<div id="CNCPT88851" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref376"></a>
+<h4 class="sect3">Bitmap Storage Structure</h4>
+<p><a id="sthref377"></a>Oracle Database uses a B-tree index structure to store bitmaps for each indexed key. For example, if <code dir="ltr">jobs.job_title</code> is the key column of a bitmap index, then the index data is stored in one B-tree. The individual bitmaps are stored in the leaf blocks.</p>
+<p>Assume that the <code dir="ltr">jobs.job_title</code> column has unique values <code dir="ltr">Shipping Clerk</code>, <code dir="ltr">Stock Clerk</code>, and several others. A bitmap index entry for this index has the following components:</p>
+<ul>
+<li>
+<p>The job title as the index key</p>
+</li>
+<li>
+<p>A low rowid and high rowid for a range of rowids</p>
+</li>
+<li>
+<p>A bitmap for specific rowids in the range</p>
+</li>
+</ul>
+<p>Conceptually, an index leaf block in this index could contain entries as follows:</p>
+<pre dir="ltr">
+Shipping Clerk,AAAPzRAAFAAAABSABQ,AAAPzRAAFAAAABSABZ,0010000100
+Shipping Clerk,AAAPzRAAFAAAABSABa,AAAPzRAAFAAAABSABh,010010
+Stock Clerk,AAAPzRAAFAAAABSAAa,AAAPzRAAFAAAABSAAc,1001001100
+Stock Clerk,AAAPzRAAFAAAABSAAd,AAAPzRAAFAAAABSAAt,0101001001
+Stock Clerk,AAAPzRAAFAAAABSAAu,AAAPzRAAFAAAABSABz,100001
+.
+.
+.
+</pre>
+<p>The same job title appears in multiple entries because the rowid range differs.</p>
+<p>Assume that a session updates the job ID of one employee from <code dir="ltr">Shipping Clerk</code> to <code dir="ltr">Stock Clerk</code>. In this case, the session requires exclusive access to the index key entry for the old value (<code dir="ltr">Shipping Clerk</code>) and the new value (<code dir="ltr">Stock Clerk</code>). Oracle Database locks the rows pointed to by these two entries&mdash;but not the rows pointed to by <code dir="ltr">Accountant</code> or any other key&mdash;until the <code dir="ltr">UPDATE</code> commits.</p>
+<p>The data for a bitmap index is stored in one <a id="sthref378"></a><a id="sthref379"></a><a href="glossary.htm#i432714"><span class="xrefglossterm">segment</span></a>. Oracle Database stores each bitmap in one or more pieces. Each piece occupies part of a single <a href="glossary.htm#i432306"><span class="xrefglossterm">data block</span></a>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="logical.htm#i10303">"User Segments"</a></div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CBBGIIFB"></a>
+<div id="CNCPT1161" class="sect2">
+<h3 class="sect2">Function-Based Indexes</h3>
+<p><a id="sthref380"></a><a id="sthref381"></a><a id="sthref382"></a>You can create indexes on functions and expressions that involve one or more columns in the table being indexed. A <span class="bold">function-based index</span> computes the value of a function or expression involving one or more columns and stores it in the index. A function-based index can be either a B-tree or a bitmap index.</p>
+<p>The function used for building the index can be an arithmetic expression or an expression that contains a SQL function, user-defined PL/SQL function, package function, or C callout. For example, a function could add the values in two columns.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ADMIN11730" href="../../server.112/e25494/indexes.htm#ADMIN11730"><span class="italic">Oracle Database Administrator's Guide</span></a> to learn how to create function-based indexes</p>
+</li>
+<li>
+<p><a class="olink PFGRF94785" href="../../server.112/e41573/data_acc.htm#PFGRF94785"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for more information about using function-based indexes</p>
+</li>
+<li>
+<p><a class="olink SQLRF53993" href="../../server.112/e41084/statements_5012.htm#SQLRF53993"><span class="italic">Oracle Database SQL Language Reference</span></a> for restrictions and usage notes for function-based indexes</p>
+</li>
+</ul>
+</div>
+<div id="CNCPT1162" class="sect3"><a id="sthref383"></a>
+<h4 class="sect3">Uses of Function-Based Indexes</h4>
+<p>Function-based indexes are efficient for evaluating statements that contain functions in their <code dir="ltr">WHERE</code> clauses. The database only uses the function-based index when the function is included in a query. When the database processes <code dir="ltr">INSERT</code> and <code dir="ltr">UPDATE</code> statements, however, it must still evaluate the function to process the statement.</p>
+<p><a id="sthref384"></a>For example, suppose you create the following function-based index:</p>
+<pre dir="ltr">
+CREATE INDEX emp_total_sal_idx
+  ON employees (<span class="bold">12 * salary * commission_pct</span>, salary, commission_pct);
+</pre>
+<p>The database can use the preceding index when processing queries such as <a href="#CBBHIHFI">Example 3-6</a> (partial sample output included).</p>
+<div id="CNCPT88852" class="example">
+<p class="titleinexample"><a id="CBBHIHFI"></a>Example 3-6 Query Containing an Arithmetic Expression</p>
+<pre dir="ltr">
+SELECT   employee_id, last_name, first_name, 
+         12*salary*commission_pct AS "ANNUAL SAL"
+FROM     employees
+WHERE    (<span class="bold">12 * salary * commission_pct</span>) &lt; 30000
+ORDER BY "ANNUAL SAL" DESC;
+
+EMPLOYEE_ID LAST_NAME                 FIRST_NAME           ANNUAL SAL
+----------- ------------------------- -------------------- ----------
+        159 Smith                     Lindsey                   28800
+        151 Bernstein                 David                     28500
+        152 Hall                      Peter                     27000
+        160 Doran                     Louise                    27000
+        175 Hutton                    Alyssa                    26400
+        149 Zlotkey                   Eleni                     25200
+        169 Bloom                     Harrison                  24000
+</pre></div>
+<!-- class="example" -->
+<p>Function-based indexes defined on the SQL functions <code dir="ltr">UPPER(</code><code dir="ltr"><span class="codeinlineitalic">column_name</span></code><code dir="ltr">)</code> or <code dir="ltr">LOWER(</code><code dir="ltr"><span class="codeinlineitalic">column_name</span></code><code dir="ltr">)</code> facilitate case-insensitive searches. For example, suppose that the <code dir="ltr">first_name</code> column in <code dir="ltr">employees</code> contains mixed-case characters. You create the following function-based index on the <code dir="ltr">hr.employees</code> table:</p>
+<pre dir="ltr">
+CREATE INDEX emp_fname_uppercase_idx 
+ON employees ( UPPER(first_name) ); 
+</pre>
+<p>The <code dir="ltr">emp_fname_uppercase_idx</code> index can facilitate queries such as the following:</p>
+<pre dir="ltr">
+SELECT * 
+FROM   employees
+WHERE  UPPER(first_name) = 'AUDREY';
+</pre>
+<p>A function-based index is also useful for indexing only specific rows in a table. For example, the <code dir="ltr">cust_valid</code> column in the <code dir="ltr">sh.customers</code> table has either <code dir="ltr">I</code> or <code dir="ltr">A</code> as a value. To index only the <code dir="ltr">A</code> rows, you could write a function that returns a null value for any rows other than the <code dir="ltr">A</code> rows. You could create the index as follows:</p>
+<pre dir="ltr">
+CREATE INDEX cust_valid_idx
+ON customers ( CASE cust_valid WHEN 'A' THEN 'A' END );
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink NLSPG294" href="../../server.112/e10729/ch5lingsort.htm#NLSPG294"><span class="italic">Oracle Database Globalization Support Guide</span></a> for information about linguistic indexes</p>
+</li>
+<li>
+<p><a class="olink PFGRF94739" href="../../server.112/e41573/stats.htm#PFGRF94739"><span class="italic">Oracle Database SQL Language Reference</span></a> to learn more about SQL functions</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect3" -->
+<div id="CNCPT1163" class="sect3"><a id="sthref385"></a>
+<h4 class="sect3">Optimization with Function-Based Indexes</h4>
+<p><a id="sthref386"></a>The <a href="glossary.htm#CHDGHIIF"><span class="xrefglossterm">optimizer</span></a> can use an index range scan on a function-based index for queries with expressions in <code dir="ltr">WHERE</code> clause. The range scan <a id="sthref387"></a><a href="glossary.htm#CHDGDGEA"><span class="xrefglossterm">access path</span></a> is especially beneficial when the predicate (<code dir="ltr">WHERE</code> clause) has low <a id="sthref388"></a><a href="glossary.htm#CHDFBHAH"><span class="xrefglossterm">selectivity</span></a>. In <a href="#CBBHIHFI">Example 3-6</a> the optimizer can use an index range scan if an index is built on the expression <code dir="ltr">12*salary*commission_pct</code>.</p>
+<p><a id="sthref389"></a><a id="sthref390"></a>A <a href="glossary.htm#CHDIBJGA"><span class="xrefglossterm">virtual column</span></a> is useful for speeding access to data derived from expressions. For example, you could define virtual column <code dir="ltr">annual_sal</code> as <code dir="ltr">12*salary*commission_pct</code> and create a function-based index on <code dir="ltr">annual_sal</code>.</p>
+<p>The optimizer performs expression matching by parsing the expression in a SQL statement and then comparing the expression trees of the statement and the function-based index. This comparison is case-insensitive and ignores blank spaces.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="sqllangu.htm#i8709">"Overview of the Optimizer"</a></p>
+</li>
+<li>
+<p><a class="olink PFGRF003" href="../../server.112/e41573/stats.htm#PFGRF003"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for more information about gathering statistics</p>
+</li>
+<li>
+<p><a class="olink ADMIN12494" href="../../server.112/e25494/tables.htm#ADMIN12494"><span class="italic">Oracle Database Administrator's Guide</span></a> to learn how to add virtual columns to a table</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CBBFEBGI"></a>
+<div id="CNCPT607" class="sect2">
+<h3 class="sect2">Application Domain Indexes</h3>
+<p><a id="sthref391"></a><a id="sthref392"></a>An <span class="bold">application domain index</span> is a customized index specific to an application. <a id="sthref393"></a><a id="sthref394"></a><a id="sthref395"></a>Oracle Database provides <span class="bold">extensible indexing</span> to do the following:</p>
+<ul>
+<li>
+<p>Accommodate indexes on customized, complex data types such as documents, spatial data, images, and video clips (see <a href="cncptdev.htm#BABJDBDJ">"Unstructured Data"</a>)</p>
+</li>
+<li>
+<p>Make use of specialized indexing techniques</p>
+</li>
+</ul>
+<p>You can encapsulate application-specific index management routines as an <span class="bold">indextype</span> schema object and define a domain index on table columns or attributes of an object type. Extensible indexing can efficiently process application-specific <a href="glossary.htm#CHDCCIAD"><span class="xrefglossterm">operators</span></a>.</p>
+<p>The application software, called the<a id="sthref396"></a> <span class="bold">cartridge</span>, controls the structure and content of a domain index. The database interacts with the application to build, maintain, and search the domain index. The index structure itself can be stored in the database as an index-organized table or externally as a file.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ADDCI110" href="../../appdev.112/e10765/introduction.htm#ADDCI110"><span class="italic">Oracle Database Data Cartridge Developer's Guide</span></a> for information about using data cartridges within the Oracle Database extensibility architecture</div>
+</div>
+<!-- class="sect2" -->
+<a id="CBBFIFAB"></a>
+<div id="CNCPT1168" class="sect2">
+<h3 class="sect2">Index Storage</h3>
+<p>Oracle Database stores index data in an <a id="sthref397"></a><a href="glossary.htm#CHDGDDBB"><span class="xrefglossterm">index segment</span></a>. Space available for index data in a <a href="glossary.htm#i432306"><span class="xrefglossterm">data block</span></a> is the data block size minus block overhead, entry overhead, rowid, and one length byte for each value indexed.</p>
+<p><a id="sthref398"></a>The <a href="glossary.htm#i996731"><span class="xrefglossterm">tablespace</span></a> of an index segment is either the default tablespace of the owner or a tablespace specifically named in <a id="sthref399"></a>the <code dir="ltr">CREATE INDEX</code> statement. For ease of administration you can store an index in a separate tablespace from its table. For example, you may choose not to back up tablespaces containing only indexes, which can be rebuilt, and so decrease the time and storage required for backups.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="logical.htm#g23847">Chapter 12, "Logical Storage Structures"</a></div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CBBJEBIH"></a>
+<div id="CNCPT911" class="sect1">
+<h2 class="sect1">Overview of Index-Organized Tables</h2>
+<p><a id="sthref400"></a><a id="sthref401"></a>An <span class="bold">index-organized table</span> is a table stored in a variation of a B-tree index structure. In a <a id="sthref402"></a><a id="sthref403"></a><a href="glossary.htm#CHDBJDCA"><span class="xrefglossterm">heap-organized table</span></a>, rows are inserted where they fit. In an index-organized table, rows are stored in an index defined on the primary key for the table. Each index entry in the B-tree also stores the non-key column values. Thus, the index is the data, and the data is the index. Applications manipulate index-organized tables just like heap-organized tables, using SQL statements.</p>
+<p>For an analogy of an index-organized table, suppose a human resources manager has a book case of cardboard boxes. Each box is labeled with a number&mdash;1, 2, 3, 4, and so on&mdash;but the boxes do not sit on the shelves in sequential order. Instead, each box contains a pointer to the shelf location of the next box in the sequence.</p>
+<p>Folders containing employee records are stored in each box. The folders are sorted by employee ID. Employee King has ID 100, which is the lowest ID, so his folder is at the bottom of box 1. The folder for employee 101 is on top of 100, 102 is on top of 101, and so on until box 1 is full. The next folder in the sequence is at the bottom of box 2.</p>
+<p>In this analogy, ordering folders by employee ID makes it possible to search efficiently for folders without having to maintain a separate index. Suppose a user requests the records for employees 107, 120, and 122. Instead of searching an index in one step and retrieving the folders in a separate step, the manager can search the folders in sequential order and retrieve each folder as found.</p>
+<p>Index-organized tables provide faster access to table rows by primary key or a valid prefix of the key. <a id="sthref404"></a>The presence of non-key columns of a row in the leaf block avoids an additional <a href="glossary.htm#i432306"><span class="xrefglossterm">data block</span></a> I/O. For example, the salary of employee 100 is stored in the index row itself. Also, because rows are stored in primary key order, range access by the primary key or prefix involves minimal block I/Os. Another benefit is the avoidance of the space overhead of a separate primary key index.</p>
+<p>Index-organized tables are useful when related pieces of data must be stored together or data must be physically stored in a specific order. This type of table is often used for information retrieval, spatial (see <a href="cncptdev.htm#CHDECFAA">"Overview of Oracle Spatial"</a>), and <a id="sthref405"></a><a href="glossary.htm#CHDCBCBG"><span class="xrefglossterm">OLAP</span></a> applications (see <a href="cmntopc.htm#BABEDHAI">"OLAP"</a>).</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ADMIN01506" href="../../server.112/e25494/tables.htm#ADMIN01506"><span class="italic">Oracle Database Administrator's Guide</span></a> to learn how to manage index-organized tables</p>
+</li>
+<li>
+<p><a class="olink PFGRF94787" href="../../server.112/e41573/data_acc.htm#PFGRF94787"><span class="italic">Oracle Database Performance Tuning Guide</span></a> to learn how to use index-organized tables to improve performance</p>
+</li>
+<li>
+<p><a class="olink SQLRF54492" href="../../server.112/e41084/statements_7002.htm#SQLRF54492"><span class="italic">Oracle Database SQL Language Reference</span></a> for <code dir="ltr">CREATE TABLE ... ORGANIZATION INDEX</code> syntax and semantics</p>
+</li>
+</ul>
+</div>
+<div id="CNCPT88853" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref406"></a>
+<h3 class="sect2">Index-Organized Table Characteristics</h3>
+<p>The database system performs all operations on index-organized tables by manipulating the B-tree index structure. <a href="#g37535">Table 3-4</a> summarizes the differences between index-organized tables and heap-organized tables.</p>
+<div id="CNCPT88854" class="tblformal">
+<p class="titleintable"><a id="sthref407"></a><a id="g37535"></a>Table 3-4 Comparison of Heap-Organized Tables with Index-Organized Tables</p>
+<table class="cellalignment1458" title="Comparison of Heap-Organized Tables with Index-Organized Tables " summary="Comparison of Index-Organized Tables with Ordinary Tables" dir="ltr">
+<thead>
+<tr class="cellalignment1449">
+<th class="cellalignment1459" id="r1c1-t31">Heap-Organized Table</th>
+<th class="cellalignment1459" id="r1c2-t31">Index-Organized Table</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1449">
+<td class="cellalignment1455" id="r2c1-t31" headers="r1c1-t31">
+<p>The <a href="glossary.htm#CHDEFIHG"><span class="xrefglossterm">rowid</span></a> uniquely identifies a row. Primary key constraint may optionally be defined.</p>
+</td>
+<td class="cellalignment1455" headers="r2c1-t31 r1c2-t31">
+<p>Primary key uniquely identifies a row. Primary key constraint must be defined.</p>
+</td>
+</tr>
+<tr class="cellalignment1449">
+<td class="cellalignment1455" id="r3c1-t31" headers="r1c1-t31">
+<p>Physical rowid in <code dir="ltr">ROWID</code> <a id="sthref408"></a><a href="glossary.htm#CHDJADFD"><span class="xrefglossterm">pseudocolumn</span></a> allows building secondary indexes.</p>
+</td>
+<td class="cellalignment1455" headers="r3c1-t31 r1c2-t31">
+<p>Logical rowid in <code dir="ltr">ROWID</code> pseudocolumn allows building secondary indexes.</p>
+</td>
+</tr>
+<tr class="cellalignment1449">
+<td class="cellalignment1455" id="r4c1-t31" headers="r1c1-t31">
+<p>Individual rows may be accessed directly by rowid.</p>
+</td>
+<td class="cellalignment1455" headers="r4c1-t31 r1c2-t31">
+<p>Access to individual rows may be achieved indirectly by primary key.</p>
+</td>
+</tr>
+<tr class="cellalignment1449">
+<td class="cellalignment1455" id="r5c1-t31" headers="r1c1-t31">
+<p>Sequential <a href="glossary.htm#CHDCGIFF"><span class="xrefglossterm">full table scan</span></a> returns all rows in some order.</p>
+</td>
+<td class="cellalignment1455" headers="r5c1-t31 r1c2-t31">
+<p>A <a href="glossary.htm#CHDDAHCB"><span class="xrefglossterm">full index scan</span></a> or fast full index scan returns all rows in some order.</p>
+</td>
+</tr>
+<tr class="cellalignment1449">
+<td class="cellalignment1455" id="r6c1-t31" headers="r1c1-t31">
+<p>Can be stored in a <a href="glossary.htm#CHDJGGGF"><span class="xrefglossterm">table cluster</span></a> with other tables.</p>
+</td>
+<td class="cellalignment1455" headers="r6c1-t31 r1c2-t31">
+<p>Cannot be stored in a table cluster.</p>
+</td>
+</tr>
+<tr class="cellalignment1449">
+<td class="cellalignment1455" id="r7c1-t31" headers="r1c1-t31">
+<p>Can contain a column of the <code dir="ltr">LONG</code> data type and columns of <a href="glossary.htm#CHDHHDDI"><span class="xrefglossterm">LOB</span></a> data types.</p>
+</td>
+<td class="cellalignment1455" headers="r7c1-t31 r1c2-t31">
+<p>Can contain LOB columns but not <code dir="ltr">LONG</code> columns.</p>
+</td>
+</tr>
+<tr class="cellalignment1449">
+<td class="cellalignment1455" id="r8c1-t31" headers="r1c1-t31">
+<p>Can contain <a href="glossary.htm#CHDDFACC"><span class="xrefglossterm">virtual columns</span></a> (only relational heap tables are supported).</p>
+</td>
+<td class="cellalignment1455" headers="r8c1-t31 r1c2-t31">
+<p>Cannot contain virtual columns.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<p><a href="#CHDJGJHG">Figure 3-3</a> illustrates the structure of an index-organized <code dir="ltr">departments</code> table. The leaf blocks contain the rows of the table, ordered sequentially by primary key. For example, the first value in the first leaf block shows a department ID of <code dir="ltr">20</code>, department name of <code dir="ltr">Marketing</code>, manager ID of <code dir="ltr">201</code>, and location ID of <code dir="ltr">1800</code>.</p>
+<div id="CNCPT88855" class="figure">
+<p class="titleinfigure"><a id="CHDJGJHG"></a>Figure 3-3 Index-Organized Table</p>
+<img width="662" height="474" src="img/cncpt272.gif" alt="Description of Figure 3-3 follows" /><br />
+<a id="sthref409" href="img_text/cncpt272.htm">Description of "Figure 3-3 Index-Organized Table"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>An index-organized table stores all data in the same structure and does not need to store the rowid. As shown in <a href="#CHDJGJHG">Figure 3-3</a>, leaf block 1 in an index-organized table might contain entries as follows, ordered by primary key:</p>
+<pre dir="ltr">
+20,Marketing,201,1800
+30,Purchasing,114,1700
+</pre>
+<p>Leaf block 2 in an index-organized table might contain entries as follows:</p>
+<pre dir="ltr">
+50,Shipping,121,1500
+60,IT,103,1400
+</pre>
+<p>A scan of the index-organized table rows in primary key order reads the blocks in the following sequence:</p>
+<ol>
+<li>
+<p>Block 1</p>
+</li>
+<li>
+<p>Block 2</p>
+</li>
+</ol>
+<p>To contrast data access in a heap-organized table to an index-organized table, suppose block 1 of a heap-organized <code dir="ltr">departments</code> table segment contains rows as follows:</p>
+<pre dir="ltr">
+50,Shipping,121,1500
+20,Marketing,201,1800
+</pre>
+<p>Block 2 contains rows for the same table as follows:</p>
+<pre dir="ltr">
+30,Purchasing,114,1700
+60,IT,103,1400
+</pre>
+<p>A B-tree index leaf block for this heap-organized table contains the following entries, where the first value is the primary key and the second is the <a href="glossary.htm#CHDEFIHG"><span class="xrefglossterm">rowid</span></a>:</p>
+<pre dir="ltr">
+20,AAAPeXAAFAAAAAyAAD
+30,AAAPeXAAFAAAAAyAAA
+50,AAAPeXAAFAAAAAyAAC
+60,AAAPeXAAFAAAAAyAAB
+</pre>
+<p>A scan of the table rows in primary key order reads the table segment blocks in the following sequence:</p>
+<ol>
+<li>
+<p>Block 1</p>
+</li>
+<li>
+<p>Block 2</p>
+</li>
+<li>
+<p>Block 1</p>
+</li>
+<li>
+<p>Block 2</p>
+</li>
+</ol>
+<p>Thus, the number of block I/Os in this example is double the number in the index-organized example.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="tablecls.htm#CHDJHGEF">"Table Organization"</a></p>
+</li>
+<li>
+<p><a href="logical.htm#i19599">"Introduction to Logical Storage Structures"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<div id="CNCPT1190" class="sect2"><a id="sthref410"></a>
+<h3 class="sect2">Index-Organized Tables with Row Overflow Area</h3>
+<p><a id="sthref411"></a>When creating an index-organized table, you can specify a separate segment as a <span class="bold">row overflow area</span>. In index-organized tables, B-tree index entries can be large because they contain an entire row, so a separate segment to contain the entries is useful. In contrast, B-tree entries are usually small because they consist of the key and rowid.</p>
+<p>If a row overflow area is specified, then the database can divide a row in an index-organized table into the following parts:</p>
+<ul>
+<li>
+<p>The index entry</p>
+<p>This part contains column values for all the primary key columns, a physical rowid that points to the overflow part of the row, and optionally a few of the non-key columns. This part is stored in the index segment.</p>
+</li>
+<li>
+<p>The overflow part</p>
+<p>This part contains column values for the remaining non-key columns. This part is stored in the overflow storage area segment.</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ADMIN11685" href="../../server.112/e25494/tables.htm#ADMIN11685"><span class="italic">Oracle Database Administrator's Guide</span></a> to learn how to use the <code dir="ltr">OVERFLOW</code> clause of <code dir="ltr">CREATE TABLE</code> to set a row overflow area</p>
+</li>
+<li>
+<p><a class="olink SQLRF54499" href="../../server.112/e41084/statements_7002.htm#SQLRF54499"><span class="italic">Oracle Database SQL Language Reference</span></a> for <code dir="ltr">CREATE TABLE ... OVERFLOW</code> syntax and semantics</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<div id="CNCPT912" class="sect2"><a id="sthref412"></a>
+<h3 class="sect2">Secondary Indexes on Index-Organized Tables</h3>
+<p><a id="sthref413"></a><a id="sthref414"></a><a id="sthref415"></a>A <span class="bold">secondary index</span> is an index on an index-organized table. In a sense, it is an index on an index. The secondary index is an independent schema object and is stored separately from the index-organized table.</p>
+<p>As explained in <a href="tablecls.htm#CBBBHABC">"Rowid Data Types"</a>, Oracle Database uses row identifiers <a id="sthref416"></a><a id="sthref417"></a>called <span class="bold">logical rowids</span> for index-organized tables. A logical rowid is a base64-encoded representation of the table primary key. The logical rowid length depends on the primary key length.</p>
+<p>Rows in index leaf blocks can move within or between blocks because of insertions. Rows in index-organized tables do not migrate as heap-organized rows do (see <a href="logical.htm#BABEEAAE">"Chained and Migrated Rows"</a>). Because rows in index-organized tables do not have permanent physical addresses, the database <a id="sthref418"></a><a id="sthref419"></a>uses logical rowids based on primary key.</p>
+<p>For example, assume that the <code dir="ltr">departments</code> table is index-organized. The <code dir="ltr">location_id</code> column stores the ID of each department. The table stores rows as follows, with the last value as the location ID:</p>
+<pre dir="ltr">
+10,Administration,200,1700
+20,Marketing,201,1800
+30,Purchasing,114,1700
+40,Human Resources,203,2400
+</pre>
+<p>A secondary index on the <code dir="ltr">location_id</code> column might have index entries as follows, where the value following the comma is the logical rowid:</p>
+<pre dir="ltr">
+1700,*BAFAJqoCwR/+ 
+1700,*BAFAJqoCwQv+
+1800,*BAFAJqoCwRX+
+2400,*BAFAJqoCwSn+
+</pre>
+<p><a id="sthref420"></a>Secondary indexes provide fast and efficient access to index-organized tables using columns that are neither the primary key nor a prefix of the primary key. For example, a query of the names of departments whose ID is greater than 1700 could use the secondary index to speed data access.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ADMIN11696" href="../../server.112/e25494/tables.htm#ADMIN11696"><span class="italic">Oracle Database Administrator's Guide</span></a> to learn how to create secondary indexes on an index-organized table</p>
+</li>
+<li>
+<p><a class="olink VLDBG003" href="../../server.112/e25523/part_admin.htm#VLDBG003"><span class="italic">Oracle Database VLDB and Partitioning Guide</span></a> to learn about creating secondary indexes on indexed-organized table partitions</p>
+</li>
+</ul>
+</div>
+<div id="CNCPT88856" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref421"></a>
+<h4 class="sect3">Logical Rowids and Physical Guesses</h4>
+<p><a id="sthref422"></a><a id="sthref423"></a>Secondary indexes use the logical rowids to locate table rows. A logical rowid includes a <span class="bold">physical guess</span>, which is the physical rowid of the index entry when it was first made. Oracle Database can use physical guesses to probe directly into the leaf block of the index-organized table, bypassing the primary key search. When the physical location of a row changes, the logical rowid remains valid even if it contains a physical guess that is stale.</p>
+<p>For a heap-organized table, access by a secondary index involves a scan of the secondary index and an additional I/O to fetch the <a href="glossary.htm#i432306"><span class="xrefglossterm">data block</span></a> containing the row. For index-organized tables, access by a secondary index varies, depending on the use and accuracy of physical guesses:</p>
+<ul>
+<li>
+<p>Without physical guesses, access involves two index scans: a scan of the secondary index followed by a scan of the primary key index.</p>
+</li>
+<li>
+<p>With physical guesses, access depends on their accuracy:</p>
+<ul>
+<li>
+<p>With accurate physical guesses, access involves a secondary index scan and an additional I/O to fetch the data block containing the row.</p>
+</li>
+<li>
+<p>With inaccurate physical guesses, access involves a secondary index scan and an I/O to fetch the wrong data block (as indicated by the guess), followed by an index unique scan of the index organized table by primary key value.</p>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<a id="BABIFAHH"></a>
+<div id="CNCPT88857" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Bitmap Indexes on Index-Organized Tables</h4>
+<p>A secondary index on an index-organized table can be a <a href="glossary.htm#CHDDEACG"><span class="xrefglossterm">bitmap index</span></a>. As explained in <a href="#CBBFJFDD">"Bitmap Indexes"</a>, a bitmap index stores a bitmap for each index key.</p>
+<p><a id="sthref424"></a><a id="sthref425"></a>When bitmap indexes exist on an index-organized table, all the bitmap indexes use a heap-organized <span class="bold">mapping table</span>. The mapping table stores the logical rowids of the index-organized table. Each mapping table row stores one logical rowid for the corresponding index-organized table row.</p>
+<p>The database accesses a bitmap index using a search key. If the database finds the key, then the bitmap entry is converted to a physical rowid. With heap-organized tables, the database uses the physical rowid to access the base table. With index-organized tables, the database uses the physical rowid to access the mapping table, which in turn yields a logical rowid that the database uses to access the index-organized table. <a href="#CIHHIFGD">Figure 3-4</a> illustrates index access for a query of the <code dir="ltr">departments_iot</code> table.</p>
+<div id="CNCPT89183" class="figure">
+<p class="titleinfigure"><a id="CIHHIFGD"></a>Figure 3-4 Bitmap Index on Index-Organized Table</p>
+<img width="437" height="287" src="img/cncpt330.gif" alt="Description of Figure 3-4 follows" /><br />
+<a id="sthref426" href="img_text/cncpt330.htm">Description of "Figure 3-4 Bitmap Index on Index-Organized Table"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Movement of rows in an index-organized table does not leave the bitmap indexes built on that index-organized table unusable.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="tablecls.htm#i20957">"Rowids of Row Pieces"</a></div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1448">
+<tr>
+<td class="cellalignment1455">
+<table class="cellalignment1453">
+<tr>
+<td class="cellalignment1452"><a href="tablecls.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1452"><a href="schemaob.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1993, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1457">
+<table class="cellalignment1451">
+<tr>
+<td class="cellalignment1452"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1452"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1452"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1452"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1452"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1452"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Backing Up and Archiving the Database</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1058" />
+<meta name="dcterms.created" content="2015-06-25T1:51:7Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Administrator's Reference" />
+<meta name="dcterms.identifier" content="E56697-01" />
+<meta name="dcterms.isVersionOf" content="VMSAR" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2008, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="apb.htm" title="Previous" type="text/html" />
+<link rel="Next" href="apd.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e56697.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">14/18</span> <!-- End Header -->
+<div id="VMSAR609" class="appendix"><a id="g635246"></a> <a id="i634232"></a>
+<h1 class="appendix"><span class="secnum">C</span> Backing Up and Archiving the Database</h1>
+<p>This appendix describes the procedures for <a id="sthref602"></a><a id="sthref603"></a>backing up a database. You must complete database backups periodically to be able to recover data if you have a media failure.</p>
+<p>This chapter contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1006604">Section C.1, "Archiving Redo Log Files"</a></p>
+</li>
+<li>
+<p><a href="#i1006606">Section C.2, "Backing Up the Database"</a></p>
+</li>
+<li>
+<p><a href="#i1003012">Section C.3, "Exporting to and Importing from Multiple Tapes"</a></p>
+</li>
+<li>
+<p><a href="#i1003693">Section C.4, "Recovering Data"</a></p>
+</li>
+</ul>
+<a id="i1006604"></a>
+<div id="VMSAR610" class="sect1">
+<h2 class="sect1"><span class="secnum">C.1</span> Archiving Redo Log Files</h2>
+<p>In case a media failure occurs, the extent of database recovery depends on whether or not you <a id="sthref604"></a><a id="sthref605"></a>archive the redo logs and how often you back up and export the database.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ADMIN" href="../e25494/toc.htm"><span class="italic">Oracle Database Administrator's Guide</span></a> for more information about archiving</div>
+<p>Information in the redo logs is always sufficient to guarantee recovery, regardless of the mode in which the logs are used. However, full media recovery is possible only if you use <code dir="ltr">ARCHIVELOG</code><a id="sthref606"></a> mode and archive in offline files. If you use <code dir="ltr">NOARCHIVELOG</code> mode, then you must shut down Oracle Database 11<span class="italic">g</span> before backing up the database.</p>
+<p>When a redo log file fills up, a checkpoint is created. Additional checkpoints can be triggered by reducing the value of the <code dir="ltr">LOG_CHECKPOINT_INTERVAL</code><a id="sthref607"></a> parameter in the <code dir="ltr">INIT.ORA</code> file. Each checkpoint guarantees that information in the redo log file is written to the database. Frequent writes can speed recovery because there will be less data in the logs to reapply to the database.</p>
+<p>Three initial redo logs of 100 MB each are created during installation. These initial logs are created in <code dir="ltr">NOARCHIVELOG</code> mode. You can change them to <code dir="ltr">ARCHIVELOG</code> mode with the <code dir="ltr">ALTER DATABASE</code><a id="sthref608"></a> command. You can create additional logs with the <code dir="ltr">ALTER DATABASE</code> command. To see the current status of the log files, use the <code dir="ltr">ARCHIVE LOG LIST</code> command.</p>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#BABDJAIE">Section C.1.1, "Specifying Archive Destinations"</a></p>
+</li>
+<li>
+<p><a href="#BABGFHAD">Section C.1.2, "Archiving Automatically"</a></p>
+</li>
+<li>
+<p><a href="#BABJGDEE">Section C.1.3, "Archiving Manually"</a></p>
+</li>
+</ul>
+<a id="BABDJAIE"></a>
+<div id="VMSAR611" class="sect2">
+<h3 class="sect2"><span class="secnum">C.1.1</span> Specifying Archive Destinations</h3>
+<p>You can archive redo log files to disk. If you want to archive redo logs to tape, then you must first archive them to disk, and then use the HP OpenVMS <code dir="ltr">BACKUP</code> utility to copy them from disk to tape. You should never archive directly to tape.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+Hewlett-Packard's document <span class="italic">HP OpenVMS Guide to Tapes and Devices</span> and <a class="olink ADMIN" href="../e25494/toc.htm"><span class="italic">Oracle Database Administrator's Guide</span></a></div>
+<p>To specify a disk file as the archive destination, use the following conventions:</p>
+<pre dir="ltr">
+LOG_ARCHIVE_DEST   = <span class="italic">diskname</span>:[<span class="italic">directory_name</span>]
+LOG_ARCHIVE_FORMAT = <span class="italic">filename</span>
+</pre>
+<p>You must specify a full file name or valid file name format using the variables. This file name is appended to the <code dir="ltr">LOG_ARCHIVE_DEST</code> string to create the archived redo log files in the specified location.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The value for <code dir="ltr">LOG_ARCHIVE_FORMAT</code> is <span class="italic">not</span> enclosed in single quotes on HP OpenVMS.
+<p>All references to <a id="sthref609"></a><code dir="ltr">LOG_ARCHIVE_DEST</code> must be accompanied by <code dir="ltr">LOG_ARCHIVE_FORMAT</code> and the statements modified as required. For example:</p>
+<pre dir="ltr">
+LOG_ARCHIVE_DEST   = DISK$ARC:[ORACLE.V11g.ORADATA.PROD]
+LOG_ARCHIVE_FORMAT = MIS_SEQ%s_SCN%c.ARC
+</pre>
+<p>For faster failure recovery, the following archive log naming convention is recommended:</p>
+<pre dir="ltr">
+LOG_ARCHIVE_FORMAT =  Name_THR%t_SEQ%s_SCN%c.ARC
+</pre></div>
+<p>The disk name, directory name, and prefix for the archived redo log files are specified in this destination command string. The prefix is added to the names of all the redo log files that are archived.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BABGFHAD"></a>
+<div id="VMSAR612" class="sect2">
+<h3 class="sect2"><span class="secnum">C.1.2</span> Archiving Automatically</h3>
+<p><a id="sthref610"></a><a id="sthref611"></a>If a database is running with <code dir="ltr">ARCHIVELOG</code> mode enabled, then the redo log files of a given instance must be archived manually or automatically..</p>
+<p>To archive redo logs automatically, dedicate a disk drive without any other Oracle files for archiving the files and then complete the following steps:</p>
+<ol>
+<li>
+<p>Shut down the current instance.</p>
+</li>
+<li>
+<p>Set the value of the <a id="sthref612"></a><code dir="ltr">LOG_ARCHIVE_START</code> parameter in the <a id="sthref613"></a><code dir="ltr">INIT.ORA</code> file to <code dir="ltr">TRUE</code>.</p>
+</li>
+<li>
+<p>Specify the destination of the archived files with the <a id="sthref614"></a><code dir="ltr">LOG_ARCHIVE_DEST</code> parameter in the same parameter file (either the instance-specific <code dir="ltr">INIT</code><code dir="ltr"><span class="codeinlineitalic">sid</span></code><code dir="ltr">.ORA</code> file, or the <code dir="ltr">INIT.ORA</code> file itself).</p>
+</li>
+<li>
+<p>Restart the instance.</p>
+</li>
+</ol>
+<p>You can also enable automatic archiving for a database instance that is running in <code dir="ltr">ARCHIVELOG</code> mode without changing the <code dir="ltr">INIT</code><code dir="ltr"><span class="codeinlineitalic">sid</span></code><code dir="ltr">.ORA</code> file by using the SQL*Plus command <code dir="ltr">ARCHIVE LOG</code> as follows:</p>
+<pre dir="ltr">
+SQL&gt; ARCHIVE LOG START <span class="italic">filename</span> 
+</pre>
+<p>The next time an online redo log file must be archived for the current instance, it will be archived automatically until the instance is shut down next. To archive permanently, you must set the <code dir="ltr">LOG_ARCHIVE_START</code>, <code dir="ltr">LOG_ARCHIVE_DEST</code>, and <code dir="ltr">LOG_ARCHIVE_FORMAT</code> parameters in the required parameter file, the <code dir="ltr">INIT.ORA</code> file or the <code dir="ltr"><span class="codeinlineitalic">setup-node</span></code>_<code dir="ltr"><span class="codeinlineitalic">sid</span></code><code dir="ltr">_INIT.ORA</code> parameter file of the instance.</p>
+<p>When using automatic archiving, errors that occur during archiving and start and stop of the <code dir="ltr">ARCH</code><a id="sthref615"></a> process are written either to a trace file in the <a id="sthref616"></a><code dir="ltr">ORA_ROOT:[ADMIN.</code><code dir="ltr"><span class="codeinlineitalic">db_name</span></code><code dir="ltr">.BDUMP]</code> directory or to the alert log.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BABJGDEE"></a>
+<div id="VMSAR613" class="sect2">
+<h3 class="sect2"><span class="secnum">C.1.3</span> Archiving Manually</h3>
+<p>To <a id="sthref617"></a><a id="sthref618"></a>archive redo log files for the current instance manually, use the <code dir="ltr">ARCHIVE LOG</code> command. You must specify the log sequence number of the redo log file group to be archived. If you do not specify the archive destination, then the destination is derived from the <code dir="ltr">INIT.ORA</code> parameter <code dir="ltr"><a id="sthref619"></a>LOG_ARCHIVE_DEST</code>.</p>
+<ul>
+<li>
+<p>To archive the first redo log, enter the following command:</p>
+<pre dir="ltr">
+SQL&gt; ARCHIVE LOG <span class="codeinlineitalic">log_sequence_number</span> <span class="italic">destination</span> 
+</pre>
+<p>Replace <code dir="ltr"><span class="codeinlineitalic">log_sequence_number</span></code> with the number of the log file you want to be archived.</p>
+</li>
+<li>
+<p>To archive the next file, use the <code dir="ltr">NEXT</code> option as follows:</p>
+<pre dir="ltr">
+SQL&gt; ARCHIVE LOG NEXT <span class="italic">destination</span>
+</pre></li>
+<li>
+<p>To archive all redo log files, use the <code dir="ltr">ALL</code> option as in the following command:</p>
+<pre dir="ltr">
+SQL&gt; ARCHIVE LOG ALL <span class="italic">destination</span>
+</pre></li>
+</ul>
+<p>When archiving manually, errors are written to the terminal.</p>
+<p>You can also manually archive using the <code dir="ltr">ARCHIVE LOG</code> clause of the <code dir="ltr">ALTER SYSTEM</code> command. The <code dir="ltr">ARCHIVE LOG</code> clause contains all the capabilities of the <code dir="ltr">ARCHIVE LOG</code> command. You can use it to archive the log files of any instance, not just the current instance.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006606"></a>
+<div id="VMSAR614" class="sect1">
+<h2 class="sect1"><span class="secnum">C.2</span> Backing Up the Database</h2>
+<p>A <a id="sthref620"></a><a id="sthref621"></a>database backup is a block-by-block copy of the database files. If you are the DBA, then you should back up the database regularly, by performing the instructions in the following sections:</p>
+<ul>
+<li>
+<p><a href="#i1003032">Section C.2.1, "Backing Up a Closed Database"</a></p>
+</li>
+<li>
+<p><a href="#i1003309">Section C.2.2, "Backing Up an Open Database"</a></p>
+</li>
+<li>
+<p><a href="#CIHIHDGJ">Section C.2.3, "Backing Up Data Structures and Definitions"</a></p>
+</li>
+</ul>
+<p>Both types of backup restore either all or part of the database to the same condition that existed at the time of backup. To recover any transactions committed after the backup, the DBA must use the redo logs where the transactions were recorded. If you back up files while the database is running, then use the redo log files in <code dir="ltr">ARCHIVELOG</code> mode to maintain a record of transactions occurring during the backup.</p>
+<p>To back up database files, use the HP OpenVMS <code dir="ltr">BACKUP</code> utility. Follow the instructions in <a class="olink ADMIN" href="../e25494/toc.htm"><span class="italic">Oracle Database Administrator's Guide</span></a> to back up both open and closed databases. When you are ready to complete the step that instructs you to perform the actual backup, run the <a id="sthref622"></a><a id="sthref623"></a>HP OpenVMS <code dir="ltr">BACKUP</code> utility.</p>
+<a id="i1003032"></a>
+<div id="VMSAR615" class="sect2">
+<h3 class="sect2"><span class="secnum">C.2.1</span> Backing Up a Closed Database</h3>
+<p>A backup of a closed database is also known as an offline or cold backup.</p>
+<p>To <a id="sthref624"></a><a id="sthref625"></a>back up a closed database, complete the following:</p>
+<ol>
+<li>
+<p>Shut down all instances by using the <a id="sthref626"></a><code dir="ltr">SHUTDOWN NORMAL</code> command.</p>
+</li>
+<li>
+<p>Run the <a id="sthref627"></a><a id="sthref628"></a>HP OpenVMS <code dir="ltr">BACKUP</code> utility to copy all database files, redo log files, and control files by entering the following command:</p>
+<pre dir="ltr">
+$ BACKUP <span class="codeinlineitalic">directory</span>:<span class="codeinlineitalic">database_filename</span> - 
+[<span class="codeinlineitalic">new_directory</span>]<span class="codeinlineitalic">new_filename</span>
+</pre>
+<p>For example, if the database file is named <code dir="ltr">SYSTEM01.DBF</code> and you are copying to a directory named <code dir="ltr">ARCDIR</code>, then enter the following command:</p>
+<pre dir="ltr">
+$ BACKUP ORA_DB:SYSTEM01.DBF DISK$2:[ARCDIR]SYSTEM01.DBF
+</pre>
+<p>If you have multiple databases, or if the database files do not reside in the <code dir="ltr">ORA_DB</code> directory, then you may need to specify a directory other than the <code dir="ltr">ORA_DB</code> directory.</p>
+</li>
+<li>
+<p>Restart the instances.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You can automate much of the backup procedure through the use of scripts or the Recovery Manager (RMAN).</div>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="i1003309"></a>
+<div id="VMSAR616" class="sect2">
+<h3 class="sect2"><span class="secnum">C.2.2</span> Backing Up an Open Database</h3>
+<p>A backup of an open database is also known as an online or hot backup.</p>
+<p>B<a id="sthref629"></a><a id="sthref630"></a>acking up an open database allows users to have normal access to all online tablespaces during backup.</p>
+<div class="infobox-note">
+<p class="notep1">Caution:</p>
+Do not take the tablespace offline or shut down the system until END BACKUP is completed. The backup may not be usable.
+<p>If the following <a id="sthref631"></a><a id="sthref632"></a>warning message is displayed during the backup procedure, then ignore it and continue with the backup:</p>
+<pre dir="ltr">
+%BACKUP-W-ACCONFLICT, is open for write by another user
+</pre></div>
+<p>To back up an open database, complete the following tasks:</p>
+<ol>
+<li>
+<p>Run SQL*Plus, and enter the following command:</p>
+<pre dir="ltr">
+SQL&gt; ALTER TABLESPACE <span class="codeinlineitalic">tablespace_name</span> BEGIN BACKUP
+</pre>
+<p>Specify the name of the tablespace that you want to back up. If you have not created additional tablespaces after installing the database, then you can back up only the initial tablespace <code dir="ltr">SYSTEM</code>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You must perform this step before proceeding. Otherwise, the backup file created in Step 2 will be invalid for recovery purposes.</div>
+</li>
+<li>
+<p>Run the <code dir="ltr">BACKUP</code> utility to copy all the database files that make up the tablespace by entering the following:</p>
+<pre dir="ltr">
+$ BACKUP/IGNORE=(INTERLOCK,NOBACKUP)- 
+ORA_DB:<span class="codeinlineitalic">database_filename</span> -
+[<span class="codeinlineitalic">new_directory</span>]<span class="codeinlineitalic">new_filename</span>
+</pre>
+<p>If you have multiple databases or if the database files do not reside in the <code dir="ltr">ORA_DB</code> directory, then you may need to specify a directory location other than <code dir="ltr">ORA_DB</code>.</p>
+</li>
+<li>
+<p>Run SQL*Plus, and enter the following command:</p>
+<pre dir="ltr">
+SQL&gt; ALTER TABLESPACE <span class="italic">tablespace_name</span> END BACKUP;
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The <code dir="ltr">BEGIN BACKUP</code> and <code dir="ltr">END BACKUP</code> commands are vital. Backups are unusable if these commands are not used in the preceding steps.</div>
+<p>Repeat Steps 1 through 3 for all tablespaces that you want to back up.</p>
+</li>
+</ol>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You can automate much of the backup procedure through the use of scripts or the Recovery Manager (RMAN).</div>
+</div>
+<!-- class="sect2" -->
+<a id="CIHIHDGJ"></a>
+<div id="VMSAR617" class="sect2">
+<h3 class="sect2"><span class="secnum">C.2.3</span> Backing Up Data Structures and Definitions</h3>
+<p>A<a id="sthref633"></a><a id="sthref634"></a><a id="sthref635"></a> <a id="sthref636"></a><a id="sthref637"></a><a id="sthref638"></a><a id="sthref639"></a>database backup is a physical copy of a database. To copy the data structures and data definitions in a database in a logically organized format, you must use the <code dir="ltr">EXPORT</code><a id="sthref640"></a> utility. Typically, you will need a logical copy of the database when a user has dropped a table and you want to restore only that table. An Export also permits selective recovery and enables you to transfer a single user's data or a specific set of tables. If a user accidentally drops a table, then you can recover the table from an export file. Image backups do not provide this flexibility.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+<a id="sthref641"></a><a id="sthref642"></a><a id="sthref643"></a><a id="sthref644"></a>IMPORT/EXPORT messages are directed to <code dir="ltr">SYS$ERROR</code>, not <code dir="ltr">SYS$OUTPUT,</code> and can be saved to a file if you use the <code dir="ltr">LOGFILE</code> option.</div>
+<p>You can export the entire database or portions of the database. You can also perform incremental exports, which save only tables that changed since the last export. These exports are quicker and more convenient. To recover the export file generated by the <code dir="ltr">EXPORT</code> utility, use the <code dir="ltr">IMPORT</code> utility.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You can copy export files to tape if you specify a block size of 4096 bytes.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><span class="italic">HP OpenVMS Database Utilities</span> for information about using the EXPORT and IMPORT utilities</p>
+</li>
+<li>
+<p><a class="olink RCMRF" href="../../backup.112/e10643/toc.htm"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for information about Recovery Manager for backup</p>
+</li>
+</ul>
+</div>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#BABCGCFD">Section C.2.3.1, "Exporting to Other HP OpenVMS Systems"</a></p>
+</li>
+<li>
+<p><a href="#BABDIHIF">Section C.2.3.2, "Exporting to Non-HP OpenVMS Systems"</a></p>
+</li>
+</ul>
+<a id="BABCGCFD"></a>
+<div id="VMSAR618" class="sect3">
+<h4 class="sect3"><span class="secnum">C.2.3.1</span> Exporting to Other HP OpenVMS Systems</h4>
+<p>To <a id="sthref645"></a><a id="sthref646"></a>export files to tape for transferring to another HP OpenVMS system, run the following commands:</p>
+<pre dir="ltr">
+$ ALLOCATE <span class="codeinlineitalic">tape_device_name</span>
+$ INIT <span class="codeinlineitalic">tape_device_name</span> <span class="italic">tape_label</span>
+$ MOUNT/BLOCKSIZE=<span class="codeinlineitalic">recordlength</span> <span class="codeinlineitalic">tape_device_name</span> <span class="italic">tape_label</span>
+$ EXP <span class="codeinlineitalic">username/password</span>
+</pre>
+<p>Several prompts are displayed at this point. You must respond to these prompts as required. When prompted to supply the name of the Export file, use the following form:</p>
+<pre dir="ltr">
+EXPORT FILE:EXPDAT.DMP &gt; : <span class="italic">tape_device_name</span>:EXPDAT.DMP
+</pre>
+<p>When the Export session ends, enter the following commands:</p>
+<pre dir="ltr">
+$ DISMOUNT <span class="italic">tape_device_name</span> 
+$ DEALLOCATE <span class="italic">tape_device_name</span> 
+</pre></div>
+<!-- class="sect3" -->
+<a id="BABDIHIF"></a>
+<div id="VMSAR619" class="sect3">
+<h4 class="sect3"><span class="secnum">C.2.3.2</span> Exporting to Non-HP OpenVMS Systems</h4>
+<p>To <a id="sthref647"></a><a id="sthref648"></a>export files to tape for transfer to a non-HP OpenVMS system, run the following commands:</p>
+<pre dir="ltr">
+$ ALLOCATE <span class="italic">tape_device_name</span> 
+$ INIT <span class="italic">tape_device_name</span> <span class="italic">tape_label</span> 
+$ MOUNT/FOREIGN/BLOCKSIZE=<span class="italic">recordlength</span> <span class="italic">tape_device_name</span> 
+$ EXP <span class="italic">username</span>/<span class="italic">password</span>
+</pre>
+<p>Several prompts are displayed at this point. You must respond to these prompts as required. When prompted to supply the name of the Export file, use the following form:</p>
+<pre dir="ltr">
+EXPORT FILE:EXPDAT.DMP &gt; : <span class="italic">tape_device_name</span>:EXPDAT.DMP
+</pre>
+<p>When the Export session ends, run the following commands:</p>
+<pre dir="ltr">
+$ DISMOUNT <span class="italic">tape_device_name</span> 
+$ DEALLOCATE <span class="italic">tape_device_name</span> 
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If you want to create an export file and move it between systems through FTP, then you should use binary mode and set <code dir="ltr">RECORDLENGTH</code> to 512.</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1003012"></a>
+<div id="VMSAR620" class="sect1">
+<h2 class="sect1"><span class="secnum">C.3</span> Exporting to and Importing from Multiple Tapes</h2>
+<p>It is a good idea to have a copy of files stored on tapes. This section describes how to <a id="sthref649"></a><a id="sthref650"></a>export to and import from multiple tapes. It includes the following topics:</p>
+<ul>
+<li>
+<p><a href="#CIHEEFBH">Section C.3.1, "Exporting with Multi-Reel Files"</a></p>
+</li>
+<li>
+<p><a href="#CIHBGAFF">Section C.3.2, "Exporting to Multiple Tapes"</a></p>
+</li>
+<li>
+<p><a href="#CIHDABJG">Section C.3.3, "Importing from Multiple Tapes"</a></p>
+</li>
+</ul>
+<p>You must have the <code dir="ltr">OPER</code> privilege to perform the tasks mentioned in the following sections. Additionally, run the command <a id="sthref651"></a><code dir="ltr">REPLY/ENABLE=TAPES</code>. This command directs the output to the terminal rather than the operator's console.</p>
+<a id="CIHEEFBH"></a>
+<div id="VMSAR621" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">C.3.1</span> Exporting with Multi-Reel Files</h3>
+<p>Multi-reel export files are possible only for HP OpenVMS tapes. These are tapes that are not mounted with the <code dir="ltr">FOREIGN</code> option. The ANSI standard format used by HP OpenVMS for tapes mounted with the <code dir="ltr">FOREIGN</code> option does not define <a id="sthref652"></a>multi-reel volumes. You can usually work around this limitation of the ANSI format by using user-level or table-level exports.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CIHBGAFF"></a>
+<div id="VMSAR622" class="sect2">
+<h3 class="sect2"><span class="secnum">C.3.2</span> Exporting to Multiple Tapes</h3>
+<p>To export to <a id="sthref653"></a><a id="sthref654"></a>multiple tapes, run the following commands:</p>
+<pre dir="ltr">
+$ INIT <span class="italic">tape_device_name</span> <span class="italic">tape_label</span> 
+$ MOUNT/BLOCK=4096 <span class="italic">tape_device_name</span> <span class="italic">tape_label</span> 
+$ EXP <span class="italic">username</span>/<span class="italic">password</span> 
+</pre>
+<p>At this point the export starts, and you are prompted to enter the name of the export file as shown in the following example:</p>
+<pre dir="ltr">
+EXPORT FILE:EXPDAT.DMP &gt; <span class="italic">tape_device_name</span>:<span class="italic">filename</span> 
+</pre>
+<p>The export proceeds to the end of the reel.</p>
+<p>In the computer room where the tapes are kept, perform the following steps:</p>
+<ol>
+<li>
+<p>Ensure that a tape drive is allocated.</p>
+<p>The tape rewinds and dismounts by itself. A request number and a message instructing you to mount the second tape is displayed.</p>
+</li>
+<li>
+<p>Make a note of the request number.</p>
+</li>
+<li>
+<p>Mount the next tape.</p>
+</li>
+<li>
+<p>Enter the following command:</p>
+<pre dir="ltr">
+$ REPLY/TO=<span class="italic">request_number</span> 
+</pre>
+<p>In this command, replace <code dir="ltr"><span class="codeinlineitalic">request_number</span></code> with the request number you noted in Step 2.</p>
+</li>
+</ol>
+<p>Repeat this procedure as many times as required.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CIHDABJG"></a>
+<div id="VMSAR623" class="sect2">
+<h3 class="sect2"><span class="secnum">C.3.3</span> Importing from Multiple Tapes</h3>
+<p>To i<a id="sthref655"></a><a id="sthref656"></a>mport from multiple tapes, the import tape label must be the same as the one for first export tape. In addition, you must have <code dir="ltr">OPER</code> privileges to perform the tasks described in this section.</p>
+<p>To direct the output to the terminal rather than the operator's console, run the <code dir="ltr">REPLY/ENABLE=TAPES</code> command.</p>
+<p>To import from multiple tapes, run the following commands:</p>
+<pre dir="ltr">
+$ MOUNT/BLOCK=4096 <span class="italic">tape_device_name</span> <span class="italic">tape_label</span>
+$ IMP <span class="italic">username</span>/<span class="italic">password</span>
+</pre>
+<p>At this point, the import starts and you are prompted to enter the import file name as follows:</p>
+<pre dir="ltr">
+IMPORT FILE:  EXPDAT.DMP &gt; <span class="italic">tape_device_name</span>:<span class="italic">filename</span>
+</pre>
+<p>The import proceeds to the end of the reel.</p>
+<p>In the computer room where the tapes are kept, perform the following steps:</p>
+<ol>
+<li>
+<p>Ensure that a tape drive is allocated.</p>
+<p>The tape rewinds and dismounts by itself. A request number and a message instructing you to mount the second tape is displayed.</p>
+</li>
+<li>
+<p>Make a note of the request number.</p>
+</li>
+<li>
+<p>Mount the next tape.</p>
+</li>
+<li>
+<p>Enter the following command:</p>
+<pre dir="ltr">
+$ REPLY/TO=<span class="italic">request_number</span> 
+</pre>
+<p>In this command, replace <code dir="ltr"><span class="codeinlineitalic">request_number</span></code> with the request number you noted in the Step 2.</p>
+</li>
+</ol>
+<div class="infobox-note">
+<p class="notep1">Caution:</p>
+Initializing the tape destroys the export.</div>
+<p>Repeat this sequence as many times as required.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1003693"></a>
+<div id="VMSAR624" class="sect1">
+<h2 class="sect1"><span class="secnum">C.4</span> Recovering Data</h2>
+<p>If the <a id="sthref657"></a>server is interrupted by a hardware failure, an operating system error, or an unexpected process termination, then the result can be damaged files or a database that contains inconsistent data. Recovery is then needed to reconstruct the database in such a way that no committed transactions are lost and no uncommitted changes are retained.</p>
+<p>This section describes the procedures for recovering data if media, software, or system fails. In the event of a media failure, you must complete database backups periodically to be able to recover data.</p>
+<ul>
+<li>
+<p><a href="#CIHJCBGB">Section C.4.1, "Overview of Data Recovery"</a></p>
+</li>
+<li>
+<p><a href="#CIHIDCJB">Section C.4.2, "Recovering from Instance Failure"</a></p>
+</li>
+<li>
+<p><a href="#CIHCFIED">Section C.4.3, "Recovering from Media Failure"</a></p>
+</li>
+</ul>
+<a id="CIHJCBGB"></a>
+<div id="VMSAR625" class="sect2">
+<h3 class="sect2"><span class="secnum">C.4.1</span> Overview of Data Recovery</h3>
+<p>Recovering an <a id="sthref658"></a>Oracle Database 11<span class="italic">g</span> database is the process of restoring normal Oracle Database 11<span class="italic">g</span> operations when they are interrupted by operating system error, hardware failure, or process termination. Recovery procedures should ensure that no transactions are lost and that no data is written incorrectly. Consequently, you must back up the database regularly.</p>
+<p>The first step in recovering normal Oracle Database 11<span class="italic">g</span> operation is to determine the type of <a id="sthref659"></a><a id="sthref660"></a><a id="sthref661"></a>failure that has occurred. There are four types of failure, but only two require action:</p>
+<ul>
+<li>
+<p>Instance failure</p>
+</li>
+<li>
+<p>Media failure</p>
+</li>
+</ul>
+<p>When either instance or media failure occurs, you must complete instance or media recovery.</p>
+<p>The other two types of failure, statement failure and process failure, result in automatic<a id="sthref662"></a> recovery.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ADMIN" href="../e25494/toc.htm"><span class="italic">Oracle Database Administrator's Guide</span></a> for more information about statement and process failure</div>
+<p>I<a id="sthref663"></a>nstance recovery is done automatically whenever an instance is started. It can be performed after instance failure by shutting down and then restarting the instance. M<a id="sthref664"></a>edia recovery is similar to instance recovery, but requires the use of database backups or archived redo logs.</p>
+<p>Both instance and media recovery consist of the following two tasks:</p>
+<ul>
+<li>
+<p>Rolling transaction<a id="sthref665"></a>s forward, to redo work that was performed just before the failure</p>
+</li>
+<li>
+<p>Rolling transactions<a id="sthref666"></a> backward, to undo work that was performed but not committed before the failure</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ADMIN" href="../e25494/toc.htm"><span class="italic">Oracle Database Administrator's Guide</span></a> and <a class="olink SUTIL" href="../e22490/toc.htm"><span class="italic">Oracle Database Utilities</span></a> for information about the Oracle Database 11<span class="italic">g</span> utilities used in recovery procedures</div>
+</div>
+<!-- class="sect2" -->
+<a id="CIHIDCJB"></a>
+<div id="VMSAR626" class="sect2">
+<h3 class="sect2"><span class="secnum">C.4.2</span> Recovering from Instance Failure</h3>
+<p>An <a id="sthref667"></a><a id="sthref668"></a>instance has failed when the work that is run within the instance has stopped, meaning that read and write transactions are no longer being processed. Instance failure can be caused by loss of power, system malfunction, an operating system failure, or another hardware or software problem. You can diagnose instance failure by checking if one or more of the detached processes<a id="sthref669"></a> have terminated, or if work in the instance seems to be suspended.</p>
+<p>To recover from instance failure, simply restart the failed instance to restore it to the working state that existed immediately before it failed. Whenever an instance is started, the following events occur:</p>
+<ul>
+<li>
+<p>Both committed and uncommitted transactions recorded in the redo logs are rolled forward.</p>
+</li>
+<li>
+<p>Uncommitted transactions are rolled back.</p>
+</li>
+<li>
+<p>All locks on Oracle Database 11<span class="italic">g</span> resources are released.</p>
+</li>
+</ul>
+<p>To <a id="sthref670"></a>restart an instance after it has failed, perform the following steps:</p>
+<ol>
+<li>
+<p>Shut down the instance with the <code dir="ltr">SHUTDOWN</code> command.<a id="sthref671"></a> You must use either the <code dir="ltr">IMMEDIATE</code> or <code dir="ltr">ABORT</code> option with the command.</p>
+</li>
+<li>
+<p><a id="sthref672"></a>Restart the instance with the <code dir="ltr">STARTUP</code> command.</p>
+</li>
+</ol>
+<p>When the instance is restarted, check the <a id="sthref673"></a>trace files generated in the dump directory by the detached processes. Sometimes, the failure of one or more of the detached processes causes instance failure. If possible, the problem that caused process failure should be diagnosed and corrected to avoid its recurrence.</p>
+<p>On HP OpenVMS Clusters where multiple instances reside on different nodes, a failed instance will be recovered by one of the remaining functional instances within the cluster. However, you must still restart the failed instance.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CIHCFIED"></a>
+<div id="VMSAR627" class="sect2">
+<h3 class="sect2"><span class="secnum">C.4.3</span> Recovering from Media Failure</h3>
+<p>A <a id="sthref674"></a><a id="sthref675"></a>media failure occurs when a nonrecoverable error occurs during a read or write transaction involving one or more of the database files. For example, a disk head failure that causes the loss of any one of the log files, control file, and database files associated with a particular database constitutes media failure. If you are prepared for media failure properly, then you can recover both the system tablespace data files and the non-system tablespace data files.</p>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#BABGCHBE">Section C.4.3.1, "Media Recovery"</a></p>
+</li>
+<li>
+<p><a href="#BABIGIHJ">Section C.4.3.2, "Using an Export File for Media Recovery"</a></p>
+</li>
+</ul>
+<a id="BABGCHBE"></a>
+<div id="VMSAR628" class="sect3">
+<h4 class="sect3"><span class="secnum">C.4.3.1</span> Media Recovery</h4>
+<p>M<a id="sthref676"></a>edia recovery achieves the same results as instance recovery. However, because media failure usually involves loss of data in the database files, media recovery usually requires the use of database backups and archived redo logs. Consequently, you cannot complete a full media recovery automatically as these backups and archived logs are kept offline. Full media recovery requires rather extensive preparation before media failure actually occurs.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ADMIN" href="../e25494/toc.htm"><span class="italic">Oracle Database Administrator's Guide</span></a></div>
+<p>If media failure occurs, then it is unlikely that any of the instances are still operational.</p>
+<p>If you must use an archived redo log file during any of these procedures, then use the HP OpenVMS <a id="sthref677"></a><code dir="ltr">BACKUP</code> utility to copy the archived file from the archive destination. When prompted to supply the log file sequence number, provide the file specification. Provide the full specification if the location is other than the current device and directory. Wildcard characters are not accepted.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BABIGIHJ"></a>
+<div id="VMSAR629" class="sect3">
+<h4 class="sect3"><span class="secnum">C.4.3.2</span> Using an Export File for Media Recovery</h4>
+<p>If you decide to import from an export file as part of media recovery, then you must re-create the database using the SQL*Plus utility before importing the export file. The procedure is as follows:</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a id="sthref678"></a><a id="sthref679"></a><a id="sthref680"></a><a class="olink SUTIL" href="../e22490/toc.htm"><span class="italic">Oracle Database Utilities</span></a> for information about using an export file for media recovery</div>
+<ol>
+<li>
+<p>Back up the current database, redo log, and control files with the HP OpenVMS <code dir="ltr">BACKUP</code> utility.</p>
+</li>
+<li>
+<p>Refer to <a class="olink SUTIL" href="../e22490/toc.htm"><span class="italic">Oracle Database Utilities</span></a> for further information.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="appendix" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1595">
+<tr>
+<td class="cellalignment1604">
+<table class="cellalignment1600">
+<tr>
+<td class="cellalignment1599"><a href="apb.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1599"><a href="apd.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2008, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1606">
+<table class="cellalignment1598">
+<tr>
+<td class="cellalignment1599"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1599"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1599"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1599"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1599"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1599"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

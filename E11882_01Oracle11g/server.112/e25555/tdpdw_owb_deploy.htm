@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Deploying to Target Schemas and Executing ETL Logic</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.1 Build 005" />
+<meta name="dcterms.created" content="2012-02-07T20:3:12Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database 2 Day + Data Warehousing Guide" />
+<meta name="dcterms.identifier" content="E25555-03" />
+<meta name="dcterms.isVersionOf" content="TDPDW" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2007, 2012,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="tdpdw_owb_etl_design.htm" title="Previous" type="text/html" />
+<link rel="Next" href="part3.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e25555.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">11/20</span> <!-- End Header --><a id="BABBDACA"></a><a id="TDPDW11100"></a>
+<h1 class="chapter"><span class="secnum">6</span> Deploying to Target Schemas and Executing ETL Logic</h1>
+<p>This chapter contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1074893">About Deployment</a></p>
+</li>
+<li>
+<p><a href="#i1088602">Deploying Objects</a></p>
+</li>
+<li>
+<p><a href="#BEIDEDIG">Starting ETL Jobs</a></p>
+</li>
+</ul>
+<a id="i1074893"></a>
+<div class="sect1">
+<h2 class="sect1"><a id="TDPDW12062"></a>About Deployment</h2>
+<p>Deployment is the process of creating physical objects in a target location from the logical objects in a Warehouse Builder repository.</p>
+<p>Deploying a mapping or a process flow includes these steps:</p>
+<ul>
+<li>
+<p>Generate the PL/SQL, SQL*Loader, or ABAP script, if necessary.</p>
+</li>
+<li>
+<p>Copy the script from the Design Center to the Control Center. Also copy SQL*Loader control files to the Control Center.</p>
+</li>
+<li>
+<p>Deploy any new connectors; that is, create the database links and database directories between locations.</p>
+</li>
+</ul>
+<p>After deploying a mapping or a process flow, you must explicitly start the scripts.</p>
+<p>You can deploy only those objects for which you have the <code>COMPILE</code> privilege. By default, you have this privilege on all objects in the repository. However, the repository owner may have instituted a different security policy.</p>
+<p>You can deploy directly from the Design Center navigation tree or using the Control Center Manager.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Always maintain objects using Warehouse Builder. Do not modify the deployed, physical objects manually in SQL. Otherwise, the logical objects and the physical objects will not be synchronized, which may cause unpredictable results.</div>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Whenever you deploy an object, Warehouse Builder automatically saves all changes to all design objects to the repository. You can choose to display a warning message by selecting <span class="bold">Prompt for commit</span> on the Preferences dialog box.</div>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref166"></a>
+<h3 class="sect2"><a id="TDPDW12063"></a>What is a Control Center?</h3>
+<p>A Control Center stores detailed information about every deployment, which you can access either by object or by job, including:</p>
+<ul>
+<li>
+<p>The current deployment status of each object</p>
+</li>
+<li>
+<p>A history of all deployment attempts for each object</p>
+</li>
+<li>
+<p>A history of all ETL start attempts for each mapping and process flow</p>
+</li>
+<li>
+<p>A complete log of messages from all deployment jobs</p>
+</li>
+</ul>
+<p>A Control Center is implemented as a schema in the same database as the target location. Each repository has a default Control Center, which was created in the schema of the repository owner. For example, the <code>REP_OWNER</code> repository owner has a schema named <code>REP_OWNER</code> that stores the metadata from both the Design Center and the default Control Center.</p>
+<p>You can use the default Control Center to deploy to the local system, or you can create additional Control Centers for deploying to different systems. Only one Control Center is active at any time.</p>
+<p>The Control Center Manager offers a comprehensive deployment console that enables you to view and manage all aspects of deployment. It provides access to the information stored in the active Control Center.</p>
+<p>You can also access deployment data reports using the Repository Browser, as described in the <span class="italic">Warehouse Builder Online Help</span>.</p>
+<p class="subhead2"><a id="sthref167"></a>To create a new Control Center:</p>
+<ol>
+<li>
+<p>In the Locations Navigator, right-click Control Centers and select <span class="bold">New Control Center</span>.</p>
+<p>The Create Control Center dialog box is displayed.</p>
+</li>
+<li>
+<p>Complete the dialog box. Click the <span class="bold">Help</span> button for additional details.</p>
+</li>
+</ol>
+<p>You can also create a Control Center using the Create Configuration wizard.</p>
+<p class="subhead2"><a id="sthref168"></a>To make a Control Center active:</p>
+<ol>
+<li>
+<p>Create or edit a configuration so that it uses the Control Center.</p>
+</li>
+<li>
+<p>Activate that configuration.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref169"></a>
+<h3 class="sect2"><a id="TDPDW12064"></a>Configuring the Physical Details of Deployment</h3>
+<p>Warehouse Builder separates the logical design of the objects from the physical details of the deployment. It creates this separation by storing the physical details in configuration parameters. An object called a <span class="bold">configuration</span> stores all of the configuration settings. You can create a different configuration for each deployment location, with different settings for the object parameters in each one.</p>
+<p>Before deployment, ensure that you check the configuration of the target objects, the mappings, and the modules.</p>
+<p>For an object to be deployable:</p>
+<ul>
+<li>
+<p>Its target location must be fully defined, valid, and selected for the object's module.</p>
+</li>
+<li>
+<p>Its Deployable parameter must be selected, which it is by default.</p>
+</li>
+<li>
+<p>It must validate and generate without errors.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="BABHDBGE"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><a id="TDPDW12065"></a>Deployment Actions</h3>
+<p>When you define a new object in the Design Center, the object is listed in the Control Center Manager. Each object has a default deployment action, which you can display. The default is set by the previous action and varies depending on the type of object. You can override the default by choosing a different deployment action in the Control Center Manager.</p>
+<p>These are the deployment actions:</p>
+<ul>
+<li>
+<p><span class="bold">Create</span>: Creates the object in the target location. If an object with that name already exists, then an error may occur.</p>
+</li>
+<li>
+<p><span class="bold">Upgrade</span>: Modifies the object without losing data, if possible. You can undo and redo an upgrade. This action is not available for some object types, such as schedules.</p>
+</li>
+<li>
+<p><span class="bold">Drop</span>: Deletes the object from the target location.</p>
+</li>
+<li>
+<p><span class="bold">Replace</span>: Deletes and re-creates the object. This action is quicker than the Upgrade action, but it deletes all data.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref170"></a>
+<h3 class="sect2"><a id="TDPDW12066"></a>The Deployment Process</h3>
+<p>During the life cycle of a data system, you typically perform these steps in the deployment process:</p>
+<ol>
+<li>
+<p>Select a configuration with the object settings and the Control Center that you want to use.</p>
+</li>
+<li>
+<p>Deploy objects to the target location. You can deploy them individually, in stages, or all at once.</p>
+</li>
+<li>
+<p>Review the results of the deployment. If an object fails to deploy, then fix the problem and try again.</p>
+</li>
+<li>
+<p>Start the ETL process.</p>
+</li>
+<li>
+<p>Revise the design of target objects to accommodate user requests, changes to the source data, and so forth.</p>
+</li>
+<li>
+<p>Set the deployment action on the modified objects to <span class="bold">Upgrade</span> or <span class="bold">Replace</span>.</p>
+</li>
+<li>
+<p>Repeat these steps.</p>
+</li>
+</ol>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Warehouse Builder automatically saves all changes to the repository before deployment.</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1088602"></a>
+<div class="sect1">
+<h2 class="sect1"><a id="TDPDW12069"></a>Deploying Objects</h2>
+<p>Deployment is the process of creating physical objects in a target location from the metadata using your generated code. You can deploy an object from the Projects Navigator or using the Control Center Manager. Warehouse Builder automatically validates and generates the object.</p>
+<p>Deployment from the Projects Navigator is restricted to the default action, which may be set to Create, Replace, Drop, or Update. To override the default action, use the Control Center Manager, which provides full control over the deployment process.</p>
+<p class="subhead2"><a id="sthref171"></a>To deploy from the Projects Navigator:</p>
+<p>Select the object and click the Deploy icon on the toolbar.</p>
+<p>Status messages appear at the bottom of the Design Center window. For notification that deployment is complete, select <span class="bold">Show Deployment Completion Messages</span> in your preferences before deploying.</p>
+<p class="subhead2"><a id="sthref172"></a>To open the Control Center Manager:</p>
+<ol>
+<li>
+<p>Open a project.</p>
+</li>
+<li>
+<p>From the Tools menu, select <span class="bold">Control Center Manager</span>.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect1" -->
+<a id="BEIDEDIG"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><a id="TDPDW12070"></a>Starting ETL Jobs</h2>
+<p>ETL is the process of extracting data from its source location, transforming it as defined in a mapping, and loading it into target objects. When you start ETL, you submit it as a job to the Warehouse Builder job queue. The job can start immediately or at a scheduled time, if you use a scheduler such as the one in Oracle Enterprise Manager. Similar to deployment, you can start ETL from the Projects Navigator or using the Control Center Manager. You can also start ETL using tools outside of Warehouse Builder that execute SQL scripts.</p>
+<p class="subhead2"><a id="sthref173"></a>To start ETL from the Projects Navigator:</p>
+<p>Select a mapping or a process flow, then, from the File menu, select <span class="bold">Start</span>.</p>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref174"></a>
+<h3 class="sect2"><a id="TDPDW12071"></a>Viewing the Data</h3>
+<p>After completing ETL, you can check any data object in Warehouse Builder to verify that the results are as you expected.</p>
+<p class="subhead2"><a id="sthref175"></a>To view the data:</p>
+<p>In the Projects Navigator, right-click the object and select <span class="bold">Data</span>. The Data Viewer will open with the contents of the object.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1433">
+<tr>
+<td class="cellalignment1440">
+<table class="cellalignment1438">
+<tr>
+<td class="cellalignment1437"><a href="tdpdw_owb_etl_design.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1437"><a href="part3.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2007, 2012,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1442">
+<table class="cellalignment1436">
+<tr>
+<td class="cellalignment1437"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1437"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1437"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1437"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1437"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1437"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

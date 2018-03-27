@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Partitioning Concepts</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 037" />
+<meta name="dcterms.created" content="2011-09-27T4:11:50Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database VLDB and Partitioning Guide" />
+<meta name="dcterms.identifier" content="E25523-01" />
+<meta name="dcterms.isVersionOf" content="VLDBG" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2008, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="intro.htm" title="Previous" type="text/html" />
+<link rel="Next" href="part_avail.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e25523.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">6/27</span> <!-- End Header --><a id="g471747"></a><a id="VLDBG002"></a>
+<h1 class="chapter"><span class="secnum">2</span> Partitioning Concepts</h1>
+<p><a id="sthref27"></a><a id="sthref28"></a>Partitioning enhances the performance, manageability, and availability of a wide variety of applications and helps reduce the total cost of ownership for storing large amounts of data. Partitioning allows tables, indexes, and index-organized tables to be subdivided into smaller pieces, enabling these database objects to be managed and accessed at a finer level of granularity. Oracle provides a rich variety of partitioning strategies and extensions to address every business requirement. Because it is entirely transparent, partitioning can be applied to almost any application without the need for potentially expensive and time consuming application changes.</p>
+<p>This chapter contains the following sections:</p>
+<ul>
+<li>
+<p><a href="#CACFECJC">Overview of Partitioning</a></p>
+</li>
+<li>
+<p><a href="#CACJFBEB">Benefits of Partitioning</a></p>
+</li>
+<li>
+<p><a href="#i460833">Partitioning Strategies</a></p>
+</li>
+<li>
+<p><a href="#BABJIGAI">Partitioning Extensions</a></p>
+</li>
+<li>
+<p><a href="#i461446">Overview of Partitioned Indexes</a></p>
+</li>
+</ul>
+<a id="CACFECJC"></a><a id="VLDBG1043"></a>
+<div class="sect1">
+<h2 class="sect1">Overview of Partitioning</h2>
+<p><a id="sthref29"></a>Partitioning allows a table, index, or index-organized table to be subdivided into smaller pieces, where each piece of such a database object is called a partition. Each partition has its own name, and may optionally have its own storage characteristics.</p>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#BABCFBCI">Basics of Partitioning</a></p>
+</li>
+<li>
+<p><a href="#BABDFFCD">Partitioning Key</a></p>
+</li>
+<li>
+<p><a href="#BABGGFEB">Partitioned Tables</a></p>
+</li>
+<li>
+<p><a href="#BABDDCHG">Partitioned Index-Organized Tables</a></p>
+</li>
+<li>
+<p><a href="#BABFCBHC">System Partitioning</a></p>
+</li>
+<li>
+<p><a href="#BABIGJJC">Partitioning for Information Lifecycle Management</a></p>
+</li>
+<li>
+<p><a href="#BABCIFJI">Partitioning and LOB Data</a></p>
+</li>
+<li>
+<p><a href="#BABBBFDH">Collections in XMLType and Object Data</a></p>
+</li>
+</ul>
+<a id="BABCFBCI"></a><a id="VLDBG14024"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Basics of Partitioning</h3>
+<p><a id="sthref30"></a>From the perspective of a database administrator, a partitioned object has multiple pieces that can be managed either collectively or individually. This gives an administrator considerable flexibility in managing partitioned objects. However, from the perspective of the application, a partitioned table is identical to a nonpartitioned table; no modifications are necessary when accessing a partitioned table using SQL queries and DML statements.</p>
+<p><a href="#i461710">Figure 2-1</a> offers a graphical view of how partitioned tables differ from nonpartitioned tables.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="i461710"></a><a id="VLDBG1044"></a>Figure 2-1 A View of Partitioned Tables</p>
+<img width="474" height="350" src="img/vldbg008.gif" alt="Description of Figure 2-1 follows" /><br />
+<a id="sthref31" href="img_text/vldbg008.htm">Description of "Figure 2-1 A View of Partitioned Tables"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+All partitions of a partitioned object must reside in tablespaces of a single block size.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink CNCPT250" href="../../server.112/e40540/logical.htm#CNCPT250"><span class="italic">Oracle Database Concepts</span></a> for more information about multiple block sizes</div>
+</div>
+<!-- class="sect2" -->
+<a id="BABDFFCD"></a><a id="VLDBG1045"></a>
+<div class="sect2">
+<h3 class="sect2">Partitioning Key</h3>
+<p><a id="sthref32"></a>Each row in a partitioned table is unambiguously assigned to a single partition. The partitioning key consists of one or more columns that determine the partition where each row is stored. Oracle automatically directs insert, update, and delete operations to the appropriate partition with the partitioning key.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BABGGFEB"></a><a id="VLDBG1046"></a>
+<div class="sect2">
+<h3 class="sect2">Partitioned Tables</h3>
+<p><a id="sthref33"></a><a id="sthref34"></a>Any table can be partitioned into a million separate partitions except those tables containing columns with <code>LONG</code> or <code>LONG</code> <code>RAW</code> data types. You can, however, use tables containing columns with <code>CLOB</code> or <code>BLOB</code> data types.</p>
+<p>This sections contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#BABBDCAC">When to Partition a Table</a></p>
+</li>
+<li>
+<p><a href="#BABIGIJB">When to Partition an Index</a></p>
+</li>
+</ul>
+<div class="infobox-note">
+<p class="notep1"><span class="bold">Note</span>:</p>
+To reduce disk and memory usage (specifically, the buffer cache), you can store tables and partitions of a partitioned table in a compressed format inside the database. This often improves scaleup for read-only operations. Table compression can also speed up query execution. There is, however, a slight cost in CPU overhead.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink CNCPT1132" href="../../server.112/e40540/tablecls.htm#CNCPT1132"><span class="italic">Oracle Database Concepts</span></a> and <a class="olink ADMIN11630" href="../../server.112/e25494/tables.htm#ADMIN11630"><span class="italic">Oracle Database Administrator's Guide</span></a> for more information about table compression</div>
+<a id="BABBDCAC"></a><a id="VLDBG1047"></a>
+<div class="sect3">
+<h4 class="sect3">When to Partition a Table</h4>
+<p><a id="sthref35"></a><a id="sthref36"></a>Here are some suggestions for when to partition a table:</p>
+<ul>
+<li>
+<p>Tables greater than 2 GB should always be considered as candidates for partitioning.</p>
+</li>
+<li>
+<p>Tables containing historical data, in which new data is added into the newest partition. A typical example is a historical table where only the current month's data is updatable and the other 11 months are read only.</p>
+</li>
+<li>
+<p>When the contents of a table must be distributed across different types of storage devices.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<a id="BABIGIJB"></a><a id="VLDBG1048"></a>
+<div class="sect3">
+<h4 class="sect3">When to Partition an Index</h4>
+<p><a id="sthref37"></a><a id="sthref38"></a>Here are some suggestions for when to consider partitioning an index:</p>
+<ul>
+<li>
+<p>Avoid rebuilding the entire index when data is removed.</p>
+</li>
+<li>
+<p>Perform maintenance on parts of the data without invalidating the entire index.</p>
+</li>
+<li>
+<p>Reduce the effect of index skew caused by an index on a column with a monotonically increasing value.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BABDDCHG"></a><a id="VLDBG1049"></a>
+<div class="sect2">
+<h3 class="sect2">Partitioned Index-Organized Tables</h3>
+<p><a id="sthref39"></a>Partitioned index-organized tables are very useful for providing improved performance, manageability, and availability for index-organized tables.</p>
+<p>For partitioning an index-organized table:</p>
+<ul>
+<li>
+<p>Partition columns must be a subset of the primary key columns.</p>
+</li>
+<li>
+<p>Secondary indexes can be partitioned (both locally and globally).</p>
+</li>
+<li>
+<p><code>OVERFLOW</code> data segments are always equipartitioned with the table partitions.</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink CNCPT911" href="../../server.112/e40540/indexiot.htm#CNCPT911"><span class="italic">Oracle Database Concepts</span></a> for more information about index-organized tables</div>
+</div>
+<!-- class="sect2" -->
+<a id="BABFCBHC"></a><a id="VLDBG00226"></a>
+<div class="sect2">
+<h3 class="sect2">System Partitioning</h3>
+<p><a id="sthref40"></a><a id="sthref41"></a>System partitioning enables application-controlled partitioning without having the database controlling the data placement. The database simply provides the ability to break down a table into partitions without knowing what the individual partitions are going to be used for. All aspects of partitioning have to be controlled by the application. For example, an attempt to insert into a system partitioned table without the explicit specification of a partition fails.</p>
+<p>System partitioning provides the well-known benefits of partitioning (scalability, availability, and manageability), but the partitioning and actual data placement are controlled by the application.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ADDCI" href="../../appdev.112/e10765/toc.htm"><span class="italic">Oracle Database Data Cartridge Developer's Guide</span></a> for more information about system partitioning</div>
+</div>
+<!-- class="sect2" -->
+<a id="BABIGJJC"></a><a id="VLDBG1050"></a>
+<div class="sect2">
+<h3 class="sect2">Partitioning for Information Lifecycle Management</h3>
+<p><a id="sthref42"></a>Information Lifecycle Management (ILM) is concerned with managing data during its lifetime. Partitioning plays a key role in ILM because it enables groups of data (that is, partitions) to be distributed across different types of storage devices and managed individually.</p>
+<p>For more information about Information Lifecycle Management, see <a href="part_lifecycle.htm#CACECAFB">Chapter 5, "Using Partitioning for Information Lifecycle Management"</a>.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BABCIFJI"></a><a id="VLDBG1051"></a>
+<div class="sect2">
+<h3 class="sect2">Partitioning and LOB Data</h3>
+<p><a id="sthref43"></a>Unstructured data (such as images and documents) which is stored in a LOB column in a database can also be partitioned. When a table is partitioned, all of the columns reside in the tablespace for that partition, except LOB columns, which can be stored in their own tablespace.</p>
+<p>This technique is very useful when a table consists of large LOBs because they can be stored separately from the main data. This can be beneficial if the main data is being frequently updated but the LOB data is not. For example, an employee record may contain a photo which is unlikely to change frequently. However, the employee personnel details (such as address, department, manager, and so on) could change. This approach also means that less expensive storage can be used for storing the LOB data and more expensive, faster storage can be used for the employee record.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BABBBFDH"></a><a id="VLDBG1052"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Collections in XMLType and Object Data</h3>
+<p><a id="sthref44"></a>Partitioning when using <code>XMLType</code> and obj<a id="sthref45"></a><a id="sthref46"></a>ect tables and columns offers the standard advantages of partitioning, such as enabling tables and indexes to be subdivided into smaller pieces, thus enabling these database objects to be managed and accessed at a finer level of granularity.</p>
+<p>When you partition an <code>XMLType</code> table or a table with an <code>XMLType</code> column using list, range, or hash partitioning, any ordered collection tables (OCTs) within the data are automatically partitioned accordingly, by default. This equipartitioning means that the partitioning of an OCT follows the partitioning scheme of its parent (base) table. There is a corresponding collection-table partition for each partition of the base table. A child element is stored in the collection-table partition that corresponds to the base-table partition of its parent element.</p>
+<p>If you partition a table that has a nested table, then Oracle Database uses the partitioning scheme of the original base table as the basis for how the nested table is partitioned. This partitioning of one base table partition for each nested table partition is called equipartitioning. By default, nested tables are automatically partitioned when the base table is partitioned. Note, however, that composite partitioning is not supported for OCTs or nested tables.</p>
+<p>For information about partitioning an <code>XMLType</code> table, refer to <a href="part_admin001.htm#CDCHCHBD">"Partitioning of Collections in XMLType and Objects"</a>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ADOBJ00608" href="../../appdev.112/e11822/adobjcol.htm#ADOBJ00608"><span class="italic">Oracle Database Object-Relational Developer's Guide</span></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF" href="../e41084/toc.htm"><span class="italic">Oracle Database SQL Language Reference</span></a> for syntax of nested tables</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CACJFBEB"></a><a id="VLDBG1053"></a>
+<div class="sect1">
+<h2 class="sect1">Benefits of Partitioning</h2>
+<p><a id="sthref47"></a>Partitioning can provide tremendous benefit to a wide variety of applications by improving performance, manageability, and availability. It is not unusual for partitioning to greatly improve the performance of certain queries or maintenance operations. Moreover, partitioning can greatly simplify common administration tasks.</p>
+<p>Partitioning also enables database designers and administrators to solve some difficult problems posed by cutting-edge applications. Partitioning is a key tool for building multi-terabyte systems or systems with extremely high availability requirements.</p>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#BABGDFDB">Partitioning for Performance</a></p>
+</li>
+<li>
+<p><a href="#BABJHHDB">Partitioning for Manageability</a></p>
+</li>
+<li>
+<p><a href="#BABBJJIB">Partitioning for Availability</a></p>
+</li>
+</ul>
+<a id="BABGDFDB"></a><a id="VLDBG1054"></a>
+<div class="sect2">
+<h3 class="sect2">Partitioning for Performance</h3>
+<p><a id="sthref48"></a>By limiting the amount of data to be examined or operated on, and by providing data distribution for parallel execution, partitioning provides multiple performance benefits. Partitioning features include:</p>
+<ul>
+<li>
+<p><a href="#I1050101">Partition Pruning</a></p>
+</li>
+<li>
+<p><a href="#I1050102">Partition-Wise Joins</a></p>
+</li>
+</ul>
+<a id="I1050101"></a><a id="VLDBG1055"></a>
+<div class="sect3">
+<h4 class="sect3">Partition Pruning</h4>
+<p><a id="sthref49"></a>Partition pruning is the simplest and also the most substantial means to improve performance using partitioning. Partition pruning can often improve query performance by several orders of magnitude. For example, suppose an application contains an <code>Orders</code> table containing a historical record of orders, and that this table has been partitioned by week. A query requesting orders for a single week would only access a single partition of the <code>Orders</code> table. If the <code>Orders</code> table had 2 years of historical data, then this query would access one partition instead of 104 partitions. This query could potentially execute 100 times faster simply because of partition pruning.</p>
+<p>Partition pruning works with all of Oracle performance features. Oracle uses partition pruning with any indexing or join technique, or parallel access method.</p>
+</div>
+<!-- class="sect3" -->
+<a id="I1050102"></a><a id="VLDBG1056"></a>
+<div class="sect3">
+<h4 class="sect3">Partition-Wise Joins</h4>
+<p><a id="sthref50"></a>Partitioning can also improve the performance of multi-table joins by using a technique known as partition-wise joins. Partition-wise joins can be applied when two tables are being joined and both tables are partitioned on the join key, or when a reference partitioned table is joined with its parent table. Partition-wise joins break a large join into smaller joins that occur between each of the partitions, completing the overall join in less time. This offers significant performance benefits both for serial and parallel execution.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BABJHHDB"></a><a id="VLDBG1057"></a>
+<div class="sect2">
+<h3 class="sect2">Partitioning for Manageability</h3>
+<p><a id="sthref51"></a>Partitioning enables you to partition tables and indexes into smaller, more manageable units, providing database administrators with the ability to pursue a <span class="italic">divide</span> <span class="italic">and</span> <span class="italic">conquer</span> approach to data management. With partitioning, maintenance operations can be focused on particular portions of tables. For example, you could back up a single partition of a table, rather than back up the entire table. For maintenance operations across an entire database object, it is possible to perform these operations on a per-partition basis, thus dividing the maintenance process into more manageable chunks.</p>
+<p>A typical usage of partitioning for manageability is to support a <span class="italic">rolling</span> <span class="italic">window</span> load process in a data warehouse. Suppose that you load new data into a table on a weekly basis. That table could be partitioned so that each partition contains one week of data. The load process is simply the addition of a new partition using a partition exchange load. Adding a single partition is much more efficient than modifying the entire table, because you do not need to modify any other partitions.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BABBJJIB"></a><a id="VLDBG1058"></a>
+<div class="sect2">
+<h3 class="sect2">Partitioning for Availability</h3>
+<p><a id="sthref52"></a>Partitioned database objects provide partition independence. This characteristic of partition independence can be an important part of a high-availability strategy. For example, if one partition of a partitioned table is unavailable, then all of the other partitions of the table remain online and available. The application can continue to execute queries and transactions against the available partitions for the table, and these database operations can run successfully, provided they do not need to access the unavailable partition.</p>
+<p>The database administrator can specify that each partition be stored in a separate tablespace; the most common scenario is having these tablespaces stored on different storage tiers. Storing different partitions in different tablespaces enables you to do backup and recovery operations on each individual partition, independent of the other partitions in the table. Thus allowing the active parts of the database to be made available sooner so access to the system can continue, while the inactive data is still being restored. Moreover, partitioning can reduce scheduled downtime. The performance gains provided by partitioning may enable you to complete maintenance operations on large database objects in relatively small batch windows.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i460833"></a><a id="VLDBG00202"></a>
+<div class="sect1">
+<h2 class="sect1">Partitioning Strategies</h2>
+<p><a id="sthref53"></a>Oracle Partitioning offers three fundamental data distribution methods as basic partitioning strategies that control how data is placed into individual partitions:</p>
+<ul>
+<li>
+<p>Range</p>
+</li>
+<li>
+<p>Hash</p>
+</li>
+<li>
+<p>List</p>
+</li>
+</ul>
+<p>Using these data distribution methods, a table can either be partitioned as a single list or as a composite partitioned table:</p>
+<ul>
+<li>
+<p><a href="#CACBDEIE">Single-Level Partitioning</a></p>
+</li>
+<li>
+<p><a href="#i460895">Composite Partitioning</a></p>
+</li>
+</ul>
+<p>Each partitioning strategy has different advantages and design considerations. Thus, each strategy is more appropriate for a particular situation.</p>
+<a id="CACBDEIE"></a><a id="VLDBG1059"></a>
+<div class="sect2">
+<h3 class="sect2">Single-Level Partitioning</h3>
+<p><a id="sthref54"></a><a id="sthref55"></a>A table is defined by specifying one of the following data distribution methodologies, using one or more columns as the partitioning key:</p>
+<ul>
+<li>
+<p><a href="#i468016">Range Partitioning</a></p>
+</li>
+<li>
+<p><a href="#i462869">Hash Partitioning</a></p>
+</li>
+<li>
+<p><a href="#i460951">List Partitioning</a></p>
+</li>
+</ul>
+<p>For example, consider a table with a column of type <code>NUMBER</code> as the partitioning key and two partitions <span class="bold">less_than_five_hundred</span> and <span class="bold">less_than_one_thousand</span>. The <span class="bold">less_than_one_thousand</span> partition contains rows where the following condition is true:</p>
+<pre>
+500 &lt;= partitioning key &lt; 1000
+</pre>
+<p><a href="#i468083">Figure 2-2</a> offers a graphical view of the basic partitioning strategies for a single-level partitioned table.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="i468083"></a><a id="VLDBG1060"></a>Figure 2-2 List, Range, and Hash Partitioning</p>
+<img width="609" height="287" src="img/vldbg005.gif" alt="Description of Figure 2-2 follows" /><br />
+<a id="sthref56" href="img_text/vldbg005.htm">Description of "Figure 2-2 List, Range, and Hash Partitioning"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<a id="i468016"></a><a id="VLDBG00220"></a>
+<div class="sect3">
+<h4 class="sect3">Range Partitioning</h4>
+<p><a id="sthref57"></a><a id="sthref58"></a>Range partitioning maps data to partitions based on ranges of values of the partitioning key that you establish for each partition. It is the most common type of partitioning and is often used with dates. For a table with a date column as the partitioning key, the <span class="bold">January-2010</span> partition would contain rows with partitioning key values from <span class="bold">01-Jan-2010</span> to <span class="bold">31-Jan-2010</span>.</p>
+<p>Each partition has a <code>VALUES</code> <code>LESS</code> <code>THAN</code> clause, that specifies a non-inclusive upper bound for the partitions. Any values of the partitioning key equal to or higher than this literal are added to the next higher partition. All partitions, except the first, have an implicit lower bound specified by the <code>VALUES</code> <code>LESS</code> <code>THAN</code> clause of the previous partition.</p>
+<p>A <code>MAXVALUE</code> literal can be defined for the highest partition. <code>MAXVALUE</code> represents a virtual infinite value that sorts higher than any other possible value for the partitioning key, including the NULL value.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i462869"></a><a id="VLDBG00222"></a>
+<div class="sect3">
+<h4 class="sect3">Hash Partitioning</h4>
+<p><a id="sthref59"></a><a id="sthref60"></a>Hash partitioning maps data to partitions based on a hashing algorithm that Oracle applies to the partitioning key that you identify. The hashing algorithm evenly distributes rows among partitions, giving partitions approximately the same size.</p>
+<p>Hash partitioning is the ideal method for distributing data evenly across devices. Hash partitioning is also an easy-to-use alternative to range partitioning, especially when the data to be partitioned is not historical or has no obvious partitioning key.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You cannot change the hashing algorithms used by partitioning.</div>
+</div>
+<!-- class="sect3" -->
+<a id="i460951"></a><a id="VLDBG00223"></a>
+<div class="sect3">
+<h4 class="sect3">List Partitioning</h4>
+<p><a id="sthref61"></a><a id="sthref62"></a>List partitioning enables you to explicitly control how rows map to partitions by specifying a list of discrete values for the partitioning key in the description for each partition. The advantage of list partitioning is that you can group and organize unordered and unrelated sets of data in a natural way. For a table with a region column as the partitioning key, the <span class="bold">East</span> <span class="bold">Sales</span> <span class="bold">Region</span> partition might contain values <span class="bold">New</span> <span class="bold">York</span>, <span class="bold">Virginia</span>, and <span class="bold">Florida</span>.</p>
+<p>The <code>DEFAULT</code> partition enables you to avoid specifying all possible values for a list-partitioned table by using a default partition, so that all rows that do not map to any other partition do not generate an error.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i460895"></a><a id="VLDBG00225"></a>
+<div class="sect2">
+<h3 class="sect2">Composite Partitioning</h3>
+<p><a id="sthref63"></a><a id="sthref64"></a>Composite partitioning is a combination of the basic data distribution methods; a table is partitioned by one data distribution method and then each partition is further subdivided into subpartitions using a second data distribution method. All subpartitions for a given partition represent a logical subset of the data.</p>
+<p><a id="sthref65"></a><a id="sthref66"></a>Composite partitioning supports historical operations, such as adding new range partitions, but also provides higher degrees of potential partition pruning and finer granularity of data placement through subpartitioning. <a href="#CACFJBDF">Figure 2-3</a> offers a graphical view of range-hash and range-list composite partitioning, as an example.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CACFJBDF"></a><a id="VLDBG1061"></a>Figure 2-3 Composite Partitioning</p>
+<img width="665" height="266" src="img/vldbg009.gif" alt="Description of Figure 2-3 follows" /><br />
+<a id="sthref67" href="img_text/vldbg009.htm">Description of "Figure 2-3 Composite Partitioning"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>This section describes the following types of partitioning:</p>
+<ul>
+<li>
+<p><a href="#CACFIDEG">Composite Range-Range Partitioning</a></p>
+</li>
+<li>
+<p><a href="#CACBHCEA">Composite Range-Hash Partitioning</a></p>
+</li>
+<li>
+<p><a href="#CACHFHGG">Composite Range-List Partitioning</a></p>
+</li>
+<li>
+<p><a href="#CACBEGAH">Composite List-Range Partitioning</a></p>
+</li>
+<li>
+<p><a href="#CACGBJBB">Composite List-Hash Partitioning</a></p>
+</li>
+<li>
+<p><a href="#CACHGFGD">Composite List-List Partitioning</a></p>
+</li>
+</ul>
+<a id="CACFIDEG"></a><a id="VLDBG1062"></a>
+<div class="sect3">
+<h4 class="sect3">Composite Range-Range Partitioning</h4>
+<p><a id="sthref68"></a><a id="sthref69"></a>Composite range-range partitioning enables logical range partitioning along two dimensions; for example, partition by <code>order_date</code> and range subpartition by <code>shipping_date</code>.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CACBHCEA"></a><a id="VLDBG1063"></a>
+<div class="sect3">
+<h4 class="sect3">Composite Range-Hash Partitioning</h4>
+<p><a id="sthref70"></a><a id="sthref71"></a>Composite range-hash partitioning partitions data using the range method, and within each partition, subpartitions it using the hash method. Composite range-hash partitioning provides the improved manageability of range partitioning and the data placement, striping, and parallelism advantages of hash partitioning.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CACHFHGG"></a><a id="VLDBG1064"></a>
+<div class="sect3">
+<h4 class="sect3">Composite Range-List Partitioning</h4>
+<p><a id="sthref72"></a><a id="sthref73"></a>Composite range-list partitioning partitions data using the range method, and within each partition, subpartitions it using the list method. Composite range-list partitioning provides the manageability of range partitioning and the explicit control of list partitioning for the subpartitions.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CACBEGAH"></a><a id="VLDBG1065"></a>
+<div class="sect3">
+<h4 class="sect3">Composite List-Range Partitioning</h4>
+<p><a id="sthref74"></a><a id="sthref75"></a>Composite list-range partitioning enables logical range subpartitioning within a given list partitioning strategy; for example, list partition by <code>country_id</code> and range subpartition by <code>order_date</code>.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CACGBJBB"></a><a id="VLDBG1066"></a>
+<div class="sect3">
+<h4 class="sect3">Composite List-Hash Partitioning</h4>
+<p><a id="sthref76"></a><a id="sthref77"></a>Composite list-hash partitioning enables hash subpartitioning of a list-partitioned object; for example, to enable partition-wise joins.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CACHGFGD"></a><a id="VLDBG1067"></a>
+<div class="sect3">
+<h4 class="sect3">Composite List-List Partitioning</h4>
+<p><a id="sthref78"></a><a id="sthref79"></a>Composite list-list partitioning enables logical list partitioning along two dimensions; for example, list partition by <code>country_id</code> and list subpartition by <code>sales_channel</code>.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BABJIGAI"></a><a id="VLDBG00204"></a>
+<div class="sect1">
+<h2 class="sect1">Partitioning Extensions</h2>
+<p><a id="sthref80"></a><a id="sthref81"></a>In addition to the basic partitioning strategies, Oracle Database provides the following types of partitioning extensions:</p>
+<ul>
+<li>
+<p><a href="#CACICEBJ">Manageability Extensions</a></p>
+</li>
+<li>
+<p><a href="#CACCEJDI">Partitioning Key Extensions</a></p>
+</li>
+</ul>
+<a id="CACICEBJ"></a><a id="VLDBG1068"></a>
+<div class="sect2">
+<h3 class="sect2">Manageability Extensions</h3>
+<p><a id="sthref82"></a><a id="sthref83"></a>The following extensions significantly enhance the manageability of partitioned tables:</p>
+<ul>
+<li>
+<p><a href="#CACHFHHF">Interval Partitioning</a></p>
+</li>
+<li>
+<p><a href="#CACEAGDC">Partition Advisor</a></p>
+</li>
+</ul>
+<a id="CACHFHHF"></a><a id="VLDBG00221"></a>
+<div class="sect3">
+<h4 class="sect3">Interval Partitioning</h4>
+<p><a id="sthref84"></a><a id="sthref85"></a>Interval partitioning is an extension of range partitioning which instructs the database to automatically create partitions of a specified interval when data inserted into the table exceeds all of the existing range partitions. You must specify at least one range partition. The range partitioning key value determines the high value of the range partitions, which is called the transition point, and the database creates interval partitions for data with values that are beyond that transition point. The lower boundary of every interval partition is the non-inclusive upper boundary of the previous range or interval partition.</p>
+<p>For example, if you create an interval partitioned table with monthly intervals and you set the transition point at January 1, 2007, then the lower boundary for the January 2007 interval is January 1, 2007. The lower boundary for the July 2007 interval is July 1, 2007, regardless of whether the June 2007 partition was created.</p>
+<p>When using interval partitioning, consider the following restrictions:</p>
+<ul>
+<li>
+<p>You can only specify one partitioning key column, and it must be of <code>NUMBER</code> or <code>DATE</code> type.</p>
+</li>
+<li>
+<p>Interval partitioning is not supported for index-organized tables.</p>
+</li>
+<li>
+<p>You cannot create a domain index on an interval-partitioned table.</p>
+</li>
+</ul>
+<p>You can create single-level interval partitioned tables and the following composite partitioned tables:</p>
+<ul>
+<li>
+<p>Interval-range</p>
+</li>
+<li>
+<p>Interval-hash</p>
+</li>
+<li>
+<p>Interval-list</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<a id="CACEAGDC"></a><a id="VLDBG1069"></a>
+<div class="sect3">
+<h4 class="sect3">Partition Advisor</h4>
+<p><a id="sthref86"></a><a id="sthref87"></a><a id="sthref88"></a>The Partition Advisor is part of the SQL Access Advisor. The Partition Advisor can recommend a partitioning strategy for a table based on a supplied workload of SQL statements which can be supplied by the SQL Cache, a SQL Tuning set, or be defined by the user.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CACCEJDI"></a><a id="VLDBG1070"></a>
+<div class="sect2">
+<h3 class="sect2">Partitioning Key Extensions</h3>
+<p><a id="sthref89"></a><a id="sthref90"></a>The following extensions extend the flexibility in defining partitioning keys:</p>
+<ul>
+<li>
+<p><a href="#CACIHDII">Reference Partitioning</a></p>
+</li>
+<li>
+<p><a href="#CACFEGDG">Virtual Column-Based Partitioning</a></p>
+</li>
+</ul>
+<a id="CACIHDII"></a><a id="VLDBG00224"></a>
+<div class="sect3">
+<h4 class="sect3">Reference Partitioning</h4>
+<p><a id="sthref91"></a><a id="sthref92"></a>Reference partitioning enables the partitioning of two tables that are related to one another by referential constraints. The partitioning key is resolved through an existing parent-child relationship, enforced by enabled and active primary key and foreign key constraints.</p>
+<p>The benefit of this extension is that tables with a parent-child relationship can be logically equipartitioned by inheriting the partitioning key from the parent table without duplicating the key columns. The logical dependency also automatically cascades partition maintenance operations, thus making application development easier and less error-prone.</p>
+<p>An example of reference partitioning is the <code>Orders</code> and <code>LineItems</code> tables related to each other by a referential constraint <code>orderid_refconstraint</code>. Namely, <code>LineItems.order_id</code> references <code>Orders.order_id</code>. The <code>Orders</code> table is range partitioned on <code>order_date</code>. Reference partitioning on <code>orderid_refconstraint</code> for <code>LineItems</code> leads to creation of the following partitioned table, which is equipartitioned on the <code>Orders</code> table, as shown in <a href="#CJHCCCII">Figure 2-4</a> and <a href="#CJHHBACJ">Figure 2-5</a>.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CJHCCCII"></a><a id="VLDBG1071"></a>Figure 2-4 Before Reference Partitioning</p>
+<img width="488" height="362" src="img/vldbg001.gif" alt="Description of Figure 2-4 follows" /><br />
+<a id="sthref93" href="img_text/vldbg001.htm">Description of "Figure 2-4 Before Reference Partitioning"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<div class="figure">
+<p class="titleinfigure"><a id="CJHHBACJ"></a><a id="VLDBG1072"></a>Figure 2-5 With Reference Partitioning</p>
+<img width="489" height="363" src="img/vldbg002.gif" alt="Description of Figure 2-5 follows" /><br />
+<a id="sthref94" href="img_text/vldbg002.htm">Description of "Figure 2-5 With Reference Partitioning"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>All basic partitioning strategies are available for reference partitioning. Interval partitioning cannot be used with reference partitioning.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CACFEGDG"></a><a id="VLDBG00227"></a>
+<div class="sect3">
+<h4 class="sect3">Virtual Column-Based Partitioning</h4>
+<p><a id="sthref95"></a><a id="sthref96"></a>In previous releases of Oracle Database, a table could only be partitioned if the partitioning key physically existed in the table. Virtual columns remove that restriction and enable the partitioning key to be defined by an expression, using one or more existing columns of a table. The expression is stored as metadata only.</p>
+<p>Oracle Partitioning has been enhanced to enable a partitioning strategy to be defined on virtual columns. For example, a 10-digit account ID can include account branch information as the leading three digits. With the extension of virtual column based partitioning, an <code>ACCOUNTS</code> table containing an <code>ACCOUNT_ID</code> column can be extended with a virtual (derived) column <code>ACCOUNT_BRANCH</code>. <code>ACCOUNT_BRANCH</code> is derived from the first three digits of the <code>ACCOUNT_ID</code> column, which becomes the partitioning key for this table.</p>
+<p>Virtual column-based partitioning is supported with all basic partitioning strategies, including reference partitioning, and interval and interval-* composite partitioning.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i461446"></a><a id="VLDBG00203"></a>
+<div class="sect1">
+<h2 class="sect1">Overview of Partitioned Indexes</h2>
+<p><a id="sthref97"></a><a id="sthref98"></a>Just like partitioned tables, partitioned indexes improve manageability, availability, performance, and scalability. They can either be partitioned independently (global indexes) or automatically linked to a table's partitioning method (local indexes). In general, you should use global indexes for OLTP applications and local indexes for data warehousing or decision support systems (DSS) applications. Also, whenever possible, try to use local indexes because they are easier to manage.</p>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#BABDAAGE">Deciding on the Type of Partitioned Index to Use</a></p>
+</li>
+<li>
+<p><a href="#BABECAAE">Local Partitioned Indexes</a></p>
+</li>
+<li>
+<p><a href="#BABEIBGH">Global Partitioned Indexes</a></p>
+</li>
+<li>
+<p><a href="#BABGCIIJ">Global Nonpartitioned Indexes</a></p>
+</li>
+<li>
+<p><a href="#BABCIHFD">Miscellaneous Information about Creating Indexes on Partitioned Tables</a></p>
+</li>
+<li>
+<p><a href="#BABCJHGB">Partitioned Indexes on Composite Partitions</a></p>
+</li>
+</ul>
+<a id="BABDAAGE"></a><a id="VLDBG14025"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Deciding on the Type of Partitioned Index to Use</h3>
+<p><a id="sthref99"></a><a id="sthref100"></a>When deciding what kind of partitioned index to use, you should consider the following guidelines in this order:</p>
+<ol>
+<li>
+<p>If the table partitioning column is a subset of the index keys, then use a local index. If this is the case, then you are finished. If this is not the case, then continue to guideline 2.</p>
+</li>
+<li>
+<p>If the index is unique and does not include the partitioning key columns, then use a global index. If this is the case, then you are finished. Otherwise, continue to guideline 3.</p>
+</li>
+<li>
+<p>If your priority is manageability, then use a local index. If this is the case, then you are finished. If this is not the case, continue to guideline 4.</p>
+</li>
+<li>
+<p>If the application is an OLTP type and users need quick response times, then use a global index. If the application is a DSS type and users are more interested in throughput, then use a local index.</p>
+</li>
+</ol>
+<p>For more information about partitioned indexes and how to decide which type to use, refer to <a href="part_warehouse.htm#g1020112">Chapter 6, "Using Partitioning in a Data Warehouse Environment"</a> and <a href="part_oltp.htm#CEGECIGF">Chapter 7, "Using Partitioning in an Online Transaction Processing Environment"</a>.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BABECAAE"></a><a id="VLDBG1073"></a>
+<div class="sect2">
+<h3 class="sect2">Local Partitioned Indexes</h3>
+<p><a id="sthref101"></a><a id="sthref102"></a>Local partitioned indexes are easier to manage than other types of partitioned indexes. They also offer greater availability and are common in DSS environments. <a id="sthref103"></a><a id="sthref104"></a>The reason for this is equipartitioning: each partition of a local index is associated with exactly one partition of the table. This functionality enables Oracle to automatically keep the index partitions synchronized with the table partitions, and makes each table-index pair independent. Any actions that make one partition's data invalid or unavailable only affect a single partition.</p>
+<p>Local partitioned indexes support more availability when there are partition or subpartition maintenance operations on the table. A type of index called a local nonprefixed index is very useful for historical databases. In this type of index, the partitioning is not on the left prefix of the index columns. For more information about prefixed indexes, refer to <a href="part_avail.htm#CIHJCJJF">"Index Partitioning"</a>.</p>
+<p>You cannot explicitly add a partition to a local index. Instead, new partitions are added to local indexes only when you add a partition to the underlying table. Likewise, you cannot explicitly drop a partition from a local index. Instead, local index partitions are dropped only when you drop a partition from the underlying table.</p>
+<p>A local index can be unique. However, in order for a local index to be unique, the partitioning key of the table must be part of the index's key columns.</p>
+<p><a href="#i461879">Figure 2-6</a> offers a graphical view of local partitioned indexes.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="i461879"></a><a id="VLDBG1074"></a>Figure 2-6 Local Partitioned Index</p>
+<img width="513" height="183" src="img/vldbg003.gif" alt="Description of Figure 2-6 follows" /><br />
+<a id="sthref105" href="img_text/vldbg003.htm">Description of "Figure 2-6 Local Partitioned Index"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>For more information about local partitioned indexes, refer to <a href="part_avail.htm#BABFEDIA">"Local Partitioned Indexes"</a>.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BABEIBGH"></a><a id="VLDBG1075"></a>
+<div class="sect2">
+<h3 class="sect2">Global Partitioned Indexes</h3>
+<p><a id="sthref106"></a><a id="sthref107"></a>Oracle offers global range partitioned indexes and global hash partitioned indexes, discussed in the following topics:</p>
+<ul>
+<li>
+<p><a href="#CACEGJDA">Global Range Partitioned Indexes</a></p>
+</li>
+<li>
+<p><a href="#BABFFIDG">Global Hash Partitioned Indexes</a></p>
+</li>
+<li>
+<p><a href="#BABJHGFJ">Maintenance of Global Partitioned Indexes</a></p>
+</li>
+</ul>
+<a id="CACEGJDA"></a><a id="VLDBG1076"></a>
+<div class="sect3">
+<h4 class="sect3">Global Range Partitioned Indexes</h4>
+<p><a id="sthref108"></a><a id="sthref109"></a>Global range partitioned indexes are flexible in that the degree of partitioning and the partitioning key are independent from the table's partitioning method.</p>
+<p>The highest partition of a global index must have a partition bound, all of whose values are <code>MAXVALUE</code>. This ensures that all rows in the underlying table can be represented in the index. Global prefixed indexes can be unique or nonunique.</p>
+<p>You cannot add a partition to a global index because the highest partition always has a partition bound of <code>MAXVALUE</code>. To add a new highest partition, use the <code>ALTER</code> <code>INDEX</code> <code>SPLIT</code> <code>PARTITION</code> statement. If a global index partition is empty, you can explicitly drop it by issuing the <code>ALTER</code> <code>INDEX</code> <code>DROP</code> <code>PARTITION</code> statement. If a global index partition contains data, dropping the partition causes the next highest partition to be marked unusable. You cannot drop the highest partition in a global index.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BABFFIDG"></a><a id="VLDBG1077"></a>
+<div class="sect3">
+<h4 class="sect3">Global Hash Partitioned Indexes</h4>
+<p><a id="sthref110"></a><a id="sthref111"></a>Global hash partitioned indexes improve performance by spreading out contention when the index is monotonically growing. In other words, most of the index insertions occur only on the right edge of an index.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BABJHGFJ"></a><a id="VLDBG1078"></a>
+<div class="sect3">
+<h4 class="sect3"><a id="sthref112"></a>Maintenance of Global Partitioned Indexes</h4>
+<p>By default, the following operations on partitions on a heap-organized table mark all global indexes as unusable:</p>
+<pre>
+ADD (HASH) 
+COALESCE (HASH) 
+DROP 
+EXCHANGE 
+MERGE 
+MOVE 
+SPLIT 
+TRUNCATE 
+</pre>
+<p>These indexes can be maintained by appending the clause <code>UPDATE INDEXES</code> to the SQL statements for the operation. The two advantages to maintaining global indexes:</p>
+<ul>
+<li>
+<p>The index remains available and online throughout the operation. Hence no other applications are affected by this operation.</p>
+</li>
+<li>
+<p>The index does not have to be rebuilt after the operation.</p>
+</li>
+</ul>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+This feature is supported only for heap-organized tables.</div>
+<p><a href="#i463810">Figure 2-7</a> offers a graphical view of global partitioned indexes.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="i463810"></a><a id="VLDBG1079"></a>Figure 2-7 Global Partitioned Index</p>
+<img width="425" height="240" src="img/vldbg007.gif" alt="Description of Figure 2-7 follows" /><br />
+<a id="sthref113" href="img_text/vldbg007.htm">Description of "Figure 2-7 Global Partitioned Index"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>For more information about global partitioned indexes, refer to <a href="part_avail.htm#BABDCGFE">"Global Partitioned Indexes"</a>.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BABGCIIJ"></a><a id="VLDBG1080"></a>
+<div class="sect2">
+<h3 class="sect2">Global Nonpartitioned Indexes</h3>
+<p><a id="sthref114"></a><a id="sthref115"></a>Global nonpartitioned indexes behave just like a nonpartitioned index.</p>
+<p><a href="#i461911">Figure 2-8</a> offers a graphical view of global nonpartitioned indexes.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="i461911"></a><a id="VLDBG1081"></a>Figure 2-8 Global Nonpartitioned Index</p>
+<img width="420" height="189" src="img/vldbg006.gif" alt="Description of Figure 2-8 follows" /><br />
+<a id="sthref116" href="img_text/vldbg006.htm">Description of "Figure 2-8 Global Nonpartitioned Index"</a><br />
+<br /></div>
+<!-- class="figure" --></div>
+<!-- class="sect2" -->
+<a id="BABCIHFD"></a><a id="VLDBG1082"></a>
+<div class="sect2">
+<h3 class="sect2">Miscellaneous Information about Creating Indexes on Partitioned Tables</h3>
+<p><a id="sthref117"></a><a id="sthref118"></a>You can create bitmap indexes on partitioned tables, with the restriction that the bitmap indexes must be local to the partitioned table. They cannot be global indexes.</p>
+<p>Global indexes can be unique. Local indexes can only be unique if the partitioning key is a part of the index key.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BABCJHGB"></a><a id="VLDBG1083"></a>
+<div class="sect2">
+<h3 class="sect2">Partitioned Indexes on Composite Partitions</h3>
+<p><a id="sthref119"></a><a id="sthref120"></a>Here are a few points to remember when using partitioned indexes on composite partitions:</p>
+<ul>
+<li>
+<p>Subpartitioned indexes are always local and stored with the table subpartition by default.</p>
+</li>
+<li>
+<p>Tablespaces can be specified at either index or index subpartition levels.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1828">
+<tr>
+<td class="cellalignment1837">
+<table class="cellalignment1833">
+<tr>
+<td class="cellalignment1832"><a href="intro.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1832"><a href="part_avail.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2008, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1840">
+<table class="cellalignment1831">
+<tr>
+<td class="cellalignment1832"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1832"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1832"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1832"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1832"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1832"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

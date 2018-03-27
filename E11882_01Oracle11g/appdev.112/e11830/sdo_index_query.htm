@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Indexing and Querying Spatial Data</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 743" />
+<meta name="description" content="Provides usage and reference information for indexing and storing spatial data and for developing spatial applications using Oracle Spatial and Graph and Oracle Locator." />
+<meta name="dcterms.created" content="2013-11-26T3:11:44Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Spatial Developer's Guide" />
+<meta name="dcterms.identifier" content="E11830-15" />
+<meta name="dcterms.isVersionOf" content="SPATL" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1999, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="sdo_objload.htm" title="Previous" type="text/html" />
+<link rel="Next" href="sdo_cs_concepts.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e11830.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">13/51</span> <!-- End Header -->
+<div id="SPATL040" class="chapter"><a id="g1010227"></a>
+<h1 class="chapter"><span class="secnum">5</span> Indexing and Querying Spatial Data</h1>
+<p>After you have loaded spatial data (discussed in <a href="sdo_objload.htm#g1007347">Chapter 4</a>), you should create a spatial index on it to enable efficient query performance using the data. This chapter describes how to:</p>
+<ul>
+<li>
+<p>Create a spatial index (see <a href="#i1000846">Section 5.1</a>)</p>
+</li>
+<li>
+<p>Query spatial data efficiently, based on an understanding of the Oracle Spatial query model and primary and secondary filtering (see <a href="#g1010114">Section 5.2</a>)</p>
+</li>
+</ul>
+<a id="i1000846"></a>
+<div id="SPATL583" class="sect1">
+<h2 class="sect1"><span class="secnum">5.1</span> Creating a Spatial Index</h2>
+<p><a id="sthref348"></a>Once data has been loaded into the spatial tables through either bulk or transactional loading, a spatial index (that is, a spatial R-tree index) must be created on each geometry column in the tables for efficient access to the data. For example, the following statement creates a spatial index named <code>territory_idx</code> using default values for all parameters:</p>
+<pre>
+CREATE INDEX territory_idx ON territories (territory_geom)
+   INDEXTYPE IS MDSYS.SPATIAL_INDEX;
+</pre>
+<p>For detailed information about options for creating a spatial index, see the documentation for the <a href="sdo_objindex.htm#i78196">CREATE INDEX</a> statement in <a href="sdo_objindex.htm#g999465">Chapter 18</a>.</p>
+<p>If the index creation does not complete for any reason, the index is invalid and must be deleted with the <a href="sdo_objindex.htm#i78197">DROP INDEX</a> &lt;index_name&gt; [FORCE] statement.</p>
+<p>Within each geometry column to be indexed, all the geometries must have the same SDO_SRID value.</p>
+<p>Spatial indexes can be built on two, three, or four dimensions of data. The default number of dimensions is two, but if the data has more than two dimensions, you can use the <code>sdo_indx_dims</code> parameter keyword to specify the number of dimensions on which to build the index. (For information about support for three-dimensional geometries, see <a href="sdo_intro.htm#BABIDJJB">Section 1.11</a>. For an explanation of support for various combinations of dimensionality in query elements, see <a href="#BGBDDHIB">Section 5.2.3</a>.)</p>
+<p>If you are <span class="italic">not</span> using the automatic undo management feature or the PGA memory management feature, or both, of Oracle Database, see <a href="#BGBEACFE">Section 5.1.7</a> for information about initialization parameter values that you may need to set. Both automatic undo management and PGA memory management are enabled by default, and their use is highly recommended.</p>
+<p>The tablespace specified with the <code>tablespace</code> keyword in the <a href="sdo_objindex.htm#i78196">CREATE INDEX</a> statement (or the default tablespace if the <code>tablespace</code> keyword is not specified) is used to hold both the index data table and some transient tables that are created for internal computations. If you specify WORK_TABLESPACE as the tablespace, the transient tables are stored in the work tablespace.</p>
+<p>For large tables (over 1 million rows), a temporary tablespace may be needed to perform internal sorting operations. The recommended size for this temporary tablespace is 100*<span class="italic">n</span> bytes, where <span class="italic">n</span> is the number of rows in the table, up to a maximum requirement of 1 gigabyte of temporary tablespace.</p>
+<p>To estimate the space that will be needed to create a spatial index, use the <a href="sdo_objtune.htm#CBDEBGEA">SDO_TUNE.ESTIMATE_RTREE_INDEX_SIZE</a> function, described in <a href="sdo_objtune.htm#g1000942">Chapter 31</a>.</p>
+<a id="i1006399"></a>
+<div id="SPATL584" class="sect2">
+<h3 class="sect2"><span class="secnum">5.1.1</span> Constraining <a id="sthref349"></a><a id="sthref350"></a><a id="sthref351"></a><a id="sthref352"></a><a id="sthref353"></a>Data to a Geometry Type</h3>
+<p>When you create or rebuild a spatial index, you can ensure that all geometries that are in the table or that are inserted later are of a specified geometry type. To constrain the data to a geometry type in this way, use the <code>layer_gtype</code> keyword in the PARAMETERS clause of the <a href="sdo_objindex.htm#i78196">CREATE INDEX</a> or <a href="sdo_objindex.htm#i78198">ALTER INDEX REBUILD</a> statement, and specify a value from the Geometry Type column of <a href="sdo_objrelschema.htm#g1013735">Table 2-1</a> in <a href="sdo_objrelschema.htm#i1005614">Section 2.2.1</a>. For example, to constrain spatial data in a layer to polygons:</p>
+<pre>
+CREATE INDEX cola_spatial_idx
+ON cola_markets(shape)
+INDEXTYPE IS MDSYS.SPATIAL_INDEX
+PARAMETERS ('layer_gtype=POLYGON');
+</pre>
+<p>The geometry types in <a href="sdo_objrelschema.htm#g1013735">Table 2-1</a> are considered as a hierarchy when data is checked:</p>
+<ul>
+<li>
+<p>The <span class="italic">MULTI</span> forms include the regular form also. For example, specifying <code>'layer_gtype=</code><code>MULTIPOINT'</code> allows the layer to include both POINT and MULTIPOINT geometries.</p>
+</li>
+<li>
+<p>COLLECTION allows the layer to include all types of geometries.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="i1003643"></a>
+<div id="SPATL585" class="sect2">
+<h3 class="sect2"><span class="secnum">5.1.2</span> Creating <a id="sthref354"></a><a id="sthref355"></a><a id="sthref356"></a>a Cross-Schema Index</h3>
+<p>You can create a spatial index on a table that is not in your schema. Assume that user B wants to create a spatial index on column GEOMETRY in table T1 under user A's schema. Follow these steps:</p>
+<ol>
+<li>
+<p>Connect to the database as a privileged user (for example, as SYSTEM), and execute the following statement:</p>
+<pre>
+GRANT create table, create sequence to B;
+</pre></li>
+<li>
+<p>Connect as a privileged user or as user A (or have user A connect), and execute the following statement:</p>
+<pre>
+GRANT select, index on A.T1 to B;
+</pre></li>
+<li>
+<p>Connect as user B and execute a statement such as the following:</p>
+<pre>
+CREATE INDEX t1_spatial_idx on A.T1(geometry)
+  INDEXTYPE IS mdsys.spatial_index;
+</pre></li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="i1005901"></a>
+<div id="SPATL586" class="sect2">
+<h3 class="sect2"><span class="secnum">5.1.3</span> Using <a id="sthref357"></a><a id="sthref358"></a><a id="sthref359"></a>Partitioned Spatial Indexes</h3>
+<p>You can create a partitioned spatial index on a partitioned table. This section describes usage considerations specific to Oracle Spatial. For a detailed explanation of partitioned tables and partitioned indexes, see <a class="olink ADMIN" href="../../server.112/e25494/toc.htm"><span class="italic">Oracle Database Administrator's Guide</span></a>.</p>
+<p>A partitioned spatial index can provide the following benefits:</p>
+<ul>
+<li>
+<p>Reduced response times for long-running queries, because partitioning reduces disk I/O operations</p>
+</li>
+<li>
+<p>Reduced response times for concurrent queries, because I/O operations run concurrently on each partition</p>
+</li>
+<li>
+<p>Easier index maintenance, because of partition-level create and rebuild operations</p>
+<p>Indexes on partitions can be rebuilt without affecting the queries on other partitions, and storage parameters for each local index can be changed independent of other partitions.</p>
+</li>
+<li>
+<p>Parallel query on multiple partition searching</p>
+<p>The degree of parallelism is the value from the DEGREE column in the row for the index in the USER_INDEXES view (that is, the value specified or defaulted for the PARALLEL keyword with the <a href="sdo_objindex.htm#i78196">CREATE INDEX</a>, <a href="sdo_objindex.htm#BAJFIDIB">ALTER INDEX</a>, or <a href="sdo_objindex.htm#i78198">ALTER INDEX REBUILD</a> statement).</p>
+</li>
+<li>
+<p>Improved query processing in multiprocessor system environments</p>
+<p>In a multiprocessor system environment, if a spatial operator is invoked on a table with partitioned spatial index and if multiple partitions are involved in the query, multiple processors can be used to evaluate the query. The number of processors used is determined by the degree of parallelism and the number of partitions used in evaluating the query.</p>
+</li>
+</ul>
+<p>The following restrictions apply to spatial index partitioning:</p>
+<ul>
+<li>
+<p>The partition key for spatial tables must be a scalar value, and must not be a spatial column.</p>
+</li>
+<li>
+<p>Only range partitioning is supported on the underlying table. All other kinds of partitioning are not currently supported for partitioned spatial indexes.</p>
+</li>
+</ul>
+<p>To create a partitioned spatial index, you must specify the LOCAL keyword. (If you do not specify the LOCAL keyword, a nonpartitioned spatial index is created on the data in all table partitions.) The following example creates a partitioned spatial index:</p>
+<pre>
+CREATE INDEX counties_idx ON counties(geometry)
+   INDEXTYPE IS MDSYS.SPATIAL_INDEX LOCAL;
+</pre>
+<p>In this example, the default values are used for the number and placement of index partitions, namely:</p>
+<ul>
+<li>
+<p>Index partitioning is based on the underlying table partitioning. For each table partition, a corresponding index partition is created.</p>
+</li>
+<li>
+<p>Each index partition is placed in the default tablespace.</p>
+</li>
+</ul>
+<p>If you do specify parameters for individual partitions, the following considerations apply:</p>
+<ul>
+<li>
+<p>The storage characteristics for each partition can be the same or different for each partition. If they are different, it may enable parallel I/O (if the tablespaces are on different disks) and may improve performance.</p>
+</li>
+<li>
+<p>The <code>sdo_indx_dims</code> value must be the same for all partitions.</p>
+</li>
+<li>
+<p>The <code>layer_gtype</code> parameter value (see <a href="#i1006399">Section 5.1.1</a>) used for each partition may be different.</p>
+</li>
+</ul>
+<p>To override the default partitioning values, use a CREATE INDEX statement with the following general format:</p>
+<pre>
+CREATE INDEX &lt;indexname&gt; ON &lt;table&gt;(&lt;column&gt;) 
+  INDEXTYPE IS MDSYS.SPATIAL_INDEX 
+     [PARAMETERS ('&lt;spatial-params&gt;, &lt;storage-params&gt;')] LOCAL 
+     [( PARTITION &lt;index_partition&gt; 
+        PARAMETERS ('&lt;spatial-params&gt;, &lt;storage-params&gt;') 
+     [, PARTITION &lt;index_partition&gt; 
+        PARAMETERS ('&lt;spatial-params&gt;, &lt;storage-params&gt;')] 
+     )] 
+</pre>
+<p>Queries can operate on partitioned tables to perform the query on only one partition. For example:</p>
+<pre>
+SELECT * FROM counties PARTITION(p1)
+    WHERE ...&lt;some-spatial-predicate&gt;;
+</pre>
+<p>Querying on a selected partition may speed up the query and also improve overall throughput when multiple queries operate on different partitions concurrently.</p>
+<p>When queries use a partitioned spatial index, the semantics (meaning or behavior) of spatial operators and functions is the same with partitioned and nonpartitioned indexes, except in the case of <a href="sdo_operat.htm#i78067">SDO_NN</a> (nearest neighbor). With <a href="sdo_operat.htm#i78067">SDO_NN</a>, the requested number of geometries is returned for each partition that is affected by the query. (See the description of the <a href="sdo_operat.htm#i78067">SDO_NN</a> operator in <a href="sdo_operat.htm#g1001037">Chapter 19</a> for more information.)</p>
+<p>For example, if you request the 5 closest restaurants to a point and the spatial index has 4 partitions, <a href="sdo_operat.htm#i78067">SDO_NN</a> returns up to 20 (5*4) geometries. In this case, you must use the ROWNUM pseudocolumn (here, <code>WHERE ROWNUM &lt;=5</code>) to return the 5 closest restaurants, and the ORDER BY clause to sort the results by distance in miles. <a href="#BABEBDJH">Example 5-1</a> returns the 5 nearest restaurants from a partitioned spatial index.</p>
+<div class="example">
+<p class="titleinexample"><a id="BABEBDJH"></a>Example 5-1 SDO_NN Query with Partitioned Spatial Index</p>
+<pre>
+SELECT * FROM
+(
+SELECT r.name, r.location, SDO_NN_DISTANCE(1) distance_in_miles
+FROM restaurants_part_table r
+WHERE SDO_NN(r.location,
+      MDSYS.SDO_GEOMETRY(2001,8307,MDSYS.SDO_POINT_TYPE(-110,35,Null),Null,Null),
+     'SDO_NUM_RES=5 distance=2  unit=MILE', 1) = 'TRUE'
+<span class="bold">ORDER BY distance_in_miles</span>
+)
+<span class="bold">WHERE ROWNUM&lt;=5</span>;
+</pre></div>
+<!-- class="example" -->
+<div class="infobox-note">
+<p class="notep1">See Also:</p>
+<a href="sdo_complex_queries.htm#CIHHIIJE">Section C.3, "SDO_NN Examples"</a>for more examples of using the <a href="sdo_operat.htm#i78067">SDO_NN</a> operator.</div>
+<p>For a cross-schema query when a table has a partitioned spatial index, the user must be granted SELECT privilege on both the spatial table and the index table (MDRT_<span class="italic">xxx</span>) for the spatial index that was created on the spatial table. For more information and an example, see <a href="sdo_operat.htm#BABBFGFE">"Cross-Schema Invocation of SDO_JOIN"</a> in the Usage Notes for the <a href="sdo_operat.htm#BGEDJIBF">SDO_JOIN</a> operator in <a href="sdo_operat.htm#g1001037">Chapter 19</a>.</p>
+<a id="BGBIEFFC"></a>
+<div id="SPATL587" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">5.1.3.1</span> Creating a Local Partitioned Spatial Index</h4>
+<p>If you want to create a local partitioned spatial index, Oracle recommends that you use the procedure in this section instead of using the PARALLEL keyword, to avoid having to start over if the creation of any partition's index fails for any reason (for example, because the tablespace is full). Follow these steps:</p>
+<ol>
+<li>
+<p>Create a local spatial index and specify the UNUSABLE keyword. For example:</p>
+<pre>
+CREATE INDEX sp_idx ON my_table (location) 
+  INDEXTYPE IS mdsys.spatial_index 
+  PARAMETERS ('tablespace=tb_name work_tablespace=work_tb_name') 
+  <span class="bold">LOCAL UNUSABLE</span>;
+</pre>
+<p>This statement executes quickly and creates metadata associated with the index.</p>
+</li>
+<li>
+<p>Create scripts with ALTER INDEX REBUILD statements, but without the PARALLEL keyword. For example, if you have 100 partitions and 10 processors, create 10 scripts with 10 ALTER INDEX statements such as the following:</p>
+<pre>
+ALTER INDEX sp_idx REBUILD PARTITION ip1;
+ALTER INDEX sp_idx REBUILD PARTITION ip2;
+. . .
+ALTER INDEX sp_idx REBUILD PARTITION ip10;
+</pre></li>
+<li>
+<p>Run all the scripts at the same time, so that each processor works on the index for a single partition, but all the processors are busy working on their own set of ALTER INDEX statements.</p>
+</li>
+</ol>
+<p>If any of the ALTER INDEX statements fails, you do not need to rebuild any partitions for which the operation has successfully completed.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BGBCIFEB"></a>
+<div id="SPATL588" class="sect2">
+<h3 class="sect2"><span class="secnum">5.1.4</span> Exchanging <a id="sthref360"></a><a id="sthref361"></a><a id="sthref362"></a>Partitions Including Indexes</h3>
+<p>You can use the ALTER TABLE statement with the EXCHANGE PARTITION ... INCLUDING INDEXES clause to exchange a spatial table partition and its index partition with a corresponding table and its index. For information about exchanging partitions, see the description of the ALTER TABLE statement in <a class="olink SQLRF01001" href="../../server.112/e41084/statements_3001.htm#SQLRF01001"><span class="italic">Oracle Database SQL Language Reference</span></a>.</p>
+<p>This feature can help you to operate more efficiently in a number of situations, such as:</p>
+<ul>
+<li>
+<p>Bringing data into a partitioned table and avoiding the cost of index re-creation.</p>
+</li>
+<li>
+<p>Managing and creating partitioned indexes. For example, the data could be divided into multiple tables. The index for each table could be built one after the other to minimize the memory and tablespace resources needed during index creation. Alternately, the indexes could be created in parallel in multiple sessions. The tables (along with the indexes) could then be exchanged with the partitions of the original data table.</p>
+</li>
+<li>
+<p>Managing offline insert operations. New data can be stored in a temporary table and periodically exchanged with a new partition (for example, in a database with historical data).</p>
+</li>
+</ul>
+<p>To exchange partitions including indexes with spatial data and indexes, the two spatial indexes (one on the partition, the other on the table) must have the same dimensionality (<code>sdo_indx_dims</code> value). If the indexes do not have the same dimensionality, an error is raised. The table data is exchanged, but the indexes are not exchanged and the indexes are marked as failed. To use the indexes, you must rebuild them</p>
+</div>
+<!-- class="sect2" -->
+<div id="SPATL589" class="sect2"><a id="sthref363"></a>
+<h3 class="sect2"><span class="secnum">5.1.5</span> <a id="sthref364"></a><a id="sthref365"></a>Export and Import Considerations with Spatial Indexes and Data</h3>
+<p>If you use the Export utility to export tables with spatial data, the behavior of the operation depends on whether or not the spatial data has been spatially indexed:</p>
+<ul>
+<li>
+<p>If the spatial data has not been spatially indexed, the table data is exported. However, you must update the USER_SDO_GEOM_METADATA view with the appropriate information on the target system.</p>
+</li>
+<li>
+<p>If the spatial data has been spatially indexed, the table data is exported, the appropriate information is inserted into the USER_SDO_GEOM_METADATA view on the target system, and the spatial index is built on the target system. However, if the insertion into the USER_SDO_GEOM_METADATA view fails (for example, if there is already a USER_SDO_GEOM_METADATA entry for the spatial layer), the spatial index is not built.</p>
+</li>
+</ul>
+<p>If you use the Import utility to import data that has been spatially indexed, the following considerations apply:</p>
+<ul>
+<li>
+<p>If the index on the exported data was created with a <code>TABLESPACE</code> clause and if the specified tablespace does not exist in the database at import time, the index is not built. (This is different from the behavior with other Oracle indexes, where the index is created in the user's default tablespace if the tablespace specified for the original index does not exist at import time.)</p>
+</li>
+<li>
+<p>If the import operation must be done by a privileged database user, and if the <code>FROMUSER</code> and <code>TOUSER</code> format is used, the <code>TOUSER</code> user must be granted the CREATE TABLE and CREATE SEQUENCE privileges before the import operation, as shown in the following example (and enter the password for the SYSTEM account when prompted):</p>
+<pre>
+sqlplus system
+SQL&gt; grant CREATE TABLE, CREATE SEQUENCE to CHRIS;
+SQL&gt; exit;
+imp system file=spatl_data.dmp fromuser=SCOTT touser=CHRIS
+</pre></li>
+</ul>
+<p>For information about using the Export and Import utilities, see <a class="olink SUTIL" href="../../server.112/e22490/toc.htm"><span class="italic">Oracle Database Utilities</span></a>.</p>
+</div>
+<!-- class="sect2" -->
+<div id="SPATL590" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref366"></a>
+<h3 class="sect2"><span class="secnum">5.1.6</span> <a id="sthref367"></a><a id="sthref368"></a>Distributed Transactions and Spatial Index Consistency</h3>
+<p>In a distributed transaction, different branches of the transaction can execute in different sessions. The branches can detach from their current session and migrate to another within the transaction scope. To maintain the consistency of Spatial indexes in distributed transactions, you must follow the usage guidelines in this section.</p>
+<p>When the first insert, update, or delete operation on a spatial table (one with a spatial index) is performed in a distributed transaction, all subsequent insert, update, or delete operations on the table, as well as any prepare to commit operation (the first branch to prepare a commit), in the transaction should happen <span class="italic">in the same session</span> as the first operation. The branches performing these subsequent operations will first have to connect to the session in which the first operation was performed.</p>
+<p>For more information about distributed transactions, see <a class="olink ADMIN031" href="../../server.112/e25494/ds_txns.htm#ADMIN031"><span class="italic">Oracle Database Administrator's Guide</span></a>.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BGBEACFE"></a>
+<div id="SPATL591" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">5.1.7</span> Rollback Segments and Sort Area Size</h3>
+<p>This section applies <span class="italic">only</span> if you (or the database administrator) are not using the automatic undo management feature or the PGA memory management feature, or both, of Oracle Database. Automatic memory management and PGA memory management are enabled by default, and their use is highly recommended. For explanations of these features, see:</p>
+<ul>
+<li>
+<p>The section about automatic undo management and undo segments in <a class="olink CNCPT305" href="../../server.112/e40540/logical.htm#CNCPT305"><span class="italic">Oracle Database Concepts</span></a></p>
+</li>
+<li>
+<p>The section about PGA memory management in <a class="olink CNCPT803" href="../../server.112/e40540/memory.htm#CNCPT803"><span class="italic">Oracle Database Concepts</span></a></p>
+</li>
+</ul>
+<p><a id="sthref369"></a><a id="sthref370"></a><a id="sthref371"></a>If you are not using automatic undo management and if the rollback segment is not large enough, an attempt to create a spatial index will fail. The rollback segment should be 100*<span class="italic">n</span> bytes, where <span class="italic">n</span> is the number of rows of data to be indexed. For example, if the table contains 1 million (1,000,000) rows, the rollback segment size should be 100,000,000 (100 million) bytes.</p>
+<p>To ensure an adequate rollback segment, or if you have tried to create a spatial index and received an error that a rollback segment cannot be extended, review (or have a DBA review) the size and structure of the rollback segments. Create a public rollback segment of the appropriate size, and place that rollback segment online. In addition, ensure that any small inappropriate rollback segments are placed offline during large spatial index operations.</p>
+<p><a id="sthref372"></a>If you are not using the PGA memory management feature, the system parameter SORT_AREA_SIZE affects the amount of time required to create the index. The SORT_AREA_SIZE value is the maximum amount, in bytes, of memory to use for a sort operation. The optimal value depends on the database size, but a good guideline is to make it at least 1 million bytes when you create a spatial index. To change the SORT_AREA_SIZE value, use the ALTER SESSION statement. For example, to change the value to 20 million bytes:</p>
+<pre>
+ALTER SESSION SET SORT_AREA_SIZE = 20000000;
+</pre></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="g1010114"></a>
+<div id="SPATL592" class="sect1">
+<h2 class="sect1"><span class="secnum">5.2</span> Querying Spatial Data</h2>
+<p>This section describes how the structures of a Spatial layer are used to resolve spatial queries and spatial joins.</p>
+<p>Spatial uses a two-tier query model with primary and secondary filter operations to resolve spatial queries and spatial joins, as explained in <a href="sdo_intro.htm#g1000087">Section 1.6</a>. The term <span class="italic">two-tier</span> indicates that two distinct operations are performed to resolve queries. If both operations are performed, the exact result set is returned.</p>
+<p><a id="sthref373"></a><a id="sthref374"></a>You cannot append a database link (dblink) name to the name of a spatial table in a query if a spatial index is defined on that table.</p>
+<div id="SPATL593" class="sect2"><a id="sthref375"></a>
+<h3 class="sect2"><span class="secnum">5.2.1</span> Spatial <a id="sthref376"></a><a id="sthref377"></a>Query</h3>
+<p>In a spatial R-tree index, each geometry is represented by its minimum bounding rectangle (MBR), as explained in <a href="sdo_intro.htm#i883140">Section 1.7.1</a>. Consider the following layer containing several objects in <a href="#BGBHEJGE">Figure 5-1</a>. Each object is labeled with its geometry name (geom_1 for the line string, geom_2 for the four-sided polygon, geom_3 for the triangular polygon, and geom_4 for the ellipse), and the MBR around each object is represented by a dashed line.</p>
+<div id="SPATL594" class="figure">
+<p class="titleinfigure"><a id="BGBHEJGE"></a>Figure 5-1 Geometries with MBRs</p>
+<img width="280" height="227" src="img/query_mbrs.gif" alt="Description of Figure 5-1 follows" /><br />
+<a id="sthref378" href="img_text/query_mbrs.htm">Description of "Figure 5-1 Geometries with MBRs"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>A typical spatial query is to request all objects that lie within a <a id="sthref379"></a><span class="bold">query window</span>, that is, a defined fence or window. A <a id="sthref380"></a>dynamic query window refers to a rectangular area that is not defined in the database, but that must be defined before it is used. <a href="#BGBHIEJD">Figure 5-2</a> shows the same geometries as in <a href="#BGBHEJGE">Figure 5-1</a>, but adds a query window represented by the heavy dotted-line box.</p>
+<div id="SPATL595" class="figure">
+<p class="titleinfigure"><a id="BGBHIEJD"></a>Figure 5-2 Layer with a Query Window</p>
+<img width="280" height="227" src="img/query_window.gif" alt="Description of Figure 5-2 follows" /><br />
+<a id="sthref381" href="img_text/query_window.htm">Description of "Figure 5-2 Layer with a Query Window"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>In <a href="#BGBHIEJD">Figure 5-2</a>, the query window covers parts of geometries geom_1 and geom_2, as well as part of the MBR for geom_3 but none of the actual geom_3 geometry. The query window does not cover any part of the geom_4 geometry or its MBR.</p>
+<a id="i1005269"></a>
+<div id="SPATL596" class="sect3">
+<h4 class="sect3"><span class="secnum">5.2.1.1</span> Primary <a id="sthref382"></a>Filter Operator</h4>
+<p>The <a href="sdo_operat.htm#BJAFBCFC">SDO_FILTER</a> operator, described in <a href="sdo_operat.htm#g1001037">Chapter 19</a>, implements the primary filter portion of the two-step process involved in the Oracle Spatial query processing model. The primary filter uses the index data to determine only if a set of candidate object pairs may interact. Specifically, the primary filter checks to see if the MBRs of the candidate objects interact, not whether the objects themselves interact. The <a href="sdo_operat.htm#BJAFBCFC">SDO_FILTER</a> operator syntax is as follows:</p>
+<pre>
+SDO_FILTER(geometry1 SDO_GEOMETRY, geometry2 SDO_GEOMETRY, param VARCHAR2)
+</pre>
+<p>In the preceding syntax:</p>
+<ul>
+<li>
+<p><code>geometry1</code> is a column of type SDO_GEOMETRY in a table. This column must be spatially indexed.</p>
+</li>
+<li>
+<p><code>geometry2</code> is an object of type SDO_GEOMETRY. This object may or may not come from a table. If it comes from a table, it may or may not be spatially indexed.</p>
+</li>
+<li>
+<p><code>param</code> is an optional string of type VARCHAR2. It can specify either or both of the <code>min_resolution</code> and <code>max_resolution</code> keywords.</p>
+</li>
+</ul>
+<p>The following examples perform a primary filter operation only (with no secondary filter operation). They will return all the geometries shown in <a href="#BGBHIEJD">Figure 5-2</a> that have an MBR that interacts with the query window. The result of the following examples are geometries geom_1, geom_2, and geom_3.</p>
+<p><a href="#i1005295">Example 5-2</a> performs a primary filter operation without inserting the query window into a table. The window will be indexed in memory and performance will be very good.</p>
+<div id="SPATL597" class="example">
+<p class="titleinexample"><a id="i1005295"></a>Example 5-2 Primary Filter with a Temporary Query Window</p>
+<pre>
+SELECT A.Feature_ID FROM TARGET A  WHERE sdo_filter(A.shape, SDO_geometry(2003,NULL,NULL,
+                                       SDO_elem_info_array(1,1003,3),
+                                       SDO_ordinate_array(x1,y1, x2,y2))
+                           ) = 'TRUE';   
+</pre>
+<p>In <a href="#i1005295">Example 5-2</a>, <code>(x1,y1)</code> and <code>(x2,y2)</code> are the lower-left and upper-right corners of the query window.</p>
+<p>In <a href="#i1005306">Example 5-3</a>, a transient instance of type SDO_GEOMETRY was constructed for the query window instead of specifying the window parameters in the query itself.</p>
+</div>
+<!-- class="example" -->
+<div id="SPATL598" class="example">
+<p class="titleinexample"><a id="i1005306"></a>Example 5-3 Primary Filter with a Transient Instance of the Query Window</p>
+<pre>
+SELECT A.Feature_ID FROM TARGET A  WHERE sdo_filter(A.shape, :theWindow) = 'TRUE';   
+</pre>
+<p><a href="#i1005314">Example 5-4</a> assumes the query window was inserted into a table called WINDOWS, with an ID of WINS_1.</p>
+</div>
+<!-- class="example" -->
+<div id="SPATL599" class="example">
+<p class="titleinexample"><a id="i1005314"></a>Example 5-4 Primary Filter with a Stored Query Window</p>
+<pre>
+SELECT A.Feature_ID FROM TARGET A, WINDOWS B  WHERE B.ID = 'WINS_1' AND    sdo_filter(A.shape, B.shape) = 'TRUE';      
+</pre>
+<p>If the B.SHAPE column is not spatially indexed, the <a href="sdo_operat.htm#BJAFBCFC">SDO_FILTER</a> operator indexes the query window in memory and performance is very good.</p>
+</div>
+<!-- class="example" --></div>
+<!-- class="sect3" -->
+<a id="i1005329"></a>
+<div id="SPATL600" class="sect3">
+<h4 class="sect3"><span class="secnum">5.2.1.2</span> Primary and <a id="sthref383"></a><a id="sthref384"></a>Secondary Filter Operator</h4>
+<p>The <a href="sdo_operat.htm#i78531">SDO_RELATE</a> operator, described in <a href="sdo_operat.htm#g1001037">Chapter 19</a>, performs both the primary and secondary filter stages when processing a query. The secondary filter ensures that only candidate objects that actually interact are selected. This operator can be used only if a spatial index has been created on two dimensions of data. The syntax of the <a href="sdo_operat.htm#i78531">SDO_RELATE</a> operator is as follows:</p>
+<pre>
+SDO_RELATE(geometry1  SDO_GEOMETRY,
+           geometry2  SDO_GEOMETRY,
+           param      VARCHAR2)
+</pre>
+<p>In the preceding syntax:</p>
+<ul>
+<li>
+<p><code>geometry1</code> is a column of type SDO_GEOMETRY in a table. This column must be spatially indexed.</p>
+</li>
+<li>
+<p><code>geometry2</code> is an object of type SDO_GEOMETRY. This object may or may not come from a table. If it comes from a table, it may or may not be spatially indexed.</p>
+</li>
+<li>
+<p><code>param</code> is a quoted string with the <code>mask</code> keyword and a valid mask value, and optionally either or both of the <code>min_resolution</code> and <code>max_resolution</code> keywords, as explained in the documentation for the <a href="sdo_operat.htm#i78531">SDO_RELATE</a> operator in <a href="sdo_operat.htm#g1001037">Chapter 19</a>.</p>
+</li>
+</ul>
+<p>The following examples perform both primary and secondary filter operations. They return all the geometries in <a href="#BGBHIEJD">Figure 5-2</a> that lie within or overlap the query window. The result of these examples is objects geom_1 and geom_2.</p>
+<p><a href="#i1005358">Example 5-5</a> performs both primary and secondary filter operations without inserting the query window into a table. The window will be indexed in memory and performance will be very good.</p>
+<div id="SPATL601" class="example">
+<p class="titleinexample"><a id="i1005358"></a>Example 5-5 Secondary Filter Using a Temporary Query Window</p>
+<pre>
+SELECT A.Feature_ID FROM TARGET A
+   WHERE sdo_relate(A.shape, SDO_geometry(2003,NULL,NULL,
+                                       SDO_elem_info_array(1,1003,3),
+                                      SDO_ordinate_array(x1,y1, x2,y2)),                         'mask=anyinteract') = 'TRUE';
+</pre>
+<p>In <a href="#i1005358">Example 5-5</a>, <code>(x1,y1)</code> and <code>(x2,y2)</code> are the lower-left and upper-right corners of the query window.</p>
+<p><a href="#i1005370">Example 5-6</a> assumes the query window was inserted into a table called WINDOWS, with an ID value of WINS_1.</p>
+</div>
+<!-- class="example" -->
+<div id="SPATL602" class="example">
+<p class="titleinexample"><a id="i1005370"></a>Example 5-6 Secondary Filter Using a Stored Query Window</p>
+<pre>
+SELECT A.Feature_ID FROM TARGET A, WINDOWS B  WHERE B.ID = 'WINS_1' AND          sdo_relate(A.shape, B.shape,
+          'mask=anyinteract') = 'TRUE';   
+</pre>
+<p>If the B.SHAPE column is not spatially indexed, the <a href="sdo_operat.htm#i78531">SDO_RELATE</a> operator indexes the query window in memory and performance is very good.</p>
+</div>
+<!-- class="example" --></div>
+<!-- class="sect3" -->
+<a id="i1005386"></a>
+<div id="SPATL603" class="sect3">
+<h4 class="sect3"><span class="secnum">5.2.1.3</span> Within-Distance Operator</h4>
+<p>The <a href="sdo_operat.htm#i77653">SDO_WITHIN_DISTANCE</a> operator, described in <a href="sdo_operat.htm#g1001037">Chapter 19</a>, is used to determine the set of objects in a table that are within <span class="italic">n</span> distance units from a reference object. This operator can be used only if a spatial index has been created on two dimensions of data. The reference object may be a transient or persistent instance of SDO_GEOMETRY, such as a temporary query window or a permanent geometry stored in the database. The syntax of the operator is as follows:</p>
+<pre>
+SDO_WITHIN_DISTANCE(geometry1  SDO_GEOMETRY, 
+                    aGeom      SDO_GEOMETRY,
+                    params     VARCHAR2);
+</pre>
+<p>In the preceding syntax:</p>
+<ul>
+<li>
+<p><code>geometry1</code> is a column of type SDO_GEOMETRY in a table. This column must be spatially indexed.</p>
+</li>
+<li>
+<p><code>aGeom</code> is an instance of type SDO_GEOMETRY.</p>
+</li>
+<li>
+<p><code>params</code> is a quoted string of keyword value pairs that determines the behavior of the operator. See the <a href="sdo_operat.htm#i77653">SDO_WITHIN_DISTANCE</a> operator in <a href="sdo_operat.htm#g1001037">Chapter 19</a> for a list of parameters.</p>
+</li>
+</ul>
+<p>The following example selects any objects within 1.35 distance units from the query window:</p>
+<pre>
+SELECT A.Feature_ID
+  FROM TARGET A
+  WHERE SDO_WITHIN_DISTANCE( A.shape, :theWindow, 'distance=1.35') = 'TRUE';
+</pre>
+<p>The distance units are based on the geometry coordinate system in use. If you are using a geodetic coordinate system, the units are meters. If no coordinate system is used, the units are the same as for the stored data.</p>
+<p>The <a href="sdo_operat.htm#i77653">SDO_WITHIN_DISTANCE</a> operator is not suitable for performing spatial joins. That is, a query such as <span class="italic">Find all parks that are within 10 distance units from coastlines</span> will not be processed as an index-based spatial join of the COASTLINES and PARKS tables. Instead, it will be processed as a nested loop query in which each COASTLINES instance is in turn a reference object that is buffered, indexed, and evaluated against the PARKS table. Thus, the <a href="sdo_operat.htm#i77653">SDO_WITHIN_DISTANCE</a> operation is performed <span class="italic">n</span> times if there are <span class="italic">n</span> rows in the COASTLINES table.</p>
+<p>For non-geodetic data, there is an efficient way to accomplish a spatial join that involves buffering all geometries of a layer. This method does not use the <a href="sdo_operat.htm#i77653">SDO_WITHIN_DISTANCE</a> operator. First, create a new table COSINE_BUFS as follows:</p>
+<pre>
+CREATE TABLE cosine_bufs UNRECOVERABLE AS
+   SELECT SDO_BUFFER (A.SHAPE, B.DIMINFO, 1.35)
+     FROM COSINE A, USER_SDO_GEOM_METADATA B
+     WHERE TABLE_NAME='COSINES' AND COLUMN_NAME='SHAPE';
+</pre>
+<p>Next, create a spatial index on the SHAPE column of COSINE_BUFS. Then you can perform the following query:</p>
+<pre>
+SELECT /*+ ordered */ a.gid, b.gid 
+  FROM TABLE(SDO_JOIN('PARKS', 'SHAPE', 
+                      'COSINE_BUFS', 'SHAPE',
+                      'mask=ANYINTERACT')) c,
+       parks a, 
+       cosine_bufs b
+  WHERE c.rowid1 = a.rowid AND c.rowid2 = b.rowid;
+</pre></div>
+<!-- class="sect3" -->
+<div id="SPATL604" class="sect3"><a id="sthref385"></a>
+<h4 class="sect3"><span class="secnum">5.2.1.4</span> Nearest Neighbor Operator</h4>
+<p>The <a href="sdo_operat.htm#i78067">SDO_NN</a> operator, described in <a href="sdo_operat.htm#g1001037">Chapter 19</a>, is used to identify the nearest neighbors for a geometry. This operator can be used only if a spatial index has been created on two dimensions of data. The syntax of the operator is as follows:</p>
+<pre>
+SDO_NN(geometry1  SDO_GEOMETRY, 
+       geometry2  SDO_GEOMETRY,
+       param      VARCHAR2
+       [, number  NUMBER]);
+</pre>
+<p>In the preceding syntax:</p>
+<ul>
+<li>
+<p><code>geometry1</code> is a column of type SDO_GEOMETRY in a table. This column must be spatially indexed.</p>
+</li>
+<li>
+<p><code>geometry2</code> is an instance of type SDO_GEOMETRY.</p>
+</li>
+<li>
+<p><code>param</code> is a quoted string of keyword-value pairs that can determine the behavior of the operator, such as how many nearest neighbor geometries are returned. See the <a href="sdo_operat.htm#i78067">SDO_NN</a> operator in <a href="sdo_operat.htm#g1001037">Chapter 19</a> for information about this parameter.</p>
+</li>
+<li>
+<p><code>number</code> is the same number used in the call to <a href="sdo_operat.htm#i80529">SDO_NN_DISTANCE</a>. Use this only if the <a href="sdo_operat.htm#i80529">SDO_NN_DISTANCE</a> ancillary operator is included in the call to <a href="sdo_operat.htm#i78067">SDO_NN</a>. See the <a href="sdo_operat.htm#i78067">SDO_NN</a> operator in <a href="sdo_operat.htm#g1001037">Chapter 19</a> for information about this parameter.</p>
+</li>
+</ul>
+<p>The following example finds the two objects from the SHAPE column in the COLA_MARKETS table that are closest to a specified point (10,7). (Note the use of the optimizer hint in the SELECT statement, as explained in the Usage Notes for the <a href="sdo_operat.htm#i78067">SDO_NN</a> operator in <a href="sdo_operat.htm#g1001037">Chapter 19</a>.)</p>
+<pre>
+SELECT /*+ INDEX(cola_markets cola_spatial_idx) */
+ c.mkt_id, c.name  FROM cola_markets c  WHERE SDO_NN(c.shape,
+   SDO_geometry(2001, NULL, SDO_point_type(10,7,NULL), NULL,
+   NULL),  'sdo_num_res=2') = 'TRUE'; 
+</pre></div>
+<!-- class="sect3" -->
+<div id="SPATL605" class="sect3"><a id="sthref386"></a>
+<h4 class="sect3"><span class="secnum">5.2.1.5</span> Spatial Functions</h4>
+<p>Spatial also supplies functions for determining relationships between geometries, finding information about single geometries, changing geometries, and combining geometries. These functions all take into account two dimensions of source data. If the output value of these functions is a geometry, the resulting geometry will have the same dimensionality as the input geometry, but only the first two dimensions will accurately reflect the result of the operation.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<div id="SPATL606" class="sect2"><a id="sthref387"></a>
+<h3 class="sect2"><span class="secnum">5.2.2</span> Spatial Join</h3>
+<p>A <a id="sthref388"></a><span class="bold">spatial join</span> is the same as a regular join except that the predicate involves a spatial operator. In Spatial, a spatial join takes place when you compare all geometries of one layer to all geometries of another layer. This is unlike a query window, which compares a single geometry to all geometries of a layer.</p>
+<p>Spatial joins can be used to answer questions such as <span class="italic">Which highways cross national parks?</span></p>
+<p>The following table structures illustrate how the join would be accomplished for this example:</p>
+<pre>
+PARKS(    GID VARCHAR2(32), SHAPE SDO_GEOMETRY)
+HIGHWAYS( GID VARCHAR2(32), SHAPE SDO_GEOMETRY) 
+</pre>
+<p>To perform a spatial join, use the <a href="sdo_operat.htm#BGEDJIBF">SDO_JOIN</a> operator, which is described in <a href="sdo_operat.htm#g1001037">Chapter 19</a>. The following spatial join query, to list the GID column values of highways and parks where a highway interacts with a park, performs a primary filter operation only (<code>'mask=FILTER'</code>), and thus it returns only approximate results:</p>
+<pre>
+SELECT /*+ ordered */ a.gid, b.gid 
+  FROM TABLE(SDO_JOIN('PARKS', 'SHAPE', 
+                      'HIGHWAYS', 'SHAPE',
+                      'mask=FILTER')) c,
+       parks a, 
+       highways b
+  WHERE c.rowid1 = a.rowid AND c.rowid2 = b.rowid;
+</pre>
+<p>The following spatial join query requests the same information as in the preceding example, but it performs both primary and secondary filter operations (<code>'mask=ANYINTERACT'</code>), and thus it returns exact results:</p>
+<pre>
+SELECT /*+ ordered */ a.gid, b.gid 
+  FROM TABLE(SDO_JOIN('PARKS', 'SHAPE', 
+                      'HIGHWAYS', 'SHAPE',
+                      'mask=ANYINTERACT')) c,
+       parks a, 
+       highways b
+  WHERE c.rowid1 = a.rowid AND c.rowid2 = b.rowid;
+</pre></div>
+<!-- class="sect2" -->
+<a id="BGBDDHIB"></a>
+<div id="SPATL1411" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">5.2.3</span> Data and Index Dimensionality, and Spatial Queries</h3>
+<p>The elements of a spatial query can, in theory, have the following dimensionality:</p>
+<ul>
+<li>
+<p>The base table geometries (or <code>geometry1</code> in Spatial operator formats) can have two, three, or more dimensions.</p>
+</li>
+<li>
+<p>The spatial index created on the base table (or <code>geometry1</code>) can be two-dimensional or three-dimensional.</p>
+</li>
+<li>
+<p>The query window (or <code>geometry2</code> in Spatial operator formats) can have two, three, or more dimensions.</p>
+</li>
+</ul>
+<p>Some combinations of dimensionality among the three elements are supported and some are not. <a href="#BGBCEEFJ">Table 5-1</a> explains what happens with the possible combinations involving two and three dimensions.</p>
+<div id="SPATL1412" class="tblformal">
+<p class="titleintable"><a id="sthref389"></a><a id="BGBCEEFJ"></a>Table 5-1 Data and Index Dimensionality, and Query Support</p>
+<table class="cellalignment740" title="Data and Index Dimensionality, and Query Support" summary="Data and Index Dimensionality, and Query Support" dir="ltr">
+<thead>
+<tr class="cellalignment734">
+<th class="cellalignment741" id="r1c1-t3">Base Table (geometry1) Dimensionality</th>
+<th class="cellalignment741" id="r1c2-t3">Spatial Index Dimensionality</th>
+<th class="cellalignment741" id="r1c3-t3">Query Window (geometry2) Dimensionality</th>
+<th class="cellalignment741" id="r1c4-t3">Query Result</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r2c1-t3" headers="r1c1-t3">
+<p>2-dimensional</p>
+</td>
+<td class="cellalignment742" headers="r2c1-t3 r1c2-t3">
+<p>2-dimensional</p>
+</td>
+<td class="cellalignment742" headers="r2c1-t3 r1c3-t3">
+<p>2-dimensional</p>
+</td>
+<td class="cellalignment742" headers="r2c1-t3 r1c4-t3">
+<p>Performs a two-dimensional query.</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r3c1-t3" headers="r1c1-t3">
+<p>2-dimensional</p>
+</td>
+<td class="cellalignment742" headers="r3c1-t3 r1c2-t3">
+<p>2-dimensional</p>
+</td>
+<td class="cellalignment742" headers="r3c1-t3 r1c3-t3">
+<p>3-dimensional</p>
+</td>
+<td class="cellalignment742" headers="r3c1-t3 r1c4-t3">
+<p>Supported if the query window has an appropriate SDO_GTYPE value less than 3008.</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r4c1-t3" headers="r1c1-t3">
+<p>2-dimensional</p>
+</td>
+<td class="cellalignment742" headers="r4c1-t3 r1c2-t3">
+<p>3-dimensional</p>
+</td>
+<td class="cellalignment742" headers="r4c1-t3 r1c3-t3">
+<p>2-dimensional</p>
+</td>
+<td class="cellalignment742" headers="r4c1-t3 r1c4-t3">
+<p>Not supported: 3D index not permitted on 2D data.</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r5c1-t3" headers="r1c1-t3">
+<p>2-dimensional</p>
+</td>
+<td class="cellalignment742" headers="r5c1-t3 r1c2-t3">
+<p>3-dimensional</p>
+</td>
+<td class="cellalignment742" headers="r5c1-t3 r1c3-t3">
+<p>3-dimensional</p>
+</td>
+<td class="cellalignment742" headers="r5c1-t3 r1c4-t3">
+<p>Not supported: 3D index not permitted on 2D data.</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r6c1-t3" headers="r1c1-t3">
+<p>3-dimensional</p>
+</td>
+<td class="cellalignment742" headers="r6c1-t3 r1c2-t3">
+<p>2-dimensional</p>
+</td>
+<td class="cellalignment742" headers="r6c1-t3 r1c3-t3">
+<p>2-dimensional</p>
+</td>
+<td class="cellalignment742" headers="r6c1-t3 r1c4-t3">
+<p>Ignores the third (Z) dimension in each base geometry and performs a two-dimensional query.</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r7c1-t3" headers="r1c1-t3">
+<p>3-dimensional</p>
+</td>
+<td class="cellalignment742" headers="r7c1-t3 r1c2-t3">
+<p>2-dimensional</p>
+</td>
+<td class="cellalignment742" headers="r7c1-t3 r1c3-t3">
+<p>3-dimensional</p>
+</td>
+<td class="cellalignment742" headers="r7c1-t3 r1c4-t3">
+<p>Supported if the query window has an appropriate SDO_GTYPE value less than 3008.</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r8c1-t3" headers="r1c1-t3">
+<p>3-dimensional</p>
+</td>
+<td class="cellalignment742" headers="r8c1-t3 r1c2-t3">
+<p>3-dimensional</p>
+</td>
+<td class="cellalignment742" headers="r8c1-t3 r1c3-t3">
+<p>2-dimensional</p>
+</td>
+<td class="cellalignment742" headers="r8c1-t3 r1c4-t3">
+<p>Converts the 2D query window to a 3D window with zero Z values and performs a three-dimensional query.</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r9c1-t3" headers="r1c1-t3">
+<p>3-dimensional</p>
+</td>
+<td class="cellalignment742" headers="r9c1-t3 r1c2-t3">
+<p>3-dimensional</p>
+</td>
+<td class="cellalignment742" headers="r9c1-t3 r1c3-t3">
+<p>3-dimensional</p>
+</td>
+<td class="cellalignment742" headers="r9c1-t3 r1c4-t3">
+<p>Performs a three-dimensional query.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment733">
+<tr>
+<td class="cellalignment742">
+<table class="cellalignment738">
+<tr>
+<td class="cellalignment737"><a href="sdo_objload.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment737"><a href="sdo_cs_concepts.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1999, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment744">
+<table class="cellalignment736">
+<tr>
+<td class="cellalignment737"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment737"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment737"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment737"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment737"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment737"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Managing Operating System Resources</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1023" />
+<meta name="dcterms.created" content="2014-06-30T4:25:5Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Performance Tuning Guide" />
+<meta name="dcterms.identifier" content="E41573-04" />
+<meta name="dcterms.isVersionOf" content="PFGRF" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2000, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="iodesign.htm" title="Previous" type="text/html" />
+<link rel="Next" href="instance_tune.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e41573.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">16/31</span> <!-- End Header -->
+<div id="PFGRF016" class="chapter"><a id="g12613"></a> <a id="i4134"></a>
+<h1 class="chapter"><span class="secnum">9</span> Managing Operating System Resources</h1>
+<p>This chapter explains how to tune the operating system for optimal performance of Oracle Database.</p>
+<p>This chapter contains the following sections:</p>
+<ul>
+<li>
+<p><a href="#i1883">Understanding Operating System Performance Issues</a></p>
+</li>
+<li>
+<p><a href="#i1891">Resolving Operating System Issues</a></p>
+</li>
+<li>
+<p><a href="#BABIEIAH">Understanding CPU</a></p>
+</li>
+<li>
+<p><a href="#BACGGJBH">Resolving CPU Issues</a></p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="autostat.htm#i35653">"Operating System Statistics"</a> for a discussion of the importance of operating system statistics</p>
+</li>
+<li>
+<p>Your operating system documentation</p>
+</li>
+<li>
+<p>Your Oracle Database platform-specific documentation, which contains tuning information specific to your platform</p>
+</li>
+</ul>
+</div>
+<a id="i1883"></a>
+<div id="PFGRF94409" class="sect1">
+<h2 class="sect1"><span class="secnum">9.1</span> Understanding Operating System Performance Issues</h2>
+<p>Operating system performance issues commonly involve process management, memory management, and scheduling. If you have tuned the Oracle database instance and still need to improve performance, verify your work or try to reduce system time. Ensure that there is enough I/O bandwidth, CPU power, and swap space. Do not expect, however, that further tuning of the operating system will have a significant effect on application performance. Changes in the Oracle Database configuration or in the application are likely to result in a more significant difference in operating system efficiency than simply tuning the operating system.</p>
+<p>For example, if an application experiences excessive buffer busy waits, then the number of system calls increases. If you reduce the buffer busy waits by tuning the application, then the number of system calls decreases.</p>
+<p>This section covers the following topics related to operating system performance issues:</p>
+<ul>
+<li>
+<p><a href="#i10687">Using Operating System Caches</a></p>
+</li>
+<li>
+<p><a href="#BABJHJDC">Memory Usage</a></p>
+</li>
+<li>
+<p><a href="#BABCAGGJ">Using Operating System Resource Managers</a></p>
+</li>
+</ul>
+<a id="i10687"></a>
+<div id="PFGRF94410" class="sect2">
+<h3 class="sect2"><span class="secnum">9.1.1</span> Using Operating System Caches</h3>
+<p>Operating systems and device controllers provide <a id="sthref582"></a><a id="sthref583"></a>data caches that do not directly conflict with Oracle Database cache management. Nonetheless, these structures can consume resources while offering little or no performance benefit. This situation is most noticeable when database files are stored in a Linux or UNIX file system. By default, all database I/O goes through the file system cache.</p>
+<p>On some Linux and UNIX systems, direct I/O is available to the filestore. This arrangement allows the database files to be accessed within the file system, bypassing the file system cache. Direct I/O saves CPU resources and allows the file system cache to be dedicated to non-database activity, such as program texts and spool files.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+This problem does not occur on Windows. All file requests by the database bypass the caches in the file system.</div>
+<p>Although the operating system cache is often redundant because the Oracle Database buffer cache buffers blocks, in some cases the database does not use the database buffer cache. In these cases, using direct I/O or raw devices may yield worse performance than using operating system buffering. Examples include:</p>
+<ul>
+<li>
+<p>Reads or writes to the <code>TEMP</code> tablespace</p>
+</li>
+<li>
+<p>Data stored in <code>NOCACHE</code> LOBs</p>
+</li>
+<li>
+<p>Parallel Query slaves reading data</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+In some cases the database can cache parallel query data in the database buffer cache instead of performing direct reads from disk into the PGA. This configuration may be appropriate when the database servers have a large amount of memory. See <a class="olink VLDBG010" href="../../server.112/e25523/parallel.htm#VLDBG010"><span class="italic">Oracle Database VLDB and Partitioning Guide</span></a> to learn more using parallel execution.</div>
+</li>
+</ul>
+<p>You may want to cache but not all files at the operating system level.</p>
+<div id="PFGRF94411" class="sect3"><a id="sthref584"></a>
+<h4 class="sect3"><span class="secnum">9.1.1.1</span> Asynchronous I/O</h4>
+<p>With synchronous I/O, when an I/O request is submitted to the operating system, the writing process blocks until the write is confirmed as complete. It can then continue processing. With asynchronous I/O, processing continues while the I/O request is submitted and processed. Use asynchronous I/O when possible to avoid bottlenecks.</p>
+<p>Some platforms support asynchronous I/O by default, others need special configuration, and some only support asynchronous I/O for certain underlying file system types.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i9267"></a>
+<div id="PFGRF94412" class="sect3">
+<h4 class="sect3"><span class="secnum">9.1.1.2</span> FILESYSTEMIO_OPTIONS Initialization Parameter</h4>
+<p>You can use the <code><a id="sthref585"></a>FILESYSTEMIO_OPTIONS</code> initialization parameter to enable or disable asynchronous I/O or direct I/O on file system files. This parameter is platform-specific and has a default value that is best for a particular platform.</p>
+<p><code>FILESYTEMIO_OPTIONS</code> can be set to one of the following values:</p>
+<ul>
+<li>
+<p><code>ASYNCH:</code> enable asynchronous I/O on file system files, which has no timing requirement for transmission.</p>
+</li>
+<li>
+<p><code>DIRECTIO:</code> enable direct I/O on file system files, which bypasses the buffer cache.</p>
+</li>
+<li>
+<p><code>SETALL:</code> enable both asynchronous and direct I/O on file system files.</p>
+</li>
+<li>
+<p><code>NONE:</code> disable both asynchronous and direct I/O on file system files.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+Your platform-specific documentation for more details</div>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<div id="PFGRF95287" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref586"></a>
+<h4 class="sect3"><span class="secnum">9.1.1.3</span> Limiting Asynchronous I/O in NFS Server Environments</h4>
+<p>In some NFS server environments, performance may be impaired if a large number of asynchronous I/O requests are made within a short period of time. In such cases, use the <code>DNFS_BATCH_SIZE</code> initialization parameter to improve performance and increase stability on your system by limiting the number of I/Os issued by an Oracle process.</p>
+<p>The <code>DNFS_BATCH_SIZE</code> initialization parameter controls the number of asynchronous I/Os that can be queued by an Oracle foreground process when Direct NFS is enabled. In environments where the NFS server cannot handle a large number of outstanding asynchronous I/O requests, Oracle recommends setting this parameter to a value of 128. You can then increase or decrease its value based on the performance of your NFS server.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The default setting for the <code>DNFS_BATCH_SIZE</code> initialization parameter is 4096. The recommended value of 128 is only applicable on systems where the NFS server cannot handle a large number of asynchronous I/O requests and severe latency is detected.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink REFRN10334" href="../../server.112/e40402/initparams083.htm#REFRN10334"><span class="italic">Oracle Database Reference</span></a> for information about the <code>DNFS_BATCH_SIZE</code> initialization parameter</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BABJHJDC"></a>
+<div id="PFGRF94413" class="sect2">
+<h3 class="sect2"><span class="secnum">9.1.2</span> Memory Usage</h3>
+<p>Memory usage is affected by both buffer cache limits and initialization parameters.</p>
+<div id="PFGRF94414" class="sect3"><a id="sthref587"></a>
+<h4 class="sect3"><span class="secnum">9.1.2.1</span> Buffer Cache Limits</h4>
+<p>The UNIX buffer cache consumes operating system memory resources. Although in some versions of UNIX, the UNIX buffer cache may be allocated a set amount of memory, it is common today for more sophisticated memory management mechanisms to be used. Typically, these will allow free memory pages to be used to cache I/O. In such systems, it is common for operating system reporting tools to show that there is no free memory, which is not generally a problem. If processes require more memory, the memory caching I/O data is usually released to allow the process memory to be allocated.</p>
+</div>
+<!-- class="sect3" -->
+<div id="PFGRF94415" class="sect3"><a id="sthref588"></a>
+<h4 class="sect3"><span class="secnum">9.1.2.2</span> Parameters Affecting Memory Usage</h4>
+<p>The memory required by any one Oracle Database session depends on many factors. Typically the major contributing factors are:</p>
+<ul>
+<li>
+<p>Number of open cursors</p>
+</li>
+<li>
+<p>Memory used by PL/SQL, such as PL/SQL tables</p>
+</li>
+<li>
+<p><code>SORT_AREA_SIZE</code> initialization parameter</p>
+</li>
+</ul>
+<p>In Oracle Database, the <code><a id="sthref589"></a>PGA_AGGREGATE_TARGET</code> initialization parameter gives greater control over a session's memory usage.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BABCAGGJ"></a>
+<div id="PFGRF94416" class="sect2">
+<h3 class="sect2"><span class="secnum">9.1.3</span> Using Operating System Resource Managers</h3>
+<p>Some platforms provide operating system resource managers. These are designed to reduce the impact of peak load use patterns by prioritizing access to system resources. They usually implement administrative policies that govern which resources users can access and how much of those resources each user is permitted to consume.</p>
+<p>Operating system resource managers are different from domains or other similar facilities. Domains provide one or more completely separated environments within one system. Disk, CPU, memory, and all other resources are dedicated to each domain and cannot be accessed from any other domain. Other similar facilities completely separate just a portion of system resources into different areas, usually separate CPU or memory areas. Like domains, the separate resource areas are dedicated only to the processing assigned to that area; processes cannot migrate across boundaries. Unlike domains, all other resources (usually disk) are accessed by all partitions on a system.</p>
+<p>Oracle Database runs within domains, and within these other less complete partitioning constructs, as long as the allocation of partitioned memory (RAM) resources is fixed, not dynamic.</p>
+<p>Operating system resource managers prioritize resource allocation within a global pool of resources, usually a domain or an entire system. Processes are assigned to groups, which are in turn assigned resources anywhere within the resource pool.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Oracle Database is not supported for use with any UNIX operating system resource manager's memory management and allocation facility. Oracle Database Resource M<a id="sthref590"></a>anager, which provides resource allocation capabilities within an Oracle database instance, cannot be used with any operating system resource manager.</div>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If you have multiple instances on a node, and you want to distribute resources among them, then each instance should be assigned to a dedicated operating-system resource manager group or managed entity. To run multiple instances in the managed entity, use instance caging to manage how the CPU resources within the managed entity should be distributed among the instances. When Oracle Database Resource Manager is managing CPU resources, it expects a fixed amount of CPU resources for the instance. Without instance caging, it expects the available CPU resources to be equal to the number of CPUs in the managed entity. With instance caging, it expects the available CPU resources to be equal to the value of the <code>CPU_COUNT</code> initialization parameter. If there are less CPU resources than expected, then Oracle Database Resource Manager is not as effective at enforcing the resource allocations in the resource plan.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p>For a complete list of operating system resource management and resource allocation and deallocation features that work with Oracle Database and Oracle <a id="sthref591"></a>Database Resource Manager, see your systems vendor and your Oracle representative. Oracle does not certify these system features for compatibility with specific release levels.</p>
+</li>
+<li>
+<p><a class="olink ADMIN027" href="../../server.112/e25494/dbrm.htm#ADMIN027"><span class="italic">Oracle Database Administrator's Guide</span></a> for information about Oracle Database Resource Manager.</p>
+</li>
+<li>
+<p><a class="olink ADMIN13332" href="../../server.112/e25494/dbrm.htm#ADMIN13332"><span class="italic">Oracle Database Administrator's Guide</span></a> for information about instance caging.</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1891"></a>
+<div id="PFGRF94417" class="sect1">
+<h2 class="sect1"><span class="secnum">9.2</span> Resolving Operating System Issues</h2>
+<p>This section provides hints for tuning various systems by explaining the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1919">Performance Hints on UNIX-Based Systems</a></p>
+</li>
+<li>
+<p><a href="#i1924">Performance Hints on Windows Systems</a></p>
+</li>
+<li>
+<p><a href="#i3191">Performance Hints on HP OpenVMS Systems</a></p>
+</li>
+</ul>
+<p>Familiarize yourself with platform-specific issues so that you know what performance options the operating system provides.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+Your Oracle platform-specific documentation and your operating system vendor's documentation</div>
+<a id="i1919"></a>
+<div id="PFGRF94418" class="sect2">
+<h3 class="sect2"><span class="secnum">9.2.1</span> Performance Hints on UNIX-Based Systems</h3>
+<p>On <a id="sthref592"></a><a id="sthref593"></a>UNIX systems, try to establish a good ratio between the amount of time the operating system spends fulfilling system calls and doing process scheduling and the amount of time the application runs. The goal should be to run most of the time in application mode, also called user mode, rather than system mode.</p>
+<p>The ratio of time spent in each mode is only a symptom of the underlying problem, which might involve the following:</p>
+<ul>
+<li>
+<p>Paging or swapping</p>
+</li>
+<li>
+<p>Executing too many operating system calls</p>
+</li>
+<li>
+<p>Running too many processes</p>
+</li>
+</ul>
+<p>If such conditions exist, then there is less time available for the application to run. The more time you can release from the operating system side, the more transactions an application can perform.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1924"></a>
+<div id="PFGRF94419" class="sect2">
+<h3 class="sect2"><span class="secnum">9.2.2</span> Performance Hints on Windows Systems</h3>
+<p><a id="sthref594"></a><a id="sthref595"></a>On Windows systems, as with UNIX-based systems, establish an appropriate ratio between time in application mode and time in system mode. You can easily monitor many factors with the Windows administrative performance tool: CPU, network, I/O, and memory are all displayed on the same graph to assist you in avoiding bottlenecks in any of these areas.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i3191"></a>
+<div id="PFGRF94420" class="sect2">
+<h3 class="sect2"><span class="secnum">9.2.3</span> Performance Hints on HP OpenVMS Systems</h3>
+<p><a id="sthref596"></a>Consider the paging parameters on a mainframe, and remember that Oracle Database can exploit a very large working set.</p>
+<p>Free memory in HP OpenVMS environments is actually memory that is not mapped to any operating system process. On a busy system, free memory likely contains a page belonging to one or more currently active process. When that access occurs, a <code>soft page fault</code> takes place, and the page is included in the working set for the process. If the process cannot expand its working set, then one of the pages currently mapped by the process must be moved to the free set.</p>
+<p>Any number of processes might have pages of shared memory within their working sets. The sum of the sizes of the working sets can thus markedly exceed the available memory. When the Oracle server is running, the SGA, the Oracle Database kernel code, and the Oracle Forms run-time executable are normally all sharable and account for perhaps 80% or 90% of the pages accessed.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BABIEIAH"></a>
+<div id="PFGRF94421" class="sect1">
+<h2 class="sect1"><span class="secnum">9.3</span> Understanding CPU</h2>
+<p>To address CPU problems, first establish appropriate expectations for the amount of CPU resources your system should be using. Then, determine whether sufficient CPU resources are available and recognize when your system is consuming too many resources. Begin by determining the amount of CPU resources the Oracle database instance utilizes with your system in the following three cases:</p>
+<ul>
+<li>
+<p>System is idle, when little Oracle Database and non-Oracle activity exists</p>
+</li>
+<li>
+<p>System at average workloads</p>
+</li>
+<li>
+<p>System at peak workloads</p>
+</li>
+</ul>
+<p>You can capture various workload snapshots using the Automatic Workload Repository, Statspack, or the <code>UTLBSTAT</code>/<code>UTLESTAT</code> utility. Operating system utilities&mdash;such as <code>vmstat</code>, <code>sar</code>, and <code>iostat</code> on UNIX and the administrative performance monitoring tool on Windows&mdash;can be used along with the <code>V$OSSTAT</code> or <code>V$SYSMETRIC_HISTORY</code> view during the same time interval as Automatic Workload Repository, Statspack, or <code>UTLBSTAT</code>/<code>UTLESTAT</code> to provide a complimentary view of the overall statistics.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="autostat.htm#i27008">"Overview of the Automatic Workload Repository"</a></p>
+</li>
+<li>
+<p><a href="diag.htm#g41683">Chapter 6, "Automatic Performance Diagnostics"</a> for more information on Oracle Database tools</p>
+</li>
+</ul>
+</div>
+<p>Workload is an important factor when evaluating your system's level of CPU utilization. During peak workload hours, 90% CPU utilization with 10% idle and waiting time can be acceptable. Even 30% utilization at a time of low workload can be understandable. However, if your system shows high utilization at normal workload, then there is no room for a peak workload. For example, <a href="#i4165">Figure 9-1</a> illustrates workload over time for an application having peak periods at 10:00 AM and 2:00 PM.</p>
+<div id="PFGRF94422" class="figure">
+<p class="titleinfigure"><a id="i4165"></a>Figure 9-1 Average Workload and Peak Workload</p>
+<img width="496" height="288" src="img/pfgrf066.gif" alt="Description of Figure 9-1 follows" /><br />
+<a id="sthref597" href="img_text/pfgrf066.htm">Description of "Figure 9-1 Average Workload and Peak Workload"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>This example application has 100 users working 8 hours a day. Each user entering one transaction every 5 minutes translates into 9,600 transactions daily. Over an 8-hour period, the system must support 1,200 transactions an hour, which is an average of 20 transactions a minute. If the demand rate were constant, then you could build a system to meet this average workload.</p>
+<p>However, usage patterns are not constant and in this context, 20 transactions a minute can be understood as merely a minimum requirement. If the peak rate you need to achieve is 120 transactions a minute, then you must configure a system that can support this peak workload.</p>
+<p>For this example, assume that at peak workload, Oracle Database uses 90% of the CPU resource. For a period of average workload, then, Oracle Database uses no more than about 15% of the available CPU resource, as illustrated in the following equation:</p>
+<pre>
+20 tpm / 120 tpm * 90% = 15% of available CPU resource
+</pre>
+<p>where <code>tpm</code> is transactions a minute.</p>
+<p>If the system requires 50% of the CPU resource to achieve 20 tpm, then a problem exists: the system cannot achieve 120 transactions a minute using 90% of the CPU. However, if you tuned this system so that it achieves 20 tpm using only 15% of the CPU, then, assuming linear scalability, the system might achieve 120 transactions a minute using 90% of the CPU resources.</p>
+<p>As users are added to an application, the workload can rise to what had previously been peak levels. No further CPU capacity is then available for the new peak rate, which is actually higher than the previous.</p>
+</div>
+<!-- class="sect1" -->
+<a id="BACGGJBH"></a>
+<div id="PFGRF95150" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">9.4</span> Resolving CPU Issues</h2>
+<p>You can resolve CPU capacity issues by:</p>
+<ul>
+<li>
+<p>Detecting and solving CPU problems from excessive consumption, as described in <a href="#i10712">"Finding and Tuning CPU Utilization"</a>.</p>
+</li>
+<li>
+<p>Reducing the impact of peak load use patterns by prioritizing CPU resource allocation using Oracle Database Resource Manager, as described in <a href="#BACJHFIH">"Managing CPU Resources Using Oracle Database Resource Manager"</a>.</p>
+</li>
+<li>
+<p>Using <a id="sthref598"></a>instance caging to limit the number of CPUs that a database instance can use simultaneously when running multiple database instances on a multi-CPU system, as described in <a href="#BACDBBGG">"Managing CPU Resources Using Instance Caging"</a>.</p>
+</li>
+<li>
+<p>Increasing hardware capacity and improving the system architecture, as described in <a href="design.htm#i27874">"System Architecture"</a>.</p>
+</li>
+</ul>
+<a id="i10712"></a>
+<div id="PFGRF94423" class="sect2">
+<h3 class="sect2"><span class="secnum">9.4.1</span> Finding and Tuning CPU Utilization</h3>
+<p>Every process running on your system affects the available <a id="sthref599"></a>CPU resources. Therefore, tuning non-database factors can also improve database performance.</p>
+<p>Use the <code>V$OSSTAT</code> or <code>V$SYSMETRIC_HISTORY</code> view to monitor system utilization statistics from the operating system. Useful statistics contained in <code>V$OSSTAT</code> and <code>V$SYSMETRIC_HISTORY</code> include:</p>
+<ul>
+<li>
+<p>Number of CPUs</p>
+</li>
+<li>
+<p>CPU utilization</p>
+</li>
+<li>
+<p>Load</p>
+</li>
+<li>
+<p>Paging</p>
+</li>
+<li>
+<p>Physical memory</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink REFRN30321" href="../../server.112/e40402/dynviews_2085.htm#REFRN30321"><span class="italic">Oracle Database Reference</span></a> for more information on <code>V$OSSTAT</code> and <code>V$SYSMETRIC_HISTORY</code></div>
+<p>You can use operating system monitoring tools to determine which processes run on the system as a whole. If the system is too heavily loaded, check the memory, I/O, and process management areas described later in this section.</p>
+<p>You can use tools such as <code>sar</code> <code>-u</code> on many UNIX-based systems to examine the level of CPU utilization on the system. In UNIX, statistics show user time, system time, idle time, and time waiting for I/O. A CPU problem exists if idle time and time waiting for I/O are both close to zero (less than 5%) at a normal or low workload.</p>
+<p>On Windows, you can use the administrative performance tool to monitor CPU utilization. This utility provides statistics on processor time, user time, privileged time, interrupt time, and DPC time.</p>
+<p>This section contains the following topics related to checking system CPU utilization:</p>
+<ul>
+<li>
+<p><a href="#BABEEEEE">Checking Memory Management</a></p>
+</li>
+<li>
+<p><a href="#BABHDBDE">Checking I/O Management</a></p>
+</li>
+<li>
+<p><a href="#BABIDDCB">Checking Network Management</a></p>
+</li>
+<li>
+<p><a href="#BABGCAGJ">Checking Process Management</a></p>
+</li>
+</ul>
+<div class="infobox-note">
+<p class="notep1"><span class="bold">Note</span>:</p>
+This section describes how to check system CPU utilization on most UNIX-based and Windows systems. For other platforms, see your operating system documentation.</div>
+<a id="BABEEEEE"></a>
+<div id="PFGRF94424" class="sect3">
+<h4 class="sect3"><span class="secnum">9.4.1.1</span> Checking Memory Management</h4>
+<p>Check the following memory management areas:</p>
+<ul>
+<li>
+<p><a href="#BACJBJHE">Paging and Swapping</a></p>
+</li>
+<li>
+<p><a href="#BACHGEFI">Oversize Page Tables</a></p>
+</li>
+</ul>
+<a id="BACJBJHE"></a>
+<div id="PFGRF94425" class="sect4">
+<h5 class="sect4"><span class="secnum">9.4.1.1.1</span> Paging and Swapping</h5>
+<p>Use the <code>V$OSSTAT</code> view, utilities such as <code><a id="sthref600"></a>sar</code> or<a id="sthref601"></a> <code>vmstat</code> on UNIX, or the administrative <a id="sthref602"></a>performance tool on Windows, to investigate the cause of paging and <a id="sthref603"></a>swapping.</p>
+</div>
+<!-- class="sect4" -->
+<a id="BACHGEFI"></a>
+<div id="PFGRF94426" class="sect4">
+<h5 class="sect4"><span class="secnum">9.4.1.1.2</span> Oversize Page Tables</h5>
+<p>On UNIX, if the processing space becomes too large, then it can result in the <a id="sthref604"></a>page tables becoming too large. This is not an issue on Windows systems.</p>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<a id="BABHDBDE"></a>
+<div id="PFGRF94427" class="sect3">
+<h4 class="sect3"><span class="secnum">9.4.1.2</span> Checking I/O Management</h4>
+<p>Thrashing is an I/O management issue. Ensure that your workload fits into memory, so the computer is not <a id="sthref605"></a>thrashing (<a id="sthref606"></a>swapping and<a id="sthref607"></a><a id="sthref608"></a> paging processes in and out of memory). The operating system allocates fixed portions of time during which CPU resources are available to your process. If the process wastes a large portion of each time period checking to ensure that it can run and ensuring that all necessary components are in the computer, then the process might be using only 50% of the time allotted to actually perform work.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="iodesign.htm#g37279">Chapter 8, "I/O Configuration and Design"</a></div>
+</div>
+<!-- class="sect3" -->
+<a id="BABIDDCB"></a>
+<div id="PFGRF94428" class="sect3">
+<h4 class="sect3"><span class="secnum">9.4.1.3</span> Checking Network Management</h4>
+<p>Check client/server round trips. There is an overhead in processing messages. When an application generates many messages that need to be sent through the network, the latency of sending a message can result in CPU overload. To alleviate this problem, bundle multiple messages rather than perform lots of round trips. For example, you can use array inserts, array fetches, and so on.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BABGCAGJ"></a>
+<div id="PFGRF94429" class="sect3">
+<h4 class="sect3"><span class="secnum">9.4.1.4</span> Checking Process Management</h4>
+<p>Several process management issues discussed in this section should be checked.</p>
+<div id="PFGRF94430" class="sect4"><a id="sthref609"></a>
+<h5 class="sect4"><span class="secnum">9.4.1.4.1</span> Scheduling and Switching</h5>
+<p>The operating system can spend excessive time <a id="sthref610"></a>scheduling and<a id="sthref611"></a> switching processes. Examine the way in which you are using the operating system, because it is possible that too many processes are in use. On Windows systems, do not overload the server with too many non-database processes.</p>
+</div>
+<!-- class="sect4" -->
+<div id="PFGRF94431" class="sect4"><a id="sthref612"></a>
+<h5 class="sect4"><span class="secnum">9.4.1.4.2</span> Context Switching</h5>
+<p>Due to operating system specific characteristics, your system could be spending a lot of time in <a id="sthref613"></a>context switches. Context switching can be expensive, especially with a large SGA. Context switching is not an issue on Windows, which has only one process for each instance. All threads share the same page table.</p>
+<p>Oracle Database has several features for context switching:</p>
+<ul>
+<li>
+<p>Post-wait driver</p>
+<p>An Oracle process must be able to post another Oracle process (give it a message) and also must be able to wait to be posted. For example, a foreground process may need to post LGWR to tell it to write out all blocks up to a given point so that it can acknowledge a commit.</p>
+<p>Often this post-wait mechanism is implemented through UNIX Semaphores, but these can be resource intensive. Therefore, some platforms supply a post-wait driver, typically a kernel device driver that is a lightweight method of implementing a post-wait interface.</p>
+</li>
+<li>
+<p>Memory-mapped system timer</p>
+<p>Oracle Database often needs to query the system time for timing information. This can involve an operating system call that incurs a relatively costly context switch. Some platforms implement a memory-mapped timer that uses an address within the processes virtual address space to contain the current time information. Reading the time from this memory-mapped timer is less expensive than the overhead of a context switch for a system call.</p>
+</li>
+<li>
+<p>List I/O interfaces to submit multiple asynchronous I/Os in One Call</p>
+<p>List I/O is an application programming interface that allows several asynchronous I/O requests to be submitted in a single system call, rather than submitting several I/O requests through separate system calls. The main benefit of this feature is to reduce the number of context switches required.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect4" -->
+<div id="PFGRF94435" class="sect4"><a id="sthref614"></a>
+<h5 class="sect4"><span class="secnum">9.4.1.4.3</span> Starting New Operating System Processes</h5>
+<p>There is a high cost in starting new operating system processes. Developers often create a single-purpose process, exit the process, and then create a new one. This technique re-creates and destroys the process each time, consuming excessive amounts of CPU, especially in applications that have large SGAs. The CPU is needed to build the page tables each time. The problem is aggravated when you pin or lock shared memory because you must access every page.</p>
+<p>For example, if you have a 1 gigabyte SGA, then you might have page table entries for every 4 KB, and a page table entry might be 8 bytes. You could end up with (1 GB&nbsp;/&nbsp;4 KB) * 8 byte entries. This becomes expensive, because you need to continually ensure that the page table is loaded.</p>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BACJHFIH"></a>
+<div id="PFGRF95151" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">9.4.2</span> Managing CPU Resources Using Oracle Database Resource Manager</h3>
+<p>Oracle <a id="sthref615"></a>Database Resource Manager allocates and manages CPU resources among database users and applications in the following ways:</p>
+<ul>
+<li>
+<p>Preventing CPU saturation</p>
+<p>If the CPUs run at 100%, then you can use Oracle Database Resource Manager to allocate a maximum amount of CPU to sessions in each consumer group. This feature can ensure that high-priority sessions can run immediately and lower the CPU consumption of low-priority sessions.</p>
+</li>
+<li>
+<p>Limiting CPU usage for a consumer group</p>
+<p>You can use the Resource Manager directive <code>max_utilization_limit</code> to place a hard limit on the percentage of CPU that a consumer group can use. This feature restricts the CPU consumption of low-priority sessions and can help provide more consistent performance for the workload in a consumer group.</p>
+</li>
+<li>
+<p>Limiting damage from runaway queries</p>
+<p>Starting with Oracle Database 11<span class="italic">g</span> Release 2 (11.2.0.2), Oracle Database Resource Manager can limit the damage from runaway queries by limiting the maximum execution time for a call, or by moving a long-running query to a lower-priority consumer group.</p>
+</li>
+<li>
+<p>Limiting the parallel statement activity for a consumer group</p>
+<p>Starting with Oracle Database 11<span class="italic">g</span> Release 2 (11.2.0.2), you can use the Resource Manager directive <code>parallel_target_percentage</code> to prevent one consumer group from monopolizing all parallel servers. The database queues parallel statements if they would cause this limit to be exceeded.</p>
+<p>For example, assume that the target number of parallel servers is 64, and the consumer group <code>ETL</code> has this directive set to 50%. If consumer group <code>ETL</code> is using 30 parallel servers, and if a new parallel statement needs 4 parallel servers, then the database would queue this statement.</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ADMIN027" href="../../server.112/e25494/dbrm.htm#ADMIN027"><span class="italic">Oracle Database Administrator's Guide</span></a> to learn how to use Oracle Database Resource Manager</p>
+</li>
+<li>
+<p><a class="olink VLDBG010" href="../../server.112/e25523/parallel.htm#VLDBG010"><span class="italic">Oracle Database VLDB and Partitioning Guide</span></a> to learn how to use parallel query</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="BACDBBGG"></a>
+<div id="PFGRF95152" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">9.4.3</span> Managing CPU Resources Using Instance Caging</h3>
+<p>When running multiple database instances on a single system, the instances compete for CPU resources. One resource-intensive database instance may significantly degrade the performance of the other instances. To avoid this problem, you can use instance caging to limit the number of CPUs that can used by each instance. Oracle Database Resource Manager then allocates CPU among the various database sessions according to the resource plan that you set for the instance, thereby minimizing the likelihood of the instance becoming CPU-bound.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ADMIN13333" href="../../server.112/e25494/dbrm.htm#ADMIN13333"><span class="italic">Oracle Database Administrator's Guide</span></a> for information about using instance caging</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1679">
+<tr>
+<td class="cellalignment1688">
+<table class="cellalignment1684">
+<tr>
+<td class="cellalignment1683"><a href="iodesign.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1683"><a href="instance_tune.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2000, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1690">
+<table class="cellalignment1682">
+<tr>
+<td class="cellalignment1683"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1683"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1683"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1683"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1683"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1683"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

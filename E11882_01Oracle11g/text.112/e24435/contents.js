@@ -1,0 +1,18 @@
+var chapters = [
+  { topic: "chapter", section: "1", title: "Understanding Oracle Text Application Development", anchor: "CCAPP0100", file: "overview.htm" },
+  { topic: "chapter", section: "2", title: "Getting Started with Oracle Text", anchor: "CCAPP0200", file: "quicktour.htm" },
+  { topic: "chapter", section: "3", title: "		Indexing with Oracle Text", anchor: "CCAPP0300", file: "ind.htm" },
+  { topic: "chapter", section: "4", title: "Querying with Oracle Text", anchor: "CCAPP0400", file: "query.htm" },
+  { topic: "chapter", section: "5", title: "Presenting Documents in Oracle Text", anchor: "CCAPP0700", file: "view.htm" },
+  { topic: "chapter", section: "6", title: "Classifying Documents in Oracle Text", anchor: "CCAPP0600", file: "classify.htm" },
+  { topic: "chapter", section: "7", title: "Tuning Oracle Text", anchor: "CCAPP0500", file: "aoptim.htm" },
+  { topic: "chapter", section: "8", title: "Searching Document Sections in Oracle Text", anchor: "CCAPP0800", file: "csection.htm" },
+  { topic: "chapter", section: "9", title: "Using Oracle Text Name Search", anchor: "CCAPP9534", file: "search.htm" },
+  { topic: "chapter", section: "10", title: "Working With a Thesaurus in Oracle Text", anchor: "CCAPP0900", file: "cthes.htm" },
+  { topic: "chapter", section: "11", title: "Using XML Query Result Set Interface", anchor: "CCAPP9537", file: "resultset.htm" },
+  { topic: "chapter", section: "12", title: "Administering Oracle Text", anchor: "CCAPP1000", file: "admin.htm" },
+  { topic: "chapter", section: "13", title: "Migrating Oracle Text Applications", anchor: "CCAPP2001", file: "cmigrt.htm" },
+  { topic: "appendix", section: "A", title: "CONTEXT Query Application", anchor: "CCAPP3000", file: "acase.htm" },
+  { topic: "appendix", section: "B", title: "CATSEARCH Query Application", anchor: "CCAPP3100", file: "acatapp.htm" },
+  { topic: "glossary", section: "", title: "Glossary", anchor: "CCAPP9000", file: "txtgloss.htm" },
+  { } ];

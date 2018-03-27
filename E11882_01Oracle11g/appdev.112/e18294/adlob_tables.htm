@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>LOB Storage</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 737" />
+<meta name="dcterms.created" content="2013-07-18T13:32:41Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database SecureFiles and Large Objects Developer's Guide" />
+<meta name="dcterms.identifier" content="E18294-04" />
+<meta name="dcterms.isVersionOf" content="ADLOB" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1996, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="part_des.htm" title="Previous" type="text/html" />
+<link rel="Next" href="adlob_design.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e18294.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">21/37</span> <!-- End Header -->
+<div id="ADLOB45259" class="chapter"><a id="g1000000"></a><a id="i1000000"></a>
+<h1 class="chapter"><span class="secnum">11</span> LOB Storage</h1>
+<p>This chapter describes issues specific to tables that contain LOB columns, with both the <code>SECUREFILE</code> and <code>BASICFILE</code> parameters. If a feature applies to only one of the two kinds of LOB, it is so stated.</p>
+<p>This chapter contains these topics:</p>
+<ul>
+<li>
+<p><a href="#i1012988">Creating Tables That Contain LOBs</a></p>
+</li>
+<li>
+<p><a href="#i1006197">Choosing a LOB Column Data Type</a></p>
+</li>
+<li>
+<p><a href="#CIHEBABG">LOB Storage Parameters</a></p>
+</li>
+<li>
+<p><a href="#i1012913">Indexing LOB Columns</a></p>
+</li>
+<li>
+<p><a href="#i1014212">Manipulating LOBs in Partitioned Tables</a></p>
+</li>
+<li>
+<p><a href="#i1006887">LOBs in Index Organized Tables</a></p>
+</li>
+<li>
+<p><a href="#i1007002">Restrictions for LOBs in Partitioned Index-Organized Tables</a></p>
+</li>
+<li>
+<p><a href="#i1016362">Updating LOBs in Nested Tables</a></p>
+</li>
+</ul>
+<a id="i1012988"></a>
+<div id="ADLOB45260" class="sect1">
+<h2 class="sect1">Creating Tables That Contain LOBs</h2>
+<p>When creating tables that contain LOBs, use the guidelines described in the following sections:</p>
+<a id="i1006119"></a>
+<div id="ADLOB45261" class="sect2">
+<h3 class="sect2">Initializing Persistent LOBs to NULL or Empty <a id="sthref257"></a></h3>
+<p>You can set a persistent LOB &mdash; &shy;that is, a LOB column in a table, or a LOB attribute in an object type that you defined&mdash; to be <code>NULL</code> or empty:</p>
+<ul>
+<li>
+<p><span class="italic">Setting a Persistent LOB to NULL</span>: A LOB set to <code>NULL</code> has no locator. A <code>NULL</code> value is stored in the row in the table, not a locator. This is the same process as for all other data types.</p>
+</li>
+<li>
+<p><span class="italic">Setting a Persistent LOB to Empty</span>: By contrast, an empty LOB stored in a table is a LOB of zero length that has a locator. So, if you <code>SELECT</code> from an empty LOB column or attribute, then you get back a locator which you can use to populate the LOB with data using supported programmatic environments, such as OCI or <code>PL/SQL(DBMS_LOB</code>). See <a href="adlob_api_overview.htm#g1060414">Chapter 13, "Overview of Supplied LOB APIs"</a> for more information on supported environments.</p>
+</li>
+</ul>
+<p>Details for these options are given in the following discussions.</p>
+<div id="ADLOB45262" class="sect3"><a id="sthref258"></a>
+<h4 class="sect3"><a id="sthref259"></a><a id="sthref260"></a>Setting a Persistent LOB to NULL</h4>
+<p>You may want to set a persistent LOB value to <code>NULL</code> upon inserting the row in cases where you do not have the LOB data at the time of the <code>INSERT</code> or if you want to use a <code>SELECT</code> statement, such as the following, to determine whether the LOB holds a <code>NULL</code> value:</p>
+<pre>
+SELECT COUNT (*) FROM print_media WHERE ad_graphic IS NOT NULL; 
+
+SELECT COUNT (*) FROM print_media WHERE ad_graphic IS NULL; 
+</pre>
+<p><a id="i1006139"></a>Note that you cannot call OCI or DBMS_LOB functions on a <code>NULL</code> <a id="sthref261"></a><a id="sthref262"></a><a id="sthref263"></a><a id="sthref264"></a>LOB, so you must then use an SQL <code>UPDATE</code> statement to reset the LOB column to a non-<code>NULL</code> (or empty) value.</p>
+<p>The point is that you cannot make a function call from the supported programmatic environments on a LOB that is <code>NULL.</code> These functions only work with a locator, and if the LOB column is <code>NULL</code>, then there is no locator in the row.</p>
+</div>
+<!-- class="sect3" -->
+<div id="ADLOB45263" class="sect3"><a id="sthref265"></a>
+<h4 class="sect3"><a id="sthref266"></a><a id="sthref267"></a><a id="sthref268"></a>Setting a Persistent LOB to Empty</h4>
+<p>You can initialize a persistent LOB to <code>EMPTY</code> rather that <code>NULL</code>. Doing so, enables you to obtain a locator for the LOB instance without populating the LOB with data. To set a persistent LOB to <code>EMPTY</code>, use the SQL function <code>EMPTY_BLOB()</code> or <code>EMPTY_CLOB()</code> in the <code>INSERT</code> statement:</p>
+<pre>
+INSERT INTO a_table VALUES (EMPTY_BLOB());
+</pre>
+<p><a id="sthref269"></a>As an alternative, you can use the <code>RETURNING</code> clause to obtain the LOB locator in one operation rather than calling a subsequent SELECT statement:</p>
+<pre>
+DECLARE
+   Lob_loc  BLOB;
+BEGIN
+   INSERT INTO a_table VALUES (EMPTY_BLOB()) RETURNING blob_col INTO Lob_loc;
+<span class="italic">   /* Now use the locator Lob_loc to populate the BLOB with data */</span>
+END;
+</pre></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<div id="ADLOB45264" class="sect2"><a id="sthref270"></a>
+<h3 class="sect2">Initializing LOBs</h3>
+<p>You can initialize the LOBs in <code>print_media</code> by using the following <code>INSERT</code> statement:</p>
+<pre>
+INSERT INTO print_media VALUES (1001, EMPTY_CLOB(), EMPTY_CLOB(), NULL,
+    EMPTY_BLOB(), EMPTY_BLOB(), NULL, NULL, NULL, NULL);
+</pre>
+<p>This sets the value of <code>ad_sourcetext</code><span class="italic">,</span> <code>ad_fltextn</code><span class="italic">,</span> <code>ad_composite</code><span class="italic">,</span> and <code>ad_photo</code> to an empty value, and sets <code>ad_graphic</code> to <code>NULL</code>.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1006162"></a>
+<div id="ADLOB45265" class="sect2">
+<h3 class="sect2">Initializing Persistent LOB Columns and Attributes to a Value <code><a id="sthref271"></a></code></h3>
+<p>You can initialize the LOB column or LOB attributes to a value that contains more than 4G bytes of data, the limit before release 10.2.</p>
+<div class="infoboxnotealso">
+<p class="notep1"><span class="bold">See Also</span>:</p>
+<a href="adlob_data_interface.htm#g1029381">Chapter 20, "Data Interface for Persistent LOBs"</a></div>
+</div>
+<!-- class="sect2" -->
+<a id="i1006175"></a>
+<div id="ADLOB45266" class="sect2">
+<h3 class="sect2">Initializing BFILEs to NULL or a File Name</h3>
+<p>A <code>BFILE</code> can be initialized to <code>NULL</code> or to a filename. To do so, you can use the <code>BFILENAME()</code> function.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="adlob_bfile_ops.htm#i1006319">"BFILENAME and Initialization"</a>.</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1012593"></a>
+<div id="ADLOB101" class="sect2">
+<h3 class="sect2">Restriction on First Extent of a LOB Segment</h3>
+<p>The first extent of any segment requires <span class="italic">at least 2 blocks</span> (if <code>FREELIST GROUPS</code> was 0). That is, the initial extent size of the segment should be at least 2 blocks. LOBs segments are different because they need <span class="italic">at least 3 blocks</span> in the first extent. If you try to create a LOB segment in a permanent dictionary managed tablespace with initial = 2 blocks, then it still works because it is possible for segments in permanent dictionary-managed tablespaces to override the default storage setting of the tablespaces.</p>
+<p>But if uniform locally managed tablespaces or dictionary managed tablespaces of the temporary type, or locally managed temporary tablespaces have an extent size of 2 blocks, then LOB segments cannot be created in these tablespaces. This is because in these tablespace types, extent sizes are fixed and the default storage setting of the tablespaces is not ignored.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006197"></a>
+<div id="ADLOB45267" class="sect1">
+<h2 class="sect1">Choosing a LOB Column Data Type</h2>
+<p>When selecting a data type, consider the following three topics:</p>
+<a id="i1006208"></a>
+<div id="ADLOB45268" class="sect2">
+<h3 class="sect2">LOBs Compared to LONG and LONG RAW Types</h3>
+<p><a href="#g1017705">Table 11-1</a> lists the similarities and differences between LOBs, LONGs, and LONG RAW types.</p>
+<div id="ADLOB45269" class="tblformal">
+<p class="titleintable"><a id="sthref272"></a><a id="g1017705"></a>Table 11-1 LOBs Vs. LONG RAW</p>
+<table class="cellalignment905" title="LOBs Vs. LONG RAW" summary="This table is described in the preceding text" dir="ltr">
+<thead>
+<tr class="cellalignment899">
+<th class="cellalignment906" id="r1c1-t4">LOB Data Type</th>
+<th class="cellalignment906" id="r1c2-t4">LONG and LONG RAW Data Type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r2c1-t4" headers="r1c1-t4">
+<p>You can store multiple LOBs in a single row</p>
+</td>
+<td class="cellalignment907" headers="r2c1-t4 r1c2-t4">
+<p>You can store only one <code>LONG</code> or <code>LONG</code> <code>RAW</code> in each row.</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r3c1-t4" headers="r1c1-t4">
+<p><code>LOB</code>s can be attributes of a user-defined data type</p>
+</td>
+<td class="cellalignment907" headers="r3c1-t4 r1c2-t4">
+<p>This is not possible with either a <code>LONG</code> or <code>LONG</code> <code>RAW</code></p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r4c1-t4" headers="r1c1-t4">
+<p>Only the LOB locator is stored in the table column; <code>BLOB</code> and <code>CLOB</code> data can be stored in separate tablespaces and <code>BFILE</code> data is stored as an external file.</p>
+<p>For inline LOBs, the database stores LOBs that are less than approximately 4000 bytes of data in the table column.</p>
+</td>
+<td class="cellalignment907" headers="r4c1-t4 r1c2-t4">
+<p>In the case of a <code>LONG</code> or <code>LONG</code> <code>RAW</code> the entire value is stored in the table column.</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r5c1-t4" headers="r1c1-t4">
+<p>When you access a LOB column, you can choose to fetch the locator or the data.</p>
+</td>
+<td class="cellalignment907" headers="r5c1-t4 r1c2-t4">
+<p>When you access a <code>LONG</code> or <code>LONG</code> <code>RAW,</code> the entire value is returned.</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r6c1-t4" headers="r1c1-t4">
+<p>A LOB can be up to 128 terabytes or more in size depending on your block size.</p>
+</td>
+<td class="cellalignment907" headers="r6c1-t4 r1c2-t4">
+<p>A <code>LONG</code> or <code>LONG</code> <code>RAW</code> instance is limited to 2 gigabytes in size.</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r7c1-t4" headers="r1c1-t4">
+<p>There is greater flexibility in manipulating data in a random, piece-wise manner with LOBs. LOBs can be accessed at random offsets.</p>
+</td>
+<td class="cellalignment907" headers="r7c1-t4 r1c2-t4">
+<p>Less flexibility in manipulating data in a random, piece-wise manner with <code>LONG or LONG RAW data.</code><code>LONG</code>s must be accessed from the beginning to the desired location<code>.</code></p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r8c1-t4" headers="r1c1-t4">
+<p>You can replicate LOBs in both local and distributed environments.</p>
+</td>
+<td class="cellalignment907" headers="r8c1-t4 r1c2-t4">
+<p>Replication in both local and distributed environments is not possible with a <code>LONG</code> or <code>LONG</code> <code>RAW</code> (see <a class="olink REPLN" href="../../server.112/e10706/toc.htm"><span class="italic">Oracle Database Advanced Replication)</span></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" --></div>
+<!-- class="sect2" -->
+<a id="i1010742"></a>
+<div id="ADLOB45270" class="sect2">
+<h3 class="sect2"><a id="sthref273"></a><a id="sthref274"></a><a id="sthref275"></a><a id="sthref276"></a><a id="sthref277"></a><a id="sthref278"></a>Storing Varying-Width Character Data in LOBs</h3>
+<p>Varying-width character data in <code>CLOB</code> and <code>NCLOB</code> data types is stored in an internal format that is compatible with UCS2 Unicode character set format. This ensures that there is no storage loss of character data in a varying-width format. Also note the following if you are using LOBs to store varying-width character data:</p>
+<ul>
+<li>
+<p>You can create tables containing <code>CLOB</code> and <code>NCLOB</code> columns even if you use a varying-width <code>CHAR</code> or <code>NCHAR</code> database character set.</p>
+</li>
+<li>
+<p>You can create a table containing a data type that has a <code>CLOB</code> attribute regardless of whether you use a varying-width <code>CHAR</code> database character set.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="i1006286"></a>
+<div id="ADLOB45271" class="sect2">
+<h3 class="sect2"><a id="sthref279"></a>Implicit Character Set Conversions with LOBs</h3>
+<p>For <code>CLOB</code> and <code>NCLOB</code> instances used in OCI (Oracle Call Interface), or any of the programmatic environments that access OCI functionality, character set conversions are implicitly performed when translating from one character set to another.</p>
+<p>The <code>DBMS_LOB.LOADCLOBFROMFILE</code> API, performs an implicit conversion from binary data to character data when loading to a <code>CLOB</code> or <code>NCLOB</code>. With the exception of <code>DBMS_LOB.LOADCLOBFROMFILE</code>, LOB APIs do not perform implicit conversions from binary data to character data.</p>
+<p>For example, when you use the <code>DBMS_LOB.LOADFROMFILE</code> API to populate a <code>CLOB</code> or <code>NCLOB</code>, you are populating the LOB with binary data from a <code>BFILE</code>. In this case, you must perform character set conversions on the <code>BFILE</code> data before calling <code>DBMS_LOB.LOADFROMFILE</code>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink NLSPG" href="../../server.112/e10729/toc.htm"><span class="italic">Oracle Database Globalization Support Guide</span></a> for more detail on character set conversions.</div>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The database character set cannot be changed from a single-byte to a multibyte character set if there are populated user-defined <code>CLOB</code> columns in the database tables. The national character set cannot be changed between <code>AL16UTF16</code> and <code>UTF8</code> if there are populated user-defined <code>NCLOB</code> columns in the database tables.</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CIHEBABG"></a>
+<div id="ADLOB45272" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">LOB Storage Parameters</h2>
+<p>This section summarizes LOB storage characteristics to consider when designing tables with LOB storage. For a discussion of <code>SECUREFILE</code> parameters:</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="adlob_smart.htm#CIHGHEFA">"Using CREATE TABLE with SecureFiles LOBs"</a></p>
+</li>
+<li>
+<p><a href="adlob_smart.htm#CIHJJBIJ">"Using ALTER TABLE with SecureFiles LOBs"</a></p>
+</li>
+</ul>
+</div>
+<a id="i1012220"></a>
+<div id="ADLOB45273" class="sect2">
+<h3 class="sect2">Inline and Out-of-Line LOB Storage <a id="sthref280"></a><a id="sthref281"></a><a id="sthref282"></a></h3>
+<p>LOB columns store locators that reference the location of the actual LOB value. Depending on the column properties you specify when you create the table, and depending the size of the LOB, actual LOB values are stored either in the table row (inline) or outside of the table row (out-of-line).</p>
+<p>LOB values are stored out-of-line when any of the following situations apply:</p>
+<ul>
+<li>
+<p>If you explicitly specify <a id="sthref283"></a><code>DISABLE</code> <code>STORAGE</code> <code>IN</code> <code>ROW</code> for the LOB storage clause when you create the table.</p>
+</li>
+<li>
+<p>If the size of the LOB is greater than <a id="sthref284"></a>approximately 4000 bytes (4000 minus system control information), regardless of the LOB storage properties for the column.</p>
+</li>
+<li>
+<p>If you update a LOB that is stored out-of-line and the resulting LOB is less than approximately 4000 bytes, it is still stored out-of-line.</p>
+</li>
+</ul>
+<p>LOB values are stored inline when any of the following conditions apply:</p>
+<ul>
+<li>
+<p>When the size of the LOB stored in the given row is small, approximately 4000 bytes or less, and you either explicitly specify <a id="sthref285"></a><code>ENABLE</code> <code>STORAGE</code> <code>IN</code> <code>ROW</code> or the LOB storage clause when you create the table, or when you do not specify this parameter (which is the default).</p>
+</li>
+<li>
+<p><a id="sthref286"></a>When the LOB value is <code>NULL</code> (regardless of the LOB storage properties for the column).</p>
+</li>
+</ul>
+<p>Using the default LOB storage properties (inline storage) can allow for better database performance; it avoids the overhead of creating and managing out-of-line storage for smaller LOB values. If LOB values stored in your database are frequently small in size, then using inline storage is recommended.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+<ul>
+<li>
+<p><a id="sthref287"></a>LOB locators are always stored in the row.</p>
+</li>
+<li>
+<p><a id="sthref288"></a>A LOB locator always exists for any LOB instance regardless of the LOB storage properties or LOB value - <code>NULL</code>, empty, or otherwise.</p>
+</li>
+<li>
+<p><a id="sthref289"></a>If the LOB is created with <code>DISABLE STORAGE IN ROW</code> properties and the BasicFiles LOB holds any data, then a minimum of one <code>CHUNK</code> of out-of-line storage space is used; even when the size of the LOB is less than the <code>CHUNK</code> size.</p>
+</li>
+<li>
+<p><a id="sthref290"></a>If a LOB column is initialized with <code>EMPTY_CLOB()</code> or <code>EMPTY_BLOB()</code>, then no LOB value exists, not even <code>NULL</code>. The row holds a LOB locator only. No additional LOB storage is used.</p>
+</li>
+<li>
+<p><a id="sthref291"></a>LOB storage properties do not affect <code>BFILE</code> columns. <code>BFILE</code> data is always stored in operating system files outside the database.</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1006378"></a>
+<div id="ADLOB45274" class="sect2">
+<h3 class="sect2"><a id="sthref292"></a>Defining Tablespace and Storage Characteristics for Persistent LOBs</h3>
+<p>When defining LOBs in a table, you can explicitly indicate the tablespace and storage characteristics for each <span class="italic">persistent LOB</span> column.</p>
+<p>To create a BasicFiles LOB, the <code>BASICFILE</code> keyword is optional but is recommended for clarity, as shown in the following example:</p>
+<pre>
+CREATE TABLE ContainsLOB_tab (n NUMBER, c CLOB)  
+      lob (c) STORE AS BASICFILE segname (TABLESPACE lobtbs1 CHUNK 4096 
+                        PCTVERSION 5 
+                        NOCACHE LOGGING 
+                        STORAGE (MAXEXTENTS 5) 
+                       ); 
+</pre>
+<p>For SecureFiles, the <code>SECUREFILE</code> keyword is necessary, as shown in the following example (assuming <code>TABLESPACE lobtbs1</code> is <code><a id="sthref293"></a><a id="sthref294"></a>ASSM</code>):</p>
+<pre>
+CREATE TABLE ContainsLOB_tab1 (n NUMBER, c CLOB)
+      lob (c) STORE AS SECUREFILE sfsegname (TABLESPACE lobtbs1
+                       RETENTION AUTO
+                       CACHE LOGGING
+                       STORAGE (MAXEXTENTS 5)
+                     );
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+There are no tablespace or storage characteristics that you can specify for <span class="italic">external</span> LOBs (<code>BFILE</code>s) as they are not stored in the database.</div>
+<p>If you must modify the LOB storage parameters on an existing LOB column, then use the <code>ALTER</code> <code>TABLE</code> <code>... MOVE</code> statement. You can change the <code>RETENTION</code>, <code>PCTVERSION</code>, <code>CACHE</code>, <code>NOCACHE</code> <code>LOGGING</code>, <code>NOLOGGING</code>, or <code>STORAGE</code> settings. You can also change the <code>TABLESPACE</code> using the <code>ALTER TABLE ... MOVE</code> statement.</p>
+<a id="i1006402"></a>
+<div id="ADLOB45275" class="sect3">
+<h4 class="sect3">Assigning a LOB Data Segment Name</h4>
+<p>As shown in the in the previous example, specifying a name for the LOB data segment makes for a much more intuitive working environment. When querying the LOB data dictionary views <code>USER_LOBS</code>, <code>ALL_LOBS</code>, <code>DBA_LOBS</code> (see <a class="olink REFRN" href="../../server.112/e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a>), you see the LOB data segment that you chose instead of system-generated names.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1006416"></a>
+<div id="ADLOB45276" class="sect2">
+<h3 class="sect2">LOB Storage Characteristics for LOB Column or Attribute</h3>
+<p>LOB storage characteristics that can be specified for a LOB column or a LOB attribute include the following:</p>
+<ul>
+<li>
+<p><code>TABLESPACE</code></p>
+</li>
+<li>
+<p><code>PCTVERSION</code> or <code>RETENTION</code></p>
+<p>Note that you can specify either <code>PCTVERSION</code> or <code>RETENTION</code> for BasicFiles LOBs, but not both. For SecureFiles, only the <code>RETENTION</code> parameter can be specified.</p>
+</li>
+<li>
+<p><code>CACHE</code>/<code>NOCACHE/CACHE READS</code></p>
+</li>
+<li>
+<p><code>LOGGING/NOLOGGING</code></p>
+</li>
+<li>
+<p><code>CHUNK</code></p>
+</li>
+<li>
+<p><code>ENABLE</code>/<code>DISABLE</code> <code>STORAGE</code> <code>IN</code> <code>ROW</code></p>
+</li>
+<li>
+<p><code>STORAGE</code></p>
+</li>
+</ul>
+<p>For most users, defaults for these storage characteristics are sufficient. If you want to fine-tune LOB storage, then consider the following guidelines.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+"STORAGE clause" and "RETENTION parameter" in <a class="olink SQLRF" href="../../server.112/e41084/toc.htm"><span class="italic">Oracle Database SQL Language Reference</span></a></div>
+</div>
+<!-- class="sect2" -->
+<a id="i1006434"></a>
+<div id="ADLOB45277" class="sect2">
+<h3 class="sect2"><a id="sthref295"></a>TABLESPACE and LOB Index</h3>
+<p>Best performance for LOBs can be achieved by specifying storage for LOBs in a tablespace different from the one used for the table that contains the LOB. If many different LOBs are accessed frequently, then it may also be useful to specify a separate tablespace for each LOB column or attribute in order to reduce device contention.</p>
+<p>The LOB index is an internal structure that is strongly associated with LOB storage. This implies that a user may not drop the LOB index and rebuild it.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The LOB index cannot be altered.</div>
+<p>The system determines which tablespace to use for LOB data and LOB index depending on your specification in the LOB storage clause:</p>
+<ul>
+<li>
+<p>If you do <span class="italic">not</span> specify a tablespace for the LOB data, then the tablespace of the table is used for the LOB data and index.</p>
+</li>
+<li>
+<p>If you specify a tablespace for the LOB data, then both the LOB data and index use the tablespace that was specified.</p>
+</li>
+</ul>
+<a id="i1006447"></a>
+<div id="ADLOB45278" class="sect3">
+<h4 class="sect3">Tablespace for LOB Index in Non-Partitioned Table</h4>
+<p>When creating a table, if you specify a tablespace for the LOB index for a non-partitioned table, then your specification of the tablespace is ignored and the LOB index is co-located with the LOB data. Partitioned LOBs do not include the LOB index syntax.</p>
+<p>Specifying a separate tablespace for the LOB storage segments enables a decrease in contention on the tablespace of the table.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1006454"></a>
+<div id="ADLOB45279" class="sect2">
+<h3 class="sect2"><a id="sthref296"></a><a id="sthref297"></a><a id="sthref298"></a><a id="sthref299"></a>PCTVERSION</h3>
+<p>When a BasicFiles LOB is modified, a new version of the BasicFiles LOB page is produced in order to support consistent read of prior versions of the BasicFiles LOB value.</p>
+<p><code>PCTVERSION</code> is the percentage of all used BasicFiles LOB data space that can be occupied by old versions of BasicFiles LOB data pages. As soon as old versions of BasicFiles LOB data pages start to occupy more than the <code>PCTVERSION</code> amount of used BasicFiles LOB space, Oracle Database tries to reclaim the old versions and reuse them. In other words, <code>PCTVERSION</code> is the percent of used BasicFiles LOB data blocks that is available for versioning old BasicFiles LOB data.</p>
+<p>PCTVERSION has a default of 10 (%), a minimum of 0, and a maximum of 100.</p>
+<p>To decide what value <code>PCTVERSION</code> should be set to, consider the following:</p>
+<ul>
+<li>
+<p>How often BasicFiles LOBs are updated?</p>
+</li>
+<li>
+<p>How often the updated BasicFiles LOBs are read?</p>
+</li>
+</ul>
+<p><a href="#g1017753">Table 11-2, "Recommended PCTVERSION Settings"</a> provides some guidelines for determining a suitable <code>PCTVERSION</code> value given an update percentage of 'X'.</p>
+<div id="ADLOB45280" class="tblformal">
+<p class="titleintable"><a id="sthref300"></a><a id="g1017753"></a>Table 11-2 Recommended PCTVERSION Settings</p>
+<table class="cellalignment905" title="Recommended PCTVERSION Settings" summary="This table is described in the preceding text" dir="ltr">
+<thead>
+<tr class="cellalignment899">
+<th class="cellalignment906" id="r1c1-t12">BasicFiles LOB Update Pattern</th>
+<th class="cellalignment906" id="r1c2-t12">BasicFiles LOB Read Pattern</th>
+<th class="cellalignment906" id="r1c3-t12">PCTVERSION</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r2c1-t12" headers="r1c1-t12">
+<p>Updates X% of LOB data</p>
+</td>
+<td class="cellalignment907" headers="r2c1-t12 r1c2-t12">
+<p>Reads updated LOBs</p>
+</td>
+<td class="cellalignment907" headers="r2c1-t12 r1c3-t12">
+<p>X%</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r3c1-t12" headers="r1c1-t12">
+<p>Updates X% of LOB data</p>
+</td>
+<td class="cellalignment907" headers="r3c1-t12 r1c2-t12">
+<p>Reads LOBs but not the updated LOBs</p>
+</td>
+<td class="cellalignment907" headers="r3c1-t12 r1c3-t12">
+<p>0%</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r4c1-t12" headers="r1c1-t12">
+<p>Updates X% of LOB data</p>
+</td>
+<td class="cellalignment907" headers="r4c1-t12 r1c2-t12">
+<p>Reads both updated and non-updated LOBs</p>
+</td>
+<td class="cellalignment907" headers="r4c1-t12 r1c3-t12">
+<p>2X%</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r5c1-t12" headers="r1c1-t12">
+<p>Never updates LOB</p>
+</td>
+<td class="cellalignment907" headers="r5c1-t12 r1c2-t12">
+<p>Reads LOBs</p>
+</td>
+<td class="cellalignment907" headers="r5c1-t12 r1c3-t12">
+<p>0%</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<p>If your application requires several BasicFiles LOB updates concurrent with heavy reads of BasicFiles LOB columns, then consider using a higher value for <code>PCTVERSION</code>, such as 20%.</p>
+<p>Setting <code>PCTVERSION</code> to twice the default value allows more free pages to be used for old versions of data pages. Because large queries may require consistent reads of BasicFiles LOB columns, it may be useful to retain old versions of BasicFiles LOB pages. In this case, BasicFiles LOB storage may grow because the database does not reuse free pages aggressively.</p>
+<p>If persistent BasicFiles LOB instances in your application are created and written just once and are primarily read-only afterward, then updates are infrequent. In this case, consider using a lower value for <code>PCTVERSION</code>, such as 5% or lower.</p>
+<p>The more infrequent and smaller the BasicFiles LOB updates are, the less space must be reserved for old copies of BasicFiles LOB data. If existing BasicFiles LOBs are known to be read-only, then you could safely set <code>PCTVERSION</code> to 0% because there would never be any pages needed for old versions of data.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CIHEHGCH"></a>
+<div id="ADLOB45281" class="sect2">
+<h3 class="sect2">RETENTION Parameter for BasicFiles LOBs</h3>
+<p>As an alternative to the <code>PCTVERSION</code> parameter, you can specify the <code>RETENTION</code> parameter in the LOB storage clause of the <code>CREATE TABLE</code> or <code>ALTER TABLE</code> statement. Doing so, configures the LOB column to store old versions of LOB data for a <span class="italic">period of time</span>, rather than using a percentage of the table space. For example:</p>
+<pre>
+CREATE TABLE ContainsLOB_tab (n NUMBER, c CLOB)  
+      lob (c) STORE AS BASICFILE segname (TABLESPACE lobtbs1 CHUNK 4096 
+                        RETENTION 
+                        NOCACHE LOGGING 
+                        STORAGE (MAXEXTENTS 5) 
+                       ); 
+</pre>
+<p>The <code>RETENTION</code> parameter is designed for use with <code>UNDO</code> features of the database, such as Flashback Versions Query. When a LOB column has the <code>RETENTION</code> property set, old versions of the LOB data are retained for the amount of time specified by the <code>UNDO_RETENTION</code> parameter.</p>
+<p>Note the following with respect to the <code>RETENTION</code> parameter:</p>
+<ul>
+<li>
+<p><code>UNDO</code> SQL is not enabled for LOB columns as it is with other data types. You must set the <code>RETENTION</code> property on a LOB column to use Undo SQL on LOB data.</p>
+</li>
+<li>
+<p>You cannot set the value of the <code>RETENTION</code> parameter explicitly. The amount of time for retention of LOB versions in determined by the <code>UNDO_RETENTION</code> parameter.</p>
+</li>
+<li>
+<p>Usage of the <code>RETENTION</code> parameter is only supported in Automatic Undo Management mode. You must configure your table for use with Automatic Undo Management before you can set <code>RETENTION</code> on a LOB column. <a id="sthref301"></a><a id="sthref302"></a>ASSM is required for LOB <code>RETENTION</code> to be in effect for BasicFiles LOBs. The <code>RETENTION</code> parameter of the SQL (in the <code>STORE</code> <code>AS</code> clause) is silently ignored if the BasicFiles LOB resides in an MSSM tablespace.</p>
+</li>
+<li>
+<p>The LOB storage clause can specify <code>RETENTION</code> or <code>PCTVERSION</code>, but not both.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ADFNS1008" href="../../appdev.112/e41502/adfns_flashback.htm#ADFNS1008"><span class="italic">Oracle Database Advanced Application Developer's Guide</span></a> for more information on using flashback features of the database.</p>
+</li>
+<li>
+<p><a class="olink SQLRF" href="../../server.112/e41084/toc.htm"><span class="italic">Oracle Database SQL Language Reference</span></a> for details on LOB storage clause syntax.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<div id="ADLOB45282" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref303"></a>
+<h3 class="sect2">RETENTION Parameter for SecureFiles LOBs</h3>
+<p>Specifying the <code>RETENTION</code> parameter for SecureFiles indicates that the database manages consistent read data for the SecureFiles storage dynamically, taking into account factors such as the <code>UNDO</code> mode of the database.</p>
+<ul>
+<li>
+<p>Specify <code>MAX</code> if the database is in <code>FLASHBACK</code> mode to limit the size of the LOB <code>UNDO</code> retention in bytes. If you specify <code>MAX</code>, then you must also specify the <code>MAXSIZE</code> clause in the <code>storage_clause</code>.</p>
+</li>
+<li>
+<p>Specify <code>AUTO</code> if you want to retain <code>UNDO</code> sufficient for consistent read purposes only. This is the default.</p>
+</li>
+<li>
+<p>Specify <code>NONE</code> if no <code>UNDO</code> is required for either consistent read or flashback purposes.</p>
+</li>
+</ul>
+<p>The default <code>RETENTION</code> for SecureFiles is <code>AUTO</code>.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1006516"></a>
+<div id="ADLOB45283" class="sect2">
+<h3 class="sect2"><a id="sthref304"></a><a id="sthref305"></a>CACHE / NOCACHE / CACHE READS</h3>
+<p>When creating tables that contain LOBs, use the cache options according to the guidelines in <a href="#g1017777">Table 11-3, "When to Use CACHE, NOCACHE, and CACHE READS"</a>:</p>
+<div id="ADLOB45284" class="tblformal">
+<p class="titleintable"><a id="sthref306"></a><a id="g1017777"></a>Table 11-3 When to Use CACHE, NOCACHE, and CACHE READS</p>
+<table class="cellalignment905" title="When to Use CACHE, NOCACHE, and CACHE READS" summary="This table is described in the preceding text" dir="ltr">
+<thead>
+<tr class="cellalignment899">
+<th class="cellalignment906" id="r1c1-t14">Cache Mode</th>
+<th class="cellalignment906" id="r1c2-t14">Read</th>
+<th class="cellalignment906" id="r1c3-t14">Write</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r2c1-t14" headers="r1c1-t14">
+<p><code>CACHE READS</code></p>
+</td>
+<td class="cellalignment907" headers="r2c1-t14 r1c2-t14">
+<p>Frequently</p>
+</td>
+<td class="cellalignment907" headers="r2c1-t14 r1c3-t14">
+<p>Once or occasionally</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r3c1-t14" headers="r1c1-t14">
+<p><code>CACHE</code></p>
+</td>
+<td class="cellalignment907" headers="r3c1-t14 r1c2-t14">
+<p>Frequently</p>
+</td>
+<td class="cellalignment907" headers="r3c1-t14 r1c3-t14">
+<p>Frequently</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r4c1-t14" headers="r1c1-t14">
+<p><code>NOCACHE</code> (default)</p>
+</td>
+<td class="cellalignment907" headers="r4c1-t14 r1c2-t14">
+<p>Once or occasionally</p>
+</td>
+<td class="cellalignment907" headers="r4c1-t14 r1c3-t14">
+<p>Never</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<a id="i1006556"></a>
+<div id="ADLOB45285" class="sect3">
+<h4 class="sect3">CACHE / NOCACHE / CACHE READS: LOB Values and Buffer Cache</h4>
+<ul>
+<li>
+<p>CACHE: Oracle places LOB pages in the buffer cache for faster access.</p>
+</li>
+<li>
+<p>NOCACHE: As a parameter in the <code>STORE AS</code> clause, <code>NOCACHE</code> specifies that LOB values are not brought into the buffer cache.</p>
+</li>
+<li>
+<p>CACHE READS: LOB values are brought into the buffer cache only during read and not during write operations.</p>
+</li>
+</ul>
+<p><code>NOCACHE</code> is the default for both SecureFiles and BasicFiles LOBs.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Using the <code>CACHE</code> option results in improved performance when reading and writing data from the LOB column. However, it can potentially age other non-LOB pages out of the buffer cache prematurely.</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1006566"></a>
+<div id="ADLOB45286" class="sect2">
+<h3 class="sect2"><a id="sthref307"></a><a id="sthref308"></a>LOGGING / NOLOGGING Parameter for BasicFiles LOBs</h3>
+<p>[<code>NO</code>]<code>LOGGING</code> has a similar application with regard to using LOBs as it does for other table operations. In the usual case, if the [<code>NO</code>]<code>LOGGING</code> clause is omitted, then this means that neither <code>NO</code><code>LOGGING</code> nor <code>LOGGING</code> is specified and the logging attribute of the table or table partition defaults to the logging attribute of the tablespace in which it resides.</p>
+<p>For LOBs, there is a further alternative depending on how <code>CACHE</code> is stipulated.</p>
+<ul>
+<li>
+<p><span class="bold">CACHE</span> <span class="bold">is specified</span> and [<code>NO</code>]<code>LOGGING</code> clause is omitted. <code>LOGGING</code> is automatically implemented (because you cannot have <code>CACHE</code> <code>NOLOGGING</code>).</p>
+</li>
+<li>
+<p><span class="bold">CACHE</span> <span class="bold">is not specified</span> and [<code>NO</code>]<code>LOGGING</code> clause is omitted. The process defaults in the same way as it does for tables and partitioned tables. That is, the [<code>NO</code>]<code>LOGGING</code> value is obtained from the tablespace in which the LOB segment resides.</p>
+</li>
+</ul>
+<p>The following issues should also be kept in mind.</p>
+<a id="i1006573"></a>
+<div id="ADLOB45287" class="sect3">
+<h4 class="sect3">LOBs <span class="bold">Always Generate Undo for</span> LOB <span class="bold">Index Pages</span></h4>
+<p>Regardless of whether <code>LOGGING</code> or <code>NOLOGGING</code> is set, LOBs never generate rollback information (undo) for LOB data pages because old LOB data is stored in versions. Rollback information that is created for LOBs tends to be small because it is only for the LOB index page changes.</p>
+</div>
+<!-- class="sect3" -->
+<div id="ADLOB45288" class="sect3"><a id="sthref309"></a>
+<h4 class="sect3"><span class="bold">When</span> LOGGING <span class="bold">is Set Oracle Generates Full Redo for</span> LOB <span class="bold">Data Pages</span></h4>
+<p><code>NOLOGGING</code> is intended to be used when a customer does not care about media recovery. Thus, if the disk/tape/storage media fails, then you cannot recover your changes from the log because the changes were never logged.</p>
+<div id="ADLOB45289" class="sect4"><a id="sthref310"></a>
+<h5 class="sect4">NOLOGGING is Useful for Bulk Loads or Inserts.</h5>
+<p>For instance, when loading data into the LOB, if you do not care about redo and can just start the load over if it fails, set the LOB data segment storage characteristics to <code>NOCACHE</code> <code>NOLOGGING</code>. This provides good performance for the initial load of data.</p>
+<p>Once you have completed loading data, if necessary, use <code>ALTER</code> <code>TABLE</code> to modify the LOB storage characteristics for the LOB data segment for normal LOB operations, for example, to <code>CACHE</code> or <code>NOCACHE</code> <code>LOGGING</code>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+<code>CACHE</code> implies that you also get <code>LOGGING</code>.</div>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CIHHCDCI"></a>
+<div id="ADLOB45290" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">LOGGING/FILESYSTEM_LIKE_LOGGING for SecureFiles LOBs</h3>
+<p><code>NOLOGGING</code> or <code>LOGGING</code> has a similar application with regard to using SecureFiles as <code>LOGGING</code>/<code>NOLOGGING</code> does for other table operations. In the usual case, if the <code>logging_clause</code> is omitted, then the SecureFiles inherits its logging attribute from the tablespace in which it resides. In this case, if <code>NOLOGGING</code> is the default value, the SecureFiles defaults to <code>FILESYSTEM_LIKE_LOGGING</code>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Using the <code>CACHE</code> option results in improved performance when reading and writing data from the LOB column. However, it can potentially age other non-LOB pages out of the buffer cache prematurely.</div>
+<div id="ADLOB45291" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref311"></a>
+<h4 class="sect3">CACHE Implies LOGGING</h4>
+<p>For SecureFiles, there is a further alternative depending on how <code>CACHE</code> is specified:</p>
+<ul>
+<li>
+<p><code>CACHE</code> is specified and the <code>LOGGING</code> clause is omitted, then <code>LOGGING</code> is used.</p>
+</li>
+<li>
+<p><code>CACHE</code> is not specified and the logging_clause is omitted. Then the process defaults in the same way as it does for tables and partitioned tables. That is, the <code>LOGGING</code> value is obtained from the tablespace in which the LOB value resides. If the tablespace is <code>NOLOGGING</code>, then the SecureFiles defaults to <code>FILESYSTEM_LIKE_LOGGING</code>.</p>
+</li>
+</ul>
+<p>The following issues should also be kept in mind.</p>
+</div>
+<!-- class="sect3" -->
+<div id="ADLOB45292" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref312"></a>
+<h4 class="sect3">SecureFiles and an Efficient Method of Generating REDO and UNDO</h4>
+<p>This means that Oracle Database determines if it is more efficient to generate <code>REDO</code> and <code>UNDO</code> for the change to a block, similar to heap blocks, or if it generates a version and full <code>REDO</code> of the new block similar to BasicFiles LOBs.</p>
+</div>
+<!-- class="sect3" -->
+<div id="ADLOB45293" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref313"></a>
+<h4 class="sect3">FILESYSTEM_LIKE_LOGGING is Useful for Bulk Loads or Inserts</h4>
+<p>For instance, when loading data into the LOB, if you do not care about <code>REDO</code> and can just start the load over if it fails, set the LOB data segment storage characteristics to <code>FILESYSTEM_LIKE_LOGGING</code>. This provides good performance for the initial load of data.</p>
+<p>Once you have completed loading data, if necessary, use <code>ALTER</code> <code>TABLE</code> to modify the LOB storage characteristics for the LOB data segment for normal LOB operations. For example, to <code>CACHE</code> or <code>NOCACHE</code> <code>LOGGING</code>.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1006587"></a>
+<div id="ADLOB45294" class="sect2">
+<h3 class="sect2"><a id="sthref314"></a><a id="sthref315"></a>CHUNK</h3>
+<p>A chunk is one or more Oracle blocks. You can specify the chunk size for the BasicFiles LOB when creating the table that contains the LOB. This corresponds to the data size used by Oracle Database when accessing or modifying the LOB value. Part of the chunk is used to store system-related information and the rest stores the LOB value. The API you are using has a function that returns the amount of space used in the LOB chunk to store the LOB value. In PL/SQL use <code>DBMS_LOB.GETCHUNKSIZE</code>. In OCI, use <code>OCILobGetChunkSize()</code>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If the tablespace block size is the same as the database block size, then <code>CHUNK</code> is also a multiple of the database block size. The default <code>CHUNK</code> size is equal to the size of one tablespace block, and the maximum value is 32K.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="adlob_design.htm#i1012747">"Terabyte-Size LOB Support"</a> for information about maximum LOB sizes</div>
+<div id="ADLOB45295" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref316"></a>
+<h4 class="sect3">Choosing the Value of CHUNK</h4>
+<p>Once the value of <code>CHUNK</code> is chosen (when the LOB column is created), it cannot be changed. Hence, it is important that you choose a value which optimizes your storage and performance requirements. For SecureFiles, <code>CHUNK</code> is an advisory size and is provided for backward compatibility purposes.</p>
+<div id="ADLOB45296" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref317"></a>
+<h5 class="sect4">Space Considerations</h5>
+<p>The value of <code>CHUNK</code> does not matter for LOBs that are stored inline. This happens when <code>ENABLE</code> <code>STORAGE</code> <code>IN</code> <code>ROW</code> is set, and the size of the LOB locator and the LOB data is less than approximately 4000 bytes. However, when the LOB data is stored out-of-line, it always takes up space in multiples of the <code>CHUNK</code> parameter. This can lead to a large waste of space if your data is small, but the <code>CHUNK</code> is set to a large number. <a href="#CIHFGJEE">Table 11-4, "Data Size and CHUNK Size"</a> illustrates this point:</p>
+<div id="ADLOB45297" class="tblformalwide">
+<p class="titleintable"><a id="sthref318"></a><a id="CIHFGJEE"></a>Table 11-4 Data Size and CHUNK Size</p>
+<table class="cellalignment910" title="Data Size and CHUNK Size" summary="Data Size vs CHUNK size" dir="ltr">
+<thead>
+<tr class="cellalignment899">
+<th class="cellalignment906" id="r1c1-t20">Data Size</th>
+<th class="cellalignment906" id="r1c2-t20">CHUNK Size</th>
+<th class="cellalignment906" id="r1c3-t20">Disk Space Used to Store the LOB</th>
+<th class="cellalignment906" id="r1c4-t20">Space Utilization (Percent)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r2c1-t20" headers="r1c1-t20">
+<p>3500 enable storage in row</p>
+</td>
+<td class="cellalignment907" headers="r2c1-t20 r1c2-t20">
+<p>irrelevant</p>
+</td>
+<td class="cellalignment907" headers="r2c1-t20 r1c3-t20">
+<p>3500 in row</p>
+</td>
+<td class="cellalignment907" headers="r2c1-t20 r1c4-t20">
+<p>100</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r3c1-t20" headers="r1c1-t20">
+<p>3500 disable storage in row</p>
+</td>
+<td class="cellalignment907" headers="r3c1-t20 r1c2-t20">
+<p>32 KB</p>
+</td>
+<td class="cellalignment907" headers="r3c1-t20 r1c3-t20">
+<p>32 KB</p>
+</td>
+<td class="cellalignment907" headers="r3c1-t20 r1c4-t20">
+<p>10</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r4c1-t20" headers="r1c1-t20">
+<p>3500 disable storage in row</p>
+</td>
+<td class="cellalignment907" headers="r4c1-t20 r1c2-t20">
+<p>4 KB</p>
+</td>
+<td class="cellalignment907" headers="r4c1-t20 r1c3-t20">
+<p>4 KB</p>
+</td>
+<td class="cellalignment907" headers="r4c1-t20 r1c4-t20">
+<p>90</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r5c1-t20" headers="r1c1-t20">
+<p>33 KB</p>
+</td>
+<td class="cellalignment907" headers="r5c1-t20 r1c2-t20">
+<p>32 KB</p>
+</td>
+<td class="cellalignment907" headers="r5c1-t20 r1c3-t20">
+<p>64 KB</p>
+</td>
+<td class="cellalignment907" headers="r5c1-t20 r1c4-t20">
+<p>51</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r6c1-t20" headers="r1c1-t20">
+<p>2 GB +10</p>
+</td>
+<td class="cellalignment907" headers="r6c1-t20 r1c2-t20">
+<p>32 KB</p>
+</td>
+<td class="cellalignment907" headers="r6c1-t20 r1c3-t20">
+<p>2 GB + 32 KB</p>
+</td>
+<td class="cellalignment907" headers="r6c1-t20 r1c4-t20">
+<p>99+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformalwide" --></div>
+<!-- class="sect4" -->
+<div id="ADLOB45298" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref319"></a>
+<h5 class="sect4">Performance Considerations</h5>
+<p>Accessing lobs in big chunks is more efficient. You can set <code>CHUNK</code> to the data size most frequently accessed or written. For example, if only one block of LOB data is accessed at a time, then set <code>CHUNK</code> to the size of one block. If you have big LOBs, and read or write big amounts of data, then choose a large value for <code>CHUNK</code>.</p>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<div id="ADLOB45299" class="sect3"><a id="sthref320"></a>
+<h4 class="sect3">Set INITIAL and NEXT to Larger than CHUNK</h4>
+<p>If you explicitly specify storage characteristics for the LOB, then make sure that <code>INITIAL</code> and <code>NEXT</code> for the LOB data segment storage are set to a size that is larger than the <code>CHUNK</code> size. For example, if the database block size is 2KB and you specify a <code>CHUNK</code> of 8KB, then make sure that <code>INITIAL</code> and <code>NEXT</code> are bigger than 8KB and preferably considerably bigger (for example, at least 16KB).</p>
+<p>Put another way: If you specify a value for <code>INITIAL,</code> <code>NEXT</code>, or the LOB <code>CHUNK</code> size, then make sure they are set in the following manner:</p>
+<ul>
+<li>
+<p><code>CHUNK</code> &lt;= <code>NEXT</code></p>
+</li>
+<li>
+<p><code>CHUNK</code> &lt;= <code>INITIAL</code></p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1006601"></a>
+<div id="ADLOB45300" class="sect2">
+<h3 class="sect2"><a id="sthref321"></a>ENABLE or DISABLE STORAGE IN ROW Clause</h3>
+<p>You use the <code>ENABLE</code> | <code>DISABLE</code> <code>STORAGE</code> <code>IN</code> <code>ROW</code> clause to indicate whether the LOB should be stored inline (in the row) or out-of-line.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You may not alter this specification once you have made it: if you <code>ENABLE STORAGE IN ROW</code>, then you cannot alter it to <code>DISABLE STORAGE IN ROW</code> and vice versa.</div>
+<p>The default is <code>ENABLE</code> <code>STORAGE</code> <code>IN</code> <code>ROW</code>.</p>
+</div>
+<!-- class="sect2" -->
+<div id="ADLOB45301" class="sect2"><a id="sthref322"></a>
+<h3 class="sect2">Guidelines for ENABLE or DISABLE STORAGE IN ROW</h3>
+<p>The maximum amount of LOB data stored in the row is the maximum <code>VARCHAR2</code> size (4000). This includes the control information and the LOB value. If you indicate that the LOB should be stored in the row, once the LOB value and control information is larger than approximately 4000, then the LOB value is automatically moved out of the row.</p>
+<p>This suggests the following guidelines:</p>
+<p>The default, ENABLE STORAGE IN ROW, is usually the best choice for the following reasons:</p>
+<ul>
+<li>
+<p><span class="bolditalic">Small LOBs</span>: If the LOB is small (less than approximately 4000 bytes), then the whole LOB can be read while reading the row without extra disk I/O.</p>
+</li>
+<li>
+<p><span class="bolditalic">Large LOBs</span>: If the LOB is big (greater than approximately 4000 bytes), then the control information is still stored in the row if ENABLE STORAGE IN ROW is set, even after moving the LOB data out of the row. This control information could enable us to read the out-of-line LOB data faster.</p>
+</li>
+</ul>
+<p>However, in some cases DISABLE STORAGE IN ROW is a better choice. This is because storing the LOB in the row increases the size of the row. This impacts performance if you are doing a lot of base table processing, such as full table scans, multi-row accesses (range scans), or many UPDATE/SELECT to columns other than the LOB columns.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1012913"></a>
+<div id="ADLOB45302" class="sect1">
+<h2 class="sect1">Indexing LOB Columns</h2>
+<p>This section discusses different techniques you can use to index LOB columns.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+After you move a LOB column any existing table indexes must be rebuilt.<a id="sthref323"></a></div>
+<a id="i1006620"></a>
+<div id="ADLOB45303" class="sect2">
+<h3 class="sect2">Using Domain Indexing on LOB Columns<a id="sthref324"></a><a id="sthref325"></a></h3>
+<p>You might be able to improve the performance of queries by building indexes specifically attuned to your domain. Extensibility interfaces provided with the database allow for domain indexing, a framework for implementing such domain specific indexes.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You cannot build a B-tree or bitmap index on a LOB column. <a id="sthref326"></a><a id="sthref327"></a></div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ADDCI" href="../e10765/toc.htm"><span class="italic">Oracle Database Data Cartridge Developer's Guide</span></a> for information on building domain specific indexes.</div>
+</div>
+<!-- class="sect2" -->
+<div id="ADLOB45304" class="sect2"><a id="sthref328"></a>
+<h3 class="sect2">Indexing LOB Columns Using a Text Index</h3>
+<p>Depending on the nature of the contents of the LOB column, one of the Oracle Text options could also be used for building indexes. For example, if a text document is stored in a <code>CLOB</code> column, then you can build a text index to speed up the performance of text-based queries over the <code>CLOB</code> column.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink CCREF" href="../../text.112/e24436/toc.htm"><span class="italic">Oracle Text Reference</span></a> for more information regarding Oracle Text options.</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1010906"></a>
+<div id="ADLOB45305" class="sect2">
+<h3 class="sect2"><a id="sthref329"></a>Function-Based Indexes on LOBs</h3>
+<p>A <a id="sthref330"></a><a id="sthref331"></a>function-based index is an index built on an expression. It extends your indexing capabilities beyond indexing on a column. A function-based index increases the variety of ways in which you can access data.</p>
+<p>Function-based indexes cannot be built on nested tables or LOB columns. However, you can build function-based indexes on VARRAYs.</p>
+<p>Like <a id="sthref332"></a>extensible indexes and domain indexes on LOB columns, function-based indexes are also automatically updated when a DML operation is performed on the LOB column. Function-based indexes are also updated when any extensible index is updated.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ADFNS" href="../e41502/toc.htm"><span class="italic">Oracle Database Advanced Application Developer's Guide</span></a> for more information on using function-based indexes.</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1006668"></a>
+<div id="ADLOB45306" class="sect2">
+<h3 class="sect2">Extensible Indexing on LOB Columns</h3>
+<p>The database provides <span class="italic">extensible indexing</span>, a feature which enables you to define new index types as required. This is based on the concept of cooperative indexing where a data cartridge and the database build and maintain indexes for data types such as text and spatial for example, for On-line-Analytical Processing (OLAP).</p>
+<p>The cartridge is responsible for defining the index structure, maintaining the index content during load and update operations, and searching the index during query processing. The index structure can be stored in Oracle as heap-organized, or an index-organized table, or externally as an operating system file.</p>
+<p>To support this structure, the database provides an <span class="italic">indextype</span>. The purpose of an indextype is to enable efficient search and retrieval functions for complex domains such as text, spatial, image, and OLAP by means of a data cartridge. An indextype is analogous to the sorted or bit-mapped index types that are built-in within the Oracle Server. The difference is that an indextype is implemented by the data cartridge developer, whereas the Oracle kernel implements built-in indexes. Once a new indextype has been implemented by a data cartridge developer, end users of the data cartridge can use it just as they would built-in indextypes.</p>
+<p>When the database system handles the physical storage of domain indexes, data cartridges</p>
+<ul>
+<li>
+<p>Define the format and content of an index. This enables cartridges to define an index structure that can accommodate a complex data object.</p>
+</li>
+<li>
+<p>Build, delete, and update a domain index. The cartridge handles building and maintaining the index structures. Note that this is a significant departure from the medicine indexing features provided for simple SQL data types. Also, because an index is modeled as a collection of tuples, in-place updating is directly supported.</p>
+</li>
+<li>
+<p>Access and interpret the content of an index. This capability enables the data cartridge to become an integral component of query processing. That is, the content-related clauses for database queries are handled by the data cartridge.</p>
+</li>
+</ul>
+<p>By supporting extensible indexes, the database significantly reduces the effort needed to develop high-performance solutions that access complex data types such as LOBs.</p>
+<div id="ADLOB45307" class="sect3"><a id="sthref333"></a>
+<h4 class="sect3">Extensible Optimizer</h4>
+<p>The extensible optimizer functionality allows authors of user-defined functions and indexes to create statistics collections, selectivity, and cost functions. This information is used by the optimizer in choosing a query plan. The cost-based optimizer is thus extended to use the user-supplied information.</p>
+<p>Extensible indexing functionality enables you to define new operators, index types, and domain indexes. For such user-defined operators and domain indexes, the extensible optimizer functionality allows users to control the three main components used by the optimizer to select an execution plan: <span class="italic">statistics, selectivity,</span> and <span class="italic">cost</span>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ADDCI" href="../e10765/toc.htm"><span class="italic">Oracle Database Data Cartridge Developer's Guide</span></a></div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<div id="ADLOB45308" class="sect2"><a id="sthref334"></a>
+<h3 class="sect2">Oracle Text Indexing Support for XML</h3>
+<p>You can create Oracle Text indexes on <code>CLOB</code> columns and perform queries on XML data.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ADXDK" href="../e23582/toc.htm"><span class="italic">Oracle XML Developer's Kit Programmer's Guide</span></a></p>
+</li>
+<li>
+<p><a class="olink CCREF" href="../../text.112/e24436/toc.htm"><span class="italic">Oracle Text Reference</span></a></p>
+</li>
+<li>
+<p><a class="olink CCAPP" href="../../text.112/e24435/toc.htm"><span class="italic">Oracle Text Application Developer's Guide</span></a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1014212"></a>
+<div id="ADLOB45309" class="sect1">
+<h2 class="sect1">Manipulating LOBs in Partitioned Tables</h2>
+<p>You can partition tables that contain <code><a id="sthref335"></a></code>LOB columns. As a result, LOBs can take advantage of all of the benefits of partitioning including the following:</p>
+<ul>
+<li>
+<p>LOB segments can be spread between several tablespaces to balance I/O load and to make backup and recovery more manageable.</p>
+</li>
+<li>
+<p>LOBs in a partitioned table become easier to maintain.</p>
+</li>
+<li>
+<p>LOBs can be partitioned into logical groups to speed up operations on LOBs that are accessed as a group.</p>
+</li>
+</ul>
+<p>This section describes some of the ways you can manipulate LOBs in partitioned tables.</p>
+<a id="i1014821"></a>
+<div id="ADLOB45310" class="sect2">
+<h3 class="sect2">Partitioning a Table Containing LOB Columns</h3>
+<p>LOBs are supported in RANGE partitioned, LIST partitioned, and HASH partitioned tables. Composite heap-organized tables can also have LOBs.</p>
+<p>You can partition a table containing LOB columns using the following techniques:</p>
+<ul>
+<li>
+<p>When the table is created using the <code>PARTITION BY ...</code> clause of the <code>CREATE TABLE</code> statement.</p>
+</li>
+<li>
+<p>Adding a partition to an existing table using the <code>ALTER TABLE ... ADD PARTITION</code> clause.</p>
+</li>
+<li>
+<p>Exchanging partitions with a table that has partitioned LOB columns using the <code>ALTER TABLE ... EXCHANGE PARTITION</code> clause. Note that <code>EXCHANGE PARTITION</code> can only be used when both tables have the same storage attributes, for example, both tables store LOBs out-of-line.</p>
+</li>
+</ul>
+<p>Creating LOB partitions at the same time you create the table (in the <code>CREATE TABLE</code> statement) is recommended. If you create partitions on a LOB column when the table is created, then the column can hold LOBs stored either inline or out-of-line LOBs.</p>
+<p>After a table is created, new LOB partitions can only be created on LOB columns that are stored out-of-line. Also, partition maintenance operations, <code>SPLIT PARTITION</code> and <code>MERGE PARTITIONS</code>, only work on LOB columns that store LOBs out-of-line.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#i1007002">"Restrictions for LOBs in Partitioned Index-Organized Tables"</a> for additional information on LOB restrictions.</div>
+<p>Note that once a table is created, storage attributes cannot be changed. See <a href="#CIHEBABG">"LOB Storage Parameters"</a> for more information about LOB storage attributes.</p>
+</div>
+<!-- class="sect2" -->
+<div id="ADLOB45311" class="sect2"><a id="sthref336"></a>
+<h3 class="sect2">Creating an Index on a Table Containing Partitioned LOB Columns</h3>
+<p><a id="sthref337"></a>To improve the performance of queries, you can create indexes on partitioned LOB columns. For example:</p>
+<pre>
+CREATE INDEX <span class="italic">index_name</span> 
+   ON <span class="italic">table_name</span> (<span class="italic">LOB_column_1</span>, <span class="italic">LOB_column_2</span>, ...) LOCAL;
+</pre>
+<p>Note that only domain and function-based indexes are supported on LOB columns. Other types of indexes, such as unique indexes are not supported with LOBs.</p>
+</div>
+<!-- class="sect2" -->
+<div id="ADLOB45312" class="sect2"><a id="sthref338"></a>
+<h3 class="sect2">Moving Partitions Containing LOBs</h3>
+<p><a id="sthref339"></a>You can move a LOB partition into a different tablespace. This is useful if the tablespace is no longer large enough to hold the partition. To do so, use the <code>ALTER TABLE ... MOVE PARTITION</code> clause. For example:</p>
+<pre>
+ALTER TABLE <span class="italic">current_table</span> MOVE PARTITION <span class="italic">partition_name</span> 
+   TABLESPACE <span class="italic">destination_table_space</span>
+   LOB (<span class="italic">column_name</span>) STORE AS (TABLESPACE <span class="italic">current_tablespace</span>);
+</pre></div>
+<!-- class="sect2" -->
+<div id="ADLOB45313" class="sect2"><a id="sthref340"></a>
+<h3 class="sect2">Splitting Partitions Containing LOBs</h3>
+<p><a id="sthref341"></a>You can split a partition containing LOBs into two equally sized partitions using the <code>ALTER TABLE ... SPLIT PARTITION</code> clause. Doing so permits you to place one or both new partitions in a new tablespace. For example:</p>
+<pre>
+ALTER TABLE <span class="italic">table_name</span> SPLIT PARTITION <span class="italic">partition_name</span>
+   AT (<span class="italic">partition_range_upper_bound</span>)
+   INTO (PARTITION <span class="italic">partition_name</span>, 
+      PARTITION <span class="italic">new_partition_name</span> TABLESPACE <span class="italic">new_tablespace_name</span>
+         LOB (<span class="italic">column_name</span>) STORE AS (TABLESPACE <span class="italic">tablespace_name</span>)
+         ... ;
+</pre></div>
+<!-- class="sect2" -->
+<div id="ADLOB45314" class="sect2"><a id="sthref342"></a>
+<h3 class="sect2">Merging Partitions Containing LOBs</h3>
+<p>You can merge partitions that contain LOB columns using the <code>ALTER TABLE ... MERGE PARTITIONS</code> clause. This technique is useful for reclaiming unused partition space. For example:</p>
+<pre>
+ALTER TABLE <span class="italic">table_name</span> 
+   MERGE PARTITIONS <span class="italic">partition_1</span>, <span class="italic">partition_2</span> 
+   INTO PARTITION <span class="italic">new_partition</span> TABLESPACE <span class="italic">new_tablespace_name</span>
+      LOB (<span class="italic">column_name</span>) store as (TABLESPACE <span class="italic">tablespace_name</span>)
+     ... ;
+</pre></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006887"></a>
+<div id="ADLOB45315" class="sect1">
+<h2 class="sect1">LOBs in Index Organized Tables</h2>
+<p>Index Organized Tables (IOTs) support internal and external LOB columns. For the most part, SQL DDL, DML, and piece wise operations on LOBs in IOTs produce the same results as those for normal tables. The only exception is the default semantics of LOBs during creation. The main differences are:</p>
+<ul>
+<li>
+<p><span class="bolditalic">Tablespace Mapping</span>: By default, or unless specified otherwise, the LOB data and index segments are created in the tablespace in which the primary key index segments of the index organized table are created.</p>
+</li>
+<li>
+<p><span class="bolditalic">Inline as Compared to Out-of-Line Storage</span>: By default, all LOBs in an index organized table created without an overflow segment are stored out of line. In other words, if an index organized table is created without an overflow segment, then the LOBs in this table have their default storage attributes as <code>DISABLE</code> <code>STORAGE</code> <code>IN</code> <code>ROW</code>. If you forcibly try to specify an <code>ENABLE</code> <code>STORAGE</code> <code>IN</code> <code>ROW</code> clause for such LOBs, then SQL raises an error.</p>
+<p>On the other hand, if an overflow segment has been specified, then LOBs in index organized tables exactly mimic their semantics in conventional tables (see <a href="#i1006378">"Defining Tablespace and Storage Characteristics for Persistent LOBs"</a>).</p>
+</li>
+</ul>
+<p class="subhead1"><a id="ADLOB45316"></a>Example of Index Organized Table (IOT) with LOB Columns</p>
+<p>Consider the following example:</p>
+<pre>
+CREATE TABLE iotlob_tab (c1 INTEGER PRIMARY KEY, c2 BLOB, c3 CLOB, c4 
+VARCHAR2(20)) 
+  ORGANIZATION INDEX 
+    TABLESPACE iot_ts 
+    PCTFREE 10 PCTUSED 10 INITRANS 1 MAXTRANS 1 STORAGE (INITIAL 4K) 
+    PCTTHRESHOLD 50 INCLUDING c2 
+  OVERFLOW 
+    TABLESPACE ioto_ts 
+    PCTFREE 10 PCTUSED 10 INITRANS 1 MAXTRANS 1 STORAGE (INITIAL 8K) LOB (c2) 
+    STORE AS lobseg (TABLESPACE lob_ts DISABLE STORAGE IN ROW 
+                     CHUNK 16384 PCTVERSION 10 CACHE STORAGE (INITIAL 2M) 
+                     INDEX lobidx_c1 (TABLESPACE lobidx_ts STORAGE (INITIAL 4K)));
+</pre>
+<p>Executing these statements results in the creation of an index organized table <code>iotlob_tab</code> with the following elements:</p>
+<ul>
+<li>
+<p>A primary key index segment in the tablespace <code>iot_ts</code><span class="italic">,</span></p>
+</li>
+<li>
+<p>An overflow data segment in tablespace <code>ioto_ts</code></p>
+</li>
+<li>
+<p>Columns starting from column <code>C3</code> being explicitly stored in the overflow data segment</p>
+</li>
+<li>
+<p><code>BLOB</code> (column <code>C2</code>) data segments in the tablespace <code>lob_ts</code></p>
+</li>
+<li>
+<p><code>BLOB</code> (column <code>C2</code>) index segments in the tablespace <code>lobidx_ts</code></p>
+</li>
+<li>
+<p><code>CLOB</code> (column <code>C3</code>) data segments in the tablespace <code>iot_ts</code></p>
+</li>
+<li>
+<p><code>CLOB</code> (column <code>C3</code>) index segments in the tablespace <code>iot_ts</code></p>
+</li>
+<li>
+<p><code>CLOB</code> (column <code>C3</code>) stored in line by virtue of the IOT having an overflow segment</p>
+</li>
+<li>
+<p><code>BLOB</code> (column <code>C2</code>) explicitly forced to be stored out of line</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If no overflow had been specified, then both C2 and C3 would have been stored out of line by default.</div>
+</li>
+</ul>
+<p>Other LOB features, such as <code>BFILE</code>s and varying character width LOBs, are also supported in index organized tables, and their usage is the same as for conventional tables.</p>
+</div>
+<!-- class="sect1" -->
+<a id="i1007002"></a>
+<div id="ADLOB510" class="sect1">
+<h2 class="sect1">Restrictions for LOBs in Partitioned Index-Organized Tables<a id="sthref343"></a><a id="sthref344"></a><a id="sthref345"></a></h2>
+<p>LOB columns are supported in range-, list-, and hash-partitioned index-organized tables with the following restrictions:</p>
+<ul>
+<li>
+<p>Composite partitioned index-organized tables are not supported.</p>
+</li>
+<li>
+<p>Relational and object partitioned index-organized tables (partitioned by range, hash, or list) can hold LOBs stored as follows; however, partition maintenance operations, such as <code>MOVE</code>, <code>SPLIT</code>, and <code>MERGE</code> are not supported with:</p>
+<ul>
+<li>
+<p>VARRAY data types stored as LOB data types</p>
+</li>
+<li>
+<p>Abstract data types with LOB attributes</p>
+</li>
+<li>
+<p>Nested tables with LOB types</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+Additional restrictions for LOB columns in general are given in <a href="adlob_working.htm#i1006278">"LOB Rules and Restrictions"</a>.</div>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<!-- class="sect1" -->
+<a id="i1016362"></a>
+<div id="ADLOB45317" class="sect1">
+<h2 class="sect1">Updating LOBs in Nested Tables</h2>
+<p>To update LOBs in a nested table, you must lock the row containing the LOB explicitly. To do so, you must specify the FOR UPDATE clause in the subquery prior to updating the LOB value.</p>
+<p>Note that locking the row of a parent table does not lock the row of a nested table containing LOB columns.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Nested tables containing LOB columns are the only data structures supported for creating collections of LOBs. You cannot create a VARRAY of any LOB data type.</div>
+</div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment898">
+<tr>
+<td class="cellalignment907">
+<table class="cellalignment903">
+<tr>
+<td class="cellalignment902"><a href="part_des.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment902"><a href="adlob_design.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1996, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment909">
+<table class="cellalignment901">
+<tr>
+<td class="cellalignment902"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment902"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment902"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment902"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment902"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment902"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

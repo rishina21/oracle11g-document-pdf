@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Editing Topologies</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1023" />
+<meta name="description" content="Provides usage and reference information about the Topology Data Model and Network Data Model Graph features of Oracle Spatial and Graph." />
+<meta name="dcterms.created" content="2014-07-09T11:54:29Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Spatial Topology and Network Data Models Developer's Guide" />
+<meta name="dcterms.identifier" content="E11831-07" />
+<meta name="dcterms.isVersionOf" content="TOPOL" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2003, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="sdo_topo_concepts.htm" title="Previous" type="text/html" />
+<link rel="Next" href="sdo_topo_ref.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e11831.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">10/17</span> <!-- End Header -->
+<div id="TOPOL150" class="chapter"><a id="CEGEHADJ"></a>
+<h1 class="chapter"><span class="secnum">2</span> Editing <a id="sthref125"></a>Topologies</h1>
+<p>This chapter explains how to edit node and edge data in a topology. The operations include adding, moving, and removing nodes and edges, and updating the coordinates of an edge.</p>
+<p>This chapter explains two approaches to editing topology data, and it explains why one approach (creating and using a special cache) is better in most cases. It also describes the behavior and implications of some major types of editing operations. It contains the following major sections:</p>
+<ul>
+<li>
+<p><a href="#CEGBDCHD">Section 2.1, "Approaches for Editing Topology Data"</a></p>
+</li>
+<li>
+<p><a href="#CEGGBBDF">Section 2.2, "Performing Operations on Nodes"</a></p>
+</li>
+<li>
+<p><a href="#CEGEFDCE">Section 2.3, "Performing Operations on Edges"</a></p>
+</li>
+</ul>
+<p>The explanations in this chapter refer mainly to the PL/SQL application programming interface (API) provided in the MDSYS.SDO_TOPO_MAP package, which is documented in <a href="sdo_topo_map_ref.htm#CACDEDEE">Chapter 4</a>. However, you can also perform topology editing operations using the client-side Java API, which is introduced in <a href="sdo_topo_concepts.htm#CIHBEHFI">Section 1.8.2</a> and is explained in the Javadoc-generated documentation.</p>
+<p>To edit topology data, always use the PL/SQL or Java API. Do not try to perform editing operations by directly modifying the node, edge, or face information tables.</p>
+<p>For cross-schema topology editing considerations, see <a href="sdo_topo_concepts.htm#CIHEEIJH">Section 1.10.2</a>.</p>
+<a id="CEGBDCHD"></a>
+<div id="TOPOL792" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">2.1</span> Approaches for Editing Topology Data</h2>
+<p>Whenever you need to edit a topology, you can use PL/SQL or Java API. In both cases, Oracle Spatial uses an in-memory topology cache, specifically, a TopoMap object (described in <a href="#CEGJIJFD">Section 2.1.1</a>):</p>
+<ul>
+<li>
+<p>If you use the PL/SQL API, you can either explicitly create and use the cache or allow Spatial to create and use the cache automatically.</p>
+</li>
+<li>
+<p>If you use the Java API, you must explicitly create and use the cache.</p>
+</li>
+</ul>
+<p>Allowing Spatial to create and manage the cache automatically is simpler, because it involves fewer steps than creating and using a cache. However, because allowing Spatial to create and manage the cache involves more database activity and disk accesses, it is less efficient when you need to edit more than a few topological elements.</p>
+<a id="CEGJIJFD"></a>
+<div id="TOPOL793" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">2.1.1</span> <a id="sthref126"></a><a id="sthref127"></a>TopoMap Objects</h3>
+<p>A <span class="bold">TopoMap object</span> is associated with an in-memory cache that is associated with a topology. If you explicitly create and use a cache for editing a topology, you must create a TopoMap object to be associated with a topology, load all or some of the topology into the cache, edit objects, periodically update the topology to write changes to the database, commit the changes made in the cache, and clear the cache.</p>
+<p>Although this approach involves more steps than allowing Spatial to create and use the cache automatically, it is much faster and more efficient for most topology editing sessions, which typically affect hundreds or thousands of topological elements. It is the approach shown in most explanations and illustrations.</p>
+<p><a id="sthref128"></a><a id="sthref129"></a><a id="sthref130"></a><a id="sthref131"></a>A TopoMap object can be updatable or read-only, depending on the value of the <code>allow_updates</code> parameter when you call the <a href="sdo_topo_map_ref.htm#CACBEHDF">SDO_TOPO_MAP.LOAD_TOPO_MAP</a> function or procedure:</p>
+<ul>
+<li>
+<p>With a read-only TopoMap object, topological elements (primitives) are loaded but not locked.</p>
+</li>
+<li>
+<p>With an updatable TopoMap object, topological elements (primitives) are loaded and locked. If you specified a rectangular window for an updatable TopoMap object, you can edit only those topological elements inside the specified window. (The TopoMap object may also contain locked topological elements that you cannot edit directly, but that Oracle Spatial can modify indirectly as needed.)</p>
+<p>For more information about what occurs when you use an updatable TopoMap object, see the Usage Notes for the <a href="sdo_topo_map_ref.htm#CACBEHDF">SDO_TOPO_MAP.LOAD_TOPO_MAP</a> function or procedure.</p>
+</li>
+</ul>
+<p>The following procedures set an updatable TopoMap object to be read-only:</p>
+<ul>
+<li>
+<p><a href="sdo_topo_map_ref.htm#CACEECCA">SDO_TOPO_MAP.COMMIT_TOPO_MAP</a></p>
+</li>
+<li>
+<p><a href="sdo_topo_map_ref.htm#CACDCFBH">SDO_TOPO_MAP.ROLLBACK_TOPO_MAP</a></p>
+</li>
+<li>
+<p><a href="sdo_topo_map_ref.htm#CACGGDAC">SDO_TOPO_MAP.CLEAR_TOPO_MAP</a></p>
+</li>
+</ul>
+<p>Within a user session at any given time, there can be no more than one updatable TopoMap object. However, multiple different user sessions can work with updatable TopoMap objects based on the same topology, as long as their editing windows do not contain any topological elements that are in any other updatable TopoMap objects. There can be multiple read-only TopoMap objects within and across user sessions.</p>
+<p>Two or more users can edit a topology at the same time as long as their editing windows (specified in the call to the <a href="sdo_topo_map_ref.htm#CACBEHDF">SDO_TOPO_MAP.LOAD_TOPO_MAP</a> function or procedure) do not overlap.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CEGCCIGG"></a>
+<div id="TOPOL794" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">2.1.2</span> <a id="sthref132"></a>Specifying the Editing Approach with the Topology Parameter</h3>
+<p>For many SDO_TOPO_MAP package functions and procedures that edit topologies, such as <a href="sdo_topo_map_ref.htm#CACFHBDI">SDO_TOPO_MAP.ADD_NODE</a> or <a href="sdo_topo_map_ref.htm#CACFCACH">SDO_TOPO_MAP.MOVE_EDGE</a>, you indicate the approach you are using for editing by specifying either a topology name or a null value for the first parameter, which is named <code>topology</code>:</p>
+<ul>
+<li>
+<p>If you specify a topology name, Spatial checks to see if an updatable TopoMap object already exists in the user session; and if one does not exist, Spatial creates an internal TopoMap object, uses that cache to perform the editing operation, commits the change (or rolls back changes to the savepoint at the beginning of the process if an exception occurred), and deletes the TopoMap object. (If an updatable TopoMap object already exists, an exception is raised.) For example, the following statement removes the node with node ID value 99 from the <code>MY_TOPO</code> topology:</p>
+<pre>
+CALL SDO_TOPO_MAP.REMOVE_NODE('MY_TOPO', 99);
+</pre></li>
+<li>
+<p>If you specify a null value, Spatial checks to see if an updatable TopoMap object already exists in the user session; and if one does exist, Spatial performs the operation in the TopoMap object's cache. (If no updatable TopoMap object exists, an exception is raised.) For example, the following statement removes the node with node ID value 99 from the current updatable TopoMap object:</p>
+<pre>
+CALL SDO_TOPO_MAP.REMOVE_NODE(null, 99);
+</pre></li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="CEGCGICJ"></a>
+<div id="TOPOL795" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">2.1.3</span> <a id="sthref133"></a><a id="sthref134"></a>Using GET_xxx Topology Functions</h3>
+<p>Some SDO_TOPO_MAP package functions that get information about topologies have <code>topology</code> and <code>topo_map</code> as their first two parameters. Examples of such functions are <a href="sdo_topo_map_ref.htm#CACHEEGD">SDO_TOPO_MAP.GET_EDGE_COORDS</a> and <a href="sdo_topo_map_ref.htm#CACCHABE">SDO_TOPO_MAP.GET_NODE_STAR</a>. To use these functions, specify a valid value for one parameter and a null value for the other parameter, as follows:</p>
+<ul>
+<li>
+<p>If you specify a valid <code>topology</code> parameter value, Spatial retrieves the information for the specified topology. It creates an internal TopoMap object, uses that cache to perform the operation, and deletes the TopoMap object. For example, the following statement returns the edge coordinates of the edge with an ID value of 1 from the <code>CITY_DATA</code> topology:</p>
+<pre>
+SELECT SDO_TOPO_MAP.GET_EDGE_COORDS('CITY_DATA', null, 1) FROM DUAL;
+</pre></li>
+<li>
+<p>If you specify a null <code>topology</code> parameter value and a valid <code>topo_map</code> parameter value, Spatial uses the specified TopoMap object (which can be updatable or read-only) to retrieve the information for the specified topology. For example, the following statement returns the edge coordinates of the edge with an ID value of 1 from the <code>CITY_DATA_TOPOMAP</code> TopoMap object:</p>
+<pre>
+SELECT SDO_TOPO_MAP.GET_EDGE_COORDS(null, 'CITY_DATA_TOPOMAP', 1) FROM DUAL;
+</pre></li>
+<li>
+<p>If you specify a null or invalid value for both the <code>topology</code> and <code>topo_map</code> parameters, an exception is raised.</p>
+</li>
+</ul>
+<p>Some SDO_TOPO_MAP package functions that get information about topology editing operations have no parameters. Examples of such functions are <a href="sdo_topo_map_ref.htm#CACBJJGI">SDO_TOPO_MAP.GET_FACE_ADDITIONS</a> and <a href="sdo_topo_map_ref.htm#CACDHDBB">SDO_TOPO_MAP.GET_NODE_CHANGES</a>. These functions use the current updatable TopoMap object. If no updatable TopoMap object exists, an exception is raised. For example, the following statement returns an SDO_NUMBER_ARRAY object (described in <a href="sdo_topo_concepts.htm#CIHJECCE">Section 1.6.7</a>) with the node ID values of nodes that have been added to the current updatable TopoMap object:</p>
+<pre>
+SELECT SDO_TOPO_MAP.GET_NODE_ADDITIONS FROM DUAL;
+</pre></div>
+<!-- class="sect2" -->
+<a id="CEGHAAJA"></a>
+<div id="TOPOL796" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">2.1.4</span> <a id="sthref135"></a>Process for Editing Using Cache Explicitly (PL/SQL API)</h3>
+<p><a href="#CEGBBECG">Figure 2-1</a> shows the recommended process for editing topological elements using the PL/SQL API and explicitly using a TopoMap object and its associated cache.</p>
+<div id="TOPOL797" class="figure">
+<p class="titleinfigure"><a id="CEGBBECG"></a>Figure 2-1 Editing Topologies Using the TopoMap Object Cache (PL/SQL API)</p>
+<img width="589" height="443" src="img/topo_editing_plsql.gif" alt="Description of Figure 2-1 follows" /><br />
+<a id="sthref136" href="img_text/topo_editing_plsql.htm">Description of "Figure 2-1 Editing Topologies Using the TopoMap Object Cache (PL/SQL API)"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>As <a href="#CEGBBECG">Figure 2-1</a> shows, the basic sequence is as follows:</p>
+<ol>
+<li>
+<p>Create the TopoMap object, using the <a href="sdo_topo_map_ref.htm#CACJCGFE">SDO_TOPO_MAP.CREATE_TOPO_MAP</a> procedure.</p>
+<p>This creates an in-memory cache for editing objects associated with the specified topology.</p>
+</li>
+<li>
+<p>Load the entire topology or a rectangular window from the topology into the TopoMap object cache for update, using the <a href="sdo_topo_map_ref.htm#CACBEHDF">SDO_TOPO_MAP.LOAD_TOPO_MAP</a> function or procedure.</p>
+<p>You can specify that in-memory R-tree indexes be built on the edges and faces that are being loaded. These indexes use some memory resources and take some time to create and periodically rebuild; however, they significantly improve performance if you edit a large number of topological elements in the session. (They can also improve performance for queries that use a read-only TopoMap object.)</p>
+</li>
+<li>
+<p>Perform a number of topology editing operations (for example, add 1000 nodes).</p>
+<p>Periodically, validate the cache by calling the <a href="sdo_topo_map_ref.htm#CACJAICB">SDO_TOPO_MAP.VALIDATE_TOPO_MAP</a> function.</p>
+<p>You can rebuild existing in-memory R-tree indexes on edges and faces in the TopoMap object, or create new indexes if none exist, by using the <a href="sdo_topo_map_ref.htm#CACGEGBB">SDO_TOPO_MAP.CREATE_EDGE_INDEX</a> and <a href="sdo_topo_map_ref.htm#CACBDEAF">SDO_TOPO_MAP.CREATE_FACE_INDEX</a> procedures. For best index performance, these indexes should be rebuilt periodically when you are editing a large number of topological elements.</p>
+<p>If you want to discard edits made in the cache, call the <a href="sdo_topo_map_ref.htm#CACGGDAC">SDO_TOPO_MAP.CLEAR_TOPO_MAP</a> procedure. This procedure fails if there are any uncommitted updates; otherwise, it clears the data in the cache and sets the cache to be read-only.</p>
+</li>
+<li>
+<p>Update the topology by calling the <a href="sdo_topo_map_ref.htm#CACJCAJH">SDO_TOPO_MAP.UPDATE_TOPO_MAP</a> procedure.</p>
+</li>
+<li>
+<p>Repeat Steps 3 and 4 (editing objects, validating the cache, rebuilding the R-tree indexes, and updating the topology) as often as needed, until you have finished the topology editing operations.</p>
+</li>
+<li>
+<p>Commit the topology changes by calling the <a href="sdo_topo_map_ref.htm#CACEECCA">SDO_TOPO_MAP.COMMIT_TOPO_MAP</a> procedure. (The <a href="sdo_topo_map_ref.htm#CACEECCA">SDO_TOPO_MAP.COMMIT_TOPO_MAP</a> procedure automatically performs the actions of the <a href="sdo_topo_map_ref.htm#CACJCAJH">SDO_TOPO_MAP.UPDATE_TOPO_MAP</a> procedure before it commits the changes.) After the commit operation, the cache is made read-only (that is, it is no longer updatable). However, if you want to perform further editing operations using the same TopoMap object, you can load it again and use it (that is, repeat Steps 2 through 5, clearing the cache first if necessary).</p>
+<p>To perform further editing operations, clear the TopoMap object cache by calling the <a href="sdo_topo_map_ref.htm#CACGGDAC">SDO_TOPO_MAP.CLEAR_TOPO_MAP</a> procedure, and then go to Step 2.</p>
+<p>If you want to discard all uncommitted topology changes, you can call the <a href="sdo_topo_map_ref.htm#CACDCFBH">SDO_TOPO_MAP.ROLLBACK_TOPO_MAP</a> procedure at any time. After the rollback operation, the cache is cleared.</p>
+</li>
+<li>
+<p>Remove the TopoMap object by calling the <a href="sdo_topo_map_ref.htm#CACEAGDD">SDO_TOPO_MAP.DROP_TOPO_MAP</a> procedure.</p>
+<p>This procedure removes the TopoMap object and frees any resources that it had used. (If you forget to drop the TopoMap object, it will automatically be dropped when the user session ends.) This procedure also rolls back any topology changes in the cache that have not been committed.</p>
+<p>If the application terminates abnormally, all uncommitted changes to the database will be discarded.</p>
+</li>
+</ol>
+<p>If you plan to perform a very large number of topology editing operations, you can divide the operations among several editing sessions, each of which performs Steps 1 through 7 in the preceding list.</p>
+</div>
+<!-- class="sect2" -->
+<div id="TOPOL798" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref137"></a>
+<h3 class="sect2"><span class="secnum">2.1.5</span> <a id="sthref138"></a>Process for Editing Using the Java API</h3>
+<p><a href="#CEGHDDBF">Figure 2-2</a> shows the recommended process for editing topological elements using the client-side Java API, which is introduced in <a href="sdo_topo_concepts.htm#CIHBEHFI">Section 1.8.2</a> and is explained in the Javadoc-generated documentation. The Java API requires that you create and manage a TopoMap object and its associated cache.</p>
+<div id="TOPOL799" class="figure">
+<p class="titleinfigure"><a id="CEGHDDBF"></a>Figure 2-2 Editing Topologies Using the TopoMap Object Cache (Java API)</p>
+<img width="551" height="443" src="img/topo_editing_java.gif" alt="Description of Figure 2-2 follows" /><br />
+<a id="sthref139" href="img_text/topo_editing_java.htm">Description of "Figure 2-2 Editing Topologies Using the TopoMap Object Cache (Java API)"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>As <a href="#CEGHDDBF">Figure 2-2</a> shows, the basic sequence is as follows:</p>
+<ol>
+<li>
+<p>Create the TopoMap object, using a constructor of the <code>TopoMap</code> class, specifying a topology and a database connection.</p>
+<p>This creates an in-memory cache for editing objects associated with the specified topology.</p>
+</li>
+<li>
+<p>Load the entire topology or a rectangular window from the topology into the TopoMap object cache for update, using the <code>loadTopology</code> or <code>loadWindow</code> method of the <code>TopoMap</code> class.</p>
+<p>You can specify that in-memory R-tree indexes be built on the edge and edge face that are being affected. These indexes use some memory resources and take some time to create and periodically rebuild; however, they significantly improve performance if you edit a large number of topological elements during the database connection.</p>
+</li>
+<li>
+<p>Perform a number of topology editing operations (for example, add 1000 nodes), and update the topology by calling the <code>updateTopology</code> method of the <code>TopoMap</code> class.</p>
+<p>Periodically, validate the cache by calling the <code>validateCache</code> method of the <code>TopoMap</code> class.</p>
+<p>If you caused in-memory R-tree indexes to be created when you loaded the TopoMap object (in Step 2), you can periodically (for example, after each addition of 100 nodes) rebuild the indexes by calling the <code>createEdgeIndex</code> and <code>createFaceIndex</code> methods of the <code>TopoMap</code> class. For best index performance, these indexes should be rebuilt periodically when you are editing a large number of topological elements.</p>
+<p>If you do not want to update the topology but instead want to discard edits made in the cache since the last update, call the <code>clearCache</code> method of the <code>TopoMap</code> class. The <code>clearCache</code> method fails if there are any uncommitted updates; otherwise, it clears the data in the cache and sets the cache to be read-only.</p>
+</li>
+<li>
+<p>Update the topology by calling the <code>updateTopology</code> method of the <code>TopoMap</code> class.</p>
+</li>
+<li>
+<p>Repeat Steps 3 and 4 (editing objects, validating the cache, rebuilding the R-tree indexes, and updating the topology) as often as needed, until you have finished the topology editing operations.</p>
+</li>
+<li>
+<p>Commit the topology changes by calling the <code>commitDB</code> method of the <code>TopoMap</code> class. (The <code>commitDB</code> method automatically calls the <code>updateTopology</code> method before it commits the changes.) After the commit operation, the cache is made read-only (that is, it is no longer updatable). However, if you want to perform further editing operations using the same TopoMap object, you can load it again and use it (that is, repeat Steps 2 through 5, clearing the cache first if necessary).</p>
+<p>To perform further editing operations, clear the TopoMap object cache by calling the <code>clearCache</code> method of the <code>TopoMap</code> class, and then go to Step 2.</p>
+<p>If you want to discard all uncommitted topology changes, you can call the <code>rollbackDB</code> method of the <code>TopoMap</code> class at any time. After the rollback operation, the cache is cleared.</p>
+</li>
+<li>
+<p>Remove the TopoMap object by setting the TopoMap object to null, which makes the object available for garbage collection and frees any resources that it had used. (If you forget to remove the TopoMap object, it will automatically be garbage collected when the application ends.)</p>
+<p>If the application terminates abnormally, all uncommitted changes to the database will be discarded.</p>
+</li>
+</ol>
+<p>If you plan to perform a very large number of topology editing operations, you can divide the operations among several editing sessions, each of which performs Steps 1 through 7 in the preceding list.</p>
+</div>
+<!-- class="sect2" -->
+<div id="TOPOL800" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref140"></a>
+<h3 class="sect2"><span class="secnum">2.1.6</span> <a id="sthref141"></a><a id="sthref142"></a>Error Handling for Topology Editing</h3>
+<p>This section discusses the following conditions:</p>
+<ul>
+<li>
+<p>Input parameter errors</p>
+</li>
+<li>
+<p>All exceptions</p>
+</li>
+</ul>
+<div id="TOPOL801" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref143"></a>
+<h4 class="sect3"><span class="secnum">2.1.6.1</span> Input Parameter Errors</h4>
+<p>When an SDO_TOPO_MAP PL/SQL subprogram or a public method in the <code>TopoMap</code> Java class is called, it validates the values of the input parameters, and it uses or creates a TopoMap object to perform the editing or read-only operation. Whenever there is an input error, an <code>oracle.spatial.topo.TopoDataException</code> exception is thrown. Other errors may occur when the underlying TopoMap object performs an operation.</p>
+<p>If the method is called from SQL or PL/SQL, the caller gets the following error message:</p>
+<pre>
+ORA-29532: Java call terminated by uncaught Java exception:
+&lt;specific error message text&gt;
+</pre>
+<p>The following PL/SQL example shows how you can handle a <code>TopoDataException</code> exception:</p>
+<pre>
+DECLARE
+  topo_data_error EXCEPTION;
+  PRAGMA EXCEPTION_INIT(topo_data_error, -29532);
+BEGIN
+  sdo_topo_map.create_topo_map(null, null, 100, 100, 100);
+EXCEPTION
+  WHEN topo_data_error THEN
+    DBMS_OUTPUT.PUT_LINE(SQLERRM);
+END;/
+ 
+</pre>
+<p>The preceding example generates the following output:</p>
+<pre>
+ORA-29532: Java call terminated by uncaught Java exception:oracle.spatial.topo.TopoDataException: invalid TopoMap name
+</pre></div>
+<!-- class="sect3" -->
+<div id="TOPOL802" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref144"></a>
+<h4 class="sect3"><span class="secnum">2.1.6.2</span> All Exceptions</h4>
+<p>The following actions are performed automatically when any exception occurs in a call to any of the following SDO_TOPO_MAP PL/SQL subprograms or their associated methods in the <code>TopoMap</code> Java class: <a href="sdo_topo_map_ref.htm#CACIIACB">SDO_TOPO_MAP.ADD_EDGE</a> (<code>addEdge</code>), <a href="sdo_topo_map_ref.htm#CACJIJCF">SDO_TOPO_MAP.ADD_ISOLATED_NODE</a> (<code>addIsolatedNode</code>), <a href="sdo_topo_map_ref.htm#CACCFEAG">SDO_TOPO_MAP.ADD_LOOP</a> (<code>addLoop</code>), <a href="sdo_topo_map_ref.htm#CACFHBDI">SDO_TOPO_MAP.ADD_NODE</a> (<code>addNode</code>), <a href="sdo_topo_map_ref.htm#CACIDBAB">SDO_TOPO_MAP.ADD_POINT_GEOMETRY</a> (<code>addPointGeometry</code>), <a href="sdo_topo_map_ref.htm#CACFGIFG">SDO_TOPO_MAP.ADD_POLYGON_GEOMETRY</a> (<code>addPolygonGeometry</code>), <a href="sdo_topo_map_ref.htm#CACHBEHA">SDO_TOPO_MAP.CHANGE_EDGE_COORDS</a> (<code>changeEdgeCoords</code>), <a href="sdo_topo_map_ref.htm#CACHAEDB">SDO_TOPO_MAP.MOVE_ISOLATED_NODE</a> (<code>moveIsolatedNode</code>), <a href="sdo_topo_map_ref.htm#CACIAHAB">SDO_TOPO_MAP.MOVE_NODE</a> (<code>moveNode</code>), <a href="sdo_topo_map_ref.htm#CACFCACH">SDO_TOPO_MAP.MOVE_EDGE</a> (<code>moveEdge</code>), <a href="sdo_topo_map_ref.htm#CACGJACC">SDO_TOPO_MAP.REMOVE_EDGE</a> (<code>removeEdge</code>), <a href="sdo_topo_map_ref.htm#CACFHJJB">SDO_TOPO_MAP.REMOVE_NODE</a> (<code>removeNode</code>), and <a href="sdo_topo_map_ref.htm#CACJCAJH">SDO_TOPO_MAP.UPDATE_TOPO_MAP</a> (<code>updateTopology</code>).</p>
+<ul>
+<li>
+<p>The transaction is rolled back.</p>
+</li>
+<li>
+<p>The TopoMap object cache is cleared.</p>
+</li>
+<li>
+<p>The TopoMap object is made read-only.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CEGGBBDF"></a>
+<div id="TOPOL803" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">2.2</span> Performing Operations on Nodes</h2>
+<p>This section contains sections that describe the effects of adding, moving, and removing nodes, and that explain how to perform these operations using the PL/SQL API.</p>
+<div id="TOPOL804" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref145"></a>
+<h3 class="sect2"><span class="secnum">2.2.1</span> <a id="sthref146"></a>Adding a Node</h3>
+<p>Adding a non-isolated node adds the node to an edge at a point that is currently on the edge. This operation also splits the edge, causing the original edge to be divided into two edges. Spatial automatically adjusts the definition of the original edge and creates a new edge (assigning it an ID value that is unique among edges in the topology).</p>
+<p>To add a non-isolated node, use the <a href="sdo_topo_map_ref.htm#CACFHBDI">SDO_TOPO_MAP.ADD_NODE</a> function. To add an isolated node, use the <a href="sdo_topo_map_ref.htm#CACJIJCF">SDO_TOPO_MAP.ADD_ISOLATED_NODE</a> function.</p>
+<p><a href="#CEGCJDJE">Figure 2-3</a> shows the addition of a node (N3) on edge E1.</p>
+<div id="TOPOL805" class="figure">
+<p class="titleinfigure"><a id="CEGCJDJE"></a>Figure 2-3 Adding a Non-Isolated Node</p>
+<img width="450" height="141" src="img/add_node.gif" alt="Description of Figure 2-3 follows" /><br />
+<a id="sthref147" href="img_text/add_node.htm">Description of "Figure 2-3 Adding a Non-Isolated Node"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>As a result of the operation shown in <a href="#CEGCJDJE">Figure 2-3</a>:</p>
+<ul>
+<li>
+<p>Edge E1 is redefined to be between the original edge's start point and the point at the added node (N3).</p>
+</li>
+<li>
+<p>Edge E2 is created. Its start point is the point at node N3, and its end point is the end point of the original edge.</p>
+</li>
+<li>
+<p>If any linear features were defined on the original edge, they are automatically redefined to be on both resulting edges, the edge is split, and a record is added to the history information table (explained in <a href="sdo_topo_concepts.htm#CIHJICHI">Section 1.5.5</a>) for the topology. For example, if a street named Main Street had been defined on the original edge E1 in <a href="#CEGCJDJE">Figure 2-3</a>, then after the addition of node N3, Main Street would be defined on both edges E1 and E2.</p>
+</li>
+</ul>
+<p><a href="#CEGHJIEE">Figure 2-4</a> shows a more complicated example of adding a node, where the result depends on whether or not the added node is a new shape point of the original edge (that is, on the value of the <code>is_new_shape_point</code> parameter to the <a href="sdo_topo_map_ref.htm#CACFHBDI">SDO_TOPO_MAP.ADD_NODE</a> function).</p>
+<div id="TOPOL806" class="figure">
+<p class="titleinfigure"><a id="CEGHJIEE"></a>Figure 2-4 Effect of is_new_shape_point Value on Adding a Node</p>
+<img width="452" height="401" src="img/add_node_2.gif" alt="Description of Figure 2-4 follows" /><br />
+<a id="sthref148" href="img_text/add_node_2.htm">Description of "Figure 2-4 Effect of is_new_shape_point Value on Adding a Node"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>In <a href="#CEGHJIEE">Figure 2-4</a>:</p>
+<ul>
+<li>
+<p>In the top part of the figure, the original edge (E1) starts at node N1, ends at node N2, and has two intermediate shape points.</p>
+</li>
+<li>
+<p>In the middle part of the figure, a new node (N3) is added that is not a shape point of the original edge, but instead is a new shape point (that is, <code>is_new_shape_point=&gt;'TRUE'</code>). The new node is added at the location specified with the <code>point</code> parameter, and is added after the vertex specified in the <code>coord_index</code> parameter (in this case, <code>coord_index=&gt;1</code> to indicate after the first vertex). The new node becomes the end node for edge E1 and the start node for the new edge E2, which ends at node N2.</p>
+</li>
+<li>
+<p>In the bottom part of the figure, a new node (N3) is added that is a shape point of the original edge, and is thus not a new shape point (that is, <code>is_new_shape_point=&gt;'FALSE'</code>). Because it is not a new shape point, the node is added at the vertex specified with the <code>coord_index</code> parameter (in this case, <code>coord_index=&gt;2</code>). As in the middle part of the figure, the new node becomes the end node for edge E1 and the start node for the new edge E2, which ends at node N2.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="CEGFCHFI"></a>
+<div id="TOPOL807" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">2.2.2</span> <a id="sthref149"></a>Moving a Node</h3>
+<p>Moving a non-isolated node to a new position causes the ends of all edges that are attached to the node to move with the node. You must specify the vertices for all edges affected by the moving of the node; each point (start or end) that is attached to the node must have the same coordinates as the new location of the node, and the other end points (not the moved node) of each affected edge must remain the same.</p>
+<p>To move a non-isolated node, use the <a href="sdo_topo_map_ref.htm#CACIAHAB">SDO_TOPO_MAP.MOVE_NODE</a> procedure. To move an isolated node, use the <a href="sdo_topo_map_ref.htm#CACHAEDB">SDO_TOPO_MAP.MOVE_ISOLATED_NODE</a> procedure.</p>
+<p><a href="#CEGHFDHJ">Figure 2-5</a> shows the original topology before node N1 is moved.</p>
+<div id="TOPOL808" class="figure">
+<p class="titleinfigure"><a id="CEGHFDHJ"></a>Figure 2-5 Topology Before Moving a Non-Isolated Node</p>
+<img width="206" height="195" src="img/move_node_1.gif" alt="Description of Figure 2-5 follows" /><br />
+<a id="sthref150" href="img_text/move_node_1.htm">Description of "Figure 2-5 Topology Before Moving a Non-Isolated Node"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p><a href="#CEGCJDDC">Figure 2-6</a> shows two cases of the original topology after node N1 is moved. In one case, no reshaping occurs; that is, all edges affected by the movement are specified as straight lines. In the other case, reshaping occurs; that is, one or more affected edges are specified as line segments with multiple vertices.</p>
+<div id="TOPOL809" class="figure">
+<p class="titleinfigure"><a id="CEGCJDDC"></a>Figure 2-6 Topology After Moving a Non-Isolated Node</p>
+<img width="421" height="226" src="img/move_node_2b.gif" alt="Description of Figure 2-6 follows" /><br />
+<a id="sthref151" href="img_text/move_node_2b.htm">Description of "Figure 2-6 Topology After Moving a Non-Isolated Node"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>In both cases shown in <a href="#CEGCJDDC">Figure 2-6</a>:</p>
+<ul>
+<li>
+<p>The topology does not change. That is, the number of nodes, edges, and faces does not change, and the relationships (such as adjacency and connectivity) among the nodes, edges, and faces do not change.</p>
+</li>
+<li>
+<p>All features defined on the nodes, edges, and faces retain their definitions.</p>
+</li>
+</ul>
+<p>Any isolated nodes and edges might remain in the same face or be moved to a different face as a result of a move operation on a non-isolated node. The <a href="sdo_topo_map_ref.htm#CACIAHAB">SDO_TOPO_MAP.MOVE_NODE</a> procedure has two output parameters, <code>moved_iso_nodes</code> and <code>moved_iso_edges</code>, that store the ID numbers of any isolated nodes and edges that were moved to a different face as a result of the operation.</p>
+<p>A node cannot be moved if, as a result of the move, any of the following would happen:</p>
+<ul>
+<li>
+<p>Any edges attached to the node would intersect any other edge. For example, assume that the original topology shown in <a href="#CEGCJDDC">Figure 2-6</a> had included another edge E20 that passed just above and to the right of node N1. If the movement of node N1 would cause edge E3, E4, E6, E8, or E9 to intersect edge E20, the move operation is not performed.</p>
+</li>
+<li>
+<p>The node would be moved to a face that does not currently bound the node. For example, if the movement of node N1 would place it outside the original topology shown in <a href="#CEGCJDDC">Figure 2-6</a>, the move operation is not performed.</p>
+</li>
+<li>
+<p>The node would be moved to the opposite side of an isolated face. This is not allowed because the move would change the topology by changing one or more of the following: the relationship or ordering of edges around the face, and the left and right face for each edge. <a href="#CEGDACBI">Figure 2-7</a> shows a node movement (flipping node N1 from one side of isolated face F1 to the other side) that would not be allowed.</p>
+<div id="TOPOL810" class="figure">
+<p class="titleinfigure"><a id="CEGDACBI"></a>Figure 2-7 Node Move Is Not Allowed</p>
+<img width="424" height="203" src="img/flip_node.gif" alt="Description of Figure 2-7 follows" /><br />
+<a id="sthref152" href="img_text/flip_node.htm">Description of "Figure 2-7 Node Move Is Not Allowed"</a><br />
+<br /></div>
+<!-- class="figure" --></li>
+</ul>
+<div id="TOPOL811" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref153"></a>
+<h4 class="sect3"><span class="secnum">2.2.2.1</span> Additional Examples of Allowed and Disallowed Node Moves</h4>
+<p>This section provides additional examples of node movement operations that are either allowed or not allowed. All refer to the topology shown in <a href="#CEGBEJIF">Figure 2-8</a>.</p>
+<div id="TOPOL812" class="figure">
+<p class="titleinfigure"><a id="CEGBEJIF"></a>Figure 2-8 Topology for Node Movement Examples</p>
+<img width="261" height="221" src="img/node_moves_several.gif" alt="Description of Figure 2-8 follows" /><br />
+<a id="sthref154" href="img_text/node_moves_several.htm">Description of "Figure 2-8 Topology for Node Movement Examples"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>In the topology shown in <a href="#CEGBEJIF">Figure 2-8</a>:</p>
+<ul>
+<li>
+<p>Attempts will be made to move node N1 to points P1, P2, P3, and P4. (These points are locations but are not existing nodes.)</p>
+</li>
+<li>
+<p>The edges have no shape points, either before or after the move operation.</p>
+</li>
+<li>
+<p>New vertices are specified for the edges E1, E2, E3, and E4, but the ID values of the start and end points for the edges remain the same.</p>
+</li>
+</ul>
+<p>When the following node move operations are attempted using the topology shown in <a href="#CEGBEJIF">Figure 2-8</a>, the following results occur:</p>
+<ul>
+<li>
+<p>Moving node N1 to point P1: Not allowed, because one or more of the four attached edges would intersect edge E5. (Edge E3 would definitely intersect edge E5 if the move were allowed.)</p>
+</li>
+<li>
+<p>Moving node N1 to point P2: Allowed.</p>
+</li>
+<li>
+<p>Moving node N1 to point P3: Allowed. However, this operation causes the isolated node N2 to change from face F2 to face F1, and this might cause the application to want to roll back or disallow the movement of node N1. Similarly, if the movement of a node would cause any isolated edges or faces to change from one face to another, the application might want to roll back or disallow the node move operation.</p>
+</li>
+<li>
+<p>Moving node N1 to point P4: Not allowed, because the node must be moved to a point in a face that bounds the original (current) position of the node.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CEGIIHDE"></a>
+<div id="TOPOL813" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">2.2.3</span> <a id="sthref155"></a>Removing a Node</h3>
+<p>You can remove individual nodes (isolated or non-isolated), as explained in this section, and you can remove all obsolete nodes in a topology, as explained in <a href="#CEGGJBCH">Section 2.2.4</a>.</p>
+<p>Removing a non-isolated node deletes the node and merges the edges that were attached to the node into a single edge. (Spatial applies complex rules, which are not documented, to determine the ID value and direction of the resulting edge.)</p>
+<p>To remove a non-isolated or isolated node, use the <a href="sdo_topo_map_ref.htm#CACFHJJB">SDO_TOPO_MAP.REMOVE_NODE</a> procedure.</p>
+<p><a href="#CEGCDECG">Figure 2-9</a> shows the removal of a node (N1) that is attached to edges E1 and E2.</p>
+<div id="TOPOL814" class="figure">
+<p class="titleinfigure"><a id="CEGCDECG"></a>Figure 2-9 Removing a Non-Isolated Node</p>
+<img width="449" height="135" src="img/delete_node.gif" alt="Description of Figure 2-9 follows" /><br />
+<a id="sthref156" href="img_text/delete_node.htm">Description of "Figure 2-9 Removing a Non-Isolated Node"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>As a result of the operation shown in <a href="#CEGCDECG">Figure 2-9</a>:</p>
+<ul>
+<li>
+<p>Edge E1 is redefined to consist of the line segments that had represented the original edges E1 and E2.</p>
+</li>
+<li>
+<p>Edge E2 is deleted.</p>
+</li>
+<li>
+<p>If any linear features were defined on both original edges, they are automatically redefined to be on the resulting edge, and a record is added to the history information table (explained in <a href="sdo_topo_concepts.htm#CIHJICHI">Section 1.5.5</a>) for the topology. For example, if a street named Main Street had been defined on the original edges E1 and E2 in <a href="#CEGCDECG">Figure 2-9</a>, then after the removal of node N1, Main Street would be defined on edge E1.</p>
+</li>
+</ul>
+<p>A node cannot be removed if one or more of the following are true:</p>
+<ul>
+<li>
+<p>A point feature is defined on the node. For example, if a point feature named Metropolitan Art Museum had been defined on node N1 in <a href="#CEGCDECG">Figure 2-9</a>, node N1 cannot be removed. Before you can remove the node in this case, you must remove the definition of any point features on the node.</p>
+</li>
+<li>
+<p>A linear feature defined on either original edge is not also defined on both edges. For example, if a linear feature named Main Street had been defined on edge E1 but not edge E2 in <a href="#CEGCDECG">Figure 2-9</a>, node N1 cannot be removed.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="CEGGJBCH"></a>
+<div id="TOPOL815" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">2.2.4</span> <a id="sthref157"></a><a id="sthref158"></a><a id="sthref159"></a>Removing Obsolete Nodes</h3>
+<p>An <span class="bold">obsolete node</span> is a node that is connected to only two distinct edges, is not assigned to any point feature, and does not serve as the demarcation between different linear features. Obsolete nodes can result when the <a href="sdo_topo_map_ref.htm#CACFGIFG">SDO_TOPO_MAP.ADD_POLYGON_GEOMETRY</a> function is used repeatedly to build a topology, or when edges have been removed during editing operations, leaving some unnecessary nodes. Therefore, it is recommended that you use the <a href="sdo_topo_map_ref.htm#CACGFAAG">SDO_TOPO_MAP.REMOVE_OBSOLETE_NODES</a> procedure to remove obsolete nodes in such cases.</p>
+<p>Spatial automatically updates the appropriate entries in the &lt;topology-name&gt;_NODE$ and &lt;topology-name&gt;_EDGE$ tables, and in the &lt;topology-name&gt;_FACE$ table if necessary.</p>
+<p><a href="#CEGCIIAA">Figure 2-10</a> shows the removal of obsolete nodes in a simple topology. In this topology, node N1 has a point feature named Art Museum defined on it, and node N3 has a point feature named Town Hall defined on it. Edges E1, E2, and E3 have a linear feature named Main Street defined on them, and edge E4 has a linear feature named First Avenue defined on it.</p>
+<div id="TOPOL816" class="figure">
+<p class="titleinfigure"><a id="CEGCIIAA"></a>Figure 2-10 Removing Obsolete Nodes</p>
+<img width="453" height="336" src="img/delete_obsolete_nodes.gif" alt="Description of Figure 2-10 follows" /><br />
+<a id="sthref160" href="img_text/delete_obsolete_nodes.htm">Description of "Figure 2-10 Removing Obsolete Nodes"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>In <a href="#CEGCIIAA">Figure 2-10</a>, the only node removed is N2, because only that node satisfies all the criteria for an obsolete node. As for the other nodes:</p>
+<ul>
+<li>
+<p>N1 is connected to only one edge (E1), and it has a point feature defined on it (Art Museum).</p>
+</li>
+<li>
+<p>N3 has a point feature defined on it (Town Hall).</p>
+</li>
+<li>
+<p>N4 is the demarcation between two different linear features (Main Street and First Avenue).</p>
+</li>
+<li>
+<p>N5 is connected to only one edge (E4).</p>
+</li>
+<li>
+<p>Node N6 is an isolated node (not connected to any edges).</p>
+</li>
+</ul>
+<p>Also as a result of the operation shown in <a href="#CEGCIIAA">Figure 2-10</a>, edge E2 was removed as a result of the removal of node N2.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CEGEFDCE"></a>
+<div id="TOPOL817" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">2.3</span> Performing Operations on Edges</h2>
+<p>This section describes the effects of adding, moving, removing, and updating edges, and explains how to perform these operations using the PL/SQL API.</p>
+<div id="TOPOL818" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref161"></a>
+<h3 class="sect2"><span class="secnum">2.3.1</span> <a id="sthref162"></a>Adding an Edge</h3>
+<p>Adding a non-isolated edge adds the edge to a face. It also splits the face, causing the original face to be divided into two faces. Spatial automatically adjusts the definition of the original face and creates a new face (assigning it an ID value that is unique among faces in the topology).</p>
+<p>To add an edge, use the <a href="sdo_topo_map_ref.htm#CACIIACB">SDO_TOPO_MAP.ADD_EDGE</a> procedure. You must specify existing nodes as the start and end nodes of the added edge.</p>
+<p><a href="#CEGFGGBC">Figure 2-11</a> shows the addition of an edge (E7) between nodes N3 and N5 on face F3.</p>
+<div id="TOPOL819" class="figure">
+<p class="titleinfigure"><a id="CEGFGGBC"></a>Figure 2-11 Adding a Non-Isolated Edge</p>
+<img width="482" height="261" src="img/add_edge.gif" alt="Description of Figure 2-11 follows" /><br />
+<a id="sthref163" href="img_text/add_edge.htm">Description of "Figure 2-11 Adding a Non-Isolated Edge"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>As a result of the operation shown in <a href="#CEGFGGBC">Figure 2-11</a>, face F3 is redefined to be two faces, F1 and F3. (Spatial applies complex rules, which are not documented, to determine the ID values of the resulting faces.)</p>
+<p>Any polygon features that were defined on the original face are automatically redefined to be on both resulting faces. For example, if a park named Walden State Park had been defined on the original face F3 in <a href="#CEGFGGBC">Figure 2-11</a>, then after the addition of edge E7, Walden State Park would be defined on both faces F1 and F3.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CEGDCGJG"></a>
+<div id="TOPOL820" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">2.3.2</span> <a id="sthref164"></a>Moving an Edge</h3>
+<p>Moving a non-isolated edge keeps the start or end point of the edge in the same position and moves the other of those two points to another existing node position. You must specify the source node (location before the move of the node to be moved), the target node (location after the move of the node being moved), and the vertices for the moved edge.</p>
+<p>To move an edge, use the <a href="sdo_topo_map_ref.htm#CACFCACH">SDO_TOPO_MAP.MOVE_EDGE</a> procedure.</p>
+<p><a href="#CEGEGBHJ">Figure 2-12</a> shows the movement of edge E7, which was originally between nodes N3 and N5, to be between nodes N2 and N5.</p>
+<div id="TOPOL821" class="figure">
+<p class="titleinfigure"><a id="CEGEGBHJ"></a>Figure 2-12 Moving a Non-Isolated Edge</p>
+<img width="482" height="261" src="img/move_edge.gif" alt="Description of Figure 2-12 follows" /><br />
+<a id="sthref165" href="img_text/move_edge.htm">Description of "Figure 2-12 Moving a Non-Isolated Edge"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>As a result of the operation shown in <a href="#CEGEGBHJ">Figure 2-12</a>, faces F1 and F3 are automatically redefined to reflect the coordinates of their edges, including the new coordinates for edge E7.</p>
+<p>Any isolated nodes and edges might remain in the same face or be moved to a different face as a result of a move operation on a non-isolated edge. The <a href="sdo_topo_map_ref.htm#CACFCACH">SDO_TOPO_MAP.MOVE_EDGE</a> procedure has two output parameters, <code>moved_iso_nodes</code> and <code>moved_iso_edges</code>, that store the ID numbers of any isolated nodes and edges that were moved to a different face as a result of the operation.</p>
+<p>An edge cannot be moved if, as a result of the move, any of the following would happen:</p>
+<ul>
+<li>
+<p>The moved edge would intersect any other edge. For example, assume that the topology before the move, as shown in <a href="#CEGEGBHJ">Figure 2-12</a>, had included another edge (E10) that was between nodes N3 and N4. In this case, the movement of edge E7 would cause it to intersect edge E10, and therefore the move operation is not performed.</p>
+</li>
+<li>
+<p>The node would be moved to a face that does not currently bound the edge. For example, if the movement of edge E7 would place its terminating point at a node outside the faces shown in <a href="#CEGEGBHJ">Figure 2-12</a> (F1 and F3), the move operation is not performed.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="CEGBHDAE"></a>
+<div id="TOPOL822" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">2.3.3</span> <a id="sthref166"></a>Removing an Edge</h3>
+<p>Removing a non-isolated edge deletes the edge and merges the faces that bounded the edge. (Spatial applies complex rules, which are not documented, to determine the ID value of the resulting face.)</p>
+<p>To remove an edge, use the <a href="sdo_topo_map_ref.htm#CACGJACC">SDO_TOPO_MAP.REMOVE_EDGE</a> procedure.</p>
+<p><a href="#CEGCFABJ">Figure 2-13</a> shows the removal of an edge (E7) that is bounded by faces F1 and F3.</p>
+<div id="TOPOL823" class="figure">
+<p class="titleinfigure"><a id="CEGCFABJ"></a>Figure 2-13 Removing a Non-Isolated Edge</p>
+<img width="482" height="253" src="img/delete_edge.gif" alt="Description of Figure 2-13 follows" /><br />
+<a id="sthref167" href="img_text/delete_edge.htm">Description of "Figure 2-13 Removing a Non-Isolated Edge"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>As a result of the operation shown in <a href="#CEGCFABJ">Figure 2-13</a>:</p>
+<ul>
+<li>
+<p>Face F1 is redefined to consist of the area of the original faces F1 and F3.</p>
+</li>
+<li>
+<p>Face F3 is deleted.</p>
+</li>
+<li>
+<p>The start and end nodes of the deleted edge (nodes N3 and N5) are not removed.</p>
+</li>
+</ul>
+<p><a id="sthref168"></a>Any polygon features that were defined on both original faces are automatically redefined to be on the resulting face. For example, if a park named Adams Park had been defined on the original faces F1 and F3 in <a href="#CEGCFABJ">Figure 2-13</a>, then after the removal of edge E7, Adams Park would be defined on face F1.</p>
+<p>A non-isolated edge cannot be removed if one or more of the following are true:</p>
+<ul>
+<li>
+<p>A linear feature is defined on the edge. For example, if a linear feature named Main Street had been defined on edge E7 in <a href="#CEGCFABJ">Figure 2-13</a>, edge E7 cannot be removed. Before you can remove the edge in this case, you must remove the definition of any linear features on the edge.</p>
+</li>
+<li>
+<p>A polygon feature defined on either original face is not also defined on both faces. For example, if a linear feature named Adams Park had been defined on face F1 but not face F3 in <a href="#CEGCFABJ">Figure 2-13</a>, edge E7 cannot be removed.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<div id="TOPOL824" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref169"></a>
+<h3 class="sect2"><span class="secnum">2.3.4</span> <a id="sthref170"></a><a id="sthref171"></a>Updating an Edge</h3>
+<p>Updating an isolated edge means changing one or more coordinates of the edge, but without changing the start point and end point.</p>
+<p>To update an edge, use the <a href="sdo_topo_map_ref.htm#CACHBEHA">SDO_TOPO_MAP.CHANGE_EDGE_COORDS</a> procedure.</p>
+<p>Any isolated nodes and edges might remain in the same face or be moved to a different face as a result of an update operation on a non-isolated edge. The <a href="sdo_topo_map_ref.htm#CACHBEHA">SDO_TOPO_MAP.CHANGE_EDGE_COORDS</a> procedure has two output parameters, <code>moved_iso_nodes</code> and <code>moved_iso_edges</code>, that store the ID numbers of any isolated nodes and edges that were moved to a different face as a result of the operation.</p>
+<p>An edge cannot be updated if, as a result of the operation, it would intersect any other edge. See the Usage Notes for the <a href="sdo_topo_map_ref.htm#CACHBEHA">SDO_TOPO_MAP.CHANGE_EDGE_COORDS</a> procedure for more information about updating an edge.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment778">
+<tr>
+<td class="cellalignment785">
+<table class="cellalignment783">
+<tr>
+<td class="cellalignment782"><a href="sdo_topo_concepts.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment782"><a href="sdo_topo_ref.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2003, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment787">
+<table class="cellalignment781">
+<tr>
+<td class="cellalignment782"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment782"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment782"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment782"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment782"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment782"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

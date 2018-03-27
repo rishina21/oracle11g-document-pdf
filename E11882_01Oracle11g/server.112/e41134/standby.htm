@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Getting Started with Data Guard</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 748" />
+<meta name="dcterms.created" content="2014-02-25T8:43:0Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Data Guard Concepts and Administration" />
+<meta name="dcterms.identifier" content="E41134-03" />
+<meta name="dcterms.isVersionOf" content="SBYDB" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1999, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="concepts.htm" title="Previous" type="text/html" />
+<link rel="Next" href="create_ps.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e41134.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">10/34</span> <!-- End Header -->
+<div id="SBYDB00100" class="chapter"><a id="g76838"></a> <a id="i50947"></a>
+<h1 class="chapter"><span class="secnum">2</span> Getting Started with Data Guard</h1>
+<p>A Data Guard configuration contains a primary database and up to thirty associated st<a id="sthref168"></a>andby databases. This chapter describes the following considerations for getting started with Data Guard:</p>
+<ul>
+<li>
+<p><a href="#i72627">Standby Database Types</a></p>
+</li>
+<li>
+<p><a href="#i52161">User Interfaces for Administering Data Guard Configurations</a></p>
+</li>
+<li>
+<p><a href="#i58150">Data Guard Operational Prerequisites</a></p>
+</li>
+<li>
+<p><a href="#i64471">Standby Database Directory Structure Considerations</a></p>
+</li>
+</ul>
+<a id="i72627"></a>
+<div id="SBYDB00110" class="sect1">
+<h2 class="sect1"><span class="secnum">2.1</span> Standby Database Types</h2>
+<p>A <span class="bold">stan<a id="sthref169"></a>dby database</span> is a transactionally consistent copy of an Oracle production database that is initially created from a backup copy of the primary database. Once the standby database is created and configured, Data Guard automatically maintains the standby database by transmitting primary database redo data to the standby system, where the redo data is applied to the standby database.</p>
+<p>A standby database can be one of these types: a physical standby database, a logical standby database, or a snapshot standby database. If needed, either a physical or a logical standby database can assume the role of the primary database and take over production processing. A Data Guard configuration can include any combination of these types of standby databases.</p>
+<a id="i50960"></a>
+<div id="SBYDB00101" class="sect2">
+<h3 class="sect2"><span class="secnum">2.1.1</span> Physical Standby Databases</h3>
+<p>A physical standby database is an exact, block-for-block copy of a primary database. A physical standby is maintained as an exact copy through a process called Redo Apply, in which redo data received from a primary database is continuously applied to a physical standby database using the database recovery mechanisms.</p>
+<p>A physical standby database can be opened for read-only access and used to offload queries from a primary database.<a id="sthref170"></a><a id="sthref171"></a> If a license for the Oracle Active Data Guard option has been purchased, Redo Apply can be active while the physical standby database is open, thus allowing queries to return results that are identical to what would be returned from the primary database. This capability is known as the real-time query feature.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="manage_ps.htm#i1017111">"Opening a Physical Standby Database"</a></p>
+</li>
+<li>
+<p><a class="olink DBLIC141" href="../../license.112/e47877/options.htm#DBLIC141"><span class="italic">Oracle Database Licensing Information</span></a> for more information about Oracle Active Data Guard</p>
+</li>
+</ul>
+</div>
+<p class="subhead2"><a id="i51024"></a><a id="SBYDB5010"></a><a id="sthref172"></a><a id="sthref173"></a>Benefits of a Physical Standby Database</p>
+<p>A physical standby database provides the following benefits:</p>
+<ul>
+<li>
+<p>Disaster recovery and high availability</p>
+<p>A physical standby database is a robust and efficient disaster recovery and high availability solution. Easy-to-manage switchover and failover capabilities allow easy role reversals between primary and physical standby databases, minimizing the downtime of the primary database for planned and unplanned outages.</p>
+</li>
+<li>
+<p>Data protection</p>
+<p>A physical standby database can prevent data loss, even in the face of unforeseen disasters. A physical standby database supports all datatypes, and all DDL and DML operations that the primary database can support. It also provides a safeguard against data corruptions and user errors. Storage level physical corruptions on the primary database will not be propagated to a standby database. Similarly, logical corruptions or user errors that would otherwise cause data loss can be easily resolved.</p>
+</li>
+<li>
+<p>Reduction in primary database workload</p>
+<p>Oracle Recovery Manager (RMAN) can use a physical standby database to off-load backups from a primary database, saving valuable CPU and I/O cycles.</p>
+<p>A physical standby database can also be queried while Redo Apply is active, which allows queries to be offloaded from the primary to a physical standby, further reducing the primary workload.</p>
+</li>
+<li>
+<p>Performance</p>
+<p>The Redo Apply technology used by a physical standby database is the most efficient mechanism for keeping a standby database updated with changes being made at a primary database because it applies changes using low-level recovery mechanisms which bypass all SQL level code layers.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="i50975"></a>
+<div id="SBYDB00102" class="sect2">
+<h3 class="sect2"><span class="secnum">2.1.2</span> Logical Standby Databases</h3>
+<p><a id="i59867"></a>A logical standby database is initially created as an identical copy of the primary database, but it later can be altered to have a different structure. The logical standby database is updated by executing SQL statements. This allows users to access the standby database for queries and reporting at any time. Thus, the logical standby database can be used concurrently for data protection and reporting operations.</p>
+<p>Data Guard automatically applies information from the archived redo log file or standby redo log file to the logical standby database by transforming the data in the log files into SQL statements and then executing the SQL statements on the logical standby database. Because the logical standby database is updated using SQL statements, it must remain open. Although the logical standby database is opened in read/write mode, its target tables for the regenerated SQL are available only for read-only operations. While those tables are being updated, they can be used simultaneously for other tasks such as reporting, summations, and queries. Moreover, these tasks can be optimized by creating additional indexes and <a id="sthref174"></a><a id="sthref175"></a><a id="sthref176"></a><a id="sthref177"></a>materialized views on the maintained tables.</p>
+<p>A logical standby database has some restrictions on datatypes, types of tables, and types of DDL and DML operations. See <a href="data_support.htm#CHDGFADJ">Appendix C</a> for information on data type and DDL support on logical standby databases.</p>
+<p class="subhead2"><a id="i51043"></a><a id="SBYDB5011"></a>B<a id="sthref178"></a><a id="sthref179"></a>enefits of a Logical Standby Database</p>
+<p><a id="i61601"></a>A logical standby database is ideal for high availability (HA) while still offering data recovery (DR) benefits. Compared to a physical standby database, a logical standby database provides significant additional HA benefits:</p>
+<ul>
+<li>
+<p>Protection against additional kinds of failure</p>
+<p>Because logical standby analyzes the redo and reconstructs logical changes to the database, it can detect and protect against certain kinds of hardware failure on the primary that could potentially be replicated through block level changes. Oracle supports having both physical and logical standbys for the same primary server.</p>
+</li>
+<li>
+<p>Efficient use of resources</p>
+<p>A logical standby database is open read/write while changes on the primary are being replicated. Consequently, a logical standby database can simultaneously be used to meet many other business requirements, for example it can run reporting workloads that would problematical for the primary's throughput. It can be used to test new software releases and some kinds of applications on a complete and accurate copy of the primary's data. It can host other applications and additional schemas while protecting data replicated from the primary against local changes. It can be used to assess the impact of certain kinds of physical restructuring (for example, changes to partitioning schemes). Because a logical standby identifies user transactions and replicates only those changes while filtering out background system changes, it can efficiently replicate only transactions of interest.</p>
+</li>
+<li>
+<p>Workload distribution</p>
+<p>Logical standby provides a simple turnkey solution for creating up-to-the-minute, consistent replicas of a primary database that can be used for workload distribution. As the reporting workload increases, additional logical standbys can be created with transparent load distribution without affecting the transactional throughput of the primary server.</p>
+</li>
+<li>
+<p>Optimized for reporting and decision support requirements</p>
+<p>A key benefit of logical standby is that significant auxiliary structures can be created to optimize the reporting workload; structures that could have a prohibitive impact on the primary's transactional response time. A logical standby can have its data physically reorganized into a different storage type with different partitioning, have many different indexes, have on-demand refresh materialized views created and maintained, and it can be used to drive the creation of data cubes and other OLAP data views.</p>
+</li>
+<li>
+<p>Minimizing downtime on software upgrades</p>
+<p>Logical standby can be used to greatly reduce downtime associated with applying patchsets and new software releases. A logical standby can be upgraded to the new release and then switched over to become the active primary. This allows full availability while the old primary is converted to a logical standby and the patchset is applied.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<div id="SBYDB00103" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref180"></a>
+<h3 class="sect2"><span class="secnum">2.1.3</span> Snapshot Standby Databases</h3>
+<p>A snapshot standby database is a type of updatable standby database that provides full data protection for a primary database. A snapshot standby database receives and archives, but does not apply, redo data from its primary database. Redo data received from the primary database is applied when a snapshot standby database is converted back into a physical standby database, after discarding all local updates to the snapshot standby database.</p>
+<p>A snapshot standby database typically diverges from its primary database over time because redo data from the primary database is not applied as it is received. Local updates to the snapshot standby database will cause additional divergence. The data in the primary database is fully protected however, because a snapshot standby can be converted back into a physical standby database at any time, and the redo data received from the primary will then be applied.</p>
+<p class="subhead2"><a id="SBYDB5012"></a>Benefits of a Snapshot Standby Database</p>
+<p>A snapshot standby database is a fully updatable standby database that provides disaster recovery and data protection benefits that are similar to those of a physical standby database. Snapshot standby databases are best used in scenarios where the benefit of having a temporary, updatable snapshot of the primary database justifies the increased time to recover from primary database failures.</p>
+<p>The benefits of using a snapshot standby database include the following:</p>
+<ul>
+<li>
+<p>It provides an exact replica of a production database for development and testing purposes, while maintaining data protection at all times.</p>
+</li>
+<li>
+<p>It can be easily refreshed to contain current production data by converting to a physical standby and resynchronizing.</p>
+</li>
+</ul>
+<p>The ability to create a snapshot standby, test, resynchronize with production, and then again create a snapshot standby and test, is a cycle that can be repeated as often as desired. The same process can be used to easily create and regularly update a snapshot standby for reporting purposes where read/write access to data is required.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i52161"></a>
+<div id="SBYDB00065" class="sect1">
+<h2 class="sect1"><span class="secnum">2.2</span> User Interfaces for Administering Data Guard Configurations</h2>
+<p>You can use the following interfaces to configure, implement, and manage a Data Guard configuration:</p>
+<ul>
+<li>
+<p>Oracle Enterprise Manager</p>
+<p>Enterprise Manager provides a GUI interface for the Data Guard broker that automates many of the tasks involved in creating, configuring, and monitoring a Data Guard environment. See <a class="olink DGBKR" href="../e40771/toc.htm"><span class="italic">Oracle Data Guard Broker</span></a> and the Oracle Enterprise Manager online Help for information about the GUI and its wizards.</p>
+</li>
+<li>
+<p>SQL*Plus Command-line interface</p>
+<p>Several SQL*Plus statements use the <code>STANDBY</code> keyword to specify operations on a standby database. Other SQL statements do not include standby-specific syntax, but they are useful for performing operations on a standby database. See <a href="sql_stmts.htm#i1005572">Chapter 16</a> for a list of the relevant statements.</p>
+</li>
+<li>
+<p>Initialization parameters</p>
+<p>Several initialization parameters are used to define the Data Guard environment. See <a href="init_params.htm#g1005251">Chapter 14</a> for a list of the relevant initialization parameters.</p>
+</li>
+</ul>
+<ul>
+<li>
+<p>Data Guard broker command-line interface (DGMGRL)</p>
+<p>The DGMGRL command-line interface is an alternative to using Oracle Enterprise Manager. The DGMGRL command-line interface is useful if you want to use the broker to manage a Data Guard configuration from batch programs or scripts. See <a class="olink DGBKR" href="../e40771/toc.htm"><span class="italic">Oracle Data Guard Broker</span></a> for complete information.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect1" -->
+<a id="i58150"></a>
+<div id="SBYDB00067" class="sect1">
+<h2 class="sect1"><span class="secnum">2.3</span> Data Guard Operational Prerequisites</h2>
+<p>The following sections describe <a id="sthref181"></a><a id="sthref182"></a>operational requirements for using Data Guard:</p>
+<ul>
+<li>
+<p><a href="#i72053">Hardware and Operating System Requirements</a></p>
+</li>
+<li>
+<p><a href="#i72073">Oracle Software Requirements</a></p>
+</li>
+</ul>
+<a id="i72053"></a>
+<div id="SBYDB4715" class="sect2">
+<h3 class="sect2"><span class="secnum">2.3.1</span> Hardware and Operating System Requirements</h3>
+<p>As of Oracle Database 11<span class="italic">g</span>, Data Guard provides increased flexibility for Data Guard configurations in which the primary and standby systems may have different CPU architectures, operating systems (for example, Windows &amp; Linux), operating system binaries (32-bit/64-bit), or Oracle database binaries (32-bit/64-bit).</p>
+<p>This increased mixed-platform flexibility is subject to the current restrictions documented in the My Oracle Support notes 413484.1 and 1085687.1 at <code><a href="http://support.oracle.com">http://support.oracle.com</a></code>.</p>
+<p>Note 413484.1 discusses mixed-platform support and restrictions for physical standbys.</p>
+<p>Note 1085687.1 discusses mixed-platform support and restrictions for logical standbys.</p>
+<p>The same release of Oracle Database Enterprise Edition must be installed on the primary database and all standby databases, except during rolling database upgrades using logical standby databases.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="rollup.htm#BABGHIGF">Chapter 12, "Using SQL Apply to Upgrade the Oracle Database"</a> for information about rolling database upgrades</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="i72073"></a>
+<div id="SBYDB4716" class="sect2">
+<h3 class="sect2"><span class="secnum">2.3.2</span> Oracle Software Requirements</h3>
+<p>The following list describes <a id="sthref183"></a><a id="sthref184"></a><a id="sthref185"></a><a id="sthref186"></a><a id="sthref187"></a>Oracle software requirements for using Data Guard:</p>
+<ul>
+<li>
+<p>Oracle Data Guard is available only as a feature of Oracle Database Enterprise Edition. It is not available with Oracle Database Standard Edition.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+It is possible to simulate a standby database environment with databases running Oracle Database S<a id="sthref188"></a><a id="sthref189"></a>tandard Edition. You can do this by manually transferring <a id="sthref190"></a><a id="sthref191"></a>archived redo log files using an operating system copy utility or using custom scripts that periodically send archived redo log files from one database to the other. The consequence is that this configuration does not provide the ease-of-use, manageability, performance, and disaster-recovery capabilities available with Data Guard</div>
+</li>
+<li>
+<p>Using Data Guard SQL Apply, you will be able to perform a <a id="sthref192"></a><a id="sthref193"></a>rolling upgrade of the Oracle database software from <a id="sthref194"></a><a id="sthref195"></a><a id="sthref196"></a><a id="sthref197"></a>patch set release <span class="italic">n</span> (minimally, this must be release 10.1.0.3) to any higher versioned patch set or major version release. During a rolling upgrade, you can run different releases of the Oracle database on the primary and l<a id="sthref198"></a><a id="sthref199"></a><a id="sthref200"></a>ogical standby databases while you upgrade them, one at a time. For complete information, see <a href="rollup.htm#BABGHIGF">Chapter 12, "Using SQL Apply to Upgrade the Oracle Database"</a> and the ReadMe file for the applicable Oracle Database 10<span class="italic">g</span> patch set release.</p>
+</li>
+<li>
+<p>The <code>COMPATIBLE</code> database initialization parameter must be set to the same value on all databases in a Data Guard configuration, except when using a logical standby database, which can have a higher <code>COMPATIBLE</code> setting than the primary database.</p>
+</li>
+<li>
+<p>If you are currently running Oracle Data Guard on Oracle8<span class="italic">i</span> database software, see <a class="olink UPGRD" href="../e23633/toc.htm"><span class="italic">Oracle Database Upgrade Guide</span></a> for complete information about upgrading to Oracle Data Guard 11<span class="italic">g</span>.</p>
+</li>
+</ul>
+<ul>
+<li>
+<p>The primary database must run in <a id="sthref201"></a><a id="sthref202"></a><code>ARCHIVELOG</code> mode. See <a class="olink ADMIN008" href="../../server.112/e25494/archredo.htm#ADMIN008"><span class="italic">Oracle Database Administrator's Guide</span></a> for more information.</p>
+</li>
+<li>
+<p>The primary database can be a single instance database or an Oracle Real Application Clusters (Oracle RAC) database. The standby databases can be single instance databases or Oracle RAC databases, and these standby databases can be a mix of physical, logical, and snapshot types. See <a class="olink HAOVW" href="../e17157/toc.htm"><span class="italic">Oracle Database High Availability Overview</span></a> for more information about configuring and using Oracle Data Guard with Oracle RAC.</p>
+</li>
+<li>
+<p>Each primary database and standby database must have its own control file.</p>
+</li>
+<li>
+<p>If a standby database is located on the same system as the primary database, the archival directories for the standby database <span class="italic">must</span> use a different directory structure than the primary database. Otherwise, the standby database may overwrite the primary database files.</p>
+</li>
+<li>
+<p>To protect against unlogged direct writes in the primary database that cannot be propagated to the standby database, turn on <code><a id="sthref203"></a><a id="sthref204"></a>FORCE LOGGING</code> at the primary database before performing datafile backups for standby creation. Keep the database in <code>FORCE LOGGING</code> mode as long as the standby database is required.</p>
+</li>
+<li>
+<p>The user accounts you use to manage the primary and standby database instances must have <code>SYSDBA</code> system privileges.</p>
+</li>
+<li>
+<p>For operational simplicity, Oracle recommends that when you set up Oracle Automatic Storage Management (Oracle ASM) and Oracle Managed Files (OMF) in a Data Guard configuration that you set it up symmetrically on the primary and standby database(s). That is, if any database in the Data Guard configuration uses Oracle ASM, OMF, or both, then every database in the configuration should use Oracle ASM, OMF, or both, respectively, unless you are purposely implementing a mixed configuration for migration or maintenance purposes. See the scenario in <a href="scenarios.htm#i1067236">Section 13.5</a> for more information.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Because some applications that perform updates involving time-based data cannot handle data entered from multiple time zones, consider setting the time zone for the primary and remote standby systems to be the same to ensure the chronological ordering of records is maintained after a role transition.</div>
+</li>
+</ul>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i64471"></a>
+<div id="SBYDB4717" class="sect1">
+<h2 class="sect1"><span class="secnum">2.4</span> Standby Database Directory S<a id="sthref205"></a><a id="sthref206"></a>tructure Considerations</h2>
+<p>The directory structure of the various standby databases is important because it determines the path names for the standby datafiles, archived redo log files, and standby redo log files. If possible, the datafiles, log files, and control files on the primary and standby systems should have the same names and path names and use <a id="sthref207"></a><a id="sthref208"></a>Optimal Flexible Architecture (OFA) naming conventions. The archival directories on the standby database should also be identical between sites, including size and structure. This strategy allows other operations such as backups, switchovers, and failovers to execute the same set of steps, reducing the maintenance complexity.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+Your operating system-specific Oracle documentation for more information about Optimal Flexible Architecture (OFA)</div>
+<p>Otherwise, you must set the filename conversion parameters (as shown in <a href="#g74804">Table 2-1</a>) or rename the datafile. Nevertheless, if you need to use a system with a different directory structure or place the standby and primary databases on the same system, you can do so with a minimum of extra administration.</p>
+<p>The three basic <a id="sthref209"></a><a id="sthref210"></a><a id="sthref211"></a>configuration options are illustrated in <a href="#i57647">Figure 2-1</a>. These include:</p>
+<ul>
+<li>
+<p>A standby database on the same system as the primary database that uses a different directory structure than the primary system. This is illustrated in <a href="#i57647">Figure 2-1</a> as <code>Standby1</code>.</p>
+<p>If you have a standby database on the same system as the primary database, you <span class="italic">must</span> use a different directory structure. Otherwise, the standby database attempts to overwrite the primary database files.</p>
+</li>
+<li>
+<p>A standby database on a separate system that uses the same directory structure as the primary system. This is illustrated in <a href="#i57647">Figure 2-1</a> as <code>Standby2</code>. This is the recommended method.</p>
+</li>
+<li>
+<p>A standby database on a separate system that uses a different directory structure than the primary system. This is illustrated in <a href="#i57647">Figure 2-1</a> as <code>Standby3</code>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If<a id="sthref212"></a><a id="sthref213"></a> <a id="sthref214"></a><a id="sthref215"></a><a id="sthref216"></a><a id="sthref217"></a>any database in the Data Guard configuration uses Oracle ASM, OMF, or both, then every database in the configuration should use Oracle ASM, OMF, or both, respectively. See <a href="scenarios.htm#i1008082">Chapter 13</a> for a scenario describing how to set up OMF in a Data Guard configuration.</div>
+</li>
+</ul>
+<div id="SBYDB5013" class="figure">
+<p class="titleinfigure"><a id="i57647"></a>Figure 2-1 Possible Standby Configurations</p>
+<img width="455" height="611" src="img/sbydb058.gif" alt="Description of Figure 2-1 follows" /><br />
+<a id="sthref218" href="img_text/sbydb058.htm">Description of "Figure 2-1 Possible Standby Configurations"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p><a href="#g74804">Table 2-1</a> describes possible configurations of primary and standby databases and the consequences of each.</p>
+<div id="SBYDB5014" class="tblruleformal">
+<p class="titleintable"><a id="sthref219"></a><a id="g74804"></a>Table 2-1 Standby Dat<a id="sthref220"></a>abase Location and Directory Options</p>
+<table class="cellalignment1823" title="Standby Database Location and Directory Options" summary="Describes the consequences of setting up a Data Guard configuration with the primary and standby databases located on separate systems, or with the primary and standby databases located on the same system." dir="ltr">
+<thead>
+<tr class="cellalignment1814">
+<th class="cellalignment1824" id="r1c1-t8"><a id="i64028"></a>Standby System</th>
+<th class="cellalignment1824" id="r1c2-t8"><a id="i64031"></a>Directory Structure</th>
+<th class="cellalignment1824" id="r1c3-t8">Consequences</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1814">
+<td class="cellalignment1820" id="r2c1-t8" headers="r1c1-t8">
+<p>Same as primary system</p>
+</td>
+<td class="cellalignment1820" headers="r2c1-t8 r1c2-t8">
+<p>Different than primary system (required)</p>
+</td>
+<td class="cellalignment1820" headers="r2c1-t8 r1c3-t8">
+<ul>
+<li>
+<p>You can either manually rename files or set up<a id="sthref221"></a><a id="sthref222"></a> the <code>DB_FILE_NAME_CONVERT</code> and <code>LOG_FILE_NAME_CONVERT</code> initialization parameters on the standby database to automatically update the path names for primary database datafiles and archived redo log files and standby redo log files in the standby database control file. (See <a href="create_ps.htm#i68626">Section 3.1.4</a>.)</p>
+</li>
+<li>
+<p>The standby database does not protect against disasters that destroy the system on which the primary and standby databases reside, but it does provide switchover capabilities for planned maintenance.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="cellalignment1814">
+<td class="cellalignment1820" id="r3c1-t8" headers="r1c1-t8">
+<p>Separate system</p>
+</td>
+<td class="cellalignment1820" headers="r3c1-t8 r1c2-t8">
+<p>Same as primary system</p>
+</td>
+<td class="cellalignment1820" headers="r3c1-t8 r1c3-t8">
+<ul>
+<li>
+<p>You do not need to rename primary database files, archived redo log files, and standby redo log files in the standby database control file, although you can still do so if you want a new naming scheme (for example, to spread the files among different disks).</p>
+</li>
+<li>
+<p>By locating the standby database on separate physical media, you safeguard the data on the primary database against disasters that destroy the primary system.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="cellalignment1814">
+<td class="cellalignment1820" id="r4c1-t8" headers="r1c1-t8">
+<p>Separate system</p>
+</td>
+<td class="cellalignment1820" headers="r4c1-t8 r1c2-t8">
+<p>Different than primary system</p>
+</td>
+<td class="cellalignment1820" headers="r4c1-t8 r1c3-t8">
+<ul>
+<li>
+<p>You can either manually rename files or set up the <code>DB_FILE_NAME_CONVERT</code> and <code>LOG_FILE_NAME_CONVERT</code> initialization parameters on the standby database to automatically rename the datafiles (see <a href="create_ps.htm#i68626">Section 3.1.4</a>).</p>
+</li>
+<li>
+<p>By locating the standby database on separate physical media, you safeguard the data on the primary database against disasters that destroy the primary system.</p>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformal" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1813">
+<tr>
+<td class="cellalignment1820">
+<table class="cellalignment1818">
+<tr>
+<td class="cellalignment1817"><a href="concepts.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1817"><a href="create_ps.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1999, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1822">
+<table class="cellalignment1816">
+<tr>
+<td class="cellalignment1817"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1817"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1817"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1817"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1817"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1817"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

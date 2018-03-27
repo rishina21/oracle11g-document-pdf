@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>DBFS Hierarchical Store</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 737" />
+<meta name="dcterms.created" content="2013-07-18T13:32:41Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database SecureFiles and Large Objects Developer's Guide" />
+<meta name="dcterms.identifier" content="E18294-04" />
+<meta name="dcterms.isVersionOf" content="ADLOB" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1996, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="adlob_sfstore.htm" title="Previous" type="text/html" />
+<link rel="Next" href="adlob_dbstore.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e18294.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">18/37</span> <!-- End Header -->
+<div id="ADLOB006" class="chapter"><a id="g100"></a>
+<h1 class="chapter"><span class="secnum">9</span> DBFS Hierarchical Store</h1>
+<p>This section discusses hierarchical store wallet management, and provides specifics of the <code>RDMS_DBFS_HS</code> PL/SQL package.</p>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#CHDJEJII">Wallet Management</a></p>
+</li>
+<li>
+<p><a href="#CHDJHDHF">Managing Storage with DBMS_DBFS_HS</a></p>
+</li>
+<li>
+<p><a href="#CHDBBJGI">Methods of DBMS_DBFS_HS Package</a></p>
+</li>
+<li>
+<p><a href="#CHDIEECE">User View for DBFS Hierarchical Store</a></p>
+</li>
+<li>
+<p><a href="#CHDEIBEJ">Examples Using DBMS_DBFS_HS</a></p>
+</li>
+</ul>
+<a id="CHDJEJII"></a>
+<div id="ADLOB46075" class="sect1">
+<h2 class="sect1">Wallet Management</h2>
+<p>The command-line utility <code>mkstore</code> creates wallets and adds aliases for the secret store. Use the following commands to create and manage wallets:</p>
+<p>Creating wallet:</p>
+<pre>
+mkstore -wrl <span class="italic">wallet_location</span> -create
+</pre>
+<p>Adding <code>KEY</code> alias. Specify the <code>access_key</code> and <code>secret_key</code> by enclosing it within single quotes.</p>
+<pre>
+mkstore -wrl <span class="italic">wallet_location</span> -createCredential <span class="italic">alias</span> '<span class="italic">access_key</span>' '<span class="italic">secret_key</span>'
+</pre>
+<p>For example:</p>
+<pre>
+mkstore -wrl /home/user1/mywallet -createCredential mykey 'abc' 'xyz'
+</pre>
+<p>Deleting KEY alias:</p>
+<pre>
+mkstore -wrl <span class="italic">wallet_location</span> -deleteCredential <span class="italic">alias</span>
+</pre>
+<p>For example:</p>
+<pre>
+mkstore -wrl /home/user1/mywallet -deleteCredential mykey
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ASOAG160" href="../../network.112/e40393/asowalet.htm#ASOAG160"><span class="italic">Oracle Database Advanced Security Administrator's Guide</span></a> for more about creation and management of wallets</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="CHDJHDHF"></a>
+<div id="ADLOB46068" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Managing Storage with DBMS_DBFS_HS</h2>
+<p>The Oracle Database File System Hierarchical Store package (<code>DBMS_DBFS_HS</code>) is a store provider for <code>DBMS_DBFS_CONTENT</code> that supports hierarchical storage for DBFS content. The DBFS Hierarchical Store (DBFS HS) package stores content in external storage devices like tape or the Amazon S3 web service and associated metadata (or properties) in the database. The DBFS HS may cache frequently accessed content in database table(s) to improve performance.</p>
+<p>The <code>DBMS_DBFS_HS</code> package can be used in conjunction with the <code>DBMS_DBFS_CONTENT</code> package to implement Hierarchical Storage Management for SecureFiles LOBs utilizing DBFS Links. Using the package, less frequently used data is migrated to a cheaper external device like tape, achieving significant reduction in storage costs by using the more expensive database disk only for more frequently accessed data. The <code>DBMS_DBFS_HS</code> package can also be plugged in as a store provider into the <code>DBMS_DBFS_CONTENT</code> package to implement a tape file system, if the associated external storage device is tape, or a cloud file system, if the associated external storage device is the Amazon S3 storage service.</p>
+<p>The <code>DBMS_DBFS_HS</code> package provides you the ability to use tape as a storage tier when doing Information Lifecycle Management (ILM) for database tables or content. The package also supports other forms of storage targets including Web Services like Amazon S3. This service enables users to store data in the database on tape and other forms of storage that were previously not supported by Oracle. The data on tape or Amazon S3 is part of the Oracle Database and can be accessed by all standard APIs, but only through the database.</p>
+<p><code>DBMS_DBFS_HS</code> provides the primitives for an Information Lifecycle Management solution. All the important primitives such as <code>CREATE</code>, <code>PUT</code>, <code>GET</code>, and <code>DELETE</code>, as defined by the <code>DBMS_DBFS_CONTENT_SPI</code> interface are implemented by the <code>DBMS_DBFS_HS</code> package.</p>
+<p><code>DBMS_DBFS_HS</code> implements the methods defined in <code>DBMS_DBFS_CONTENT_SPI</code>. It also has some additional interfaces needed to manage the external storage device and the cache associated with each store.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ARPLS72088" href="../../appdev.112/e40758/d_dbfs_hs.htm#ARPLS72088"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a>, for details of the <code>DBMS_DBFS_HS</code> Package</div>
+<div id="ADLOB46069" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref246"></a>
+<h3 class="sect2">Constants for DBMS_DBFS_HS Package</h3>
+<p>See <a class="olink ARPLS72148" href="../../appdev.112/e40758/d_dbfs_hs.htm#ARPLS72148"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for details of constants used by <code>DBMS_DBFS_HS</code> PL/SQL package</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDBBJGI"></a>
+<div id="ADLOB46070" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Methods of DBMS_DBFS_HS Package</h2>
+<p><a href="#CHDEECJD">Table 9-1</a> summarizes the methods of the <code>DBMS_DBFS_HS</code> PL/SQL package.</p>
+<div id="ADLOB46160" class="tblformal">
+<p class="titleintable"><a id="sthref247"></a><a id="CHDEECJD"></a>Table 9-1 Methods of the DBMS_DBFS_HS Pl/SQL Packages</p>
+<table class="cellalignment905" title="Methods of the DBMS_DBFS_HS Pl/SQL Packages" summary="Methods of the DBMS_DBFS_HS package. Column 1 is the method, and Column 2 is its brief description." dir="ltr">
+<thead>
+<tr class="cellalignment899">
+<th class="cellalignment906" id="r1c1-t4">Method</th>
+<th class="cellalignment906" id="r1c2-t4">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r2c1-t4" headers="r1c1-t4">
+<p><a href="#CHDGIJII">CREATESTORE()</a></p>
+</td>
+<td class="cellalignment907" headers="r2c1-t4 r1c2-t4">
+<p>Creates a DBFS HS store.</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r3c1-t4" headers="r1c1-t4">
+<p><a href="#CHDCDBEF">DROPSTORE()</a></p>
+</td>
+<td class="cellalignment907" headers="r3c1-t4 r1c2-t4">
+<p>Deletes a previously created DBFS HS store.</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r4c1-t4" headers="r1c1-t4">
+<p><a href="#CHDCBEAA">RECONFIGCACHE()</a></p>
+</td>
+<td class="cellalignment907" headers="r4c1-t4 r1c2-t4">
+<p>Reconfigures the parameters of the database cache used by the store.</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r5c1-t4" headers="r1c1-t4">
+<p><a href="#CHDIJGDI">SETSTOREPROPERTY()</a></p>
+</td>
+<td class="cellalignment907" headers="r5c1-t4 r1c2-t4">
+<p>Associates name/value properties with a registered Hierarchical Store.</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r6c1-t4" headers="r1c1-t4">
+<p><a href="#CHDCBFHH">GETSTOREPROPERTY()</a></p>
+</td>
+<td class="cellalignment907" headers="r6c1-t4 r1c2-t4">
+<p>Retrieves the values of a property of a store in the database.</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r7c1-t4" headers="r1c1-t4">
+<p><a href="#CHDHDCII">CREATEBUCKET()</a></p>
+</td>
+<td class="cellalignment907" headers="r7c1-t4 r1c2-t4">
+<p>Creates an AWS bucket, for use with the <code>STORETYPE_AMAZON3</code> store.</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r8c1-t4" headers="r1c1-t4">
+<p><a href="#CHDFHEJJ">STOREPUSH()</a></p>
+</td>
+<td class="cellalignment907" headers="r8c1-t4 r1c2-t4">
+<p>Pushes locally cached data to an archive store.</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r9c1-t4" headers="r1c1-t4">
+<p><a href="#CHDCJBIG">CLEANUPUNUSEDBACKUPFILES()</a></p>
+</td>
+<td class="cellalignment907" headers="r9c1-t4 r1c2-t4">
+<p>Removes files that are created on the external storage device if they have no current content.</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r10c1-t4" headers="r1c1-t4">
+<p><a href="#CHDIBJDE">REGISTERSTORECOMMAND()</a></p>
+</td>
+<td class="cellalignment907" headers="r10c1-t4 r1c2-t4">
+<p>Registers commands (messages) for a store so they are sent to the Media Manager of an external storage device.</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r11c1-t4" headers="r1c1-t4">
+<p><a href="#CHDBHHAJ">DEREGSTORECOMMAND()</a></p>
+</td>
+<td class="cellalignment907" headers="r11c1-t4 r1c2-t4">
+<p>Removes a command (message) that was associated with a store.</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r12c1-t4" headers="r1c1-t4">
+<p><a href="#CHDBDFBJ">SENDCOMMAND()</a></p>
+</td>
+<td class="cellalignment907" headers="r12c1-t4 r1c2-t4">
+<p>Sends a command (message) to the Media Manager of an external storage device.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<a id="CHDGIJII"></a>
+<div id="ADLOB46071" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">CREATESTORE()</h3>
+<p>This method enables users to create a new DBFS HS store named <code>store_name</code> of type <code>store_type</code> (<code>STORETYPE_TAPE</code> or <code>STORETYPE_AMAZONS3</code>) in schema <code>schema_name</code> (defaulting to the current schema) under the ownership of invoking session <code>user.tbl_name</code> in tablespace <code>tbs_space</code> that holds store entries in the <code>database.cache_size</code> amount of space to be used to cache the content.</p>
+<p>Store names must be unique for an owner. But the same store names can be used for different stores owned by different owners.</p>
+<p>Currently <code>CREATESTORE()</code> sets certain properties of the store to default values. The user can use the methods <code>SETSTOREPROPERTY()</code> and <code>RECONFIGCACHE()</code> to appropriately change the property values and to set other properties of the store.</p>
+<p>See <a class="olink ARPLS72159" href="../../appdev.112/e40758/d_dbfs_hs.htm#ARPLS72159"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDCDBEF"></a>
+<div id="ADLOB46072" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">DROPSTORE()</h3>
+<p>This method deletes a previously created DBFS HS store with the name <code>store_name</code> and owned by the invoking <code>session_user</code>.</p>
+<p>This method unregisters the store from the DBFS Content API, the <code>DBMS_DBFS_CONTENT</code> package. All files in the given store are deleted from the store (tape or Amazon S3 web service). The database table holding the store's entries in the database is also dropped by this method.</p>
+<p>This method executes like a DDL (auto-commit before and after its execution).</p>
+<p>See <a class="olink ARPLS72163" href="../../appdev.112/e40758/d_dbfs_hs.htm#ARPLS72163"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDCBEAA"></a>
+<div id="ADLOB46073" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">RECONFIGCACHE()</h3>
+<p>This procedure reconfigures the parameters of the database cache being used by the store.</p>
+<p>The Hierarchical Store uses a level 1 cache and a level 2 cache. The level 1 cache subsumes most of the working set and the level 2 cache is used to perform bulk writes to the backend device.</p>
+<p>The <code>DBMS_DBFS_HS</code> package optimistically tries to allocate more than one tarball's worth of size for level 2 cache to facilitate concurrency, though a minimum of one tarball size is necessary for level 2 cache.</p>
+<p>The values for cumulative cache size and LOB cache quota determine allocation of space for the two caches. If values are not provided, a user might see an <code>INSUFFICIENT CACHE</code> exception. In that case, it is better to revise the cache parameters in order to have a working store.</p>
+<p>If this subprogram successfully executes, its actions cannot be rolled back by the user. In that case, the user must call <code>RECONFIGCACHE</code> again with new or modified parameters.</p>
+<p>See <a class="olink ARPLS72167" href="../../appdev.112/e40758/d_dbfs_hs.htm#ARPLS72167"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDIJGDI"></a>
+<div id="ADLOB46074" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">SETSTOREPROPERTY()</h3>
+<p>This method associates properties with a store registered with the Hierarchical Store. Each property is a name value pair.</p>
+<p>See <a class="olink ARPLS72173" href="../../appdev.112/e40758/d_dbfs_hs.htm#ARPLS72173"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information about this method, and <a class="olink ARPLS72150" href="../../appdev.112/e40758/d_dbfs_hs.htm#ARPLS72150"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for details of the <code>DBMS_DBFS_HS</code> constants used by this method.</p>
+<p>Note that the DBFS hierarchical store has the ability to store its files in compressed form. Compression can be enabled by means of the property <code>PROPNAME_COMPRESSLVL</code>. This property specifies the compression level to be used in compressing the files. It can be one of the following four allowed values: <code>PROPVAL_COMPLVL_NONE</code> indicaes no compression, <code>PROPVAL_COMPLVL_LOW</code> indicates <code>LOW</code> compression, <code>PROPVAL_COMPLVL_MEDIUM</code> indicates <code>MEDIUM</code> compression, and <code>PROPVAL_COMPLVL_HIGH</code> indicates <code>HIGH</code> compression.</p>
+<p>In general, the compression level <code>LOW</code> is expected to have the best performance while still providing a good compression ratio. Compression level <code>MEDIUM</code> and compression level <code>HIGH</code> are expected to provide a significantly better compression ratio but compression time can be correspondingly longer. It is recommended to use <code>NONE</code> or <code>LOW</code> when write performance is critical such as when files in the DBFS HS store are updated frequently. If space is critical and the best possible compression ratio is desired, <code>MEDIUM</code> or <code>HIGH</code> should be used.</p>
+<p>Note that files are compressed as they are paged out of the cache into the staging area (before they are subsequently pushed into the back end tape/ S3 storage). Therefore, compression also benefits by storing smaller files in the staging area and thereby effectively increasing the total available capacity of the staging area.</p>
+<p>Regarding <code>PROPNAME_ENABLECLEANUPONDELETE</code> behavior, a job is created for each store by the <code>DBMS_DBFS_HS</code> to remove the unused files from the external storage. By default, the job is enabled for <code>STORETYPE_AMAZONS3</code> and is disabled for <code>STORETYPE_TAPE</code>. If the <code>ENABLECLEANUPONDELETE</code> property is set to <code>TRUE</code>, the job is enabled; if the property is set to <code>FALSE</code>, the job is disabled. If enabled, the job runs at an interval of one hour by default. The <code>DBMS_SCHEDULER</code> package can be used to modify the schedule. The name of the job can be obtained by querying <code>USER_DBFS_HS_FIXED_PROPERTIES</code> for <code>prop_name</code> <code>=</code> <code>'DELJOB_NAME</code>'.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDCBFHH"></a>
+<div id="ADLOB46076" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">GETSTOREPROPERTY()</h3>
+<p>This method retrieves the values of a property, identified by <code>PropertyName</code>, of a store in the database.</p>
+<p>See <a class="olink ARPLS72165" href="../../appdev.112/e40758/d_dbfs_hs.htm#ARPLS72165"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDHDCII"></a>
+<div id="ADLOB46077" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">CREATEBUCKET()</h3>
+<p>The S3 bucket, associated with a store of type <code>STORETYPE_AMAZONS3</code>, must exist when the DBFS HS tries to move content into that bucket.</p>
+<p>One way of creating the S3 bucket is to use the <code>DBMS_DBFS_HS.CREATEBUCKET</code> method. The <code>PROPNAME_BUCKET</code> property of the store must be set before this method is called.</p>
+<p>See <a class="olink ARPLS72157" href="../../appdev.112/e40758/d_dbfs_hs.htm#ARPLS72157"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDFHEJJ"></a>
+<div id="ADLOB46078" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">STOREPUSH()</h3>
+<p>This pushes locally cached data to the archive store identified by <code>storename</code>.</p>
+<p>See <a class="olink ARPLS72169" href="../../appdev.112/e40758/d_dbfs_hs.htm#ARPLS72169"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDCJBIG"></a>
+<div id="ADLOB46079" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">CLEANUPUNUSEDBACKUPFILES()</h3>
+<p>This method removes files created on the external storage device that have no currently used data (content) in them. This method can be executed periodically (perhaps once a week) to clear space on the external storage device. Asynchronously deleting content from the external storage device is useful because it has minimal impact on OLTP performance. Periodic scheduling can be implemented using the <code>DBMS_SCHEDULER</code> package.</p>
+<p>See <a class="olink ARPLS72155" href="../../appdev.112/e40758/d_dbfs_hs.htm#ARPLS72155"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDIBJDE"></a>
+<div id="ADLOB46080" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">REGISTERSTORECOMMAND()</h3>
+<p>A client uses this method to register commands (messages) for a store with the DBFS HS to be sent to the Media Manager for the external storage device associated with the store. These commands are sent before the next read or write of content. When the DBFS HS wants to push or get data to or from the storage device, it begins an API session to talk to the device. After beginning the session, it sends all registered commands, for that particular device, to the device before writing or getting any data.</p>
+<p>See <a class="olink ARPLS72177" href="../../appdev.112/e40758/d_dbfs_hs.htm#ARPLS72177"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDBHHAJ"></a>
+<div id="ADLOB46081" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">DEREGSTORECOMMAND()</h3>
+<p>This method removes a command (message) that had been previously associated with a store through the <code>REGISTERSTORECOMMAND</code>.</p>
+<p>See <a class="olink ARPLS72161" href="../../appdev.112/e40758/d_dbfs_hs.htm#ARPLS72161"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDBDFBJ"></a>
+<div id="ADLOB46082" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">SENDCOMMAND()</h3>
+<p>This sends a command (message) to be executed on the Media Manager of the external storage device.</p>
+<p>See <a class="olink ARPLS72171" href="../../appdev.112/e40758/d_dbfs_hs.htm#ARPLS72171"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDIEECE"></a>
+<div id="ADLOB46088" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">User View for DBFS Hierarchical Store</h2>
+<p>This view for DBFS Hierarchical Store is available:</p>
+<div id="ADLOB46093" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref248"></a>
+<h3 class="sect2">USER_DBFS_HS_FILES</h3>
+<p>This view shows the files archived by this user, and their location on the back end device.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink REFRN26780" href="../../server.112/e40402/statviews_5281.htm#REFRN26780"><span class="italic">Oracle Database Reference</span></a>, USER_DBFS_HS_FILES view</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDEIBEJ"></a>
+<div id="ADLOB46094" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Examples Using DBMS_DBFS_HS</h2>
+<p>For you to be able to use package <code>DBMS_DBFS_HS</code>, you must be granted <code>dbfs_role</code> by the DBA.</p>
+<div id="ADLOB46095" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref249"></a>
+<h3 class="sect2">Setting up the Store</h3>
+<p class="subhead2"><a id="ADLOB46161"></a>To set up the store:</p>
+<ol>
+<li>
+<p>Call <code>createStore</code>.</p>
+<pre>
+DBMS_DBFS_HS.createStore( store_name, store_type, tbl_name, tbs_name, cache_size, lob_cache_quota, optimal_tarball_size, schema_name);
+</pre></li>
+<li>
+<p>Set mandatory and optional properties using the following interface:</p>
+<pre>
+DBMS_DBFS_HS.setStoreProperty(StoreName, PropertyName, PropertyValue);
+</pre>
+<p>For <code>store_type</code> = <code>STORETYPE_TAPE</code>, mandatory properties are:</p>
+<pre>
+PROPNAME_DEVICELIBRARY, PROPNAME_MEDIAPOOL, PROPNAME_CACHESIZE.
+ 
+PROPNAME_CACHESIZE is already set by createStore. 
+</pre>
+<p>You can change the value of <code>PROPNAME_CACHESIZE</code> using <code>setStoreProperty</code>.</p>
+<p>Optional properties are:</p>
+<pre>
+PROPNAME_OPTTARBALLSIZE, PROPNAME_READCHUNKSIZE, PROPNAME_WRITECHUNKSIZE, PROPNAME_STREAMABLE.
+</pre>
+<p>For <code>store_type</code> = <code>STORETYPE_AMAZONS3</code> mandatory properties are:</p>
+<pre>
+PROPNAME_DEVICELIBRARY, PROPNAME_CACHESIZE, PROPNAME_S3HOST,PROPNAME_BUCKET, PROPNAME_LICENSEID, PROPNAME_WALLET.
+</pre>
+<p><code>PROPNAME_CACHESIZE</code> is set by <code>createStore</code>. You can change the value of <code>PROPNAME_CACHESIZE</code> using <code>setStoreProperty</code>.</p>
+<p>Optional properties are:</p>
+<pre>
+PROPNAME_OPTTARBALLSIZE, PROPNAME_READCHUNKSIZE, PROPNAME_WRITECHUNKSIZE, PROPNAME_STREAMABLE, PROPNAME_HTTPPROXY.
+</pre></li>
+<li>
+<p>Register the store with DBFS Content API using:</p>
+<pre>
+DBMS_DBFS_CONTENT.registerStore(store_name, provider_name, provider_package);
+</pre></li>
+<li>
+<p>Mount the stores for access using:</p>
+<pre>
+DBMS_DBFS_CONTENT.mountStore(store_name, store_mount, singleton,principal,   owner, acl, asof, read_only);
+</pre></li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<div id="ADLOB46096" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref250"></a>
+<h3 class="sect2">Using the Hierarchical Store</h3>
+<p>The Hierarchical Store can be used as an independent file system or as an archive solution for SecureFiles LOBs.</p>
+<div id="ADLOB46097" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref251"></a>
+<h4 class="sect3">Using Hierarchical Store as a File System</h4>
+<p>Use the <code>DBMS_DBFS_CONTENT</code> package to create, update, read, and delete file system entries in the store.</p>
+<p>Refer to the documentation of <code>DBMS_DBFS_CONTENT</code> for details.</p>
+</div>
+<!-- class="sect3" -->
+<div id="ADLOB46098" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref252"></a>
+<h4 class="sect3">Using Hierarchical Store as an Archive Solution For SecureFiles LOBs</h4>
+<p>Use the <code>DBMS_LOB</code> package to archive SecureFiles LOBs in Tape or S3 store.</p>
+<p>Refer to the documentation of <code>DBMS_LOB</code> for details.</p>
+<p>To free space in the cache or to force cache resident contents to be written to external storage device, call:</p>
+<pre>
+DBMS_DBFS_HS.storePush(store_name);
+</pre></div>
+<!-- class="sect3" -->
+<div id="ADLOB46099" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref253"></a>
+<h4 class="sect3">Dropping a Hierarchical Store</h4>
+<p>Call:</p>
+<pre>
+DBMS_DBFS_HS.dropStore(store_name, opt_flags);
+</pre></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<div id="ADLOB46100" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref254"></a>
+<h3 class="sect2">Example: Using Amazon S3</h3>
+<p>The following example program configures and uses an Amazon S3 store.</p>
+<p>Valid values must be substituted in some places, indicated by &lt;...&gt;, for the program to run successfully.</p>
+<p>Please refer to <code>DBMS_DBFS_HS</code> documentation for complete details about the methods and their parameters.</p>
+<pre>
+Rem Example to configure and use an Amazon S3 store.
+Rem
+Rem hsuser should be a valid database user who has been granted
+Rem the role dbfs_role.
+ 
+connect hsuser/hsuser 
+ 
+Rem The following block sets up a STORETYPE_AMAZONS3 store with
+Rem DBMS_DBFS_HS acting as the store provider.
+ 
+declare 
+storename varchar2(32) ; 
+tblname varchar2(30) ; 
+tbsname varchar2(30) ; 
+lob_cache_quota number := 0.8 ; 
+cachesz number ; 
+ots number ; 
+begin 
+cachesz := 50 * 1048576 ; 
+ots := 1048576 ; 
+storename := 's3store10' ; 
+tblname := 's3tbl10' ; 
+tbsname := '&lt;TBS_3&gt;' ; -- Substitute a valid tablespace name
+ 
+-- Create the store.
+-- Here tbsname is the tablespace used for the store,
+-- tblname is the table holding all the store entities,
+-- cachesz is the space used by the store to cache content
+--   in the tablespace,
+-- lob_cache_quota is the fraction of cachesz allocated
+--   to level-1 cache and
+-- ots is minimum amount of content that is accumulated
+--   in level-2 cache before being stored in AmazonS3
+dbms_dbfs_hs.createStore(
+  storename,  
+  dbms_dbfs_hs.STORETYPE_AMAZONS3,
+  tblname, tbsname, cachesz,
+  lob_cache_quota, ots) ; 
+ 
+dbms_dbfs_hs.setstoreproperty(storename,
+  dbms_dbfs_hs.PROPNAME_SBTLIBRARY,
+  '&lt;ORACLE_HOME/work/libosbws11.so&gt;');
+  -- Substitute your ORACLE_HOME path
+ 
+dbms_dbfs_hs.setstoreproperty(
+  storename,
+  dbms_dbfs_hs.PROPNAME_S3HOST,
+  's3.amazonaws.com') ; 
+ 
+dbms_dbfs_hs.setstoreproperty(
+  storename,
+  dbms_dbfs_hs.PROPNAME_BUCKET,
+  'oras3bucket10') ; 
+ 
+dbms_dbfs_hs.setstoreproperty(
+  storename,
+  dbms_dbfs_hs.PROPNAME_WALLET,
+  'LOCATION=file:&lt;ORACLE_HOME&gt;/work/wlt CREDENTIAL_ALIAS=a_key') ;
+  -- Substitute your ORACLE_HOME path
+ 
+dbms_dbfs_hs.setstoreproperty(
+  storename,
+  dbms_dbfs_hs.PROPNAME_LICENSEID,
+  '&lt;xxxxxxxxxxxxxxxx&gt;') ; -- Substitute a valid SBT license id
+ 
+dbms_dbfs_hs.setstoreproperty(
+  storename,
+  dbms_dbfs_hs.PROPNAME_HTTPPROXY,
+  '&lt;http://www-proxy.mycompany.com:80/&gt;') ;
+  -- Substitute valid value. If a proxy is not used,
+  -- then this property need not be set.
+ 
+dbms_dbfs_hs.setstoreproperty(
+  storename,
+  dbms_dbfs_hs.PROPNAME_COMPRESSLEVEL,
+  'NONE') ; 
+ 
+dbms_dbfs_hs.createbucket(storename) ; 
+ 
+-- Please refer to DBMS_DBFS_CONTENT documentation
+-- for details about this method
+dbms_dbfs_content.registerstore(
+  storename,
+  's3prvder10',
+  'dbms_dbfs_hs') ; 
+ 
+-- Please refer to DBMS_DBFS_CONTENT documentation
+-- for details about this method
+dbms_dbfs_content.mountstore(
+  storename,
+  's3mnt10') ; 
+end ; 
+/ 
+ 
+Rem The following code block does file operations
+Rem using DBMS_DBFS_CONTENT on the store configured
+Rem in the previous code block
+ 
+connect hsuser/hsuser 
+ 
+declare 
+path varchar2(256) ; 
+path_pre varchar2(256) ; 
+mount_point varchar2(32) ; 
+store_name varchar2(32) ; 
+prop1 dbms_dbfs_content_properties_t ; 
+prop2 dbms_dbfs_content_properties_t ; 
+mycontent blob := empty_blob() ; 
+buffer varchar2(1050) ; 
+rawbuf raw(1050) ; 
+outcontent blob := empty_blob() ; 
+itemtype integer ; 
+pflag integer ; 
+filecnt integer ; 
+iter integer ; 
+offset integer ; 
+rawlen integer ; 
+begin 
+ 
+  mount_point := '/s3mnt10' ; 
+  store_name := 's3store10' ; 
+  path_pre := mount_point ||'/file' ; 
+ 
+  -- We create 10 empty files in the following loop
+  filecnt := 0 ; 
+  loop 
+    exit when filecnt = 10 ; 
+    path := path_pre || to_char(filecnt) ; 
+    mycontent := empty_blob() ; 
+    prop1 := null ; 
+ 
+    -- Please refer to DBMS_DBFS_CONTENT documentation
+    -- for details about this method
+    dbms_dbfs_content.createFile(
+      path, prop1, mycontent) ; -- Create the file
+ 
+    commit ; 
+    filecnt := filecnt + 1 ; 
+  end loop ; 
+ 
+  -- We populate the newly created files with content
+  -- in the following loop
+  pflag := dbms_dbfs_content.prop_data +
+           dbms_dbfs_content.prop_std  +
+           dbms_dbfs_content.prop_opt  ; 
+ 
+  buffer := 'Oracle provides an integrated management '  ||
+            'solution for managing Oracle database with '||
+            'a unique top-down application management '  ||
+            'approach. With new self-managing '          ||
+            'capabilities, Oracle eliminates time-'      ||
+            'consuming, error-prone administrative '     ||
+            'tasks, so database administrators can '     ||
+            'focus on strategic business objectives '    ||
+            'instead of performance and availability '   ||
+            'fire drills. Oracle Management Packs for '  ||
+            'Database provide signifiCant cost and time-'||
+            'saving capabilities for managing Oracle '   ||
+            'Databases. Independent studies demonstrate '||
+            'that Oracle Database is 40 percent easier ' ||
+            'to manage over DB2 and 38 percent over '    ||
+            'SQL Server.'; 
+ 
+  rawbuf := utl_raw.cast_to_raw(buffer) ; 
+  rawlen := utl_raw.length(rawbuf) ; 
+  offset := 1 ; 
+  filecnt := 0 ; 
+  loop 
+    exit when filecnt = 10 ; 
+    path := path_pre || to_char(filecnt) ; 
+    prop1 := null;
+  
+    -- Append buffer to file
+    -- Please refer to DBMS_DBFS_CONTENT documentation
+    -- for details about this method
+    dbms_dbfs_content.putpath(
+      path, prop1, rawlen,
+      offset, rawbuf) ;
+ 
+    commit ; 
+    filecnt := filecnt + 1 ; 
+  end loop ; 
+ 
+  -- Clear out level 1 cache
+  dbms_dbfs_hs.flushCache(store_name) ; 
+  commit ; 
+ 
+  -- Do write operation on even-numbered files.
+  -- Do read operation on odd-numbered files.
+  filecnt := 0 ; 
+  loop 
+    exit when filecnt = 10; 
+    path := path_pre || to_char(filecnt) ; 
+    if mod(filecnt, 2) = 0 then 
+      -- Get writable file
+      -- Please refer to DBMS_DBFS_CONTENT documentation
+      -- for details about this method
+      dbms_dbfs_content.getPath(
+        path, prop2, outcontent, itemtype,
+        pflag, null, true) ;
+  
+      buffer := 'Agile businesses want to be able to '    ||
+                'quickly adopt new technologies, whether '||
+                'operating systems, servers, or '         ||
+                'software, to help them stay ahead of '   ||
+                'the competition. However, change often ' ||
+                'introduces a period of instability into '||
+                'mission-critical IT systems. Oracle '    ||
+                'Real Application Testing-with Oracle '   ||
+                'Database 11g Enterprise Edition-allows ' ||
+                'businesses to quickly adopt new '        ||
+                'technologies while eliminating the '     ||
+                'risks associated with change. Oracle '   ||
+                'Real Application Testing combines a '    ||
+                'workload capture and replay feature '    ||
+                'with an SQL performance analyzer to '    ||
+                'help you test changes against real-life '||
+                'workloads, and then helps you fine-tune '||
+                'the changes before putting them into'    ||
+                'production. Oracle Real Application '    ||
+                'Testing supports older versions of '     ||
+                'Oracle Database, so customers running '  ||
+                'Oracle Database 9i and Oracle Database ' ||
+                '10g can use it to accelerate their '     ||
+                'database upgrades. '; 
+ 
+      rawbuf := utl_raw.cast_to_raw(buffer) ; 
+      rawlen := utl_raw.length(rawbuf) ; 
+ 
+      -- Modify file content
+      -- Please refer to DBMS_DBFS_CONTENT documentation
+      -- for details about this method
+      dbms_lob.write(outcontent, rawlen, 10, rawbuf);
+      commit ; 
+    else 
+      -- Read the file
+      -- Please refer to DBMS_DBFS_CONTENT documentation
+      -- for details about this method
+      dbms_dbfs_content.getPath(
+        path, prop2, outcontent, itemtype, pflag) ;
+    end if ; 
+    filecnt := filecnt + 1 ; 
+  end loop ; 
+ 
+  -- Delete the first 2 files
+  filecnt := 0; 
+ 
+  loop 
+    exit when filecnt = 2 ; 
+    path := path_pre || to_char(filecnt) ; 
+    -- Delete file
+    -- Please refer to DBMS_DBFS_CONTENT documentation
+    -- for details about this method
+    dbms_dbfs_content.deleteFile(path) ;
+    commit ; 
+    filecnt := filecnt + 1 ; 
+  end loop ; 
+ 
+ 
+  -- Move content staged in database to Amazon S3 store
+  dbms_dbfs_hs.storePush(store_name) ; 
+  commit ; 
+ 
+end ; 
+/
+</pre></div>
+<!-- class="sect2" -->
+<div id="ADLOB46101" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref255"></a>
+<h3 class="sect2">Example: Using Tape</h3>
+<p>The following example program configures and uses a tape store.</p>
+<p>Valid values must be substituted in some places, indicated by &lt;...&gt;, for the program to run successfully.</p>
+<p>Please refer to the <code>DBMS_DBFS_HS</code> documentation for complete details about the methods and their parameters.</p>
+<pre>
+Rem Example to configure and use a Tape store.
+Rem
+Rem hsuser should be a valid database user who has been granted
+Rem the role dbfs_role.
+ 
+connect hsuser/hsuser 
+ 
+Rem The following block sets up a STORETYPE_TAPE store with
+Rem DBMS_DBFS_HS acting as the store provider.
+ 
+declare 
+storename varchar2(32) ; 
+tblname varchar2(30) ; 
+tbsname varchar2(30) ; 
+lob_cache_quota number := 0.8 ; 
+cachesz number ; 
+ots number ; 
+begin 
+cachesz := 50 * 1048576 ; 
+ots := 1048576 ; 
+storename := 'tapestore10' ; 
+tblname := 'tapetbl10' ; 
+tbsname := '&lt;TBS_3&gt;' ; -- Substitute a valid tablespace name
+ 
+-- Create the store.
+-- Here tbsname is the tablespace used for the store,
+-- tblname is the table holding all the store entities,
+-- cachesz is the space used by the store to cache content
+--   in the tablespace,
+-- lob_cache_quota is the fraction of cachesz allocated
+--   to level-1 cache and
+-- ots is minimum amount of content that is accumulated
+--   in level-2 cache before being stored in AmazonS3
+dbms_dbfs_hs.createStore(
+  storename,
+  dbms_dbfs_hs.STORETYPE_TAPE,
+  tblname, tbsname, cachesz,
+  lob_cache_quota, ots) ; 
+ 
+dbms_dbfs_hs.setstoreproperty(
+  storename,
+  dbms_dbfs_hs.PROPNAME_SBTLIBRARY,
+  '&lt;ORACLE_HOME/work/libobkuniq.so&gt;') ;
+  -- Substitute your ORACLE_HOME path
+ 
+dbms_dbfs_hs.setstoreproperty(
+  storename,
+  dbms_dbfs_hs.PROPNAME_MEDIAPOOL,
+  '&lt;0&gt;') ;  -- Substitute valid value
+ 
+dbms_dbfs_hs.setstoreproperty(
+  storename,
+  dbms_dbfs_hs.PROPNAME_COMPRESSLEVEL,
+  'NONE') ; 
+ 
+-- Please refer to DBMS_DBFS_CONTENT documentation
+-- for details about this method
+dbms_dbfs_content.registerstore(
+  storename,
+  'tapeprvder10',
+  'dbms_dbfs_hs') ; 
+ 
+-- Please refer to DBMS_DBFS_CONTENT documentation
+-- for details about this method
+dbms_dbfs_content.mountstore(storename, 'tapemnt10') ; 
+end ; 
+/ 
+ 
+Rem The following code block does file operations
+Rem using DBMS_DBFS_CONTENT on the store configured
+Rem in the previous code block
+ 
+connect hsuser/hsuser 
+ 
+declare 
+  path varchar2(256) ; 
+  path_pre varchar2(256) ; 
+  mount_point varchar2(32) ; 
+  store_name varchar2(32) ; 
+  prop1 dbms_dbfs_content_properties_t ; 
+  prop2 dbms_dbfs_content_properties_t ; 
+  mycontent blob := empty_blob() ; 
+  buffer varchar2(1050) ; 
+  rawbuf raw(1050) ; 
+  outcontent blob := empty_blob() ; 
+  itemtype integer ; 
+  pflag integer ; 
+  filecnt integer ; 
+  iter integer ; 
+  offset integer ; 
+  rawlen integer ; 
+begin 
+ 
+  mount_point := '/tapemnt10' ; 
+  store_name := 'tapestore10' ; 
+  path_pre := mount_point ||'/file' ; 
+ 
+ 
+-- We create 10 empty files in the following loop
+  filecnt := 0 ; 
+  loop 
+    exit when filecnt = 10 ; 
+    path := path_pre || to_char(filecnt) ; 
+    mycontent := empty_blob() ; 
+    prop1 := null ; 
+ 
+    -- Please refer to DBMS_DBFS_CONTENT documentation
+    -- for details about this method
+    dbms_dbfs_content.createFile(
+      path, prop1, mycontent) ; -- Create the file
+ 
+    commit ; 
+    filecnt := filecnt + 1 ; 
+  end loop ; 
+ 
+  -- We populate the newly created files with content
+  -- in the following loop
+  pflag := dbms_dbfs_content.prop_data +
+           dbms_dbfs_content.prop_std  +
+           dbms_dbfs_content.prop_opt  ; 
+ 
+  buffer := 'Oracle provides an integrated management '  ||
+            'solution for managing Oracle database with '||
+            'a unique top-down application management '  ||
+            'approach. With new self-managing '          ||
+            'capabilities, Oracle eliminates time-'      ||
+            'consuming, error-prone administrative '     ||
+            'tasks, so database administrators can '     ||
+            'focus on strategic business objectives '    ||
+            'instead of performance and availability '   ||
+            'fire drills. Oracle Management Packs for '  ||
+            'Database provide signifiCant cost and time-'||
+            'saving capabilities for managing Oracle '   ||
+            'Databases. Independent studies demonstrate '||
+            'that Oracle Database is 40 percent easier ' ||
+            'to manage over DB2 and 38 percent over '    ||
+            'SQL Server.'; 
+ 
+  rawbuf := utl_raw.cast_to_raw(buffer) ; 
+  rawlen := utl_raw.length(rawbuf) ; 
+  offset := 1 ; 
+  filecnt := 0 ; 
+  loop 
+    exit when filecnt = 10 ; 
+    path := path_pre || to_char(filecnt) ; 
+    prop1 := null;
+  
+    -- Append buffer to file
+    -- Please refer to DBMS_DBFS_CONTENT documentation
+    -- for details about this method
+    dbms_dbfs_content.putpath(
+      path, prop1, rawlen,
+      offset, rawbuf) ;
+ 
+    commit ; 
+    filecnt := filecnt + 1 ; 
+  end loop ; 
+ 
+  -- Clear out level 1 cache
+  dbms_dbfs_hs.flushCache(store_name) ; 
+  commit ; 
+ 
+  -- Do write operation on even-numbered files.
+  -- Do read operation on odd-numbered files.
+  filecnt := 0 ; 
+  loop 
+    exit when filecnt = 10; 
+    path := path_pre || to_char(filecnt) ; 
+    if mod(filecnt, 2) = 0 then 
+      -- Get writable file
+      -- Please refer to DBMS_DBFS_CONTENT documentation
+      -- for details about this method
+      dbms_dbfs_content.getPath(
+        path, prop2, outcontent, itemtype,
+        pflag, null, true) ;
+  
+      buffer := 'Agile businesses want to be able to '    ||
+                'quickly adopt new technologies, whether '||
+                'operating systems, servers, or '         ||
+                'software, to help them stay ahead of '   ||
+                'the competition. However, change often ' ||
+                'introduces a period of instability into '||
+                'mission-critical IT systems. Oracle '    ||
+                'Real Application Testing-with Oracle '   ||
+                'Database 11g Enterprise Edition-allows ' ||
+                'businesses to quickly adopt new '        ||
+                'technologies while eliminating the '     ||
+                'risks associated with change. Oracle '   ||
+                'Real Application Testing combines a '    ||
+                'workload capture and replay feature '    ||
+                'with an SQL performance analyzer to '    ||
+                'help you test changes against real-life '||
+                'workloads, and then helps you fine-tune '||
+                'the changes before putting them into'    ||
+                'production. Oracle Real Application '    ||
+                'Testing supports older versions of '     ||
+                'Oracle Database, so customers running '  ||
+                'Oracle Database 9i and Oracle Database ' ||
+                '10g can use it to accelerate their '     ||
+                'database upgrades. '; 
+ 
+      rawbuf := utl_raw.cast_to_raw(buffer) ; 
+      rawlen := utl_raw.length(rawbuf) ; 
+ 
+      -- Modify file content
+      -- Please refer to DBMS_DBFS_CONTENT documentation
+      -- for details about this method
+      dbms_lob.write(outcontent, rawlen, 10, rawbuf);
+      commit ; 
+    else 
+      -- Read the file
+      -- Please refer to DBMS_DBFS_CONTENT documentation
+      -- for details about this method
+      dbms_dbfs_content.getPath(
+        path, prop2, outcontent, itemtype, pflag) ;
+    end if ; 
+    filecnt := filecnt + 1 ; 
+  end loop ; 
+ 
+  -- Delete the first 2 files
+  filecnt := 0; 
+ 
+  loop 
+    exit when filecnt = 2 ; 
+    path := path_pre || to_char(filecnt) ; 
+    -- Delete file
+    -- Please refer to DBMS_DBFS_CONTENT documentation
+    -- for details about this method
+    dbms_dbfs_content.deleteFile(path) ;
+    commit ; 
+    filecnt := filecnt + 1 ; 
+  end loop ; 
+ 
+ 
+  -- Move content staged in database to Amazon S3 store
+  dbms_dbfs_hs.storePush(store_name) ; 
+  commit ; 
+ 
+end ; 
+/
+</pre></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment898">
+<tr>
+<td class="cellalignment907">
+<table class="cellalignment903">
+<tr>
+<td class="cellalignment902"><a href="adlob_sfstore.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment902"><a href="adlob_dbstore.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1996, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment909">
+<table class="cellalignment901">
+<tr>
+<td class="cellalignment902"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment902"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment902"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment902"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment902"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment902"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Monitoring for High Availability</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1022" />
+<meta name="dcterms.created" content="2014-06-05T10:53:59Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database High Availability Best Practices" />
+<meta name="dcterms.identifier" content="E10803-06" />
+<meta name="dcterms.isVersionOf" content="HABPT" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2005, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="config_fcf.htm" title="Previous" type="text/html" />
+<link rel="Next" href="outage.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10803.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">17/21</span> <!-- End Header -->
+<div id="HABPT003" class="chapter"><a id="g1011041"></a>
+<h1 class="chapter"><span class="secnum">12</span> Monitoring for High Availability</h1>
+<p>This chapter provides best practices for monitoring your system using Enterprise Manager and to monitor and maintain a highly available environment across all tiers of the application stack.</p>
+<p>This chapter contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#CFABGBFA">Overview of Monitoring and Detection for High Availability</a></p>
+</li>
+<li>
+<p><a href="#CFAECIDG">Using Enterprise Manager for System Monitoring</a></p>
+</li>
+<li>
+<p><a href="#i1007185">Managing the High Availability Environment with Enterprise Manager</a></p>
+</li>
+<li>
+<p><a href="#CHDIJBCC">Using Cluster Health Monitor</a></p>
+</li>
+</ul>
+<a id="CFABGBFA"></a>
+<div id="HABPT4974" class="sect1">
+<h2 class="sect1"><span class="secnum">12.1</span> Overview of Monitoring and Detection for High Availability</h2>
+<p>Continuous monitoring of the system, network, database operations, application, and other system components ensures early detection of problems. Early detection improves the user's system experience because problems can be avoided or resolved faster. In addition, monitoring captures system metrics to indicate trends in system performance, growth, and recurring problems. This information can facilitate prevention, enforce security policies, and manage job processing. For the database server, a sound monitoring system must measure availability and detect events that can cause the database server to become unavailable, and provide immediate notification about critical failures to responsible parties.</p>
+<p>The monitoring system itself must be highly available and adhere to the same operational best practices and availability practices as the resources it monitors. Failure of the monitoring system leaves all monitored systems unable to capture diagnostic data or alert the administrator about problems.</p>
+<p>Enterprise Manager provides management and monitoring capabilities with many different notification options. Recommendations are available for methods of monitoring the environment's availability and performance, and for using the tools in response to changes in the environment.</p>
+</div>
+<!-- class="sect1" -->
+<a id="CFAECIDG"></a>
+<div id="HABPT4975" class="sect1">
+<h2 class="sect1"><span class="secnum">12.2</span> Using Enterprise Manager for System Monitoring<a id="sthref622"></a><a id="sthref623"></a><a id="sthref624"></a><a id="sthref625"></a><a id="sthref626"></a></h2>
+<p>A major benefit of Enterprise Manager is its ability to manage components across the entire application stack, from the host operating system to a user or packaged application. Enterprise Manager treats each of the layers in the application as a <span class="italic"><a id="sthref627"></a>target</span>. Targets&mdash;such as databases, application servers, and hardware&mdash;can then be viewed along with other targets of the same type, or can be grouped by application type. You can also review all targets in a single view from the High Availability Console (for more information, <a href="#CFAHIBCJ">Section 12.3.3, "Manage Database Availability with the High Availability Console"</a>). Each target type has a default generated home page that displays a summary of relevant details for a specific target. You can group different types of targets by function; that is, as resources that support the same application.</p>
+<p>Every target is monitored by an <a id="sthref628"></a><a id="sthref629"></a>Oracle Management Agent. Every <a id="sthref630"></a>Management Agent runs on a system and is responsible for a set of targets. The targets can be on a system that is different from the one that the Management Agent is on. For example, a Management Agent can monitor a storage array that cannot host an agent natively. When a Management Agent is installed on a host, the host is automatically discovered along with other targets that are on the machine.</p>
+<p>Moreover, to help you implement the Maximum Availability Architecture (MAA) best practices, Enterprise Manager provides the MAA Advisor (for more information, see <a href="#CFADBGAJ">Section 12.3.4, "Configure High Availability Solutions with MAA Advisor"</a>). The MAA Advisor page recommends Oracle solutions for most outage types and describes the benefits of each solution.</p>
+<p>In addition to monitoring infrastructure with Enterprise Manager in the Oracle HA environment, Oracle Auto Service Request (ASR) can be used to resolve problems faster by using auto-case generation for Oracle's Sun server and storage systems when specific hardware faults occur. For more information, see "Oracle Auto Service Request" in My Oracle Support Note 1185493.1 at</p>
+<p><code><a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=1185493.1">https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=1185493.1</a></code></p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink OEMCN" href="http://www.oracle.com/pls/topic/lookup?ctx=db112&amp;id=OEMCN"><span class="italic">Oracle Enterprise Manager Concepts</span></a> for information about Enterprise Manager Architecture and the Oracle Management Agent</div>
+<div id="HABPT4976" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref631"></a>
+<h3 class="sect2"><span class="secnum">12.2.1</span> Oracle Enterprise Manager Home Page</h3>
+<p>The <a id="sthref632"></a><a id="sthref633"></a>Enterprise Manager home page in <a href="#CHDJJFJH">Figure 12-1</a> shows the availability of all discovered targets.</p>
+<div id="HABPT5338" class="figure">
+<p class="titleinfigure"><a id="CHDJJFJH"></a>Figure 12-1 Enterprise Manager Home Page</p>
+<img width="1003" height="656" src="img/habpt_gc_home.png" alt="Description of Figure 12-1 follows" /><br />
+<a id="sthref634" href="img_text/habpt_gc_home.htm">Description of "Figure 12-1 Enterprise Manager Home Page"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>The Enterprise Manager home page includes the following information:</p>
+<ul>
+<li>
+<p>A snapshot of the current availability of all targets. The All Targets Status pie chart gives the administrator an immediate indication of any target that is Available (Up), unavailable (Down), or has lost communication with the console (Unknown).</p>
+</li>
+<li>
+<p>An overview of how many <a id="sthref635"></a><a id="sthref636"></a>alerts and problems (for jobs) are known in the entire monitored system. You can display detailed information by clicking the links, or by navigating to the <span class="bold">Alerts</span> tab from any Enterprise Manager page.</p>
+</li>
+<li>
+<p>A view of the severity and total number of policy violations for all managed targets. Drill down to determine the source and type of violation.</p>
+</li>
+<li>
+<p>All Targets Jobs lists the number of scheduled, running, suspended, and problem (stopped/failed) executions for all Enterprise Manager jobs. Click the number next to the status group to view a list of those jobs.</p>
+</li>
+<li>
+<p>An overview of what is actually discovered in the system. This list can be shown at the hardware level and the Oracle level.</p>
+</li>
+</ul>
+<p>Alerts are generated by a combination of factors and are defined on specific <span class="bold">metrics</span>. A <a id="sthref637"></a><a id="sthref638"></a>metric is a data point sampled by a Management Agent and sent to the Oracle Management Repository. An alert could be the availability of a component through a simple heartbeat test, or an evaluation of a specific performance measurement such as "disk busy" or percentage of processes waiting for a specific wait event.</p>
+<p>There are four states that can be checked for any metric: error, warning, critical, and clear. The administrator must make policy decisions such as:</p>
+<ul>
+<li>
+<p>What objects should be monitored (databases, nodes, listeners, or other services)?</p>
+</li>
+<li>
+<p>What instrumentation should be sampled (such as availability, CPU percent busy)?</p>
+</li>
+<li>
+<p>How frequently should the metric be sampled?</p>
+</li>
+<li>
+<p>What should be done when the metric exceeds a predefined threshold?</p>
+</li>
+</ul>
+<p>All of these decisions are predicated on the business needs of the system. For example, all components might be monitored for availability, but some systems might be monitored only during business hours. Systems with specific performance problems can have additional performance tracing enabled to debug a problem.</p>
+<div class="infoboxnotealso">
+<p class="notep1"><span class="bold">See Also</span>:</p>
+<a class="olink EMCON120" href="http://www.oracle.com/pls/topic/lookup?ctx=db112&amp;id=EMCON120"><span class="italic">Oracle Enterprise Manager Cloud Control Introduction</span></a> for more information about monitoring and using metrics in Enterprise Manager</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1006661"></a>
+<div id="HABPT4978" class="sect2">
+<h3 class="sect2"><span class="secnum">12.2.2</span> Configure Metrics and Notification Rules for Each System</h3>
+<p><span class="bold"><a id="sthref639"></a>Notification Rules</span> are defined sets of alerts on metrics that are automatically applied to a target when it is discovered by Enterprise Manager. For example, an administrator can create a rule that monitors the availability of database targets and generates an e-mail message if a database fails. After that rule is generated, it is applied to all existing databases and any database created in the future. Access these rules by navigating to <span class="bold">Preferences</span> and then choosing <span class="bold">Rules</span>.</p>
+<p>The rules monitor problems that require immediate attention, such as those that can affect service availability, and Oracle or application errors. Service availability can be affected by an outage in any layer of the application stack: node, database, listener, and critical application data. A service availability failure, such as the inability to connect to the database, or the inability to access data critical to the functionality of the application, must be identified, reported, and reacted to quickly. Potential service outages such as a full archive log directory also must be addressed correctly to avoid a system outage.</p>
+<p>Enterprise Manager provides a series of default rules that provide a strong framework for monitoring availability. A default rule is provided for each of the preinstalled target types that come with Enterprise Manager. You can modify these rules to conform to the policies of each individual site, and you can create rules for site-specific targets or applications. You can also set the rules to notify users during specific time periods to create an automated coverage policy.</p>
+<p>Use the following best practices:</p>
+<ul>
+<li>
+<p>Modify each rule for high-value components in the target architecture to suit your availability requirements by using the rules modification wizard. For the database rule, set the metrics in <a href="#CFAJGBGJ">Table 12-1</a>, <a href="#CFAJADBD">Table 12-2</a>, and <a href="#CFAJGIHC">Table 12-3</a> for each target. The frequency of the monitoring is determined by the service-level agreement (SLA)<a id="sthref640"></a><a id="sthref641"></a> for each component.</p>
+</li>
+<li>
+<p>Use <a id="sthref642"></a><a id="sthref643"></a><a id="sthref644"></a><a id="sthref645"></a><a id="sthref646"></a>Beacon functionality to track the performance of individual applications. A Beacon can be set to perform a user transaction representative of normal application work. Enterprise Manager can then break down the response time of that transaction into its component pieces for analysis. In addition, an alert can be triggered if the execution time of that transaction exceeds a predefined limit.</p>
+</li>
+<li>
+<p>Add Notification Methods and use them in each Notification Rule. By default, the easiest method for alerting an administrator to a potential problem is to send e-mail. Supplement this notification method by adding a callout to an SNMP trap or operating system script that sends an alert by some method other than e-mail. This avoids problems that might occur if a component of the e-mail system fails. Set additional Notification Methods by using the <span class="bold">Setup</span> link at the top of any Enterprise Manager page.</p>
+</li>
+<li>
+<p>Modify Notification Rules to notify the administrator when there are errors in computing target availability. This might generate a false positive reading on the availability of the component, but it ensures the highest level of notification to system administrators.</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink EMCON120" href="http://www.oracle.com/pls/topic/lookup?ctx=db112&amp;id=EMCON120"><span class="italic">Oracle Enterprise Manager Cloud Control Introduction</span></a> for conceptual information about Beacons</p>
+</li>
+<li>
+<p><a class="olink OEMCG0601" href="http://www.oracle.com/pls/topic/lookup?ctx=db112&amp;id=OEMCG0601"><span class="italic">Oracle Enterprise Manager Advanced Configuration</span></a> for information about configuring service tests and Beacons</p>
+</li>
+</ul>
+</div>
+<p><a href="#CHDBEFGG">Figure 12-2</a> shows the Edit Notification Rule property page for choosing availability states, with the Down option chosen.</p>
+<div id="HABPT5306" class="figure">
+<p class="titleinfigure"><a id="CHDBEFGG"></a>Figure 12-2 Setting Notification Rules for Availability</p>
+<img width="1027" height="690" src="img/habpt_set_notif_rule.png" alt="Description of Figure 12-2 follows" /><br />
+<a id="sthref647" href="img_text/habpt_set_notif_rule.htm">Description of "Figure 12-2 Setting Notification Rules for Availability"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>In addition, ensure that the metrics listed in <a href="#CFAJGBGJ">Table 12-1</a>, <a href="#CFAJADBD">Table 12-2</a>, and <a href="#CFAJGIHC">Table 12-3</a> are added to the database notification rule. Configure those metrics using the <span class="bold">Metrics</span> <span class="bold">and Policy Settings</span> page, which can be accessed from the <span class="bold">Related Links</span> section of the <span class="bold">Database Homepage</span>.</p>
+<p>Use the metrics shown in <a href="#CFAJGBGJ">Table 12-1</a> to monitor space management conditions that have the potential to cause a service outage.</p>
+<div id="HABPT4980" class="tblruleformalwide">
+<p class="titleintable"><a id="sthref648"></a><a id="CFAJGBGJ"></a>Table 12-1 Recommendations for Monitoring Space</p>
+<table class="cellalignment1620" title="Recommendations for Monitoring Space" summary="This table provides recommendations for metric settings to help you monitor space usage." dir="ltr">
+<thead>
+<tr class="cellalignment1611">
+<th class="cellalignment1621" id="r1c1-t5">Metric</th>
+<th class="cellalignment1621" id="r1c2-t5">Recommendation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r2c1-t5" headers="r1c1-t5">
+<p>Tablespace Space Used (%)</p>
+</td>
+<td class="cellalignment1617" headers="r2c1-t5 r1c2-t5">
+<p>Set this database-level metric to check the Available Space Used (%) for each tablespace. For cluster databases, this metric is monitored at the cluster database target level and not by member instances. This metric enables the administrator to choose the threshold percentages that Enterprise Manager tests against, and the number of samples that must occur in error before a message is generated and sent to the administrator. If the percentage of used space is greater than the values specified in the threshold arguments, then a warning or critical alert is generated.</p>
+<p>The recommended default settings are 85% for a warning and 97% for a critical space usage threshold, but you should adjust these values appropriately, depending on system usage. Also, you can customize this metric to monitor specific tablespaces.</p>
+<p>Note: there is an Enterprise Manager Job in the Job Library named:</p>
+<p><code>DISABLE TABLESPACE USED (%) ALERTS FOR UNDO AND TEMP TABLESPACES</code></p>
+<p>Use this Job to disable alerts for all <code>UNDO</code> and <code>TEMP</code> tablespaces. This job is useful if you encounter too many alerts on <code>TEMP</code> and <code>UNDO</code> tablespaces.</p>
+</td>
+</tr>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r3c1-t5" headers="r1c1-t5">
+<p>Dump Area Used (%)</p>
+</td>
+<td class="cellalignment1617" headers="r3c1-t5 r1c2-t5">
+<p>Set this metric to monitor the dump directory destinations. Dump space must be available so that the maximum amount of diagnostic information is saved the first time an error occurs. The recommended default settings are 70% for a warning and 90% for an error, but these should be adjusted depending on system usage.</p>
+<p>Set this metric in the Dump Area metric group.</p>
+</td>
+</tr>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r4c1-t5" headers="r1c1-t5">
+<p>Recovery Area Free Space (%)</p>
+</td>
+<td class="cellalignment1617" headers="r4c1-t5 r1c2-t5">
+<p>This is a database-level metric that is evaluated by the server every 15 minutes or during a file creation, whichever occurs first. The metric is also printed in the alert log. For cluster databases, this metric is monitored at the cluster database target level and not by member instances.</p>
+<p>The Critical Threshold is set for &lt; 3% and the Warning Threshold is set for &lt; 15%. You cannot customize these thresholds. An alert is returned the first time the alert occurs, and the alert is not cleared until the available space rises above 15%.</p>
+</td>
+</tr>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r5c1-t5" headers="r1c1-t5">
+<p>File System Available(%)</p>
+</td>
+<td class="cellalignment1617" headers="r5c1-t5 r1c2-t5">
+<p>By default, this metric monitors the root file system per host. The default warning level is 20% and the critical warning is 5%.</p>
+</td>
+</tr>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r6c1-t5" headers="r1c1-t5">
+<p>Archive Area Used (%)</p>
+</td>
+<td class="cellalignment1617" headers="r6c1-t5 r1c2-t5">
+<p>Set this metric to return the percentage of space used on the archive area destination. If the space used is more than the threshold value given in the threshold arguments, then a warning or critical alert is generated.</p>
+<p>If the database is not running in <code>ARCHIVELOG</code> mode, this metric fails to register. The default warning threshold is 80%, but consider using 70% full to send a warning or 90% for the critical threshold.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformalwide" -->
+<p><a id="sthref649"></a><a id="sthref650"></a>In Enterprise Manager 11<span class="italic">g</span> the mechanism for monitoring the Database Alert Log is tightly integrated with the Support Workbench, with the benefits of being able to generate packages for each problem or incident reported and quickly upload them to support.</p>
+<p>As part of integrating with the Support Workbench, errors are categorized into different classes and groups, each served by a separate metric. At the highest level of categorization there are two different classes of errors: incidents and operational errors.</p>
+<ul>
+<li>
+<p>Incidents are errors that are recorded in the database alert log file, which signify that the database being monitored has detected a critical error condition. For example a critical error condition could be a generic internal error or an access violation.</p>
+</li>
+<li>
+<p>Operational Errors are errors that are recorded in the database alert log file, which signify that the database being monitored has detected an error that may affect the operation of the database. For example, an operational error could be an indication that the archiver is hung or a media failure.</p>
+</li>
+</ul>
+<p>Configure the metrics that raise alerts for errors reported in the Alert Log as shown in <a href="#CFAJADBD">Table 12-2</a>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+For more information about the Alert Log metrics in <a href="#CFAJADBD">Table 12-2</a> and Alert Log Monitoring for 11<span class="italic">g</span> database targets in Enterprise Manager, see "Monitoring 11g Database Alert Log Errors in Enterprise Manager" in My Oracle Support Note 949858.1 at
+<p><code><a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=949858.1">https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=949858.1</a></code></p>
+</div>
+<div id="HABPT4981" class="tblruleformalwide">
+<p class="titleintable"><a id="sthref651"></a><a id="CFAJADBD"></a>Table 12-2 Recommendations for Monitoring the Alert Log</p>
+<table class="cellalignment1620" title="Recommendations for Monitoring the Alert Log" summary="This table provides recommendations for metric settings that can help you to monitor the alert log." dir="ltr">
+<thead>
+<tr class="cellalignment1611">
+<th class="cellalignment1621" id="r1c1-t7">Metric</th>
+<th class="cellalignment1621" id="r1c2-t7">Recommendation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r2c1-t7" headers="r1c1-t7">
+<p>Generic Internal Error Status</p>
+</td>
+<td class="cellalignment1617" headers="r2c1-t7 r1c2-t7">
+<p>Set the Critical threshold to 0 to ensure an alert is raised each time one or more <code>ORA-0600</code> errors have been reported in the Alert Log since the last time the metric was collected.</p>
+</td>
+</tr>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r3c1-t7" headers="r1c1-t7">
+<p>Access Violation Status</p>
+</td>
+<td class="cellalignment1617" headers="r3c1-t7 r1c2-t7">
+<p>Set the Critical threshold to 0 to ensure an alert is raised each time one or more <code>ORA-7445</code> or <code>ORA-3113</code> errors have been reported in the Alert Log since the last time the metric was collected.</p>
+</td>
+</tr>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r4c1-t7" headers="r1c1-t7">
+<p>Session Terminated Status</p>
+</td>
+<td class="cellalignment1617" headers="r4c1-t7 r1c2-t7">
+<p>Set the Critical threshold to 0 to ensure an alert is raised each time one or more <code>ORA-603</code> errors have been reported in the Alert Log since the last time the metric was collected.</p>
+</td>
+</tr>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r5c1-t7" headers="r1c1-t7">
+<p>Out of Memory Status</p>
+</td>
+<td class="cellalignment1617" headers="r5c1-t7 r1c2-t7">
+<p>Set the Critical threshold to 0 to ensure an alert is raised each time one or more <code>ORA-4030</code> or <code>ORA-4031</code> errors have been reported in the Alert Log since the last time the metric was collected.</p>
+</td>
+</tr>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r6c1-t7" headers="r1c1-t7">
+<p>Redo Log Corruption Status</p>
+</td>
+<td class="cellalignment1617" headers="r6c1-t7 r1c2-t7">
+<p>Set the Critical threshold to 0 to ensure an alert is raised each time one or more <code>ORA-353</code>, <code>ORA-355</code>, or <code>ORA-356</code> errors have been reported in the Alert Log since the last time the metric was collected.</p>
+</td>
+</tr>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r7c1-t7" headers="r1c1-t7">
+<p>Inconsistent DB State Status</p>
+</td>
+<td class="cellalignment1617" headers="r7c1-t7 r1c2-t7">
+<p>Set the Critical threshold to 0 to ensure an alert is raised each time one or more <code>ORA-1410</code> or <code>ORA-8103</code> errors have been reported in the Alert Log since the last time the metric was collected.</p>
+</td>
+</tr>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r8c1-t7" headers="r1c1-t7">
+<p>Deadlock Status</p>
+</td>
+<td class="cellalignment1617" headers="r8c1-t7 r1c2-t7">
+<p>Set the Critical threshold to 0 to ensure an alert is raised each time one or more <code>ORA-4020</code> errors have been reported in the Alert Log since the last time the metric was collected.</p>
+<p><span class="bold">Note</span>: This metric does <span class="italic">not</span> raise alerts when application level deadlocks (<code>ORA-0060</code> errors) are reported in the Alert Log.</p>
+</td>
+</tr>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r9c1-t7" headers="r1c1-t7">
+<p>Internal SQL Error Status</p>
+</td>
+<td class="cellalignment1617" headers="r9c1-t7 r1c2-t7">
+<p>Set the Critical threshold to 0 to ensure an alert is raised each time one or more <code>ORA-604</code> errors have been reported in the Alert Log since the last time the metric was collected.</p>
+</td>
+</tr>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r10c1-t7" headers="r1c1-t7">
+<p>Cluster Error Status</p>
+</td>
+<td class="cellalignment1617" headers="r10c1-t7 r1c2-t7">
+<p>Set the Critical threshold to 0 to ensure an alert is raised each time one or more <code>ORA-29740</code> errors have been reported in the Alert Log since the last time the metric was collected.</p>
+</td>
+</tr>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r11c1-t7" headers="r1c1-t7">
+<p>Data Block Corruption Status</p>
+</td>
+<td class="cellalignment1617" headers="r11c1-t7 r1c2-t7">
+<p>Set the Critical threshold to 0 to ensure an alert is raised each time one or more <code>ORA-1578</code>, <code>ORA-1157</code>, or <code>ORA-27048</code> errors have been reported in the Alert Log since the last time the metric was collected.</p>
+</td>
+</tr>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r12c1-t7" headers="r1c1-t7">
+<p>Media Failure Status</p>
+</td>
+<td class="cellalignment1617" headers="r12c1-t7 r1c2-t7">
+<p>Set the Critical threshold to 0 to ensure an alert is raised each time one or more <code>ORA-1242</code> or <code>ORA-1243</code> errors have been reported in the Alert Log since the last time the metric was collected.</p>
+</td>
+</tr>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r13c1-t7" headers="r1c1-t7">
+<p>Generic Incident Status</p>
+</td>
+<td class="cellalignment1617" headers="r13c1-t7 r1c2-t7">
+<p>Set the Critical threshold to 0 to ensure an alert is raised each time one or more of the errors: <code>ORA-700</code>, <code>ORA-255</code>, <code>ORA-239</code>, <code>ORA-601</code>, <code>ORA-602</code>, <code>ORA-255</code>, <code>ORA-240</code>, <code>ORA-494</code>, <code>ORA-3137</code>, <code>ORA-202</code>, <code>ORA-214</code>, <code>ORA-227</code>, <code>ORA-1103</code>, <code>ORA-312</code>, <code>ORA-313</code>, <code>ORA-1110</code>, <code>ORA-1542</code>, <code>ORA-32701</code>, <code>ORA-32703</code>, or <code>ORA-12751</code> have been reported in the Alert Log since the last time the metric was collected.</p>
+</td>
+</tr>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r14c1-t7" headers="r1c1-t7">
+<p>Generic Operational Error Status</p>
+</td>
+<td class="cellalignment1617" headers="r14c1-t7 r1c2-t7">
+<p>Set the Critical threshold to 0 to ensure an alert is raised each time one or more generic operational errors have been reported in the Alert Log since the last time the metric was collected.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformalwide" -->
+<p>Monitor the system to ensure that the processing capacity is not exceeded. The warning and critical thresholds for these metrics should be modified based on the usage pattern of the system, following the recommendations in <a href="#CFAJGIHC">Table 12-3</a>.</p>
+<div id="HABPT4982" class="tblruleformalwide">
+<p class="titleintable"><a id="sthref652"></a><a id="CFAJGIHC"></a>Table 12-3 Recommendations for Monitoring Processing Capacity</p>
+<table class="cellalignment1620" title="Recommendations for Monitoring Processing Capacity" summary="This table provides recommendations for metric settings to help you monitor processing capacity." dir="ltr">
+<thead>
+<tr class="cellalignment1611">
+<th class="cellalignment1621" id="r1c1-t8">Metric</th>
+<th class="cellalignment1621" id="r1c2-t8">Recommendation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r2c1-t8" headers="r1c1-t8">
+<p>Process limit</p>
+</td>
+<td class="cellalignment1617" headers="r2c1-t8 r1c2-t8">
+<p>Set thresholds for this metric to warn if the number of current processes approaches the value of the <code>PROCESSES</code> initialization parameter.</p>
+</td>
+</tr>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r3c1-t8" headers="r1c1-t8">
+<p>Session limit</p>
+</td>
+<td class="cellalignment1617" headers="r3c1-t8 r1c2-t8">
+<p>Set thresholds for this metric to warn if the instance is approaching the maximum number of concurrent connections allowed by the database.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformalwide" -->
+<p><a href="#CHDBJAGG">Figure 12-3</a> shows the Metric and Policy settings page for setting and editing metrics. The online help contains complete reference information for every metric. To access reference information for a specific metric, use the online help search feature.</p>
+<div id="HABPT5346" class="figure">
+<p class="titleinfigure"><a id="CHDBJAGG"></a>Figure 12-3 Setting Notification Rules for Metrics</p>
+<img width="1011" height="882" src="img/habpt_metric_policy.png" alt="Description of Figure 12-3 follows" /><br />
+<a id="sthref653" href="img_text/habpt_metric_policy.htm">Description of "Figure 12-3 Setting Notification Rules for Metrics"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ADMQS010" href="../../server.112/e10897/montune.htm#ADMQS010"><span class="italic">Oracle Database 2 Day DBA</span></a> for information about setting up notification rules and metric thresholds</p>
+</li>
+<li>
+<p><a class="olink ADMQS12115" href="../../server.112/e10897/problems.htm#ADMQS12115"><span class="italic">Oracle Database 2 Day DBA</span></a> for more on Viewing Problems Using the Enterprise Manager Support Workbench</p>
+</li>
+<li>
+<p><a class="olink EMDBM111" href="http://www.oracle.com/pls/topic/lookup?ctx=db112&amp;id=EMDBM111"><span class="italic">Oracle Enterprise Manager Oracle Database and Database-Related Metric Reference Manual</span></a> for information about available metrics</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1007720"></a>
+<div id="HABPT4984" class="sect2">
+<h3 class="sect2"><span class="secnum">12.2.3</span> Use Database Target Views to Monitor Health, Availability, and Performance</h3>
+<p>The Database <a id="sthref654"></a><a id="sthref655"></a>target Home page in <a href="#CHDCJBBH">Figure 12-4</a> shows system performance, space usage, and the configuration of important availability components such as the percentage space used in the Fast Recovery Area, and Flashback Database Logging status (the Fast Recovery Area is labeled Flash Recovery Area (%) in Enterprise Manager 11<span class="italic">g</span>).</p>
+<p>You can see the most recent alerts for the target under the Alerts table, as shown in <a href="#CHDCJBBH">Figure 12-4</a>. You can access further information about alerts by clicking the links in the Message column.</p>
+<div id="HABPT5308" class="figure">
+<p class="titleinfigure"><a id="CHDCJBBH"></a>Figure 12-4 Database Home Page</p>
+<img width="1009" height="866" src="img/habpt_db_home.png" alt="Description of Figure 12-4 follows" /><br />
+<a id="sthref656" href="img_text/habpt_db_home.htm">Description of "Figure 12-4 Database Home Page"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p class="subhead2"><a id="HABPT5347"></a>Performance Analysis and Performance Baseline</p>
+<p>Many of the metrics for Database targets in Enterprise Manager pertain to performance. A system that is not meeting performance service-level agreements is not meeting High Availability system requirements. While performance problems seldom cause a major system outage, they can still cause an outage to a subset of customers. Outages of this type are commonly referred to as <span class="bold"><a id="sthref657"></a><a id="sthref658"></a>application service brownouts</span>. The primary cause of brownouts is the intermittent or partial failure of one or more infrastructure components. IT managers must be aware of how the infrastructure components are performing (their response time, latency, and availability), and how they are affecting the quality of application service delivered to the end user.</p>
+<p>A performance baseline, derived from normal operations that meet the service-level agreement should determine what constitutes a performance metric alert. Baseline data should be collected from the first day that an application is in production and should include the following:</p>
+<ul>
+<li>
+<p>Application statistics (transaction volumes, response time, web service times)</p>
+</li>
+<li>
+<p>Database statistics (transaction rate, redo rate, hit ratios, top 5 wait events, top 5 SQL transactions)</p>
+</li>
+<li>
+<p>Operating system statistics (CPU, memory, I/O, network)</p>
+</li>
+</ul>
+<p>You can use Enterprise Manager to capture a baseline snapshot of database performance and create an Automatic Workload Repository (AWR) baseline. Enterprise Manager compares these values against system performance and displays the result on the database Target page. Enterprise Manager can also send alerts if the values deviate too far from the established baseline. See <a href="config_db.htm#BGBGIBGI">"Use Automatic Performance Tuning Features"</a> for more information about Automatic Workload Repository.</p>
+<p>Set the database <a id="sthref659"></a><a id="sthref660"></a>notification rule to capture the metrics listed in <a href="#CFAGHECG">Table 12-4</a> for all database targets.</p>
+<div id="HABPT4986" class="tblruleformalwide">
+<p class="titleintable"><a id="sthref661"></a><a id="CFAGHECG"></a>Table 12-4 Recommendations for Performance Related Metrics</p>
+<table class="cellalignment1620" title="Recommendations for Performance Related Metrics" summary="This table lists recommendations for performance related metrics" dir="ltr">
+<thead>
+<tr class="cellalignment1611">
+<th class="cellalignment1621" id="r1c1-t10">Metric</th>
+<th class="cellalignment1621" id="r1c2-t10">Level</th>
+<th class="cellalignment1621" id="r1c3-t10">Recommendation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r2c1-t10" headers="r1c1-t10">
+<p>I/O Requests (per second)</p>
+</td>
+<td class="cellalignment1617" headers="r2c1-t10 r1c2-t10">
+<p>Instance</p>
+</td>
+<td class="cellalignment1617" headers="r2c1-t10 r1c3-t10">
+<p>This metric represents the total rate of I/O read and write requests for the database. It sends an alert when the number of operations exceeds a user-defined threshold. Use this metric with operating system-level metrics that are also available with Enterprise Manager.</p>
+<p>Set this metric based on the total I/O throughput available to the system, the number of I/O channels available, network bandwidth (in a SAN environment), the effects of the disk cache if you are using a storage array device, and the maximum I/O rate and number of spindles available to the database.</p>
+</td>
+</tr>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r3c1-t10" headers="r1c1-t10">
+<p>Database CPU Time (%)</p>
+</td>
+<td class="cellalignment1617" headers="r3c1-t10 r1c2-t10">
+<p>Instance</p>
+</td>
+<td class="cellalignment1617" headers="r3c1-t10 r1c3-t10">
+<p>This metric represents the percentage of database call time that is spent on the CPU. It can be used to detect a change in the operation of a system, for example, a drop in Database CPU time from 50% to 25%.</p>
+<p>The <code>Consecutive Number of Occurrences Preceding Notification</code> column indicates the consecutive number of times the comparison against thresholds should hold <code>TRUE</code> before an alert is generated. This usage might be normal at peak periods, but it might also be an indication of a runaway process or of a potential resource shortage.</p>
+</td>
+</tr>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r4c1-t10" headers="r1c1-t10">
+<p>Wait Time (%)</p>
+</td>
+<td class="cellalignment1617" headers="r4c1-t10 r1c2-t10">
+<p>Instance</p>
+</td>
+<td class="cellalignment1617" headers="r4c1-t10 r1c3-t10">
+<p>Excessive idle time indicates that a bottleneck for one or more resources is occurring. Set this instance-level metric based on the system wait time when the application is performing as expected.</p>
+</td>
+</tr>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r5c1-t10" headers="r1c1-t10">
+<p>Network Bytes per Second</p>
+</td>
+<td class="cellalignment1617" headers="r5c1-t10 r1c2-t10">
+<p>Instance</p>
+</td>
+<td class="cellalignment1617" headers="r5c1-t10 r1c3-t10">
+<p>This metric reports network traffic that Oracle generates. This metric can indicate a potential network bottleneck. Set this metric based on actual usage during peak periods.</p>
+</td>
+</tr>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r6c1-t10" headers="r1c1-t10">
+<p>Pages Paged-in (per second)</p>
+</td>
+<td class="cellalignment1617" headers="r6c1-t10 r1c2-t10">
+<p>Host</p>
+</td>
+<td class="cellalignment1617" headers="r6c1-t10 r1c3-t10">
+<p>For UNIX-based systems, represents the number of pages paged in (read from disk to resolve fault memory references) per second. This metric checks the number of pages paged in for the CPU(s) specified by the Host CPU(s) parameter, such as <code>cpu_stat0</code> or <code>*</code> (for all CPUs on the system).</p>
+<p>For Microsoft Windows, this metric is the rate at which pages are read from disk to resolve hard page faults. Hard page faults occur when a process refers to a page in virtual memory that is not in its working set or elsewhere in physical memory, and must be retrieved from disk. When a page is faulted, the system tries to read multiple contiguous pages into memory to maximize the benefit of the read operation.</p>
+</td>
+</tr>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r7c1-t10" headers="r1c1-t10">
+<p>Run Queue Length</p>
+</td>
+<td class="cellalignment1617" headers="r7c1-t10 r1c2-t10">
+<p>Host</p>
+</td>
+<td class="cellalignment1617" headers="r7c1-t10 r1c3-t10">
+<p>For UNIX-based systems, the Run Queue Length metrics represent the average number of processes in memory and subject to be run in the last interval (1 minute average, 5 minute average, and 15 minute average).</p>
+<p>It is recommended to alert when Run Queue Length = # of CPUs. (An alternative way to do this is to monitor the Load Average metric and compare it to Maximum CPU.)</p>
+<p>This metric is not available on Microsoft Windows.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformalwide" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink PFGRF" href="../e41573/toc.htm"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for more information about performance monitoring</p>
+</li>
+<li>
+<p><a class="olink ADMQS010" href="../../server.112/e10897/montune.htm#ADMQS010"><span class="italic">Oracle Database 2 Day DBA</span></a> for more information about monitoring and tuning using Enterprise Manager</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1006676"></a>
+<div id="HABPT4988" class="sect2">
+<h3 class="sect2"><span class="secnum">12.2.4</span> Use Metrics to Monitor Data Guard System Availability</h3>
+<p>Set Enterprise Manager metrics to monitor the availability of Data Guard <a id="sthref662"></a>configurations. <a href="#CFAHDIGG">Table 12-5</a> shows the metrics that are available for monitoring Data Guard databases.</p>
+<div id="HABPT4989" class="tblruleformalwide">
+<p class="titleintable"><a id="sthref663"></a><a id="CFAHDIGG"></a>Table 12-5 Recommendations for Setting Data Guard Metrics<a id="sthref664"></a></p>
+<table class="cellalignment1620" title="Recommendations for Setting Data Guard Metrics " summary="This table lists recommended settings for metrics that can be used to monitor the availability of logical and physical Data Guard configurations." dir="ltr">
+<thead>
+<tr class="cellalignment1611">
+<th class="cellalignment1621" id="r1c1-t12">Metric</th>
+<th class="cellalignment1621" id="r1c2-t12">Recommendation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r2c1-t12" headers="r1c1-t12">
+<p>Data Guard Status<a id="sthref665"></a></p>
+</td>
+<td class="cellalignment1617" headers="r2c1-t12 r1c2-t12">
+<p>Notifies you about system problems in a Data Guard configuration.</p>
+</td>
+</tr>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r3c1-t12" headers="r1c1-t12">
+<p>Apply Lag<a id="sthref666"></a></p>
+</td>
+<td class="cellalignment1617" headers="r3c1-t12 r1c2-t12">
+<p>Displays (in seconds) how far the standby is behind the primary database. This metric generates an alert on the standby database if it falls behind more than the user-specified threshold (if any).</p>
+</td>
+</tr>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r4c1-t12" headers="r1c1-t12">
+<p>Estimated Failover Time<a id="sthref667"></a></p>
+</td>
+<td class="cellalignment1617" headers="r4c1-t12 r1c2-t12">
+<p>Displays the approximate number of seconds required to failover to this standby database.</p>
+</td>
+</tr>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r5c1-t12" headers="r1c1-t12">
+<p>Redo Apply Rate<a id="sthref668"></a></p>
+</td>
+<td class="cellalignment1617" headers="r5c1-t12 r1c2-t12">
+<p>Displays the Redo Apply rate in KB/second on this standby database.</p>
+</td>
+</tr>
+<tr class="cellalignment1611">
+<td class="cellalignment1617" id="r6c1-t12" headers="r1c1-t12">
+<p>Transport Lag<a id="sthref669"></a></p>
+</td>
+<td class="cellalignment1617" headers="r6c1-t12 r1c2-t12">
+<p>Displays the approximate number of seconds of redo that is not yet available on this standby database. The lag may be because the redo data has not yet been transported or there may be a gap. This metric generates an alert on the standby database if it falls behind more than the user-specified threshold (if any).</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformalwide" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1007185"></a>
+<div id="HABPT4990" class="sect1">
+<h2 class="sect1"><span class="secnum">12.3</span> Managing the High Availability Environment with Enterprise Manager</h2>
+<p>Use Enterprise Manager as a proactive part of administering any system and for problem notification and analysis, with the following recommendations:</p>
+<ul>
+<li>
+<p><a href="#i1007229">Check Enterprise Manager Policy Violations</a></p>
+</li>
+<li>
+<p><a href="#i1007674">Use Enterprise Manager to Manage Oracle Patches and Maintain System Baselines</a></p>
+</li>
+<li>
+<p><a href="#CFAHIBCJ">Manage Database Availability with the High Availability Console</a></p>
+</li>
+<li>
+<p><a href="#CFADBGAJ">Configure High Availability Solutions with MAA Advisor</a></p>
+</li>
+</ul>
+<a id="i1007229"></a>
+<div id="HABPT4991" class="sect2">
+<h3 class="sect2"><span class="secnum">12.3.1</span> Check Enterprise Manager Policy Violations</h3>
+<p><a id="sthref670"></a>Enterprise Manager <a id="sthref671"></a>comes with a pre-installed set of policies and recommendations of best practices for all databases. These policies are checked by default and the number of violations is displayed on the Targets page in the <span class="bold">Policy Violations</span> area, as shown in <a href="#CHDHAADF">Figure 12-5</a>.</p>
+<div id="HABPT5348" class="figure">
+<p class="titleinfigure"><a id="CHDHAADF"></a>Figure 12-5 Database Home Page with Targets Showing Policy Violations</p>
+<img width="1207" height="880" src="img/habpt_db_home_east.png" alt="Description of Figure 12-5 follows" /><br />
+<a id="sthref672" href="img_text/habpt_db_home_east.htm">Description of "Figure 12-5 Database Home Page with Targets Showing Policy Violations"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>To see more details on violations, select a link in the <span class="bold">Policy Violations</span> area. <a href="#CHDDCFFC">Figure 12-6</a> shows the Policy Tend Overview page.</p>
+<div id="HABPT5349" class="figure">
+<p class="titleinfigure"><a id="CHDDCFFC"></a>Figure 12-6 Database Targets Policy Trend Overview Page</p>
+<img width="1212" height="881" src="img/habpt_policy_trend.png" alt="Description of Figure 12-6 follows" /><br />
+<a id="sthref673" href="img_text/habpt_policy_trend.htm">Description of "Figure 12-6 Database Targets Policy Trend Overview Page"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>To see Policy Violations, select <span class="bold">Violations</span> from the <span class="bold">Compliance</span> tab, as shown in <a href="#CHDGJJCD">Figure 12-7</a>.</p>
+<div id="HABPT5350" class="figure">
+<p class="titleinfigure"><a id="CHDGJJCD"></a>Figure 12-7 Shows Compliance Tab with Policy Violations</p>
+<img width="1209" height="881" src="img/habpt_policy_violations.png" alt="Description of Figure 12-7 follows" /><br />
+<a id="sthref674" href="img_text/habpt_policy_violations.htm">Description of "Figure 12-7 Shows Compliance Tab with Policy Violations"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink OEMPO" href="http://www.oracle.com/pls/topic/lookup?ctx=db112&amp;id=OEMPO"><span class="italic">Oracle Enterprise Manager Policy Reference Manual</span></a> for definitions of existing policies</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1007674"></a>
+<div id="HABPT4992" class="sect2">
+<h3 class="sect2"><span class="secnum">12.3.2</span> Use Enterprise Manager to Manage Oracle Patches and Maintain System Baselines</h3>
+<p>For any monitored system in the application environment, you can use Enterprise Manager to download and <a id="sthref675"></a><a id="sthref676"></a>manage patches from My Oracle Support at</p>
+<p><code><a href="https://support.oracle.com/">https://support.oracle.com/</a></code></p>
+<p>You can set up a job to routinely check for patches that are relevant to the user environment. Those patches can be downloaded and stored directly in the Management Repository. Patches can be staged from the Management Repository to multiple systems and applied during maintenance windows.</p>
+<p>You can examine patch levels for one system and compare them between systems in either a one-to-one or one-to-many relationship. In this case, a system can be identified as a baseline and used to demonstrate maintenance requirements in other systems. This can be done for operating system patches and database patches.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink PVPTG" href="http://www.oracle.com/pls/topic/lookup?ctx=db112&amp;id=PVPTG"><span class="italic">Oracle Enterprise Manager Administrator's Guide for Software and Server Provisioning and Patching</span></a> for information about Patching Using My Oracle Support</p>
+</li>
+<li>
+<p><a class="olink PVPTG" href="http://www.oracle.com/pls/topic/lookup?ctx=db112&amp;id=PVPTG"><span class="italic">Oracle Enterprise Manager Administrator's Guide for Software and Server Provisioning and Patching</span></a> for information about Patching Oracle Database</p>
+</li>
+<li>
+<p><a href="schedule_outage.htm#CACCFHHC">Section 14.2, "Eliminating or Reducing Downtime for Scheduled Outages"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="CFAHIBCJ"></a>
+<div id="HABPT4993" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">12.3.3</span> Manage Database Availability with the <a id="sthref677"></a><a id="sthref678"></a>High Availability Console</h3>
+<p><a id="sthref679"></a>The High Availability (HA) Console is a one stop, dashboard-style page for monitoring the availability of each database. You can use it on any database and if a database is part of a Data Guard configuration, the HA Console allows you to switch your view from the primary database to any of the standby databases.</p>
+<p>Use the HA Console to:</p>
+<ul>
+<li>
+<p>Display high availability events including events from related targets such as standby databases</p>
+</li>
+<li>
+<p>View the high availability summary that includes the status of the database</p>
+</li>
+<li>
+<p>View the last backup status</p>
+</li>
+<li>
+<p>View the Fast Recovery Area Usage, if configured</p>
+</li>
+<li>
+<p>If Oracle Data Guard is configured: View the Data Guard summary<a id="sthref680"></a><a id="sthref681"></a>, set up Data Guard standby databases for any database target, manage switchover and failover of database targets other than the database that contains the Management Repository, and monitor the health of a Data Guard configuration at a glance</p>
+</li>
+<li>
+<p>If Oracle RAC is configured: View the Oracle RAC Services summary including Top Services</p>
+</li>
+</ul>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+<a id="sthref682"></a>Oracle Enterprise Manager Database Control uses the name Fast Recovery Area for the renamed Flash Recovery Area. In places, the HA Console and Enterprise Manager use the name Flash Recovery Area. For more information about the Fast Recovery Area, see <a href="config_db.htm#BGBHHHED">Section 5.1.3, "Use a Fast Recovery Area"</a>.</div>
+<p><a href="#CHDJEEBG">Figure 12-8</a> shows the HA Console. This figure shows summary information, details, and historical statistics for the primary database and shows the standby databases for the primary target, various Data Guard standby performance metrics and settings, and the data protection mode.</p>
+<div id="HABPT5339" class="figure">
+<p class="titleinfigure"><a id="CHDJEEBG"></a>Figure 12-8 Monitoring a Primary Database in the High Availability Console</p>
+<img width="1115" height="759" src="img/habpt_ha_console_p.png" alt="Description of Figure 12-8 follows" /><br />
+<a id="sthref683" href="img_text/habpt_ha_console_p.htm">Description of "Figure 12-8 Monitoring a Primary Database in the High Availability Console"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>In <a href="#CHDJEEBG">Figure 12-8</a>, the Availability Summary shows that the primary database is up and its availability is currently 100%. The Availability Summary also shows Oracle ASM instances status. The Availability Events table shows specific high availability events (alerts). You can click the message to obtain more details (or to suppress the event). To set up, manage, and configure a specific solution area for this database, under Availability Summary, next to <span class="bold">MAA Advisor</span>, click <span class="bold">Details</span> to go to the Maximum Availability Architecture (MAA) Advisor page (described in more detail in <a href="#CFADBGAJ">Section 12.3.4, "Configure High Availability Solutions with MAA Advisor"</a>).</p>
+<p>The <span class="bold">Backup/Recovery Summary</span> area displays the Last Backup and Next Backup information. The Fast Recovery Area Usage chart indicates about 83% of the fast recovery area is currently used. The Used (Non-reclaimable) Fast Recovery Area (%) chart shows the usage over the last 2 hours. You can click the chart to display the page with the metric details.</p>
+<p>The <span class="bold">Data Guard Summary</span> area shows the primary database is running in Maximum Availability mode and has Fast-Start Failover enabled. You can click the link next to <span class="bold">Protection Mode</span> to modify the data protection mode. In the Standby Databases table, the physical standby database (north) is caught up with the primary database (Apply/Transport Lag) metrics are showing 0 seconds, and the Used Fast Recovery Area (FRA) is 16.02%. The Primary Database Redo Rate chart shows the redo trend over the past 2 hours. Note that if Data Guard is not configured, the "Switch To" box in the corner of the console is not displayed.</p>
+<p><a href="#CHDFDAJB">Figure 12-9</a> shows information similar to figure <a href="#CHDJEEBG">Figure 12-8</a>, but for the standby database (north), which is a physical standby database running real-time query. In the Standby Databases table, the Apply/Transport Lag metrics indicate that the physical standby database is caught up with the primary database, and the Used Fast Recovery Area (FRA) is 16%. Note that if Data Guard is not configured, the "Switch To" box in the corner of the console is not displayed.</p>
+<div id="HABPT5340" class="figure">
+<p class="titleinfigure"><a id="CHDFDAJB"></a>Figure 12-9 Monitoring the Standby Database in the High Availability Console</p>
+<img width="1117" height="763" src="img/habpt_ha_console_sta.png" alt="Description of Figure 12-9 follows" /><br />
+<a id="sthref684" href="img_text/habpt_ha_console_sta.htm">Description of "Figure 12-9 Monitoring the Standby Database in the High Availability Console"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p><a href="#CHDIDFAE">Figure 12-10</a> shows sample values for <span class="bold">Services Summary</span> and <span class="bold">Services Details</span> areas. These areas show summary and detail information about Oracle RAC Services, including Top Services and problem services.</p>
+<div id="HABPT5352" class="figure">
+<p class="titleinfigure"><a id="CHDIDFAE"></a>Figure 12-10 Monitoring the Cluster in the High Availability Console Showing Services</p>
+<img width="986" height="724" src="img/habpt_ha_console_serv.png" alt="Description of Figure 12-10 follows" /><br />
+<a id="sthref685" href="img_text/habpt_ha_console_serv.htm">Description of "Figure 12-10 Monitoring the Cluster in the High Availability Console Showing Services"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink EMCON124" href="http://www.oracle.com/pls/topic/lookup?ctx=db112&amp;id=EMCON124"><span class="italic">Oracle Enterprise Manager Cloud Control Introduction</span></a> for information about Database Management</div>
+</div>
+<!-- class="sect2" -->
+<a id="CFADBGAJ"></a>
+<div id="HABPT4996" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">12.3.4</span> Configure High Availability Solutions with MAA Advisor<a id="sthref686"></a><a id="sthref687"></a><a id="sthref688"></a><a id="sthref689"></a></h3>
+<p><a id="sthref690"></a>The goal of the MAA Advisor is to help you implement Oracle's best practices to achieve the optimal high availability architecture.</p>
+<p>From the Availability Summary section on the High Availability Console, you can link to the MAA Advisor to:</p>
+<ul>
+<li>
+<p>View recommended Oracle solutions for each outage type (site failures, computer failures, storage failures, human errors, and data corruptions)</p>
+</li>
+<li>
+<p>View the configuration status and use the links in the Oracle Solution column to go to the Enterprise Manager page where the solution can be configured.</p>
+</li>
+<li>
+<p>Understand the benefits of each solution</p>
+</li>
+<li>
+<p>Link to the MAA website for white papers, documentation, and other information</p>
+</li>
+</ul>
+<p>The MAA Advisor page contains a table that lists the outage type, Oracle solutions for each outage, configuration status, and benefits. The MAA Advisor allows you to view High Availability solutions in the following ways:</p>
+<ul>
+<li>
+<p><span class="bold">Primary Database Recommendations Only</span>&mdash;This condensed view shows only the recommended solutions (the default view) for the primary database.</p>
+</li>
+<li>
+<p><span class="bold">All Solutions</span> &mdash;This expanded view shows all configuration recommendations and status for all primary and standby databases in this configuration. It includes an extra column <span class="bold">Target Name:Role</span> that provides the database name and shows the role (Primary, Physical Standby, or Logical Standby) of the database.</p>
+</li>
+</ul>
+<p><a href="#CHDIHDDE">Figure 12-11</a> shows an example of the MAA Advisor page with the <span class="bold">Show</span> All Solutions view selected.</p>
+<div id="HABPT5309" class="figure">
+<p class="titleinfigure"><a id="CHDIHDDE"></a>Figure 12-11 Maximum Availability Architecture (MAA) Advisor Page in Enterprise Manager</p>
+<img width="1101" height="882" src="img/habpt_gc_maa_adv.png" alt="Description of Figure 12-11 follows" /><br />
+<a id="sthref691" href="img_text/habpt_gc_maa_adv.htm">Description of "Figure 12-11 Maximum Availability Architecture (MAA) Advisor Page in Enterprise Manager"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>You can click the link in the Oracle Solution column to go to a page where you can set up, manage, and configure the specific solution area. Once a solution has been configured, click <span class="bold">Refresh</span> to update the configuration status. Once the page is refreshed, click <span class="bold">Advisor Details</span> on the Console page to see the updated values.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDIJBCC"></a>
+<div id="HABPT5310" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">12.4</span> Using Cluster Health Monitor</h2>
+<p><a id="sthref692"></a>The Cluster Health Monitor (CHM) gathers operating system metrics in real time and stores them in its repository for later analysis to determine the root cause of many Oracle Clusterware and Oracle RAC issues with the assistance of Oracle Support. It also works with Oracle Database Quality of Service Management (Oracle Database QoS Management) by providing metrics to detect memory over-commitment on a node. With this information, Oracle Database QoS Management can take action to relieve the stress and preserve existing workloads.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See:</p>
+<a class="olink CWADD90958" href="../../rac.112/e41959/intro.htm#CWADD90958"><span class="italic">Oracle Clusterware Administration and Deployment Guide</span></a> for an Overview of Managing Oracle Clusterware Environments and for more information about Cluster Health Monitor (CHM)</div>
+</div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1610">
+<tr>
+<td class="cellalignment1617">
+<table class="cellalignment1615">
+<tr>
+<td class="cellalignment1614"><a href="config_fcf.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1614"><a href="outage.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2005, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1619">
+<table class="cellalignment1613">
+<tr>
+<td class="cellalignment1614"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1614"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1614"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1614"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1614"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1614"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

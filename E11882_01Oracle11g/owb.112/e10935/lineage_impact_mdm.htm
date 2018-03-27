@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Managing Metadata Dependencies</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 037" />
+<meta name="dcterms.created" content="2011-09-21T18:21:35Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Warehouse Builder Data Modeling, ETL, and Data Quality Guide" />
+<meta name="dcterms.identifier" content="E10935-05" />
+<meta name="dcterms.isVersionOf" content="WBETL" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2000, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="auditing.htm" title="Previous" type="text/html" />
+<link rel="Next" href="errors_trouble.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10935.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">19/37</span> <!-- End Header --><a id="CIACJGCB"></a><a id="WBETL14000"></a>
+<h1 class="chapter"><span class="secnum">14</span> Managing Metadata Dependencies</h1>
+<p><a id="ABC1294405"></a>The Metadata Dependency Manager enables you to detect and resolve the impact of the changes made to the object definitions or the metadata in the workspace.</p>
+<p>This chapter contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#CGDGHBJG">"About the Metadata Dependency Manager"</a></p>
+</li>
+<li>
+<p><a href="#CGDJGDID">"Opening an LIA Diagram"</a></p>
+</li>
+<li>
+<p><a href="#CGDJACBF">"Managing and Exploring Objects in an LIA Diagram"</a></p>
+</li>
+<li>
+<p><a href="#CGDHGHIB">"Making Changes to Design Metadata Using Automatic Change Propagation"</a></p>
+</li>
+</ul>
+<a id="CGDGHBJG"></a><a id="WBETL14002"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">About the Metadata Dependency Manager</h2>
+<p><a id="sthref1575"></a><a id="sthref1576"></a>The Metadata Dependency Manager provides the interface through which you can explore dependencies among data objects, as represented by the metadata in your Oracle Warehouse Builder repository. The Metadata Dependency Manager presents dependencies in the form of interactive lineage and impact diagrams. A lineage diagram traces the data flows for an object back to the sources and displays all objects along those paths. An impact diagram identifies all the objects that are derived from the selected object.</p>
+<p>This type of information can help you in many circumstances such as the following:</p>
+<ul>
+<li>
+<p>Starting from a target object, such as a dimension, cube, or business intelligence tool report, identify the columns in each data source that are used in computing the results in the target.</p>
+</li>
+<li>
+<p>Assess the impact of design changes in an object such as a source table or a pluggable mapping that is used throughout a project.</p>
+</li>
+<li>
+<p>Propagate a design change, such as a change to the data type of a source table column, to downstream objects in the design.</p>
+</li>
+</ul>
+<p>Using end-to-end data lineage and impact analysis reduces project risk by enabling better planning for design changes, faster identification of unanticipated impacts when source systems change, and enabling more effective auditing of your business intelligence results, master data or other data integration processes.</p>
+<a id="CGDGGGHA"></a>
+<div class="sect2">
+<h3 class="sect2">Example: Lineage and Impact Analysis (LIA)</h3>
+<p>The metadata from sources such as files, databases, and applications can change even after the design and implementation of a data integration system. A change in the source metadata implies a corresponding impact in your Oracle Warehouse Builder implementation. Oracle Warehouse Builder enables you to reimport the modified source definitions into the workspace. However, your original warehouse design may no longer remain valid with the reimported definitions, and you must make changes to the design and fix the inconsistencies.</p>
+<p>You must first find out how the warehouse design is affected by the changes in the source and then determine all the design objects that are dependent upon the sources. Next, you must synchronize the metadata so that all the affected design objects are updated to reflect the changes in the source. After this process is complete, you can redeploy the updated design to rebuild your data warehouse and synchronize the data.</p>
+<p>For example, a company retrieves source data for a data warehouse from a flat file named <code>CUSTOMERS</code>. The <code>CUSTOMERS</code> flat file and a downstream staging table are referenced from multiple mappings in the ETL design, and ultimately loaded into a cube and an instance of Oracle Discoverer used for reporting. Records in <code>CUSTOMERS</code> include a numeric <code>CUSTOMER_ID</code> column, a <code>REGION</code> column which can take values <code>US</code>, <code>EMEA</code>, <code>APAC</code> or <code>OTHER</code>, Records from <code>CUSTOMERS</code> are also fed to a customer master database.</p>
+<p>Over time, the following issues arise:</p>
+<ul>
+<li>
+<p>The owners of the customer master data discover that a required column <code>GROUP_ID</code> sometimes contains a <code>NULL</code> value.</p>
+</li>
+<li>
+<p>The marketing department questions the breakdown of customers and sales by region as shown in reports generated by Oracle Discoverer.</p>
+</li>
+<li>
+<p>The <code>CUSTOMER_ID</code> column which previously only contained numeric values now may include letters and numbers.</p>
+</li>
+<li>
+<p>The existing <code>CUSTOMER_NAME</code> column, which was previously 50 characters, is expanded to 100 characters.</p>
+</li>
+<li>
+<p>A pluggable mapping referenced in several other mappings in the design is updated to reject rows with NULL values for the <code>GROUP_ID</code> column.</p>
+</li>
+</ul>
+<p>Changes to the definition of <code>CUSTOMERS</code> can potentially affect all of the objects downstream of that flat file. Errors in the customer master data could be originating in source data or could be caused by a bug in a ETL mapping. The questions about the Oracle Discoverer reports can be resolved if the origin of the region information for customers can be documented.</p>
+<p>Without data lineage and impact analysis based on Oracle Warehouse Builder repository metadata, developers responsible for the changes must manually review the entire data integration design, including staging tables, ODS tables, dimensions, cubes, Discoverer objects and the master data. Design changes in the source data require manual update of any ETL mappings used to load those objects. Marketing's confidence in the BI reports depends upon the developers' through manual review of the design.</p>
+<p>The metadata dependency management, data lineage and impact analysis features of Oracle Warehouse Builder simplifies these tasks:</p>
+<ul>
+<li>
+<p>The Metadata Dependency Manager automates tracing the lineage of the bad columns in the customer master data.</p>
+</li>
+<li>
+<p>The Discoverer design can be validated because the origin of the region data used in the reports is documented and can be proven.</p>
+</li>
+<li>
+<p>ETL mappings and targets that may be affected by the addition of non-numeric values to the <code>CUSTOMER_ID</code> column can be identified automatically.</p>
+</li>
+<li>
+<p>Target objects and ETL mappings throughout the design that are affected by the change to the <code>CUSTOMER_NAME</code> column definition can be automatically identified and even updated.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="CGDJCHAB"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">About Lineage and Impact Analysis and Metadata Dependency Diagrams</h3>
+<p><a id="ABC1295593"></a><a id="ABC1295593SRI1"></a><a id="ABC1295593SRI12"></a><a id="ABC1295593SRI123"></a>Metadata dependency diagrams show the relationships among objects managed by Oracle Warehouse Builder. The diagrams show both relationships of structure (for example, a primary key and foreign key relationship between columns in two tables) and data relationships (for example, the flow of data from the <code>CUSTOMERS</code> flat file to the <code>CUSTOMERS_STAGE</code> staging table).</p>
+<p>Diagrams can be read to discover data lineage and impact analysis information. A diagram can be read from left to right to discover impact analysis information (that is, which objects are affected by a given object or column) or from right to left to discover data lineage information (that is, to identify the source of data in an output object).</p>
+<p>For example, you might have a mapping that extracts data from a file and loads it into a table by way of an external table. This is the relationship:</p>
+<pre>
+flat_file &gt; external_table &gt; table
+</pre>
+<p><a href="#CGDGEFHI">Figure 14-1</a> shows a lineage diagram of an external table named <code>ADDRESS_EXT_TAB</code>. <code>ADDRESS_CSV</code> is a flat file, and it is part of the lineage of <code>ADDRESS_EXT_TAB</code>. Thus, any change to <code>ADDRESS_CSV</code> impacts <code>ADDRESS_EXT_TAB</code>.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CGDGEFHI"></a>Figure 14-1 Lineage Analysis Diagram for ADDRESS_EXT_TABLE</p>
+<img width="274" height="83" src="img/lineage.gif" alt="Screen capture of a lineage analysis diagram" /><br />
+<a id="sthref1577" href="img_text/lineage.htm">Description of "Figure 14-1 Lineage Analysis Diagram for ADDRESS_EXT_TABLE"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p><a href="#CGDGIEID">Figure 14-2</a> shows an impact diagram of <code>ADDRESS_EXT_TAB</code>, which includes the <code>ADDRESS_TABLE</code>. Any change to <code>ADDRESS_EXT_TAB</code> impacts <code>ADDRESS_TABL</code>E. <code>ADDRESS_EXT_TAB</code> is part of the lineage of <code>ADDRESS_TABL</code>E.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CGDGIEID"></a>Figure 14-2 Impact Analysis Diagram for ADDRESS_EXT_TABLE</p>
+<img width="512" height="176" src="img/impact.gif" alt="Screen capture of an impact analysis diagram" /><br />
+<a id="sthref1578" href="img_text/impact.htm">Description of "Figure 14-2 Impact Analysis Diagram for ADDRESS_EXT_TABLE"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The diagrams include the <code>DEFAULT_CONFIGURATION</code> object and the source and target data objects, because the selected configuration can affect how data is moved from sources to targets.</div>
+<p>You can expand the diagram to include the lineage and the impact of an object by clicking the plus signs (+) on either side of the object icon in the diagram, as shown in <a href="#CGDGJAAH">Figure 14-3</a>.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CGDGJAAH"></a>Figure 14-3 Lineage and Impact Analysis Diagram</p>
+<img width="534" height="152" src="img/lia_all.gif" alt="Screen capture of a lineage and impact analysis diagram." /><br />
+<a id="sthref1579" href="img_text/lia_all.htm">Description of "Figure 14-3 Lineage and Impact Analysis Diagram"</a><br />
+<br /></div>
+<!-- class="figure" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CGDJGDID"></a><a id="WBETL14003"></a>
+<div class="sect1">
+<h2 class="sect1">Opening an LIA Diagram</h2>
+<p>You can generate an LIA diagram from the Projects Navigator in the Design Center.</p>
+<p class="subhead2"><a id="sthref1580"></a>To generate an LIA diagram from the Design Center:</p>
+<ol>
+<li>
+<p>Expand the Projects Navigator until you see the object to analyze.</p>
+</li>
+<li>
+<p>Right-click the object and select <span class="bold">Lineage</span> or <span class="bold">Impact</span>.</p>
+<p>The Lineage or Impact tab is displayed, showing either the lineage of the object (one level of objects to the left of the selected object) or its impacts (one level of objects to the right of the selected object).</p>
+</li>
+</ol>
+<p>The Lineage and Impact commands are also available from the View menu.</p>
+</div>
+<!-- class="sect1" -->
+<a id="CGDJACBF"></a><a id="WBETL14004"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Managing and Exploring Objects in an LIA Diagram</h2>
+<p>Your initial selection of an object and a diagram type simply determine the initial starting point and the direction that the diagram branches from that object. You can modify an LIA diagram in the following ways:</p>
+<ul>
+<li>
+<p>Drag-and-drop another object onto the diagram to view its dependencies along with the other objects.</p>
+</li>
+<li>
+<p>Click the plus (+) and minus (-) signs next to an object icon to expand or collapse a branch of the diagram.</p>
+</li>
+<li>
+<p>Remove the selected objects from the canvas. From the Graph menu, select <span class="bold">Hide Selected Object</span> to remove objects from the canvas. To restore the hidden objects, select Refresh from the Graph menu.</p>
+</li>
+<li>
+<p>Use the grouping tool to collapse a section of the diagram into a single icon, as described in <a href="#CGDDEGEG">"Using Groups in an LIA Diagram"</a>.</p>
+</li>
+<li>
+<p>Double-click an object to display its attributes, as described in <a href="#CGDCABFF">"Displaying an Object's Attributes"</a>.</p>
+</li>
+<li>
+<p>Right-click an object to display the following menu options: Open Editor, Show Full Lineage, and Show Full Impact.</p>
+<p><a href="#CGDHGHIB">"Making Changes to Design Metadata Using Automatic Change Propagation"</a> describes the Open Editor option.</p>
+<p>The Show Full Lineage and Show Full Impact options are described <a href="#CIAFGIEJ">"Exploring Object Lineage and Impact in an LIA Diagram"</a>.</p>
+</li>
+</ul>
+<a id="CIAFGIEJ"></a>
+<div class="sect2">
+<h3 class="sect2">Exploring Object Lineage and Impact in an LIA Diagram</h3>
+<p>Use the following options in the Graph menu to explore the lineage and impact analysis information in LIA diagrams:</p>
+<ul>
+<li>
+<p><span class="bold">Show Full Impact</span>: Expands nodes to show all impacts in the diagram of the selected object.</p>
+</li>
+<li>
+<p><span class="bold">Show Full Lineage</span>: Generates the full lineage diagram of the selected object.</p>
+</li>
+<li>
+<p><span class="bold">Show Lineage</span>: Displays the next level of objects in the lineage diagram of the selected object.</p>
+</li>
+<li>
+<p><span class="bold">Hide Lineage</span>: Hides the lineage of the selected object.</p>
+</li>
+<li>
+<p><span class="bold">Show Impact</span>: Displays the next level of objects in the impact diagram of the selected object.</p>
+</li>
+<li>
+<p><span class="bold">Hide Impact</span>: Hides all impacts of the selected object.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1581"></a>
+<h3 class="sect2">Using Find to Search for Objects in an LIA Diagram</h3>
+<p>You can search for objects in the lineage and impact analysis diagram, as with other editors within Oracle Warehouse Builder. Searching forward follows the impact analysis from left to right, and searching backward follows the data lineage from right to left. The diagram moves so that the current matching node is at the center of the diagram. You can also highlight all matches for a search in the diagram.</p>
+<p class="subhead2"><a id="sthref1582"></a>To search within a Lineage and Impact Analysis (LIA) diagram:</p>
+<ol>
+<li>
+<p>From the Search menu, select <span class="bold">Find</span>.</p>
+<p>The Find dialog box is displayed.</p>
+</li>
+<li>
+<p>In the <span class="bold">Find</span> field, enter the name of the object you want to find.</p>
+</li>
+<li>
+<p>To use additional options while searching for objects, click <span class="bold">Show Advanced</span>.</p>
+<p>The advanced search options are displayed in the Find dialog box.</p>
+</li>
+<li>
+<p>(Optional) Specify advanced search options as described in the following sections:</p>
+<ul>
+<li>
+<p><a href="mappings.htm#BEIDAFHD">"Specifying the Search Criteria"</a></p>
+</li>
+<li>
+<p><a href="mappings.htm#BEIHJEBE">"Match Options"</a></p>
+</li>
+<li>
+<p><a href="mappings.htm#BEIEBDFD">"Find Options"</a></p>
+</li>
+<li>
+<p><a href="mappings.htm#BEIBAHEJ">"Scope"</a></p>
+</li>
+<li>
+<p><a href="mappings.htm#BEICAFFD">"Direction"</a></p>
+</li>
+</ul>
+<p>These sections discuss performing advanced search for mappings and pluggable mappings. However, the functionality and the processes are the same when you perform advanced search in an LIA diagram.</p>
+</li>
+<li>
+<p>Click <span class="bold">OK</span>.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="CGDDEGEG"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Using Groups in an LIA Diagram</h3>
+<p><a id="sthref1583"></a>Groups enable you to organize the objects in a complex diagram so that they are easier to locate and edit. By reducing the number of objects in a diagram, you can more easily focus on the objects currently of interest.</p>
+<p class="subhead2"><a id="sthref1584"></a>To create a group:</p>
+<ol>
+<li>
+<p>Select a group of objects by dragging and dropping a box around them.</p>
+</li>
+<li>
+<p>Click <span class="bold">Group Selected Objects</span> on the toolbar.</p>
+<p>The Group Selected Data Objects dialog box is displayed.</p>
+</li>
+<li>
+<p>Enter a name for the group.</p>
+<p>The selected objects are collapsed into a single folder icon.</p>
+</li>
+</ol>
+<p>To display the individual objects in a group, double-click the folder icon. You can work on these objects in the same way as ungrouped objects.</p>
+<p>To ungroup the objects, select the group and click <span class="bold">Ungroup Selected Object</span> on the toolbar.</p>
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1585"></a>
+<h4 class="sect3">Managing Groups in an LIA Diagram</h4>
+<p>The following operations are available for working with groups in an LIA diagram.</p>
+<ul>
+<li>
+<p><span class="bold">Group Selected Objects</span>: Creates a group containing the selected objects on the canvas. A folder icon represents all objects in the group. Grouping enables you to reduce clutter on the canvas when there are many objects. Double-click the icon to display the individual objects in the group.</p>
+</li>
+<li>
+<p><span class="bold">Ungroup Selected Objects</span>: Eliminates the selected group so that all objects are represented individually. Select the folder icon you want to ungroup and click <span class="bold">Ungroup Selected Folders</span>.</p>
+</li>
+<li>
+<p><span class="bold">Group By Module</span>: Automatically groups all objects by module. A folder icon represents the module and all objects in the module. To group by module, select <span class="bold">Group By Module</span> from the Graph menu.</p>
+<p>Double-click the icon to display the individual objects in the group.</p>
+</li>
+<li>
+<p><span class="bold">Ungroup Modules</span>: Eliminates the module groups so that all objects are represented individually. To ungroup modules, select <span class="bold">Ungroup Modules</span> from the Graph menu.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CGDCABFF"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Displaying an Object's Attributes</h3>
+<p>You can expand an object icon in a diagram so that you can examine its attributes. To expand an icon, double-click it. To reduce it to an icon, click the down arrow in the upper-right corner.</p>
+<p class="subhead2"><a id="sthref1586"></a>To generate an LIA diagram for an attribute:</p>
+<ol>
+<li>
+<p>Generate an LIA diagram for an object.</p>
+</li>
+<li>
+<p>Double-click the icons to display their attributes.</p>
+</li>
+<li>
+<p>Right-click an attribute and select <span class="bold">Show Lineage</span> or <span class="bold">Show Impact</span>.</p>
+<p>The attributes along the lineage or impact path for the selected attribute are highlighted in a different color.</p>
+</li>
+</ol>
+<p>You can use this detailed information for auditing or when planning to propagate changes.<a id="sthref1587"></a><a id="sthref1588"></a><a id="sthref1589"></a><a id="sthref1590"></a></p>
+<p><a href="#CGDFEGFC">Figure 14-4</a> shows two expanded icons whose column attributes are connected by a mapping.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CGDFEGFC"></a>Figure 14-4 Expanded Icons in an LIA Diagram</p>
+<img width="632" height="306" src="img/mdm_expand.gif" alt="Screen capture of LIA diagram with expanded icons" /><br />
+<a id="sthref1591" href="img_text/mdm_expand.htm">Description of "Figure 14-4 Expanded Icons in an LIA Diagram"</a><br />
+<br /></div>
+<!-- class="figure" --></div>
+<!-- class="sect2" -->
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1592"></a>
+<h3 class="sect2">Exporting and Printing LIA Diagrams</h3>
+<p>LIA diagrams can be exported to SVG or JPEG formats, or printed using commands under the File menu.</p>
+<ul>
+<li>
+<p><span class="bold">Export Diagram</span>: Exports the active diagram to the local file system as an SVG or JPEG file. To export an LIA diagram, select <span class="bold">Export</span>, then <span class="bold">Diagram</span> from the File menu.</p>
+</li>
+<li>
+<p><span class="bold">Print Options</span>: Provides Print Setup, Preview, and Print options for printing the diagram.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CGDHGHIB"></a><a id="WBETL14005"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Making Changes to Design Metadata Using Automatic Change Propagation</h2>
+<p>The LIA diagrams identify all of the objects that may be invalidated by a change to one or more objects. With this knowledge, you can examine the affected objects and modify them as necessary. Many changes can automatically be propagated to downstream objects in the Metadata Dependency Manager.</p>
+<p class="subhead2"><a id="sthref1593"></a>To manually modify objects:</p>
+<ol>
+<li>
+<p>In the Dependency Manager, navigate to the first object to be changed. For example, navigate to a source table.</p>
+</li>
+<li>
+<p>Right-click the object icon in a diagram and select <span class="bold">Open Editor</span>.</p>
+<p>Oracle Warehouse Builder opens the editing tool for the object. For example, if you selected a table, then Oracle Warehouse Builder opens the Data Object Editor.</p>
+</li>
+<li>
+<p>Make the necessary changes in the editing tool and then save your changes.</p>
+</li>
+<li>
+<p>Repeat these steps for all objects identified in the LIA diagram as needing change.</p>
+</li>
+</ol>
+<p>In the case that only a few objects are affected by a change, then you may prefer to modify the object manually. However, if many objects are affected, you can use automated change propagation to save time.</p>
+<p class="subhead2"><a id="sthref1594"></a>To propagate metadata changes using Dependency Manager:</p>
+<ol>
+<li>
+<p>Double-click the object icon in a diagram.</p>
+<p>For example, double-click the icon for a source table.</p>
+</li>
+<li>
+<p>Right-click the metadata to change, and select <span class="bold">Propagate Change</span>.</p>
+<p>For example, right-click a column in the table.</p>
+</li>
+<li>
+<p>Change the attributes as described in <a href="#CHDDFIHI">"Automated Change Propagation in the Dependency Manager"</a>.</p>
+</li>
+</ol>
+<a id="CHDDFIHI"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Automated Change Propagation in the Dependency Manager</h3>
+<p>In the Propagate Change dialog box, you specify metadata changes which Oracle Warehouse Builder propagates to all dependent objects, as indicated in the Lineage Impact Analysis diagram. This dialog box displays metadata details under the following columns: Propagate, Attribute, Existing Value, and New Value.</p>
+<p><a href="#CIABIFHB">Figure 14-5</a> displays the Propagate change dialog box.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CIABIFHB"></a>Figure 14-5 Propagate Change Dialog Box</p>
+<img width="596" height="351" src="img/propagate_change_dlg.gif" alt="Description of Figure 14-5 follows" /><br />
+<a id="sthref1595" href="img_text/propagate_change_dlg.htm">Description of "Figure 14-5 Propagate Change Dialog Box"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>The Attribute column lists the metadata attribute, such as name, business name, and data type. The Existing Value column lists the current value of the attribute and the New Value lists the changed value discovered by the Metadata Dependency Manager.</p>
+<p>Select <span class="bold">Propagate</span> for each attribute to change. For example, to change the data type and length for a column, ensure that you select Propagate to the left of these attributes.</p>
+<p>In the <span class="bold">New Value</span> field, you can enter the desired values for each attribute. <a id="sthref1596"></a>Click <span class="bold">OK</span> after selecting the changes to propagate.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment2968">
+<tr>
+<td class="cellalignment2977">
+<table class="cellalignment2973">
+<tr>
+<td class="cellalignment2972"><a href="auditing.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment2972"><a href="errors_trouble.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2000, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment2980">
+<table class="cellalignment2971">
+<tr>
+<td class="cellalignment2972"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment2972"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment2972"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment2972"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment2972"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment2972"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

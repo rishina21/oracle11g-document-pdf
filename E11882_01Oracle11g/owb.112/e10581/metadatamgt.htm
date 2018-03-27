@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Dependency and Change Management</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 748" />
+<meta name="dcterms.created" content="2014-03-05T2:31:2Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Warehouse Builder Concepts" />
+<meta name="dcterms.identifier" content="E10581-06" />
+<meta name="dcterms.isVersionOf" content="WBCON" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2000, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="datatransform.htm" title="Previous" type="text/html" />
+<link rel="Next" href="dataquality.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10581.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">12/19</span> <!-- End Header -->
+<div id="WBCON4602" class="chapter"><a id="sthref522"></a>
+<h1 class="chapter"><span class="secnum">7</span> Dependency and Change Management</h1>
+<p>This section discusses how metadata is managed and made secure in Oracle Warehouse Builder and introduces the Metadata Loader, snapshots, the Metadata Dependency Manager, and lineage and impact analysis.</p>
+<p>This section contains these topics:</p>
+<ul>
+<li>
+<p><a href="#CHDFDBFG">"Metadata Security Concepts"</a></p>
+</li>
+<li>
+<p><a href="#CHDCCFJC">"Metadata Lifecycle Management Concepts"</a></p>
+</li>
+<li>
+<p><a href="#BCEFCFJC">"The Metadata Loader"</a></p>
+</li>
+<li>
+<p><a href="#BGBHIEEG">"Metadata Snapshots"</a></p>
+</li>
+<li>
+<p><a href="#CGDGHBJG">"The Metadata Dependency Manager (MDM)"</a></p>
+</li>
+<li>
+<p><a href="#CHDGBFHC">"Metadata Dependencies and Lineage and Impact Analysis"</a></p>
+</li>
+</ul>
+<a id="CHDFDBFG"></a>
+<div id="WBCON4638" class="sect1">
+<h2 class="sect1">Metadata Security Concepts</h2>
+<p><a id="sthref523"></a>Oracle Warehouse Builder enables you to design security on the metadata you store in the design repository. The design repository is an Oracle Database with users, roles, and access privileges defined. Oracle Warehouse Builder metadata security operates in addition to the Oracle Database security. The Oracle Database provides security for data while Oracle Warehouse Builder provides security for the metadata.</p>
+<p>In addition to being registered in the repository, all users must also be database users in the design repository database. Database users have access to the data in the database by using SQL Plus. However, they do not have access to Oracle Warehouse Builder and its metadata unless the users are also registered in Oracle Warehouse Builder.</p>
+<p>Metadata security is optional and flexible. You can:</p>
+<ul>
+<li>
+<p>Apply no metadata security controls or define a metadata security policy.</p>
+</li>
+<li>
+<p>Define multiple users and apply full security.</p>
+</li>
+<li>
+<p>Implement your own security strategy based on the Security Service.</p>
+</li>
+</ul>
+<p>Also, after you define a security strategy, you can later adapt the strategy to be more or less restrictive. The following sections describe how to implement metadata security using the Design Center.</p>
+<p>Security policies can be managed from within the Repository Assistant or by using OMB*Plus commands.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p>About Metadata Security" in <a class="olink WBINS15100" href="../../owb.112/e17130/security_mgmt.htm#WBINS15100"><span class="italic">Oracle Warehouse Builder Installation and Administration Guide.</span></a></p>
+</li>
+<li>
+<p>"Managing Metadata Dependencies" in <a class="olink WBETL14000" href="../../owb.112/e10935/lineage_impact_mdm.htm#WBETL14000"><span class="italic">Oracle Warehouse Builder Data Modeling, ETL, and Data Quality Guide</span></a>.</p>
+</li>
+</ul>
+</div>
+<a id="BGBFJGCJ"></a>
+<div id="WBCON4639" class="sect2">
+<h3 class="sect2">About the <a id="sthref524"></a>Security Service</h3>
+<p>Only users with administrative privileges can access the Security Service and change security policy in Oracle Warehouse Builder.</p>
+<p>When you install Oracle Warehouse Builder and then use the Repository Assistant to create a design repository, Oracle Warehouse Builder assigns the design repository owner you define to be the default administrator. The first time you start the Design Center after installation, you must log in as the design repository owner. You can then define additional administrators or other users as necessary.</p>
+<p>Log in to the Oracle Warehouse Builder Design Center as the design repository owner and Oracle Warehouse Builder displays the Globals Navigator.</p>
+<p>Under the <a id="sthref525"></a>security node, there are two predefined roles, <a id="sthref526"></a>ADMINISTRATOR and <a id="sthref527"></a>EVERYONE. The one predefined user is the design repository owner, <span class="italic">REPOS_OWNER</span> in this example, which is assigned the ADMINISTRATOR role by default.</p>
+<p>To perform actions under the Security node, select an object and right-click to view all of the possible operations. Or select an object and select <span class="bold">Edit</span> from the menu bar.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+These topics in <a class="olink WBINS" href="../e17130/toc.htm"><span class="italic">Oracle Warehouse Builder Installation and Administration Guide</span></a>:
+<ul>
+<li>
+<p><a class="olink WBINS15000" href="../../owb.112/e17130/security_mgmt.htm#WBINS15000">"Managing Security"</a></p>
+</li>
+<li>
+<p><a class="olink WBINS13000" href="../../owb.112/e17130/multi_design_mgmt.htm#WBINS13000">"Managing Configurations"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDCCFJC"></a>
+<div id="WBCON4622" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><a id="sthref528"></a>Metadata Lifecycle Management Concepts</h2>
+<p>Oracle Warehouse Builder provides several solutions for <a id="sthref529"></a>copying and moving metadata for the purposes of backup, history management, and version management. You can either take snapshots of your metadata or use the Metadata Loader (MDL) utility.</p>
+<p><a id="sthref530"></a>Snapshots enable you to capture the metadata definitions of design objects created in the Project Navigator. You can capture all the design objects in a project or selectively choose objects in a project to include in a snapshot.</p>
+<p>The <a id="sthref531"></a>Metadata Loader utility enables you to copy and move all types of metadata objects in a repository. With this utility, you can move metadata between Oracle Warehouse Builder repositories that reside on platforms with different operating systems.</p>
+<p>With both solutions, you can export the metadata into a third-party version control tool such as ClearCase or SourceSafe.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+These topics in <a class="olink WBINS" href="../e17130/toc.htm"><span class="italic">Oracle Warehouse Builder Installation and Administration Guide</span></a>
+<ul>
+<li>
+<p><a class="olink WBINS10100" href="../../owb.112/e17130/content_mgmt.htm#WBINS10100">"About Snapshots and Metadata Loader"</a></p>
+</li>
+<li>
+<p><a class="olink WBINS16216" href="../../owb.112/e17130/content_mgmt.htm#WBINS16216">"Comparison of Snapshots and Metadata Loader"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="BCEFCFJC"></a>
+<div id="WBCON4625" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">The Metadata Loader</h2>
+<p>Using the <a id="sthref532"></a>Metadata Loader (MDL) utility, you can import and export metadata from any object in the Project Navigator, Global Navigator, and Connection Navigator. You can then move exported files into a third-party version control tool such as Oracle Repository, ClearCase, or SourceSafe. You can enter annotations for your <a id="sthref533"></a>MDL export file to keep track of the information contained in the file.</p>
+<p>The Metadata Loader enables you to populate a new repository and transfer, update, or restore a backup of existing repository metadata. You can copy or move metadata objects between repositories, even if those repositories reside on platforms with different operating systems.</p>
+<p>You can use the Design Center to run the Metadata Loader utilities. The Design Center provides a graphical interface that guides you through the process of exporting and importing metadata.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+"Using the Metadata Loader" in <a class="olink WBINS12000" href="../../owb.112/e17130/change_mgmt.htm#WBINS12000"><span class="italic">Oracle Warehouse Builder Installation and Administration Guide.</span></a></div>
+</div>
+<!-- class="sect1" -->
+<a id="BGBHIEEG"></a>
+<div id="WBCON4623" class="sect1">
+<h2 class="sect1"><a id="sthref534"></a>Metadata Snapshots</h2>
+<p><a id="sthref535"></a>A <span class="bold">snapshot</span> captures all the metadata information about the selected objects and their relationships at a given point in time. While an object can only have one current definition in a workspace, it can have multiple snapshots that describe it at various points in time. Snapshots are stored in the Oracle Database, in contrast to Metadata Loader exports, which are stored as separate disk files. You can, however, export snapshots to disk files. Snapshots are also used to support the recycle bin, providing the information needed to restore a deleted metadata object.</p>
+<p>When you take a snapshot, you capture the metadata of all or specific objects in your workspace at a given point in time. You can use a snapshot to detect and report changes in your metadata. You can create snapshots of any objects that you can access from the Projects Navigator.</p>
+<p>A snapshot of a collection is not a snapshot of just the shortcuts in the collection but a snapshot of the actual objects.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p>"Using Snapshots" in <a class="olink WBINS10200" href="../../owb.112/e17130/content_mgmt.htm#WBINS10200"><span class="italic">Oracle Warehouse Builder Installation and Administration Guide.</span></a></p>
+</li>
+<li>
+<p><a class="olink WBSCR" href="../e10584/toc.htm"><span class="italic">Oracle Warehouse Builder API and Scripting Reference</span></a> for information about creating and managing snapshots using scripts.</p>
+</li>
+</ul>
+</div>
+<a id="i1098312"></a>
+<div id="WBCON4624" class="sect2">
+<h3 class="sect2">About Managing Snapshots</h3>
+<p>You can manage your snapshots from the Metadata Change Management window in the Design Center. To open this window, select <span class="bold">Change Manager</span> from the Tools menu.</p>
+<p>The Metadata Change Management window contains a menu bar and a toolbar. You can start most tasks in several different ways, either by using the menus, clicking the tools, or right-clicking a snapshot or a component.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+"Managing Snapshots" in <a class="olink WBINS16221" href="../../owb.112/e17130/content_mgmt.htm#WBINS16221"><span class="italic">Oracle Warehouse Builder for Installation and Administration Guide</span></a> for complete procedures.</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CGDGHBJG"></a>
+<div id="WBCON4608" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">The Metadata Dependency Manager (MDM)</h2>
+<p><a id="sthref536"></a>The <a id="sthref537"></a><span class="bold">Metadata Dependency Manager</span> (MDM) enables you to plan your project by previewing the impact of the changes or future changes for "what-if" analysis. When you plan to introduce changes to your source systems, you can gauge the impact of that change on your warehouse design. If changes have been introduced, then you can plan the time required to update your ETL design and rebuild your data warehouse.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+"Managing Metadata Dependencies" in <a class="olink WBETL14000" href="../../owb.112/e10935/lineage_impact_mdm.htm#WBETL14000"><span class="italic">Oracle Warehouse Builder Data Modeling, ETL, and Data Quality Guide</span></a> for complete procedures.</div>
+<div id="WBCON4611" class="sect2"><!-- infolevel="all" --><a id="sthref538"></a>
+<h3 class="sect2">The Metadata Dependency Manager Menus and Commands</h3>
+<p>The Metadata Dependency Manager is a graphical interface that represents the dependencies between objects. Knowing that an object has dependencies with another object helps identify potential impacts when things change.</p>
+<p>The Metadata Dependency Manager has the following components:</p>
+<ul>
+<li>
+<p><a href="#CHDGCBAG">"Menu Bar"</a></p>
+</li>
+<li>
+<p><a href="#CHDBHBIC">"Analysis"</a></p>
+</li>
+<li>
+<p><a href="#CHDIJEDF">"Edit"</a></p>
+</li>
+<li>
+<p><a href="#CHDCHCJB">"View"</a></p>
+</li>
+<li>
+<p><a href="#CHDBHEJB">"Window"</a></p>
+</li>
+<li>
+<p><a href="#CHDDGCEB">"Toolbars"</a></p>
+</li>
+<li>
+<p><a href="#CHDGGHCB">"DM Tree"</a></p>
+</li>
+<li>
+<p><a href="#CHDHFCED">"Property Inspector"</a></p>
+</li>
+<li>
+<p><a href="#CHDEDDHH">"Canvas"</a></p>
+</li>
+</ul>
+<p class="subhead2"><a id="CHDGCBAG"></a><a id="WBCON4612"></a>Menu Bar</p>
+<p>The Metadata Dependency Manager menu bar provides commands for performing various tasks. Some commands are also available on the toolbars.</p>
+<p class="subhead2"><a id="CHDBHBIC"></a><a id="WBCON4613"></a>Analysis</p>
+<p>The Analysis menu contains the following commands:</p>
+<ul>
+<li>
+<p><span class="bold">Close</span>: Closes the Dependency Manager.</p>
+</li>
+<li>
+<p><span class="bold">Export Diagram</span>: Exports the active diagram to the local file system as an SVG or JPEG file.</p>
+</li>
+<li>
+<p><span class="bold">Print Options</span>: Provides Print Setup, Preview, and Print options for printing the diagram.</p>
+</li>
+</ul>
+<p class="subhead2"><a id="CHDIJEDF"></a><a id="WBCON4614"></a>Edit</p>
+<p>The Edit menu contains the following commands:</p>
+<ul>
+<li>
+<p><span class="bold">Open Editor</span>: Opens the Editor for the currently selected object.</p>
+</li>
+<li>
+<p><span class="bold">Hide</span>: Removes the selected objects from the canvas. Use the Refresh command on the View menu to restore the hidden objects.</p>
+</li>
+<li>
+<p><span class="bold">Select All</span>: Selects all objects displayed on the canvas.</p>
+</li>
+<li>
+<p><span class="bold">Propagate Changes</span>: Displays the Propagate Changes dialog box for a selected attribute. Use it to change the value of an attribute and to propagate that change to all objects downstream. For example, you can select a column in a table object and change its metadata such as its name or data type.</p>
+</li>
+<li>
+<p><span class="bold">Group Selected Objects</span>: Creates a group containing the selected objects on the canvas. A folder icon represents all objects in the group. Double-click the icon to display the individual objects in the group. Grouping enables you to reduce clutter on the canvas when there are many objects.</p>
+</li>
+<li>
+<p><span class="bold">Ungroup Selected Objects</span>: Eliminates the selected group so that all objects are represented individually.</p>
+</li>
+<li>
+<p><span class="bold">Group By Module</span>: Automatically groups all objects by module. A folder icon represents the module and all objects in the module. Double-click the icon to display the individual objects in the group.</p>
+</li>
+<li>
+<p><span class="bold">Ungroup Modules</span>: Eliminates the module groups so that all objects are represented individually.</p>
+</li>
+</ul>
+<p class="subhead2"><a id="CHDCHCJB"></a><a id="WBCON4615"></a>View</p>
+<p>The View menu contains the following commands:</p>
+<ul>
+<li>
+<p><span class="bold">Toolbars</span>: Displays or hides the Graphic tools or the Edit tools.</p>
+</li>
+<li>
+<p><span class="bold">Mode</span>: Sets the pointer for one of these actions:</p>
+<ul>
+<li>
+<p><span class="bold">Select</span>: Selects one or more objects on the canvas.</p>
+</li>
+<li>
+<p><span class="bold">Pan</span>: Moves the entire diagram on the canvas.</p>
+</li>
+<li>
+<p><span class="bold">Interactive Zoom</span>: Expands the diagram as you move the pointer down, or shrinks the diagram as you move the pointer up.</p>
+</li>
+<li>
+<p><span class="bold">Navigate Edge</span>: Selects the next object in the flow.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><span class="bold">Zoom</span>: Displays a list of percentages that expand or shrink the diagram.</p>
+</li>
+<li>
+<p><span class="bold">Fit in Window:</span> Automatically chooses a size for the diagram so that it fits on the canvas.</p>
+</li>
+<li>
+<p><span class="bold">Auto Layout</span>: Organizes the objects and displays the diagram at its default size.</p>
+</li>
+<li>
+<p><span class="bold">Center:</span> Centers the diagram on the canvas.</p>
+</li>
+<li>
+<p><span class="bold">Show Full Impact</span>: Generates the full impact diagram of the selected object.</p>
+</li>
+<li>
+<p><span class="bold">Show Full Lineage</span>: Generates the full lineage diagram of the selected object.</p>
+</li>
+<li>
+<p><span class="bold">Show Lineage</span>: Displays the next level of objects in the lineage diagram of the selected object.</p>
+</li>
+<li>
+<p><span class="bold">Hide Lineage</span>: Hides the lineage of the selected object.</p>
+</li>
+<li>
+<p><span class="bold">Show Impact</span>: Displays the next level of objects in the impact diagram of the selected object.</p>
+</li>
+<li>
+<p><span class="bold">Hide Impact</span>: Hides the impact of the selected object.</p>
+</li>
+<li>
+<p><span class="bold">Expand</span>: Expands the selected icon in the diagram. The expanded icon shows the details of the object, such as the columns in a table or the attributes in a dimension.</p>
+</li>
+<li>
+<p><span class="bold">Expand All</span>: Expands all the object icons in the diagram.</p>
+</li>
+<li>
+<p><span class="bold">Collapse</span>: Collapses the expanded icon for a selected object.</p>
+</li>
+<li>
+<p><span class="bold">Collapse All</span>: Collapses all the expanded icons on the canvas.</p>
+</li>
+<li>
+<p><span class="bold">Refresh</span>: Refreshes the Dependency Manager diagram to reflect recent changes in the workspace.</p>
+</li>
+</ul>
+<p class="subhead2"><a id="CHDBHEJB"></a><a id="WBCON4616"></a>Window</p>
+<p>The Metadata Dependency Manager Window menu contains commands for toggling between displaying and hiding the following windows:</p>
+<ul>
+<li>
+<p><span class="bold">Property Inspector</span></p>
+</li>
+<li>
+<p><span class="bold">Bird's Eye View</span></p>
+</li>
+<li>
+<p><span class="bold">Tree View</span></p>
+</li>
+</ul>
+<p class="subhead2"><a id="CHDDGCEB"></a><a id="WBCON4617"></a>Toolbars</p>
+<p>The Metadata Dependency Manager provides two toolbars as shortcuts to frequently used commands:</p>
+<ul>
+<li>
+<p><span class="bold">Graphic toolbar</span>: Provides icons for commands on the View menu. Refer to <a href="#CHDCHCJB">"View"</a> for descriptions of these commands.</p>
+</li>
+<li>
+<p><span class="bold">Edit toolbar</span>: Provides icons for commands on the Edit menu. Refer to <a href="#CHDIJEDF">"Edit"</a> for descriptions of these commands.</p>
+</li>
+</ul>
+<p class="subhead2"><a id="CHDBACIA"></a><a id="WBCON4618"></a><a id="sthref539"></a>Bird's Eye View</p>
+<p>Use the Bird's Eye View to quickly change the portion of the diagram currently displayed on the canvas. This view displays a miniature version of the diagram on the canvas, with a scrollable box that represents the dimensions of the canvas. Drag the box to the area of the diagram currently of interest to you.</p>
+<p class="subhead2"><a id="CHDGGHCB"></a><a id="WBCON4619"></a><a id="sthref540"></a>DM Tree</p>
+<p>Use the DM Tree to change the content of the canvas. The DM Tree has these tabs:</p>
+<ul>
+<li>
+<p><span class="bold">DM Context Tree</span>: Lists objects in the current project. Right-click an object, and use the menu to generate a new diagram or to add the object to the current diagram. You can also drag-and-drop an object onto the current diagram.</p>
+</li>
+<li>
+<p><span class="bold">DM Graph Tree</span>: Lists the current diagrams. You can close a diagram on the canvas, then use this list to redisplay the diagram without regenerating it.</p>
+</li>
+</ul>
+<p class="subhead2"><a id="CHDHFCED"></a><a id="WBCON4620"></a><a id="sthref541"></a>Property Inspector</p>
+<p>Use the Property Inspector to view an object's properties.</p>
+<p>To change the current object in the Property Inspector, right-click the object on the canvas and select <span class="bold">Update Property Inspector</span>.</p>
+<p>For a description of a property, select the property in the Inspector. The description appears at the bottom of the window.</p>
+<p class="subhead2"><a id="CHDEDDHH"></a><a id="WBCON4621"></a><a id="sthref542"></a>Canvas</p>
+<p>Use the canvas to display one or more lineage and impact diagrams. Each diagram is displayed on a separate tab.</p>
+<p>You can use these techniques to create and manipulate diagrams on the canvas:</p>
+<ul>
+<li>
+<p>To open a new diagram, right-click an object in the DM Context Tree and select <span class="bold">Show Lineage</span> or <span class="bold">Show Impact</span>.</p>
+</li>
+<li>
+<p>To close a diagram, click the <span class="bold">X</span> on the tab. You can redisplay the diagram from the DM Graph Tree until you close the Metadata Management window.</p>
+</li>
+<li>
+<p>To add an object to the canvas, drag-and-drop it from the DM Context Tree.</p>
+</li>
+<li>
+<p>To display more of the lineage of an object, click the plus sign (+) to the left of its icon. To hide the lineage, click the minus sign (-) to the left.</p>
+</li>
+<li>
+<p>To display more of the impact of an object, click the plus sign (+) to the right of its icon. To hide the impact, click the minus sign (-) to the right.</p>
+</li>
+<li>
+<p>To display the details of an object, double-click it. You can then select an individual property and edit it by choosing <span class="bold">Propagate Changes</span> from the Edit menu.</p>
+</li>
+<li>
+<p>To edit an object, right-click its icon and select <span class="bold">Open Editor</span>.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDGBFHC"></a>
+<div id="WBCON4603" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Metadata Dependencies and Lineage and Impact Analysis</h2>
+<p>Oracle Warehouse Builder provides the <a id="sthref543"></a>Metadata Dependency Manager to detect and resolve the impact of the changes made to the object definitions or the metadata in the workspace. <a id="sthref544"></a><a id="sthref545"></a><a id="sthref546"></a>The Metadata Dependency Manager generates lineage and impact diagrams for any data object. A lineage diagram traces the data flows for an object back to the sources and displays all objects along those paths. An impact diagram identifies all the objects that are derived from selected object.</p>
+<p>This type of information can help you in many circumstances as follows:</p>
+<ul>
+<li>
+<p>Follow <a id="sthref547"></a>government regulations or other audits that require tracking of financial data.</p>
+</li>
+<li>
+<p>Modify the system design because of changes in the source data.</p>
+</li>
+<li>
+<p>Modify the system design because of new requirements for reporting and analysis.</p>
+</li>
+<li>
+<p>Assess the impact of design changes in a pluggable mapping that is used throughout a project.</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+These topics in <a class="olink WBETL" href="../e10935/toc.htm"><span class="italic">Oracle Warehouse Builder Data Modeling, ETL, and Data Quality Guide</span></a>
+<ul>
+<li>
+<p><a class="olink WBETL14002" href="../../owb.112/e10935/lineage_impact_mdm.htm#WBETL14002">"About the Metadata Dependency Manager"</a></p>
+</li>
+<li>
+<p><a class="olink WBETL14003" href="../../owb.112/e10935/lineage_impact_mdm.htm#WBETL14003">"Opening an LIA Diagram"</a></p>
+</li>
+<li>
+<p>"<a class="olink WBETL15001" href="../../owb.112/e10935/errors_trouble.htm#WBETL15001">Runtime Audit Browser</a>"</p>
+</li>
+</ul>
+</div>
+<a id="CGDJCHAB"></a>
+<div id="WBCON4604" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Lineage and Impact Analysis Diagrams</h3>
+<p><a id="sthref548"></a>Lineage and Impact Analysis (LIA) diagra<a class="olink WBETL15001" href="../../owb.112/e10935/errors_trouble.htm#WBETL15001"></a>ms show the relationships among objects managed by Oracle Warehouse Builder. These relationships are constructed by mappings and structural relationships (for example, a primary key and foreign key relationship). The <a id="sthref549"></a>lineage diagram for a particular object shows its source objects, and the impact diagram shows its targets.</p>
+<p>Lineage and impact are mirror images of each other. If Object A is part of the lineage diagram of Object B, then Object B is part of the impact diagram of Object A. When you read a diagram from left to right, you are seeing impact. When you read it from right to left, you are seeing lineage.</p>
+<div class="infoboxnotealso">
+<p class="notep1">Tip:</p>
+"Managing and Exploring Objects in an LIA Diagram" in <a class="olink WBETL14004" href="../../owb.112/e10935/lineage_impact_mdm.htm#WBETL14004"><span class="italic">Oracle Warehouse Builder Data Modeling, ETL, and Data Quality Guide</span></a></div>
+<p>For example, you might have a mapping that extracts data from a file and loads it into a table by way of an external table. This is the relationship:</p>
+<pre>
+flat_file &gt; external_table &gt; table
+</pre>
+<p><a href="#CGDGEFHI">Figure 7-1</a> shows a lineage diagram of an external table named <code>ADDRESS_EXT_TABLE</code>. <code>ADDRESS_CSV</code> is a flat file, and it is part of the lineage of <code>ADDRESS_EXT_TABLE</code>. Thus, any change to <code>ADDRESS_CSV</code> will impact <code>ADDRESS_EXT_TABLE</code>.</p>
+<div id="WBCON4605" class="figure">
+<p class="titleinfigure"><a id="CGDGEFHI"></a>Figure 7-1 Lineage Analysis Diagram for ADDRESS_EXT_TABLE</p>
+<img width="465" height="208" src="img/lineage.gif" alt="Description of Figure 7-1 follows" /><br />
+<a id="sthref550" href="img_text/lineage.htm">Description of "Figure 7-1 Lineage Analysis Diagram for ADDRESS_EXT_TABLE"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p><a href="#CGDGIEID">Figure 7-2</a> shows an impact diagram of <code>ADDRESS_EXT_TABLE</code>, which includes the <code>ADDRESS_TBL</code>. Any change to <code>ADDRESS_EXT_TABLE</code> will impact <code>ADDRESS_TBL</code>. <code>ADDRESS_EXT_TABLE</code> is part of the lineage of <code>ADDRESS_TBL</code>.</p>
+<div id="WBCON4606" class="figure">
+<p class="titleinfigure"><a id="CGDGIEID"></a>Figure 7-2 Impact Analysis Diagram for ADDRESS_EXT_TABLE</p>
+<img width="466" height="209" src="img/impact.gif" alt="Description of Figure 7-2 follows" /><br />
+<a id="sthref551" href="img_text/impact.htm">Description of "Figure 7-2 Impact Analysis Diagram for ADDRESS_EXT_TABLE"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>You can see both the lineage and the impact of an object by clicking the plus signs (+) on either side of the object icon, as shown in <a href="#CGDGJAAH">Figure 7-3</a>.</p>
+<div id="WBCON4607" class="figure">
+<p class="titleinfigure"><a id="CGDGJAAH"></a>Figure 7-3 Lineage and Impact Analysis Diagram</p>
+<img width="624" height="258" src="img/lia_all.gif" alt="Description of Figure 7-3 follows" /><br />
+<a id="sthref552" href="img_text/lia_all.htm">Description of "Figure 7-3 Lineage and Impact Analysis Diagram"</a><br />
+<br /></div>
+<!-- class="figure" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment3042">
+<tr>
+<td class="cellalignment3049">
+<table class="cellalignment3047">
+<tr>
+<td class="cellalignment3046"><a href="datatransform.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment3046"><a href="dataquality.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2000, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment3051">
+<table class="cellalignment3045">
+<tr>
+<td class="cellalignment3046"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment3046"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment3046"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment3046"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment3046"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment3046"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

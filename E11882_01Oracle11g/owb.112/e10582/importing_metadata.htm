@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Connecting to Data Sources and Importing Metadata</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 737" />
+<meta name="dcterms.created" content="2013-07-16T0:40:0Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Warehouse Builder Sources and Targets Guide" />
+<meta name="dcterms.identifier" content="E10582-06" />
+<meta name="dcterms.isVersionOf" content="WBDOD" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2000, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="intro_sources_targets.htm" title="Previous" type="text/html" />
+<link rel="Next" href="defining_flatfiles.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10582.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">5/17</span> <!-- End Header -->
+<div id="WBDOD10502" class="chapter"><a id="BAZWEGSD"></a>
+<h1 class="chapter"><span class="secnum">2</span> Connecting to Data Sources and Importing Metadata</h1>
+<p>In Oracle Warehouse Builder, you can access data from a variety of sources. You can interpret and extract metadata from custom, and also packaged applications and databases. As a precursor to extracting any data set, you first import its metadata.</p>
+<p>This chapter contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1075366">"About Source Data and Metadata"</a></p>
+</li>
+<li>
+<p><a href="#BABEEIJG">"General Steps for Importing Metadata from Sources"</a></p>
+</li>
+<li>
+<p><a href="#CACEDJFC">"Using the Import Metadata Wizard"</a></p>
+</li>
+<li>
+<p><a href="#i1075624">"Importing Metadata Definitions from Oracle Database"</a></p>
+</li>
+<li>
+<p><a href="#i1075703">"Reimporting Definitions"</a></p>
+</li>
+</ul>
+<a id="i1075366"></a>
+<div id="WBDOD04364" class="sect1">
+<h2 class="sect1">About Source Data and Metadata</h2>
+<p>Metadata is data that describes the contents of objects in a data set. For example, the metadata for a table includes such information as the name of the table and the names and data types of columns, relationships between this table and other objects, and so on. When working with objects in data sources not created within Oracle Warehouse Builder, you must first import metadata from those sources.</p>
+<p>Oracle Warehouse Builder groups metadata for objects in different data sources in modules, which are visible in the Projects Navigator. The type of module you create depends on the source from which you are importing metadata. For example, to import metadata definitions from an Oracle database, create an Oracle module. To import metadata definitions from flat files, create a flat file module.</p>
+</div>
+<!-- class="sect1" -->
+<a id="BABEEIJG"></a>
+<div id="WBDOD10518" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">General Steps for Importing Metadata from Sources</h2>
+<p>Whether you want to import metadata from a table, file, or application, the general process is the same.</p>
+<p><span class="bold">To import metadata from a source</span>:</p>
+<ol>
+<li>
+<p>Review the list of supported sources and targets in <a href="intro_sources_targets.htm#BEIJJJJF">Table 1-1, "Sources and Targets Supported in Oracle Warehouse Builder 11<span class="italic">g</span> Release 2 (11.2)"</a> to determine if the source from which you want to extract data is supported in Oracle Warehouse Builder.</p>
+</li>
+<li>
+<p>Select an existing location or create a location as described in <a href="#BABCDEGF">"Creating Locations"</a>.</p>
+</li>
+<li>
+<p>Create a module for the source metadata as described in <a href="#CHDJFDEI">"Creating Modules"</a>.</p>
+</li>
+<li>
+<p>Right-click the module and select <span class="bold">Import.</span></p>
+<p>You can import metadata from database objects, flat files, COBOL copybook files, and Oracle Warehouse Builder metadata.</p>
+</li>
+<li>
+<p>Follow the prompts in the Import Metadata Wizard.</p>
+<p>The wizard prompts you for information based on the type of source you selected. For more information, see <a href="#CACEDJFC">"Using the Import Metadata Wizard"</a>.</p>
+</li>
+</ol>
+<p class="subhead2"><a id="WBDOD90696"></a>Subsequent Steps</p>
+<p>For most data sources, after importing the metadata of the data objects, you can view the data stored in these objects.</p>
+<p>To move the data using Oracle Warehouse Builder, you can design ETL logic that extracts the data from the source, transforms the data, and loads it into a target schema.</p>
+<p>Over a period, the source metadata may change. If this occurs, you can use Oracle Warehouse Builder to identify the ETL logic that would be impacted and potentially made invalid due to a change in metadata.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p>"Managing Metadata Dependencies" in the <span class="italic">Warehouse Builder Online Help</span></p>
+</li>
+</ul>
+</div>
+<p>To introduce the changed metadata into Oracle Warehouse Builder, right-click the desired module and select <span class="bold">Import.</span> As described in <a href="#i1075703">"Reimporting Definitions"</a>, Oracle Warehouse Builder recognizes when you are reimporting metadata.</p>
+<a id="BEIDCCHI"></a>
+<div id="WBDOD04362" class="sect2">
+<h3 class="sect2">About Locations</h3>
+<p>Locations enable you to store the connection information to the various files, databases, and applications that Oracle Warehouse Builder accesses for extracting and loading data. Similarly, locations also store connection information to ETL management tools and Business Intelligence tools. For a detailed listing, see <a href="intro_sources_targets.htm#BEIJJJJF">Table 1-1</a>.</p>
+<p>Oracle Database locations and file locations can be sources, targets, or both. For example, you can use a location as a target for storing data temporarily or as a staging table. Later, you can reuse that location as a source to populate the final target.</p>
+<p>In some cases, such as with flat file data, the data and metadata for a given source are stored separately. In that case, create one location for the connection information for the data and another for the connection information for the metadata.</p>
+<p class="subhead2"><a id="WBDOD90697"></a>Automatically Created Locations</p>
+<p>During installation, Oracle Warehouse Builder creates an Oracle location named <code>OWB_REPOSITORY_LOCATION</code>. This location provides the connection details to the Oracle Warehouse Builder workspace.</p>
+<p class="subhead2"><a id="WBDOD90698"></a>Types of Locations</p>
+<p>You can deploy to several different types of locations. These locations are available on the Locations Navigator of the UI. Each location type has a different use:</p>
+<ul>
+<li>
+<p><span class="bold">Databases</span>: Targets for either relational or dimensional systems, including objects such as tables and views, or dimensions and cubes. See, <a class="olink WBETL" href="../e10935/toc.htm"><span class="italic">Oracle Warehouse Builder Data Modeling, ETL, and Data Quality Guide</span></a> for more details about these objects.</p>
+</li>
+<li>
+<p><span class="bold">Files</span>: Targets for storing data in delimited, fixed, or XML format.</p>
+</li>
+<li>
+<p><span class="bold">Applications</span>: Targets for Oracle E-Business Suite, PeopleSoft, Siebel, and SAP systems.</p>
+</li>
+<li>
+<p><span class="bold">Process Flows and Schedules</span>: Indicates an Oracle Workflow location.</p>
+</li>
+<li>
+<p><span class="bold">Business Intelligence</span>: Targets for deploying metadata derived from databases or Oracle modules. This is then used by business intelligence tools.</p>
+</li>
+<li>
+<p><span class="bold">URI Locations</span>: URI locations are used internally as part of the definition of other locations. You must not create any instances of it.</p>
+</li>
+<li>
+<p><span class="bold">Agents</span>: Specifies the location of a control center agent or an application server.</p>
+</li>
+<li>
+<p><span class="bold">Transportable Modules</span>: For defining transportable module sources and targets.</p>
+</li>
+</ul>
+<a id="BABCDEGF"></a>
+<div id="WBDOD10519" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Creating <a id="sthref24"></a><a id="sthref25"></a>Locations</h4>
+<p>You can create your own locations to use as sources or targets.</p>
+<p><span class="bold">To create a location:</span></p>
+<ol>
+<li>
+<p>In the Locations Navigator, expand the <span class="bold">Locations</span> node and then expand the node that represents the type of location you want to create.</p>
+<p>For example, to create an Oracle database location, expand the Locations node, the Databases node, and then the Oracle node.</p>
+</li>
+<li>
+<p>Right-click the type of location and select <span class="bold">New &lt;Object&gt; Location</span>.</p>
+<p>The Create &lt;Object&gt; Location dialog box is displayed.</p>
+<p>Or, right-click <span class="bold">Locations</span> and select <span class="bold">New</span>. This opens the New Gallery dialog box. Select a location type from the list of items and click <span class="bold">OK</span>.</p>
+<p>The Create &lt;Object&gt; Location dialog box is displayed.</p>
+</li>
+<li>
+<p>Complete the dialog box. Click the <span class="bold">Help</span> button for additional details.</p>
+<p>Provide the required connection details in the Details tab.</p>
+</li>
+</ol>
+<p class="subhead2"><a id="WBDOD90699"></a>Using SQL*Net to Create Locations</p>
+<p>When you create Oracle locations of type SQL*Net, you must set up a transparent network substrate (TNS) name entry for these locations. The TNS name must be accessible from the Oracle Warehouse Builder client home. Run the Net Configuration Assistant from the Oracle Warehouse Builder client home. See <a class="olink DBIMI" href="../../network.112/e10744/toc.htm"><span class="italic">Oracle Database Enterprise User Security Administrator's Guide</span></a> for information about using the Net Configuration Assistant.</p>
+<p>After setting up the TNS name entry, restart the control center service so that it can pick up the changes. Furthermore, if the Warehouse Builder control center home is distinct from the Oracle Database home, then the same TNS name entry must be defined in the Oracle Database home as well. Run the Net Configuration Assistant from the Oracle Database home and specify the same TNS name there as well.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If the TNS names in the Control Center home and the Oracle Database home are different, then connection errors may occur during deployment and execution.</div>
+<p class="subhead2"><a id="WBDOD90700"></a>About Locations, Passwords, and Security</p>
+<p>Because all Oracle Warehouse Builder users can view connection information in a location, passwords are always encrypted. Furthermore, Oracle Warehouse Builder administrators can determine whether to allow locations to be shared and persistent across design sessions. By default, locations are not shared or persisted.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink WBINS15950" href="../../owb.112/e17130/security_mgmt.htm#WBINS15950"><span class="italic">Oracle Warehouse Builder Installation and Administration Guide</span></a> for more information about "Managing Passwords".</div>
+</div>
+<!-- class="sect3" -->
+<div id="WBDOD10520" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref26"></a>
+<h4 class="sect3">Granting Privileges to a Target Location</h4>
+<p>Some deployments require the owner of the target location to have more powerful privileges than are granted when creating a new user:</p>
+<ul>
+<li>
+<p>Upgrade action</p>
+</li>
+<li>
+<p>End User Layer (EUL) deployment</p>
+</li>
+</ul>
+<p>A privileged database user can grant the additional privileges.</p>
+<p>For ETL, the owner of the target location must have sufficient privileges to read data from the source location. If the source location is a database table, for example, the owner of the target must have <code>SELECT</code> privileges on the table. Similarly, for locations pertaining to Transportable Modules sources and targets, users require additional privileges as described in <a class="olink WBETL" href="../e10935/toc.htm"><span class="italic">Oracle Warehouse Builder Data Modeling, ETL, and Data Quality Guide</span></a>.</p>
+<p><a id="WBDOD90701"></a><span class="subhead3">Upgrade Action&nbsp;</span></p>
+<p>The <code>GRANT_UPGRADE_PRIVILEGES</code> PL/SQL script grants the target user the necessary roles and privileges for the upgrade action. Use this syntax:</p>
+<pre>
+@%<span class="codeinlineitalic">OWB_HOME</span>%/owb/rtp/sql/grant_upgrade_privileges <span class="codeinlineitalic">username</span>
+</pre>
+<p><code><span class="codeinlineitalic">OWB_HOME</span></code> is the home directory for Oracle Warehouse Builder on the target system.</p>
+<p><code><span class="codeinlineitalic">username</span></code> is the owner of the target location.</p>
+<p>For example, the following command grants privileges on a Windows system to the <code>SALES_TARGET</code> user.</p>
+<pre>
+@%<span class="codeinlineitalic">OWB_HOME</span>%\owb\rtp\sql\grant_upgrade_privileges <span class="codeinlineitalic">sales_target</span>
+</pre>
+<p><a id="WBDOD90702"></a><span class="subhead3">EUL Deployment&nbsp;</span></p>
+<p>Oracle BI Discoverer locations require the EUL user to have the <code>CREATE DATABASE LINK</code> privilege.</p>
+</div>
+<!-- class="sect3" -->
+<div id="WBDOD10521" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref27"></a>
+<h4 class="sect3">Registering and <a id="sthref28"></a><a id="sthref29"></a>Unregistering Locations</h4>
+<p>Locations must be created during the design process. All modules, including their source and target objects, must have locations associated with them before they can be deployed. You cannot view source data or deploy target objects unless there is a location defined for the associated module.</p>
+<p>Registering a location in a control center establishes a link between the workspace and the locations of source data and deployed objects. You can register a location in multiple control centers. See <a class="olink WBCON" href="../e10581/toc.htm"><span class="italic">Oracle Warehouse Builder Concepts</span></a> for more information about control centers.</p>
+<p>You can change the definition of a location before it is registered. However, after the location is registered, you can change only the password. To edit other details of a location or one of its connectors, you must first unregister the location from all the control centers where it is registered. Unregistering a location deletes the deployment history of the location.</p>
+<p>Locations are registered automatically by deployment. Alternatively, you can explicitly register a location in the Control Center.</p>
+<p><span class="bold">To register a location:</span></p>
+<ol>
+<li>
+<p>Select the required project.</p>
+</li>
+<li>
+<p>Select <span class="bold">Tools</span>, <span class="bold">Control Center Manager</span> to open the Control Center Manager.</p>
+</li>
+<li>
+<p>Right-click the location and click <span class="bold">Register.</span></p>
+<p>The Location dialog box is displayed.</p>
+</li>
+<li>
+<p>Check the location details carefully.</p>
+<p>Click <span class="bold">Help</span> for additional information.</p>
+</li>
+<li>
+<p>Click <span class="bold">Test Connection</span> to verify the connection details.</p>
+</li>
+<li>
+<p>Click <span class="bold">OK</span>.</p>
+</li>
+</ol>
+<p><span class="bold">To unregister a location:</span></p>
+<ol>
+<li>
+<p>Select <span class="bold">Tools</span>, <span class="bold">Control Center Manager</span> to open the Control Center Manager.</p>
+</li>
+<li>
+<p>Right-click the location and click <span class="bold">Unregister</span>.</p>
+</li>
+<li>
+<p>Click <span class="bold">OK</span> to confirm the action.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<a id="BABHCCED"></a>
+<div id="WBDOD10522" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Deleting <a id="sthref30"></a>Locations</h4>
+<p><span class="bold">To delete a location</span>:</p>
+<ol>
+<li>
+<p>Right-click the location in Locations Navigator and select <span class="bold">Delete.</span></p>
+<p>If the <span class="bold">Delete</span> option is not available here, this indicates that the location has been registered in a control center and is likely being used. See <a href="#BABCDGAG">"Locations Registered in Multiple Control Centers"</a> for more information.</p>
+</li>
+<li>
+<p>Verify that the location is not in use, unregister the location in the Control Center Manager, and then delete the location from Locations Navigator.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<a id="BABCDGAG"></a>
+<div id="WBDOD10523" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Locations Registered in Multiple Control Centers</h4>
+<p>After you register a location in a control center, the connection details of the location are locked. You can edit the connection details or delete the location only after unregistering it from the control center.</p>
+<p>It is also likely that as part of your project requirements, a location is registered in multiple control centers. In such a scenario, you cannot edit the connection details of the location or delete the location unless you unregister the location from all the control centers where it is registered.</p>
+<p><span class="bold">To see the details of all the control centers where a location is registered</span>:</p>
+<ol>
+<li>
+<p>On the Locations Navigator, right-click the location and click <span class="bold">Open</span>.</p>
+<p>The Edit Location dialog box is displayed.</p>
+</li>
+<li>
+<p>Click <span class="bold">Registration</span> to view the list of control centers where the location is registered.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BABCACGB"></a>
+<div id="WBDOD10524" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">About <a id="sthref31"></a><a id="sthref32"></a>DB Connectors and Directories</h3>
+<p>A DB connector or Directory is a logical link between a source location and a target location. The connector between schemas in two different Oracle Databases is implemented as a database link, and the connector between a schema and an operating system directory is implemented as a database directory.</p>
+<p>To create a database directory, a user requires the <code>CREATE DIRECTORY</code> and <code>DROP DIRECTORY</code> privileges. When you create an Oracle Warehouse Builder user, these privileges are not automatically granted to the user. Therefore, the database administrator must explicitly grant these privileges to the Oracle Warehouse Builder user. For example:</p>
+<pre>
+GRANT CREATE ANY DIRECTORY TO OWB_USER;
+GRANT DROP ANY DIRECTORY TO OWB_USER;
+</pre>
+<p>where <code>OWB_USER</code> is an Oracle Warehouse Builder user performing the deployment.</p>
+<p>Or else, a user with these privileges must create the link connectors and grant you access to use them. You can then create the connectors manually and select the database link or directory from a list.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+To create a Database Link, a user requires the <code>CREATE DATABASE LINK</code> privilege. This privilege is granted automatically when an Oracle Warehouse Builder user is created.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink SQLRF01205" href="../../server.112/e41084/statements_5005.htm#SQLRF01205"><span class="italic">Oracle Database SQL Language Reference</span></a> for more information about the <code>CREATE DATABASE LINK</code> command</p>
+</li>
+<li>
+<p><a class="olink SQLRF01207" href="../../server.112/e41084/statements_5007.htm#SQLRF01207"><span class="italic">Oracle Database SQL Language Reference</span></a> for more information about the <code>CREATE DIRECTORY</code> command</p>
+</li>
+</ul>
+</div>
+<p><span class="bold">To manually create a <a id="sthref33"></a>database connector:</span></p>
+<ol>
+<li>
+<p>In the Locations Navigator, expand the <span class="bold">Locations</span> folder and then expand the subfolder for the target location.</p>
+</li>
+<li>
+<p>Right-click <span class="bold">DB Connectors</span> and select <span class="bold">New DB Connector</span>.</p>
+<p>Follow the steps in the Create Connector Wizard.</p>
+</li>
+</ol>
+<p><span class="bold">To manually create a <a id="sthref34"></a>directory connector:</span></p>
+<ol>
+<li>
+<p>In the Locations Navigator, expand the <span class="bold">Locations</span> folder and then expand the subfolder for the target location.</p>
+</li>
+<li>
+<p>Right-click <span class="bold">Directories</span> and select <span class="bold">New Directory</span>.</p>
+<p>The Create Connector Wizard opens.</p>
+</li>
+<li>
+<p>Follow the steps and create a directory connector.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="BABHCIFJ"></a>
+<div id="WBDOD04363" class="sect2">
+<h3 class="sect2">About Modules</h3>
+<p>Modules are grouping mechanisms in the Projects Navigator that correspond to locations in the Locations Navigator. A single location can correspond to one or more modules. However, a given module can correspond to only one metadata location and data location at a time.</p>
+<p>The association of a module to a location enables you to perform certain actions more easily in Oracle Warehouse Builder. For example, group actions such as creating snapshots, copying, validating, generating, deploying, and so on, can be performed on all the objects in a module by choosing an action on the context menu when the module is selected.</p>
+<a id="CHDJFDEI"></a>
+<div id="WBDOD10525" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Creating Modules</h4>
+<p>You can create a module from the Projects Navigator.</p>
+<p><span class="bold">To create a module:</span></p>
+<ol>
+<li>
+<p>Expand the <span class="bold">Projects Navigator</span> until you find the node for the appropriate metadata type.</p>
+<p>For example, if the source data is stored in Oracle Database, then expand the <span class="bold">Databases</span> node to view the Oracle node. If the source data is in an SAP R/3 system, expand the <span class="bold">Applications</span> node to view the SAP node.</p>
+</li>
+<li>
+<p>Right-click the desired node and select <span class="bold">New&lt;Module Type&gt;</span>.</p>
+<p>The Create Module Wizard opens.</p>
+<p>You can also right-click the desired node and select <span class="bold">New</span>. This opens the New Gallery dialog box. You can now select the item you want to create (module) and click <span class="bold">OK</span>.</p>
+<p>The Create Module Wizard opens.</p>
+</li>
+<li>
+<p>On the Name and Description page, provide a name and an optional description for the module. For non-Oracle sources and applications, you must not select the access method. Select from <span class="bold">Native Database Connection</span> and <span class="bold">Oracle Gateway</span>.</p>
+</li>
+<li>
+<p>Click <span class="bold">Next</span>.</p>
+<p>The Connection Information page is displayed.</p>
+</li>
+<li>
+<p>Provide details about the location that is associated with this module.</p>
+<p>The contents of the Connection Information page depend on the type of module you create. For more information about providing information about this page, click <span class="bold">Help</span>.</p>
+</li>
+<li>
+<p>Click <span class="bold">Next</span> to display the Summary page.</p>
+<p>Review the information you provided and click <span class="bold">Back</span> to modify entered values.</p>
+</li>
+<li>
+<p>Click <span class="bold">Finish</span>.</p>
+</li>
+</ol>
+<p>While using Oracle Warehouse Builder, you must not associate a module with a new location. For example, assuming your production environment uses different locations than those used by your development environment, then you must change the module associations when moving code from the production to the development environment.</p>
+<p>To change the location associated with a module, you must edit the configuration properties of the module. Configuration properties define the physical information pertaining to the metadata.</p>
+<p><span class="bold">To change the location associated with a module:</span></p>
+<ol>
+<li>
+<p>In the Projects Navigator, right-click the module and select <span class="bold">Configure</span>.</p>
+<p>The Configuration Properties editor is displayed.</p>
+</li>
+<li>
+<p>In the <span class="bold">Identification</span> node, select a new value for the Locations property. If the desired location is not in the list, then edit the module and add the location.</p>
+</li>
+</ol>
+<p>See <a class="olink WBETL01004" href="../../owb.112/e10935/design_tgt_schemas.htm#WBETL01004"><span class="italic">Oracle Warehouse Builder Data Modeling, ETL, and Data Quality Guide</span></a> for more information about "Configuring Data Objects".</p>
+</div>
+<!-- class="sect3" -->
+<a id="BABHFDFB"></a>
+<div id="WBDOD10526" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Creating User Folders</h4>
+<p>After you create a module for a particular object such as an Oracle database, you can view all the associated objects under the database such as Mappings, Transformation, Tables, and so on.</p>
+<p>You can also create your own folder, called User Folder, under a module. You can then define the required objects within the folder. For example, related tables and views that must be generated or deployed can be placed under a common folder. User Folders provide more flexibility in organizing objects within a module.</p>
+<p><span class="bold">To create a User Folder</span>:</p>
+<ol>
+<li>
+<p>Right-click a module, and click <span class="bold">New</span>.</p>
+<p>The New Gallery dialog box is displayed.</p>
+</li>
+<li>
+<p>Select <span class="bold">User Folder</span> from the list of items and click <span class="bold">OK</span>.</p>
+<p>The Create User Folder dialog box is displayed.</p>
+</li>
+<li>
+<p>Provide a name and description (optional), and click <span class="bold">OK</span>.</p>
+</li>
+</ol>
+<p>The newly created user folder is now available under the module. The folder is empty with no nodes under it. All the objects that can be added under a module can also be added under the newly created user folder. For example,</p>
+<p><span class="bold">To add a table</span>:</p>
+<ol>
+<li>
+<p>Right-click the folder, and click <span class="bold">New</span>.</p>
+<p>The New Gallery dialog box is displayed.</p>
+</li>
+<li>
+<p>Select <span class="bold">Table</span> from the list of items and click <span class="bold">OK</span>.</p>
+<p>The Create Table dialog box is displayed.</p>
+</li>
+<li>
+<p>Provide a name and description (optional) and click <span class="bold">OK</span>.</p>
+</li>
+</ol>
+<p>The newly created table is now available under the Tables node within the folder.</p>
+<p>Within a user folder, you can also:</p>
+<ul>
+<li>
+<p>Create other user folders.</p>
+</li>
+<li>
+<p>Copy valid objects from other user folders.</p>
+</li>
+<li>
+<p>Copy valid objects from other compatible module types.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CACEDJFC"></a>
+<div id="WBDOD04370" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Using the Import Metadata Wizard</h2>
+<p>Use the Import Metadata Wizard to import metadata definitions into modules.</p>
+<p>The Import Metadata Wizard supports importing of tables, views, materialized views, dimensions, cubes, external tables, sequences, user-defined types, and PL/SQL transformations directly or through object lookups using synonyms.</p>
+<p>Importing a table includes importing its columns, primary keys, unique keys, and foreign keys, which enable the import of secondary tables. When you import an external table, Oracle Warehouse Builder also imports the associated location and directory information for the associated flat file.</p>
+<p>You can import metadata definitions either from the Oracle Database catalog or Designer/2000 (Oracle Designer).</p>
+</div>
+<!-- class="sect1" -->
+<a id="i1075624"></a>
+<div id="WBDOD10527" class="sect1">
+<h2 class="sect1">Importing Metadata Definitions <a id="sthref35"></a><a id="sthref36"></a><a id="sthref37"></a><a id="sthref38"></a>from Oracle <a id="sthref39"></a><a id="sthref40"></a><a id="sthref41"></a><a id="sthref42"></a><a id="sthref43"></a>Database</h2>
+<p>Create an Oracle module to store the imported metadata.</p>
+<p><span class="bold">To create an Oracle module</span>:</p>
+<ol>
+<li>
+<p>From the Projects Navigator, right-click <span class="bold">Oracle</span> under the Databases node and select <span class="bold">New Oracle Module</span>.</p>
+<p>The Create Module Wizard is displayed.</p>
+</li>
+<li>
+<p>On the Name and Description page, provide a name and an optional description for the module. Click <span class="bold">Next</span> to open the Connection Information page.</p>
+</li>
+<li>
+<p>Use the Connection Information page to select a database location for the module. To define a new location, click <span class="bold">Edit</span>. The Edit Oracle Database Location dialog box is displayed. See <a href="#BABFJEAI">"Edit Oracle Database Location Dialog Box"</a> for the connection parameters to be entered in this dialog box.</p>
+<p>Click <span class="bold">OK</span> to open the Summary page.</p>
+</li>
+<li>
+<p>Verify the specified details on the Summary page and click <span class="bold">Finish</span>.</p>
+<p>The newly created Oracle module is now available under the Oracle node in the Projects Navigator.</p>
+</li>
+</ol>
+<a id="BABFJEAI"></a>
+<div class="sect2">
+<h3 class="sect2">Edit Oracle Database Location Dialog Box</h3>
+<p>Use this dialog box to specify the location details of an Oracle location.</p>
+<p class="subhead2"><a id="sthref44"></a>Name</p>
+<p>A name for the location.</p>
+<p class="subhead2"><a id="sthref45"></a>Description</p>
+<p>An optional description.</p>
+<p class="subhead2"><a id="sthref46"></a>Connection Type</p>
+<p>Lists the connections available for access to a database location. You cannot change the type after creating the location. There are four connection types available: <a id="sthref47"></a><code>HOST:PORT:SERVICE</code>, <a id="sthref48"></a><code>Database Link</code>, <a id="sthref49"></a><code>SQL*NET Connection</code>, and <a id="sthref50"></a><code>OCI</code>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+When the source and target locations are on the same host, be sure to identify them in the same way. Otherwise, the product treats them as separate locations and creates a database link between them. The database link may slow down the loading of data.
+<p>Common mistakes of this type include the following:</p>
+<ul>
+<li>
+<p>Specifying <code>localhost</code> for one location and the actual computer name (such as <code>mycomputer-pc</code>) for another location.</p>
+</li>
+<li>
+<p>Specifying the domain inconsistently, for example, <code>mycomputer-pc</code> for one location and <code>mycomputer-pc.us.oracle.com</code> for another.</p>
+</li>
+</ul>
+</div>
+<ul>
+<li>
+<p><span class="bold">HOST:PORT:SERVICE</span>: Makes a connection using the Easy Connect Naming method, which requires no prior setup:</p>
+<ul>
+<li>
+<p><span class="bold">User Name</span>: The database user credential that has permission to access the schema location.</p>
+<p>When connecting to a database that does not have user names, enter any text as a mock user name.</p>
+</li>
+<li>
+<p><span class="bold">Password</span>: The password associated with user name.</p>
+<p>When connecting to a database that does not have passwords, enter any text as a mock password.</p>
+</li>
+<li>
+<p><span class="bold">Host</span>: The name of the system where the database is installed.</p>
+<p>If Oracle Warehouse Builder is installed on the same system as the Oracle database, you can enter <code>localhost</code> instead of the computer name. If the database resides on a remote system, then provide the internet protocol (IP) address of the remote system.</p>
+</li>
+<li>
+<p><span class="bold">Port</span>: The SQL port number for the database.</p>
+</li>
+<li>
+<p><span class="bold">Service Name</span>: The service name of the database.</p>
+</li>
+<li>
+<p><span class="bold">Use Global Name</span>: The unique name of the database, which is composed of the database name and the domain in the form <span class="italic">database_name</span>.<span class="italic">database_domain</span>. For example, <code>orcl.us.example.com</code> identifies the <code>orcl</code> database in the <code>us.example.com</code> domain. Select this option when connecting to a database on a different network.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><span class="bold">Database Link</span>: Makes a connection to another database using an existing database link. Select this method only when you do not have privileges that enable you to make a direct connection. You cannot deploy to a location that uses a database link. Not available for Oracle Business Intelligence or Discoverer locations.</p>
+<p>A database link is a schema object that contains information for connecting to a remote database. Database links are used in distributed database environments and enable a client to access two physical databases as one logical database.</p>
+<ul>
+<li>
+<p><span class="bold">From Location</span>: An existing location where the database link is defined.</p>
+</li>
+<li>
+<p><span class="bold">Database Link</span>: The object name of the database link.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><span class="bold">SQL*NET Connection</span>: Makes a connection using a net service name previously defined using a tool such as Oracle Net Configuration Assistant. The net service name provides a convenient alias for the connection information. This method of connecting is the best for Oracle RAC installations.</p>
+<ul>
+<li>
+<p><span class="bold">User Name</span>: The database user credential that has permission to access the schema location.</p>
+<p>When connecting to a database that does not have user names, enter any text as a mock user name.</p>
+</li>
+<li>
+<p><span class="bold">Password</span>: The password associated with user name.</p>
+<p>When connecting to a database that does not have passwords, enter any text as a mock password.</p>
+</li>
+<li>
+<p><span class="bold">Net Service Name</span>: The name of the predefined connection.</p>
+</li>
+<li>
+<p><span class="bold">Use Global Name</span>: The unique name of the database, which is composed of the database name and the domain in the form <span class="italic">database_name</span>.<span class="italic">database_domain</span>. For example, <code>orcl.us.example.com</code> identifies the <code>orcl</code> database in the <code>us.example.com</code> domain. Select this option when connecting to a database in a different network.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><span class="bold">OCI</span>: Makes a connection using <a id="sthref51"></a><a id="sthref52"></a>Oracle Call Interface (OCI) to interact with an Oracle database. This connection type uses the JDBC OCI driver that is specific to your version of Oracle database and your platform. Use this method when you need a high degree of compatibility with an earlier release of Oracle. The JDBC OCI drivers enable you to call the OCI directly from Java.</p>
+<ul>
+<li>
+<p><span class="bold">User Name</span>: The database user credential that has permission to access the schema location.</p>
+<p>When connecting to a database that does not have user names, enter any text as a mock user name.</p>
+</li>
+<li>
+<p><span class="bold">Password</span>: The password associated with user name.</p>
+<p>When connecting to a database that does not have passwords, enter any text as a mock password.</p>
+</li>
+<li>
+<p><span class="bold">Net Service Name</span>: The name of the predefined OCI connection.</p>
+</li>
+<li>
+<p><span class="bold">Use Global Name</span>: The unique name of the database, which is composed of the database name and the domain in the form <span class="italic">database_name</span>.<span class="italic">database_domain</span>. For example, <code>orcl.us.example.com</code> identifies the <code>orcl</code> database in the <code>us.example.com</code> domain. Select this option when connecting to a database in a different network.</p>
+</li>
+</ul>
+</li>
+</ul>
+<p class="subhead2"><a id="sthref53"></a>Schema</p>
+<p>The schema where the source data is stored or the target objects are deployed. The schema must be registered. By default, it is the user name schema.</p>
+<p>When connecting to a type of database that does not have schemas, do not enter any value in this field.</p>
+<p class="subhead2"><a id="sthref54"></a>Version</p>
+<p>The version number of Oracle Database. Not available for non-Oracle database locations.</p>
+<p class="subhead2"><a id="sthref55"></a>Test Connection</p>
+<p>Attempts to make a connection using the values provided on this page.</p>
+<p class="subhead2"><a id="sthref56"></a>Test Results</p>
+<p>A message that reports whether a test connection succeeded or failed.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="sthref57"></a>Figure 2-1 Edit Oracle Location Dialog Box</p>
+<img width="585" height="539" src="img/orcl_location.gif" alt="Edit Oracle Location dialog box" /><br /></div>
+<!-- class="figure" --></div>
+<!-- class="sect2" -->
+<div class="sect2"><a id="sthref58"></a>
+<h3 class="sect2">Importing Metadata Definitions</h3>
+<p>Use the Import Metadata Wizard to import metadata from an Oracle database into the module.</p>
+<p><a id="i1075630"></a><span class="bold">To import metadata definitions from an Oracle database:</span></p>
+<ol>
+<li>
+<p>Right-click the newly created Oracle module and select <span class="bold">Import</span>, then <span class="bold">Database Objects</span>.</p>
+<p>The Welcome page of the Import Metadata Wizard is displayed. This page lists the steps to import object metadata. Click <span class="bold">Next</span> to proceed with the import.</p>
+</li>
+<li>
+<p>Complete the following:</p>
+<ul>
+<li>
+<p><a href="#BABEBDJE">"Filter Information Page"</a></p>
+</li>
+<li>
+<p><a href="#BABFAEHH">"Object Selection Page"</a></p>
+</li>
+<li>
+<p><a href="#BABFBADG">"Summary and Import Page"</a></p>
+</li>
+<li>
+<p><a href="#BABGGHAD">"Import Results Page"</a></p>
+</li>
+</ul>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="BABEBDJE"></a>
+<div id="WBDOD10528" class="sect2">
+<h3 class="sect2">Filter Information Page</h3>
+<p>Use the Filter Information page to limit the search using one of the following methods:</p>
+<p><a id="WBDOD90704"></a><span class="subhead3">Selecting the Object Types&nbsp;</span>The Object Type section displays the types of database objects that you can import. These objects include tables, dimensions, external tables, sequences, materialized views, cubes, views, PL/SQL transformations, and user-defined types. Select the types of objects you want to import. For example, to import tables and views, select <span class="bold">Tables</span> and <span class="bold">Views</span>.</p>
+<p><a id="WBDOD90705"></a><span class="subhead3">Search Based on the Object Name&nbsp;</span>Use the <span class="bold">Only select objects that match the pattern</span> option to specify a search pattern. Oracle Warehouse Builder searches for objects whose names match the pattern specified. Use the percent sign (<code>%</code>) as a wildcard match for multiple characters and an underscore (<code>_</code>) as a wildcard match for a single character. For example, you can enter a warehouse project name followed by a percent sign (<code>%</code>) to import objects that begin with that project name.</p>
+<p>Click <span class="bold">Next</span> to retrieve names that meet the filter conditions from the data dictionary. Oracle Warehouse Builder then displays the Object Selection page.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BABFAEHH"></a>
+<div id="WBDOD10529" class="sect2">
+<h3 class="sect2">Object Selection Page</h3>
+<p>Select items to import from the Available list and click the right arrow to move them to the Selected list. If you are reimporting definitions, previously imported objects appear in bold.</p>
+<p>To search for specific items by name, click the <span class="bold">Find Objects</span> icon that looks like a flashlight.</p>
+<p>To move all items to the Selected Objects list, click <span class="bold">Move All</span>.</p>
+<p><a id="WBDOD90706"></a><span class="subhead3">Importing Dependent Objects&nbsp;</span>The Import Metadata Wizard enables you to import the dependent objects of the object being imported.</p>
+<p>Select one of the following options to specify if dependent objects should be included in the import:</p>
+<ul>
+<li>
+<p><span class="bold">None</span>: Moves only the selected object to the Selected list. No dependencies are imported when you select this option.</p>
+</li>
+<li>
+<p><span class="bold">One Level</span>: Moves the selected object and the objects it references to the Selected list. This is the default selection.</p>
+</li>
+<li>
+<p><span class="bold">All Levels</span>: Moves the selected object and all its references, direct or indirect, to the Selected list.</p>
+</li>
+</ul>
+<p>Click <span class="bold">Next</span> to display the Summary and Import page.</p>
+<p><a id="WBDOD90707"></a><span class="subhead3">Importing Dimensions&nbsp;</span>When you import a dimension that uses a relational implementation, the implementation table that stores the dimension data is not imported. You must explicitly import this table by moving the table from the Available list to the Selected list on the Object Selection page. Also, after importing the table, you must bind the dimension to its implementation table. For more information about how to perform binding, refer to <a class="olink WBETL" href="../e10935/toc.htm"><span class="italic">Oracle Warehouse Builder Data Modeling, ETL, and Data Quality Guide</span></a>.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BABFBADG"></a>
+<div id="WBDOD10530" class="sect2">
+<h3 class="sect2">Summary and Import Page</h3>
+<p>This page summarizes your selections in a spreadsheet that lists the name, type of object, and whether the object are reimported or created. Verify the contents of this page and add descriptions, if required, for each of the objects.</p>
+<p>You can specify additional properties for objects that have been imported into the module. Click <span class="bold">Advanced Import Options</span> to specify these properties. The Advanced Import Options dialog box is displayed. For more information about the contents of this dialog box, see <a href="#BABDIJAH">"Advanced Import Options"</a>. For more information about reimporting definitions, see <a href="#i1075703">"Reimporting Definitions"</a>.</p>
+<p>Click <span class="bold">Finish</span> to import the selected objects. The Importing Progress dialog box shows the progress of the import activity. After the import completes, the Import Results page is displayed.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BABGGHAD"></a>
+<div id="WBDOD10531" class="sect2">
+<h3 class="sect2">Import Results Page</h3>
+<p>This page summarizes the import result, and lists the objects and details about whether the object was created or synchronized.</p>
+<p>Click <span class="bold">OK</span> to accept the results. To save a metadata loader (MDL) file associated with this import, click <span class="bold">Save.</span> Oracle Warehouse Builder stores the definitions in the database module from which you performed the import.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1075703"></a>
+<div id="WBDOD10532" class="sect1">
+<h2 class="sect1">Reimporting Definitions</h2>
+<p>Reimporting your source database definitions enables you to import changes made to your source metadata after your previous import. You do not have to remove the original definitions from the workspace. Oracle Warehouse Builder provides you with options that also enable you to preserve any changes you may have made to the definitions since the previous import activity. This includes any new objects, foreign keys, relationships, and descriptions you may have created in Oracle Warehouse Builder.</p>
+<p><span class="bold">To reimport definitions:</span></p>
+<ol>
+<li>
+<p>Right-click a data source module name and select <span class="bold">Import.</span></p>
+<p>The Welcome page for the Import Metadata Wizard is displayed.</p>
+</li>
+<li>
+<p>Click <span class="bold">Next.</span></p>
+<p>The Filter Information page is displayed.</p>
+</li>
+<li>
+<p>Complete the <a href="#BABEBDJE">"Filter Information Page"</a> and <a href="#BABFAEHH">"Object Selection Page"</a>, selecting the same settings used in the original import to ensure that the same objects are reimported.</p>
+</li>
+<li>
+<p>The Summary and Import page is displayed.</p>
+<p>If the source contains new objects related to the object you are reimporting, the wizard requires that you import the new objects at the same time.</p>
+</li>
+<li>
+<p>Click <a href="#BABDIJAH"><span class="xreftitlebold">Advanced Import Options</span></a> and make selections. (Optional)</p>
+</li>
+<li>
+<p>Click <span class="bold">Finish.</span></p>
+<p>Oracle Warehouse Builder reconciles and creates objects. When this is complete, the Import Results dialog box displays.</p>
+<p>The report lists the actions performed by Oracle Warehouse Builder for each object. For objects that have been reimported, the Actions column displays Synchronized. You can also expand an object to see which elements have changed. For example, you can see which columns of a table have changed since the last import.</p>
+<p>Click <span class="bold">Save</span> to save the report. You should use a naming convention that is specific to the reimport.</p>
+</li>
+<li>
+<p>Click <span class="bold">OK</span> to proceed or click <span class="bold">Undo</span> to undo all changes to your workspace.</p>
+</li>
+</ol>
+<a id="BABDIJAH"></a>
+<div id="WBDOD10533" class="sect2">
+<h3 class="sect2">Advanced Import Options</h3>
+<p>The Advanced Import Options dialog box displays the options that you can configure while importing objects. This dialog box enables you to preserve any edits and additions made to the object definitions in the Oracle Warehouse Builder workspace.</p>
+<p>By default, all options on this dialog box are selected. Deselect these options to have these objects replaced and not preserved.</p>
+<p>For example, after importing tables or views for the first time, you manually add descriptions to the table or view definitions. To ensure that these descriptions are not overwritten while reimporting the table or view definitions, you must select the Preserve Existing Definitions option.</p>
+<p>The contents of this dialog box depend on the type of objects being imported. For more information about the advanced import options for each type of objects, see the following sections:</p>
+<ul>
+<li>
+<p><a href="#CHDJHFJF">"Advanced Import Options for Views and External Tables"</a></p>
+</li>
+<li>
+<p><a href="#CHDICEJE">"Advanced Import Options for Tables"</a></p>
+</li>
+<li>
+<p><a href="#CHDIACIA">"Advanced Import Options for Object Types"</a></p>
+</li>
+</ul>
+<a id="CHDJHFJF"></a>
+<div id="WBDOD10534" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Advanced Import Options for Views and External Tables</h4>
+<p>Select these options to reconcile views or external tables:</p>
+<ul>
+<li>
+<p><span class="bold">Import descriptions:</span> The descriptions of the view or external table are imported. Existing descriptions are not preserved.</p>
+</li>
+<li>
+<p><span class="bold">Preserve workspace added columns:</span> The columns you added to the object in the workspace are preserved.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink WBCON4461" href="../../owb.112/e10581/uitour.htm#WBCON4461"><span class="italic">Oracle Warehouse Builder Concepts</span></a> for more information about "Workspaces".</div>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<a id="CHDICEJE"></a>
+<div id="WBDOD10535" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Advanced Import Options for Tables</h4>
+<p>Select these options to reconcile tables:</p>
+<ul>
+<li>
+<p><span class="bold">Preserve workspace added columns:</span> To retain any columns added to the table in the workspace.</p>
+</li>
+<li>
+<p><span class="bold">Preserve workspace added constraints:</span> To preserve the constraints you added to the table in Oracle Warehouse Builder.</p>
+</li>
+<li>
+<p><span class="bold">Import indexes:</span> To specify additional details about how indexes should be imported. Importing indexes consists of the following options:</p>
+<ul>
+<li>
+<p><span class="bold">Preserve workspace added indexes:</span> To retain any indexes added to the workspace table.</p>
+</li>
+<li>
+<p><span class="bold">Import physical properties of indexes:</span> To indicate how indexes should be imported. Select the <span class="bold">Preserve workspace added physical properties of indexes</span> option below this option to specify that any physical properties added to the indexes should be preserved.</p>
+</li>
+<li>
+<p><span class="bold">Import index partitioning:</span> To indicate how index partitions should be imported. Select the <span class="bold">Preserve repository added index partitioning</span> option to specify that any index partitions added to the workspace table must be preserved.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><span class="bold">Import partitioning:</span> To specify additional details about how partitions should be imported. Importing partitions contains the following options:</p>
+<ul>
+<li>
+<p><span class="bold">Preserve workspace added partitioning:</span> To retain all partitions added to the workspace table.</p>
+</li>
+<li>
+<p><span class="bold">Import physical properties of partitioning:</span> Use this option to indicate how the physical properties of partitions should be imported. Select <span class="bold">Preserve workspace added physical properties of partitioning</span> to indicate that all physical properties of the partitions in the workspace table should be retained.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><span class="bold">Import physical properties:</span> To indicate how the physical properties of the table should be imported. Select the <span class="bold">Preserve workspace added physical properties</span> option to specify that all physical properties added to the workspace table must be preserved.</p>
+</li>
+<li>
+<p><span class="bold">Import descriptions:</span> To import the descriptions of the table.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<a id="CHDIACIA"></a>
+<div id="WBDOD10536" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Advanced Import Options for Object Types</h4>
+<p>Select these options to reconcile object types:</p>
+<ul>
+<li>
+<p><span class="bold">Import descriptions:</span> To import the descriptions of the object type.</p>
+</li>
+<li>
+<p><span class="bold">Preserve workspace added attributes:</span> To retain the attributes added to the object type in the workspace.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1075769"></a>
+<div id="WBDOD10538" class="sect2">
+<h3 class="sect2">Updating Source Module Definitions<a id="sthref59"></a><a id="sthref60"></a><a id="sthref61"></a></h3>
+<p>The Edit Module dialog box enables you to edit the name, metadata location, and the data locations for a source module.</p>
+<p><span class="bold">To update the database definitions of an Oracle module:</span></p>
+<ol>
+<li>
+<p>Right-click the module, and select <span class="bold">Open</span>.</p>
+<p>The Edit Module dialog box displays.</p>
+</li>
+<li>
+<p>To edit the metadata location, click the <span class="bold">Metadata Location</span> tab and specify the following:</p>
+<ul>
+<li>
+<p><span class="bold">Source Type</span>: Identifies the location of the metadata. It can be either Oracle Data Dictionary or Oracle Designer Repository. Select Oracle Data Dictionary if the metadata is stored in the default workspace of the Oracle Database. Select Oracle Designer Repository if the metadata is stored in an Oracle Designer repository.</p>
+</li>
+<li>
+<p><span class="bold">Location</span>: Identifies the metadata location for the module. You can select a location from the list.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>To edit the data location, click the <span class="bold">Data Locations</span> tab. By default, the location name specified while creating the module is selected. To change the location, you can either select from other existing locations or create a new location. To create a new location, click <span class="bold">New</span>. The Edit Oracle Database Location dialog box displays. Specify the details of the data location in the dialog box.</p>
+</li>
+</ol>
+<p>This chapter provides a generic description of importing metadata, which is identical for Oracle databases and other data source types. Follow these procedures when working with Oracle databases.</p>
+<p>For information about importing metadata definitions from non-Oracle databases and other applications, see:</p>
+<ul>
+<li>
+<p><a href="defining_flatfiles.htm#BABICCDG">Chapter 3, " Using Flat Files as Sources or Targets"</a> for importing metadata definitions from flat files and <a id="sthref62"></a>COBOL copybooks.</p>
+</li>
+<li>
+<p><a href="gateways_connection.htm#CHDHEGEZ">Chapter 4, "Connecting to Non-Oracle Data Sources Through Gateways"</a> for connecting to and importing metadata from non-Oracle databases such as DB2 and SQL Server using <a id="sthref63"></a>Oracle Gateways.</p>
+</li>
+<li>
+<p><a href="jdbc_connection.htm#CHDHEGEK">Chapter 6, "Connecting to Data Sources Through JDBC"</a> for connecting to non-Oracle databases such as DB2 and SQL Server using <a id="sthref64"></a>JDBC connectivity.</p>
+</li>
+<li>
+<p><a href="integrating_apps.htm#BACFGEDG">Chapter 8, "Integrating with Oracle ERP Applications"</a> for details of importing metadata from Oracle applications including <a id="sthref65"></a>Oracle E-Business Suite, <a id="sthref66"></a>PeopleSoft, and <a id="sthref67"></a>Siebel applications.</p>
+</li>
+<li>
+<p><a href="sap_integrate.htm#BACFRSAP">Chapter 7, "Extracting Data from SAP Applications"</a> for details of connecting to a SAP application and extracting data.</p>
+</li>
+<li>
+<p><a href="business_intelligence.htm#g1121756">Chapter 9, "Importing Oracle Warehouse Builder Data into Business Intelligence Applications"</a> for information about deriving business intelligence objects and deploying these objects into Oracle Business Intelligence Suite Enterprise Edition and Oracle BI Discoverer.</p>
+</li>
+<li>
+<p><a href="imp_thirdparty_design.htm#BAXDAFBC">Chapter 10, "Importing Design Definitions from Oracle Designer"</a> for information about importing design definitions from Oracle Designer applications.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment3013">
+<tr>
+<td class="cellalignment3022">
+<table class="cellalignment3018">
+<tr>
+<td class="cellalignment3017"><a href="intro_sources_targets.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment3017"><a href="defining_flatfiles.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2000, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment3024">
+<table class="cellalignment3016">
+<tr>
+<td class="cellalignment3017"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment3017"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment3017"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment3017"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment3017"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment3017"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

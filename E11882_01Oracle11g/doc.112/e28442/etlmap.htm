@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>ETL Implementation and Customization</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 740" />
+<meta name="dcterms.created" content="2013-10-17T14:37:20Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Communications Data Model Implementation and Operations Guide" />
+<meta name="dcterms.identifier" content="E28442-05" />
+<meta name="dcterms.isVersionOf" content="CDMOG" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2011, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="adm.htm" title="Previous" type="text/html" />
+<link rel="Next" href="rep_quer.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e28442.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">9/15</span> <!-- End Header -->
+<div id="CDMOG227" class="chapter"><a id="BEHJFAFF"></a>
+<h1 class="chapter"><span class="secnum">4</span> ETL Implementation and Customization</h1>
+<p>This chapter discusses the ETL (extraction, transformation and loading) programs you use to populate an Oracle Communications Data Model warehouse. It includes the following topics:</p>
+<ul>
+<li>
+<p><a href="#BEHCJJIH">The Role of ETL in the Oracle Communications Data Model</a></p>
+</li>
+<li>
+<p><a href="#BEHFIHBE">ETL for the Foundation Layer of an Oracle Communications Data Model Warehouse</a></p>
+</li>
+<li>
+<p><a href="#BEHJFGJB">Customizing Intra-ETL for Oracle Communications Data Model</a></p>
+</li>
+<li>
+<p><a href="#BEHBABJG">Performing an Initial Load of an Oracle Communications Data Model Warehouse</a></p>
+</li>
+<li>
+<p><a href="#BEHFFJJH">Refreshing the Data in an Oracle Communications Data Model Warehouse</a></p>
+</li>
+<li>
+<p><a href="#BEHHHEFJ"><span class="bold">Managing Errors During Oracle Communications Data Model Intra-ETL Execution</span></a></p>
+</li>
+</ul>
+<a id="BEHCJJIH"></a>
+<div id="CDMOG228" class="sect1">
+<h2 class="sect1">The Role of ETL in the Oracle Communications Data Model</h2>
+<p><a id="sthref119"></a><a id="sthref120"></a><a href="pdm.htm#CHDFJJGA">Figure 2-1, "Layers of an Oracle Communications Data Model Warehouse"</a> illustrated the three layers in Oracle Communications Data Model warehouse environment: the optional staging layer, the foundation layer, and the access layer. As illustrated by <a href="#BEHBEGGA">Figure 4-1</a>, you use two types of ETL (extraction, transformation and loading) to populate these layers:</p>
+<ul>
+<li>
+<p><a id="sthref121"></a><a id="sthref122"></a><span class="bold">Source-ETL</span>. ETL that populates the staging layer (if any) and the foundation layer (that is, the base, reference, and lookup tables) with data from the operational system is known as source ETL.</p>
+<p>Oracle Communications Data Model does <span class="italic">not</span> include source-ETL scripts. Unless you are using an application adapter for Oracle Communications Data Model, you must create source-ETL yourself using your understanding of your operational and other source systems and your customized Oracle Communications Data Model. See <a href="#BEHFIHBE">"ETL for the Foundation Layer of an Oracle Communications Data Model Warehouse"</a> for more information on creating source-ETL.</p>
+</li>
+<li>
+<p><a id="sthref123"></a><a id="sthref124"></a><span class="bold">Intra-ETL</span>. ETL that populates the access layer (that is, the derived tables, aggregate tables, materialized views, OLAP cubes, and data mining models) using the data in the foundation layer is known as intra-ETL.</p>
+<p>Oracle Communications Data Model <span class="italic">does</span> include intra-ETL. You can modify the default intra-ETL to populate a customized access layer from a customized foundation layer. See <a href="#BEHJFGJB">"Customizing Intra-ETL for Oracle Communications Data Model"</a> for more information on the intra-ETL.</p>
+</li>
+</ul>
+<div id="CDMOG229" class="figure">
+<p class="titleinfigure"><a id="BEHBEGGA"></a>Figure 4-1 ETL Flow Diagram</p>
+<img width="412" height="712" src="img/etlflow.gif" alt="Description of Figure 4-1 follows" /><br />
+<a id="sthref125" href="img_text/etlflow.htm">Description of "Figure 4-1 ETL Flow Diagram"</a><br />
+<br /></div>
+<!-- class="figure" --></div>
+<!-- class="sect1" -->
+<a id="BEHFIHBE"></a>
+<div id="CDMOG230" class="sect1">
+<h2 class="sect1">ETL for the Foundation Layer of an Oracle Communications Data Model Warehouse</h2>
+<p><a id="sthref126"></a><a id="sthref127"></a>ETL that populates the foundation layer of an Oracle Communications Data Model warehouse (that is, the base, reference, and lookup tables) with data from an operational system is known as source-ETL.</p>
+<p>You can populate the foundation layer of an Oracle Communications Data Model warehouse in the following ways:</p>
+<ul>
+<li>
+<p><a id="sthref128"></a><a id="sthref129"></a><a id="sthref130"></a>If an application adapter for Oracle Communications Data Model is available for the system from which you want to populate the foundation layer of an Oracle Communications Data Model warehouse, you can use that adapter to populate the foundation layer. For more information, see <a href="#BEHDJHGB">"Using an Application Adapter to Populate the Foundation Layer"</a>.</p>
+</li>
+<li>
+<p>Write your own source-ETL scripts using Oracle Data Integrator or another ETL tool and then use those scripts to populate the foundation layer. For more information, see <a href="#BEHEGHEG">"Writing Your Own Source-ETL"</a>.</p>
+</li>
+</ul>
+<a id="BEHDJHGB"></a>
+<div id="CDMOG348" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Using an Application Adapter to Populate the Foundation Layer</h3>
+<p><a id="sthref131"></a><a id="sthref132"></a><a id="sthref133"></a><a id="sthref134"></a>If an Application Adapter for Oracle Communications Data Model is available for the application that populates your Operational system, you use that adapter to populate the foundation layer of your Oracle Communications Data Model warehouse.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BEHEGHEG"></a>
+<div id="CDMOG349" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Writing Your Own Source-ETL</h3>
+<p>If you are not using an application adapter for Oracle Communications Data Model, you must write your own source-ETL scripts using Oracle Data Integrator or another ETL tool or mapping tool.</p>
+<p>The following topics provide general information about writing source-ETL:</p>
+<ul>
+<li>
+<p><a href="#BEHFHCBG">Source-ETL Design Considerations</a></p>
+</li>
+<li>
+<p><a href="#BEHCBAHB">ETL Architecture for Oracle Communications Data Model Source-ETL</a></p>
+</li>
+<li>
+<p><a href="#BEHEIJAB">Creating a Source to Target Mapping Document for the Source-ETL</a></p>
+</li>
+<li>
+<p><a href="#BEHEIDDG">Designing a Plan for Rectifying Source-ETL Data Quality Problems</a></p>
+</li>
+<li>
+<p><a href="#BEHJBGGI">Designing Source-ETL Workflow and Jobs Control</a></p>
+</li>
+<li>
+<p><a href="#BEHEDEDI">Designing Source-ETL Exception Handling</a></p>
+</li>
+<li>
+<p><a href="#BEHGBCAJ">Writing Source-ETL that Loads Efficiently</a></p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ODIDG" href="http://www.oracle.com/pls/topic/lookup?ctx=db112&amp;id=ODIDG"><span class="italic">Oracle&reg; Fusion Middleware Developer's Guide for Oracle Data Integrator</span></a></div>
+<a id="BEHFHCBG"></a>
+<div id="CDMOG350" class="sect3">
+<h4 class="sect3">Source-ETL Design Considerations</h4>
+<p>Keep the following points in mind when designing and writing source-ETL for Oracle Communications Data Model:</p>
+<ul>
+<li>
+<p>You can populate the calendar data by using the calendar population scripts provided with Oracle Communications Data Model and described in <a class="olink CDMRF1228" href="../../doc.112/e28440/utility_scripts_cdm.htm#CDMRF1228"><span class="italic">Oracle Communications Data Model Reference</span></a>.</p>
+</li>
+<li>
+<p>Populate the tables in the following order:</p>
+<ol>
+<li>
+<p>Lookup tables</p>
+</li>
+<li>
+<p>Reference tables</p>
+</li>
+<li>
+<p>Base tables</p>
+</li>
+</ol>
+</li>
+<li>
+<p>Analyze the tables in one category before loading the tables in the next category (for example, analyze the reference tables before loading the lookup tables). Additionally, you must analyze all of the tables loaded by the source-ETL process before executing the intra-ETL processes).</p>
+<div class="infoboxnotealso">
+<p class="notep1">See:</p>
+The topic about analyzing tables, indexes, and clusters in <a class="olink ADMIN11524" href="../../server.112/e25494/general.htm#ADMIN11524"><span class="italic">Oracle Database Administrator's Guide</span></a>.</div>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<a id="BEHCBAHB"></a>
+<div id="CDMOG231" class="sect3">
+<h4 class="sect3">ETL Architecture for Oracle Communications Data Model Source-ETL</h4>
+<p><a id="sthref135"></a><a id="sthref136"></a>ETL (or EL-T, that is, Extract, Load and Transform) first extracts data from the original sources, assures the quality of the data, cleans the data, and makes the data consistent across the original sources. ETL then populates the physical objects with the "clean" data so that query tools, report writers, dashboards and so on can access the data.</p>
+<p>The fundamental services upon which data acquisition is constructed are as follows:</p>
+<ul>
+<li>
+<p>Data sourcing</p>
+</li>
+<li>
+<p>Data movement</p>
+</li>
+<li>
+<p>Data transformation</p>
+</li>
+<li>
+<p>Data loading</p>
+</li>
+</ul>
+<p>From a logical architecture perspective, there are many different ways to configure these building blocks for delivering data acquisition services. The major architectural styles available that cover a range of options to be targeted within a data warehousing architecture include:</p>
+<ul>
+<li>
+<p><span class="bold">Batch Extract, Transform, and Load</span> and <span class="bold">Batch Extract, Load, Transform, Load</span></p>
+<p>Batch Extract, Transform and Load (ETL) and Batch Extract, Load, Transform, Load (ELTL) are the traditional architecture's in a data warehouse implementation. The difference between them is where the transformation proceed in or out of the database.</p>
+</li>
+<li>
+<p><span class="bold">Batch Hybrid Extract, Transform, Load, Transform, Load</span></p>
+<p>Batch Hybrid Extract, Transform, Load, Transform, Load (ETLTL) is a hybrid strategy. This strategy provides the most flexibility to remove hand coding approaches to transformation design, apply a metadata-driven approach, and still be able to leverage the data processing capabilities of the enterprise warehouse. In this targeted design, the transformation processing is first performed outside the warehouse as a pre-processing step before loading the staging tables, and then further transformation processing is performed within the data warehouse before the final load into the target tables.</p>
+</li>
+<li>
+<p><span class="bold">Real-time Extract, Transform, Load</span></p>
+<p>Real-time Extract, Transform, Load (rETL) is appropriate when service levels for data freshness demand more up-to-date information in the data warehousing environment. In this approach, the OLTP system must actively publish events of interest so that the rETL processes can extract them from a message bus (queue) on a timely basis. A message-based paradigm is used with publish and subscribe message bus structures or point-to-point messaging with reliable queues. In such cases, the staging area can be used as a real-time Operational Data Store, at least for the source concerned, and aggregation could run directly from the Operational Data Store (operational system) to the Access layer, or to the presentation layer in specific cases.</p>
+</li>
+</ul>
+<p>When designing source-ETL for Oracle Communications Data Model, use the architecture that best meets your business needs.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BEHEIJAB"></a>
+<div id="CDMOG232" class="sect3">
+<h4 class="sect3">Creating a Source to Target Mapping Document for the Source-ETL</h4>
+<p><a id="sthref137"></a><a id="sthref138"></a>Before you begin building your extract systems, create a logical data interface document that maps the relationship between original source fields and target destination fields in the tables. This document ties the very beginning of the ETL system to the very end.</p>
+<p>Columns in the data mapping document are sometimes combined. For example, the source database, table name, and column name could be combined into a single target column. The information within the concatenated column would be delimited with a period. Regardless of the format, the content of the logical data mapping document has been proven to be the critical element required to sufficiently plan ETL processes.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BEHEIDDG"></a>
+<div id="CDMOG233" class="sect3">
+<h4 class="sect3">Designing a Plan for Rectifying Source-ETL Data Quality Problems</h4>
+<p><a id="sthref139"></a><a id="sthref140"></a>Data cleaning consists of all the steps required to clean and validate the data feeding a table and to apply known business rules to make the data consistent. The perspectives of the cleaning and conforming steps are less about the upside potential of the data and more about containment and control.</p>
+<p>There are several potential data quality issues, related to each other, that the staging area needs to handle:</p>
+<ul>
+<li>
+<p>Data Validity: Is the data content and type sufficient to be usable, and as expected (and "profile" in case one uses this advanced option)?</p>
+</li>
+<li>
+<p>Data Accuracy: correct addresses, correct with respect some "true" standard (or as such defined).</p>
+</li>
+<li>
+<p>Data Completeness: is all the required data there? What to do when data is missing? What represents the minimum set of required data?</p>
+</li>
+<li>
+<p>Data Consistency: that is, consistency of the data between the various sources and what rules one applies for inconsistencies.</p>
+</li>
+<li>
+<p>Data Latency: A sub-part of data consistency, but treated separately because of its importance: when does data arrive, over which period and in which one can we combine, which one not?</p>
+</li>
+<li>
+<p>Data Reasoning: This is more at reporting level but can be applied at the staging level: Does the data I see make sense from a business perspective? Can I really combine the data as an end-user would expect?</p>
+</li>
+</ul>
+<p>As a consequence, a multi-layer staging is generally required or expected.</p>
+<p>If there are data quality problems, then build a plan, in agreement with IT and business users, for how to rectify these problems.</p>
+<p>Answer the following questions:</p>
+<ul>
+<li>
+<p>Is data missing?</p>
+</li>
+<li>
+<p>Is the data wrong or inconsistent?</p>
+</li>
+<li>
+<p>Should the problem be fixed in the source systems?</p>
+</li>
+<li>
+<p>Set up the data quality reporting and action program and people responsibility.</p>
+</li>
+</ul>
+<p>Set up the following processes and programs:</p>
+<ul>
+<li>
+<p>Set up a data quality measurement process.</p>
+</li>
+<li>
+<p>Set up the data quality reporting and action program and people responsibility.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<a id="BEHJBGGI"></a>
+<div id="CDMOG234" class="sect3">
+<h4 class="sect3">Designing Source-ETL Workflow and Jobs Control</h4>
+<p><a id="sthref141"></a><a id="sthref142"></a><a id="sthref143"></a><a id="sthref144"></a>All data movement among ETL processes are composed of jobs. An ETL workflow executes these jobs in the proper sequence and with the necessary dependencies. General ETL tools, such as Oracle Warehouse Builder, support this kind of workflow, job design, and execution control.</p>
+<p>Below are some tips when you design ETL jobs and workflow:</p>
+<ul>
+<li>
+<p>Use common structure across all jobs (source system to transformer to target data warehouse).</p>
+</li>
+<li>
+<p>Have a one-to-one mapping from source to target.</p>
+</li>
+<li>
+<p>Define one job per Source table.</p>
+</li>
+<li>
+<p>Apply generic job structure and template jobs to allow for rapid development and consistency.</p>
+</li>
+<li>
+<p>Use an optimized job design to leverage Oracle load performance based on data volumes.</p>
+</li>
+<li>
+<p>Design parameterized job to allow for greater control over job performance and behavior.</p>
+</li>
+<li>
+<p>Maximize Jobs parallelism execution.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<a id="BEHEDEDI"></a>
+<div id="CDMOG235" class="sect3">
+<h4 class="sect3">Designing Source-ETL Exception Handling</h4>
+<p><a id="sthref145"></a>Your ETL tool or your developed mapping scripts generate status and error handling tables.</p>
+<p>As a general principle, all ETL logs status and errors into a table. You monitor execution status using an ETL tool or by querying this log table directly.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BEHGBCAJ"></a>
+<div id="CDMOG236" class="sect3">
+<h4 class="sect3"><a id="sthref146"></a>Writing Source-ETL that Loads Efficiently</h4>
+<p><a id="sthref147"></a>Whether you are developing mapping scripts and loading into a staging layer or directly into the foundation layer the goal is to get the data into the warehouse in the most expedient manner. In order to achieve good performance during the load you must begin by focusing on where the data to be loaded resides and how you load it into the database. For example, you should not use a serial database link or a single JDBC connection to move large volumes of data. The most common and preferred mechanism for loading large volumes of data is loading from flat files.</p>
+<p>The following topics discuss best practices for ensuring your source-ETL loads efficiently:</p>
+<ul>
+<li>
+<p><a href="#BEHGIGJI">Using a Staging Area for Flat Files</a></p>
+</li>
+<li>
+<p><a href="#BEHGCGCC">Preparing Raw Data Files for Source-ETL</a></p>
+</li>
+<li>
+<p><a href="#BEHDJCEF">Source-ETL Data Loading Options</a></p>
+</li>
+<li>
+<p><a href="#BEHJEGJC">Parallel Direct Path Load Source-ETL</a></p>
+</li>
+<li>
+<p><a href="#BEHGDBHG">Partition Exchange Load for Oracle Communications Data Model Source-ETL</a></p>
+</li>
+</ul>
+<a id="BEHGIGJI"></a>
+<div id="CDMOG237" class="sect4">
+<h5 class="sect4">Using a Staging Area for Flat Files</h5>
+<p>The area where flat files are stored before being loaded into the staging layer of a data warehouse system is commonly known as staging area. The overall speed of your load is determined by:</p>
+<ul>
+<li>
+<p>How quickly the raw data can be read from staging area.</p>
+</li>
+<li>
+<p>How quickly the raw data can be processed and inserted into the database.</p>
+</li>
+</ul>
+<p class="subhead2"><a id="CDMOG238"></a>Recommendations: Using a Staging Area</p>
+<p>Stage the raw data across as many physical disks as possible to ensure that reading it is not a bottleneck during the load.</p>
+<p>Also, if you are using the Exadata Database Machine, the best place to stage the data is in an Oracle Database File System (DBFS) stored on the Exadata storage cells. DBFS creates a mountable cluster file system which can you can use to access files stored in the database. Create the DBFS in a separate database on the Database Machine. This allows the DBFS to be managed and maintained separately from the data warehouse.</p>
+<p>Mount the file system using the <code>DIRECT_IO</code> option to avoid thrashing the system page cache while moving the raw data files in and out of the file system.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See:</p>
+<a class="olink ADLOB" href="../../appdev.112/e18294/toc.htm"><span class="italic">Oracle Database SecureFiles and Large Objects Developer's Guide</span></a> for more information on setting up DBFS.</div>
+</div>
+<!-- class="sect4" -->
+<a id="BEHGCGCC"></a>
+<div id="CDMOG239" class="sect4">
+<h5 class="sect4">Preparing Raw Data Files for Source-ETL</h5>
+<p>In order to parallelize the data load Oracle Database must be able to logically break up the raw data files into chunks, known as granules. To ensure balanced parallel processing, the number of granules is typically much higher than the number of parallel server processes. At any given point in time, a parallel server process is allocated one granule to work on. After a parallel server process completes working on its granule, another granule is allocated until all of the granules are processed and the data is loaded.</p>
+<p class="subhead2"><a id="CDMOG240"></a>Recommendations: Preparing Raw Data Files for Source-ETL</p>
+<p>Follow these recommendations:</p>
+<ul>
+<li>
+<p>Deliminate each row using a known character such as a new line or a semicolon. This ensures that Oracle can look inside the raw data file and determine where each row of data begins and ends in order to create multiple granules within a single file.</p>
+</li>
+<li>
+<p>If a file is not position-able and seek-able (for example the file is compressed or zip file), then the files cannot be broken up into granules and the whole file is treated as a single granule. In this case, only one parallel server process can work on the entire file. In order to parallelize the loading of compressed data files, use multiple compressed data files. The number of compressed data files used determines the maximum parallel degree used by the load.</p>
+</li>
+<li>
+<p>When loading multiple data files (compressed or uncompressed):</p>
+<ul>
+<li>
+<p>Use a single external table, if at all possible</p>
+</li>
+<li>
+<p>Make the files similar in size</p>
+</li>
+<li>
+<p>Make the size of the files a multiple of 10 MB</p>
+</li>
+</ul>
+</li>
+<li>
+<p>If you must have files of different sizes, list the files from largest to smallest. By default, Oracle assumes that the flat file has the same character set as the database. If this is not the case, specify the character set of the flat file in the external table definition to ensure the proper character set conversions can take place.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect4" -->
+<a id="BEHDJCEF"></a>
+<div id="CDMOG241" class="sect4">
+<h5 class="sect4">Source-ETL Data Loading Options</h5>
+<p>Oracle offers several data loading options</p>
+<ul>
+<li>
+<p>External table or SQL*Loader</p>
+</li>
+<li>
+<p>Oracle Data Pump (import and export)</p>
+</li>
+<li>
+<p>Change Data Capture and Trickle feed mechanisms (such as Oracle GoldenGate)</p>
+</li>
+<li>
+<p>Oracle Database Gateways to open systems and mainframes</p>
+</li>
+<li>
+<p>Generic Connectivity (ODBC and JDBC)</p>
+</li>
+</ul>
+<p>The approach that you take depends on the source and format of the data you receive.</p>
+<p class="subhead2"><a id="CDMOG242"></a>Recommendations: Loading Flat Files</p>
+<p>If you are loading from files into Oracle you have two options: SQL*Loader or external tables.</p>
+<p>Using external tables offers the following advantages:</p>
+<ul>
+<li>
+<p>Allows transparent parallelization inside the database.You can avoid staging data and apply transformations directly on the file data using arbitrary SQL or PL/SQL constructs when accessing external tables. SQL Loader requires you to load the data as-is into the database first.</p>
+</li>
+<li>
+<p>Parallelizing loads with external tables enables a more efficient space management compared to SQL*Loader, where each individual parallel loader is an independent database sessions with its own transaction. For highly partitioned tables this could potentially lead to a lot of wasted space.</p>
+</li>
+</ul>
+<p>You can create an external table using the standard <code>CREATE TABLE</code> statement. However, to load from flat files the statement must include information about where the flat files reside outside the database. The most common approach when loading data from an external table is to issue a <code>CREATE TABLE AS SELECT (CTAS)</code> statement or an <code>INSERT AS SELECT (IAS)</code> statement into an existing table.</p>
+</div>
+<!-- class="sect4" -->
+<a id="BEHJEGJC"></a>
+<div id="CDMOG243" class="sect4">
+<h5 class="sect4">Parallel Direct Path Load Source-ETL</h5>
+<p><a id="sthref148"></a>A direct path load parses the input data according to the description given in the external table definition, converts the data for each input field to its corresponding Oracle data type, then builds a column array structure for the data. These column array structures are used to format Oracle data blocks and build index keys. The newly formatted database blocks are then written directly to the database, bypassing the standard SQL processing engine and the database buffer cache.</p>
+<p>The key to good load performance is to use direct path loads wherever possible:</p>
+<ul>
+<li>
+<p>A <code>CREATE TABLE AS SELECT (CTAS)</code> statement always uses direct path load.</p>
+</li>
+<li>
+<p>A simple <code>INSERT AS SELECT (IAS)</code> statement does <span class="italic">not</span> use direct path load. In order to achieve direct path load with an IAS statement you must add the <code>APPEND</code> hint to the command.</p>
+</li>
+</ul>
+<p>Direct path loads can also run in parallel. To set the parallel degree for a direct path load, either:</p>
+<ul>
+<li>
+<p>Add the <code>PARALLEL</code> hint to the CTAS statement or an IAS statement.</p>
+</li>
+<li>
+<p>Set the <code>PARALLEL</code> clause on both the external table and the table into which the data is loaded.</p>
+<p>After the parallel degree is set:</p>
+<ul>
+<li>
+<p>A <code>CTAS</code> statement automatically performs a direct path load in parallel.</p>
+</li>
+<li>
+<p>An <code>IAS</code> statement does not automatically perform a direct path load in parallel. In order to enable an <code>IAS</code> statement to perform direct path load in parallel, you must alter the session to enable parallel DML by executing the following statement.</p>
+<pre>
+alter session enable parallel DML;
+</pre></li>
+</ul>
+</li>
+</ul>
+</div>
+<!-- class="sect4" -->
+<a id="BEHGDBHG"></a>
+<div id="CDMOG244" class="sect4">
+<h5 class="sect4">Partition Exchange Load for Oracle Communications Data Model Source-ETL</h5>
+<p><a id="sthref149"></a><a id="sthref150"></a><a id="sthref151"></a>A benefit of partitioning is the ability to load data quickly and easily with minimal impact on the business users by using the <code>EXCHANGE PARTITION</code> command. The <code>EXCHANGE PARTITION</code> command enables swapping the data in a nonpartitioned table into a particular partition in your partitioned table. The <code>EXCHANGE PARTITION</code> command does not physically move data, instead it updates the data dictionary to exchange a pointer from the partition to the table and vice versa.</p>
+<p>Because there is no physical movement of data, an exchange does not generate redo and undo. In other words, an exchange is a sub-second operation and far less likely to impact performance than any traditional data-movement approaches such as <code>INSERT</code>.</p>
+<p class="subhead2"><a id="CDMOG245"></a>Recommendations: Partitioning Tables</p>
+<p>Partition the larger tables and fact tables in the Oracle Communications Data Model warehouse.</p>
+<div id="CDMOG246" class="example">
+<p class="titleinexample"><a id="sthref152"></a>Example 4-1 Using Exchange Partition Statement with a Partitioned Table</p>
+<p>Assume that there is a large table called <code>Sales</code>, which is range partitioned by day. At the end of each business day, data from the online sales system is loaded into the <code>Sales</code> table in the warehouse.</p>
+<p>The following steps ensure the daily data gets loaded into the correct partition with minimal impact to the business users of the data warehouse and optimal speed:</p>
+<ol>
+<li>
+<p>Create external table for the flat file data coming from the online system</p>
+</li>
+<li>
+<p>Using a <code>CTAS</code> statement, create a nonpartitioned table called <code>tmp_sales</code> that has the same column structure as <code>Sales</code> table</p>
+</li>
+<li>
+<p>Build any indexes that are on the <code>Sales</code> table on the <code>tmp_sales</code> table</p>
+</li>
+<li>
+<p>Issue the <code>EXCHANGE PARTITION</code> command.</p>
+<pre>
+Alter table Sales exchange partition p2 with
+    table top_sales including indexes without validation;
+</pre></li>
+<li>
+<p>Gather optimizer statistics on the newly exchanged partition using incremental statistics.</p>
+</li>
+</ol>
+<p>The <code>EXCHANGE PARTITION</code> command in this example, swaps the definitions of the named partition and the <code>tmp_sales</code> table, so the data instantaneously exists in the right place in the partitioned table. Moreover, with the inclusion of the <code>INCLUDING INDEXES</code> and <code>WITHOUT VALIDATION</code> clauses, Oracle swaps index definitions and does not check whether the data actually belongs in the partition - so the exchange is very quick.</p>
+</div>
+<!-- class="example" -->
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The assumption being made in this example is that the data integrity was verified at date extraction time. If you are unsure about the data integrity, omit the <code>WITHOUT VALIDATION</code> clause so that the Database checks the validity of the data.</div>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BEHJFGJB"></a>
+<div id="CDMOG435" class="sect1">
+<h2 class="sect1">Customizing Intra-ETL for Oracle Communications Data Model</h2>
+<p>The Oracle Communications Data Model uses workflow implemented using PL/SQL packages to execute the intra-ETL process. The workflow consists of four major components:</p>
+<ol>
+<li>
+<p>Lookup Values</p>
+</li>
+<li>
+<p><a href="#BEHEFHHD">Executing Derived Intra-ETL Programs</a>:</p>
+<ol>
+<li>
+<p>Independent Derived intra-ETL programs - Level 0</p>
+</li>
+<li>
+<p>First level dependent Derived intra-ETL programs - Level 1</p>
+</li>
+<li>
+<p>Second level dependent Derived intra-ETL programs - Level 2</p>
+</li>
+</ol>
+</li>
+<li>
+<p><a href="#BEHCGDAA">Refreshing Aggregate Materialized Views</a>:</p>
+<ol>
+<li>
+<p>Independent Aggregate materialized views - Level 0</p>
+</li>
+<li>
+<p>First level dependent Aggregate materialized views - Level 1</p>
+</li>
+</ol>
+</li>
+<li>
+<p><a href="#BEHBJHJF">Refreshing Data mining models</a></p>
+</li>
+<li>
+<p><a href="#BEHBJBGB">Refreshing OLAP Cubes</a></p>
+</li>
+</ol>
+<p><a href="#BEHCEBJG">Figure 4-2</a> illustrates the Oracle Communications Data Model intra-ETL workflow.</p>
+<div id="CDMOG436" class="figure">
+<p class="titleinfigure"><a id="BEHCEBJG"></a>Figure 4-2 Oracle Communications Data Model Intra-ETL Workflow</p>
+<img width="797" height="481" src="img/ietl_cust_flow1.png" alt="Description of Figure 4-2 follows" /><br />
+<a id="sthref153" href="img_text/ietl_cust_flow1.htm">Description of "Figure 4-2 Oracle Communications Data Model Intra-ETL Workflow"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<div id="CDMOG473" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref154"></a>
+<h3 class="sect2">Handling Lookup Values in Staging</h3>
+<p>Some Intra-ETLs expect some default values in order to work properly. They are usually associated with codes and stored as numbers but saved as text. For example, a typical status code (<code>STAT_CD</code>) is expected to start with 1 for pre-activated status, 2 with active status, 4 with deactivated status, and 5 with canceled status.</p>
+<p>The advantage of defining numbers saved as text is that this allows the addition of custom codes that can be associated with an active state (for example 21, 2199, 21000001, and so on) that will be taken into account without having to change anything in the codes.</p>
+<p>But of course, you will need to map the original codes to the text values. When you use an ETL lookup Matrix, as table, this allows the identifier of the source system, source table, the source column and the source code, and the Oracle Communications Data Model target table, column, and code.</p>
+<p>You can define a simple function to search and leverage the correct code and map it to a number (stored as text to allow the use of SQL TEXT functions). You might want to add Oracle Communications Data Model Lookup tables with a <code>SHORT_NAME</code> column that would represent the original code of the source system, or the one that the end-users use, for reporting purposes only.</p>
+<p>An alternative approach is to change the default value in the Intra-ETLs. Note that as soon as multiple sources map to the same Oracle Communications Data Model table, you will need some similar lookup code unification process.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BEHEFHHD"></a>
+<div id="CDMOG437" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Executing Derived Intra-ETL Programs</h3>
+<p>The first workflow component is the <span class="bold">Derived intra-ETL</span> programs. This component has three subcomponents that handle the dependency among Derived intra-ETL programs:</p>
+<ol>
+<li>
+<p>Independent Derived intra-ETL programs, the first subcomponent, has Derived intra-ETL programs that get data from foundation layer tables, that is base, lookup, and reference tables.</p>
+</li>
+<li>
+<p>Derived intra-ETL programs, the second subcomponent, handles parts that depend on the first subcomponent, Independent Derived intra-ETL programs. The second subcomponent intra-ETL programs get data from foundation layer tables, that is base, lookup, and reference tables and also from derived tables that have intra-ETL programs in first subcomponent.</p>
+</li>
+<li>
+<p>The third subcomponent has Derived intra-ETL programs that depend on the both the first (Independent Derived intra-ETL programs) and the second subcomponents (First level dependent Derived intra-ETL programs). The third subcomponent intra-ETL programs get data from foundation layer tables, that is base, lookup, and reference tables and also from derived tables that have intra-ETL programs in both first and second subcomponents.</p>
+</li>
+</ol>
+<p>Intra-ETL programs in all three subcomponents are implemented using PL/SQL packages. All Intra-ETL packages except two (<code>DWD_CNT_DAY_PKG</code> and <code>DWD_CUST_DNA_PKG</code>) insert data for the ETL period mentioned in <code>DWC_ETL_PARAMETER</code> table for <span class="italic">"OCDM-INTRA-ETL"</span> process. The process name for <code>DWD_CNT_DAY</code> table is "<code>DWD_CNT_DAY</code>" and for <code>DWD_CUST_DNA</code> table it is "<code>DWD_CUST_DNA</code>". Modify the ETL period of all three processes according to your data load requirements. If you are trying to load data for ETL period, for which data is already loaded, intra-ETL program first truncates the partitions existing for the ETL period, and then loads data into the target derived table.</p>
+<p>Modifying existing or adding new intra-ETLs is a common customization of Oracle Communications Data Model. If new data marts are required or if some existing data warehouse requires modifications, it is usual to either create an Intra-ETL from scratch or to copy an existing Intra-ETL and modify it. In both cases, the new or modified intra-ETL program needs to be added in the Package <code>PKG_INTRA_ETL_PROCESS</code>, and the old one needs to be switched off or commented, at the correct level of dependency.</p>
+<p>Be sure to create or modify the target entity as required.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BEHCGDAA"></a>
+<div id="CDMOG438" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Refreshing Aggregate Materialized Views</h3>
+<p>This is the second component of the workflow. This component depends on the first component, <a href="#BEHEFHHD">"Executing Derived Intra-ETL Programs"</a>. The execution of this component happens only when the execution of the first component completes successfully. This component has two subcomponents to deal with the dependency among the Aggregate materialized views:</p>
+<ol>
+<li>
+<p><span class="italic">Independent Aggregate materialized views</span>, the first subcomponent, has aggregate materialized views that do not depend on any other aggregate materialized views and most of them get data from derived tables and reference tables. Whereas few materialized views get data from foundation layer tables and derived tables.</p>
+</li>
+<li>
+<p><span class="italic">First level dependent Aggregate materialized views</span>, the second component, has aggregate materialized views that depend on the first subcomponent, <span class="italic">Independent Aggregate materialized views</span>. The aggregate materialized views in this subcomponent get data from aggregate materialized views in first the subcomponent</p>
+</li>
+</ol>
+<p>Modifications or additions in this layer follow the same principle as the ones in the derived layer.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BEHBJHJF"></a>
+<div id="CDMOG439" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Refreshing Data mining models</h3>
+<p>This is the third component of the workflow. This component depends on the first component, <a href="#BEHEFHHD">"Executing Derived Intra-ETL Programs"</a>. The execution of this component happens only when the execution of the first component completes successfully. This component refreshes data mining models based on the <span class="italic">training day</span> and <span class="italic">apply day</span> specified in ETL parameter table, <code>DWC_ETL_PARAMETER</code> table for <span class="italic">BUILD-MINING-MODELS</span> process.</p>
+<p>The creation of new mining models or the adaptation of existing mining models for a specific business need could be seen as typical "customization" (or configuration in case of existing models). One should follow the standard mining process as described in the specific documentation for the Advanced Analytics option of the database (because data mining is a process as such, before being automated as part of the customized Intra-ETL processes).</p>
+<p>Additional models, once finalized, should be seen as normal personalization of Oracle Communications Data Model to one's business.</p>
+<p>As your model changes over time any customized models need to be reviewed and fine tuned to conform and provide useful information with the new data available, as part of the standard reprocessing of the mining models on a regular basis. It is usual to re-run and fine tune any given mining model at least every quarter, to make sure the current mining model takes into account any new trends from available data.</p>
+<p>The mining intra-ETLs should be customized to correspondingly consider any model data additions or changes.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BEHBJBGB"></a>
+<div id="CDMOG440" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Refreshing OLAP Cubes</h3>
+<p>This is the fourth component of the workflow. This component depends on the second component, <a href="#BEHCGDAA">"Refreshing Aggregate Materialized Views"</a>, which in turn depends on the first component, <a href="#BEHEFHHD">"Executing Derived Intra-ETL Programs"</a>. The execution of this component happens only when the execution of the second component completes successfully. This component refreshes data in OLAP cubes and dimensions based on the parameters given in <code>DWC_OLAP_ETL_PARAMETER</code> table.</p>
+<p>Similarly to data mining and aggregate customization, when you add a cube or change an existing cube is part of typical customization of Oracle Communications Data Model, your refresh must follows the same process as a cube creation or modification as described in the <a class="olink OLAUG300" href="../../olap.112/e17123/cubes.htm#OLAUG300"><span class="italic">Oracle OLAP User's Guide</span></a>. The Intra-ETL that fills the cubes should be correspondingly modified.</p>
+</div>
+<!-- class="sect2" -->
+<div id="CDMOG441" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref155"></a>
+<h3 class="sect2">Executing Intra-ETL Workflow</h3>
+<p>Oracle Communications Data Model intra-ETL workflow is implemented using a PL/SQL package, <code>PKG_INTRA_ETL_PROCESS</code>. Each component and their subcomponents of intra-ETL workflow have one procedure each. All these procedures are private to the package. The package has only one public procedure, which invokes all the private procedures as depicted in <a href="#BEHCEBJG">Figure 4-2</a>. Before executing the workflow, ensure that you set all ETL parameters in <code>DWC_OLAP_PARAMETER</code> and <code>DWC_OLAP_ETL_PARAMETER</code> tables. Invoking <code>PKG_INTRA_ETL_PROCESS.RUN</code> procedure starts the workflow execution.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BEHBABJG"></a>
+<div id="CDMOG442" class="sect1">
+<h2 class="sect1">Performing an Initial Load of an Oracle Communications Data Model Warehouse</h2>
+<p>Performing an initial load of an Oracle Communications Data Model is a multistep process:</p>
+<ol>
+<li>
+<p>Load the foundation layer of the Oracle Communications Data Model warehouse (that is, the reference, lookup, and base tables) as described in <a href="#BEHIFAAG">"Performing an Initial Load of the Foundation Layer"</a>.</p>
+</li>
+<li>
+<p>Load the access layer of the Oracle Communications Data Model warehouse (that is, the derived and aggregate tables, materialized views, OLAP cubes, and data mining models) as described in <a href="#BEHCGACI">"Performing an Initial Load of the Access Layer"</a>.</p>
+</li>
+</ol>
+<a id="BEHIFAAG"></a>
+<div id="CDMOG443" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Performing an Initial Load of the Foundation Layer</h3>
+<p>The manner in which you perform an initial load of the foundation layer of an Oracle Communications Data Model warehouse (that is, the reference, lookup, and base tables) varies depending on whether you are using an application adapter for Oracle Communications Data Model:</p>
+<ul>
+<li>
+<p>If you are using an application adapter for Oracle Communications Data Model, then you use that adapter to load the foundation layer. For example, you can use the NCC Adapter for Oracle Communications Data Model to populate the foundation layer of an Oracle Communications Data Model warehouse with data from an Oracle Communications Network Charging and Control system.</p>
+</li>
+<li>
+<p>If you are not using an application adapter, then you perform the initial load of the foundation layer using source-ETL that you create. See <a href="#BEHEGHEG">"Writing Your Own Source-ETL"</a> for more information on creating this ETL.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="BEHCGACI"></a>
+<div id="CDMOG444" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Performing an Initial Load of the Access Layer</h3>
+<p>To perform an initial load of access layer of the Oracle Communications Data Model warehouse (that is, the derived and aggregate tables, materialized views, OLAP cubes, and data mining models) take the following steps:</p>
+<ol>
+<li>
+<p>Update the parameters in <code>DWC_ETL_PARAMETER</code> control table in the <code>ocdm_sys</code> schema for different processes so that the ETL can use this information (that is, the beginning and end date of the ETL period) when loading the derived and aggregate tables and views.</p>
+<p>For an initial load of an Oracle Communications Data Model warehouse, specify the values shown in the following tables:</p>
+<p>For <span class="italic">OCDM-INTRA-ETL</span> process:</p>
+<div class="inftblinformal">
+<table class="cellalignment2082" summary="table" dir="ltr">
+<thead>
+<tr class="cellalignment2076">
+<th class="cellalignment2083" id="r1c1-t6"><span class="bold">Columns</span></th>
+<th class="cellalignment2083" id="r1c2-t6"><span class="bold">Value</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r2c1-t6" headers="r1c1-t6"><code>PROCESS_NAME</code></td>
+<td class="cellalignment2084" headers="r2c1-t6 r1c2-t6">'<code>OCDM-INTRA-ETL</code>'</td>
+</tr>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r3c1-t6" headers="r1c1-t6"><code>FROM_DATE_ETL</code></td>
+<td class="cellalignment2084" headers="r3c1-t6 r1c2-t6">The beginning date of the ETL period.</td>
+</tr>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r4c1-t6" headers="r1c1-t6"><code>TO_DATE_ETL</code></td>
+<td class="cellalignment2084" headers="r4c1-t6 r1c2-t6">The ending date of the ETL period.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformal" -->
+<p>For <span class="italic">DWD_CUST_DNA</span> process:</p>
+<div class="inftblinformal">
+<table class="cellalignment2082" summary="table" dir="ltr">
+<thead>
+<tr class="cellalignment2076">
+<th class="cellalignment2083" id="r1c1-t7"><span class="bold">Columns</span></th>
+<th class="cellalignment2083" id="r1c2-t7"><span class="bold">Value</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r2c1-t7" headers="r1c1-t7"><code>PROCESS_NAME</code></td>
+<td class="cellalignment2084" headers="r2c1-t7 r1c2-t7">'<code>DWD_CUST_DNA</code>'</td>
+</tr>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r3c1-t7" headers="r1c1-t7"><code>FROM_DATE_ETL</code></td>
+<td class="cellalignment2084" headers="r3c1-t7 r1c2-t7">The beginning date of the ETL period.</td>
+</tr>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r4c1-t7" headers="r1c1-t7"><code>TO_DATE_ETL</code></td>
+<td class="cellalignment2084" headers="r4c1-t7 r1c2-t7">The ending date of the ETL period.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformal" -->
+<p>For <span class="italic">DWD_CNT_DAY</span> process:</p>
+<div class="inftblinformal">
+<table class="cellalignment2082" summary="table" dir="ltr">
+<thead>
+<tr class="cellalignment2076">
+<th class="cellalignment2083" id="r1c1-t8"><span class="bold">Columns</span></th>
+<th class="cellalignment2083" id="r1c2-t8"><span class="bold">Value</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r2c1-t8" headers="r1c1-t8"><code>PROCESS_NAME</code></td>
+<td class="cellalignment2084" headers="r2c1-t8 r1c2-t8">'<code>DWD_CNT_DAY</code>'</td>
+</tr>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r3c1-t8" headers="r1c1-t8"><code>FROM_DATE_ETL</code></td>
+<td class="cellalignment2084" headers="r3c1-t8 r1c2-t8">The beginning date of the ETL period.</td>
+</tr>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r4c1-t8" headers="r1c1-t8"><code>TO_DATE_ETL</code></td>
+<td class="cellalignment2084" headers="r4c1-t8 r1c2-t8">The ending date of the ETL period.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformal" -->
+<p>For <span class="italic">OCDM-DWA-MV-DATE</span> process:</p>
+<div class="inftblinformal">
+<table class="cellalignment2082" summary="table" dir="ltr">
+<thead>
+<tr class="cellalignment2076">
+<th class="cellalignment2083" id="r1c1-t9"><span class="bold">Columns</span></th>
+<th class="cellalignment2083" id="r1c2-t9"><span class="bold">Value</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r2c1-t9" headers="r1c1-t9"><code>PROCESS_NAME</code></td>
+<td class="cellalignment2084" headers="r2c1-t9 r1c2-t9">' <code>OCDM-DWA-MV-DATE</code>'</td>
+</tr>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r3c1-t9" headers="r1c1-t9"><code>FROM_DATE_ETL</code></td>
+<td class="cellalignment2084" headers="r3c1-t9 r1c2-t9">The beginning date of the ETL period.</td>
+</tr>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r4c1-t9" headers="r1c1-t9"><code>TO_DATE_ETL</code></td>
+<td class="cellalignment2084" headers="r4c1-t9 r1c2-t9">The ending date of the ETL period.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformal" -->
+<p>For <span class="italic">BUILD-MINING-MODELS</span> process:</p>
+<div class="inftblinformal">
+<table class="cellalignment2082" summary="table" dir="ltr">
+<thead>
+<tr class="cellalignment2076">
+<th class="cellalignment2083" id="r1c1-t10"><span class="bold">Columns</span></th>
+<th class="cellalignment2083" id="r1c2-t10"><span class="bold">Value</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r2c1-t10" headers="r1c1-t10"><code>PROCESS_NAME</code></td>
+<td class="cellalignment2084" headers="r2c1-t10 r1c2-t10">'<code>BUILD-MINING-MODELS</code>'</td>
+</tr>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r3c1-t10" headers="r1c1-t10"><code>FROM_DATE_ETL</code></td>
+<td class="cellalignment2084" headers="r3c1-t10 r1c2-t10">The beginning date of the ETL period.</td>
+</tr>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r4c1-t10" headers="r1c1-t10"><code>TO_DATE_ETL</code></td>
+<td class="cellalignment2084" headers="r4c1-t10 r1c2-t10">The ending date of the ETL period.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformal" -->
+<p>For more information on <code>DWC_ETL_PARAMETER</code> control table, see <a class="olink CDMRF1445" href="../../doc.112/e28440/control_cdm.htm#CDMRF1445"><span class="italic">Oracle Communications Data Model Reference</span></a>.</p>
+</li>
+<li>
+<p>Update the Oracle Communications Data Model OLAP ETL parameters in <code>DWC_OLAP_ETL_PARAMETER</code> control table in the <code>ocdm_sys</code> schema to specify the build method and other build characteristics so that the ETL can use this information when loading the OLAP cube data.</p>
+<p>For an initial load of the analytic workspace, specify values following the guidelines in <a href="#BEHFDFAF">Table 4-1</a>.</p>
+<div id="CDMOG445" class="tblhruleformalwidemax">
+<p class="titleintable"><a id="sthref156"></a><a id="BEHFDFAF"></a>Table 4-1 Values of OLAP ETL Parameters in the <code>DWC_OLAP_ETL_PARAMETER</code> table for Initial Load</p>
+<table class="cellalignment2082" title="Values of OLAP ETL Parameters in the DWC_OLAP_ETL_PARAMETER table for Initial Load" summary="OLAP ETL Parameters Names and Values for DWC_OLAP_ETL_PARAMETER table" dir="ltr">
+<thead>
+<tr class="cellalignment2076">
+<th class="cellalignment2083" id="r1c1-t11">Column Name</th>
+<th class="cellalignment2083" id="r1c2-t11">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r2c1-t11" headers="r1c1-t11">
+<p><code>PROCESS_NAME</code></p>
+</td>
+<td class="cellalignment2084" headers="r2c1-t11 r1c2-t11">
+<p>' <code>OCDM-OLAP-ETL</code>'</p>
+</td>
+</tr>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r3c1-t11" headers="r1c1-t11">
+<p><code>BUILD_METHOD</code></p>
+</td>
+<td class="cellalignment2084" headers="r3c1-t11 r1c2-t11">
+<p>C which specifies a complete refresh which clears all dimension values before loading.</p>
+</td>
+</tr>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r4c1-t11" headers="r1c1-t11">
+<p><code>CUBENAME</code></p>
+</td>
+<td class="cellalignment2084" headers="r4c1-t11 r1c2-t11">
+<p>One of the following values that specifies the cubes you want to build:</p>
+<ul>
+<li>
+<p>ALL specifies a build of the cubes in the Oracle Communications Data Model analytic workspace.</p>
+</li>
+<li>
+<p>cubename[[|cubename]...] specifies one or more cubes to build.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r5c1-t11" headers="r1c1-t11">
+<p><code>MAXJOBQUEUES</code></p>
+</td>
+<td class="cellalignment2084" headers="r5c1-t11 r1c2-t11">
+<p>A decimal value that specifies the number of parallel processes to allocate to this job. (Default value is 4.) The value that you specify varies depending on the setting of the JOB_QUEUE_PROCESSES database initialization parameter.</p>
+</td>
+</tr>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r6c1-t11" headers="r1c1-t11">
+<p><code>CALC_FCST</code></p>
+</td>
+<td class="cellalignment2084" headers="r6c1-t11 r1c2-t11">
+<p>One of the following values depending on whether you want to calculate forecast cubes:</p>
+<ul>
+<li>
+<p><code>Y</code> specifies calculate forecast cubes.</p>
+</li>
+<li>
+<p><code>N</code> specifies do not calculate forecast cubes.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r7c1-t11" headers="r1c1-t11">
+<p><code>NO_FCST_YRS</code></p>
+</td>
+<td class="cellalignment2084" headers="r7c1-t11 r1c2-t11">
+<p>If the value for the <code>CALC_FCST</code> column is Y, specify a decimal value that specifies how many years forecast data you want to calculate; otherwise, specify <code>NULL</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r8c1-t11" headers="r1c1-t11">
+<p><code>FCST_MTHD</code></p>
+</td>
+<td class="cellalignment2084" headers="r8c1-t11 r1c2-t11">
+<p>If the value for the <code>CALC_FCST</code> column is Y, then specify <code>AUTO</code>; otherwise, specify <code>NULL</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r9c1-t11" headers="r1c1-t11">
+<p><code>FCST_ST_YR</code></p>
+</td>
+<td class="cellalignment2084" headers="r9c1-t11 r1c2-t11">
+<p>If the value for the <code>CALC_FCST</code> column is Y, then specify value specified as '<code>BY YYYY</code>' which is the "start business year" of a historical period; otherwise, specify NULL.</p>
+</td>
+</tr>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r10c1-t11" headers="r1c1-t11">
+<p><code>FCST_END_YR</code></p>
+</td>
+<td class="cellalignment2084" headers="r10c1-t11 r1c2-t11">
+<p>If the value for the <code>CALC_FCST</code> column is Y, then specify value specified as '<code>BY YYYY</code>' which is the "end business year" of a historical period; otherwise, specify NULL.</p>
+</td>
+</tr>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r11c1-t11" headers="r1c1-t11">
+<p><code>OTHER1</code></p>
+</td>
+<td class="cellalignment2084" headers="r11c1-t11 r1c2-t11">
+<p>Specify <code>NULL</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r12c1-t11" headers="r1c1-t11">
+<p><code>OTHER2</code></p>
+</td>
+<td class="cellalignment2084" headers="r12c1-t11 r1c2-t11">
+<p>Specify <code>NULL</code>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblhruleformalwidemax" --></li>
+<li>
+<p>Execute the intra-ETL as described in <a href="#BEHDDJAB">"Executing the Default Oracle Communications Data Model Intra-ETL"</a>.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="BEHDDJAB"></a>
+<div id="CDMOG446" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Executing the Default Oracle Communications Data Model Intra-ETL</h3>
+<p>The intra-ETL workflow is implemented using PL/SQL package, <code>PKG_INTRA_ETL_PROCESS</code>. This package has a public procedure, <code>Run</code>, and also has private procedures for executing derived intra-ETL programs, refreshing aggregate materialized views, refreshing data mining models, and refreshing OLAP cubes. The public procedure, <code>Run</code>, invokes all the private procedures.</p>
+<p>Before executing intra-ETL workflow, update ETL parameters in <code>DWC_ETL_PARAMETER</code> and <code>DWC_OLAP_ETL_PARAMETER</code> tables. It is suggested to not use <code>ocdm_sys</code> user to update ETL parameter tables and executing intra-ETL workflow. Ask your DBA to create a user for performing these tasks using following commands:</p>
+<pre>
+CREATE USER ocdm_user IDENTIFIED BY ocdm_user;
+GRANT CREATE SESSION TO ocdm_user;
+GRANT ALTER SESSION TO ocdm_user;
+
+GRANT EXECUTE ON ocdm_sys.PKG_INTRA_ETL_PROCESS TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.PKG_INTRA_ETL_UTIL TO ocdm_user;
+
+GRANT SELECT,UPDATE ON ocdm_sys.DWC_ETL_PARAMETER TO ocdm_user;
+GRANT SELECT ON ocdm_sys.DWC_INTRA_ETL_ACTIVITY TO ocdm_user;
+GRANT SELECT ON ocdm_sys.DWC_INTRA_ETL_PROCESS TO ocdm_user;
+GRANT SELECT,UPDATE ON ocdm_sys.DWC_OLAP_ETL_PARAMETER TO ocdm_user;
+GRANT SELECT ON ocdm_sys.DWC_OLAP_ACTIVITY TO ocdm_user;
+GRANT SELECT ON ocdm_sys.DWC_MESSAGE TO ocdm_user;
+
+</pre>
+<p>Use <code>ocdm_user</code> user to update ETL parameter tables and execute intra-ETL workflow. In a SQLPLUS session, connect to <code>ocdm_user</code> user:</p>
+<pre>
+sqlplus ocdm_user/ocdm_user@SID
+</pre>
+<p>Update ETL parameter tables:</p>
+<pre>
+SQL&gt; UPDATE DWC_ETL_PARAMETER
+SET from_date_etl = &lt; The beginning date of the ETL period &gt;,
+    to_date_etl   = &lt; The ending date of the ETL period &gt;
+WHERE process_name = 'OCDM-INTRA-ETL'
+;
+/
+SQL&gt; commit;
+ 
+SQL&gt; UPDATE DWC_ETL_PARAMETER
+SET from_date_etl = &lt; The beginning date of the ETL period &gt;,
+    to_date_etl   = &lt; The ending date of the ETL period &gt;
+WHERE process_name = 'DWD_CUST_DNA'
+;
+/
+SQL&gt; commit;
+ 
+SQL&gt; UPDATE DWC_ETL_PARAMETER
+SET from_date_etl = &lt; The beginning date of the ETL period &gt;,
+    to_date_etl   = &lt; The ending date of the ETL period &gt;
+WHERE process_name = 'DWD_CNT_DAY'
+;
+/
+SQL&gt; commit;
+ 
+SQL&gt; UPDATE DWC_ETL_PARAMETER
+SET from_date_etl = &lt; The beginning date of the ETL period &gt;,
+    to_date_etl   = &lt; The ending date of the ETL period &gt;
+WHERE process_name = 'OCDM-DWA-MV-DATE'
+;
+/
+SQL&gt; commit;
+ 
+SQL&gt; UPDATE DWC_ETL_PARAMETER
+SET from_date_etl = &lt; The beginning date of the ETL period &gt;,
+    to_date_etl   = &lt; The ending date of the ETL period &gt;
+WHERE process_name = 'BUILD-MINING-MODELS'
+;
+/
+SQL&gt; commit;
+ 
+SQL&gt; UPDATE DWC_OLAP_ETL_PARAMETER
+SET build_method = &lt;&gt;,
+    cubename   = &lt;&gt;,
+  .
+  .
+  .
+  .
+fcst_st_yr = &lt;&gt;,
+fcst_end_yr = &lt;&gt;
+;
+/
+SQL&gt; commit;
+</pre>
+<p>Run the following command to execute intra-ETL workflow:</p>
+<pre>
+SQL&gt; BEGIN 
+OCDM_SYS.PKG_INTRA_ETL_PROCESS.Run; 
+END; 
+/
+</pre>
+<p>The status of each activity is tracked using <code>DWC_INTRA_ETL_ACTIVITY</code> table. The status of each cube data loading is tracked using <code>DWC_OLAP_ACTIVITY</code> table. The status of the entire intra-ETL workflow process is tracked using <code>DWC_INTRA_ETL_PROCESS</code> table. See <a href="#BEHHFABG">"Monitoring the Execution of the Intra-ETL Process"</a> for more information on these tables.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BEHFFJJH"></a>
+<div id="CDMOG447" class="sect1">
+<h2 class="sect1">Refreshing the Data in an Oracle Communications Data Model Warehouse</h2>
+<p>The section, <a href="#BEHCGACI">"Performing an Initial Load of the Access Layer"</a> describes how to perform an initial load of an Oracle Communications Data Model data warehouse. After this initial load, you must load new data into your Oracle Communications Data Model data warehouse regularly so that it can serve its purpose of facilitating business analysis.</p>
+<p>To load new data into your Oracle Communications Data Model warehouse, you extract the data from one or more operational systems and copy that data into the warehouse. The challenge in data warehouse environments is to integrate, rearrange and consolidate large volumes of data over many systems, thereby providing a new unified information base for business intelligence.</p>
+<p>The successive loads and transformations must be scheduled and processed in a specific order that is determined by your business needs. Depending on the success or failure of the operation or parts of it, the result must be tracked and subsequent, alternative processes might be started.</p>
+<p>You can do a full incremental load of the Oracle Communications Data Model warehouse, or you can refresh the data sequentially, as follows:</p>
+<ol>
+<li>
+<p><a href="#BEHIBCFH">Refreshing the Foundation Layer of Oracle Communications Data Model Warehouse</a></p>
+</li>
+<li>
+<p><a href="#BEHEGIEI">Refreshing the Access Layer of an Oracle Communications Data Model Warehouse</a></p>
+</li>
+</ol>
+<p>In either case, you can manage errors during the execution of the intra-ETL as described in .</p>
+<a id="BEHIBCFH"></a>
+<div id="CDMOG448" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Refreshing the Foundation Layer of Oracle Communications Data Model Warehouse</h3>
+<p>You can refresh the foundation layer of an Oracle Communications Data Model warehouse (that is, the reference, lookup, and base tables) in the following ways:</p>
+<ul>
+<li>
+<p>If an application adapter for Oracle Communications Data Model is available for the system from which you want to refresh the foundation layer of an Oracle Communications Data Model warehouse, you can use that adapter to refresh the foundation layer.</p>
+</li>
+<li>
+<p>You can refresh the foundation layer using source-ETL scripts that you wrote using Oracle Warehouse Builder or another ETL tool. For more information on creating source-ETL, see <a href="#BEHEGHEG">"Writing Your Own Source-ETL"</a>.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="BEHEGIEI"></a>
+<div id="CDMOG449" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Refreshing the Access Layer of an Oracle Communications Data Model Warehouse</h3>
+<p>Refreshing the access layer of an Oracle Communications Data Model is a multi-step process. You can do a full incremental load of the access layer all at one time, or you can refresh the data sequentially, as follows:</p>
+<ul>
+<li>
+<p>Refreshing Oracle Communications Data Model Derived Tables</p>
+</li>
+<li>
+<p>Refreshing Oracle Communications Data Model Aggregate Materialized Views</p>
+</li>
+<li>
+<p>Refreshing Oracle Communications Data Model OLAP Cubes</p>
+</li>
+<li>
+<p>Refreshing Oracle Communications Data Model Data Mining Models</p>
+</li>
+</ul>
+<p>In either case, you can manage errors during the execution of the intra-ETL as described in <a href="#BEHHHEFJ">"<span class="bold">Managing Errors During Oracle Communications Data Model Intra-ETL Execution</span>"</a>.</p>
+<p>To accomplish incremental loading of Oracle Communications Data Model data warehouse, ask your DBA to grant execute privilege on Derived intra-ETL, OLAP ETL, and Mining PL/SQL packages:</p>
+<pre>
+GRANT EXECUTE ON ocdm_sys.DWD_ACCT_BAL_MO_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_ACCT_DEBT_MO_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_ACCT_FRST_ACTVTY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_ACCT_LAST_ACTVTY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_ACCT_PYMT_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_ACCT_PMT_MTD_STAT_HST_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_AGRMNT_CHNG_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_AGRMNT_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_CANBLZTN_DTL_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_CMPGN_HIST_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_CNT_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_CNTCT_CNTR_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_CUST_EQPMNT_INSLTN_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_CUST_ORDR_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_CUST_ORDR_LN_ITEM_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_CUST_RFMP_SCR_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_CUST_SKU_SL_RETRN_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_DATA_USG_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_GIVE_AWAY_ITEM_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_INV_ADJ_ITEM_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_INV_POSN_ITEM_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_INV_RCPT_ITEM_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_INV_UNAVL_ITEM_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_INV_XFER_ITEM_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_INVC_AGNG_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_INVC_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_LYLTY_MBR_PNT_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_NBR_PRT_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_POS_TNDR_FLOW_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_PRCS_INVC_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_RTL_SL_RETRN_ITEM_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_SPLMNTR_SRVC_USG_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_SRVC_PRBLM_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_STORE_EFFNCY_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_VAS_SBRP_QCK_SUMM_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_VAS_USG_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_VOI_CALL_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_AGRMNT_RVN_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_PRPD_ACCT_STTSTC_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_RVN_DAY_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.DWD_CUST_DNA_PKG TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.PKG_MINING_ETL TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.PKG_OCDM_MINING TO ocdm_user;
+GRANT EXECUTE ON ocdm_sys.PKG_OCDM_OLAP_ETL_AW_LOAD TO ocdm_user;
+</pre></div>
+<!-- class="sect2" -->
+<a id="BEHFFHEG"></a>
+<div id="CDMOG450" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Refreshing Oracle Communications Data Model Derived Tables</h3>
+<p>Refreshing the relational tables in an Oracle Communications Data Model is a multi-step process:</p>
+<ol>
+<li>
+<p>Refresh the foundation layer of the Oracle Communications Data Model warehouse (that is, the reference, lookup, and base tables) with operational system data by executing the source-ETL that you have written.</p>
+</li>
+<li>
+<p>Update the parameters of the <code>DWC_ETL_PARAMETER</code> control table for three processes<code>('OCDM-INTRA-ETL', 'DWD_CUST_DNA', 'DWD_CNT_DAY')</code>. Please refer to <a href="#BEHBABJG">"Performing an Initial Load of an Oracle Communications Data Model Warehouse"</a> for more information on the <code>DWC_ETL_PARAMETER</code> table. For an incremental load of an Oracle Communications Data Model warehouse, specify the values shown in the following table (that is, the beginning and end date of the ETL period) for all three processes</p>
+<div class="inftblinformal">
+<table class="cellalignment2082" summary="table" dir="ltr">
+<thead>
+<tr class="cellalignment2076">
+<th class="cellalignment2083" id="r1c1-t12"><span class="bold">Columns</span></th>
+<th class="cellalignment2083" id="r1c2-t12"><span class="bold">Value</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r2c1-t12" headers="r1c1-t12">FROM_DATE_ETL</td>
+<td class="cellalignment2084" headers="r2c1-t12 r1c2-t12">The beginning date of the ETL period.</td>
+</tr>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r3c1-t12" headers="r1c1-t12">TO_DATE_ETL</td>
+<td class="cellalignment2084" headers="r3c1-t12 r1c2-t12">The ending date of the ETL period.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformal" -->
+<p>For more information on <code>DWC_ETL_PARAMETER</code> control table, see <a class="olink CDMRF1445" href="../../doc.112/e28440/control_cdm.htm#CDMRF1445"><span class="italic">Oracle Communications Data Model Reference</span></a>.</p>
+</li>
+<li>
+<p>Create a session by connecting ocdm_user user through SQLPLUS. Then, start an intra-ETL process. Make sure the previous process ended with <code>'COMPLETED-SUCCESS'</code> status before starting a new process:</p>
+<pre>
+sqlplus ocdm_user/ocdm_user@SID
+ 
+SQL&gt; DECLARE
+  l_process_type  OCDM_SYS.DWC_INTRA_ETL_PROCESS.PROCESS_TYPE%TYPE;
+  l_error_text    OCDM_SYS.DWC_MESSAGE.MESSAGE_TEXT%TYPE;
+  l_process_no    NUMBER;
+BEGIN
+  l_process_no := OCDM_SYS.PKG_INTRA_ETL_UTIL.Start_Process(l_process_type,l_error_text);
+END;
+/
+</pre></li>
+<li>
+<p>Refresh Oracle Communications Data Model derived tables by executing following commands:</p>
+</li>
+</ol>
+<pre>
+SQL&gt; DECLARE
+  p_process_no    NUMBER;
+  l_status        VARCHAR2(20);
+BEGIN
+  l_status := OCDM_SYS.DWD_ACCT_BAL_MO_PKG.Load('DWD_ACCT_BAL_MO',p_process_no);
+  l_status := OCDM_SYS.DWD_ACCT_DEBT_MO_PKG.Load('DWD_ACCT_DEBT_MO',p_process_no);
+  l_status := OCDM_SYS.DWD_ACCT_FRST_ACTVTY_PKG.Load('DWD_ACCT_FRST_ACTVTY',p_process_no);
+  l_status := OCDM_SYS.DWD_ACCT_LAST_ACTVTY_PKG.Load('DWD_ACCT_LAST_ACTVTY',p_process_no);
+  l_status := OCDM_SYS.DWD_ACCT_PYMT_DAY_PKG.Load('DWD_ACCT_PYMT_DAY',p_process_no);
+  l_status := OCDM_SYS.DWD_ACCT_PMT_MTD_STAT_HST_PKG.Load('DWD_ACCT_PYMT_MTHD_STAT_HIST',p_process_no);
+  l_status := OCDM_SYS.DWD_AGRMNT_CHNG_PKG.Load('DWD_AGRMNT_CHNG',p_process_no);
+  l_status := OCDM_SYS.DWD_AGRMNT_PKG.Load('DWD_AGRMNT',p_process_no);    
+  l_status := OCDM_SYS.DWD_CANBLZTN_DTL_DAY_PKG.Load('DWD_CANBLZTN_DTL_DAY',p_process_no);
+  l_status := OCDM_SYS.DWD_CMPGN_HIST_DAY_PKG.Load('DWD_CMPGN_HIST_DAY',p_process_no);
+  l_status := OCDM_SYS.DWD_CNT_DAY_PKG.Load('DWD_CNT_DAY',p_process_no);
+  l_status := OCDM_SYS.DWD_CNTCT_CNTR_DAY_PKG.Load('DWD_CNTCT_CNTR_DAY',p_process_no);    
+  l_status := OCDM_SYS.DWD_CUST_EQPMNT_INSLTN_DAY_PKG.Load('DWD_CUST_EQPMNT_INSTLTN_DAY',p_process_no);
+  l_status := OCDM_SYS.DWD_CUST_ORDR_DAY_PKG.Load('DWD_CUST_ORDR_DAY',p_process_no);
+  l_status := OCDM_SYS.DWD_CUST_ORDR_LN_ITEM_DAY_PKG.Load('DWD_CUST_ORDR_LN_ITEM_DAY',p_process_no);
+  l_status := OCDM_SYS.DWD_CUST_RFMP_SCR_PKG.Load('DWD_CUST_RFMP_SCR',p_process_no);
+  l_status := OCDM_SYS.DWD_CUST_SKU_SL_RETRN_DAY_PKG.Load('DWD_CUST_SKU_SL_RETRN_DAY',p_process_no);    
+  l_status := OCDM_SYS.DWD_DATA_USG_DAY_PKG.Load('DWD_DATA_USG_DAY',p_process_no);
+  l_status := OCDM_SYS.DWD_GIVE_AWAY_ITEM_DAY_PKG.Load('DWD_GIVE_AWAY_ITEM_DAY',p_process_no);
+  l_status := OCDM_SYS.DWD_INV_ADJ_ITEM_DAY_PKG.Load('DWD_INV_ADJ_ITEM_DAY',p_process_no);
+  l_status := OCDM_SYS.DWD_INV_POSN_ITEM_DAY_PKG.Load('DWD_INV_POSN_ITEM_DAY',p_process_no);
+  l_status := OCDM_SYS.DWD_INV_RCPT_ITEM_DAY_PKG.Load('DWD_INV_RCPT_ITEM_DAY',p_process_no);
+  l_status := OCDM_SYS.DWD_INV_UNAVL_ITEM_DAY_PKG.Load('DWD_INV_UNAVL_ITEM_DAY',p_process_no);
+  l_status := OCDM_SYS.DWD_INV_XFER_ITEM_DAY_PKG.Load('DWD_INV_XFER_ITEM_DAY',p_process_no);
+  l_status := OCDM_SYS.DWD_INVC_AGNG_DAY_PKG.Load('DWD_INVC_AGNG_DAY',p_process_no);
+  l_status := OCDM_SYS.DWD_INVC_DAY_PKG.Load('DWD_INVC_DAY',p_process_no);
+  l_status := OCDM_SYS.DWD_LYLTY_MBR_PNT_DAY_PKG.Load('DWD_LYLTY_MBR_PNT_DAY',p_process_no);
+  l_status := OCDM_SYS.DWD_NBR_PRT_DAY_PKG.Load('DWD_NBR_PRT_DAY',p_process_no);
+  l_status := OCDM_SYS.DWD_POS_TNDR_FLOW_PKG.Load('DWD_POS_TNDR_FLOW',p_process_no);
+  l_status := OCDM_SYS.DWD_PRCS_INVC_DAY_PKG.Load('DWD_PRCS_INVC_DAY',p_process_no);
+  l_status := OCDM_SYS.DWD_RTL_SL_RETRN_ITEM_DAY_PKG.Load('DWD_RTL_SL_RETRN_ITEM_DAY',p_process_no);
+  l_status := OCDM_SYS.DWD_SPLMNTR_SRVC_USG_PKG.Load('DWD_SPLMNTR_SRVC_USG',p_process_no);
+  l_status := OCDM_SYS.DWD_SRVC_PRBLM_DAY_PKG.Load('DWD_SRVC_PRBLM_DAY',p_process_no);
+  l_status := OCDM_SYS.DWD_STORE_EFFNCY_DAY_PKG.Load('DWD_STORE_EFFNCY_DAY',p_process_no);
+  l_status := OCDM_SYS.DWD_VAS_SBRP_QCK_SUMM_PKG.Load('DWD_VAS_SBRP_QCK_SUMM',p_process_no); 
+  l_status := OCDM_SYS.DWD_VAS_USG_DAY_PKG.Load('DWD_VAS_USG_DAY',p_process_no);
+  l_status := OCDM_SYS.DWD_VOI_CALL_DAY_PKG.Load('DWD_VOI_CALL_DAY',p_process_no);
+END;
+/
+ 
+SQL&gt; DECLARE
+  p_process_no    NUMBER;
+  l_status        VARCHAR2(20);
+BEGIN
+  l_status := OCDM_SYS.DWD_AGRMNT_RVN_DAY_PKG.Load('DWD_AGRMNT_RVN_DAY',p_process_no);
+  l_status := OCDM_SYS.DWD_PRPD_ACCT_STTSTC_DAY_PKG.Load('DWD_PRPD_ACCT_STTSTC_DAY',p_process_no);
+  l_status := OCDM_SYS.DWD_RVN_DAY_PKG.Load('DWD_RVN_DAY',p_process_no);
+END;
+/
+ 
+SQL&gt; DECLARE
+  p_process_no    NUMBER;
+  l_status        VARCHAR2(20);
+BEGIN
+  l_status := OCDM_SYS.DWD_CUST_DNA_PKG.Load('DWD_CUST_DNA',p_process_no);
+END;
+/
+</pre></div>
+<!-- class="sect2" -->
+<div id="CDMOG451" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref157"></a>
+<h3 class="sect2">Refreshing Oracle Communications Data Model Aggregate Materialized Views</h3>
+<p>Refreshing the Aggregate Materialized Views in an Oracle Communications Data Model is a multi-step process:</p>
+<ol>
+<li>
+<p>Refresh the foundation layer of the Oracle Communications Data Model warehouse (that is, the reference, lookup, and base tables) with operational system data by executing the source-ETL that you have written.</p>
+</li>
+<li>
+<p>Refresh Oracle Communications Data Model derived tables as explained in Refreshing Oracle Communications Data Model Derived Tables.</p>
+</li>
+<li>
+<p>Update the parameters of the <code>DWC_ETL_PARAMETER</code> control table for <code>OCDM-DWA-MV-DATE</code> process. Please refer to Performing an Initial Load of an Oracle Communications Data Model Warehouse section to know how to update <code>DWC_ETL_PARAMETER</code> table. For an incremental load of an Oracle Communications Data Model warehouse, specify the values shown in the following table (that is, the beginning and end date of the ETL period) for <code>OCDM-DWA-MV-DATE</code> process.</p>
+<div class="inftblinformal">
+<table class="cellalignment2082" summary="table" dir="ltr">
+<thead>
+<tr class="cellalignment2076">
+<th class="cellalignment2083" id="r1c1-t13"><span class="bold">Columns</span></th>
+<th class="cellalignment2083" id="r1c2-t13"><span class="bold">Value</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r2c1-t13" headers="r1c1-t13"><code>FROM_DATE_ETL</code></td>
+<td class="cellalignment2084" headers="r2c1-t13 r1c2-t13">The beginning date of the ETL period.</td>
+</tr>
+<tr class="cellalignment2076">
+<td class="cellalignment2084" id="r3c1-t13" headers="r1c1-t13"><code>TO_DATE_ETL</code></td>
+<td class="cellalignment2084" headers="r3c1-t13 r1c2-t13">The ending date of the ETL period.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformal" -->
+<p>For more information on <code>DWC_ETL_PARAMETER</code> control table, see <a class="olink CDMRF1445" href="../../doc.112/e28440/control_cdm.htm#CDMRF1445"><span class="italic">Oracle Communications Data Model Reference</span></a>.</p>
+</li>
+<li>
+<p>Create a session by connecting ocdm_user user through SQLPLUS. An intra-ETL process created in Refreshing Oracle Communications Data Model Derived Tables must be in <code>'RUNNING'</code> status now:</p>
+<pre>
+sqlplus ocdm_user/ocdm_user@SID
+</pre></li>
+<li>
+<p>Refresh Oracle Communications Data Model aggregate materialized views by executing following commands:</p>
+</li>
+</ol>
+<pre>
+SQL&gt; DECLARE
+  p_process_no    NUMBER;
+  l_status        VARCHAR2(20);
+BEGIN
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_ACCT_DEBT_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_ACCT_PYMT_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_ACCT_STTSTC_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_AGRMNT_ACCT_SBRP_PROD',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_ARPU_BASE_CUST_TYP',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_BER_FER_ERR_RATIO_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_CALL_CNTR_CALL_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_CALL_CNTR_CASE_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_CELL_STTSTC_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_CMISN_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_CNT_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_COST_CNTR_MO',p_process_no);    
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_CUST_ACQSTN_SUMM_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_CUST_CHRN_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_CUST_COST_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_CUST_DEBT_COLLCTN_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_CUST_EQPMNT_INSTLTN_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_CUST_ORDR_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_DATA_USG_MO',p_process_no);    
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_INVC_ADJ_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_INVC_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_INV_POSN_DEPT_DAY',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_INV_POSN_SBC_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_IN_PLTFRM_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_LYLTY_PROG_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_MKT_SHARE',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_MSC_TRFC_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_NBR_PRT_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_NTWK_AVLBLTY_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_NTWK_TCHPNT_MO',p_process_no);    
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_PRPD_ALWNCE_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_PRTNR_STLMNT_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_RDMPTN_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_RF_NTWK_CPCTY_MO',p_process_no);    
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_RVN_MO',p_process_no);        
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_SBSCBR_STTSTC_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_SL_CMPGN_SUMM_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_SPLMNTR_SRVC_USG_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_STORE_EFFNCY_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_VAS_SBRP_QCK_SUMM_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_VAS_USG_MO',p_process_no);
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_VOI_CALL_MO',p_process_no);
+END;
+/
+ 
+ 
+SQL&gt; DECLARE
+  p_process_no    NUMBER;
+  l_status        VARCHAR2(20);
+BEGIN
+  l_status := OCDM_SYS.PKG_INTRA_ETL_UTIL.Refresh_MV('DWA_CUST_GROSS_ORDRS_QTR',p_process_no);
+END;
+/
+</pre></div>
+<!-- class="sect2" -->
+<div id="CDMOG452" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref158"></a>
+<h3 class="sect2">Refreshing Oracle Communications Data Model OLAP Cubes</h3>
+<p>On a scheduled basis you must update the OLAP cube data with the relational data that has been added to the Oracle Communications Data Model data warehouse since the initial load of the OLAP cubes. Refreshing the OLAP Cubes in an Oracle Communications Data Model is a multi-step process:</p>
+<ol>
+<li>
+<p>Refresh the foundation layer of the Oracle Communications Data Model warehouse (that is, the reference, lookup, and base tables) with operational system data by executing the source-ETL that you have written.</p>
+</li>
+<li>
+<p>Refresh Oracle Communications Data Model derived tables as explained in Refreshing Oracle Communications Data Model Derived Tables.</p>
+</li>
+<li>
+<p>Refresh Oracle Communications Data Model aggregate materialized views as explained in Refreshing Oracle Communications Data Model Aggregate Materialized Views.</p>
+</li>
+<li>
+<p>Update the parameters of the <code>DWC_OLAP_ETL_PARAMETER</code> control table. Please refer to Performing an Initial Load of an Oracle Communications Data Model Warehouse section to know how to update <code>DWC_OLAP_ETL_PARAMETER</code> table.</p>
+<p>For more information on <code>DWC_OLAP_ETL_PARAMETER</code> control table, see <a class="olink CDMRF1445" href="../../doc.112/e28440/control_cdm.htm#CDMRF1445"><span class="italic">Oracle Communications Data Model Reference</span></a>.</p>
+</li>
+<li>
+<p>Create a session by connecting <code>ocdm_user</code> user through SQLPLUS. An intra-ETL process created in Refreshing Oracle Communications Data Model Derived Tables must be in <code>'RUNNING'</code> status now:</p>
+<pre>
+sqlplus ocdm_user/ocdm_user@SID
+</pre></li>
+<li>
+<p>Refresh Oracle Communications Data Model OLAP cubes by executing following commands:</p>
+<pre>
+SQL&gt; DECLARE
+  l_build_methd OCDM_SYS.DWC_OLAP_ETL_PARAMETER.BUILD_METHOD%TYPE;
+  l_cube_nm OCDM_SYS.DWC_OLAP_ETL_PARAMETER.CUBENAME%TYPE;
+  l_maxjobques OCDM_SYS.DWC_OLAP_ETL_PARAMETER.MAXJOBQUEUES%TYPE;
+  l_calc_fcst  OCDM_SYS.DWC_OLAP_ETL_PARAMETER.CALC_FCST%TYPE;
+  l_no_fcst_yrs OCDM_SYS.DWC_OLAP_ETL_PARAMETER.NO_FCST_YRS%TYPE;
+  l_fcst_mthd  OCDM_SYS.DWC_OLAP_ETL_PARAMETER.FCST_MTHD%TYPE;
+  l_fcst_st_yr OCDM_SYS.DWC_OLAP_ETL_PARAMETER.FCST_ST_YR%TYPE;
+  l_fcst_end_yr OCDM_SYS.DWC_OLAP_ETL_PARAMETER.FCST_END_YR%TYPE;
+  l_status VARCHAR2(20);
+BEGIN
+  /***************  Fetching the values of the OLAP ETL parameters variable used in this procedure  ****************/
+      SELECT
+         BUILD_METHOD l_build_methd,
+        CUBENAME l_cube_nm,
+        MAXJOBQUEUES l_maxjobques,
+        CALC_FCST l_calc_fcst,
+        NO_FCST_YRS l_no_fcst_yrs,
+        FCST_MTHD l_fcst_mthd,
+        FCST_ST_YR l_fcst_st_yr,
+        FCST_END_YR l_fcst_end_yr
+      INTO
+        l_build_methd,
+        l_cube_nm,
+        l_maxjobques,
+        l_calc_fcst,
+        l_no_fcst_yrs,
+        l_fcst_mthd,
+        l_fcst_st_yr,
+        l_fcst_end_yr
+      FROM
+      OCDM_SYS.DWC_OLAP_ETL_PARAMETER;
+   l_status := OCDM_SYS.PKG_OCDM_OLAP_ETL_AW_LOAD.olap_etl_aw_build(l_build_methd,l_cube_nm,l_maxjobques,l_calc_fcst,l_no_fcst_yrs,l_fcst_mthd,l_fcst_st_yr,l_fcst_end_yr,null,null);
+END;
+/
+</pre></li>
+<li>
+<p>If there is requirement to refresh only Oracle Communications Data Model OLAP cubes, the same can be achieved with step 6, but before that make sure an intra-ETL process is already running. If no intra-ETL process is running, start one:</p>
+<pre>
+sqlplus ocdm_user/ocdm_user@SID
+ 
+SQL&gt; DECLARE
+  l_process_type  OCDM_SYS.DWC_INTRA_ETL_PROCESS.PROCESS_TYPE%TYPE;
+  l_error_text    OCDM_SYS.DWC_MESSAGE.MESSAGE_TEXT%TYPE;
+  l_process_no    NUMBER;
+BEGIN
+  l_process_no := OCDM_SYS.PKG_INTRA_ETL_UTIL.Start_Process(l_process_type,l_error_text);
+END;
+/
+</pre></li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<div id="CDMOG453" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref159"></a>
+<h3 class="sect2">Refreshing Oracle Communications Data Model Data Mining Models</h3>
+<p>Refreshing of data mining models is integrated into intra-ETL workflow. Data mining models get refreshed whenever intra-ETL workflow is executed. Data mining models trained using training data collected based on from_date_etl parameter and scored on apply data collected based on from_date_etl parameter in <code>DWC_ETL_PARAMETER</code> table for <code>BUILD-MINING-MODELS</code> process. You can also refresh all data mining models together or refresh each data mining model individually.</p>
+<p>Refreshing the Data Mining Models in an Oracle Communications Data Model is a multi-step process:</p>
+<ol>
+<li>
+<p>Refresh the foundation layer of the Oracle Communications Data Model warehouse (that is, the reference, lookup, and base tables) with operational system data by executing the source-ETL that you have written.</p>
+</li>
+<li>
+<p>Refresh Oracle Communications Data Model derived tables as explained in <a href="#BEHFFHEG">"Refreshing Oracle Communications Data Model Derived Tables"</a>.</p>
+</li>
+<li>
+<p>Update the parameters of the <code>DWC_ETL_PARAMETER</code> control table for <code>BUILD-MINING-MODELS</code> process. See <a href="#BEHBABJG">"Performing an Initial Load of an Oracle Communications Data Model Warehouse"</a> for information on updating the <code>DWC_ETL_PARAMETER</code> table.</p>
+<p>For more information on <code>DWC_ETL_PARAMETER</code> control table, see <a class="olink CDMRF1445" href="../../doc.112/e28440/control_cdm.htm#CDMRF1445"><span class="italic">Oracle Communications Data Model Reference</span></a>.</p>
+</li>
+<li>
+<p>Create a session by connecting <code>ocdm_user</code> user through SQLPLUS. An intra-ETL process created in <a href="#BEHFFHEG">"Refreshing Oracle Communications Data Model Derived Tables"</a> must be in <code>'RUNNING</code>' status now:</p>
+<pre>
+sqlplus ocdm_user/ocdm_user@SID
+</pre></li>
+<li>
+<p>Refresh Oracle Communications Data Model data mining models by executing following commands:</p>
+<pre>
+SQL&gt; DECLARE
+  l_trnng_day       DATE;
+  l_apply_day       DATE;
+  l_trnng_day_key   NUMBER(30);
+  l_apply_day_key   NUMBER(30);
+  l_status          VARCHAR2(500);
+ 
+BEGIN
+ 
+  SELECT from_date_etl, to_date_etl  INTO l_trnng_day, l_apply_day
+  FROM ocdm_sys.dwc_etl_parameter
+  WHERE process_name = 'BUILD-MINING-MODELS';
+  
+  l_trnng_day_key := TO_CHAR(l_trnng_day,'YYYYMMDD');
+  l_apply_day_key := TO_CHAR(l_apply_day,'YYYYMMDD');
+  
+    -- Create/refresh mining source views  OCDM_SYS.PKG_MINING_ETL.refresh_mining_views(l_trnng_day_key,l_apply_day_key);
+    
+  -- Build mining models
+    l_status := OCDM_SYS.PKG_OCDM_MINING.REFRESH_MODEL(l_apply_day_key,NULL);
+ 
+END;
+/
+</pre></li>
+<li>
+<p>You can also refresh data mining models individually. To refresh Prepaid SVM Churn model, execute the following command (make sure you are connected as ocdm_user user):</p>
+<pre>
+SQL&gt; exec ocdm_sys.pkg_ocdm_mining.create_prpd_churn_svm_model(training_day_key);
+</pre></li>
+</ol>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BEHHHEFJ"></a>
+<div id="CDMOG454" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="bold">Managing Errors During Oracle Communications Data Model Intra-ETL Execution</span></h2>
+<p>This topic discusses how you can identify and manage errors during intra-ETL execution. It contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#BEHHFABG">Monitoring the Execution of the Intra-ETL Process</a></p>
+</li>
+<li>
+<p><a href="#BEHFHCJC">Recovering an Intra ETL Process</a></p>
+</li>
+</ul>
+<a id="BEHHFABG"></a>
+<div id="CDMOG455" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Monitoring the Execution of the Intra-ETL Process</h3>
+<p>Three <code>ocdm_sys</code> schema control tables, <code>DWC_INTRA_ETL_PROCESS</code>, <code>DWC_INTRA_ETL_ACTIVITY</code>, <code>DWC_OLAP_ACTIVITY</code> monitor the execution of the intra-ETL process. These tables are documented in <a class="olink CDMRF" href="../e28440/toc.htm">Oracle Communications Data Model Reference</a>. You can access these three tables from ocdm_user user.</p>
+<p>Each normal run (as opposed to an error-recovery run) of a separate intra-ETL execution performs the following steps:</p>
+<ol>
+<li>
+<p>Inserts a record into the <code>DWC_INTRA_ETL_PROCESS</code> table with a monotonically increasing system generated unique process key, <code>SYSDATE</code> as process start time, RUNNING as the process status, and an input date range in the <code>FROM_DATE_ETL</code> and <code>TO_DATE_ETL</code> columns.</p>
+</li>
+<li>
+<p>Invokes each of the individual intra-ETL programs in the appropriate order of dependency. Before the invocation of each program, the procedure inserts a record into the intra-ETL Activity detail table, <code>DWC_INTRA_ETL_ACTIVITY</code>, with values for:</p>
+</li>
+<li>
+<ul>
+<li>
+<p><code>ACTIVITY_KEY</code>, a system generated unique activity key.</p>
+</li>
+<li>
+<p><code>PROCESS_KEY</code>, the process key value corresponding to the intra-ETL process.</p>
+</li>
+<li>
+<p><code>ACTIVITY_NAME</code>, an individual program name.</p>
+</li>
+<li>
+<p><code>ACTIVITY_DESC</code>, a suitable activity description.</p>
+</li>
+<li>
+<p><code>ACTIVITY_START_TIME</code>, the value of <code>SYSDATE</code>.</p>
+</li>
+<li>
+<p><code>ACTIVITY_STATUS</code>, the value of <code>RUNNING</code>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Updates the corresponding record in the <code>DWC_INTRA_ETL_ACTIVITY</code> table for the activity end time and activity status after the completion of each individual ETL program (either successfully or with errors). For successful completion of the activity, the procedure updates the status as <code>'COMPLETED-SUCCESS</code>'. When an error occurs, the procedure updates the activity status as <code>'COMPLETED-ERROR'</code>, and also updates the corresponding error detail in the <code>ERROR_DTL</code> column.</p>
+</li>
+<li>
+<p>Updates the record corresponding to the process in the <code>DWC_INTRA_ETL_ PROCESS</code> table for the process end time and status, after the completion of all individual intra-ETL programs. When all the individual programs succeed, the procedure updates the status to <code>'COMPLETED-SUCCESS'</code>; otherwise it updates the status to <code>'COMPLETED-ERROR'</code>.</p>
+</li>
+<li>
+<p>For OLAP cubes loading, a record is inserted into <code>DWC_OLAP_ACTIVITY</code> table with <code>CUBENAME</code> as cube name, status as <code>'RUNNING'</code>, and <code>LOAD_START_DT</code> as SYSDATE for each cube. It updates the record upon the completion of cube loading. It updates STATUS column to <code>'COMPLETED-SUCCESS'</code> if cube loading is successful, otherwise <code>'COMPLETE-ERROR'</code> and updates <code>LOAD_END_DT</code> column to <code>SYSDATE</code>. In case of <code>'COMPLETED-ERROR'</code> cubes, it also updates <code>ERROR_DTL</code> column with error details.</p>
+</li>
+</ol>
+<p>You can monitor the execution state of the intra-ETL, including current process progress, time taken by individual programs, or the complete process, by viewing the contents of the <code>DWC_INTRA_ETL_PROCESS</code>, <code>DWC_INTRA_ETL_ACTIVITY</code>, and <code>DWC_OLAP_ACTIVITY</code> tables. In <code>DWC_INTRA_ETL_ACTIVITY</code> table, see the records of currently running process. Monitoring can be done both during and after the execution of the intra-ETL procedure.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BEHFHCJC"></a>
+<div id="CDMOG456" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Recovering an Intra ETL Process</h3>
+<p>To recover an intra-ETL process</p>
+<ol>
+<li>
+<p>Identify the errors by looking at the corresponding error details that are tracked against the individual programs in the <code>DWC_INTRA_ETL_ACTIVITY</code> table.</p>
+</li>
+<li>
+<p>Identify errors of OLAP cubes loading for individual cubes in <code>DWC_OLAP_ACTIVITY</code> table.</p>
+</li>
+<li>
+<p>Correct the causes of the errors.</p>
+</li>
+<li>
+<p>Re-invoke the intra-ETL process.</p>
+</li>
+</ol>
+<p>The intra-ETL workflow process identifies whether it is a normal run or recovery run by referring the <code>DWC_INTRA_ETL_ACTIVITY</code> table. During a recovery run, the intra-ETL workflow executes only the necessary programs. For example, for a derived population error as a part of the previous run, this recovery run executes the individual derived population programs which produced errors in the previous run. After their successful completion, the run refreshes aggregate materialized views in the appropriate order.</p>
+<p>In this way, the intra-ETL error recovery is almost transparent, without involving the data warehouse or ETL administrator. The administrator must only correct the causes of the errors and re-invoke the intra-ETL process. The intra-ETL process identifies and executes the programs that generated errors.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment2075">
+<tr>
+<td class="cellalignment2084">
+<table class="cellalignment2080">
+<tr>
+<td class="cellalignment2079"><a href="adm.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment2079"><a href="rep_quer.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2011, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment2086">
+<table class="cellalignment2078">
+<tr>
+<td class="cellalignment2079"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment2079"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment2079"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment2079"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment2079"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment2079"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

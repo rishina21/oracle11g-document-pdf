@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Application Examples</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 033" />
+<meta name="dcterms.created" content="2011-08-16T11:52:4Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Rules Manager and Expression Filter Developer's Guide" />
+<meta name="dcterms.identifier" content="E14919-04" />
+<meta name="dcterms.isVersionOf" content="EXPRN" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2003, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="exprn_app_a.htm" title="Previous" type="text/html" />
+<link rel="Next" href="exprn_app_c.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e14919.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">30/36</span> <!-- End Header --><a id="BGBGBFEG"></a><a id="EXPRN112"></a>
+<h1 class="appendix"><span class="secnum">B</span> <a id="sthref381"></a>Application Examples</h1>
+<p>This appendix describes examples of applications using the Expression Filter.</p>
+<p class="subhead2"><a id="EXPRN557"></a><a id="sthref382"></a><a id="sthref383"></a>Active Application</p>
+<p>In an active database system, the server performs some actions when certain criteria are met. For example, an application can monitor changes to data in a database table and react to these changes accordingly.</p>
+<p>Consider the <code>Car4Sale</code> application described in <a href="exprn_expconcepts.htm#CHDEGDBB">Section 11.2.1</a>. In this application, the <code>Consumer</code> table stores the information about consumers interested in buying used cars. In addition to the <code>Consumer</code> table described in <a href="exprn_expconcepts.htm#BABGCHJB">Section 11.2.2</a>, assume that there is an <code>Inventory</code> table that stores information about all the used cars available for sale, as defined in the following example:</p>
+<pre>
+CREATE TABLE Inventory (Model   VARCHAR2(20), 
+                        Year    NUMBER, 
+                        Price   NUMBER, 
+                        Mileage NUMBER);
+</pre>
+<p>Now, you can design the application such that the system reacts to any changes made to the data in the <code>Inventory</code> table, by defining a row trigger on the table:</p>
+<pre>
+CREATE TRIGGER activechk AFTER insert OR update ON Inventory
+  FOR EACH ROW
+  DECLARE
+    cursor c1 (ditem VARCHAR2) is
+      SELECT CId, Phone FROM Consumer WHERE EVALUATE (Interest, ditem) = 1;
+    ditem VARCHAR2(200);
+ BEGIN
+  ditem := Car4Sale.getVarchar(:new.Model, :new.Year, :new.Price, :new.Mileage);
+  
+  for cur in c1(ditem) loop
+    DBMS_OUTPUT.PUT_LINE('  For Model '||:new.Model||' Call '||cur.CId||
+                         ' @ '||cur.Phone);
+  end loop;
+END;
+/
+ 
+</pre>
+<p>This trigger evaluates the expressions for every row inserted (or updated) into the <code>Inventory</code> table and prints a message if a consumer is interested in the car. An Expression Filter index on the <code>Interest</code> column can speed up the query on the <code>Consumer</code> table.</p>
+<p class="subhead2"><a id="EXPRN558"></a><a id="sthref384"></a><a id="sthref385"></a>Batch Evaluation of Expressions</p>
+<p>To evaluate a set of expressions for a batch of data items, you can perform a simple join of the table storing data items and the table storing expressions. You can join the <code>Consumer</code> table with the <code>Inventory</code> table to determine the interest in each car, as shown in the following example:</p>
+<pre>
+SELECT DISTINCT Inventory.Model, count(*) as Demand
+   FROM  Consumer, Inventory
+   WHERE EVALUATE (Consumer.Interest, 
+                Car4Sale.getVarchar(Inventory.Model, 
+                                    Inventory.Year, 
+                                    Inventory.Price, 
+                                    Inventory.Mileage)) = 1 
+   GROUP BY Inventory.Model
+   ORDER BY Demand DESC;
+</pre>
+<p>You can also use the join semantics of the <code>EVALUATE</code> operator to maintain complex <span class="italic">N</span>-to-<span class="italic">M</span> (many-to-many) relationships between data stored in multiple tables.</p>
+<p class="subhead2"><a id="EXPRN559"></a><a id="sthref386"></a><a id="sthref387"></a>Resource Management</p>
+<p>Consider an application that manages IT support resources based on the responsibilities (or duties) and the workload of each representative. In this application, you can capture the responsibilities of the representatives as expressions defined using variables such as the priority of the problem, organization, and the environment.</p>
+<p>Create a table named <code>ITResource</code> to store information about all the available representatives, as shown in the following example:</p>
+<pre>
+-- Create the object type and the attribute set for ticket description --
+CREATE OR REPLACE TYPE ITTicket AS OBJECT (
+                       Priority       NUMBER,
+                       Environment    VARCHAR2(10),
+                       Organization   VARCHAR2(10));
+/
+BEGIN
+  DBMS_EXPFIL.CREATE_ATTRIBUTE_SET(attr_set =&gt; 'ITTicket',
+                                   from_type =&gt; 'Yes');
+END;
+/
+
+-- Table storing expressions --
+CREATE TABLE ITResource (RId        NUMBER,
+                         Duties     VARCHAR2(100));
+
+BEGIN
+  DBMS_EXPFIL.ASSIGN_ATTRIBUTE_SET(attr_set =&gt; 'ITTicket',
+                                   expr_tab =&gt; 'ITResource',
+                                   expr_col =&gt; 'Duties');
+END;
+/
+
+INSERT INTO ITResource (RId, Duties) VALUES
+   (1, 'Priority &lt;= 2 and Environment = ''NT'' and Organization =
+                                                   ''Research''');
+
+INSERT INTO ITResource (RId, Duties) VALUES
+   (2, 'Priority = 1 and (Environment = ''UNIX'' or Environment = ''LINUX'')
+        and Organization = ''APPS''');
+</pre>
+<p>Create a table named <code>ITProblem</code> to store the problems filed, as shown in the following example:</p>
+<pre>
+CREATE TABLE ITProblem (PId             NUMBER,
+                        Description     ITTicket,
+                        AssignedTo      NUMBER);
+</pre>
+<p>The <code>AssignedTo</code> column in the <code>ITProblem</code> table stores the identifier of the representative handling the problem.</p>
+<p>Now, use the following <code>UPDATE</code> statement to assign all the previously unassigned problems to capable IT representatives:</p>
+<pre>
+UPDATE ITProblem p SET AssignedTo =
+             (SELECT RId FROM ITResource r
+              WHERE EVALUATE(r.Duties, p.Description.getVarchar()) = 1
+                    and rownum &lt; 2)
+    WHERE AssignedTo IS NULL;
+</pre>
+<p>The previous <code>UPDATE</code> operation can benefit from an Expression Filter index defined on the <code>Duties</code> column of the <code>Resource</code> table.</p>
+</div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment988">
+<tr>
+<td class="cellalignment995">
+<table class="cellalignment993">
+<tr>
+<td class="cellalignment992"><a href="exprn_app_a.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment992"><a href="exprn_app_c.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2003, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment997">
+<table class="cellalignment991">
+<tr>
+<td class="cellalignment992"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment992"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment992"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment992"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment992"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment992"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

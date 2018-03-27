@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Rules Manager Concepts</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 033" />
+<meta name="dcterms.created" content="2011-08-16T11:52:2Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Rules Manager and Expression Filter Developer's Guide" />
+<meta name="dcterms.identifier" content="E14919-04" />
+<meta name="dcterms.isVersionOf" content="EXPRN" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2003, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="exprn_part1.htm" title="Previous" type="text/html" />
+<link rel="Next" href="exprn_brm_eventpolicies.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e14919.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">10/36</span> <!-- End Header --><a id="CEGIFBGA"></a><a id="EXPRN065"></a>
+<h1 class="chapter"><span class="secnum">2</span> Rules Manager Concepts</h1>
+<p>Rules Manager is a feature of Oracle Database that uses the Expression Filter and object relational features to provide the features of a special-purpose rules engine with greater scalability and better operational characteristics.</p>
+<a id="EXPRN067"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" --><a id="sthref18"></a>
+<h2 class="sect1"><span class="secnum">2.1</span> Rules Terminology</h2>
+<p>Rules Manager uses the following terminology:</p>
+<ul>
+<li>
+<p>An <span class="bold">event structure</span> <a id="sthref19"></a><a id="sthref20"></a>is an object (abstract) type that you define with a set of attributes that describes the specific features of an event. For example, it is the data structure that captures the customer flight information, using variables, such as Airline, Customer Id, From City, and so forth. The object type definition of the AddFlight event structure is as follows:</p>
+</li>
+<li>
+<pre>
+TYPE AddFlight AS OBJECT (
+    CustId       NUMBER,
+    Airline      VARCHAR2(20),
+    FromCity     VARCHAR2(30),
+    ToCity       VARCHAR2(30),
+    Depart       DATE,
+    Return       DATE);
+</pre></li>
+<li>
+<p>An event<a id="sthref21"></a> is the instantiation of the event structure, so each instance of the event structure is an event. For example, these are three events:</p>
+<pre>
+AddFlight  (123, 'Abcair', 'Boston', 'Orlando', '01-Apr-2003', '08-Apr-2003');
+AddFlight  (234, 'Acbair', 'Chicago', 'San Jose', '01-Aug-2003',
+           '10-Aug-2003');
+AddFlight  (345, 'Acbair', 'New York', 'San Jose', '22-Jun-2003',
+           '24-Jun-2003');
+</pre></li>
+<li>
+<p>Events are classified into two types:</p>
+<ul>
+<li>
+<p><span class="bold">Primitive event</span> <a id="sthref22"></a>&mdash; represents an event that is assumed to be instantaneous and atomic in an application. A primitive event cannot be further broken down into other events and it either occurs completely or not at all. Each primitive event is typically bound to a specific point in time. So Rules Manager can fully evaluate the rules defined for the corresponding event structure with the event. For example, the <code>AddFlight</code> event is an example of a primitive event:</p>
+<pre>
+AddFlight (CustId, Airline, FromCity, ToCity, Depart, Return)
+</pre></li>
+<li>
+<p><span class="bold">Composite event</span> <a id="sthref23"></a>&mdash; represents the combination of two or more primitive events. All primitive events included in the composite event can be bound to a time window and thus generated at different points in time. So Rules Manager cannot fully evaluate the rules defined for the composite event structure until all the corresponding primitive events are generated. For example, adding a second primitive event AddRentalCar to the AddFlight primitive event creates a composite event:</p>
+<pre>
+   AddFlight (CustId, Airline, FromCity, ToCity, Depart, Return)
+   AddRentalCar (CustId, CarType, Checkout, Checkin, Options)
+</pre>
+<p>Because evaluation of rules for composite event structures must be deferred until all parts of a composite event are available, Rules Manager provides several ways of efficiently evaluating composite events.</p>
+<p>See <a href="#CEGDEAAI">Section 2.4</a> for more information about composite events and complex rule applications.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>A <span class="bold">rule class</span> <a id="sthref24"></a>is a database table that stores and groups a set of rules that share a common event structure. For example, this rule class of three rules is for the AddFlight event structure:</p>
+<pre>
+ON AddFlight (CustId, Airline, FromCity, ToCity, Depart, Return)
+IF Airline = 'Abcair', and ToCity = 'Orlando'
+THEN OfferPromtion (CustId, 'RentalCar', 'Acar')
+
+ON AddFlight (CustId, Airline, FromCity, ToCity, Depart, Return)
+IF Airline = 'Acbair', and ToCity = 'Houston'
+THEN OfferPromtion (CustId, 'RentalCar', 'Bcar')
+
+ON AddFlight (CustId, Airline, FromCity, ToCity, Depart, Return)
+IF ToCity = 'Orlando' and Return-Depart &gt;7
+THEN OfferPromtion (CustId, 'ThemePark', 'Ocean World')
+</pre></li>
+<li>
+<p>Rules are evaluated for an instance of the corresponding event structure. For example, the following event is used to evaluate the rules defined using the <code>AddFlight</code> event structure:</p>
+<pre>
+AddFlight  (123, 'Abcair', 'Boston', 'Orlando', '01-Apr-2003', '08-Apr-2003');
+</pre></li>
+<li>
+<p>A rule<a id="sthref25"></a> is a row in a rule class table that has elements consisting of:</p>
+<ul>
+<li>
+<p>The <span class="bold">rule condition</span> <a id="sthref26"></a>is a conditional expression formed using the attributes defined in the event structure. For example, the following rule condition use the attributes: Airline, ToCity, Return, and Depart:</p>
+<pre>
+Airline = 'Abcair' and ToCity = 'Orlando' and Return-Depart &gt;= 7
+</pre></li>
+<li>
+<p>The <span class="bold">rule action preferences</span> <a id="sthref27"></a>determine the exact action for each rule and specify the details for the action.</p>
+<p>Typically, the actions associated with rules in the rule class are homogenous. For example, if you use a rule class to determine the discount offered during a checkout process, each rule in the class is associated with a specific discount percentage. For rules that match an event instance, these values determine the appropriate action for the rule.</p>
+<p>Action preferences can come in different forms, such as:</p>
+<ul>
+<li>
+<p>A list of literals bound as arguments to the common procedure, such as:</p>
+<pre>
+'RentalCar', 'Acar', 'Bcar',... 
+</pre></li>
+<li>
+<p>Dynamic PL/SQL commands, such as:</p>
+<pre>
+BEGIN OfferRentalPromotion(:1,'Acar'); END;
+</pre></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>An <span class="bold">action callback procedure</span> <a id="sthref28"></a>is a procedure that acts as an entry point for executing actions for all the rules in a rule class. This procedure is implemented to execute the action for each rule in the rule class based on the action preferences associated with the rule and the event attributes. For the previous example, the action callback procedure can be implemented to invoke the OfferPromotion procedure with the appropriate arguments.</p>
+</li>
+<li>
+<p>A <span class="bold">results view</span> <a id="sthref29"></a>configures a rule class for external action execution when the actions for each matching rule cannot be executed by means of an action callback procedure, such as applications that span multiple tiers.</p>
+<p>The rules matching an event are available by querying this preconfigured view. Thus, the component issuing the query executes the corresponding actions. This is useful when the action for certain rules is implemented in the application on multiple tiers. See <a href="#CEGJBHJB">Section 2.6</a> for more information.</p>
+</li>
+<li>
+<p>The results from a rule evaluation are available through the results view until the end of the <span class="bold">rule session</span><a id="sthref30"></a>. By default, the database session (from connect to disconnect) is considered the rule session. Alternatively, you can use the reset session procedure (<code>dbms_rlmgr.reset_session( )</code>) to end a rule session and start a new session within a database session. Note that at the beginning of a rule session, the results view is empty.</p>
+</li>
+<li>
+<p>Rule class properties define the <span class="bold">event management policies</span> that Rules Manager enforces for each rules application. Two main policies discussed in this chapter are consumption and conflict resolution. <span class="bold">Consumption</span> refers to whether an event can be used for multiple rule executions or for just a single rule execution (see <a href="exprn_brm_eventpolicies.htm#CIHIFHGE">Section 3.1</a>). <span class="bold">Conflict resolution</span>, or ordering, determines the order in which matching rules with various events are to be executed (see <a href="exprn_brm_eventpolicies.htm#BABHCGEA">Section 3.2</a>). <a href="#BHCDBFEH">Section 2.5</a> and <a href="exprn_brm_eventpolicies.htm#CIHFAJAG">Chapter 3</a> describe the complete set of event management policies that Rules Manager supports.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect1" -->
+<a id="CEGJACJG"></a><a id="EXPRN068"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">2.2</span> Database Representation of a Rule Class and Rules</h2>
+<p>Rules Manager uses a relational table to hold the contents of a rule class with each row in the table representing a rule. The rule class table minimally has three columns, one for rule identifiers (<code>rlm$ruleid</code>), one for rule conditions (<code>rlm$rulecond</code>), and one for the description of the rule (<code>rlm$ruledesc</code>). In addition, the rule class table can have one or more columns to store rule action preferences.</p>
+<p><a href="#CEGEBCIH">Figure 2-1</a> shows a database representation of the TravelPromotion rule class and its rules for processing the AddFlight event instances.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CEGEBCIH"></a><a id="EXPRN498"></a>Figure 2-1 Database Representation of Rule Class and Rules</p>
+<img width="987" height="655" src="img/dbruleset.gif" alt="Description of Figure 2-1 follows" /><br />
+<a id="sthref31" href="img_text/dbruleset.htm">Description of "Figure 2-1 Database Representation of Rule Class and Rules"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>The TravelPromotion rule class consists of the following columns:</p>
+<ul>
+<li>
+<p><code>rlm$ruleid</code> &mdash; contains the unique rule identifier that identifies each rule within a rule class.</p>
+</li>
+<li>
+<p><code>rlm$rulecond</code> &mdash; contains the rule condition describing each rule; in this case, the rule condition, when satisfied, allows the promotion specified to be offered.</p>
+</li>
+<li>
+<p><code>rlm$enabled</code> &mdash; contains a value indicating whether the rule added to the rule class is enabled or disabled. A value of <code>Y</code> indicates the rule is enabled, a value of <code>N</code> indicates that it is disabled. By default, a rule created with a missing value for the <code>rlm$enabled</code> column is considered enabled.</p>
+</li>
+<li>
+<p><code>PromoType</code> &mdash; contains one action preference that is used when the rule condition is satisfied, and in each case, the action callback procedure is called that executes the actions for the rules in the rule class; in this case, the <code>Promotype</code> column stores the type of promotion to be offered, such as a car rental promotion or hotel stay promotion. This value is used by the <code>PromoAction</code> action callback procedure to invoke the <code>OfferPromotion</code> procedure with the appropriate arguments.</p>
+</li>
+<li>
+<p><code>OfferedBy</code> &mdash; contains another action preference that is associated with the previous action preference column; in this case, it contains the name of the company offering the promotion.</p>
+</li>
+<li>
+<p><code>rlm$ruledesc</code> &mdash; contains a description of the rule in plain text provided by the person defining the rule.</p>
+</li>
+</ul>
+<p>Each row of the <code>TravelPromotion</code> rule class table stores an ECA rule<a id="sthref32"></a>. The event structure, defined as an object type in the database, is associated with the rule condition column and this provides the necessary vocabulary for the rule conditions (stored in the column). The event structure, the rule class table, and the action callback procedure are all created as part of rule class creation.</p>
+<p>Once you add all the rules to the rule class, events are ready to be processed and rules evaluated. At runtime, each rule in the rule class is processed against each instance of the event structure. When a rule evaluates to true for a particular event, the <code>PromoAction</code> action callback procedure calls the designated <code>OfferPromotion</code> procedure using rule action preferences to execute the prescribed action of offering a specific type of promotion from a particular vendor. Rules Manager enforces various event management policies, such as conflict resolution when an event matches more than one rule, or immediate event consumption when the first match is found and no further evaluation is necessary. These and other event management policies are described in more detail in <a href="exprn_brm_eventpolicies.htm#CIHFAJAG">Chapter 3</a>.</p>
+<p><a href="#CEGFIBFB">Section 2.3</a>, <a href="#CEGJBHJB">Section 2.6</a>, and <a href="#CEGDEAAI">Section 2.4</a> describe the process of creating rules applications that use a simple event, that span multiple tiers, and that use composite events, respectively. Though the basic five steps are the same for all three cases, the details vary, and some additional steps are necessary for multiple tier applications.</p>
+</div>
+<!-- class="sect1" -->
+<a id="CEGFIBFB"></a><a id="EXPRN069"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">2.3</span> Creating Rules Applications That Use Simple or Non-Composite Events</h2>
+<p>The basic steps to create a rules application <a id="sthref33"></a>that uses a simple or non-composite event are as follows:</p>
+<ol>
+<li>
+<p><a id="BHCEIHFF"></a>Create the event<a id="sthref34"></a><a id="sthref35"></a> structure as an object type in the database.</p>
+<p>Using the <code>AddFlight</code> example, the event structure is defined as:</p>
+<pre>
+CREATE TYPE AddFlight AS OBJECT (
+    CustId       NUMBER,
+    Airline      VARCHAR2(20),
+    FromCity     VARCHAR2(30),
+    ToCity       VARCHAR2(30),
+    Depart       DATE,
+    Return       DATE);
+</pre></li>
+<li>
+<p>Create the rule class for the event structure.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+For successful creation of a rule class, you should have sufficient privileges to create views, object types, tables, packages, and procedures.</div>
+<p>For this example, create the <code>TravelPromotion</code> rule class for the <code>AddFlight</code> event structure and define the <code>PromoType</code> and <code>OfferedBy</code> columns as its action preferences. This procedure takes the name of the rule class, the name of the existing event structure created in Step <a href="#BHCEIHFF">1</a>, the name of the action callback procedure, and the action preference specification as arguments. The action preferences specification defines the data types of action preferences that are associated with each rule in the rule class.</p>
+<pre>
+BEGIN
+dbms_rlmgr.create_rule_class (
+     rule_class   =&gt; 'TravelPromotion',
+     event_struct =&gt; 'AddFlight',
+     action_cbk   =&gt; 'PromoAction',
+     actprf_spec  =&gt; 'PromoType  VARCHAR2(20),
+                      OfferedBy  VARCHAR2(20)');
+END;
+</pre>
+<p>Rule class creation creates a table to store the corresponding rule definitions and action preferences. The rule class table uses the same name as the rule class and it is created in the user's schema. The rule class table defines three columns to store the rule identifiers, rule descriptions, and the rule conditions. In this example, the table also creates the rule action preferences columns specified with the previous command to store the action preferences.</p>
+<pre>
+TABLE TravelPromotion (
+                 rlm$ruleid     VARCHAR2(100),
+                 rlm$rulecond   VARCHAR2(4000),
+                 rlm$enabled    CHAR(1) DEFAULT 'Y',
+                 rlm$ruledesc   VARCHAR2(1000),
+                 PromoType      VARCHAR2(20),
+                 OfferedBy      VARCHAR2(20));
+</pre>
+<p>You can query the table to see the rules defined in the rule class as well as perform SQL <code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code> operations to add, update, and delete rules.</p>
+<p>Rule class creation implicitly creates the skeleton for a callback procedure to perform the action. The action callback procedure acts as an entry point for executing actions for all the rules in the rule class. The action callback is called once for every rule that matches an event. The implementation of the action callback procedure can rely on values in the event instance and the action preferences associated with the matching rule.</p>
+<pre>
+PROCEDURE  PromoAction (rlm$event      AddFlight,
+                        rlm$rule       TravelPromotion%ROWTYPE) is
+BEGIN
+  null;
+  --- The action for the matching rules can be performed here.
+  --- The appropriate action can be determined from the event
+  --- instance and the action preferences associated with each rule.
+END;
+</pre>
+<p>Rule class creation, in this case, creates the action callback procedure with the name the user provides and has two arguments:</p>
+<ul>
+<li>
+<p>The event as an instance of the corresponding object type.</p>
+</li>
+<li>
+<p>The action preferences as a <code>ROWTYPE</code> of the corresponding rule class table. The <code>%ROWTYPE</code> attribute provides a record type that represents a row in a table.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><a id="BHCFEGAJ"></a>Replace the system-generated callback procedure with the user implementation to perform the appropriate action for each matching rule. The following action callback procedure can be implemented to invoke the <code>OfferPromotion</code> procedure with arguments obtained from the event instance and the rule definition:</p>
+<p>For this example,</p>
+<pre>
+PROCEDURE  PromoAction (
+            rlm$event      AddFlight,
+            rlm$rule       TravelPromotion%ROWTYPE) is
+BEGIN
+   OfferPromotion (rlm$event.CustId,
+                   rlm$rule.PromoType,
+                   rlm$rule.OfferedBy);
+END;
+</pre>
+<p>In this example, the procedure <code>OfferPromotion</code> performs the action and each matching rule provides the appropriate action preferences. <a href="exprn_app_g.htm#BEJHAIJB">Appendix G</a> shows alternate ways for implementing the action callback procedure for a different choice of action preferences.</p>
+</li>
+<li>
+<p><a id="BHCCDGGB"></a>Add rules to the rule class.</p>
+<p>Adding rules consists of using the SQL <code>INSERT</code> statement to add a row for each rule. Each row inserted typically contains a rule identifier, a condition, and values for action preferences. Insert the following rule into the <code>TravelPromotion</code> table:</p>
+<pre>
+INSERT INTO TravelPromotion (rlm$ruleid, PromoType, OfferedBy, rlm$rulecond) VALUES
+('UN_AV_FL', 'Rental Car', 'Acar', 
+'<span class="codeinlinebold">Airline= ''Abcair'' and ToCity = ''Orlando'' and Return-Depart &gt;= 7</span>');
+</pre></li>
+<li>
+<p><a id="BHCEAHHE"></a>Process the rules for an event.</p>
+<p>Use the <code>dbms_rlmgr.process_rules( )</code> procedure to process the rules in a rule class for an event instance. Processing the rules consists of passing in an event instance as a string of name-value pairs (generated using the <code>getVarchar( )</code> procedure) or as an <code>AnyData</code> instance for an event consisting of binary data types as described in <a href="exprn_expconcepts.htm#CHDFJJAB">Section 11.3</a>. Recall that the Oracle supplied <code>getVarchar( )</code> method is used to represent the data item as string-formatted name-value pairs when this is possible and that <code>AnyData</code> is an Oracle supplied object type that can hold instances of any Oracle data type, both Oracle supplied and user-defined.</p>
+<p>The following example processes the rules in the <code>TravelPromotion</code> rule class for an <code>AddFlight</code> event instance using the <code>getVarchar( )</code> function.</p>
+<pre>
+BEGIN
+dbms_rlmgr.process_rules (
+   rule_class  =&gt; 'TravelPromotion',
+   event_inst  =&gt; <span class="codeinlinebold">AddFlight.getVarchar(987, 'Abcair', 'Boston', 'Orlando', '01-APR-2003', '08-APR-2003')</span>);
+END;
+</pre>
+<p>The following example processes the rules in the <code>TravelPromotion</code> rule class for an <code>AddFlight</code> event instance using the <code>AnyData.ConvertObject( )</code> procedure.</p>
+<pre>
+BEGIN
+dbms_rlmgr.process_rules (
+   rule_class  =&gt; 'TravelPromotion',
+   event_inst  =&gt; <span class="bold">AnyData.convertObject(AddFlight(987, 'Abcair', 'Boston', 'Orlando', '01-APR-2003', '08-APR-2003'))</span>);
+END;
+</pre>
+<p>The previous command processes the rules in the <code>TravelPromotion</code> rule class for an <code>AddFlight</code> event instance and performs the action associated with each matching rule through the action callback procedure.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect1" -->
+<a id="CEGDEAAI"></a><a id="EXPRN071"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">2.4</span> Creating Rules Applications That Use Composite Events</h2>
+<p>Probably the more common types of rules applications <a id="sthref36"></a>are those that use a composite event structure<a id="sthref37"></a><a id="sthref38"></a> that combines two or more primitive events. Evaluating rule classes for composite events creates additional requirements. Rules Manager addresses these requirements by:</p>
+<ul>
+<li>
+<p>Aggregating events for rule execution</p>
+<p>When two or more primitive events are brought together, each primitive event may be generated by the application at different points in time. This often means a rule cannot be evaluated conclusively until all the primitive events are available. Rules Manager manages the primitive events and joins them together before evaluating the rules. Rules Manager hides the complexity of managing composite events by maintaining the association between the primitive events and the composite event. See <a href="exprn_brm_rule_cond.htm#CIHEBAID">Chapter 5</a> for more information.</p>
+</li>
+<li>
+<p>Maintaining intermediate state of event processing</p>
+<p>When composite events are completely formed in the user application, some parts of rule conditions may need to be evaluated repeatedly with some parts of the composite events. This may lead to multiple evaluations of one primitive event for each instance of a second primitive event, and so forth to find matching rules. This evaluation becomes complex very quickly as the number of primitive events exceeds two. XML tags support incremental evaluation of rules for composite events resulting in Rules Manager improving the performance of the system. Rules Manager maintains the intermediate state of rule evaluation persistently for efficient processing. See <a href="exprn_brm_rule_cond.htm#CIHJGEID">Section 5.1</a> for more information.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The intermediate state maintained for a rule is closely related to the corresponding rule condition (for composite events). So, any modifications made to the rule condition (using the <code>UPDATE</code> command) will discard the intermediate state associated with the rule and the state is maintained only for the events processed subsequently. Effectively, updating a rule condition is equivalent to deleting the corresponding rule and inserting a new one. Modifying the rule's action preferences or the rule identifier has no impact on the rule evaluation state.</div>
+</li>
+<li>
+<p>Supporting complex rule constructs</p>
+<p>Rules Manager enables you to build complex rules with negation, Any <span class="italic">n</span>, and Set semantics in conditional expressions. Using XML tags within rule conditions, Rules Manager can support these complex rule constructs that are commonly used in applications. See <a href="exprn_brm_rule_cond.htm#CIHEBAID">Chapter 5</a> for more information.</p>
+</li>
+<li>
+<p>Setting event management policies</p>
+<p>Rules Manager allows an individual with application domain knowledge to declaratively set event management policies for a rules application. Event policies are specified as properties of a rules class when the rule class is created to control the behavior of simple and composite events in the system, and the performance of composite events.</p>
+<p>The policies controlling the ordering of rule executions and the reuse of events for multiple rule executions are applicable to an application with simple as well as composite events. Other composite event-specific policies control the aging of the unused events, ordering of events, and the correlation of primitive events within composite events. The event management policies are summarized in <a href="#BHCDBFEH">Section 2.5</a> and described in <a href="exprn_brm_eventpolicies.htm#CIHIFHGE">Section 3.1</a> through <a href="exprn_brm_eventpolicies.htm#CJAGGIBF">Section 3.8</a>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The EQUAL property must be specified for a rules class if it is configured for composite events. Domain knowledge is needed to identify common equality join predicates that correlate the primitive events for all the rules in a rule class.</div>
+</li>
+</ul>
+<p class="subhead2"><a id="EXPRN499"></a>Designing Rules Applications with Composite Events</p>
+<p>Developing a rules application for composite events has some similarities with that of developing a database (SQL) application. The event structure definitions in a rules application are similar to table definitions in a database application. SQL queries operating on these tables are similar to the rule conditions defined in a rule class. In a database application, constraints and indexes specific to each application are created for data integrity and performance. Similarly, in the case of a rules application, properties specified for the rule class enforce the event management policies and improve the performance. These rule class properties are summarized in <a href="#BHCDBFEH">Section 2.5</a> and described <a href="exprn_brm_eventpolicies.htm#CIHFAJAG">Chapter 3</a>.</p>
+<a id="CEGHGEAE"></a><a id="EXPRN072"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">2.4.1</span> How to Create a Rules Application That Uses Composite Events</h3>
+<p>The basic steps to create a rules application with composite events are the same as those described for simple events in <a href="#CEGFIBFB">Section 2.3</a>, with accommodations for multiple primitive events.</p>
+<p>The steps to create a rules application with composite events are as follows:</p>
+<ol>
+<li>
+<p>Create the composite event structure as an object type in the database.</p>
+<p>First, create each primitive event structure as an object type. For example:</p>
+<pre>
+CREATE or REPLACE TYPE AddFlight AS OBJECT (
+    CustId       NUMBER,
+    Airline      VARCHAR2(20),
+    FromCity     VARCHAR2(30),
+    ToCity       VARCHAR2(30),
+    Depart       DATE,
+    Return       DATE);
+
+CREATE or REPLACE TYPE AddRentalCar AS OBJECT  (
+    CustId       NUMBER,
+    CarType      VARCHAR2(20),
+    CheckOut     DATE,
+    CheckIn      DATE,
+    Options      VARCHAR2(30));
+</pre>
+<p>Next, create all the primitive event structures that constitute the composite event as (first level) embedded types in this object type. For example:</p>
+<pre>
+CREATE or REPLACE TYPE TSCompEvent AS OBJECT (Flt AddFlight,
+                                              Car AddRentalCar);
+</pre>
+<p>Use the attribute names, <code>Flt</code> and <code>Car</code>, in the rule conditions for identifying the predicates on individual primitive events and for specifying join conditions between primitive events; <code>Flt</code> and <code>Car</code> are the primitive event variables used for composite events.</p>
+</li>
+<li>
+<p><a id="BHCIBCAJ"></a>Create the rule class for the composite event structure. Configure the rule class for composite events using an XML properties document that is assigned to the properties argument of the <code>dbms_rlmgr.create_rule_class</code> procedure.</p>
+<pre>
+BEGIN
+   dbms_rlmgr.create_rule_class (
+               rule_class    =&gt; 'CompTravelPromo',
+               event_struct  =&gt; 'TSCompEvent',
+               action_cbk    =&gt; 'CompPromoAction',
+               rslt_viewnm   =&gt; 'CompMatchingPromos',
+               actprf_spec   =&gt; 'PromoType  VARCHAR2(20),
+                                 OfferedBy  VARCHAR2(20)',
+               <span class="codeinlinebold">rlcls_prop    =&gt; '&lt;composite equal="Flt.CustId, Car.CustId"/&gt;'</span>);
+END;
+</pre>
+<p>The previous code example creates the rule class for the composite event structure. The <code>rlcls_prop</code> argument specifies the XML element <code>&lt;composite&gt;</code> to configure the rule class for composite events. The properties also include an equal specification that identifies the common equality join predicate in all the rules in the rule class. Other critical rule class properties such as consumption, duration, and ordering of events can be specified using the syntax discussed in <a href="exprn_brm_eventpolicies.htm#CIHIFHGE">Section 3.1</a> through <a href="exprn_brm_eventpolicies.htm#CIHCFFGF">Section 3.7</a>.</p>
+<p>This step re-creates each object type representing a primitive event structure to include a timestamp attribute, <code>rlm$CrtTime</code>, which captures the corresponding event creation times. This attribute is created with the <code>TIMESTAMP</code> data type and its value is defaulted to the database timestamp (<code>SYSTIMESTAMP</code>) at the time of event instantiation. Alternately, an application can explicitly set an event creation time by assigning a valid timestamp value to this attribute.</p>
+<p>As previously mentioned, this rule class creation also creates the action callback procedure with the specified name as follows:</p>
+<pre>
+PROCEDURE CompPromotion (Flt       AddFlight,
+                         Car       AddRentalCar,
+                         rlm$rule  CompTravelPromo%ROWTYPE)  is
+BEGIN
+   null;
+  --- The action for the matching rules can be performed here.
+  --- The appropriate action can be determined from the event
+  --- instance and the action preferences associated with each rule.
+END;
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The primitive events within the composite events are passed in as separate arguments to the callback procedure. The action callback procedure includes additional arguments when the rule class is configured for the <code>RULE</code> consumption policy or when the rule class is enabled for one or more collection events.</div>
+</li>
+<li>
+<p>Replace the system generated action callback procedure with the user implementation to perform the appropriate action for each matching rule. For example:</p>
+<pre>
+PROCEDURE  CompPromoAction (Flt       AddFlight,
+                            Car       AddRentalCar,
+                            rlm$rule  CompTravelPromo%ROWTYPE) is
+BEGIN
+   OfferPromotion (Flt.CustId,
+                   rlm$rule.PromoType,
+                   rlm$rule.OfferedBy);
+END;
+</pre></li>
+<li>
+<p><a id="BHCDFJEF"></a>Add the rules to the rule class. In this case, add a rule with a conditional expression that uses XML tags. See <a href="exprn_brm_rule_cond.htm#CIHJGEID">Section 5.1</a> for more information about using XML tag extensions in rule conditions to support complex rule constructs.</p>
+<pre>
+INSERT INTO CompTravelPromo (rlm$ruleid, PromoType, OfferedBy, rlm$rulecond) 
+  VALUES ('UN-HT-FL', 'RentalCar', 'Acar', 
+          '&lt;condition&gt;
+             &lt;and join="Flt.CustId = Car.CustId"&gt;
+                &lt;object name="Flt"&gt;
+                    Airline=''Abcair'' and ToCity=''Orlando''
+                &lt;/object&gt;
+                &lt;object name="Car"&gt;
+                    CarType = ''Luxury''
+                &lt;/object&gt;
+             &lt;/and&gt;
+           &lt;/condition&gt;');
+</pre></li>
+<li>
+<p>Process the rules using one primitive event at a time. For example:</p>
+<pre>
+BEGIN
+   dbms_rlmgr.process_rules (
+             rule_class     =&gt; 'CompTravelPromo',
+             event_inst     =&gt; 
+                AnyData.ConvertObject(
+                              AddFlight(987, 'Abcair', 'Boston', 'Orlando',
+                                        '01-APR-2003', '08-APR-2003')));
+
+
+   dbms_rlmgr.process_rules (
+             rule_class     =&gt; 'CompTravelPromo',
+             event_inst     =&gt; 
+                AnyData.ConvertObject(
+                              AddFlight(567, 'Abdair', 'Boston', 'Miami',
+                                        '03-APR-2003', '09-APR-2003')));
+
+   dbms_rlmgr.process_rules (
+             rule_class     =&gt; 'CompTravelPromo',
+             event_inst     =&gt; 
+                AnyData.ConvertObject(
+                              AddRentalCar(987, 'Luxury', '03-APR-2003', 
+                                        '08-APR-2003', NULL)));
+END;
+</pre></li>
+</ol>
+<p>This command adds three primitive events to the Rules Manager. For the rule defined in Step <a href="#BHCDFJEF">4</a>, the first event matches the primitive rule condition for the <code>AddFlight</code> event and the third event matches the condition for the <code>AddRentalCar</code> event. Additionally, these two events satisfy the join predicate in the rule condition. So for the previous example, the first and last primitive events together form a composite event that matches the rule condition specified in Step <a href="#BHCDFJEF">4</a>. These primitive event instances are passed to the action callback procedure for action execution. The type information for the primitive events that is passed in is embedded in the corresponding <code>AnyData</code> instance. However, when a string-formatted event is used, the primitive event type information should be explicitly passed in as follows:</p>
+<pre>
+BEGIN
+   dbms_rlmgr.process_rules (
+             rule_class     =&gt; 'TravelPromotion',
+             <span class="bold">event_type     =&gt; 'AddFlight',</span>
+             event_inst     =&gt;
+                 AddFlight.getVarchar(987, 'Abcair', 'Boston', 'Orlando',
+                                      '01-APR-2003', '08-APR-2003'));
+END;
+</pre></div>
+<!-- class="sect2" -->
+<a id="EXPRN073"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref39"></a>
+<h3 class="sect2"><span class="secnum">2.4.2</span> Evaluating Composite Events Using Complex Rule Conditions</h3>
+<p>Rules Manager supports evaluating composite events<a id="sthref40"></a> using complex rule conditions<a id="sthref41"></a> with the following:</p>
+<ul>
+<li>
+<p>Incremental evaluation of rules by allowing predicate joins between and among primitive events</p>
+</li>
+<li>
+<p>Negation in rule conditions to raise exceptions in processes (that is, when something does not happen, do something)</p>
+</li>
+<li>
+<p>Sequencing in rule conditions by tracking primitive event creation time and enforcing or detecting sequencing among events</p>
+</li>
+<li>
+<p>Set semantics in rule conditions to allow instances of primitive events of the same type to be monitored as a group</p>
+</li>
+<li>
+<p>Any <span class="italic">n</span> in rule conditions to allow matching of a subset of primitive events</p>
+</li>
+</ul>
+<p>Rules Manager supports incremental evaluation of rules involving composite events. To support complex rule conditions, the conditional expressions in the SQL <code>WHERE</code> clause are extended with some XML tags that identify different parts of a conditional expression and adds special semantics to these expressions. <a href="exprn_brm_rule_cond.htm#CIHEBAID">Chapter 5</a> describes more about each type of complex rule condition. <a href="exprn_brm_rule_cond.htm#CIHJGEID">Section 5.1</a> describes implementing incremental evaluation of rules.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BHCDBFEH"></a><a id="EXPRN074"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">2.5</span> Setting Event Management Policies (Rule Class Properties) for Rule Applications</h2>
+<p>Rule class properties define the event management policies <a id="sthref42"></a><a id="sthref43"></a>that the Rules Manager should enforce for each rules application. Rule class propertie<a id="sthref44"></a>s include:</p>
+<ul>
+<li>
+<p>Consumption &mdash; determines if an event can be used for multiple rule executions or a single rule execution</p>
+</li>
+<li>
+<p>Conflict resolution or ordering &mdash; determines the order in which matching rules with various events are to be executed</p>
+</li>
+<li>
+<p>Duration &mdash; determines the lifetime of unconsumed primitive events</p>
+</li>
+<li>
+<p>Auto-commit &mdash; determines if each interaction with a rule class should be committed automatically</p>
+</li>
+<li>
+<p>Storage &mdash; determines the storage characteristics of the rule class in the database</p>
+</li>
+<li>
+<p>Equal &mdash; specifies the common equality join predicates for all the rules in a rule class, that is, what are the lists of primitive event attributes that are equal in the composite events configured for a rule class</p>
+</li>
+<li>
+<p>DML Events &mdash; specifies when an event structure is created with one or more table alias attributes, that the corresponding rule class should consider the data manipulation language (DML) operations (<code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>) on the corresponding tables as the events for which the rules are evaluated</p>
+</li>
+<li>
+<p>CNF Events &mdash; continuous query notification (formerly database change notification) events similar to DML Events except that the rules are processed after the commit of the transaction performing the DML operations.</p>
+</li>
+</ul>
+<p>You specify the rule class properties at the time of rule class creation using an XML properties document that is assigned to the <code>rlcls_prop</code> argument of the <code>dbms_rlmgr.create_rule_set( )</code> procedure. For rule classes configured for composite events, specify these properties at the composite event level (for all the primitive events). In addition, you can specify overrides for one or more primitive events in the properties document. <a href="exprn_brm_eventpolicies.htm#CIHIFHGE">Section 3.1</a> through <a href="exprn_brm_eventpolicies.htm#CJAGGIBF">Section 3.8</a> describe each of these rules properties in more detail and how each is implemented.</p>
+</div>
+<!-- class="sect1" -->
+<a id="CEGJBHJB"></a><a id="EXPRN070"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">2.6</span> Creating Rules Applications That Span Multiple Tiers</h2>
+<p>For rules applications that span multiple tiers<a id="sthref45"></a> and where rule management is handled in the database, but the action execution for the rules is handled in the application server, the actions for the rules matching an event <a id="sthref46"></a><a id="sthref47"></a>cannot be invoked from an action callback procedure. Instead, a results view is populated with the events and the matching rules, both of which are available for external action execution. The results view can be queried to determine the rules that match an event and their corresponding actions can then be executed.</p>
+<p>To handle rules applications with certain rules having their action execution occurring on the application server, you must also configure the rule class for external execution (in addition to configuring the action callback procedure). The steps to do this are similar to those described in <a href="#CEGFIBFB">Section 2.3</a>, but are modified and briefly described as follows (see <a href="exprn_brm_mtier.htm#CCHFICFC">Chapter 6</a> for a complete description of each step):</p>
+<ol>
+<li>
+<p>Create the event structure as an object type in the database (same as Step <a href="#BHCEIHFF">1</a> in <a href="#CEGFIBFB">Section 2.3</a>).</p>
+</li>
+<li>
+<p>Create the rule class and also define the results view. See Step <a href="exprn_brm_mtier.htm#CCHCAAFJ">2</a> in <a href="exprn_brm_mtier.htm#CCHDFBFC">Section 6.1</a> for the details.</p>
+</li>
+<li>
+<p>Implement the action callback procedure (same as Step<a href="#BHCFEGAJ">3</a> in <a href="#CEGFIBFB">Section 2.3</a>).</p>
+</li>
+<li>
+<p>Add rules to the rule class (same as Step <a href="#BHCCDGGB">4</a> in <a href="#CEGFIBFB">Section 2.3</a>).</p>
+</li>
+<li>
+<p>Identify the matching rules for an event. Use the add event procedure (<code>dbms_rlmgr.add_event( )</code>) that adds each event to the rule class one at a time and identifies the matching rules for a given event that is later accessed using the results view. See Step<a href="exprn_brm_mtier.htm#CCHIAGIA">5</a> in <a href="exprn_brm_mtier.htm#CCHDFBFC">Section 6.1</a> for the details.</p>
+</li>
+<li>
+<p>Find the matching rules by querying the results view. See Step <a href="exprn_brm_mtier.htm#CCHEBFHH">6</a> in <a href="exprn_brm_mtier.htm#CCHDFBFC">Section 6.1</a> for the details.</p>
+</li>
+<li>
+<p>Consume the event that is used in a rule execution. See Step <a href="exprn_brm_mtier.htm#CCHFEHCH">7</a> in <a href="exprn_brm_mtier.htm#CCHDFBFC">Section 6.1</a> for the details.</p>
+</li>
+</ol>
+<p>For more information about creating rules applications that span multiple tiers, see <a href="exprn_brm_mtier.htm#CCHDFBFC">Section 6.1</a>, and for more information about running rules applications in multitier mode see <a href="exprn_brm_mtier.htm#CHDBEFFD">Section 6.2</a>.</p>
+</div>
+<!-- class="sect1" -->
+<a id="EXPRN500"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" --><a id="sthref48"></a>
+<h2 class="sect1"><span class="secnum">2.7</span> Using Rules Manager with SQL*Loader and Export/Import Utilities</h2>
+<p><a href="#BHCIFIBC">Section 2.7.1</a> describes using SQL*Loader to load data into a rule class table. <a href="#BHCFFEAG">Section 2.7.2</a> describes exporting and importing rules applications.</p>
+<a id="BHCIFIBC"></a><a id="EXPRN501"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">2.7.1</span> SQL*Loader</h3>
+<p>You can use SQL*Loader to bulk load data from an ASCII file into a rule class table. For the loader operations, SQL*Loader treats the rule conditions stored in the <code>rlm$rulecond</code> column of the rule class table as strings loaded into a <code>VARCHAR2</code> column. The data file can hold the XML and SQL based rule conditions in any format allowed for <code>VARCHAR2</code> data. The values for the action preference columns in the rule class table are loaded using normal SQL*Loader semantics.</p>
+<p>Rules Manager automatically validates the data loaded into the rule condition column using the event structure associated with the rule class. The validation is done by a trigger defined on the rule condition column, due to which, a direct load cannot be used while loading rule definitions into a rule class table.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BHCFFEAG"></a><a id="EXPRN502"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">2.7.2</span> Export/Import</h3>
+<p>You can export a rules application defined using a set of event structures and a rule class and then import it back to the same database or a different Oracle database. A rule class in a schema is automatically exported when the corresponding rule class table is exported using the export command's (<code>expdp</code>) <code>tables</code> parameter or when the complete schema is exported. When you export a rule class, definitions for the associated primitive and composite event structures and the rules defined in the rule class are all placed in the export dump file. However, the internal database objects that maintain the information about event instances and incremental states for partially matched rules are not exported with the rule class. When you use the <code>tables</code> parameter to export a particular rule class, the implementation for the action callback procedure is not written to the export dump file. The action callback procedure is only exported with the schema export operation.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+In the case of a rule class with references to shareable primitive rule conditions, the conditions table storing the conditions are not exported unless the schema is exported or the conditions table is explicitly listed in the <code>tables</code> parameter of the export command. See the note at the end of <a href="exprn_brm_evnt_rcconfig.htm#CJAIFEJJ">Section 4.6</a> for more information.</div>
+<p>You can use the dump file, created with the export of a rule class, to import the rule class and its event structures into the same or a different Oracle database. At the time of import, the internal database objects used for the rule class state maintenance are re-created. Due to the order in which certain objects are created and skipped in an import session, the rule class creation raises some errors and warnings that can be safely ignored. In the case of a schema level import of the rule class, the implementation for action callback procedure is also re-created on the import site However, in the case of a table-level import, only the skeleton for the action callback procedure is created.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+In the case of the rule class with references to shareable primitive rule conditions, the rules are validated during the import operation. Any broken references found due to a missing conditions table or the specific primitive condition in the conditions table, returns an ORA-41704 error message. However, the broken references can be fixed as a post-import operation. For this purpose, all the rule conditions with broken references are marked FAILED with the corresponding <code>rlm$enabled</code> column storing the value <code>F</code>.</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment988">
+<tr>
+<td class="cellalignment995">
+<table class="cellalignment993">
+<tr>
+<td class="cellalignment992"><a href="exprn_part1.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment992"><a href="exprn_brm_eventpolicies.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2003, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment997">
+<table class="cellalignment991">
+<tr>
+<td class="cellalignment992"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment992"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment992"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment992"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment992"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment992"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

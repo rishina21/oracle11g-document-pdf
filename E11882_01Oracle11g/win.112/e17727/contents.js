@@ -1,0 +1,18 @@
+var chapters = [
+  { topic: "chapter", section: "1", title: "Introducing Oracle Objects for OLE", anchor: "OOFOL0001", file: "intro.htm" },
+  { topic: "chapter", section: "2", title: "Using Oracle Objects for OLE with Automation Clients", anchor: "OOFOL0002", file: "clients.htm" },
+  { topic: "chapter", section: "3", title: "Basic Features", anchor: "OOFOL0003", file: "basfeat.htm" },
+  { topic: "chapter", section: "4", title: "Advanced OO4O Features", anchor: "OOFOL0004", file: "advfeat.htm" },
+  { topic: "chapter", section: "5", title: "Tuning and Troubleshooting", anchor: "OOFOL0005", file: "tips.htm" },
+  { topic: "chapter", section: "6", title: "Quick Tour with Visual Basic", anchor: "OOFOL0006", file: "quicktour.htm" },
+  { topic: "chapter", section: "7", title: "Code Wizard for Stored Procedures", anchor: "OOFOL0007", file: "codewiz.htm" },
+  { topic: "chapter", section: "8", title: "Introduction to Automation Objects", anchor: "OOFOL0008", file: "apiintro.htm" },
+  { topic: "chapter", section: "9", title: "Server Objects", anchor: "OOFOL0009", file: "serobjch.htm" },
+  { topic: "chapter", section: "10", title: "Server Methods", anchor: "OOFOL0010", file: "sermthod.htm" },
+  { topic: "chapter", section: "11", title: "Server Properties", anchor: "OOFOL0011", file: "serprop.htm" },
+  { topic: "chapter", section: "12", title: "Data Control Events", anchor: "OOFOL0012", file: "dcevents.htm" },
+  { topic: "chapter", section: "13", title: "Data Control Methods", anchor: "OOFOL0013", file: "dcmethods.htm" },
+  { topic: "chapter", section: "14", title: "Data Control Properties", anchor: "OOFOL0014", file: "dcprop.htm" },
+  { topic: "appendix", section: "A", title: "Appendix A", anchor: "OOFOL0015", file: "appendix.htm" },
+  { topic: "glossary", section: "", title: "Glossary", anchor: "OOFOL884", file: "glossary.htm" },
+  { } ];

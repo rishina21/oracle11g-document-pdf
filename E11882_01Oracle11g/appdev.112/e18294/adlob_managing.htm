@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Managing LOBs: Database Administration</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 737" />
+<meta name="dcterms.created" content="2013-07-18T13:32:40Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database SecureFiles and Large Objects Developer's Guide" />
+<meta name="dcterms.identifier" content="E18294-04" />
+<meta name="dcterms.isVersionOf" content="ADLOB" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1996, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="adlob_working.htm" title="Previous" type="text/html" />
+<link rel="Next" href="part_securef.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e18294.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">11/37</span> <!-- End Header -->
+<div id="ADLOB45150" class="chapter"><a id="g1012541"></a><a id="i1009749"></a>
+<h1 class="chapter"><span class="secnum">3</span> Managing LOBs: Database Administration</h1>
+<p>This chapter describes administrative tasks that must be performed to set up, maintain, and use a database that contains LOBs.</p>
+<p>This chapter contains these topics:</p>
+<ul>
+<li>
+<p><a href="#i1009613">Database Utilities for Loading Data into LOBs</a></p>
+</li>
+<li>
+<p><a href="#i1009688"><span class="bold">Managing Temporary LOBs</span></a></p>
+</li>
+<li>
+<p><a href="#i1009689"><span class="bold">Managing BFILEs</span></a></p>
+</li>
+<li>
+<p><a href="#i1006574">Changing Tablespace Storage for a LOB</a></p>
+</li>
+</ul>
+<a id="i1009613"></a>
+<div id="ADLOB45151" class="sect1">
+<h2 class="sect1">Database Utilities for Loading Data into LOBs</h2>
+<p>The following utilities are recommended for bulk loading data into LOB columns as part of database setup or maintenance tasks:</p>
+<ul>
+<li>
+<p>SQL*Loader</p>
+</li>
+<li>
+<p>Oracle Data Pump</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Application Developers: If you are loading data into a LOB in your application, then using the LOB APIs is recommended. See <a href="adlob_lob_ops.htm#g1113588">Chapter 22, " Using LOB APIs"</a> for details on APIs that allow you to load LOBs from files.</div>
+</li>
+</ul>
+<a id="i1006100"></a>
+<div id="ADLOB45152" class="sect2">
+<h3 class="sect2">Using SQL*Loader to Load LOBs</h3>
+<p>There are two general techniques for using SQL*Loader to load data into LOBs:</p>
+<ul>
+<li>
+<p>Loading data from a primary data file</p>
+</li>
+<li>
+<p>Loading from a secondary data file using <code>LOBFILE</code>s</p>
+</li>
+</ul>
+<p>Consider the following issues when loading LOBs with SQL*Loader:</p>
+<ul>
+<li>
+<p>For SQL*Loader conventional path loads, failure to load a particular LOB does not result in the rejection of the record containing that LOB; instead, the record ends up containing an empty LOB.</p>
+<p>For SQL*Loader direct-path loads, the LOB could be <span class="italic">empty</span> or <span class="italic">truncated</span>. LOBs are sent in pieces to the server for loading. If there is an error, then the LOB piece with the error is discarded and the rest of that LOB is not loaded. In other words, if the entire LOB with the error is contained in the first piece, then that LOB column is either empty or truncated.</p>
+</li>
+<li>
+<p>When loading from <code>LOBFILE</code>s specify the maximum length of the field corresponding to a LOB-type column. If the maximum length is specified, then it is taken as a hint to help optimize memory usage. It is important that the maximum length specification does not underestimate the true maximum length.</p>
+</li>
+<li>
+<p>When using SQL*Loader direct-path load, loading LOBs can take up substantial memory. If the message "SQL*Loader 700 (out of memory)" appears when loading LOBs, then internal code is probably batching up more rows in each load call than can be supported by your operating system and process memory. A work-around is to use the ROWS option to read a smaller number of rows in each data save.</p>
+</li>
+<li>
+<p>You can also use the Direct Path API to load LOBs.</p>
+</li>
+<li>
+<p>Using <code>LOBFILE</code>s is recommended when loading columns containing XML data in <code>CLOB</code>s or <code>XMLType</code> columns. Whether you perform a direct-path load or a conventional path load with SQL*Loader depends on whether you must validate XML documents upon loading.</p>
+<ul>
+<li>
+<p>If the XML document must be validated upon loading, then use <a id="sthref63"></a><a id="sthref64"></a>conventional path load.</p>
+</li>
+<li>
+<p>If it is not necessary to ensure that the XML document is valid or you can safely assume that the XML document is valid, then you can perform a direct-path load. Performance is higher when you use <a id="sthref65"></a><a id="sthref66"></a>direct-path load because the overhead of XML validation is incurred.</p>
+</li>
+</ul>
+<p>A <span class="italic">conventional path load</span> executes SQL <code>INSERT</code> statements to populate tables in an Oracle database. A direct path load eliminates much of the Oracle database overhead by formatting Oracle data blocks and writing the data blocks directly to the database files.</p>
+<p>A <span class="italic">direct-path load</span> does not compete with other users for database resources, so it can usually load data at near disk speed. Considerations inherent to direct path loads, such as restrictions, security, and backup implications, are discussed in <a class="olink SUTIL" href="../../server.112/e22490/toc.htm">Oracle Database Utilities</a>.</p>
+</li>
+<li>
+<p>Tables to be loaded must exist in the database. SQL*Loader never creates tables. It loads existing tables that either contain data or are empty.</p>
+</li>
+<li>
+<p>The following privileges are required for a load:</p>
+<ul>
+<li>
+<p>You must have <code>INSERT</code> privileges on the table to be loaded.</p>
+</li>
+<li>
+<p>You must have <code>DELETE</code> privilege on the table to be loaded, when using the <code>REPLACE</code> or <code>TRUNCATE</code> option to empty out the old data before loading the new data in its place.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+For details on using SQL*Loader to load LOBs and other details on SQL*Loader usage, refer to the <a class="olink SUTIL" href="../../server.112/e22490/toc.htm"><span class="italic">Oracle Database Utilities</span></a> guide.</div>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<div id="ADLOB45153" class="sect2"><a id="sthref67"></a>
+<h3 class="sect2">Using SQL*Loader to Populate a BFILE Column</h3>
+<p>This section describes how to load data from files in the file system into a <code>BFILE</code> column.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="adlob_bfile_ops.htm#i1049679">"Supported Environments for BFILE APIs"</a></div>
+<p>Note that the <code>BFILE</code> data type stores unstructured <span class="italic">binary</span> <span class="italic">data</span> in operating system files outside the database. A <code>BFILE</code> column or attribute stores a file <span class="italic">locator</span> that points to a server-side external file containing the data.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+A particular file to be loaded as a <code>BFILE</code> does not have to actually exist at the time of loading.</div>
+<p>SQL*Loader assumes that the necessary <code>DIRECTORY</code> objects have been created.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+See <a href="adlob_bfile_ops.htm#i1006270">"Directory Objects"</a> and the sections following it for more information on creating directory objects.</div>
+<p>A control file field corresponding to a <code>BFILE</code> column consists of column name followed by the <code>BFILE</code> directive.</p>
+<p>The <code>BFILE</code> directive takes as arguments a <code>DIRECTORY</code> object name followed by a <code>BFILE</code> name. Both of these can be provided as string constants, or they can be dynamically sourced through some other field.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SUTIL" href="../../server.112/e22490/toc.htm"><span class="italic">Oracle Database Utilities</span></a> for details on SQL*Loader syntax.</div>
+<p>The following two examples illustrate the loading of <code>BFILES</code>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You may be required to set up the following data structures for certain examples to work (you are prompted for the password):
+<pre>
+CONNECT system
+Enter password:
+Connected.
+GRANT CREATE ANY DIRECTORY to samp; 
+CONNECT samp
+Enter password:
+Connected.
+CREATE OR REPLACE DIRECTORY adgraphic_photo as '/tmp';
+CREATE OR REPLACE DIRECTORY adgraphic_dir as '/tmp';
+</pre></div>
+<p>In the following example only the file name is specified dynamically.</p>
+<p>Control file:</p>
+<pre>
+LOAD DATA
+INFILE sample9.dat
+INTO TABLE Print_media
+FIELDS TERMINATED BY ','
+(product_id  INTEGER EXTERNAL(6),
+ FileName    FILLER CHAR(30),
+ ad_graphic  BFILE(CONSTANT "modem_graphic_2268_21001", FileName))
+</pre>
+<p>Data file:</p>
+<pre>
+007, modem_2268.jpg,
+008, monitor_3060.jpg,
+009, keyboard_2056.jpg,
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+<code>product_ID</code> defaults to (255) if a size is not specified. It is mapped to the file names in the data file. <code>ADGRAPHIC_PHOTO</code> is the directory where all files are stored. <code>ADGRAPHIC_DIR</code> is a <code>DIRECTORY</code> object created previously.</div>
+<p>In the following example, the <code>BFILE</code> and the <code>DIRECTORY</code> object are specified dynamically.</p>
+<p>Control file:</p>
+<pre>
+LOAD DATA
+INFILE sample10.dat
+INTO TABLE Print_media
+FIELDS TERMINATED BY ','
+(
+ product_id INTEGER EXTERNAL(6),
+ ad_graphic BFILE (DirName, FileName),
+ FileName  FILLER CHAR(30),
+ DirName   FILLER CHAR(30)
+)
+</pre>
+<p>Data file:</p>
+<pre>
+007,monitor_3060.jpg,ADGRAPHIC_PHOTO,
+008,modem_2268.jpg,ADGRAPHIC_PHOTO,
+009,keyboard_2056.jpg,ADGRAPHIC_DIR,
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+<code>DirName</code> <code>FILLER</code> <code>CHAR</code> <code>(30)</code> is mapped to the data file field containing the directory name corresponding to the file being loaded.</div>
+</div>
+<!-- class="sect2" -->
+<div id="ADLOB45154" class="sect2"><a id="sthref68"></a>
+<h3 class="sect2">Using Oracle <a id="sthref69"></a>Data Pump to Transfer LOB Data</h3>
+<p>You can use Oracle Data Pump to transfer LOB data from one database to another.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+For details on using Oracle Data Pump, refer to the <a class="olink SUTIL" href="../../server.112/e22490/toc.htm"><span class="italic">Oracle Database Utilities</span></a> guide.</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1009688"></a>
+<div id="ADLOB45155" class="sect1">
+<h2 class="sect1"><span class="bold">Managing Temporary LOBs</span></h2>
+<p>The database keeps track of temporary LOBs in each session, and provides a <code>v$</code> view called <a id="sthref70"></a><code>v$temporary_lobs</code>. From the session, the application can determine which user owns the temporary LOB. As a database administrator, you can use this view to monitor and guide any emergency cleanup of temporary space used by temporary LOBs.</p>
+<div id="ADLOB45156" class="sect2"><a id="sthref71"></a>
+<h3 class="sect2">Managing Temporary Tablespace for Temporary LOBs</h3>
+<p>Temporary tablespace is used to store temporary LOB data. As a database administrator you control data storage resources for temporary LOB data by controlling user access to temporary tablespaces and by the creation of different temporary tablespaces.</p>
+<div class="infoboxnotealso">
+<p class="notep1"><span class="bold">See Also</span>:</p>
+Refer to the <a class="olink ADMIN" href="../../server.112/e25494/toc.htm"><span class="italic">Oracle Database Administrator's Guide</span></a> for details on managing temporary tablespaces.</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1009689"></a>
+<div id="ADLOB45157" class="sect1">
+<h2 class="sect1"><span class="bold">Managing BFILEs</span></h2>
+<p>This section describes administrative tasks for managing databases that contain <code>BFILE</code>s.</p>
+<a id="i1006554"></a>
+<div id="ADLOB45158" class="sect2">
+<h3 class="sect2">Rules for Using <a id="sthref72"></a><a id="sthref73"></a><a id="sthref74"></a>Directory Objects and <a id="sthref75"></a><a id="sthref76"></a><a id="sthref77"></a><a id="sthref78"></a><a id="sthref79"></a><a id="sthref80"></a>BFILEs</h3>
+<p>When creating a directory object or <code>BFILE</code>s, ensure that the following conditions are met:</p>
+<ul>
+<li>
+<p>The operating system file must not be a symbolic or hard link.</p>
+</li>
+<li>
+<p>The operating system directory path named in the Oracle DIRECTORY object must be an existing operating system directory path.</p>
+</li>
+<li>
+<p>The operating system directory path named in the Oracle DIRECTORY object should not contain any symbolic links in its components.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="i1006564"></a>
+<div id="ADLOB45159" class="sect2">
+<h3 class="sect2"><a id="sthref81"></a>Setting Maximum Number of Open BFILEs</h3>
+<p><a id="sthref82"></a><a id="sthref83"></a>A limited number of <code>BFILE</code>s can be open simultaneously in each session. The initialization parameter, <code>SESSION_<a id="sthref84"></a>MAX_OPEN_FILES</code> defines an upper limit on the number of simultaneously open files in a session.</p>
+<p>The default value for this parameter is 10. That is, you can open a maximum of 10 files at the same time in each session if the default value is used. If you want to alter this limit, then the database administrator can change the value of this parameter in the <code>init.ora</code> file<span class="bold">.</span> For example:</p>
+<pre>
+SESSION_MAX_OPEN_FILES=20
+</pre>
+<p>If the number of unclosed files reaches the <code>SESSION_MAX_OPEN_FILES</code> value, then you cannot open additional files in the session. To close all open files, use the <code>DBMS_LOB.FILECLOSEALL</code> call.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006574"></a>
+<div id="ADLOB45160" class="sect1">
+<h2 class="sect1">Changing Tablespace Storage for a LOB</h2>
+<p>As the database administrator, you can use the following techniques to change the default storage for a LOB after the table has been created:</p>
+<ul>
+<li>
+<p><span class="bold">Using ALTER TABLE... MODIFY</span>: You can change LOB tablespace storage as follows:</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+<ul>
+<li>
+<p>The <code>ALTER TABLE</code> syntax for modifying an existing LOB column uses the <code>MODIFY LOB</code> clause, not the <code>LOB...STORE AS</code> clause. The <code>LOB...STORE AS</code> clause is only for newly added LOB columns.</p>
+</li>
+<li>
+<p>There are two kinds of LOB storage clauses: <code>LOB_storage_clause</code> and <code>modify_LOB_storage_clause</code>. In the <code>ALTER TABLE MODIFY LOB</code> statement, you can only specify the <code>modify_LOB_storage_clause</code>.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+<pre>
+ALTER TABLE test MODIFY 
+  LOB (lob1)
+    STORAGE  (
+    NEXT         4M
+    MAXEXTENTS   100
+    PCTINCREASE  50
+            )
+</pre>
+<ul>
+<li>
+<p><span class="bold">Using ALTER TABLE... MOVE</span>: You can also use the MOVE clause of the ALTER TABLE statement to change LOB tablespace storage. For example:</p>
+</li>
+</ul>
+<pre>
+ALTER TABLE test MOVE
+    TABLESPACE tbs1
+    LOB (lob1, lob2)
+    STORE AS (
+          TABLESPACE tbs2
+          DISABLE STORAGE IN ROW);
+</pre></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment898">
+<tr>
+<td class="cellalignment907">
+<table class="cellalignment903">
+<tr>
+<td class="cellalignment902"><a href="adlob_working.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment902"><a href="part_securef.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1996, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment909">
+<table class="cellalignment901">
+<tr>
+<td class="cellalignment902"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment902"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment902"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment902"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment902"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment902"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

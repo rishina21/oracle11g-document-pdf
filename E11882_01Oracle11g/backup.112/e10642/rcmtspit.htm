@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Performing RMAN Tablespace Point-in-Time Recovery (TSPITR)</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1054" />
+<meta name="description" content="A guide to backup and recovery of Oracle databases, including RMAN backup and recovery, RMAN data transfer, Oracle Flashback Technology, and user-managed backup and recovery" />
+<meta name="dcterms.created" content="2015-05-13T14:1:11Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Backup and Recovery User's Guide" />
+<meta name="dcterms.identifier" content="E10642-08" />
+<meta name="dcterms.isVersionOf" content="BRADV" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2003, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="rcmadvre.htm" title="Previous" type="text/html" />
+<link rel="Next" href="part_tun.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10642.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">33/47</span> <!-- End Header -->
+<div id="BRADV009" class="chapter"><a id="CIHGGAFH"></a> <a id="i1014116"></a>
+<h1 class="chapter"><span class="secnum">21</span> Performing RMAN Tablespace Point-in-Time Recovery (TSPITR)</h1>
+<p>This chapter explains how to perform RMAN tablespace point-in-time recovery. This chapter contains the following sections:</p>
+<ul>
+<li>
+<p><a href="#CHDECDJD">Overview of RMAN TSPITR</a></p>
+</li>
+<li>
+<p><a href="#CHDHBAFJ">TSPITR Restrictions, Special Cases, and Limitations</a></p>
+</li>
+<li>
+<p><a href="#i1015064">Planning and Preparing for TSPITR</a></p>
+</li>
+<li>
+<p>Running RMAN TSPITR:</p>
+<ul>
+<li>
+<p><a href="#i1035361">Performing Fully Automated RMAN TSPITR</a></p>
+</li>
+<li>
+<p><a href="#i1035362">Overriding Defaults for RMAN TSPITR with an RMAN-Managed Auxiliary Instance</a></p>
+</li>
+<li>
+<p><a href="#i1034676">Performing RMAN TSPITR Using Your Own Auxiliary Instance</a></p>
+</li>
+</ul>
+</li>
+<li>
+<p><a href="#i1035377">Troubleshooting RMAN TSPITR</a></p>
+</li>
+</ul>
+<a id="CHDECDJD"></a>
+<div id="BRADV89787" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Overview of RMAN TSPITR</h2>
+<p>To use RMAN <a href="glossary.htm#i433562"><span class="xrefglossterm">tablespace point-in-time recovery (TSPITR)</span></a> effectively, it is helpful to understand what types of problems it can resolve, its components, what RMAN does during TSPITR, and the various limitations and restrictions on when and how it can be run. This section explains the basic concepts, preparatory tasks, and modes of running RMAN TSPITR.</p>
+<div id="BRADV89788" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1659"></a>
+<h3 class="sect2">Purpose of RMAN TSPITR</h3>
+<p>Recovery Manager (RMAN) TSPITR enables quick recovery of one or more tablespaces in a database to an earlier time without affecting the rest of the tablespaces and objects in the database.</p>
+<p><a id="sthref1660"></a>RMAN TSPITR is most useful for the following situations:</p>
+<ul>
+<li>
+<p>To recover a logical database to a point different from the rest of the physical database, when multiple logical databases exist in separate tablespaces of one physical database. For example, you maintain logical databases in the <code dir="ltr">orders</code> and <code dir="ltr">personnel</code> tablespaces. An incorrect batch job or data manipulation language (DML) statement corrupts the data in only one tablespace.</p>
+</li>
+<li>
+<p>To recover data lost after data definition language (DDL) operations that change the structure of tables. You cannot use Flashback Table to rewind a table to before the point of a structural change such as a truncate table operation.</p>
+</li>
+<li>
+<p>To recover a table after it has been dropped with the <code dir="ltr">PURGE</code> option.</p>
+</li>
+<li>
+<p>To recover from the logical corruption of a table.</p>
+</li>
+<li>
+<p><a id="sthref1661"></a>To recover dropped tablespaces. In fact, RMAN can perform TSPITR on dropped tablespaces even when a recovery catalog is not used.</p>
+</li>
+</ul>
+<p>You can also use Flashback Database to rewind data, but you must rewind the entire database rather than just a subset. Also, unlike TSPITR, the Flashback Database feature necessitates the overhead of maintaining flashback logs. The point in time to which you can flash back the database is more limited than the TSPITR window, which extends back to your earliest recoverable backup.</p>
+</div>
+<!-- class="sect2" -->
+<div id="BRADV160" class="sect2"><a id="sthref1662"></a>
+<h3 class="sect2">Basic Concepts of RMAN TSPITR</h3>
+<p>The following sections explain RMAN TSPITR fundamentals:</p>
+<ul>
+<li>
+<p><a href="#CIHHFBDI">Common Terms</a></p>
+</li>
+<li>
+<p><a href="#CIHDCFFD">Modes of RMAN TSPITR</a></p>
+</li>
+<li>
+<p><a href="#CIHEHEEB">How RMAN TSPITR Works With an RMAN-Managed Auxiliary Instance</a></p>
+</li>
+</ul>
+<a id="CIHHFBDI"></a>
+<div id="BRADV371" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Common Terms</h4>
+<p><a href="#CIHEAFBF">Table 21-1</a> defines some common entities that are used by RMAN TSPITR.</p>
+<div id="BRADV372" class="tblformal">
+<p class="titleintable"><a id="sthref1663"></a><a id="CIHEAFBF"></a>Table 21-1 RMAN TSPITR Entities</p>
+<table class="cellalignment1940" title="RMAN TSPITR Entities" summary="TSPITR terms" dir="ltr">
+<thead>
+<tr class="cellalignment1934">
+<th class="cellalignment1941" id="r1c1-t2">Name</th>
+<th class="cellalignment1941" id="r1c2-t2">Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r2c1-t2" headers="r1c1-t2">
+<p>Target instance</p>
+</td>
+<td class="cellalignment1942" headers="r2c1-t2 r1c2-t2">
+<p>Contains the tablespace to be recovered to the target time</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r3c1-t2" headers="r1c1-t2">
+<p>Target time</p>
+</td>
+<td class="cellalignment1942" headers="r3c1-t2 r1c2-t2">
+<p>Point in time or SCN of the tablespace after TSPITR completes</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r4c1-t2" headers="r1c1-t2">
+<p>Auxiliary instance</p>
+</td>
+<td class="cellalignment1942" headers="r4c1-t2 r1c2-t2">
+<p>A database instance used in the recovery process to perform the work of recovery. The auxiliary instance has other files associated with it. See auxiliary set for a complete list.</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r5c1-t2" headers="r1c1-t2">
+<p>Auxiliary destination</p>
+</td>
+<td class="cellalignment1942" headers="r5c1-t2 r1c2-t2">
+<p>An optional disk location that RMAN uses to temporarily store the auxiliary set files. The auxiliary destination is used only with an RMAN-managed auxiliary instance. Specifying an auxiliary destination with a user-managed auxiliary instance results in an error.</p>
+<p>All references to auxiliary destination in this chapter assume use of an RMAN-managed auxiliary instance.</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r6c1-t2" headers="r1c1-t2">
+<p>Recovery set</p>
+</td>
+<td class="cellalignment1942" headers="r6c1-t2 r1c2-t2">
+<p>Data files in the tablespaces that you intend to recover</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r7c1-t2" headers="r1c1-t2">
+<p>Auxiliary set</p>
+</td>
+<td class="cellalignment1942" headers="r7c1-t2 r1c2-t2">
+<p>Data files required for TSPITR that are not part of the recovery set. The auxiliary set typically includes:</p>
+<ul>
+<li>
+<p>The <code dir="ltr">SYSTEM</code> and <code dir="ltr">SYSAUX</code> tablespaces.</p>
+</li>
+<li>
+<p>Data files containing rollback or undo segments from the target database instance.</p>
+</li>
+<li>
+<p>Temporary tablespaces.</p>
+</li>
+<li>
+<p>Control file from source database.</p>
+</li>
+<li>
+<p>Archived redo logs that must be restored to recover the auxiliary instance to specified point in time.</p>
+</li>
+<li>
+<p>Online redo logs of the auxiliary instance. These are not the same logs as the online redo logs from the source database. They are created when the auxiliary instance is opened with the <code dir="ltr">RESETLOGS</code> option.</p>
+</li>
+</ul>
+<p>The auxiliary set does not include the parameter file, password file, or associated network files.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" --></div>
+<!-- class="sect3" -->
+<a id="CIHDCFFD"></a>
+<div id="BRADV373" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Modes of RMAN TSPITR</h4>
+<p>You start RMAN TSPITR with the RMAN <code dir="ltr">RECOVER TABLESPACE</code> command. You have several options for running RMAN TSPITR. The difference between the various modes of operation corresponds to how much automation versus customization you require in your environment. There are three ways to run the utility:</p>
+<ul>
+<li>
+<p>Fully Automated (the default)</p>
+<p>In this mode, RMAN manages the entire TSPITR process including the auxiliary instance. You specify the tablespaces of the recovery set, an auxiliary destination, the target time, and you allow RMAN to manage all other aspects of TSPITR.</p>
+<p>The default mode is recommended unless you specifically need more control over the location of recovery set files after TSPITR, auxiliary set files during TSPITR, channel settings and parameters or some other aspect of your auxiliary instance. For more information, see <a href="#i1035361">"Performing Fully Automated RMAN TSPITR"</a>.</p>
+</li>
+<li>
+<p>Automated: RMAN-Managed Auxiliary Instance with User Settings</p>
+<p>You can override some defaults of RMAN TSPITR while still using an RMAN-managed auxiliary instance and destination. This variation of the default mode enables you to benefit from some built-in management that RMAN TSITR provides while being able to specify:</p>
+<ul>
+<li>
+<p>Location of auxiliary set or recovery set files</p>
+</li>
+<li>
+<p>Initialization parameters</p>
+</li>
+</ul>
+<p>For more information, see <a href="#i1035362">"Overriding Defaults for RMAN TSPITR with an RMAN-Managed Auxiliary Instance"</a>.</p>
+</li>
+<li>
+<p>Non-Automated: TSPITR and User-Managed Auxiliary Instance</p>
+<p>This mode of RMAN TSPITR requires you to set up and manage all aspects of the auxiliary instance and some aspects of the TSPITR process. This mode may be appropriate if, for example, you must allocate a different number of channels or change the channel parameters for your user-managed auxiliary instance.</p>
+<p>For more information, see <a href="#i1034676">"Performing RMAN TSPITR Using Your Own Auxiliary Instance"</a>.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<a id="CIHEHEEB"></a>
+<div id="BRADV374" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">How RMAN TSPITR Works With an RMAN-Managed Auxiliary Instance</h4>
+<p>Having selected tablespaces from the recovery set, an auxiliary destination and a target time, you are now ready to perform Fully Automated RMAN TSPITR (default). The automated mode of RMAN TSPITR shares many of these high-level processing steps.</p>
+<p>RMAN TSPITR automatically performs the following actions:</p>
+<ol>
+<li>
+<p>If the tablespaces in the recovery set have not been dropped, checks to see if they are self-contained by executing the <code dir="ltr">DBMS_TTS.TRANSPORT_SET_CHECK</code> for the recovery set tablespaces and then checking that the view <code dir="ltr">TRANSPORT_SET_VIOLATIONS</code> is empty. If the query returns rows, RMAN stops TSPITR processing. You must resolve any tablespace containment violations before TSPITR can proceed. <a href="#CHDFCCFH">Example 21-1</a> shows you how to set up and run the query before invoking RMAN TSPITR.</p>
+</li>
+<li>
+<p>Checks to see if a connection to a user-managed auxiliary instance was provided. If it is, then RMAN TSPITR uses it. If not, RMAN TSPITR creates the auxiliary instance, starts it, and connects to it.</p>
+</li>
+<li>
+<p>Takes the tablespaces to be recovered offline in the target database, if the tablespaces in the recovery set have not been dropped.</p>
+</li>
+<li>
+<p>Restores a backup control file from a point in time before the target time to the auxiliary instance.</p>
+</li>
+<li>
+<p>Restores the data files from the recovery set and the auxiliary set to the auxiliary instance.</p>
+<p>Files are restored either in the:</p>
+<ul>
+<li>
+<p>Locations that you specify for each file</p>
+</li>
+<li>
+<p>Original location of the file (for recovery set data files)</p>
+</li>
+<li>
+<p>Auxiliary destination (if you used the <code dir="ltr">AUXILIARY DESTINATION</code> argument of <code dir="ltr">RECOVER TABLESPACE</code> and an RMAN-managed auxiliary instance)</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Recovers the restored data files in the auxiliary instance to the specified time.</p>
+</li>
+<li>
+<p>Opens the auxiliary database with the <code dir="ltr">RESETLOGS</code> option.</p>
+</li>
+<li>
+<p>Makes the recovery set tablespaces read-only in the auxiliary instance.</p>
+</li>
+<li>
+<p>Exports the recovery set tablespaces from the auxiliary instance using the Data Pump utility to produce a transportable tablespace dump file.</p>
+</li>
+<li>
+<p>Shuts down the auxiliary instance.</p>
+</li>
+<li>
+<p>Drops the recovery set tablespaces from the target.</p>
+</li>
+<li>
+<p>Data Pump utility reads the transportable tablespace dump file and plugs the recovery set tablespaces into the target.</p>
+</li>
+<li>
+<p>Makes the tablespaces that were put in the target database read/write and immediately takes them offline.</p>
+</li>
+<li>
+<p>Deletes all auxiliary set files.</p>
+</li>
+</ol>
+<p>At this point, RMAN TSPITR has finished. The recovery set data files are returned to their contents at the specified point in time, and belong to the target database.</p>
+<p>The recovery set tablespaces are left offline for you to back up and then bring back online. These last steps follow Oracle's recommendation and best practice of backing up recovered tablespaces as soon as TSPITR completes.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDHBAFJ"></a>
+<div id="BRADV89790" class="sect1">
+<h2 class="sect1">TSPITR Restrictions, Special Cases, and Limitations</h2>
+<p>Some database problems cannot be resolved with TSPITR. The following list explains when you <span class="italic">cannot</span> perform TSPITR:</p>
+<ul>
+<li>
+<p>If there are no archived redo logs or if the database runs in <code dir="ltr">NOARCHIVELOG</code> mode.</p>
+</li>
+<li>
+<p>If TSPITR is used to recover a renamed tablespace to a point in time before it was renamed, you must use the previous name of the tablespace to perform the recovery operation.</p>
+<p>In this case when TSPITR completes, the target database contains two copies of the same tablespace, the original tablespace with the new name and the TSPITR tablespace with the old name. If this is not your goal, then you can drop the new tablespace with the new name.</p>
+</li>
+<li>
+<p>If constraints for the tables in tablespace <code dir="ltr">tbs1</code> are contained in tablespace <code dir="ltr">tbs2</code>, then you cannot recover <code dir="ltr">tbs1</code> without also recovering <code dir="ltr">tbs2</code>.</p>
+</li>
+<li>
+<p>If a table and its indexes are stored in different tablespaces, then the indexes must be dropped before performing TSPITR.</p>
+</li>
+<li>
+<p>You cannot use TSPITR to recover the current default tablespace.</p>
+</li>
+<li>
+<p>You cannot use TSPITR to recover tablespaces containing any of the following objects:</p>
+<ul>
+<li>
+<p>Objects with underlying objects (such as materialized views) or contained objects (such as partitioned tables) unless all of the underlying or contained objects are in the recovery set. Additionally, if the partitions of a partitioned table are stored in different tablespaces, then you must either drop the table before performing TSPITR or move all the partitions to the same tablespace before performing TSPITR.</p>
+</li>
+<li>
+<p>Undo or rollback segments</p>
+</li>
+<li>
+<p>Oracle8-compatible advanced queues with multiple recipients</p>
+</li>
+<li>
+<p>Objects owned by the user <code dir="ltr">SYS</code>. Examples of these types of objects are: PL/SQL, Java classes, callout programs, views, synonyms, users, privileges, dimensions, directories, and sequences.</p>
+</li>
+</ul>
+</li>
+</ul>
+<a id="CIHEAIEJ"></a>
+<div id="BRADV89791" class="sect2">
+<h3 class="sect2">Limitations of TSPITR</h3>
+<p>After TSPITR completes, RMAN recovers the data files in the recovery set to the target time. Note the following special cases:</p>
+<ul>
+<li>
+<p>TSPITR does not recover query optimizer statistics for recovered objects.You must gather new statistics after TSPITR completes.</p>
+</li>
+<li>
+<p>If you run TSPITR on a tablespace and bring the tablespace online at time <span class="italic">t</span>, then backups of the tablespace created before time <span class="italic">t</span> are no longer usable for recovery with a current control file. You cannot use the current control file to recover the database to any time less than or equal to <span class="italic">t</span>.</p>
+</li>
+<li>
+<p>If one or more data files in the recovery set have Oracle Managed File (OMF) names and the compatibility in the target database is set to version 10.1 or earlier, RMAN cannot reuse the data file. This restriction is true even if no <code dir="ltr">SET NEWNAME</code> command is provided for the data file. A new OMF name is created for the recovery set data file. This action temporarily doubles the space requirements for the data file. This is because <code dir="ltr">DB_CREATE_FILE_DEST</code> has two copies of the data file (the original data file and the one used by TSPITR) until the tablespace is dropped in the target and the original data file is deleted.</p>
+</li>
+</ul>
+<p>RMAN uses the transportable tablespaces functionality to perform TSPITR. Therefore, any limitations on transportable tablespaces are also applicable to TSPITR.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ADMIN13896" href="http://www.oracle.com/pls/topic/lookup?ctx=db112&amp;id=ADMIN13896"><span class="italic">Oracle Database Administrator's Guide</span></a> for information about limitations on transportable tablespaces</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1010280"></a>
+<div id="BRADV89792" class="sect2">
+<h3 class="sect2">Special Considerations When Not Using a Recovery Catalog<a id="sthref1664"></a></h3>
+<p>You should be aware of following precautions:</p>
+<ul>
+<li>
+<p>Because RMAN has no historical record of the undo in the control file, RMAN assumes that the current set of tablespaces with rollback or undo segments were the same set present at the time when recovery was performed. If the tablespace set has changed since that time, then the current rollback or undo segments were the same segments present at the time to which recovery is performed. If the undo segments have changed since that time, then you can use <code dir="ltr">UNDO TABLESPACE</code> to indicate the correct set of tablespaces with undo at the point in time where the tablespaces are being recovered.</p>
+</li>
+<li>
+<p>TSPITR to a time that is too old may not succeed if Oracle Database has reused the control file records for needed backups. (In planning your database, set the <code dir="ltr">CONTROL_FILE_RECORD_KEEP_TIME</code> initialization parameter to a value large enough to ensure that control file records needed for TSPITR are kept.)</p>
+</li>
+<li>
+<p>To rerun TSPITR when you are not using a recovery catalog, you must first drop the tablespace to be used by TSPITR from the target database.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1015064"></a>
+<div id="BRADV161" class="sect1">
+<h2 class="sect1">Planning and Preparing for TSPITR</h2>
+<p><a id="sthref1665"></a>This section assumes that you have read <a href="#CHDHBAFJ">"TSPITR Restrictions, Special Cases, and Limitations"</a>. You must complete the following steps when preparing for TSPITR:</p>
+<ul>
+<li>
+<p><a href="#i1013426">Step 1: Select the Right Target Time for TSPITR</a></p>
+</li>
+<li>
+<p><a href="#i1010246">Step 2: Determine the Recovery Set</a></p>
+</li>
+<li>
+<p><a href="#i1009484">Step 3: Identify and Preserve Objects That Are Lost After TSPITR</a></p>
+</li>
+</ul>
+<a id="i1013426"></a>
+<div id="BRADV910" class="sect2">
+<h3 class="sect2">Step 1: Select the Right Target Time for TSPITR</h3>
+<p>It is extremely important that you choose the right target time or SCN for your TSPITR. As noted in <a href="#CHDHBAFJ">"TSPITR Restrictions, Special Cases, and Limitations"</a>, after you bring a tablespace online after TSPITR, you cannot use any backup from a time earlier than the moment you brought the tablespace online.</p>
+<p>If you have a recovery catalog, then you can perform repeated TSPITR operations to different target times because the catalog contains tablespace history information. If RMAN uses only a control file, however, repeated TSPITR is only possible after dropping the tablespace because the control file does not have the tablespace history. In this case, RMAN only knows about the current set of tablespaces. The tablespace on which TSPITR was performed has a creation time equal to the time it was brought online.</p>
+<p>To investigate past states of your data to identify the target time for TSPITR, you can use Flashback Query, Oracle Transaction Query, and Flashback Version Query to find the point in time when unwanted database changes occurred.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ADFNS1008" href="../../appdev.112/e41502/adfns_flashback.htm#ADFNS1008"><span class="italic">Oracle Database Advanced Application Developer's Guide</span></a> for more information on Flashback Query, Flashback Transaction Query, and Flashback Version Query</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1010246"></a>
+<div id="BRADV89793" class="sect2">
+<h3 class="sect2">Step 2: Determine the Recovery Set</h3>
+<p>Initially, your recovery set includes the data files for the tablespaces that you intend to recover. However, if objects in the tablespaces that you need have relationships (such as constraints) to objects in other tablespaces, then you must account for these relationships before you can perform TSPITR. You have the following choices when faced with such a relationship:</p>
+<ul>
+<li>
+<p>Add the tablespace including the related objects to your recovery set</p>
+</li>
+<li>
+<p>Remove the relationship</p>
+</li>
+<li>
+<p>Suspend the relationship for the duration of TSPITR</p>
+</li>
+</ul>
+<div id="BRADV89794" class="sect3"><a id="sthref1666"></a>
+<h4 class="sect3">Identify and Resolve Dependencies on the Primary Database</h4>
+<p>RMAN TSPITR requires that the tablespace be self-contained and that no SYS -owned objects reside in the tablespace. You can use the <code dir="ltr">DBMS_TTS.TRANSPORT_SET_CHECK</code> procedure to locate objects outside the tablespace and identify relationships between objects that span the recovery set boundaries. If the <code dir="ltr">TRANSPORT_SET_VIOLATIONS</code> view returns rows, you must investigate and correct the problem according to the choices mentioned earlier in this step.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If one or more of the tablespaces in the recovery set have been dropped, RMAN TSPITR cannot run the procedure <code dir="ltr">DBMS_TTS.TRANSPORT_SET_CHECK</code>. In this case, <code dir="ltr">DBMS_TTS.TRANSPORT_SET_CHECK</code> is run when the Data Pump export of the auxiliary instance occurs. Just like RMAN TSPITR, the export operation fails if it encounters any tablespaces that are not self-contained.</div>
+<p>Record all actions performed during this step so that you can re-create any suspended or removed relationships after completing TSPITR. Proceed with TSPITR <span class="italic">only</span> when the <code dir="ltr">TRANSPORT_SET_VIOLATIONS</code> view is empty for the tablespaces in the recovery set.</p>
+<p>The query in <a href="#CHDFCCFH">Example 21-1</a> illustrates how to use the <code dir="ltr">DBMS_TTS.TRANSPORT_SET_CHECK</code> procedure for an initial recovery set consisting of tablespaces <code dir="ltr">tools</code> and <code dir="ltr">users</code>. It queries the transportable tablespace violations table to manage any dependencies. No rows are returned from this query when all dependencies are managed.</p>
+<div id="BRADV375" class="example">
+<p class="titleinexample"><a id="CHDFCCFH"></a>Example 21-1 Querying DBMS_TTS.TRANSPORT_SET_CHECK for a Subset of Tablespaces</p>
+<pre dir="ltr">
+BEGIN
+   DBMS_TTS.TRANSPORT_SET_CHECK('USERS,TOOLS', TRUE,TRUE);
+END;
+/
+SELECT * FROM  TRANSPORT_SET_VIOLATIONS;
+</pre></div>
+<!-- class="example" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink REFRN" href="../../server.112/e40402/toc.htm"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information about the <code dir="ltr">DBMS_TTS.TRANSPORT_SET_CHECK</code> procedure and corresponding view</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1009484"></a>
+<div id="BRADV89795" class="sect2">
+<h3 class="sect2">Step 3: Identify and Preserve Objects That Are Lost After TSPITR</h3>
+<p>When you perform RMAN TSPITR on a tablespace, objects created after the target recovery time are lost. You can preserve such objects after they are identified by exporting them before TSPITR with the Data Pump Export utility and reimporting them afterward with Data Pump Import.</p>
+<p>To determine which objects are lost in TSPITR, query the <code dir="ltr">TS_PITR_OBJECTS_TO_BE_DROPPED</code> view on the primary database. <a href="#g1040808">Table 21-2</a> describes the contents of the view.</p>
+<div id="BRADV376" class="tblruleformal">
+<p class="titleintable"><a id="sthref1667"></a><a id="g1040808"></a>Table 21-2 TS_PITR_OBJECTS_TO_BE_DROPPED View</p>
+<table class="cellalignment1945" title="TS_PITR_OBJECTS_TO_BE_DROPPED View " summary="This table describes columns in the TS_PITR_OBJECTS_TO_BE_DROPPED view." dir="ltr">
+<thead>
+<tr class="cellalignment1934">
+<th class="cellalignment1941" id="r1c1-t7">Column Name</th>
+<th class="cellalignment1941" id="r1c2-t7">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r2c1-t7" headers="r1c1-t7">
+<p><code dir="ltr">OWNER</code></p>
+</td>
+<td class="cellalignment1942" headers="r2c1-t7 r1c2-t7">
+<p>Owner of the object to be dropped</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r3c1-t7" headers="r1c1-t7">
+<p><code dir="ltr">NAME</code></p>
+</td>
+<td class="cellalignment1942" headers="r3c1-t7 r1c2-t7">
+<p>The name of the object that is lost by undergoing TSPITR</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r4c1-t7" headers="r1c1-t7">
+<p><code dir="ltr">CREATION_TIME</code></p>
+</td>
+<td class="cellalignment1942" headers="r4c1-t7 r1c2-t7">
+<p>Creation time stamp for the object</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r5c1-t7" headers="r1c1-t7">
+<p><code dir="ltr">TABLESPACE_NAME</code></p>
+</td>
+<td class="cellalignment1942" headers="r5c1-t7 r1c2-t7">
+<p>Name of the tablespace containing the object</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformal" -->
+<p>Filter the view for objects whose <code dir="ltr">CREATION_TIME</code> is after the target time for TSPITR. For example, with a recovery set consisting of <code dir="ltr">users</code> and <code dir="ltr">tools</code>, and a recovery point in time of November 2, 2007, 7:03:11 am, issue the statement shown in <a href="#CHDJAEFG">Example 21-2</a>.</p>
+<div id="BRADV377" class="example">
+<p class="titleinexample"><a id="CHDJAEFG"></a>Example 21-2 Querying TS_PITR_OBJECTS_TO_BE_DROPPED</p>
+<pre dir="ltr">
+SELECT OWNER, NAME, TABLESPACE_NAME, 
+       TO_CHAR(CREATION_TIME, 'YYYY-MM-DD:HH24:MI:SS') 
+       FROM TS_PITR_OBJECTS_TO_BE_DROPPED 
+WHERE TABLESPACE_NAME IN ('USERS','TOOLS') 
+AND CREATION_TIME &gt; TO_DATE('02-NOV-07:07:03:11','YY-MON-DD:HH24:MI:SS')
+ORDER BY TABLESPACE_NAME, CREATION_TIME;
+</pre></div>
+<!-- class="example" -->
+<p>The <code dir="ltr">TO_CHAR</code> and <code dir="ltr">TO_DATE</code> functions are used to avoid issues with different national date formats. Of course, you can use local date formats in your own work.</p>
+<p>Alternatively, if you have the SCN of the tablespaces, you can use conversion functions to determine the time stamp associated with the SCN and the objects that are dropped. For example, if the SCN to recover tablespaces <code dir="ltr">users</code> and <code dir="ltr">tools</code> is 1645870, use the statement outlined in <a href="#CIHJBAFB">Example 21-3</a> to determine the objects that are dropped.</p>
+<div id="BRADV378" class="example">
+<p class="titleinexample"><a id="CIHJBAFB"></a>Example 21-3 Using SCN and TS_PITR_OBJECTS_TO_BE_DROPPED</p>
+<pre dir="ltr">
+SELECT OWNER, NAME, TABLESPACE_NAME,
+       TO_CHAR(CREATION_TIME,'YYYY-MM-DD:HH24:MI:SS')
+       FROM TS_PITR_OBJECTS_TO_BE_DROPPED
+WHERE TABLESPACE_NAME IN ('USERS','TOOLS')
+AND CREATION_TIME &gt; TO_DATE(TO_CHAR(SCN_TO_TIMESTAMP(1645870),
+'MM/DD/YYYY HH24:MI:SS'),
+'MM/DD/YYYY HH24:MI:SS')
+ORDER BY TABLESPACE_NAME, CREATION_TIME;
+</pre></div>
+<!-- class="example" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink REFRN" href="../../server.112/e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for more information about the <code dir="ltr">TS_PITR_OBJECTS_TO_BE_DROPPED</code> view</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1035361"></a>
+<div id="BRADV89796" class="sect1">
+<h2 class="sect1">Performing Fully Automated RMAN TSPITR</h2>
+<p>In the default mode, RMAN bases as much of the configuration for TSPITR as possible on the target database. During TSPITR, the recovery set data files are written in their current locations on the target database (For OMF files, see <a href="#CIHEAIEJ">"Limitations of TSPITR"</a>). The same channel configurations for the target database are used on the auxiliary instance when restoring files from backup. Auxiliary set data files and other auxiliary instance files, however, are stored in the auxiliary destination.</p>
+<p>Use the <code dir="ltr">AUXILIARY DESTINATION</code> parameter to set a location for RMAN to use for the auxiliary set data files. The auxiliary destination must be a location on disk with enough space to hold auxiliary set data files. Even if you use other techniques to rename some or all of the auxiliary set data files, specifying an <code dir="ltr">AUXILIARY DESTINATION</code> parameter provides a default location for auxiliary set data files for which names are not specified. TSPITR does not fail if you inadvertently omit some names of the auxiliary set data files.</p>
+<p>To perform fully automated RMAN TSPITR, the user performing TSPITR should be able to connect as <code dir="ltr">SYSDBA</code> using operating system authentication.</p>
+<p class="subhead2"><a id="BRADV379"></a>To perform fully automated RMAN TSPITR:</p>
+<ol>
+<li>
+<p>Review the information in <a href="#CHDHBAFJ">"TSPITR Restrictions, Special Cases, and Limitations"</a>.</p>
+</li>
+<li>
+<p>Perform the tasks in <a href="#i1015064">"Planning and Preparing for TSPITR"</a>.</p>
+</li>
+<li>
+<p>Start an RMAN session on the target database and, if applicable, connect to a recovery catalog.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Do not connect to an auxiliary instance when starting the RMAN client for automated TSPITR. If RMAN is connected to an auxiliary instance when you run <code dir="ltr">RECOVER TABLESPACE</code>, then RMAN assumes that you are trying to manage your own auxiliary instance, as described in <a href="#i1034676">"Performing RMAN TSPITR Using Your Own Auxiliary Instance"</a>, and tries to use the connected auxiliary for TSPITR.</div>
+</li>
+<li>
+<p>Configure any channels required for TSPITR on the target instance.</p>
+<p>The auxiliary instance uses the same channel configuration as the target instance when performing TSPITR.</p>
+</li>
+<li>
+<p>Run the <code dir="ltr">RECOVER TABLESPACE</code> command, specifying both the <code dir="ltr">UNTIL</code> clause and the <code dir="ltr">AUXILIARY DESTINATION</code> parameter.</p>
+<p><a href="#CHDCDFCG">Example 21-4</a> returns the <code dir="ltr">users</code> and <code dir="ltr">tools</code> tablespaces to the end of log sequence number 1299, and stores the auxiliary set files in the <code dir="ltr">/disk1/auxdest</code> directory.</p>
+<div id="BRADV380" class="example">
+<p class="titleinexample"><a id="CHDCDFCG"></a>Example 21-4 Performing TSPITR on Two Tablespaces</p>
+<pre dir="ltr">
+RECOVER TABLESPACE users, tools 
+  UNTIL LOGSEQ 1300 THREAD 1
+  AUXILIARY DESTINATION '/disk1/auxdest';
+</pre></div>
+<!-- class="example" -->
+<p>The next step depends on the results of the <code dir="ltr">RECOVER</code> command:</p>
+<ul>
+<li>
+<p>If no error occurs during TSPITR, then proceed to Step <a href="#CHDCGEEF">6</a>.</p>
+<p>The tablespaces are taken offline by RMAN, restored from backup and recovered to the desired point in time on the auxiliary instance, and then reimported to the target database. The tablespaces are left offline. All auxiliary set data files and other auxiliary instance files are cleaned up from the auxiliary destination.</p>
+</li>
+<li>
+<p>If an error occurs during TSPITR, then proceed to <a href="#i1035377">"Troubleshooting RMAN TSPITR"</a>.</p>
+</li>
+</ul>
+</li>
+<li id="CHDCGEEF">
+<p>If TSPITR completes successfully, then back up the recovered tablespaces before bringing them online.</p>
+<p>For example, enter the following command:</p>
+<pre dir="ltr">
+BACKUP TABLESPACE users, tools;
+</pre>
+<p>After you perform TSPITR on a tablespace, you can no longer use previous backups of that tablespace once TSPITR successfully completes. If you use the recovered tablespaces without taking a backup, then you run your database without a usable backup of these tablespaces.</p>
+</li>
+<li>
+<p>Bring the tablespaces back online.</p>
+<p>For example, enter the following command:</p>
+<pre dir="ltr">
+RMAN&gt; SQL "ALTER TABLESPACE users, tools ONLINE";
+</pre>
+<p>Your recovered tablespaces are now ready for use.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect1" -->
+<a id="i1035362"></a>
+<div id="BRADV89797" class="sect1">
+<h2 class="sect1">Overriding Defaults for RMAN TSPITR with an RMAN-Managed Auxiliary Instance</h2>
+<p>You can customize the following aspects of RMAN TSPITR while still mostly following the procedure described in <a href="#i1035361">"Performing Fully Automated RMAN TSPITR"</a>:</p>
+<ul>
+<li>
+<p>Rename or relocate your recovery set data files so that the data files making up the recovered tablespaces are not stored in the original locations after TSPITR. This may be necessary if the disk that originally contained the tablespace is not usable.</p>
+<p>This task is described in <a href="#i1037419">"Renaming TSPITR Recovery Set Data Files with SET NEWNAME"</a>.</p>
+</li>
+<li>
+<p>Specify a location other than the auxiliary destination for some or all auxiliary set data files. You might choose this option if no single location on disk has enough space for all auxiliary set files.</p>
+<p>This task is described in <a href="#i1019430">"Naming TSPITR Auxiliary Set Data Files"</a>.</p>
+</li>
+<li>
+<p>Rename files in an Oracle Managed Files format.</p>
+<p>This task is described in <a href="#CIHJECED">"Considerations When Renaming OMF Auxiliary Set Files in TSPITR"</a>.</p>
+</li>
+<li>
+<p>Set up image copy backups of your auxiliary set data files in advance to avoid having to restore data files during TSPITR.</p>
+<p>This task is described in <a href="#i1035589">"Using Image Copies for Faster RMAN TSPITR Performance"</a>.</p>
+</li>
+<li>
+<p>Customize initialization parameters for your RMAN-managed auxiliary instance.</p>
+<p>This task is described in <a href="#i1034656">"Customizing Initialization Parameters for the Automatic Auxiliary Instance in TSPITR"</a>.</p>
+</li>
+</ul>
+<a id="i1037419"></a>
+<div id="BRADV89799" class="sect2">
+<h3 class="sect2">Renaming TSPITR Recovery Set Data Files with SET NEWNAME</h3>
+<p>You may not want the recovery set data files restored and recovered in their original locations. The <code dir="ltr">SET NEWNAME</code> command enables you to specify a new destination. When you specify a new destination for the recovery set, RMAN does not remove the original data files of the tablespaces.</p>
+<p>To specify new recovery set file names, create a <code dir="ltr">RUN</code> block and use <code dir="ltr">SET NEWNAME</code> commands within it. Be sure to assign names that do not conflict with each other or with the names of your current data files. <a href="#CHDBDCCA">Example 21-5</a> illustrates the basic technique.</p>
+<div id="BRADV381" class="example">
+<p class="titleinexample"><a id="CHDBDCCA"></a>Example 21-5 Renaming Recovery Set Files</p>
+<pre dir="ltr">
+RUN
+{
+   .
+   .
+   .
+   SET NEWNAME FOR DATAFILE '<span class="italic">ORACLE_HOME</span>/oradata/trgt/users01.dbf'
+     TO '/newfs/users01.dbf';
+<span class="italic">   ...other SET NEWNAME commands...</span>
+   RECOVER TABLESPACE users, tools UNTIL SEQUENCE 1300 THREAD 1;
+}
+</pre></div>
+<!-- class="example" -->
+<p>In this example, RMAN takes the following actions:</p>
+<ul>
+<li>
+<p>Restores each specified data file to the new location during TSPITR.</p>
+</li>
+<li>
+<p>Uses the image copy if one exists at the specified location and its checkpoint is before the specified point in time. If this criteria is not met, then RMAN overwrites the image copy.</p>
+</li>
+<li>
+<p>Plugs the newly recovered data file into the target control file.</p>
+</li>
+</ul>
+<p>RMAN does not detect conflicts between names set with <code dir="ltr">SET NEWNAME</code> and current data file names on the target database until the actual recovery. If RMAN detects a conflict, then TSPITR fails and RMAN reports an error. The valid data file is not overwritten.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1019430"></a>
+<div id="BRADV89800" class="sect2">
+<h3 class="sect2">Naming TSPITR Auxiliary Set Data Files</h3>
+<p>Unlike recovery set data files, which are usually stored in their original locations, auxiliary set data files must not overwrite the corresponding original files in the target database. If you do not specify an auxiliary set file location that is different from its original location, then TSPITR fails. The failure occurs when RMAN attempts to overwrite the corresponding file in the original database and discovers the file in use.</p>
+<p>The simplest way to provide locations for auxiliary set data files is to specify an auxiliary destination for TSPITR. However, RMAN supports the following alternatives for controlling the location of auxiliary set data files, which are listed in order of precedence shown in <a href="#CHDGAFGB">Table 21-3</a>.</p>
+<div id="BRADV382" class="tblformal">
+<p class="titleintable"><a id="sthref1668"></a><a id="CHDGAFGB"></a>Table 21-3 Order of Precedence for Naming Files</p>
+<table class="cellalignment1940" title="Order of Precedence for Naming Files" summary="Describes order of precedence: set newname, configure auxname, db_file_name_convert, and auxiliary destination" dir="ltr">
+<thead>
+<tr class="cellalignment1934">
+<th class="cellalignment1941" id="r1c1-t10">Order</th>
+<th class="cellalignment1941" id="r1c2-t10">Technique</th>
+<th class="cellalignment1941" id="r1c3-t10">Section</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r2c1-t10" headers="r1c1-t10">
+<p>1</p>
+</td>
+<td class="cellalignment1942" headers="r2c1-t10 r1c2-t10">
+<p><code dir="ltr">SET</code> <code dir="ltr">NEWNAME</code></p>
+</td>
+<td class="cellalignment1942" headers="r2c1-t10 r1c3-t10">
+<p><a href="#CHDDDFJF">"Using SET NEWNAME to Name Auxiliary Set Data Files"</a></p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r3c1-t10" headers="r1c1-t10">
+<p>2</p>
+</td>
+<td class="cellalignment1942" headers="r3c1-t10 r1c2-t10">
+<p><code dir="ltr">CONFIGURE</code> <code dir="ltr">AUXNAME</code></p>
+</td>
+<td class="cellalignment1942" headers="r3c1-t10 r1c3-t10">
+<p><a href="#i1030332">"Using SET NEWNAME and CONFIGURE AUXNAME with Auxiliary Set Image Copies"</a></p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r4c1-t10" headers="r1c1-t10">
+<p>3</p>
+</td>
+<td class="cellalignment1942" headers="r4c1-t10 r1c2-t10">
+<p><code dir="ltr">DB_FILE_NAME_CONVERT</code></p>
+</td>
+<td class="cellalignment1942" headers="r4c1-t10 r1c3-t10">
+<p><a href="#i1035562">"Using DB_FILE_NAME_CONVERT to Name Auxiliary Set Data Files"</a>. If the target database uses OMF names for auxiliary set, then you cannot use <code dir="ltr">DB_FILE_NAME_CONVERT.</code> See <a href="#CIHJECED">"Considerations When Renaming OMF Auxiliary Set Files in TSPITR"</a>.</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r5c1-t10" headers="r1c1-t10">
+<p>4</p>
+</td>
+<td class="cellalignment1942" headers="r5c1-t10 r1c2-t10">
+<p><code dir="ltr">AUXILIARY DESTINATION</code> argument to <code dir="ltr">RECOVER TABLESPACE</code> when using an RMAN-managed auxiliary instance</p>
+</td>
+<td class="cellalignment1942" headers="r5c1-t10 r1c3-t10">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<p>Settings higher on the list override settings lower on the list in situations where both have been applied. For example, you might run <code dir="ltr">RECOVER TABLESPACE... AUXILIARY DESTINATION</code> on a target database when some auxiliary set data files have auxiliary names configured with <code dir="ltr">CONFIGURE AUXNAME</code>.</p>
+<p>Even if you intend to use either of the preceding techniques to provide locations for specific files, Oracle recommends that you provide an <code dir="ltr">AUXILIARY DESTINATION</code> argument to <code dir="ltr">RECOVER TABLESPACE</code> when using an RMAN-managed auxiliary instance. If you overlook renaming some auxiliary set data files, then TSPITR still succeeds. Any files not otherwise renamed are placed in the auxiliary destination.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You can view any current <code dir="ltr">CONFIGURE</code> <code dir="ltr">AUXNAME</code> settings by running the <code dir="ltr">SHOW</code> <code dir="ltr">AUXNAME</code> command, which is described in <a class="olink RCMRF154" href="../../backup.112/e10643/rcmsynta2015.htm#RCMRF154"><span class="italic">Oracle Database Backup and Recovery Reference</span></a>.</div>
+<a id="CIHJECED"></a>
+<div id="BRADV383" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Considerations When Renaming OMF Auxiliary Set Files in TSPITR</h4>
+<p>Auxiliary set data files can have Oracle Managed Files (OMF) in the target and can use Automatic Storage Management (ASM) or non-ASM storage. TSPITR performs name conversion differently when the <code dir="ltr">DB_FILE_NAME_CONVERT</code> initialization parameter is set and the OMF files are in ASM or non-ASM storage.</p>
+<div id="BRADV384" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref1669"></a>
+<h5 class="sect4">Using ASM Storage</h5>
+<p>For Oracle Managed Files (OMF) that use ASM storage, the database converts only disk group names as in: +DISK1 to +DISK2.</p>
+<p>You can use <code dir="ltr">DB_FILE_NAME_CONVERT</code> and <code dir="ltr">LOG_FILE_NAME_CONVERT</code> initialization parameters for the auxiliary instance to specify the conversion of the disk group. RMAN uses the pattern to convert the ASM disk group name and generates a valid OMF file name in the converted disk group. The following command demonstrates this point:</p>
+<pre dir="ltr">
+LOG_FILE_NAME_CONVERT='+onlinelogs','+tmpasm'
+</pre>
+<p>If the <code dir="ltr">DB_FILE_NAME_CONVERT</code> and <code dir="ltr">LOG_FILE_NAME_CONVERT</code> parameters change a substring other than the disk group name, the conversion is ignored and the resulting disk group name is used, for example:</p>
+<pre dir="ltr">
+DB_FILE_NAME_CONVERT='+DATAFILE/prod','+DATAFILE/tspitr'
+</pre>
+<p>The preceding command results in an invalid ASM OMF file name and the change is ignored. Instead, the files are created in disk group name +DATAFILE and the following message is issued:</p>
+<pre dir="ltr">
+WARNING: DB_FILE_NAME_CONVERT resulted in invalid ASM names; names changed to disk group only 
+</pre>
+<pre dir="ltr">
+</pre>
+<p>If auxiliary set data files are stored in ASM disk groups, then you can use the <code dir="ltr">SET</code> <code dir="ltr">NEWNAME</code> command to redirect individual files to a specific disk group accessible from the auxiliary instance (and allow the database to generate the file name within the disk group). <a href="#CIHHGCGF">Example 21-6</a> shows how to do this.</p>
+<div id="BRADV385" class="example">
+<p class="titleinexample"><a id="CIHHGCGF"></a>Example 21-6 Redirecting ASM files</p>
+<pre dir="ltr">
+RUN
+{
+  SET NEWNAME FOR DATAFILE 1 TO "+DISK2";
+  SET NEWNAME FOR DATAFILE 2 TO "+DISK3";
+  RECOVER TABLESPACE users, tools 
+    UNTIL LOGSEQ 1300 THREAD 1
+    AUXILIARY DESTINATION '/disk1/auxdest';
+}
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect4" -->
+<a id="CIHCHDIB"></a>
+<div id="BRADV386" class="sect4"><!-- infolevel="all" infotype="General" -->
+<h5 class="sect4">Using Non-ASM Storage</h5>
+<p>The initialization parameters <code dir="ltr">DB_FILE_NAME_CONVERT</code> and <code dir="ltr">LOG_FILE_NAME_CONVERT</code> cannot be used to rename OMF (non-ASM) file names for the auxiliary instance because this method generates invalid OMF file names. If you must control the generation of new OMF file names that do not use ASM storage, you must rename them using one of the following alternate techniques. The various naming options are listed in order from most recommended to least recommended.</p>
+<ol>
+<li>
+<p>Use an auxiliary destination, as described in <a href="#i1035361">"Performing Fully Automated RMAN TSPITR"</a>.</p>
+</li>
+<li>
+<p>Specify locations for new OMF files with one or more of the OMF initialization parameters for the auxiliary instance so that all of the necessary OMF files are handled:</p>
+<ul>
+<li>
+<p><code dir="ltr">DB_CREATE_FILE_DEST</code> for the auxiliary set data files</p>
+</li>
+<li>
+<p><code dir="ltr">DB_CREATE_ONLINE_LOG_DEST_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code> with <code dir="ltr">DB_CREATE_FILE_DEST</code> for the online redo logs of the auxiliary instance if the online logs are not created in the <code dir="ltr">DB_CREATE_FILE_DEST</code></p>
+</li>
+</ul>
+</li>
+</ol>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<a id="CHDDDFJF"></a>
+<div id="BRADV89801" class="sect3">
+<h4 class="sect3">Using SET NEWNAME to Name Auxiliary Set Data Files</h4>
+<p>To specify a new name for an auxiliary set data file, you can enclose <code dir="ltr">RECOVER TABLESPACE</code> in a <code dir="ltr">RUN</code> command and use a <code dir="ltr">SET NEWNAME</code> command within the <code dir="ltr">RUN</code> block to rename the file. <a href="#CHDIAAAJ">Example 21-7</a> illustrates the basic technique.</p>
+<div id="BRADV387" class="example">
+<p class="titleinexample"><a id="CHDIAAAJ"></a>Example 21-7 Renaming Auxiliary Set Oracle Managed Files (OMF) in TSPITR</p>
+<pre dir="ltr">
+RUN
+{
+  SET NEWNAME FOR DATAFILE '?/oradata/prod/system01.dbf'
+    TO '/disk1/auxdest/system01.dbf';
+  SET NEWNAME FOR DATAFILE '?/oradata/prod/sysaux01.dbf'
+    TO '/disk1/auxdest/sysaux01.dbf';
+  SET NEWNAME FOR DATAFILE '?/oradata/prod/undotbs01.dbf'
+    TO '/disk1/auxdest/undotbs01.dbf';
+  RECOVER TABLESPACE users, tools 
+    UNTIL LOGSEQ 1300 THREAD 1
+    AUXILIARY DESTINATION '/disk1/auxdest';
+}
+</pre></div>
+<!-- class="example" -->
+<p>The result depends on whether <code dir="ltr">/disk1/auxdest/system01.dbf</code> exists when <code dir="ltr">RECOVER TABLESPACE</code> is executed. If <code dir="ltr">?/oradata/system01.dbf</code> exists at the specified location and was created at an SCN before the <code dir="ltr">UNTIL</code> time for TSPITR, then the <code dir="ltr">DATAFILECOPY</code> is used and the restore operation is not necessary. For more information, see <a href="#i1030332">"Using SET NEWNAME and CONFIGURE AUXNAME with Auxiliary Set Image Copies"</a>. Otherwise, RMAN restores the auxiliary set data file to the <code dir="ltr">NEWNAME</code> instead of the default location. If your intention is to control where the auxiliary set data files are stored, then ensure that no file is stored at the location specified by <code dir="ltr">SET NEWNAME</code> before performing TSPITR.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i1035562"></a>
+<div id="BRADV89802" class="sect3">
+<h4 class="sect3">Using DB_FILE_NAME_CONVERT to Name Auxiliary Set Data Files</h4>
+<p>Assume that you do not want to use an auxiliary destination for all of your auxiliary set data files, but you also do not want to name every file individually. In this case, you can include a <code dir="ltr">DB_FILE_NAME_CONVERT</code> initialization parameter in the initialization parameter file used by the auxiliary instance. You can use this technique only in the following circumstances:</p>
+<p>One of the following situations exists:</p>
+<ul>
+<li>
+<p>- You create your own initialization parameter file for an automatically managed auxiliary instance, as described in <a href="#i1034656">"Customizing Initialization Parameters for the Automatic Auxiliary Instance in TSPITR"</a></p>
+</li>
+<li>
+<p>- You create your own auxiliary instance, as described in <a href="#i1034676">"Performing RMAN TSPITR Using Your Own Auxiliary Instance"</a></p>
+</li>
+</ul>
+<p>The <code dir="ltr">DB_FILE_NAME_CONVERT</code> initialization parameter in the auxiliary instance specifies how to derive names for files in the auxiliary instance from the original names of the corresponding files in the target database instance. The parameter consists of a list of pairs of strings. For any file name that contains the first string of a pair as a substring, the name of the corresponding file in the auxiliary instance is generated by substituting the second string of the pair into the original file name.</p>
+<p>For example, assume that the target instance contains the following files:</p>
+<ul>
+<li>
+<p><code dir="ltr">?/oradata/trgt/system01.dbf</code> of the <code dir="ltr">SYSTEM</code> tablespace</p>
+</li>
+<li>
+<p><code dir="ltr">?/oradata/trgt/sysaux01.dbf</code> of the <code dir="ltr">SYSAUX</code> tablespace</p>
+</li>
+<li>
+<p><code dir="ltr">?/oradata/trgt/undotbs01.dbf</code> of the <code dir="ltr">undotbs</code> tablespace</p>
+</li>
+</ul>
+<p>To place the corresponding files of the auxiliary instance in <code dir="ltr">/bigtmp</code>, you would add the following line to the auxiliary instance parameter file:</p>
+<pre dir="ltr">
+DB_FILE_NAME_CONVERT=('?/oradata/trgt', '/bigtmp')
+</pre>
+<p>New file names for the corresponding auxiliary instance files would be <code dir="ltr">/bigtmp/trgt/system01.dbf</code>, <code dir="ltr">/bigtmp/trgt/sysaux01.dbf</code>, and <code dir="ltr">/bigtmp/trgt/undotbs01.dbf</code>.</p>
+<p>The most important point to remember is that <code dir="ltr">DB_FILE_NAME_CONVERT</code> <span class="italic">must</span> be present in the auxiliary instance parameter file. If the auxiliary instance was manually created, then add <code dir="ltr">DB_FILE_NAME_CONVERT</code> to the auxiliary instance parameter file.</p>
+<p>You can still rename individual auxiliary set data files with the <code dir="ltr">SET NEWNAME</code> or <code dir="ltr">CONFIGURE AUXNAME</code> command. Also, files that do not match the patterns provided in <code dir="ltr">DB_FILE_NAME_CONVERT</code> are not renamed. When using RMAN-managed auxiliary instance, you can use the <code dir="ltr">AUXILIARY DESTINATION</code> parameter of <code dir="ltr">RECOVER TABLESPACE</code> command to ensure that all auxiliary set data files are sent to some destination. If none of the renaming methods used provide a new name for a file at the auxiliary instance, then TSPITR fails.</p>
+<div id="BRADV89804" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref1670"></a>
+<h5 class="sect4">Renaming Temp Files During TSPITR</h5>
+<p>Temp files are considered part of the auxiliary set for your database. When the auxiliary instance is instantiated, RMAN re-creates the temporary tablespaces of the target database and generates their names using the regular rules for the auxiliary data file names.</p>
+<p>To rename temp files, you can use one of the following:</p>
+<ul>
+<li>
+<p><code dir="ltr">SET</code> <code dir="ltr">NEWNAME</code> <code dir="ltr">FOR</code> <code dir="ltr">TEMPFILE</code> command</p>
+</li>
+<li>
+<p><code dir="ltr">DB_FILE_NAME_CONVERT</code> initialization parameter of the auxiliary instance. See the previous example. If the temporary files have non-ASM Oracle Managed File names, you cannot use this parameter option. See <a href="#CIHJECED">"Considerations When Renaming OMF Auxiliary Set Files in TSPITR"</a>.</p>
+</li>
+<li>
+<p><code dir="ltr">AUXILIARY DESTINATION</code> clause of the <code dir="ltr">RECOVER</code> command when using an RMAN-managed auxiliary instance</p>
+</li>
+</ul>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1035589"></a>
+<div id="BRADV89805" class="sect2">
+<h3 class="sect2">Using Image Copies for Faster RMAN TSPITR Performance</h3>
+<p>You can enhance TSPITR performance by redirecting RMAN to use existing image copies of the recovery set and auxiliary set data files. In this case, RMAN does not need to restore the data files from backup. You can use the following techniques to tell RMAN about the possible existence of an image copy of a data file:</p>
+<ul>
+<li>
+<p>Use the <code dir="ltr">CONFIGURE AUXNAME</code> command with image copies of auxiliary set data files</p>
+</li>
+<li>
+<p>Use the <code dir="ltr">SET NEWNAME</code> command with image copies of recovery set data files or auxiliary set data files</p>
+</li>
+</ul>
+<p>In general, if a suitable image copy is available in the specified location, then RMAN uses the image copy to perform TSPITR, and the data file copy is uncataloged from the target control file.</p>
+<div id="BRADV89806" class="sect3"><a id="sthref1671"></a>
+<h4 class="sect3">Using SET NEWNAME with Recovery Set Image Copies</h4>
+<p>During TSPITR, RMAN looks in the specified <code dir="ltr">NEWNAME</code> location for the data file. RMAN checks whether an image copy backup of the data file exists with a <a href="glossary.htm#CHDGHFDF"><span class="xrefglossterm">data file checkpoint</span></a> SCN early enough that it can be recovered to the target time. If RMAN finds a usable image copy, then RMAN uses it in TSPITR. Otherwise, RMAN restores the data file to the <code dir="ltr">NEWNAME</code> location. Any file in the location specified by the <code dir="ltr">NEWNAME</code> is overwritten. The specified <code dir="ltr">NEWNAME</code> becomes the name of the data file in the target database once TSPITR completes. <a href="#CHDFHFCJ">Example 21-8</a> illustrates this technique.</p>
+<div id="BRADV388" class="example">
+<p class="titleinexample"><a id="CHDFHFCJ"></a>Example 21-8 Using SET NEWNAME</p>
+<pre dir="ltr">
+RUN
+{
+SET NEWNAME FOR DATAFILE '<span class="italic">ORACLE_HOME</span>/oradata/trgt/users01.dbf' 
+  TO '/newfs/users1.dbf';
+<span class="italic">...other RMAN commands, if any...</span>
+RECOVER TABLESPACE users, tools UNTIL SEQUENCE 1300 THREAD 1;
+}
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect3" -->
+<a id="i1030332"></a>
+<div id="BRADV89807" class="sect3">
+<h4 class="sect3">Using SET NEWNAME and CONFIGURE AUXNAME with Auxiliary Set Image Copies</h4>
+<p>The <code dir="ltr">CONFIGURE AUXNAME</code> command sets a persistent alternative location for an auxiliary set data file image copy, whereas the <code dir="ltr">SET NEWNAME</code> command sets an alternative location for the duration of a <code dir="ltr">RUN</code> command.</p>
+<p>Assume that you use <code dir="ltr">SET NEWNAME</code> or <code dir="ltr">CONFIGURE AUXNAME</code> to specify a new location for an auxiliary set data file. Also assume that there is an image copy at that location with an SCN that can be used in TSPITR. In this case, RMAN uses the image copy. If there is no usable image copy at that location, however, then RMAN restores a usable copy from backup. (If an image copy is present but the SCN is after the target time for TSPITR, then the data file is overwritten by the restored file.)</p>
+<p>As with all auxiliary set files, the file is deleted after TSPITR. This behavior occurs regardless of whether it was an image copy created before TSPITR or restored by RMAN during TSPITR.</p>
+<p>The primary use of <code dir="ltr">CONFIGURE AUXNAME</code> is to make TSPITR faster by eliminating restore times. If you anticipate performing TSPITR, then you can include in your backup routine the maintenance of a set of image copies of the auxiliary set data files, and update these periodically to the earliest point to which you expect to perform TSPITR. The recommended usage model is:</p>
+<ol>
+<li>
+<p>Configure the <code dir="ltr">AUXNAME</code> for the files once, when setting up this strategy.</p>
+</li>
+<li>
+<p>Perform <code dir="ltr">BACKUP AS COPY DATAFILE</code> <code dir="ltr"><span class="codeinlineitalic">n</span></code> <code dir="ltr">FORMAT</code> <code dir="ltr"><span class="codeinlineitalic">auxname</span></code> regularly to maintain the updated image copy. For better performance, use an incrementally updated backup strategy to keep the image copies up-to-date without performing full backups of the data files.</p>
+</li>
+<li>
+<p>When TSPITR is needed, specify a target time after the last update of the image copy.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<div id="BRADV89808" class="sect3"><a id="sthref1672"></a>
+<h4 class="sect3">Performing TSPITR with CONFIGURE AUXNAME and Image Copies: Scenario</h4>
+<p>Assume that you have enough disk space to save image copies of your entire database for use in TSPITR. In preparation for the possibility of TSPITR, you do the following:</p>
+<ul>
+<li>
+<p>Configure an <code dir="ltr">AUXNAME</code> for each data file in the auxiliary set by using a command of the following form:</p>
+<pre dir="ltr">
+CONFIGURE AUXNAME FOR DATAFILE <span class="italic">n</span> TO <span class="italic">auxname_n</span>;
+</pre></li>
+<li>
+<p>Take an image copy of the auxiliary set every Sunday by using a command of the following form:</p>
+<pre dir="ltr">
+                BACKUP AS COPY DATAFILE <span class="italic">n</span> FORMAT <span class="italic">auxname_n</span>
+</pre>
+<p>If the image copies are all in the same location on disk, and if they are named similarly to the original data files, then you can avoid performing backups of every data file. Instead, you can use the <code dir="ltr">FORMAT</code> or <code dir="ltr">DB_FILE_NAME_CONVERT</code> options of the <code dir="ltr">BACKUP</code> command and use <code dir="ltr">BACKUP AS COPY DATABASE</code>. For example, if the configured auxiliary names are a translation of the location <code dir="ltr">maindisk</code> to <code dir="ltr">auxdisk</code>, then you use the following command:</p>
+<pre dir="ltr">
+BACKUP AS COPY 
+  DATABASE 
+  DB_FILE_NAME_CONVERT (maindisk, auxdisk);
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Because Oracle managed file names cannot generally be translated using a simple substitution, you cannot typically use <code dir="ltr">DB_FILE_NAME_CONVERT</code> to generate names for image copies stored in OMF.</div>
+</li>
+</ul>
+<p>After these steps, you are prepared for TSPITR without restoring the auxiliary set from backup. For example, if an erroneous batch job, started on November 15, 2007, at 19:00:00, incorrectly updates the tables in the tablespace <code dir="ltr">parts</code>, you use the following command to perform TSPITR on tablespace <code dir="ltr">parts</code>:</p>
+<pre dir="ltr">
+RECOVER TABLESPACE parts UNTIL TIME 'November 15 2007, 19:00:00';
+</pre>
+<p>Because <code dir="ltr">AUXNAME</code> locations are configured and refer to data file copies from an SCN before the TSPITR target time, the auxiliary set is not restored from backup. Instead, the data file copies are used in recovery, which reduces the restore overhead.</p>
+<p>You can also prevent the recovery set from being restored. You must take frequent image copies of the tablespaces and use <code dir="ltr">SET NEWNAME</code> to specify the location of these copies. This method ensures that the recovery set is not restored, and the tablespace changes location after TSPITR successfully completes.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1034656"></a>
+<div id="BRADV89809" class="sect2">
+<h3 class="sect2">Customizing Initialization Parameters for the Automatic Auxiliary Instance in TSPITR</h3>
+<p>The automatic auxiliary instance uses a set of default initialization parameters as shown in <a href="#CHDJIJAF">Table 21-4</a>. It also looks for additional initialization parameters to complement the default parameters in a location that is operating system-dependent. For example, in UNIX this location is: <code dir="ltr">?/rdbms/admin/params_auxinst.ora</code>. RMAN always looks for this additional parameter file for an RMAN-automatic auxiliary instance when performing TSPITR. If the file is not found, then RMAN does not generate an error. Instead, RMAN uses the default parameters in <a href="#CHDJIJAF">Table 21-4</a> for the RMAN-managed automatic auxiliary instance.</p>
+<div id="BRADV389" class="tblruleformal">
+<p class="titleintable"><a id="sthref1673"></a><a id="CHDJIJAF"></a>Table 21-4 Default Initialization Parameters for the RMAN-Managed Auxiliary Instance</p>
+<table class="cellalignment1945" title="Default Initialization Parameters for the RMAN-Managed Auxiliary Instance" summary="Default initialization parameters" dir="ltr">
+<thead>
+<tr class="cellalignment1934">
+<th class="cellalignment1941" id="r1c1-t13">Initialization Parameter</th>
+<th class="cellalignment1941" id="r1c2-t13">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r2c1-t13" headers="r1c1-t13">
+<p><code dir="ltr">DB_NAME</code></p>
+</td>
+<td class="cellalignment1942" headers="r2c1-t13 r1c2-t13">
+<p>Same as <code dir="ltr">DB_NAME</code> of the source database</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r3c1-t13" headers="r1c1-t13">
+<p><code dir="ltr">COMPATIBLE</code></p>
+</td>
+<td class="cellalignment1942" headers="r3c1-t13 r1c2-t13">
+<p>Same as the <code dir="ltr">COMPATIBLE</code> setting of the target database</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r4c1-t13" headers="r1c1-t13">
+<p><code dir="ltr">DB_UNIQUE_NAME</code></p>
+</td>
+<td class="cellalignment1942" headers="r4c1-t13 r1c2-t13">
+<p>RMAN auto-generated unique value based on <code dir="ltr">DB_NAME</code></p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r5c1-t13" headers="r1c1-t13">
+<p><code dir="ltr">DB_BLOCK_SIZE</code></p>
+</td>
+<td class="cellalignment1942" headers="r5c1-t13 r1c2-t13">
+<p>Same as the <code dir="ltr">DB_BLOCK_SIZE</code> of the target database</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r6c1-t13" headers="r1c1-t13">
+<p><code dir="ltr">DB_CREATE_FILE_DEST</code></p>
+</td>
+<td class="cellalignment1942" headers="r6c1-t13 r1c2-t13">
+<p>Auxiliary destination (only if the <code dir="ltr">AUXILIARY DESTINATION</code> argument is specified when using an RMAN-managed auxiliary instance). RMAN creates Oracle Managed Files for the auxiliary set files in this location.</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r7c1-t13" headers="r1c1-t13">
+<p><code dir="ltr">LOG_ARCHIVE_DEST_1</code></p>
+</td>
+<td class="cellalignment1942" headers="r7c1-t13 r1c2-t13">
+<p>Auxiliary destination (only if the <code dir="ltr">AUXILIARY DESTINATION</code> clause is specified when using an RMAN-managed auxiliary instance). Archived logs needed for recovery are restored to this location.</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r8c1-t13" headers="r1c1-t13">
+<p><code dir="ltr">SGA_TARGET</code></p>
+</td>
+<td class="cellalignment1942" headers="r8c1-t13 r1c2-t13">
+<p><code dir="ltr">280M</code></p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r9c1-t13" headers="r1c1-t13">
+<p><code dir="ltr">DB_FILES</code></p>
+</td>
+<td class="cellalignment1942" headers="r9c1-t13 r1c2-t13">
+<p>Same as <code dir="ltr">DB_FILES</code> of the target database</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r10c1-t13" headers="r1c1-t13">
+<p><code dir="ltr">PROCESSES</code></p>
+</td>
+<td class="cellalignment1942" headers="r10c1-t13 r1c2-t13">
+<p><code dir="ltr">50</code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformal" -->
+<p>Usually it is not necessary to alter or add to the values of these initialization parameters, especially if you provide an <code dir="ltr">AUXILIARY DESTINATION</code> clause to the <code dir="ltr">RECOVER TABLESPACE</code> command when using a RMAN-managed auxiliary instance. If you override an initialization parameter in <a href="#CHDJIJAF">Table 21-4</a> with an inappropriate value, then TSPITR may fail due to problems with the auxiliary instance. Nevertheless, you can add other parameters besides these basic parameters if needed. For example, you can use <code dir="ltr">DB_FILE_NAME_CONVERT</code> to specify the names of the data files in the auxiliary and recovery sets.</p>
+<p>To override or specify parameters for the automatic auxiliary instance, you can do either of the following:</p>
+<ul>
+<li>
+<p>- Place the initialization parameters in the operating system specific default auxiliary parameter file name. For example, in UNIX, the file name is <code dir="ltr">?/rdbms/admin/params_auxinst.ora</code>.</p>
+</li>
+<li>
+<p>Perform these steps:</p>
+<ol>
+<li>
+<p>Place the initialization parameters in a file.</p>
+</li>
+<li>
+<p>Specify the location of this file with the <code dir="ltr">SET AUXILIARY INSTANCE PARAMETER FILE</code> command before executing TSPITR.</p>
+</li>
+</ol>
+</li>
+</ul>
+<p>Regardless of the method that you choose, the parameters that you specify take precedence over defaults and can override the value of an <code dir="ltr">AUXILIARY DESTINATION</code> clause.</p>
+<div id="BRADV89810" class="sect3"><a id="sthref1674"></a>
+<h4 class="sect3">Specifying the Auxiliary Instance Control File Location in TSPITR</h4>
+<p>If you use an initialization parameter file, then you can specify your own location for the control file of your auxiliary instance. Set the <code dir="ltr">CONTROL_FILES</code> initialization parameter to specify a location for the control files.</p>
+<p>If you do not explicitly specify a control file location, and if you use the <code dir="ltr">AUXILIARY DESTINATION</code> clause, then RMAN locates the control file in the auxiliary destination. If you do not use the <code dir="ltr">AUXILIARY DESTINATION</code> clause, then the auxiliary instance control files are stored in an operating system-specific location.</p>
+<p>No matter where you store your auxiliary instance control file, it is removed at the end of the TSPITR operation. Because control files are relatively small, RMAN seldom encounters a problem creating an auxiliary control file. If there is not enough space to create the control file, however, then TSPITR fails.</p>
+</div>
+<!-- class="sect3" -->
+<div id="BRADV390" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1675"></a>
+<h4 class="sect3">Specifying the Auxiliary Instance Archived Logs in TSPITR</h4>
+<p>To perform recovery on the auxiliary and recovery sets after restoring them at the auxiliary instance, RMAN may need to restore archived logs. When an auxiliary destination is being used, the archived logs are restored to that location. In the absence of an auxiliary destination and any other initialization parameters, the archived logs are restored to an operating system specific location. For details, consult your operating system specific documentation. You can use the <code dir="ltr">LOG_ARCHIVE_DEST_1</code> initialization parameter to specify an alternative location where the archived logs are restored.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CIHBHEID"></a>
+<div id="BRADV89811" class="sect3">
+<h4 class="sect3">Specifying the Auxiliary Instance Online Log Location in TSPITR</h4>
+<p>If you specify the <code dir="ltr">LOG_FILE_NAME_CONVERT</code> initialization parameter in your auxiliary instance parameter file and the parameter successfully converts the names of the online redo logs of the target, then this parameter determines the online redo log location. The same restrictions that apply to OMF data files, apply to OMF online redo logs. For more information, see <a href="#CIHJECED">"Considerations When Renaming OMF Auxiliary Set Files in TSPITR"</a>. If RMAN is managing the auxiliary instance and an auxiliary destination is specified, RMAN creates the online redo log in the auxiliary destination.</p>
+<p>Alternatively, you can use <code dir="ltr">DB_CREATE_FILE_DEST</code> or <code dir="ltr">DB_CREATE_FILE_DEST</code> and <code dir="ltr">DB_CREATE_ONLINE_LOG_1</code> to specify the location where the auxiliary instance redo logs are created. If you choose the latter option, you must use <code dir="ltr">DB_CREATE_ONLINE_LOG_1</code> with <code dir="ltr">DB_CREATE_FILE_DEST</code>.</p>
+<p>TSPITR fails to create the online redo logs if you do not specify a location for them by using one of the following:</p>
+<ul>
+<li>
+<p><code dir="ltr">LOG_FILE_NAME_CONVERT</code></p>
+</li>
+<li>
+<p><code dir="ltr">DB_CREATE_FILE_DEST</code></p>
+</li>
+<li>
+<p><code dir="ltr">DB_CREATE_FILE_DEST</code> and <code dir="ltr">DB_CREATE_ONLINE_LOG_1</code></p>
+</li>
+<li>
+<p><code dir="ltr">AUXILIARY DESTINATION</code></p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1034676"></a>
+<div id="BRADV89812" class="sect1">
+<h2 class="sect1">Performing RMAN TSPITR Using Your Own Auxiliary Instance</h2>
+<p>Although Oracle recommends that you let RMAN manage all aspects of the auxiliary instance, there may be times when you must create and manage your own auxiliary instance. If you select this mode, you are responsible for setting up, starting, stopping and cleaning up the auxiliary instance used in TSPITR.</p>
+<p>One reason that you might want to create your own instance is to exercise control of channels used in TSPITR. The automatic auxiliary instance uses the configured channels of the target database as the basis for the channels to configure on the auxiliary instance and to use during the restore operation. You may need different channel settings and may not want to use the <code dir="ltr">CONFIGURE</code> command to change the settings on the target database. In this case, you can operate your own auxiliary instance. By connecting to the auxiliary instance before invoking <code dir="ltr">RECOVER</code>, a run block can provide specific channel allocations using <code dir="ltr">the ALLOCATE AUXILIARY CHANNEL</code> command.</p>
+<a id="i1032739"></a>
+<div id="BRADV89813" class="sect2">
+<h3 class="sect2">Preparing Your Own Auxiliary Instance for RMAN TSPITR</h3>
+<p><a id="sthref1676"></a>Creating an Oracle instance suitable for use as an auxiliary instance requires that you complete all of the following steps:</p>
+<ul>
+<li>
+<p><a href="#i1035586">Step 1: Create an Oracle Password File for the Auxiliary Instance</a></p>
+</li>
+<li>
+<p><a href="#i1035585">Step 2: Create an Initialization Parameter File for the Auxiliary Instance</a></p>
+</li>
+<li>
+<p><a href="#i1035583">Step 3: Check Oracle Net Connectivity to the Auxiliary Instance</a></p>
+</li>
+</ul>
+<a id="i1035586"></a>
+<div id="BRADV89814" class="sect3">
+<h4 class="sect3">Step 1: Create an Oracle Password File for the Auxiliary Instance</h4>
+<p>For instructions on how to create and maintain Oracle password files, refer to <a class="olink ADMIN10241" href="../../server.112/e25494/dba.htm#ADMIN10241"><span class="italic">Oracle Database Administrator's Guide</span></a>.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i1035585"></a>
+<div id="BRADV89815" class="sect3">
+<h4 class="sect3">Step 2: Create an Initialization Parameter File for the Auxiliary Instance</h4>
+<p>Use a text editor to create an initialization parameter file for the auxiliary instance on the target database host. For this example, assume that your parameter file is placed at <code dir="ltr">/tmp/initAux.ora</code>. Set the parameters described in <a href="#CHDFJCCF">Table 21-5</a>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+For TSPITR, the target and auxiliary database instances must be on the same host.</div>
+<div id="BRADV391" class="tblruleformalwide">
+<p class="titleintable"><a id="sthref1677"></a><a id="CHDFJCCF"></a>Table 21-5 Initialization Parameters in a User-Managed Auxiliary Instance</p>
+<table class="cellalignment1945" title="Initialization Parameters in a User-Managed Auxiliary Instance" summary="This table is described in the preceding text." dir="ltr">
+<thead>
+<tr class="cellalignment1934">
+<th class="cellalignment1941" id="r1c1-t15">Parameter</th>
+<th class="cellalignment1941" id="r1c2-t15">Mandatory?</th>
+<th class="cellalignment1941" id="r1c3-t15">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r2c1-t15" headers="r1c1-t15">
+<p><a id="sthref1678"></a><a id="sthref1679"></a><code dir="ltr">DB_NAME</code></p>
+</td>
+<td class="cellalignment1942" headers="r2c1-t15 r1c2-t15">
+<p>YES</p>
+</td>
+<td class="cellalignment1942" headers="r2c1-t15 r1c3-t15">
+<p>The same name as the target database</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r3c1-t15" headers="r1c1-t15">
+<p><code dir="ltr"><a id="sthref1680"></a><a id="sthref1681"></a>DB_UNIQUE_NAME</code></p>
+</td>
+<td class="cellalignment1942" headers="r3c1-t15 r1c2-t15">
+<p>YES</p>
+</td>
+<td class="cellalignment1942" headers="r3c1-t15 r1c3-t15">
+<p>A value different from any database in the same Oracle home. For simplicity, specify <code dir="ltr">_</code><code dir="ltr"><span class="codeinlineitalic">dbname</span></code>. For example, if the target database name is <code dir="ltr">trgt</code>, then specify <code dir="ltr">_trgt</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r4c1-t15" headers="r1c1-t15">
+<p><code dir="ltr">REMOTE_LOGIN_PASSWORDFILE</code></p>
+</td>
+<td class="cellalignment1942" headers="r4c1-t15 r1c2-t15">
+<p>YES</p>
+</td>
+<td class="cellalignment1942" headers="r4c1-t15 r1c3-t15">
+<p>Set to <code dir="ltr">EXCLUSIVE</code> when connecting to the auxiliary instance with a password file. Otherwise, set to <code dir="ltr">NONE</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r5c1-t15" headers="r1c1-t15">
+<p><code dir="ltr">COMPATIBLE</code></p>
+</td>
+<td class="cellalignment1942" headers="r5c1-t15 r1c2-t15">
+<p>YES</p>
+</td>
+<td class="cellalignment1942" headers="r5c1-t15 r1c3-t15">
+<p>The same value as the parameter in the target database</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r6c1-t15" headers="r1c1-t15">
+<p><code dir="ltr">DB_BLOCK_SIZE</code></p>
+</td>
+<td class="cellalignment1942" headers="r6c1-t15 r1c2-t15">
+<p>YES</p>
+</td>
+<td class="cellalignment1942" headers="r6c1-t15 r1c3-t15">
+<p>If this initialization parameter is set in the target database, then it must be set to the same value in the auxiliary instance.</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r7c1-t15" headers="r1c1-t15">
+<p><a id="sthref1682"></a><a id="sthref1683"></a><code dir="ltr">LOG_FILE_NAME_CONVERT</code></p>
+</td>
+<td class="cellalignment1942" headers="r7c1-t15 r1c2-t15">
+<p>NO</p>
+</td>
+<td class="cellalignment1942" headers="r7c1-t15 r1c3-t15">
+<p>Patterns to generate file names for the online redo logs of the auxiliary database based on the online redo log names of the target database. <a id="sthref1684"></a>Query <code dir="ltr">V$LOGFILE.MEMBER</code>to obtain target instance online redo log file names, and ensure that the conversion pattern matches the format of the file name shown in the view.</p>
+<p><span class="bold">Note:</span> Some platforms do not support ending patterns in a forward or backward slash (<code dir="ltr">\</code> or <code dir="ltr">/</code>).</p>
+<p><span class="bold">See Also:</span> <a href="#CIHBHEID">"Specifying the Auxiliary Instance Online Log Location in TSPITR"</a> for restrictions on possible values for <code dir="ltr">LOG_FILE_NAME_CONVERT</code> with OMF file names and <a href="#CIHJECED">"Considerations When Renaming OMF Auxiliary Set Files in TSPITR"</a></p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r8c1-t15" headers="r1c1-t15">
+<p><a id="sthref1685"></a><a id="sthref1686"></a><code dir="ltr">DB_FILE_NAME_CONVERT</code></p>
+</td>
+<td class="cellalignment1942" headers="r8c1-t15 r1c2-t15">
+<p>NO</p>
+</td>
+<td class="cellalignment1942" headers="r8c1-t15 r1c3-t15">
+<p>Patterns to convert file names for the data files of the auxiliary database. You can use this parameter to generate file names for those files that you did not name with <code dir="ltr">SET</code> <code dir="ltr">NEWNAME</code> or <code dir="ltr">CONFIGURE</code> <code dir="ltr">AUXNAME</code>. Obtain the data file names by querying<a id="sthref1687"></a> <code dir="ltr">V$DATAFILE.NAME</code>, and ensure that the conversion pattern matches the format of the file name displayed in the view.</p>
+<p><span class="bold">Note:</span> Some platforms do not support ending patterns in a forward or backward slash (<code dir="ltr">\</code> or <code dir="ltr">/</code>).</p>
+<p><span class="bold">See Also:</span> <a href="#i1035562">"Using DB_FILE_NAME_CONVERT to Name Auxiliary Set Data Files"</a> and <a href="#CIHJECED">"Considerations When Renaming OMF Auxiliary Set Files in TSPITR"</a>.</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r9c1-t15" headers="r1c1-t15">
+<p><code dir="ltr">DB_CREATE_FILE_DEST</code></p>
+</td>
+<td class="cellalignment1942" headers="r9c1-t15 r1c2-t15">
+<p>NO</p>
+</td>
+<td class="cellalignment1942" headers="r9c1-t15 r1c3-t15">
+<p>Use it to specify a location for all auxiliary set files.</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r10c1-t15" headers="r1c1-t15">
+<p><code dir="ltr">LOG_ARCHIVE_DEST_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code></p>
+</td>
+<td class="cellalignment1942" headers="r10c1-t15 r1c2-t15">
+<p>NO</p>
+</td>
+<td class="cellalignment1942" headers="r10c1-t15 r1c3-t15">
+<p>Use it to specify where archived logs required for recover are created.</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r11c1-t15" headers="r1c1-t15">
+<p><code dir="ltr">DB_CREATE_ONLINE_LOG_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code></p>
+</td>
+<td class="cellalignment1942" headers="r11c1-t15 r1c2-t15">
+<p>NO</p>
+</td>
+<td class="cellalignment1942" headers="r11c1-t15 r1c3-t15">
+<p>Use it with <code dir="ltr">DB_CREATE_FILE_DEST</code> to specify a different location where online redo logs are created.</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r12c1-t15" headers="r1c1-t15">
+<p><a id="sthref1688"></a><code dir="ltr">CONTROL_FILES</code></p>
+</td>
+<td class="cellalignment1942" headers="r12c1-t15 r1c2-t15">
+<p>NO</p>
+</td>
+<td class="cellalignment1942" headers="r12c1-t15 r1c3-t15">
+<p>Filenames that do not conflict with the control file names of the target instance (or any other existing file).</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r13c1-t15" headers="r1c1-t15">
+<p><code dir="ltr">SGA_TARGET</code></p>
+</td>
+<td class="cellalignment1942" headers="r13c1-t15 r1c2-t15">
+<p>NO (Recommended)</p>
+</td>
+<td class="cellalignment1942" headers="r13c1-t15 r1c3-t15">
+<p><code dir="ltr">280M</code></p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r14c1-t15" headers="r1c1-t15">
+<p><code dir="ltr">STREAMS_POOL_SIZE</code></p>
+</td>
+<td class="cellalignment1942" headers="r14c1-t15 r1c2-t15">
+<p>NO</p>
+<p>YES</p>
+</td>
+<td class="cellalignment1942" headers="r14c1-t15 r1c3-t15">
+<p>If <code dir="ltr">SGA_TARGET</code> is set</p>
+<p>If <code dir="ltr">SGA_TARGET</code> is not set</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformalwide" -->
+<p>Set other parameters as needed, including the parameters to specify how much memory the auxiliary instance uses.</p>
+<p>The following example shows possible initialization parameter settings for an auxiliary instance for TSPITR:</p>
+<pre dir="ltr">
+DB_NAME=trgt
+DB_UNIQUE_NAME=_trgt
+CONTROL_FILES=/tmp/control01.ctl
+DB_FILE_NAME_CONVERT=('/oracle/oradata/trgt/','/tmp/')
+LOG_FILE_NAME_CONVERT=('/oracle/oradata/trgt/redo','/tmp/redo')
+REMOTE_LOGIN_PASSWORDFILE=exclusive
+COMPATIBLE =11.0.0
+DB_BLOCK_SIZE=8192
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+After setting these initialization parameters, ensure that you do not overwrite the initialization settings for the production files at the target database.</div>
+</div>
+<!-- class="sect3" -->
+<a id="i1035583"></a>
+<div id="BRADV89816" class="sect3">
+<h4 class="sect3">Step 3: Check Oracle Net Connectivity to the Auxiliary Instance</h4>
+<p>The auxiliary instance must have a valid net service name. Before proceeding, use SQL*Plus to ensure that you can establish a <code dir="ltr">SYSDBA</code> connection to the auxiliary instance.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink NETAG" href="../../network.112/e41945/toc.htm"><span class="italic">Oracle Database Net Services Administrator's Guide</span></a> for more information about Oracle Net</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1037932"></a>
+<div id="BRADV89817" class="sect2">
+<h3 class="sect2">Preparing RMAN Commands for TSPITR with Your Own Auxiliary Instance</h3>
+<p>If you run your own auxiliary instance, then it is possible for the sequence of commands required for TSPITR to be long. This situation can occur when you allocate a complex channel configuration for restoring from backup and you are not using <code dir="ltr">DB_CREATE_FILE_DEST</code> to determine file naming of auxiliary set files.</p>
+<p>You may want to store the series of commands for TSPITR in an RMAN command file. Review the command file carefully to catch any errors. To read the command file into RMAN, use the <code dir="ltr">@</code> command (or the <code dir="ltr">CMDFILE</code> command-line argument when starting RMAN).</p>
+<p>The following example runs the command file named <code dir="ltr">/tmp/tspitr.rman</code>:</p>
+<pre dir="ltr">
+@/tmp/tspitr.rman;
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="rcmcnctg.htm#BABBDAEA">"Using Command Files with RMAN"</a></div>
+<div id="BRADV89818" class="sect3"><a id="sthref1689"></a>
+<h4 class="sect3">Planning Channels for TSPITR with Your Own Auxiliary Instance</h4>
+<p>When you run your own auxiliary instance, the default behavior is to use the automatic channel configuration of the target instance. If you decide to allocate your own channels with a different configuration (changing the number of channels or channel parameters), you can include <code dir="ltr">ALLOCATE AUXILIARY CHANNEL</code> commands in a <code dir="ltr">RUN</code> block along with the <code dir="ltr">RECOVER TABLESPACE</code> command for TSPITR. Plan out these commands, if necessary, and add them to the sequence of commands you run for TSPITR.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#i1038311">"Performing TSPITR with Your Own Auxiliary Instance: Scenario"</a> to learn how to include channel allocation in your TSPITR script</div>
+</div>
+<!-- class="sect3" -->
+<div id="BRADV89819" class="sect3"><a id="sthref1690"></a>
+<h4 class="sect3">Planning Data File Names with Your Own Auxiliary Instance: SET NEWNAME</h4>
+<p>You may want to use <code dir="ltr">SET NEWNAME</code> commands to refer to existing image copies of auxiliary set files to improve TSPITR performance, or to assign new names to the recovery set files for after TSPITR. Plan these commands, if necessary, and add them to the sequence of commands that you run for TSPITR. For more information, see <a href="#i1037419">"Renaming TSPITR Recovery Set Data Files with SET NEWNAME"</a>.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<div id="BRADV89820" class="sect2"><a id="sthref1691"></a>
+<h3 class="sect2">Executing TSPITR with Your Own Auxiliary Instance</h3>
+<p>With the preparations complete and your TSPITR commands completely planned, you are now ready to perform TSPITR. The following steps are required:</p>
+<ul>
+<li>
+<p><a href="#i1038088">Step 1: Start the Auxiliary Instance in NOMOUNT Mode</a></p>
+</li>
+<li>
+<p><a href="#i1038417">Step 2: Connect the RMAN Client to Target and Auxiliary Instances</a></p>
+</li>
+<li>
+<p><a href="#i1038418">Step 3: Execute the RECOVER TABLESPACE Command</a></p>
+</li>
+</ul>
+<a id="i1038088"></a>
+<div id="BRADV89821" class="sect3">
+<h4 class="sect3">Step 1: Start the Auxiliary Instance in NOMOUNT Mode</h4>
+<p>Before beginning RMAN TSPITR, start SQL*Plus and connect to the auxiliary instance with <code dir="ltr">SYSOPER</code> privileges.</p>
+<p>Start the auxiliary instance in <code dir="ltr">NOMOUNT</code> mode, specifying a parameter file if necessary. For example, enter the following SQL*Plus command:</p>
+<pre dir="ltr">
+SQL&gt; STARTUP NOMOUNT PFILE='/tmp/initAux.ora'
+</pre>
+<p>Remember that if you specify <code dir="ltr">PFILE</code>, then the path for the <code dir="ltr">PFILE</code> is a client-side path on the host from which you run SQL*Plus.</p>
+<p>Because the auxiliary instance does not yet have a control file, you can only start the instance in <code dir="ltr">NOMOUNT</code> mode. Do not create a control file or try to mount or open the auxiliary instance for TSPITR.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i1038417"></a>
+<div id="BRADV89822" class="sect3">
+<h4 class="sect3">Step 2: Connect the RMAN Client to Target and Auxiliary Instances</h4>
+<p>Start RMAN and connect to the target database and the manually created auxiliary instance.</p>
+<pre dir="ltr">
+$rman target dba/dbapwd AUXILIARY aux/auxpwd@aux
+</pre></div>
+<!-- class="sect3" -->
+<a id="i1038418"></a>
+<div id="BRADV89823" class="sect3">
+<h4 class="sect3">Step 3: Execute the RECOVER TABLESPACE Command</h4>
+<p>In the simplest case, execute the <code dir="ltr">RECOVER TABLESPACE... UNTIL</code> command at the RMAN prompt:</p>
+<pre dir="ltr">
+RECOVER TABLESPACE <span class="italic">ts1, ts2...</span> UNTIL TIME '<span class="italic">time</span>';
+</pre>
+<p>If you want to use the <code dir="ltr">ALLOCATE AUXILIARY CHANNEL</code> or <code dir="ltr">SET NEWNAME</code> commands, then include these commands before the <code dir="ltr">RECOVER TABLESPACE</code> command within a <code dir="ltr">RUN</code> command. The following example illustrates this technique:</p>
+<pre dir="ltr">
+RUN
+{
+   ALLOCATE AUXILIARY CHANNEL c1 DEVICE TYPE DISK;
+   ALLOCATE AUXILIARY CHANNEL c2 DEVICE TYPE sbt;
+  # and so on...
+   RECOVER TABLESPACE <span class="italic">ts1, ts2</span> UNTIL TIME 'time';
+}
+</pre></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1038311"></a>
+<div id="BRADV89825" class="sect2">
+<h3 class="sect2">Performing TSPITR with Your Own Auxiliary Instance: Scenario</h3>
+<p>This scenario shows the execution of a <code dir="ltr">RECOVER TABLESPACE... UNTIL</code> operation. This scenario illustrates the following features of RMAN TSPITR:</p>
+<ul>
+<li>
+<p>Managing your own auxiliary instance</p>
+</li>
+<li>
+<p>Configuring channels for restore of backups from disk and <a href="glossary.htm#CHDCCBFI"><span class="xrefglossterm">SBT</span></a> devices</p>
+</li>
+<li>
+<p>Using recoverable image copies for some auxiliary set data files using <code dir="ltr">SET NEWNAME</code></p>
+</li>
+<li>
+<p>Specifying new names for recovery set data files using <code dir="ltr">SET NEWNAME</code></p>
+</li>
+</ul>
+<p><span class="bold">To use TSPITR with your own auxiliary instance:</span></p>
+<ol>
+<li>
+<p>Prepare the auxiliary instance as described in <a href="#i1032739">"Preparing Your Own Auxiliary Instance for RMAN TSPITR"</a>. Specify a password for the auxiliary instance in the password file, and set up the auxiliary instance parameter file <code dir="ltr">/bigtmp/init_tspitr_prod.ora</code> with the following settings:</p>
+<pre dir="ltr">
+DB_NAME=PROD
+DB_UNIQUE_NAME=tspitr_PROD
+CONTROL_FILES=/bigtmp/tspitr_cntrl.dbf
+DB_CREATE_FILE_DEST=/bigtmp
+COMPATIBLE=11.0.0
+BLOCK_SIZE=8192
+REMOTE_LOGIN_PASSWORD=exclusive
+</pre></li>
+<li>
+<p>Create service name <code dir="ltr">pitprod</code> for the auxiliary instance, and check for connectivity.</p>
+</li>
+<li>
+<p>Using SQL*Plus, connect to the auxiliary instance with <code dir="ltr">SYSOPER</code> privileges. Start the instance in <code dir="ltr">NOMOUNT</code> mode:</p>
+<pre dir="ltr">
+SQL&gt; STARTUP NOMOUNT PFILE=/bigtmp/init_tspitr_prod.ora
+</pre></li>
+<li>
+<p>Start RMAN and connect to the target and auxiliary database instances.</p>
+<pre dir="ltr">
+rman target / auxiliary sys/syspwd@pitprod 
+</pre></li>
+<li>
+<p>Enter the following commands in a <code dir="ltr">RUN</code> block to set up and execute TSPITR:</p>
+<pre dir="ltr">
+RUN 
+{
+# Specify NEWNAME for recovery set data files
+  SET NEWNAME FOR TABLESPACE clients
+                        TO '?/oradata/prod/rec/%b';
+
+# Specify NEWNAMES for some auxiliary set 
+# data files that have a valid image copy to avoid restores:
+  SET NEWNAME FOR DATAFILE '?/oradata/prod/system01.dbf'
+                        TO '/backups/prod/system01_monday_noon.dbf';
+  SET NEWNAME FOR DATAFILE '?/oradata/prod/system02.dbf'
+                        TO '/backups/prod/system02_monday_noon.dbf';
+  SET NEWNAME FOR DATAFILE '?/oradata/prod/sysaux01.dbf'
+                        TO '/backups/prod/sysaux01_monday_noon.dbf';
+  SET NEWNAME FOR DATAFILE '?/oradata/prod/undo01.dbf'
+                        TO '/backups/prod/undo01_monday_noon.dbf';
+
+# Specify the types of channels to use
+  ALLOCATE AUXILIARY CHANNEL c1 DEVICE TYPE DISK;
+  ALLOCATE AUXILIARY CHANNEL t1 DEVICE TYPE sbt;
+
+# Recover the clients tablespace to 24 hours ago:
+  RECOVER TABLESPACE clients UNTIL TIME 'sysdate-1';
+}
+</pre></li>
+</ol>
+<p>Consider storing this command sequence in a command file and executing the command file.</p>
+<p>If the TSPITR operation is successful, then the results are:</p>
+<ul>
+<li>
+<p>The recovery set data files are registered in the target database control file under the names specified with <code dir="ltr">SET NEWNAME</code>, with their contents as of the time specified time for TSPITR.</p>
+</li>
+<li>
+<p>The auxiliary files are removed by RMAN, including the control files, online logs, and auxiliary set data files of the auxiliary instance.</p>
+</li>
+<li>
+<p>The auxiliary instance is shut down.</p>
+</li>
+</ul>
+<p>If the TSPITR operation fails, the auxiliary set files are removed and the auxiliary instance is shut down. The recovery set files are left in the specified location and in an unresolved state from the failed TSPITR run.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1035377"></a>
+<div id="BRADV99978" class="sect1">
+<h2 class="sect1">Troubleshooting RMAN TSPITR</h2>
+<p>A variety of problems can cause RMAN TSPITR to fail. This section lists possible areas to check and fix:</p>
+<ul>
+<li>
+<p>Filename conflicts</p>
+</li>
+<li>
+<p>Mismatched or incorrect TSPITR target times for sets of tablespaces and undo segments</p>
+</li>
+<li>
+<p>Management issues with auxiliary instances not created by RMAN</p>
+</li>
+</ul>
+<div id="BRADV89826" class="sect2"><a id="sthref1692"></a>
+<h3 class="sect2">Troubleshooting Filename Conflicts</h3>
+<p>Name conflicts can occur between files already in the target database, file names assigned by the <code dir="ltr">SET NEWNAME</code> or <code dir="ltr">CONFIGURE AUXNAME</code> commands, and file names generated by the effect of the <code dir="ltr">DB_FILE_NAME_CONVERT</code> parameter.</p>
+<p>Suppose that <code dir="ltr">SET NEWNAME</code>, <code dir="ltr">CONFIGURE AUXNAME</code>, and <code dir="ltr">DB_FILE_NAME_CONVERT</code> cause multiple files in the auxiliary or recovery sets to have the same name. In this case, RMAN reports an error during TSPITR. To correct the problem, use different values for these parameters.</p>
+</div>
+<!-- class="sect2" -->
+<div id="BRADV89827" class="sect2"><a id="sthref1693"></a>
+<h3 class="sect2">Troubleshooting the Identification of Tablespaces with Undo Segments</h3>
+<p>During TSPITR, RMAN needs information about which tablespaces had undo segments at the TSPITR target time. This information is usually available in the recovery catalog, if one is used.</p>
+<p>If there is no recovery catalog or if the information is not found in the recovery catalog, RMAN assumes that the set of tablespaces with undo segments at the target time is the same as the set of tablespaces with undo segments at the present time. If this assumption is not correct, then TSPITR fails with an error. In this case, use the <code dir="ltr">UNDO</code> <code dir="ltr">TABLESPACE</code> clause to provide a list of tablespaces with undo segments at the target time.</p>
+</div>
+<!-- class="sect2" -->
+<div id="BRADV89828" class="sect2"><a id="sthref1694"></a>
+<h3 class="sect2">Troubleshooting the Restart of a Manual Auxiliary Instance After TSPITR Failure</h3>
+<p>If you are managing your own auxiliary instance and TSPITR fails, do not attempt to rerun TSPITR without resolving the errors and following this approach:</p>
+<ol>
+<li>
+<p>Identify and fix the problems that prevented TSPITR from a successful run.</p>
+</li>
+<li>
+<p>Start the auxiliary instance in <code dir="ltr">NOMOUNT</code>.</p>
+</li>
+<li>
+<p>Run TSPITR again.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1933">
+<tr>
+<td class="cellalignment1942">
+<table class="cellalignment1938">
+<tr>
+<td class="cellalignment1937"><a href="rcmadvre.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1937"><a href="part_tun.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2003, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1944">
+<table class="cellalignment1936">
+<tr>
+<td class="cellalignment1937"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1937"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1937"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1937"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1937"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1937"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

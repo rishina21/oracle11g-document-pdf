@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Backing Up and Recovering a Database</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1060" />
+<meta name="dcterms.created" content="2015-07-23T2:44:39Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Installation and Administration Guide" />
+<meta name="dcterms.identifier" content="E27508-04" />
+<meta name="dcterms.isVersionOf" content="DFSIG" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2007, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="admin.htm" title="Previous" type="text/html" />
+<link rel="Next" href="tuning.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e27508.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">9/24</span> <!-- End Header -->
+<div id="DFSIG212" class="chapter"><a id="sthref74"></a>
+<h1 class="chapter"><span class="secnum">6</span> Backing Up and Recovering a Database</h1>
+<p>This chapter supplements the generic Oracle Database documentation set with information about backup and recovery.</p>
+<p>Refer to the following Oracle manuals for detailed information about database backup and recovery:</p>
+<ul>
+<li>
+<p><a class="olink CNCPT" href="../../server.112/e40540/toc.htm"><span class="italic">Oracle Database Concepts</span></a></p>
+</li>
+<li>
+<p><a class="olink ADMIN" href="../../server.112/e25494/toc.htm"><span class="italic">Oracle Database Administrator's Guide</span></a></p>
+</li>
+<li>
+<p><a class="olink BRADV" href="../../backup.112/e10642/toc.htm"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a></p>
+</li>
+</ul>
+<p>You can choose among many methods and Oracle tools for backup and recovery. You may use the Import and Export Utilities for logical backup and recovery. For physical backup and recovery you may use Recovery Manager (RMAN) or operating system utilities.</p>
+<p>This chapter describes some BS2000 specific issues if you apply user-managed backup and recovery with SQL*Plus and BS2000 utilities.</p>
+<p>Refer to <a href="#CEGFGGGC">Section 6.1.2, "Online Backup"</a> for information about RMAN on BS2000.</p>
+<a id="BABJFJFJ"></a>
+<div id="DFSIG420" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">6.1</span> Backing Up an Oracle Database</h2>
+<p>You can use one of the following methods to back up an Oracle Database.</p>
+<ul>
+<li>
+<p><a href="#CEGBDHFB">Using BS2000 Utilities to Back Up an Oracle Database</a></p>
+</li>
+<li>
+<p><a href="#CEGFGGGC">Online Backup</a></p>
+</li>
+</ul>
+<a id="CEGBDHFB"></a>
+<div id="DFSIG215" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">6.1.1</span> Using BS2000 Utilities to Back Up an Oracle Database</h3>
+<p>You can back up an Oracle database using BS2000 operating system utilities (for example, <code dir="ltr">ARCHIVE</code> or the <code dir="ltr">/COPY-FILE</code> command).</p>
+<p>Use the following steps to back up an Oracle database:</p>
+<ol>
+<li>
+<p>While the database is running, collect the names of all files, which make up Oracle database. You can determine the names of the log and database files by entering the following commands:</p>
+<pre dir="ltr">
+/START-PROGRAM $ORAC1120.SQLPLUS
+* /NOLOG
+SQL&gt; CONNECT / AS SYSDBA
+SQL&gt; SELECT * FROM V$DATAFILE;
+SQL&gt; SELECT * FROM V$LOGFILE;
+</pre></li>
+<li>
+<p>To ensure that all Oracle database files are synchronized at the time of the backup, shut down Oracle database using SQL*Plus.</p>
+</li>
+<li>
+<p>Back up all database files and log files using the BS2000 <code dir="ltr">ARCHIVE</code> utility or the BS2000 <code dir="ltr">/COPY-FILE</code> command. You should always back up all files at the same time.</p>
+</li>
+<li>
+<p>Restart Oracle Database using SQL*Plus.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="CEGFGGGC"></a>
+<div id="DFSIG216" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">6.1.2</span> Online Backup</h3>
+<p>You can perform an online backup of the database or individual tablespaces by using either:</p>
+<ul>
+<li>
+<p>the BS2000 <code dir="ltr">ARCHIVE</code> utility together with Oracle Database <code dir="ltr">INSTALL.C.OPNBACK</code> utility</p>
+</li>
+<li>
+<p>the BS2000 <code dir="ltr">PERCON</code> utility</p>
+</li>
+</ul>
+<p>The <code dir="ltr">ARCHIVE</code> method is faster, and is described in this section.</p>
+<p>Before you can perform an online (hot) backup of individual tablespaces, you must ensure that the <code dir="ltr">ARCHIVE</code> utility can back up open files.</p>
+<p>The following BS2000 command ensures that <code dir="ltr">ARCHIVE</code> can back up all open files:</p>
+<pre dir="ltr">
+/START-PROGRAM  $ORAC1120.INSTALL.C.OPNBACK
+*<span class="codeinlineitalic">filename</span>
+</pre>
+<p>The <code dir="ltr">INSTALL.C.OPNBACK</code> utility calls the BS2000 macro <code dir="ltr">CATAL</code>, which sets the <code dir="ltr">OPNBACK</code> file attribute to <code dir="ltr">YES</code>. For the <code dir="ltr">CATAL</code> macro to work the database must be shut down or the tablespace in question must be offline. You enter this command once for each file. For example, before adding it to a tablespace, not on the occasion of each backup.</p>
+<p>You must never back up database files online without first setting the tablespace to backup mode. If you do not follow this step, then the resulting backup files are inconsistent. To perform an online backup of individual tablespaces or data files, use the following procedure:</p>
+<ol>
+<li>
+<p>Enter the following command:</p>
+<pre dir="ltr">
+SQL&gt; ALTER TABLESPACE name BEGIN BACKUP;
+</pre></li>
+<li>
+<p>Back up the files of the tablespace using the BS2000 utility ARCHIVE utility. Ensure that the OLS parameter of ARCHIVE is set to <code dir="ltr">YES</code>.</p>
+</li>
+<li>
+<p>Enter the following command:</p>
+<pre dir="ltr">
+SQL&gt; ALTER TABLESPACE name END BACKUP;
+</pre></li>
+</ol>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The preceding SQL*Plus commands operate on tablespaces, while the <code dir="ltr">ARCHIVE</code> utility operates on data files.</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BABGGDCF"></a>
+<div id="DFSIG217" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">6.2</span> <a id="sthref75"></a>R<a id="sthref76"></a>ecovering Databases</h2>
+<p>An Oracle Database can be restored offline from backups, using the following steps:</p>
+<ol>
+<li>
+<p>Copy all the database files and the log files from the backup. You may use the BS2000 <code dir="ltr">ARCHIVE</code> utility or the BS2000 <code dir="ltr">/COPY-FILE</code> command. Files must be restored with their original name.</p>
+<p>While Oracle database is running, the names of all files which it comprises can be determined by querying the table <code dir="ltr">V$DATAFILE</code>. Enter the following command when the SQL prompt is displayed:</p>
+<pre dir="ltr">
+SQL&gt; select file#,name FROM V$DATAFILE;
+</pre>
+<p>The following is an example of the result that is displayed:</p>
+<pre dir="ltr">
+FILE#    NAME
+------  -------------------------
+1           :pvs:$dbauserid.<span class="codeinlineitalic">sid</span>.DBS.DATABASE1.DBF
+2           :pvs:$dbauserid.<span class="codeinlineitalic">sid</span>.DBS.DATABASE2.DBF
+ 
+2 ROWS SELECTED. 
+</pre>
+<p>You can determine the name of the log files in a similar way:</p>
+<pre dir="ltr">
+SQL&gt; SELECT GROUP#,MEMBER FROM V$LOGFILE;
+</pre>
+<p>The following is an example of the result that is displayed:</p>
+<pre dir="ltr">
+GROUP#   MEMBER
+------  -------------------------
+1       :pvs:$dbauserid.<span class="codeinlineitalic">sid</span>.DBS.LOG1.DBF
+2       :pvs:$dbauserid.<span class="codeinlineitalic">sid</span>.DBS.LOG2.DBF
+ 
+2 ROWS SELECTED. 
+</pre></li>
+<li>
+<p>Under the DBA user ID, ensure that the <code dir="ltr">ORA</code><code dir="ltr"><span class="codeinlineitalic">SID</span></code> environment variable identifies the Oracle Database, which is to be restored.</p>
+</li>
+<li>
+<p>Use the SQL*Plus <code dir="ltr">STARTUP</code> command to start the Oracle database.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect1" -->
+<div id="DFSIG223" class="sect1"><!-- infolevel="all" infotype="General" --><a id="sthref77"></a>
+<h2 class="sect1"><span class="secnum">6.3</span> Recovery Manager</h2>
+<p>On BS2000/OSD, Recovery Manager does not support tapes. Disks are the only backup media.</p>
+<p>As a workaround, you could use the Recovery Manager output as a first level storage to be migrated by BS2000 subsystem HSMS (Hierarchical Storage Management System) to tapes. However, it is the administrator's responsibility to care for cooperation of the two systems.</p>
+<p>Recovery Manager must use an Oracle Net Services connection. For this purpose you can:</p>
+<ul>
+<li>
+<p>Use a Bequeath Server. Refer to <a href="netv2.htm#CHDDIHHI">Chapter 9, " Oracle Net Services"</a> for more details.</p>
+</li>
+<li>
+<p>Create a password file, start a listener, and connect through Oracle Net Services</p>
+</li>
+</ul>
+<p>The following is an example of a Recovery Manager command:</p>
+<pre dir="ltr">
+/START-PROG $ORAC1120.RMAN
+*target "dba1/dba1@i1" catalog "dba2/dba2@i2" cmdfile "b.dat" log "b.log"
+</pre></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment2612">
+<tr>
+<td class="cellalignment2621">
+<table class="cellalignment2617">
+<tr>
+<td class="cellalignment2616"><a href="admin.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment2616"><a href="tuning.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2007, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment2623">
+<table class="cellalignment2615">
+<tr>
+<td class="cellalignment2616"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment2616"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment2616"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment2616"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment2616"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment2616"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

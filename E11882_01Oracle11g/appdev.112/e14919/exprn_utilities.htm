@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Using Expression Filter with Utilities</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 033" />
+<meta name="dcterms.created" content="2011-08-16T11:52:4Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Rules Manager and Expression Filter Developer's Guide" />
+<meta name="dcterms.identifier" content="E14919-04" />
+<meta name="dcterms.isVersionOf" content="EXPRN" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2003, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="exprn_sql.htm" title="Previous" type="text/html" />
+<link rel="Next" href="exprn_types.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e14919.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">25/36</span> <!-- End Header --><a id="CJAGDHBB"></a><a id="EXPRN039"></a>
+<h1 class="chapter"><span class="secnum">16</span> Using Expression Filter with <a id="sthref330"></a>Utilities</h1>
+<p>This chapter describes the use of SQL*Loader and Data Pump Export and Import utilities in the presence of one or more Expression columns.</p>
+<a id="CJABHDDD"></a><a id="EXPRN040"></a>
+<div class="sect1">
+<h2 class="sect1"><span class="secnum">16.1</span> <a id="sthref331"></a><a id="sthref332"></a>Bulk Loading of Expression Data</h2>
+<p>Bulk loading can import large amounts of ASCII data into an Oracle database. You use the <a id="sthref333"></a>SQL*Loader utility to bulk load data.</p>
+<p>For SQL*Loader operations, the expression data is treated as strings loaded into a <code>VARCHAR2</code> column of a database table. The data file can hold the expression data in any format allowed for <code>VARCHAR2</code> data, and the control file can refer to the column storing expressions as a column of a <code>VARCHAR2</code> data type.</p>
+<p>A sample control file used to load a few rows into the <code>Consumer</code> table is shown in the following example:</p>
+<pre>
+LOAD DATA
+INFILE *
+INTO TABLE Consumer
+FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '"'
+(CId, Zipcode, Phone, Interest)
+BEGINDATA
+1,32611,"917 768 4633","Model='Taurus' and Price &lt; 15000 and Mileage &lt; 25000"
+2,03060,"603 983 3464","Model='Mustang' and Year &gt; 1999 and Price &lt; 20000"
+3,03060,"603 484 7013","HorsePower(Model, Year) &gt; 200 and Price &lt; 20000"
+</pre>
+<p>The data loaded into an Expression column is automatically validated using the attribute set associated with the column. This validation is done by the <code>BEFORE ROW</code> trigger defined on the column storing expressions. Therefore, a direct load cannot be used when the table has one or more Expression columns.</p>
+<p>If an Expression Filter index is defined on the column storing expressions, it is automatically maintained during the SQL*Loader operations.To achieve faster bulk loads, the expression validation can be <a id="sthref334"></a><a id="sthref335"></a>bypassed by following these steps:</p>
+<ol>
+<li>
+<p><a id="sthref336"></a>Drop any Expression Filter indexes defined on Expression columns in the table:</p>
+<pre>
+DROP INDEX InterestIndex;
+</pre></li>
+<li>
+<p>Convert the Expression columns back into <code>VARCHAR2</code> columns by unassigning the attribute sets, using the <a id="sthref337"></a><code>UNASSIGN_ATTRIBUTE_SET</code> procedure:</p>
+<pre>
+BEGIN
+  DBMS_EXPFIL.UNASSIGN_ATTRIBUTE_SET (expr_tab =&gt; 'Consumer',
+                                      expr_col =&gt; 'Interest');
+END;
+/
+</pre></li>
+<li>
+<p>Perform the bulk load operation. Because the Expression columns are converted to <code>VARCHAR2</code> columns in the previous step, a direct load is possible in this step.</p>
+</li>
+<li>
+<p>Convert the <code>VARCHAR2</code> columns with expression data into Expression columns by assigning a value of <code>TRUE</code> for the <code>force</code> argument of the <a id="sthref338"></a><code>ASSIGN_ATTRIBUTE_SET</code> procedure:</p>
+<pre>
+BEGIN
+  DBMS_EXPFIL.ASSIGN_ATTRIBUTE_SET (
+                                    attr_set =&gt; 'Car4Sale', 
+                                    expr_tab =&gt; 'Consumer',
+                                    expr_col =&gt; 'Interest',
+                                    force    =&gt; 'TRUE');
+END;
+/
+</pre></li>
+<li>
+<p>To avoid runtime validation errors, you can validate the expressions in the table using the <code>DBMS_EXPFIL.<a id="sthref339"></a>VALIDATE_EXPRESSIONS</code> procedure:</p>
+<pre>
+BEGIN
+  DBMS_EXPFIL.VALIDATE_EXPRESSIONS (expr_tab =&gt; 'Consumer', 
+                                     expr_col =&gt; 'Interest');
+END;
+/
+</pre></li>
+<li>
+<p>Re-create the indexes on the Expression columns.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect1" -->
+<a id="EXPRN041"></a>
+<div class="sect1"><a id="sthref340"></a>
+<h2 class="sect1"><span class="secnum">16.2</span> Exporting and Importing Tables, Users, and Databases</h2>
+<p>A table with one or more Expression columns can be exported and imported back to the same database or a different Oracle database. If a table with Expression columns is being imported into an Oracle Database, ensure Expression Filter is installed.</p>
+<a id="EXPRN042"></a>
+<div class="sect2"><a id="sthref341"></a>
+<h3 class="sect2"><span class="secnum">16.2.1</span> <a id="sthref342"></a><a id="sthref343"></a>Exporting and <a id="sthref344"></a><a id="sthref345"></a>Importing Tables Containing Expression Columns</h3>
+<p>The following guidelines and known behavior associated with exporting and importing tables containing Expression columns can assist you in this operation.</p>
+<ul>
+<li>
+<p>When a table with one or more Expression columns is exported, the corresponding attribute set definitions, along with their object type definitions, are placed in the export dump file. An attribute set definition placed in the dump file includes its default index parameters and the list of approved user-defined functions. However, definitions for the user-defined functions are not placed in the export dump file.</p>
+</li>
+<li>
+<p>While importing a table with one or more Expression columns from the export dump file, the attribute set creation may fail if a matching attribute set exists in the destination schema. If the attribute set is defined with one or more (embedded) object typed attributes, these types should exist in the database importing the attribute set.</p>
+</li>
+<li>
+<p>While importing the default index parameters and user-defined function list, the import driver continues the import process if it encounters missing dependent objects. For example, if the function <code>HorsePower</code> does not exist in the schema importing the <code>Consumer</code> table, the import of the table and the attribute set proceeds without errors. However, the corresponding entries in the Expression Filter dictionary display null values for object type or output data type fields, an indication the import process was incomplete.</p>
+</li>
+<li>
+<p>When the Expression Filter index defined on an Expression column is exported, all its metadata is placed in the export dump file. This metadata includes a complete list of stored and indexed attributes configured for the index. During import, this list is used. The attributes are not derived from the default index parameters. If one or more stored attributes use object references (functions) that are not valid in the schema importing the index, the index creation fails with an error. However, the index metadata is preserved in the Expression Filter dictionary.</p>
+</li>
+<li>
+<p>A table imported incompletely due to broken references to dependent schema objects (in the function list, default index parameters list, and exact index parameters list) may cause runtime errors during subsequent expression evaluation or expression modifications (through DML). Import of such tables can be completed from a SQL*Plus session by resolving all the broken references. Running the Expression Validation utility (<code>DBMS_EXPFIL.VALIDATE_EXPRESSIONS</code> procedure) can identify errors in the expression metadata and the expressions. You can create any missing objects identified by this utility and repeat the process until all the errors in the expression set are resolved. Then, you can recover the Expression Filter index with the SQL <code>ALTER INDEX ... REBUILD</code> statement.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="EXPRN043"></a>
+<div class="sect2"><a id="sthref346"></a>
+<h3 class="sect2"><span class="secnum">16.2.2</span> <a id="sthref347"></a><a id="sthref348"></a>Exporting a User Owning Attribute Sets</h3>
+<p>In addition to exporting tables and indexes defined in the schema, export of a user places the definitions for attribute sets that are not associated with any Expression column into the export dump file. All the restrictions that apply to the export of tables also apply to the export of a user.</p>
+</div>
+<!-- class="sect2" -->
+<a id="EXPRN044"></a>
+<div class="sect2"><a id="sthref349"></a>
+<h3 class="sect2"><span class="secnum">16.2.3</span> <a id="sthref350"></a><a id="sthref351"></a>Exporting a Database Containing Attribute Sets</h3>
+<p>During a database export, attribute set definitions are placed in the export file along with all other objects. The contents of <code>EXFSYS</code> schema are excluded from the database export.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment988">
+<tr>
+<td class="cellalignment995">
+<table class="cellalignment993">
+<tr>
+<td class="cellalignment992"><a href="exprn_sql.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment992"><a href="exprn_types.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2003, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment997">
+<table class="cellalignment991">
+<tr>
+<td class="cellalignment992"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment992"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment992"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment992"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment992"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment992"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

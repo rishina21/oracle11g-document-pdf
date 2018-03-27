@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Schema Modeling Techniques</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 070" />
+<meta name="dcterms.created" content="2013-07-04T23:23:22Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Data Warehousing Guide" />
+<meta name="dcterms.identifier" content="E25554-02" />
+<meta name="dcterms.isVersionOf" content="DWHSG" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2001, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="qradv.htm" title="Previous" type="text/html" />
+<link rel="Next" href="aggreg.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e25554.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">29/35</span> <!-- End Header --><a id="g1008401"></a><a id="DWHSG019"></a>
+<h1 class="chapter"><span class="secnum">20</span> Schema Modeling Techniques</h1>
+<p>The following topics provide information about schemas in a data warehouse:</p>
+<ul>
+<li>
+<p><a href="#CIHHHGFJ">Schemas in Data Warehouses</a></p>
+</li>
+<li>
+<p><a href="#CIHEDBDD">Third Normal Form</a></p>
+</li>
+<li>
+<p><a href="#CIHFGCEJ">Star Schemas</a></p>
+</li>
+<li>
+<p><a href="#CIHGHEFB">Optimizing Star Queries</a></p>
+</li>
+</ul>
+<a id="CIHHHGFJ"></a><a id="DWHSG8583"></a>
+<div class="sect1">
+<h2 class="sect1">Schemas in Data Warehouses</h2>
+<p><a id="sthref1002"></a>A <a href="glossary.htm#i997085"><span class="xrefglossterm">schema</span></a> is a collection of database objects, including tables, views, indexes, and synonyms.</p>
+<p>There is a variety of ways of arranging schema objects in the schema models designed for data warehousing. One data warehouse schema model is a star schema. The <code>sh</code> sample schema (the basis for most of the examples in this book) uses a star schema. However, there are other schema models that are commonly used for data warehouses. The most prevalent of these schema models is the <a href="glossary.htm#i997180"><span class="xrefglossterm">third normal form (3NF)</span></a> s<a id="sthref1003"></a>chema. Additionally, some data warehouse schemas are neither star schemas nor 3NF schemas, but instead share characteristics of both schemas; these are referred to as hybrid schema models.</p>
+<p>The Oracle Database is designed to support all data warehouse schemas. Some features may be specific to one schema model (such as the star transformation feature, described in <a href="#i1006335">"Using Star Transformation"</a>, which is specific to star schemas). However, the vast majority of Oracle's data warehousing features are equally applicable to star schemas, 3NF schemas, and hybrid schemas. Key data warehousing capabilities such as partitioning (including the rolling window load technique), parallelism, materialized views, and analytic SQL are implemented in all schema models.</p>
+<p>The determination of which schema model should be used for a data warehouse should be based upon the requirements and preferences of the data warehouse project team. Comparing the merits of the alternative schema models is outside of the scope of this book; instead, this chapter briefly introduces each schema model and suggest how Oracle Database can be optimized for those environments.</p>
+</div>
+<!-- class="sect1" -->
+<a id="CIHEDBDD"></a><a id="DWHSG8584"></a>
+<div class="sect1">
+<h2 class="sect1">Third Normal Form</h2>
+<p>Although this guide <a id="sthref1004"></a><a id="sthref1005"></a>primarily uses star schemas in its examples, you can also use the third normal form for your data warehouse implementation.</p>
+<p>Third normal form modeling is a classical relational-database modeling technique that minimizes data redundancy through normalization. When compared to a star schema, a 3NF schema typically has a larger number of tables due to this normalization process. For example, in <a href="#i1006236">Figure 20-1</a>, <code>orders</code> and <code>order</code> <code>items</code> tables contain similar information as <code>sales</code> table in the star schema in <a href="#i1006289">Figure 20-2</a>.</p>
+<p>3NF schemas are typically chosen for large data warehouses, especially environments with significant data-loading requirements that are used to feed data marts and execute long-running queries.</p>
+<p>The main advantages of 3NF schemas are that they:</p>
+<ul>
+<li>
+<p>Provide a neutral schema design, independent of any application or data-usage considerations</p>
+</li>
+<li>
+<p>May require less data-transformation than more normalized schemas such as star schemas</p>
+</li>
+</ul>
+<p><a href="#i1006236">Figure 20-1</a> presents a graphical representation of a third normal form schema.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="i1006236"></a><a id="DWHSG8585"></a>Figure 20-1 Third Normal Form Schema</p>
+<img width="326" height="135" src="./dwhsg108.gif" alt="Description of Figure 20-1 follows" /><br />
+<a id="sthref1006" href="./img_text/dwhsg108.htm">Description of "Figure 20-1 Third Normal Form Schema"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<a id="DWHSG8586"></a>
+<div class="sect2"><a id="sthref1007"></a>
+<h3 class="sect2">Optimizing Third Normal Form Queries</h3>
+<p>Queries on 3NF schemas <a id="sthref1008"></a>are often very complex and involve a large number of tables. The performance of joins between large tables is thus a primary consideration when using 3NF schemas.</p>
+<p>One particularly important feature for 3NF schemas is partition-wise joins. The largest tables in a 3NF schema should be partitioned to enable partition-wise joins. The most common partitioning technique in these environments is composite range-hash partitioning for the largest tables, with the most-common join key chosen as the hash-partitioning key.</p>
+<p>Parallelism is often heavily utilized in 3NF environments, and parallelism should typically be enabled in these environments.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CIHFGCEJ"></a><a id="DWHSG8587"></a>
+<div class="sect1">
+<h2 class="sect1">Star Schemas</h2>
+<p>The <a href="glossary.htm#i997131"><span class="xrefglossterm">star schema</span></a><a id="sthref1009"></a> is perhaps the simplest data warehouse schema. It is called a star schema because the entity-relationship diagram of this schema resembles a star, with points radiating from a central table. The center of the star consists of a large fact table and the points of the star are the dimension tables.<a id="sthref1010"></a><a id="sthref1011"></a><a id="sthref1012"></a><a id="sthref1013"></a><a id="sthref1014"></a><a id="sthref1015"></a><a id="sthref1016"></a><a id="sthref1017"></a><a id="sthref1018"></a><a id="sthref1019"></a></p>
+<p><a id="sthref1020"></a>A <a href="glossary.htm#i997128"><span class="xrefglossterm">star query</span></a> is a join between a fact table and a number of dimension tables. Each dimension table is joined to the fact table using a primary key to foreign key join, but the dimension tables are not joined to each other. The optimizer recognizes star queries and generates efficient execution plans for them. It is not mandatory to have any foreign keys on the fact table for star transformation to take effect.</p>
+<p>A typical fact table contain<a id="sthref1021"></a><a id="sthref1022"></a>s keys and measures. For example, in the <code>sh</code> sample schema, the fact table, <code>sales</code>, contain the measures <code>quantity_sold</code>, <code>amount</code>, and <code>cost</code>, and the keys <code>cust_id</code>, <code>time_id</code>, <code>prod_id</code>, <code>channel_id</code>, and <code>promo_id</code>. The dimension tables are <code>customers</code>, <code>times</code>, <code>products</code>, <code>channels</code>, and <code>promotions</code>. The <code>products</code> dimension table, for example, contains information about each product number that appears in the fact table.</p>
+<p><a id="sthref1023"></a><a id="sthref1024"></a><a id="sthref1025"></a><a id="sthref1026"></a>A star join is a primary key to foreign key join of the dimension tables to a fact table.</p>
+<p>The main advantages of star schemas are that they:</p>
+<ul>
+<li>
+<p>Provide a direct and intuitive mapping between the business entities being analyzed by end users and the schema design.</p>
+</li>
+<li>
+<p>Provide highly optimized performance for typical star queries.</p>
+</li>
+<li>
+<p>Are widely supported by a large number of business intelligence tools, which may anticipate or even require that the data warehouse schema contain dimension tables.</p>
+</li>
+</ul>
+<p>Star schemas are used for both simple data marts and very large data warehouses.</p>
+<p><a href="#i1006289">Figure 20-2</a> presents a graphical representation of a star schema.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="i1006289"></a><a id="DWHSG8588"></a>Figure 20-2 Star Schema</p>
+<img width="377" height="178" src="./dwhsg007.gif" alt="Description of Figure 20-2 follows" /><br />
+<a id="sthref1027" href="./img_text/dwhsg007.htm">Description of "Figure 20-2 Star Schema"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<a id="DWHSG8589"></a>
+<div class="sect2"><a id="sthref1028"></a>
+<h3 class="sect2">Snowflake Schemas</h3>
+<p>The snowflake schema<a id="sthref1029"></a> is a more complex data warehouse model than a star schema, and is a type of star schema. It is called a snowflake schema because the diagram of the schema resembles a snowflake.</p>
+<p>Snowflake schemas normalize dimensions to eliminate redundancy. That is, the dimension data has been grouped into multiple tables instead of one large table. For example, a product dimension table in a star schema might be normalized into a products table, a <code>product_category</code> table, and a <code>product_manufacturer</code> table in a snowflake schema. While this saves space, it increases the number of dimension tables and requires more foreign key joins<a id="sthref1030"></a>. The result is more complex queries<a id="sthref1031"></a><a id="sthref1032"></a> and reduced query performance. <a href="#i1006305">Figure 20-3</a> presents a graphical representation of a snowflake schema.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="i1006305"></a><a id="DWHSG8590"></a>Figure 20-3 Snowflake Schema</p>
+<img width="377" height="247" src="./dwhsg008.gif" alt="Description of Figure 20-3 follows" /><br />
+<a id="sthref1033" href="./img_text/dwhsg008.htm">Description of "Figure 20-3 Snowflake Schema"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<div class="infobox-note">
+<p class="notep1"><span class="bold">Note</span>:</p>
+Oracle recommends you choose a star schema over a snowflake schema unless you have a clear reason not to.</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CIHGHEFB"></a><a id="DWHSG8591"></a>
+<div class="sect1">
+<h2 class="sect1">Optimizing Star Queries</h2>
+<p>You should consider the following when using star queries:</p>
+<ul>
+<li>
+<p><a href="#i1006327">Tuning Star Queries</a></p>
+</li>
+<li>
+<p><a href="#i1006335">Using Star Transformation</a></p>
+</li>
+</ul>
+<a id="i1006327"></a><a id="DWHSG8592"></a>
+<div class="sect2">
+<h3 class="sect2">Tuning Star Queries</h3>
+<p>To get the best possible performance for star queries, it is important to follow some basic guidelines:</p>
+<ul>
+<li>
+<p>A bitmap index should be built on each of the foreign key columns of the fact table or tables.</p>
+</li>
+<li>
+<p>The initialization parameter <code><a id="sthref1034"></a><a id="sthref1035"></a>STAR_TRANSFORMATION_ENABLED</code> should be set to <code>TRUE</code>. This enables an important optimizer feature for star-queries. It is set to <code>FALSE</code> by default for backward-compatibility.</p>
+</li>
+</ul>
+<p>When a data warehouse satisfies these conditions, the majority of the star queries running in the data warehouse uses a query execution strategy known as the star transformation. The star transformation provides very efficient query performance for star queries.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1006335"></a><a id="DWHSG8593"></a>
+<div class="sect2">
+<h3 class="sect2">Using Star Transformation</h3>
+<p>The star transformation is a powerful optimization technique that relies upon implicitly rewriting (or transforming) the SQL of the original star query. The end user never needs to know any of the details about the star transformation. Oracle Database's query optimizer automatically chooses the star transformation where appropriate.</p>
+<p><a id="sthref1036"></a><a id="sthref1037"></a>The star transformation is a query transformation aimed at executing star queries efficiently. Oracle Database processes a star query using two basic phases. The first phase retrieves exactly the necessary rows from the fact tabl<a id="sthref1038"></a>e (the result set). Because this retrieval utilizes bitmap indexes, it is very efficient. The second phase joins this result set to the dimension tables. An example of an end user query is: "What were the sales and profits for the grocery department of stores in the west and southwest sales districts over the last three quarters?" This is a simple star query.</p>
+<a id="CIHEIFCC"></a><a id="DWHSG8594"></a>
+<div class="sect3">
+<h4 class="sect3">Star Transformation with a Bitmap Index</h4>
+<p>A prerequisite of the star transformation is that there be a single-column bitmap index on every join column of the fact table. These join columns include all foreign key columns.</p>
+<p>For example, the <code>sales</code> table of the <code>sh</code> sample schema has bitmap indexes on the <code>time_id</code>, <code>channel_id</code>, <code>cust_id</code>, <code>prod_id</code>, and <code>promo_id</code> columns.</p>
+<p>Consider the following star query:</p>
+<pre>
+SELECT ch.channel_class, c.cust_city, t.calendar_quarter_desc,
+   SUM(s.amount_sold) sales_amount
+FROM sales s, times t, customers c, channels ch
+WHERE s.time_id = t.time_id
+AND   s.cust_id = c.cust_id
+AND   s.channel_id = ch.channel_id
+AND   c.cust_state_province = 'CA'
+AND   ch.channel_desc in ('Internet','Catalog')
+AND   t.calendar_quarter_desc IN ('1999-Q1','1999-Q2')
+GROUP BY ch.channel_class, c.cust_city, t.calendar_quarter_desc;
+</pre>
+<p>This query is processed in two phases. In the first phase, Oracle Database uses the bitmap indexes on the foreign key columns of the fact table to identify and retrieve only the necessary rows from the fact table. That is, Oracle Database retrieves the result set from the fact table using essentially the following query:</p>
+<pre>
+SELECT ... FROM sales
+WHERE time_id IN
+  (SELECT time_id FROM times 
+   WHERE calendar_quarter_desc IN('1999-Q1','1999-Q2'))
+   AND cust_id IN
+  (SELECT cust_id FROM customers WHERE cust_state_province='CA')
+   AND channel_id IN
+  (SELECT channel_id FROM channels WHERE channel_desc IN('Internet','Catalog'));
+</pre>
+<p>This is the transformation step of the algorithm, because the original star query has been transformed into this subquery representation. This method of accessing the fact table leverages the strengths of bitmap indexes. Intuitively, bitmap indexes provide a set-based processing scheme within a relational database. Oracle has implemented very fast methods for doing set operations such as <code>AND</code> (an intersection in standard set-based terminology), <code>OR</code> (a set-based union), <code>MINUS</code>, and <code>COUNT</code>.</p>
+<p>In this star query, a bitmap index on <code>time_id</code> is used to identify the set of all rows in the fact table corresponding to <code>sales</code> in <code>1999-Q1</code>. This set is represented as a bitmap (a string of 1's and 0's that indicates which rows of the fact table are members of the set).</p>
+<p>A similar bitmap is retrieved for the fact table rows corresponding to the sale from <code>1999-Q2</code>. The bitmap <code>OR</code> operation is used to combine this set of <code>Q1</code> sales with the set of <code>Q2</code> sales.</p>
+<p>Additional set operations will be done for the <code>customer</code> dimension and the <code>product</code> dimension. At this point in the star query processing, there are three bitmaps. Each bitmap corresponds to a separate dimension table, and each bitmap represents the set of rows of the fact table that satisfy that individual dimension's constraints.</p>
+<p>These three bitmaps are combined into a single bitmap using the bitmap <code>AND</code> operation. This final bitmap represents the set of rows in the fact table that satisfy all of the constraints on the dimension table. This is the result set, the exact set of rows from the fact table needed to evaluate the query. Note that none of the actual data in the fact table has been accessed. All of these operations rely solely on the bitmap indexes and the dimension tables. Because of the bitmap indexes' compressed data representations, the bitmap set-based operations are extremely efficient.</p>
+<p>Once the result set is identified, the bitmap is used to access the actual data from the sales table. Only those rows that are required for the end user's query are retrieved from the fact table. At this point, Oracle Database has effectively joined all of the dimension tables to the fact table using bitmap indexes. This technique provides excellent performance because Oracle Database is joining all of the dimension tables to the fact table with one logical join operation, rather than joining each dimension table to the fact table independently.</p>
+<p>The second phase of this query is to join these rows from the fact table (the result set) to the dimension tables. Oracle uses the most efficient method for accessing and joining the dimension tables. Many dimension are very small, and table scans are typically the most efficient access method for these dimension tables. For large dimension tables, table scans may not be the most efficient access method. In the previous example, a bitmap index on <code>product.department</code> can be used to quickly identify all of those products in the grocery department. Oracle Database's optimizer automatically determines which access method is most appropriate for a given dimension table, based upon the optimizer's knowledge about the sizes and data distributions of each dimension table.</p>
+<p>The specific join method (as well as indexing method) for each dimension table will likewise be intelligently determined by the optimizer. A hash join is often the most efficient algorithm for joining the dimension tables. The final answer is returned to the user once all of the dimension tables have been joined. The query technique of retrieving only the matching rows from one table and then joining to another table is commonly known as a semijoin.</p>
+</div>
+<!-- class="sect3" -->
+<a id="DWHSG8595"></a>
+<div class="sect3"><a id="sthref1039"></a>
+<h4 class="sect3">Execution Plan for a Star Transformation with a Bitmap Index</h4>
+<p><a id="sthref1040"></a><a id="sthref1041"></a><a id="sthref1042"></a>The following typical execution plan might result from <a href="#CIHEIFCC">"Star Transformation with a Bitmap Index"</a>:</p>
+<pre>
+SELECT STATEMENT
+ SORT GROUP BY
+  HASH JOIN
+   TABLE ACCESS FULL                          CHANNELS
+   HASH JOIN
+    TABLE ACCESS FULL                         CUSTOMERS
+    HASH JOIN
+     TABLE ACCESS FULL                        TIMES
+     PARTITION RANGE ITERATOR
+      TABLE ACCESS BY LOCAL INDEX ROWID       SALES
+       BITMAP CONVERSION TO ROWIDS
+        BITMAP AND
+         BITMAP MERGE
+          BITMAP KEY ITERATION
+           BUFFER SORT
+            TABLE ACCESS FULL                 CUSTOMERS
+           BITMAP INDEX RANGE SCAN            SALES_CUST_BIX
+         BITMAP MERGE
+          BITMAP KEY ITERATION
+           BUFFER SORT
+            TABLE ACCESS FULL                 CHANNELS
+           BITMAP INDEX RANGE SCAN            SALES_CHANNEL_BIX
+         BITMAP MERGE
+          BITMAP KEY ITERATION
+           BUFFER SORT
+            TABLE ACCESS FULL                 TIMES
+           BITMAP INDEX RANGE SCAN            SALES_TIME_BIX
+</pre>
+<p>In this plan, the fact table is accessed through a bitmap access path based on a bitmap <code>AND</code>, of three merged bitmaps. The three bitmaps are generated by the <code>BITMAP</code> <code>MERGE</code> row source being fed bitmaps from row source trees underneath it. Each such row source tree consists of a <code>BITMAP</code> <code>KEY</code> <code>ITERATION</code> row source which fetches values from the subquery row source tree, which in this example is a full table access. For each such value, the <code>BITMAP</code> <code>KEY</code> <code>ITERATION</code> row source retrieves the bitmap from the bitmap index. After the relevant fact table rows have been retrieved using this access path, they are joined with the dimension tables and temporary tables to produce the answer to the query.</p>
+</div>
+<!-- class="sect3" -->
+<a id="DWHSG8596"></a>
+<div class="sect3"><a id="sthref1043"></a>
+<h4 class="sect3">Star Transformation with a Bitmap Join Index</h4>
+<p>In addition to bitmap indexes, you can use a bitmap join index during star transformations. Assume you have the following additional index structure:</p>
+<pre>
+CREATE BITMAP INDEX sales_c_state_bjix
+ON sales(customers.cust_state_province)
+FROM sales, customers
+WHERE sales.cust_id = customers.cust_id
+LOCAL NOLOGGING COMPUTE STATISTICS;
+</pre>
+<p>The processing of the same star query using the bitmap join index is similar to the previous example. The only difference is that Oracle utilizes the join index, instead of a single-table bitmap index, to access the customer data in the first phase of the star query.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i1006430"></a><a id="DWHSG8597"></a>
+<div class="sect3">
+<h4 class="sect3">Execution Plan for a Star Transformation with a Bitmap Join Index</h4>
+<p>The following typical execution plan might result from <a href="#i1006430">"Execution Plan for a Star Transformation with a Bitmap Join Index"</a>:</p>
+<pre>
+SELECT STATEMENT
+ SORT GROUP BY
+  HASH JOIN
+   TABLE ACCESS FULL                          CHANNELS
+   HASH JOIN
+    TABLE ACCESS FULL                         CUSTOMERS
+    HASH JOIN
+     TABLE ACCESS FULL                        TIMES
+     PARTITION RANGE ALL
+      TABLE ACCESS BY LOCAL INDEX ROWID       SALES
+       BITMAP CONVERSION TO ROWIDS
+        BITMAP AND
+         BITMAP INDEX SINGLE VALUE            SALES_C_STATE_BJIX
+         BITMAP MERGE
+          BITMAP KEY ITERATION
+           BUFFER SORT
+            TABLE ACCESS FULL                 CHANNELS
+           BITMAP INDEX RANGE SCAN            SALES_CHANNEL_BIX
+         BITMAP MERGE
+          BITMAP KEY ITERATION
+           BUFFER SORT
+            TABLE ACCESS FULL                 TIMES
+           BITMAP INDEX RANGE SCAN            SALES_TIME_BIX
+</pre>
+<p>The difference between this plan as compared to the previous one is that the inner part of the bitmap index scan for the <code>customer</code> dimension has no subselect. This is because the join predicate information on <code>customer.cust_state_province</code> can be satisfied with the bitmap join index <code>sales_c_state_bjix</code>.</p>
+</div>
+<!-- class="sect3" -->
+<a id="DWHSG8598"></a>
+<div class="sect3"><a id="sthref1044"></a>
+<h4 class="sect3">How Oracle Chooses to Use Star Transformation</h4>
+<p>The optimizer generates and saves the best plan it can produce without the transformation. If the transformation is enabled, the optimizer then tries to apply it to the query and, if applicable, generates the best plan using the transformed query. Based on a comparison of the cost estimates between the best plans for the two versions of the query, the optimizer then decides whether to use the best plan for the transformed or untransformed version.</p>
+<p>If the query requires accessing a large percentage of the rows in the fact table, it might be better to use a full table scan and not use the transformations. However, if the constraining predicates on the dimension tables are sufficiently selective that only a small portion of the fact table must be retrieved, the plan based on the transformation will probably be superior.</p>
+<p>Note that the optimizer generates a subquery for a dimension table only if it decides that it is reasonable to do so based on a number of criteria. There is no guarantee that subqueries will be generated for all dimension tables. The optimizer may also decide, based on the properties of the tables and the query, that the transformation does not merit being applied to a particular query. In this case the best regular plan will be used.</p>
+</div>
+<!-- class="sect3" -->
+<a id="DWHSG8599"></a>
+<div class="sect3"><a id="sthref1045"></a>
+<h4 class="sect3">Star Transformation Restrictions</h4>
+<p><a id="sthref1046"></a>Star transformation is not supported for tables with any of the following characteristics:</p>
+<ul>
+<li>
+<p>Queries with a table hint that is incompatible with a bitmap access path</p>
+</li>
+<li>
+<p>Queries that contain bind variables</p>
+</li>
+<li>
+<p>Tables with too few bitmap indexes. There must be a bitmap index on a fact table column for the optimizer to generate a subquery for it.</p>
+</li>
+<li>
+<p>Remote fact tables. However, remote dimension tables are allowed in the subqueries that are generated.</p>
+</li>
+<li>
+<p>Anti-joined tables</p>
+</li>
+<li>
+<p>Tables that are already used as a dimension table in a subquery</p>
+</li>
+<li>
+<p>Tables that are really unmerged views, which are not view partitions</p>
+</li>
+<li>
+<p>Tables where the fact table is an unmerged view.</p>
+</li>
+<li>
+<p>Tables where a partitioned view is used as a fact table.</p>
+</li>
+</ul>
+<p>The star transformation may not be chosen by the optimizer for the following cases:</p>
+<ul>
+<li>
+<p>Tables that have a good single-table access path</p>
+</li>
+<li>
+<p>Tables that are too small for the transformation to be worthwhile</p>
+</li>
+</ul>
+<p>In addition, temporary tables will not be used by star transformation under the following conditions:</p>
+<ul>
+<li>
+<p>The database is in read-only mode</p>
+</li>
+<li>
+<p>The star query is part of a transaction that is in serializable mode</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1371">
+<tr>
+<td class="cellalignment1378">
+<table class="cellalignment1376">
+<tr>
+<td class="cellalignment1375"><a href="qradv.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1375"><a href="aggreg.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2001, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1380">
+<table class="cellalignment1374">
+<tr>
+<td class="cellalignment1375"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1375"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1375"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1375"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1375"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1375"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

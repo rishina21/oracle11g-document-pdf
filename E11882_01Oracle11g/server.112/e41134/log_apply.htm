@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Apply Services</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 748" />
+<meta name="dcterms.created" content="2014-02-25T8:43:1Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Data Guard Concepts and Administration" />
+<meta name="dcterms.identifier" content="E41134-03" />
+<meta name="dcterms.isVersionOf" content="SBYDB" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1999, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="log_transport.htm" title="Previous" type="text/html" />
+<link rel="Next" href="role_management.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e41134.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">15/34</span> <!-- End Header -->
+<div id="SBYDB00500" class="chapter"><a id="g1045133"></a> <a id="i1027052"></a>
+<h1 class="chapter"><span class="secnum">7</span> Apply Services</h1>
+<p>This chapter describes how <a id="sthref373"></a><a id="sthref374"></a>redo data is applied to a standby database. It includes the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1015213">Introduction to Apply Services</a></p>
+</li>
+<li>
+<p><a href="#i1023371">Apply Services Configuration Options</a></p>
+</li>
+<li>
+<p><a href="#i1020855">Applying Redo Data to Physical Standby Databases</a></p>
+</li>
+<li>
+<p><a href="#i1040509">Applying Redo Data to Logical Standby Databases</a></p>
+</li>
+</ul>
+<a id="i1015213"></a>
+<div id="SBYDB00505" class="sect1">
+<h2 class="sect1"><span class="secnum">7.1</span> Introduction to Apply Services</h2>
+<p><span class="bold"><a id="sthref375"></a><a id="sthref376"></a><a id="sthref377"></a><a id="sthref378"></a><a id="sthref379"></a>Apply services</span> automatically apply <span class="italic">redo</span> to standby databases to maintain synchronization with the primary database and allow transactionally consistent access to the data.</p>
+<p>By default, apply services waits for a standby redo log file to be archived before applying the redo that it contains. However, you can enable real-time apply, which allows apply services to apply the redo in the current standby redo log file as it is being filled. Real-time apply is described in more detail in <a href="#i1022881">Section 7.2.1</a>.</p>
+<p>Apply services use the following methods to maintain physical and <a id="sthref380"></a><a id="sthref381"></a><a id="sthref382"></a><a id="sthref383"></a>logical standby databases:</p>
+<ul>
+<li>
+<p><a id="sthref384"></a>Redo Apply (physical standby databases only)</p>
+<p>Uses media recovery to keep the primary and physical standby databases synchronized.</p>
+</li>
+</ul>
+<ul>
+<li>
+<p><a id="sthref385"></a><a id="sthref386"></a>SQL Apply (logical standby databases only)</p>
+<p>Reconstitutes SQL statements from the redo received from the primary database and executes the SQL statements against the logical standby database.</p>
+</li>
+</ul>
+<p>The sections in this chapter describe Redo Apply, SQL Apply, real-time apply, and delayed apply in more detail.</p>
+</div>
+<!-- class="sect1" -->
+<a id="i1023371"></a>
+<div id="SBYDB4761" class="sect1">
+<h2 class="sect1"><span class="secnum">7.2</span> Apply Services Configuration Options</h2>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1022881">Using Real-Time Apply to Apply Redo Data Immediately</a></p>
+</li>
+<li>
+<p><a href="#i1022811">Specifying a Time Delay for the Application of Archived Redo Log Files</a></p>
+</li>
+</ul>
+<a id="i1022881"></a>
+<div id="SBYDB0050" class="sect2">
+<h3 class="sect2"><span class="secnum">7.2.1</span> Using <a id="sthref387"></a><a id="sthref388"></a><a id="sthref389"></a><a id="sthref390"></a><a id="sthref391"></a><a id="sthref392"></a>Real-Time Apply to Apply Redo Data Immediately</h3>
+<p>If the real-time apply feature is enabled, apply services can apply redo data as it is received, without waiting for the current standby redo log file to be archived. This results in faster switchover and failover times because the standby redo log files have been applied already to the standby database by the time the failover or switchover begins.</p>
+<p>Use the <code>ALTER DATABASE</code> statement to enable the real-time apply feature, as follows:</p>
+<ul>
+<li>
+<p>For physical standby databases, issue the <code>ALTER DATABASE RECOVER MANAGED STANDBY DATABASE USING CURRENT LOGFILE</code> statement.</p>
+</li>
+<li>
+<p>For logical standby databases, issue the <code>ALTER DATABASE START LOGICAL STANDBY APPLY IMMEDIATE</code> statement.</p>
+</li>
+</ul>
+<p>Real-time apply requires a standby database that is configured with a standby redo log and that is in ARCHIVELOG mode.</p>
+<p><a href="#i1021537">Figure 7-1</a> shows a D<a id="sthref393"></a>ata Guard configuration with a local destination and a standby destination. As the remote file server <a id="sthref394"></a>(RFS) process writes the redo data to standby redo log files on the standby database, apply services can recover redo from standby redo log files as they are being filled.</p>
+<div id="SBYDB5030" class="figure">
+<p class="titleinfigure"><a id="i1021537"></a>Figure 7-1 Applying Redo Data to a Standby Destination Using Real-Time Apply</p>
+<img width="665" height="638" src="img/sbydb049.gif" alt="Description of Figure 7-1 follows" /><br />
+<a id="sthref395" href="img_text/sbydb049.htm">Description of "Figure 7-1 Applying Redo Data to a Standby Destination Using Real-Time Apply"</a><br />
+<br /></div>
+<!-- class="figure" --></div>
+<!-- class="sect2" -->
+<a id="i1022811"></a>
+<div id="SBYDB4762" class="sect2">
+<h3 class="sect2"><span class="secnum">7.2.2</span> S<a id="sthref396"></a><a id="sthref397"></a><a id="sthref398"></a><a id="sthref399"></a>pecifying a Time Delay for the Application of Archived Redo Log Files</h3>
+<p>In some cases, you may want to c<a id="sthref400"></a><a id="sthref401"></a><a id="sthref402"></a><a id="sthref403"></a>reate a time lag between the time when redo data is received from the primary site and when it is applied to the standby database. You can specify a time interval (in minutes) to protect against the application of corrupted or erroneous data to the standby database. When you set a <code>DELAY</code> interval, it does not delay the transport of the redo data to the standby database. Instead, the time lag you specify begins when the redo data is completely archived at the standby destination.</p>
+<div class="infobox-note">
+<p class="notep1"><span class="bold">Note</span>:</p>
+If you define a delay for a destination that has real-time apply enabled, the delay is ignored.</div>
+<p class="subhead2"><a id="SBYDB5031"></a>Specifying a Time Delay</p>
+<p>You can set a time delay on primary and standby databases <a id="sthref404"></a><a id="sthref405"></a>using the <code>DE</code><a id="sthref406"></a><a id="sthref407"></a><code>LAY=</code><code><span class="codeinlineitalic">minutes</span></code> attribute of the <code>LOG_ARCHIVE_DEST_</code><code><span class="codeinlineitalic">n</span></code> initialization parameter to delay applying archived redo log files to the standby database. By default, there is no time delay. If you specify the <code>DELAY</code> attribute without specifying a value, then the default delay interval is 30 minutes.</p>
+<p class="subhead2"><a id="SBYDB5032"></a>C<code><a id="sthref408"></a><a id="sthref409"></a></code>anceling a Time Delay</p>
+<p>You can cancel a specified delay interval as follows:</p>
+<ul>
+<li>
+<p>For physical standby databases, use the <code>NODELAY</code> keyword of the <code><a id="sthref410"></a><a id="sthref411"></a>RECOVER MANAGED STANDBY DATABASE</code> clause:</p>
+<pre>
+SQL&gt; ALTER DATABASE RECOVER MANAGED STANDBY DATABASE NODELAY;
+</pre></li>
+<li>
+<p>For logical standby databases, specify the following SQL statement:</p>
+<pre>
+SQL&gt; ALTER DATABASE START LOGICAL STANDBY APPLY NODELAY;
+</pre></li>
+</ul>
+<p>These commands result in apply services immediately beginning to apply archived redo log files to the standby database, before the time interval expires.</p>
+<div id="SBYDB4763" class="sect3"><a id="sthref412"></a>
+<h4 class="sect3"><span class="secnum">7.2.2.1</span> Using Flashback Database as an Alternative to Setting a Time Delay</h4>
+<p>As an alternative to setting an apply delay, you can use Flashback Database to recover from the application of corrupted or erroneous data to the standby database. Flashback Database can quickly and easily flash back a standby database to an arbitrary point in time.</p>
+<p>See <a href="scenarios.htm#i1008082">Chapter 13</a> for scenarios showing how to use Data Guard with Flashback Database, and <a class="olink BRADV" href="../../backup.112/e10642/toc.htm"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a> for more information about enabling and using Flashback Database.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1020855"></a>
+<div id="SBYDB00515" class="sect1">
+<h2 class="sect1"><span class="secnum">7.3</span> Applying Redo Data to Physical Standby Databases<a id="sthref413"></a><a id="sthref414"></a><a id="sthref415"></a></h2>
+<p>By default, the redo data is applied from archived redo log files. When performing Redo Apply, a physical standby database can use the real-time apply feature to apply redo directly from the standby redo log files as they are being written by the RFS process.</p>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1034632">Starting Redo Apply</a></p>
+</li>
+<li>
+<p><a href="#i1035622">Stopping Redo Apply</a></p>
+</li>
+<li>
+<p><a href="#BGBHGCED">Monitoring Redo Apply on Physical Standby Databases</a></p>
+</li>
+</ul>
+<a id="i1034632"></a>
+<div id="SBYDB00530" class="sect2">
+<h3 class="sect2"><span class="secnum">7.3.1</span> Startin<a id="sthref416"></a><a id="sthref417"></a>g Redo Apply</h3>
+<p>To start apply services on a physical standby database, ensure the physical standby database is started and mounted and then start Redo Apply using the SQL <code><a id="sthref418"></a><a id="sthref419"></a>ALTER DATABASE RECOVER MANAGED STANDBY DATABASE</code> statement.</p>
+<p><a id="sthref420"></a><a id="sthref421"></a><a id="sthref422"></a>You can specify that <a id="sthref423"></a>Redo Apply runs as a foreground session or as a background process, and enable it with real-time apply.</p>
+<ul>
+<li>
+<p>To start Redo Apply in the foreground, issue the following SQL statement:</p>
+<pre>
+SQL&gt; <a id="sthref424"></a><a id="sthref425"></a>ALTER DATABASE RECOVER MANAGED STANDBY DATABASE;
+</pre>
+<p>If you start a foreground session, control is not returned to the command prompt until recovery is canceled by another session.</p>
+</li>
+<li>
+<p>To start Redo Apply in the background, include the <code>DISCONNECT</code> keyword on the SQL statement. For example:</p>
+<pre>
+SQL&gt; <a id="sthref426"></a><a id="sthref427"></a>ALTER DATABASE RECOVER MANAGED STANDBY DATABASE DISCONNECT;
+</pre>
+<p>This statement starts a detached server process and immediately returns control to the user. While the managed recovery process is performing recovery in the background, the foreground process that issued the <code>RECOVER</code> statement can continue performing other tasks. This does not disconnect the current SQL session.</p>
+</li>
+<li>
+<p>To start r<a id="sthref428"></a><a id="sthref429"></a><a id="sthref430"></a><a id="sthref431"></a>eal-time apply,<a id="sthref432"></a><a id="sthref433"></a><a id="sthref434"></a><a id="sthref435"></a> include the <code>USING CURRENT LOGFILE</code> clause on the SQL statement. For example:</p>
+<pre>
+SQL&gt; <a id="sthref436"></a><a id="sthref437"></a><a id="sthref438"></a>ALTER DATABASE RECOVER MANAGED STANDBY DATABASE USING CURRENT LOGFILE;
+</pre></li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="i1035622"></a>
+<div id="SBYDB4764" class="sect2">
+<h3 class="sect2"><span class="secnum">7.3.2</span> St<a id="sthref439"></a><a id="sthref440"></a><a id="sthref441"></a>opping Redo Apply</h3>
+<p>To stop Redo Apply, issue the following SQL statement:</p>
+<pre>
+SQL&gt; <a id="sthref442"></a>ALTER DATABASE RECOVER MANAGED STANDBY DATABASE CANCEL;
+</pre></div>
+<!-- class="sect2" -->
+<a id="BGBHGCED"></a>
+<div id="SBYDB4765" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">7.3.3</span> Monitoring Redo Apply on Physical Standby Databases<a id="sthref443"></a><a id="sthref444"></a></h3>
+<p><a id="sthref445"></a>To monitor the status of apply services on a physical standby database, see <a href="manage_ps.htm#i1035175">Section 9.5.1</a>. You can also monitor the standby database using Oracle Enterprise Manager. Also, see the <a class="olink REFRN" href="../e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for complete reference information about views.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1040509"></a>
+<div id="SBYDB00510" class="sect1">
+<h2 class="sect1"><span class="secnum">7.4</span> Applying <a id="sthref446"></a>Redo Data to Logical Standby Databases</h2>
+<p>SQL Apply converts the data from the archived redo log or standby redo log into SQL statements and then executes these SQL statements on the logical standby database. Because the logical standby database remains open, tables that are maintained can be used simultaneously for other tasks such as reporting, summations, and queries.</p>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1019687">Starting SQL Apply</a></p>
+</li>
+<li>
+<p><a href="#i1036181">Stopping SQL Apply on a Logical Standby Database</a></p>
+</li>
+<li>
+<p><a href="#i1036189">Monitoring SQL Apply on Logical Standby Databases</a></p>
+</li>
+</ul>
+<a id="i1019687"></a>
+<div id="SBYDB4766" class="sect2">
+<h3 class="sect2"><span class="secnum">7.4.1</span> Starting SQL Apply</h3>
+<p>To start SQL Apply, start the logical standby database and issue the following statement:</p>
+<pre>
+SQL&gt; <a id="sthref447"></a><a id="sthref448"></a>ALTER DATABASE START LOGICAL STANDBY APPLY;
+</pre>
+<p><a id="sthref449"></a><a id="sthref450"></a><a id="sthref451"></a><a id="sthref452"></a><a id="sthref453"></a><a id="sthref454"></a><a id="sthref455"></a><a id="sthref456"></a><a id="sthref457"></a><a id="sthref458"></a><a id="sthref459"></a>To start real-time apply on the logical standby database to immediately apply redo data from the standby redo log files on the logical standby database, include the <code>IMMEDIATE</code> keyword as shown in the following statement:</p>
+<pre>
+SQL&gt;  <a id="sthref460"></a><a id="sthref461"></a><a id="sthref462"></a><a id="sthref463"></a>ALTER DATABASE START LOGICAL STANDBY APPLY IMMEDIATE;
+</pre></div>
+<!-- class="sect2" -->
+<a id="i1036181"></a>
+<div id="SBYDB4767" class="sect2">
+<h3 class="sect2"><span class="secnum">7.4.2</span> S<a id="sthref464"></a><a id="sthref465"></a><a id="sthref466"></a><a id="sthref467"></a><a id="sthref468"></a><a id="sthref469"></a><a id="sthref470"></a>topping SQL Apply on a Logical Standby Database</h3>
+<p>To stop SQL Apply, issue the following statement on the logical standby database:</p>
+<pre>
+SQL&gt; <a id="sthref471"></a><a id="sthref472"></a>ALTER DATABASE STOP LOGICAL STANDBY APPLY;
+</pre>
+<p>When you issue this statement, SQL Apply waits until it has committed all complete transactions that were in the process of being applied. Thus, this command may not stop the SQL Apply processes immediately.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1036189"></a>
+<div id="SBYDB4768" class="sect2">
+<h3 class="sect2"><span class="secnum">7.4.3</span> M<a id="sthref473"></a>onitoring SQL Apply on Logical Standby Databases</h3>
+<p><a id="sthref474"></a><a id="sthref475"></a>To monitor SQL Apply, see <a href="manage_ls.htm#CHDEFEFC">Section 10.3</a>. You can also monitor the standby database using Oracle Enterprise Manager. See <a href="troubleshooting.htm#g643918">Appendix A, "Troubleshooting Data Guard"</a> and <a class="olink DGBKR" href="../e40771/toc.htm"><span class="italic">Oracle Data Guard Broker</span></a>.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1813">
+<tr>
+<td class="cellalignment1820">
+<table class="cellalignment1818">
+<tr>
+<td class="cellalignment1817"><a href="log_transport.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1817"><a href="role_management.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1999, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1822">
+<table class="cellalignment1816">
+<tr>
+<td class="cellalignment1817"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1817"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1817"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1817"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1817"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1817"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

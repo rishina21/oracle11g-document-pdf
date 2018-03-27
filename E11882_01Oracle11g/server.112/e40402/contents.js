@@ -1,0 +1,17 @@
+var chapters = [
+  { topic: "chapter", section: "1", title: "Initialization Parameters", anchor: "g1195420", file: "initparams.htm" },
+  { topic: "chapter", section: "2", title: "Static Data Dictionary Views: ALL_ALL_TABLES to ALL_OUTLINES", anchor: "g1698636", file: "statviews_1.htm" },
+  { topic: "chapter", section: "3", title: "Static Data Dictionary Views: ALL_PART_COL_STATISTICS to DATABASE_PROPERTIES", anchor: "CCHHHJIF", file: "statviews_2.htm" },
+  { topic: "chapter", section: "4", title: "Static Data Dictionary Views: DBA_2PC_NEIGHBORS to DBA_HIST_JAVA_POOL_ADVICE", anchor: "g1720197", file: "statviews_3.htm" },
+  { topic: "chapter", section: "5", title: "Static Data Dictionary Views: DBA_HIST_LATCH to DBA_STORED_SETTINGS", anchor: "BABFFGHG", file: "statviews_4.htm" },
+  { topic: "chapter", section: "6", title: "Static Data Dictionary Views: DBA_STREAMS_ADD_COLUMN to XS_SESSION_ROLES", anchor: "BABDFHFI", file: "statviews_5.htm" },
+  { topic: "chapter", section: "7", title: "Dynamic Performance (V$) Views: V$ACCESS to V$HVMASTER_INFO", anchor: "g1540635", file: "dynviews_1.htm" },
+  { topic: "chapter", section: "8", title: "Dynamic Performance (V$) Views: V$INDEXED_FIXED_COLUMN to V$RULE_SET_AGGREGATE_STATS", anchor: "CCHEEIHF", file: "dynviews_2.htm" },
+  { topic: "chapter", section: "9", title: "Dynamic Performance (V$) Views: V$SCHEDULER_RUNNING_JOBS to V$XSTREAM_TRANSACTION", anchor: "g1540636", file: "dynviews_3.htm" },
+  { topic: "appendix", section: "A", title: "Database Limits", anchor: "REFRN004", file: "limits.htm" },
+  { topic: "appendix", section: "B", title: "SQL Scripts", anchor: "REFRN005", file: "scripts.htm" },
+  { topic: "appendix", section: "C", title: "Oracle Wait Events", anchor: "REFRN101", file: "waitevents.htm" },
+  { topic: "appendix", section: "D", title: "Oracle Enqueue Names", anchor: "REFRN102", file: "enqueues.htm" },
+  { topic: "appendix", section: "E", title: "Statistics Descriptions", anchor: "REFRN103", file: "stats.htm" },
+  { topic: "appendix", section: "F", title: "Background Processes", anchor: "REFRN104", file: "bgprocesses.htm" },
+  { } ];

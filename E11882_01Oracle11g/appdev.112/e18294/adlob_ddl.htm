@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>DDL and DML Statements with LOBs</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 737" />
+<meta name="dcterms.created" content="2013-07-18T13:32:41Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database SecureFiles and Large Objects Developer's Guide" />
+<meta name="dcterms.identifier" content="E18294-04" />
+<meta name="dcterms.isVersionOf" content="ADLOB" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1996, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="part_sql.htm" title="Previous" type="text/html" />
+<link rel="Next" href="adlob_sql_semantics.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e18294.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">26/37</span> <!-- End Header -->
+<div id="ADLOB45560" class="chapter"><a id="g1013501"></a><a id="i1006235"></a>
+<h1 class="chapter"><span class="secnum">15</span> DDL and DML Statements with LOBs</h1>
+<p>This chapter contains these topics:</p>
+<ul>
+<li>
+<p><a href="#i1007083">Creating a Table Containing One or More LOB Columns</a></p>
+</li>
+<li>
+<p><a href="#i1007250">Creating a Nested Table Containing a LOB</a></p>
+</li>
+<li>
+<p><a href="#i1007251">Inserting a Row by Selecting a LOB From Another Table</a></p>
+</li>
+<li>
+<p><a href="#i1007252"><span class="bold">Inserting a LOB Value Into a Table</span></a></p>
+</li>
+<li>
+<p><a href="#i1008129">Inserting a Row by Initializing a LOB Locator Bind Variable</a></p>
+</li>
+<li>
+<p><a href="#i1007253">Updating a LOB with EMPTY_CLOB() or EMPTY_BLOB()</a></p>
+</li>
+<li>
+<p><a href="#i1007262">Updating a Row by Selecting a LOB From Another Table</a></p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+For guidelines on how to <code>INSERT</code> into a LOB when binds of more than 4000 bytes are involved, see the following sections in <a href="adlob_data_interface.htm#g1023176">"Binds of All Sizes in INSERT and UPDATE Operations"</a>.</div>
+<a id="i1007083"></a>
+<div id="ADLOB45561" class="sect1">
+<h2 class="sect1">Creating a <a id="sthref842"></a><a id="sthref843"></a>Table Containing One or More LOB Columns</h2>
+<p>This section describes how to create a table containing one or more LOB columns.</p>
+<p>When you use functions, <code>EMPTY_BLOB()</code> and <code>EMPTY_CLOB()</code>, the resulting LOB is initialized, but not populated with data. Also note that LOBs that are empty are not <code>NULL</code>.</p>
+<div class="infoboxnotealso">
+<p class="notep1"><span class="bold">See Also</span>:</p>
+<p><a class="olink SQLRF014" href="../../server.112/e41084/statements_7.htm#SQLRF014"><span class="italic">Oracle Database SQL Language Reference</span></a> for a complete specification of syntax for using LOBs in <code>CREATE</code> <code>TABLE</code> and <code>ALTER</code> <code>TABLE</code> with:</p>
+<ul>
+<li>
+<p><code>BLOB</code>, <code>CLOB</code>, <code>NCLOB</code> and <code>BFILE</code> columns</p>
+</li>
+<li>
+<p><code>EMPTY_BLOB</code> and <code>EMPTY_CLOB</code> functions</p>
+</li>
+<li>
+<p>LOB storage clause for persistent LOB columns, and LOB attributes of embedded objects</p>
+</li>
+</ul>
+</div>
+<p class="subhead1"><a id="ADLOB45562"></a>Scenario</p>
+<p>These examples use the following Sample Schemas:</p>
+<ul>
+<li>
+<p>Human Resources (<code>HR</code>)</p>
+</li>
+<li>
+<p>Order Entry (<code>OE</code>)</p>
+</li>
+<li>
+<p>Product Media (<code>PM</code>)</p>
+</li>
+</ul>
+<p>Note that the <code>HR</code> and <code>OE</code> schemas must exist before the <code>PM</code> schema is created. For details on these schemas, refer to <a class="olink COMSC" href="../../server.112/e10831/toc.htm"><span class="italic">Oracle Database Sample Schemas.</span></a></p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Because you can use SQL DDL directly to create a table containing one or more LOB columns, it is not necessary to use the <code>DBMS_LOB</code> package.</div>
+<pre>
+/*  Setup script for creating Print_media, 
+    Online_media and associated structures 
+*/
+
+DROP USER pm CASCADE;
+DROP DIRECTORY ADPHOTO_DIR;
+DROP DIRECTORY ADCOMPOSITE_DIR;
+DROP DIRECTORY ADGRAPHIC_DIR;
+DROP INDEX onlinemedia CASCADE CONSTRAINTS;
+DROP INDEX printmedia CASCADE CONSTRAINTS;
+DROP TABLE online_media CASCADE CONSTRAINTS;
+DROP TABLE print_media CASCADE CONSTRAINTS;
+DROP TYPE textdoc_typ;
+DROP TYPE textdoc_tab;
+DROP TYPE adheader_typ;
+DROP TABLE adheader_typ;
+CREATE USER pm;
+GRANT CONNECT, RESOURCE to pm;
+
+CREATE DIRECTORY ADPHOTO_DIR AS '/tmp/';
+CREATE DIRECTORY ADCOMPOSITE_DIR AS '/tmp/';
+CREATE DIRECTORY ADGRAPHIC_DIR AS '/tmp/';
+CREATE DIRECTORY media_dir AS '/tmp/';
+GRANT READ ON DIRECTORY ADPHOTO_DIR to pm;
+GRANT READ ON DIRECTORY ADCOMPOSITE_DIR to pm;
+GRANT READ ON DIRECTORY ADGRAPHIC_DIR to pm;
+GRANT READ ON DIRECTORY media_dir to pm;
+
+CONNECT pm/<span class="italic">password</span>  (or &amp;pass);
+COMMIT;
+
+CREATE TABLE a_table (blob_col BLOB); 
+
+CREATE TYPE adheader_typ AS OBJECT ( 
+   header_name    VARCHAR2(256),  
+   creation_date  DATE,  
+   header_text    VARCHAR(1024), 
+   logo           BLOB );
+
+CREATE TYPE textdoc_typ AS OBJECT ( 
+   document_typ   VARCHAR2(32), 
+   formatted_doc  BLOB);
+
+CREATE TYPE Textdoc_ntab AS TABLE of textdoc_typ;
+
+CREATE TABLE adheader_tab of adheader_typ (
+Ad_finaltext DEFAULT EMPTY_CLOB(), CONSTRAINT 
+Take CHECK (Take IS NOT NULL),  DEFAULT NULL);
+
+CREATE TABLE online_media
+( product_id  NUMBER(6),
+product_photo ORDSYS.ORDImage,
+product_photo_signature ORDSYS.ORDImageSignature,
+product_thumbnail ORDSYS.ORDImage, 
+product_video ORDSYS.ORDVideo,
+product_audio ORDSYS.ORDAudio, 
+product_text CLOB,
+product_testimonials ORDSYS.ORDDoc);
+
+CREATE UNIQUE INDEX onlinemedia_pk
+  ON online_media (product_id);
+  
+ALTER TABLE online_media
+ADD (CONSTRAINT onlinemedia_pk
+PRIMARY KEY (product_id), CONSTRAINT loc_c_id_fk
+FOREIGN KEY (product_id)  REFERENCES oe.product_information(product_id)
+);
+
+CREATE TABLE print_media
+(product_id NUMBER(6), 
+ad_id NUMBER(6),
+ad_composite BLOB,
+ad_sourcetext CLOB, 
+ad_finaltext CLOB,
+ad_fktextn NCLOB,
+ad_testdocs_ntab textdoc_tab,
+ad_photo BLOB, 
+ad_graphic BFILE,
+ad_header adheader_typ,
+press_release LONG) NESTED TABLE ad_textdocs_ntab STORE AS textdocs_nestedtab;
+
+CREATE UNIQUE INDEX printmedia_pk
+  ON print_media (product_id, ad_id);
+
+ALTER TABLE print_media
+ADD (CONSTRAINT printmedia_pk
+PRIMARY KEY (product_id, ad_id), 
+CONSTRAINT printmedia_fk FOREIGN KEY (product_id) 
+REFERENCES oe.product_information(product_id)
+);
+</pre></div>
+<!-- class="sect1" -->
+<a id="i1007250"></a>
+<div id="ADLOB45563" class="sect1">
+<h2 class="sect1">Creating a Nested Table Containing a LOB</h2>
+<p>This section describes how to create a nested table containing a LOB.</p>
+<p>You must create the object type that contains the LOB attributes before you create a nested table based on that object type. In the example that follows, table <code>Print_media</code> contains nested table <code>ad_textdoc_ntab</code> that has type <code>textdoc_tab</code>. This type uses two LOB data types:</p>
+<ul>
+<li>
+<p><code>BFILE</code> - an advertisement graphic</p>
+</li>
+<li>
+<p><code>CLOB</code> - an advertisement transcript</p>
+</li>
+</ul>
+<p>The actual embedding of the nested table is accomplished when the structure of the containing table is defined. In our example, this is effected by the <code>NESTED TABLE</code> statement when the <code>Print_media</code> table is created as shown in the following example:</p>
+<pre>
+/* Create type textdoc_typ as the base type 
+   for the nested table textdoc_ntab, 
+   where textdoc_ntab contains a LOB: 
+*/
+CREATE TYPE textdoc_typ AS OBJECT
+( 
+   document_typ    VARCHAR2(32),  
+   formatted_doc   BLOB 
+);
+/
+
+/* The type has been created. Now you need a */
+/* nested table of that type to embed in */
+/* table Print_media, so: */
+CREATE TYPE textdoc_ntab AS TABLE of textdoc_typ; 
+/
+
+CREATE TABLE textdoc_ntable ( 
+   id NUMBER, 
+   ntab_col textdoc_ntab) 
+NESTED TABLE ntab_col STORE AS textdoc_nestedtab;
+
+DROP TYPE textdoc_typ force;
+DROP TYPE textdoc_ntab;
+DROP TABLE textdoc_ntable;
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#i1007083">"Creating a Table Containing One or More LOB Columns"</a></p>
+</li>
+<li>
+<p><a class="olink SQLRF014" href="../../server.112/e41084/statements_7.htm#SQLRF014"><span class="italic">Oracle Database SQL Language Reference</span></a>, "Chapter 7, SQL Statements" &mdash; CREATE TABLE.</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="i1007251"></a>
+<div id="ADLOB45564" class="sect1">
+<h2 class="sect1">Inserting a Row by Selecting a LOB From Another Table</h2>
+<p>This section describes how to insert a row containing a LOB as SELECT.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Persistent LOB types <code>BLOB</code>, <code>CLOB</code>, and <code>NCLOB</code>, use <span class="italic">copy</span> <span class="italic"><a id="sthref844"></a><a id="sthref845"></a>semantics,</span> as opposed to<a id="sthref846"></a> <span class="italic"><a id="sthref847"></a>reference semantics</span> that apply to <code>BFILE</code>s. When a <code>BLOB</code>, <code>CLOB</code>, or <code>NCLOB</code> is copied from one row to another in the same table or a different table, the <span class="italic">actual</span> LOB value is copied, not just the LOB locator.</div>
+<p>For LOBs, one of the advantages of using an object-relational approach is that you can define a type as a common template for related tables. For instance, it makes sense that both the tables that store archival material and working tables that use those libraries, share a common structure.</p>
+<p>For example, assuming <code>Print_media</code> and <code>Online_media</code> have identical schemas. The statement creates a new LOB locator in table <code>Print_media. It also</code> copies the LOB data from <code>Online_media</code> to the location pointed to by the new LOB locator inserted in table <code>Print_media</code>.</p>
+<p>The following code fragment is based on the fact that the table <code>Online_media</code> is of the same type as <code>Print_media</code> referenced by the <code>ad_textdocs_ntab</code> column of table <code>Print_media</code>. It inserts values into the library table, and then inserts this same data into <code>Print_media</code> by means of a <code>SELECT</code>.</p>
+<pre>
+/* Store records in the archive table Online_media: */
+INSERT INTO Online_media  
+   VALUES (3060, NULL, NULL, NULL, NULL, 
+           'some text about this CRT Monitor', NULL);
+
+/* Insert values into Print_media by selecting from Online_media: */
+INSERT INTO Print_media (product_id, ad_id, ad_sourcetext)
+   (SELECT product_id, 11001, product_text
+          FROM Online_media WHERE product_id = 3060);
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink SQLRF016" href="../../server.112/e41084/statements_9.htm#SQLRF016"><span class="italic">Oracle Database SQL Language Reference</span></a>, "Chapter 7, SQL Statements" &mdash; INSERT.</p>
+</li>
+<li>
+<p><a class="olink COMSC" href="../../server.112/e10831/toc.htm"><span class="italic">Oracle Database Sample Schemas</span></a> for a description of the PM Schema and the <code>Print_media</code> table used in this example.</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="i1007252"></a>
+<div id="ADLOB45565" class="sect1"><a id="g1012364"></a>
+<h2 class="sect1"><span class="bold">Inserting a LOB Value Into a Table</span></h2>
+<p>This section describes how to insert a LOB value using <code>EMPTY_CLOB()</code> or <code>EMPTY_BLOB()</code>.</p>
+<p class="subhead1"><a id="ADLOB45566"></a>Usage Notes</p>
+<p>Here are guidelines for inserting LOBs:</p>
+<p class="subhead2"><a id="ADLOB45567"></a>Before Inserting Make the LOB Column Non-Null</p>
+<p><a id="i1006731"></a>Before you write data to a persistent LOB, make the LOB column non-<code>NULL</code>; that is, the LOB column must contain a locator that points to an empty or populated LOB value. You can initialize a <code>BLOB</code> column value by using the function <code>EMPTY_BLOB()</code> as a default predicate. Similarly, a <code>CLOB</code> or <code>NCLOB</code> column value can be initialized by using the function <code>EMPTY_CLOB()</code>.</p>
+<p><a id="i1006732"></a>You can also initialize a LOB column with a character or raw string less than 4000 bytes in size. For example:</p>
+<pre>
+INSERT INTO Print_media (product_id, ad_id, ad_sourcetext)
+     VALUES (1, 1, 'This is a One Line Advertisement');
+</pre>
+<p>Note that you can also perform this <a id="sthref848"></a>initialization during the <code>CREATE</code> <code>TABLE</code> operation. See <a href="#i1007083">"Creating a Table Containing One or More LOB Columns"</a> for more information.</p>
+<p>These functions are special functions in Oracle SQL, and are not part of the <code>DBMS_LOB</code> package.</p>
+<pre>
+/* In the new row of table Print_media, 
+   the columns ad_sourcetext and ad_fltextn are initialized using EMPTY_CLOB(), 
+   the columns ad_composite and ad_photo are initialized using EMPTY_BLOB(),
+   the column formatted-doc in the nested table is initialized using
+   EMPTY_BLOB(),
+   the column logo in the column object is initialized using EMPTY_BLOB(): */   
+INSERT INTO Print_media 
+   VALUES (3060,11001, EMPTY_BLOB(), EMPTY_CLOB(),EMPTY_CLOB(),EMPTY_CLOB(), 
+   textdoc_tab(textdoc_typ ('HTML', EMPTY_BLOB())), EMPTY_BLOB(), NULL,
+   adheader_typ('any header name', &lt;any date&gt;, 'ad header text goes here',
+   EMPTY_BLOB()),
+ 'Press release goes here');
+</pre></div>
+<!-- class="sect1" -->
+<a id="i1008129"></a>
+<div id="ADLOB45568" class="sect1">
+<h2 class="sect1">Inserting a Row by <a id="sthref849"></a>Initializing a LOB Locator Bind Variable</h2>
+<p>This section gives examples of how to insert a row by initializing a LOB locator bind variable.</p>
+<p class="subhead1"><a id="ADLOB45569"></a><span class="bold">Preconditions</span></p>
+<p>Before you can insert a row using this technique, the following conditions must be met:</p>
+<ul>
+<li>
+<p>The table containing the source row must exist.</p>
+</li>
+<li>
+<p>The destination table must exist.</p>
+</li>
+</ul>
+<p>For details on creating tables containing LOB columns, see <a href="adlob_tables.htm#CIHEBABG">"LOB Storage Parameters"</a>.</p>
+<p class="subhead1"><a id="ADLOB45570"></a><span class="bold">Usage Notes</span></p>
+<p>For guidelines on how to INSERT and UPDATE a row containing a LOB when binds of more than 4000 bytes are involved, see <a href="adlob_data_interface.htm#g1023176">"Binds of All Sizes in INSERT and UPDATE Operations"</a>.</p>
+<p class="subhead1"><a id="ADLOB45571"></a><span class="bold">Syntax</span></p>
+<p>See the following syntax references for details on using this operation in each programmatic environment:</p>
+<ul>
+<li>
+<p>SQL: <a class="olink SQLRF" href="../../server.112/e41084/toc.htm"><span class="italic">Oracle Database SQL Language Reference</span></a>, "Chapter 7, SQL Statements" &mdash; INSERT</p>
+</li>
+<li>
+<p>C (OCI): <a class="olink LNOCI150" href="../../appdev.112/e10646/oci16rel.htm#LNOCI150"><span class="italic">Oracle Call Interface Programmer's Guide</span></a> "Relational Functions" &mdash; LOB Functions.</p>
+</li>
+<li>
+<p>C++ (OCCI): <a class="olink LNCPP" href="../e10764/toc.htm"><span class="italic">Oracle C++ Call Interface Programmer's Guide</span></a></p>
+</li>
+<li>
+<p>COBOL (Pro*COBOL) <a class="olink LNPCB" href="../../appdev.112/e10826/toc.htm"><span class="italic">Pro*COBOL Programmer's Guide</span></a> for information on LOBs, usage notes on LOB Statements, and embedded SQL and precompiler directives &mdash; INSERT.</p>
+</li>
+<li>
+<p>C/C++ (Pro*C/C++): <a class="olink LNPCC" href="../../appdev.112/e10825/toc.htm"><span class="italic">Pro*C/C++ Programmer's Guide</span></a> Appendix F, "Embedded SQL Statements and Directives" &mdash; INSERT</p>
+</li>
+<li>
+<p>COM (OO4O) (Oracle Objects for OLE (OO4O) Online Help): From Help Topics, Contents tab, select OO4O Automation Server &gt; Objects &gt; Oradynaset</p>
+</li>
+<li>
+<p>Java (JDBC): <a class="olink JJDBC" href="../../java.112/e16548/toc.htm"><span class="italic">Oracle Database JDBC Developer's Guide and Reference</span></a> Chapter 7, "Working With LOBs" &mdash; Creating and Populating a <code>BLOB</code> or <code>CLOB</code> Column.</p>
+</li>
+</ul>
+<p class="subhead1"><a id="ADLOB45572"></a><span class="bold">Examples</span></p>
+<p>Examples for this use case are provided in the following programmatic environments:</p>
+<ul>
+<li>
+<p><a href="#i1008233">PL/SQL: Inserting a Row by Initializing a LOB Locator Bind Variable</a></p>
+</li>
+<li>
+<p><a href="#i1008253">C (OCI): Inserting a Row by Initializing a LOB Locator Bind Variable</a></p>
+</li>
+<li>
+<p>C++ (OCCI): No example is provided with this release.</p>
+</li>
+<li>
+<p><a href="#i1008309">COBOL (Pro*COBOL): Inserting a Row by Initializing a LOB Locator Bind Variable</a></p>
+</li>
+<li>
+<p><a href="#i1008366">C/C++ (Pro*C/C++): Inserting a Row by Initializing a LOB Locator Bind Variable</a></p>
+</li>
+<li>
+<p><a href="#i1008422">COM (OO4O): Inserting a Row by Initializing a LOB Locator Bind Variable</a></p>
+</li>
+<li>
+<p><a href="#i1008447">Java (JDBC): Inserting a Row by Initializing a LOB Locator Bind Variable</a></p>
+</li>
+</ul>
+<a id="i1008233"></a>
+<div id="ADLOB45573" class="sect2">
+<h3 class="sect2">PL/SQL: Inserting a Row by Initializing a LOB Locator Bind Variable</h3>
+<pre>
+/* This file is installed in the following path when you install */
+/* the database: $ORACLE_HOME/rdbms/demo/lobs/plsql/linsert.sql */
+
+/* inserting a row through an insert statement */
+
+CREATE OR REPLACE PROCEDURE insertLOB_proc (Lob_loc IN BLOB) IS
+BEGIN
+  /* Insert the BLOB into the row */
+  DBMS_OUTPUT.PUT_LINE('------------ LOB INSERT EXAMPLE ------------');
+  INSERT INTO print_media (product_id, ad_id, ad_photo) 
+        values (3106, 60315, Lob_loc);
+END;
+/
+</pre></div>
+<!-- class="sect2" -->
+<a id="i1008253"></a>
+<div id="ADLOB45574" class="sect2">
+<h3 class="sect2">C (OCI): Inserting a Row by Initializing a LOB Locator Bind Variable</h3>
+<pre>
+/* This file is installed in the following path when you install */
+/* the database: $ORACLE_HOME/rdbms/demo/lobs/oci/linsert.c */
+
+/* Insert the Locator into table using Bind Variables. */
+#include &lt;oratypes.h&gt;
+#include &lt;lobdemo.h&gt;
+void insertLOB_proc(OCILobLocator *Lob_loc, OCIEnv *envhp,
+                    OCIError *errhp, OCISvcCtx *svchp, OCIStmt *stmthp)
+{
+  int            product_id;
+  OCIBind       *bndhp3;
+  OCIBind       *bndhp2;
+  OCIBind       *bndhp1;
+  text          *insstmt = 
+   (text *) "INSERT INTO Print_media (product_id, ad_id, ad_sourcetext) \
+             VALUES (:1, :2, :3)";
+
+  printf ("----------- OCI Lob Insert Demo --------------\n");   
+  /* Insert the locator into the Print_media table with product_id=3060 */
+  product_id = (int)3060;
+
+  /* Prepare the SQL statement */
+  checkerr (errhp, OCIStmtPrepare(stmthp, errhp, insstmt, (ub4) 
+                                  strlen((char *) insstmt),
+                                  (ub4) OCI_NTV_SYNTAX, (ub4)OCI_DEFAULT));
+
+  /* Binds the bind positions */
+  checkerr (errhp, OCIBindByPos(stmthp, &amp;bndhp1, errhp, (ub4) 1,
+                                (void *) &amp;product_id, (sb4) sizeof(product_id),
+                                SQLT_INT, (void *) 0, (ub2 *)0, (ub2 *)0,
+                                (ub4) 0, (ub4 *) 0, (ub4) OCI_DEFAULT));
+
+  checkerr (errhp, OCIBindByPos(stmthp, &amp;bndhp1, errhp, (ub4) 2,
+                                (void *) &amp;product_id, (sb4) sizeof(product_id),
+                                SQLT_INT, (void *) 0, (ub2 *)0, (ub2 *)0,
+                                (ub4) 0, (ub4 *) 0, (ub4) OCI_DEFAULT));
+
+  checkerr (errhp, OCIBindByPos(stmthp, &amp;bndhp2, errhp, (ub4) 3,
+                                (void *) &amp;Lob_loc, (sb4) 0,  SQLT_CLOB,
+                                (void *) 0, (ub2 *)0, (ub2 *)0,
+                                (ub4) 0, (ub4 *) 0, (ub4) OCI_DEFAULT));
+
+  /* Execute the SQL statement */
+  checkerr (errhp, OCIStmtExecute(svchp, stmthp, errhp, (ub4) 1, (ub4) 0,
+                                  (CONST OCISnapshot*) 0, (OCISnapshot*) 0,  
+                                  (ub4) OCI_DEFAULT));
+}
+</pre></div>
+<!-- class="sect2" -->
+<a id="i1008309"></a>
+<div id="ADLOB45575" class="sect2">
+<h3 class="sect2">COBOL (Pro*COBOL): Inserting a Row by Initializing a LOB Locator Bind Variable</h3>
+<pre>
+      * This file is installed in the following path when you install
+      * the database: $ORACLE_HOME/rdbms/demo/lobs/procob/linsert.pco
+
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. INSERT-LOB.
+       ENVIRONMENT DIVISION.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+
+       01 BLOB1 SQL-BLOB.
+       01  USERID   PIC X(11) VALUES "PM/<span class="italic">password</span>".
+           EXEC SQL INCLUDE SQLCA END-EXEC.
+
+       PROCEDURE DIVISION.
+       INSERT-LOB.
+    
+           EXEC SQL WHENEVER SQLERROR DO PERFORM SQL-ERROR END-EXEC.
+           EXEC SQL CONNECT :USERID END-EXEC.
+      * Initialize the BLOB locator
+           EXEC SQL ALLOCATE :BLOB1 END-EXEC.
+      * Populate the LOB
+           EXEC SQL WHENEVER NOT FOUND GOTO END-OF-BLOB END-EXEC.
+           EXEC SQL 
+              SELECT AD_PHOTO INTO :BLOB1 FROM PRINT_MEDIA
+               WHERE PRODUCT_ID = 2268 AND AD_ID = 21001 END-EXEC.
+  
+      * Insert the value with PRODUCT_ID of 3060
+           EXEC SQL 
+              INSERT INTO PRINT_MEDIA (PRODUCT_ID, AD_PHOTO)
+                 VALUES (3060, 11001, :BLOB1)END-EXEC.
+
+      * Free resources held by locator
+       END-OF-BLOB.
+           EXEC SQL WHENEVER NOT FOUND CONTINUE END-EXEC.
+           EXEC SQL FREE :BLOB1 END-EXEC.
+           EXEC SQL ROLLBACK WORK RELEASE END-EXEC.
+           STOP RUN.
+
+       SQL-ERROR.
+           EXEC SQL WHENEVER SQLERROR CONTINUE END-EXEC.
+           DISPLAY " ".
+           DISPLAY "ORACLE ERROR DETECTED:".
+           DISPLAY " ".
+           DISPLAY SQLERRMC.
+           EXEC SQL ROLLBACK WORK RELEASE END-EXEC.
+           STOP RUN.
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+For simplicity in demonstrating this feature, this example does not perform the password management techniques that a deployed system normally uses. In a production environment, follow the Oracle Database password management guidelines, and disable any sample accounts. See <a class="olink DBSEG50053" href="../../network.112/e36292/app_devs.htm#DBSEG50053"><span class="italic">Oracle Database Security Guide</span></a> for password management guidelines and other security recommendations.</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1008366"></a>
+<div id="ADLOB45576" class="sect2">
+<h3 class="sect2">C/C++ (Pro*C/C++): Inserting a Row by Initializing a LOB Locator Bind Variable</h3>
+<pre>
+/* This file is installed in the following path when you install */
+/* the database: $ORACLE_HOME/rdbms/demo/lobs/proc/linsert.pc */
+
+#include &lt;oci.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;sqlca.h&gt;
+
+void Sample_Error()
+{
+   EXEC SQL WHENEVER SQLERROR CONTINUE;
+   printf("%.*s\n", sqlca.sqlerrm.sqlerrml, sqlca.sqlerrm.sqlerrmc);
+   EXEC SQL ROLLBACK WORK RELEASE;
+   exit(1);
+}
+
+void insertUseBindVariable_proc(Rownum, Lob_loc)
+   int Rownum, Rownum2;
+   OCIBlobLocator *Lob_loc;
+{
+   EXEC SQL WHENEVER SQLERROR DO Sample_Error();
+   EXEC SQL INSERT INTO Print_media (product_id, ad_id, ad_photo)
+      VALUES (:Rownum, :Rownum2, :Lob_loc);
+}
+void insertBLOB_proc()
+{
+   OCIBlobLocator *Lob_loc;
+
+   /* Initialize the BLOB Locator: */
+   EXEC SQL ALLOCATE :Lob_loc;
+
+   /* Select the LOB from the row where product_id = 2268 and ad_id=21001: */
+   EXEC SQL SELECT ad_photo INTO :Lob_loc
+      FROM Print_media WHERE product_id = 2268 AND ad_id = 21001;
+
+   /* Insert into the row where product_id = 3106 and ad_id = 13001: */
+   insertUseBindVariable_proc(3106, 13001, Lob_loc);
+
+   /* Release resources held by the locator: */
+   EXEC SQL FREE :Lob_loc;
+}
+
+void main()
+{
+   char *samp = "pm/<span class="italic">password</span>";
+   EXEC SQL CONNECT :pm;
+   insertBLOB_proc();
+   EXEC SQL ROLLBACK WORK RELEASE;
+}
+</pre></div>
+<!-- class="sect2" -->
+<a id="i1008422"></a>
+<div id="ADLOB45577" class="sect2">
+<h3 class="sect2">COM (OO4O): Inserting a Row by Initializing a LOB Locator Bind Variable</h3>
+<pre>
+' This file is installed in the following path when you install
+' the database: $ORACLE_HOME/rdbms/demo/lobs/vb/linsert.bas
+
+Dim OraDyn as OraDynaset, OraPhoto1 as OraBLOB, OraPhotoClone as OraBLOB
+Set OraDyn = OraDb.CreateDynaset(
+   "SELECT * FROM Print_media ORDER BY product_id", ORADYN_DEFAULT)
+Set OraPhoto1 = OraDyn.Fields("ad_photo").Value
+'Clone it for future reference
+Set OraPhotoClone = OraPhoto1  
+
+'Go to Next row
+OraDyn.MoveNext
+'Lets update the current row and set the LOB to OraPhotoClone
+OraDyn.Edit
+Set OraPhoto1 = OraPhotoClone
+OraDyn.Update
+</pre></div>
+<!-- class="sect2" -->
+<a id="i1008447"></a>
+<div id="ADLOB45578" class="sect2">
+<h3 class="sect2">Java (JDBC): Inserting a Row by Initializing a LOB Locator Bind Variable</h3>
+<pre>
+/* This file is installed in the following path when you install */
+/* the database: $ORACLE_HOME/rdbms/demo/lobs/java/linsert.java */
+ 
+// Core JDBC classes: 
+import java.sql.DriverManager;
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+ 
+// Oracle Specific JDBC classes: 
+import oracle.sql.*;
+import oracle.jdbc.driver.*;
+ 
+public class linsert
+{
+  public static void main (String args [])
+       throws Exception
+  {
+    // Load the Oracle JDBC driver
+    DriverManager.registerDriver (new oracle.jdbc.driver.OracleDriver ());
+    // Connect to the database: 
+    Connection conn =
+       DriverManager.getConnection ("jdbc:oracle:oci8:@", "pm", "<span class="italic">password</span>");
+ 
+    // It's faster when auto commit is off: 
+    conn.setAutoCommit (false);
+ 
+    // Create a Statement: 
+    Statement stmt = conn.createStatement ();
+    try
+    {
+       ResultSet rset = stmt.executeQuery (
+  "SELECT ad_photo FROM Print_media WHERE product_id = 3106 AND ad_id = 13001");
+       if (rset.next())
+       {
+          // retrieve the LOB locator from the ResultSet
+          BLOB adphoto_blob = ((OracleResultSet)rset).getBLOB (1);
+          OraclePreparedStatement ops = 
+          (OraclePreparedStatement) conn.prepareStatement(
+"INSERT INTO Print_media (product_id, ad_id, ad_photo) VALUES (2268, "
++ "21001, ?)");
+          ops.setBlob(1, adphoto_blob);
+          ops.execute();
+          conn.commit();
+          conn.close();
+       }
+    }
+    catch (SQLException e)
+    {
+       e.printStackTrace();
+    }
+  }
+}
+</pre></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1007253"></a>
+<div id="ADLOB45579" class="sect1">
+<h2 class="sect1">Updating a LOB with EMPTY_CLOB() or EMPTY_BLOB()</h2>
+<p>This section describes how to UPDATE a LOB with <code>EMPTY_CLOB()</code> or <code>EMPTY_BLOB()</code>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Performance improves when you update the LOB with the actual value, instead of using <code>EMPTY_CLOB()</code> or <code>EMPTY_BLOB()</code>.</div>
+<p class="subhead1"><a id="ADLOB45580"></a>Preconditions</p>
+<p>Before you write data to a persistent LOB, make the LOB column non-<code>NULL</code>; that is, the LOB column must contain a locator that points to an empty or populated LOB value. You can initialize a <code>BLOB</code> column value by using the function <code>EMPTY_BLOB()</code> as a default predicate. Similarly, a <code>CLOB</code> or <code>NCLOB</code> column value can be initialized by using the function <code>EMPTY_CLOB()</code>.</p>
+<p><a id="i1006937"></a>You can also initialize a LOB column with a character or raw string less than 4000 bytes in size. For example:</p>
+<pre>
+UPDATE Print_media 
+          SET ad_sourcetext = 'This is a One Line Story'
+          WHERE product_id = 2268;
+</pre>
+<p>You can perform this initialization during <code>CREATE</code> <code>TABLE</code> (see <a href="#i1007083">"Creating a Table Containing One or More LOB Columns"</a>) or, as in this case, by means of an <code>INSERT</code>.</p>
+<p>The following example shows a series of updates using the <code>EMPTY_CLOB</code> operation to different data types.</p>
+<pre>
+UPDATE Print_media SET ad_sourcetext = EMPTY_CLOB() 
+       WHERE product_id = 3060 AND ad_id = 11001;
+
+UPDATE Print_media SET ad_fltextn = EMPTY_CLOB() 
+       WHERE product_id = 3060 AND ad_id = 11001;
+
+UPDATE Print_media SET ad_photo = EMPTY_BLOB()
+       WHERE product_id = 3060 AND ad_id = 11001;
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+SQL: <a class="olink SQLRF017" href="../../server.112/e41084/statements_10.htm#SQLRF017"><span class="italic">Oracle Database SQL Language Reference</span></a> Chapter 7, "SQL Statements" &mdash; UPDATE</div>
+</div>
+<!-- class="sect1" -->
+<a id="i1007262"></a>
+<div id="ADLOB45581" class="sect1">
+<h2 class="sect1">Updating a Row by Selecting a LOB From Another Table</h2>
+<p>This section describes how to use the SQL <code>UPDATE AS SELECT</code> statement to update a row containing a LOB column by selecting a LOB from another table.</p>
+<p>To use this technique, you must update by means of a reference. For example, the following code updates data from <code>online_media</code>:</p>
+<pre>
+Rem Updating a row by selecting a LOB from another table (persistent LOBs)
+
+UPDATE Print_media SET ad_sourcetext = 
+   (SELECT * product_text FROM online_media WHERE product_id = 3060);
+    WHERE product_id = 3060 AND ad_id = 11001;
+</pre></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment898">
+<tr>
+<td class="cellalignment907">
+<table class="cellalignment903">
+<tr>
+<td class="cellalignment902"><a href="part_sql.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment902"><a href="adlob_sql_semantics.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1996, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment909">
+<table class="cellalignment901">
+<tr>
+<td class="cellalignment902"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment902"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment902"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment902"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment902"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment902"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

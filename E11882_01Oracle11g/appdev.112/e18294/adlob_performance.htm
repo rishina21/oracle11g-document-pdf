@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Performance Guidelines</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 737" />
+<meta name="dcterms.created" content="2013-07-18T13:32:41Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database SecureFiles and Large Objects Developer's Guide" />
+<meta name="dcterms.identifier" content="E18294-04" />
+<meta name="dcterms.isVersionOf" content="ADLOB" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1996, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="adlob_api_overview.htm" title="Previous" type="text/html" />
+<link rel="Next" href="part_sql.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e18294.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">24/37</span> <!-- End Header -->
+<div id="ADLOB45549" class="chapter"><a id="g1009891"></a><a id="i1007089"></a>
+<h1 class="chapter"><span class="secnum">14</span> Performance Guidelines</h1>
+<p>This chapter contains these topics:</p>
+<ul>
+<li>
+<p><a href="#i1006096">LOB Performance Guidelines</a></p>
+</li>
+<li>
+<p><a href="#i1006231">Moving Data to LOBs in a Threaded Environment</a></p>
+</li>
+<li>
+<p><a href="#CIAJIFAE">LOB Access Statistics</a></p>
+</li>
+</ul>
+<a id="i1006096"></a>
+<div id="ADLOB45550" class="sect1">
+<h2 class="sect1">LOB Performance Guidelines</h2>
+<p>This section describes performance guidelines for applications that use LOB data types.</p>
+<div id="ADLOB45551" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref825"></a>
+<h3 class="sect2">Chunk Size</h3>
+<p>A chunk is one or more Oracle blocks. You can specify the chunk size for the LOB when creating the table that contains the LOB. This corresponds to the data size used by Oracle Database when accessing or modifying the LOB value. Part of the chunk is used to store system-related information and the rest stores the LOB value. The API you are using has a function that returns the amount of space used in the LOB chunk to store the LOB value. In PL/SQL use <code>DBMS_LOB.GETCHUNKSIZE</code>. In OCI, use <code>OCILobGetChunkSize()</code>. For SecureFiles, the usable data area of the tablespace block size is returned.</p>
+</div>
+<!-- class="sect2" -->
+<div id="ADLOB45552" class="sect2"><a id="sthref826"></a>
+<h3 class="sect2">Performance Guidelines for Small BasicFiles LOBs</h3>
+<p>If most LOBs in your database tables are small in size&mdash;8K bytes or less&mdash;and only a few rows have LOBs larger than 8K bytes, then use the following guidelines to maximize database performance:</p>
+<ul>
+<li>
+<p>Use <code>ENABLE STORAGE IN ROW</code>.</p>
+</li>
+<li>
+<p>Set the <code>DB_BLOCK_SIZE</code> initialization parameter to 8K bytes and use a chunk size of 8K bytes.</p>
+</li>
+<li>
+<p>See <a href="adlob_tables.htm#CIHEBABG">"LOB Storage Parameters"</a> information on tuning other parameters such as <code>CACHE,</code> <code>PCTVERSION</code>, and <code>CHUNK</code> for the LOB segment.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="i1006106"></a>
+<div id="ADLOB45553" class="sect2">
+<h3 class="sect2">General Performance Guidelines for BasicFiles LOBs</h3>
+<p>Use the following guidelines to achieve maximum performance with BasicFiles LOBs:</p>
+<ul>
+<li>
+<p><span class="bolditalic">When Possible, Read/Write <a id="sthref827"></a><a id="sthref828"></a><a id="sthref829"></a>Large Data Chunks at a Time</span>: Because LOBs are big, you can obtain the best performance by reading and writing large pieces of a LOB value at a time. This helps in several respects:</p>
+<ol>
+<li>
+<p>If accessing the LOB from the client side and the client is at a different node than the server, then large reads/writes reduce network overhead.</p>
+</li>
+<li>
+<p>If using the <code>NOCACHE</code> option, then each small read/write incurs an I/O. Reading/writing large quantities of data reduces the I/O.</p>
+</li>
+<li>
+<p>Writing to the LOB creates a new version of the LOB chunk. Therefore, writing small amounts at a time incurs the cost of a new version for each small write. If logging is on, then the chunk is also stored in the redo log.</p>
+</li>
+</ol>
+</li>
+<li id="i1006114">
+<p><span class="bolditalic">Use LOB Buffering to Read/Write Small Chunks of Data</span>: If you must read or write small pieces of LOB data on the client, then use LOB buffering &mdash; see <code>OCILobEnableBuffering</code>(), <code>OCILobDisableBuffering</code>(), <code>OCILobFlushBuffer</code>(), <code>OCILobWrite2</code>(), <code>OCILobRead2</code>(). Basically, turn on LOB buffering before reading/writing small pieces of LOB data.</p>
+<div class="infoboxnotealso">
+<p class="notep1"><span class="bold">See Also</span>:</p>
+<a href="adlob_design.htm#i1006095">"LOB Buffering Subsystem"</a> for more information on LOB buffering.</div>
+</li>
+<li id="i1006132">
+<p><span class="bolditalic">Use</span> <span class="bolditalic">OCILobRead2</span><span class="bolditalic">() and</span> <span class="bolditalic">OCILobWrite2</span><span class="bolditalic">() with Callback</span>: So that data is streamed to and from the LOB. Ensure the length of the entire write is set in the <code>amount</code> parameter on input. Whenever possible, read and write in <span class="italic">multiples</span> of the LOB <span class="italic">chunk</span> size.</p>
+</li>
+<li id="i1006134">
+<p><span class="bolditalic">Use a Checkout/Check-in Model for</span> <span class="bolditalic">LOB</span><span class="bolditalic">s</span>: LOBs are optimized for the following operations:</p>
+<ul>
+<li>
+<p>SQL <code>UPDATE</code> which replaces the entire LOB value</p>
+</li>
+<li id="i1006138">
+<p>Copy the entire LOB data to the client, modify the LOB data on the client side, copy the entire LOB data back to the database. This can be done using <code>OCILobRead2</code>() and <code>OCILobWrite2</code>() with streaming.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Commit changes frequently.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="i1006155"></a>
+<div id="ADLOB105" class="sect2">
+<h3 class="sect2">Temporary LOB Performance Guidelines</h3>
+<p>In addition to the guidelines described earlier under <a href="#i1006096">"LOB Performance Guidelines"</a> on LOB performance in general, here are some guidelines for using temporary LOBs:</p>
+<ul>
+<li>
+<p><span class="bolditalic">Use a separate temporary tablespace for temporary LOB storage instead of the default system tablespace.</span> This avoids device contention when copying data from persistent LOBs to temporary LOBs.</p>
+<p><a id="i1006163"></a>If you use the newly provided enhanced SQL semantics functionality in your applications, then there are many more temporary LOBs created silently in SQL and PL/SQL than before. Ensure that <span class="bolditalic">temporary tablespace</span> for storing these temporary LOBs is <span class="bolditalic">large enough</span> for your applications. In particular, these temporary LOBs are silently created when you use the following:</p>
+<ul>
+<li>
+<p>SQL functions on LOBs</p>
+</li>
+<li>
+<p>PL/SQL built-in character functions on LOBs</p>
+</li>
+<li>
+<p>Variable assignments from <code>VARCHAR2</code>/<code>RAW</code> to <code>CLOB</code>s/<code>BLOB</code>s, respectively.</p>
+</li>
+<li>
+<p>Perform a <code>LONG</code>-to-<code>LOB</code> migration</p>
+</li>
+</ul>
+</li>
+<li>
+<p><span class="bolditalic">In PL/SQL, use <a id="sthref830"></a>NOCOPY to pass temporary LOB parameters by reference whenever possible</span>. Refer to the <a class="olink LNPLS" href="../e25519/toc.htm"><span class="italic">Oracle Database PL/SQL Language Reference,</span></a> for more information on passing parameters by reference and parameter aliasing.</p>
+</li>
+<li id="i1006205">
+<p><span class="bolditalic">Take advantage of buffer cache on temporary LOBs.</span> <a id="sthref831"></a><a id="sthref832"></a><a id="sthref833"></a>Temporary LOBs created with the CACHE parameter set to true move through the buffer cache. Otherwise temporary LOBs are read directly from, and written directly to, disk.</p>
+</li>
+<li>
+<p><a id="ADLOB106"></a>For optimal performance, temporary LOBs use <span class="bolditalic">reference on read, copy on write semantics</span>. When a temporary LOB locator is assigned to another locator, the physical LOB data is not copied. Subsequent READ operations using either of the LOB locators refer to the same physical LOB data. On the first WRITE operation after the assignment, the physical LOB data is copied in order to preserve LOB value semantics, that is, to ensure that each locator points to a unique LOB value. This performance consideration mainly applies to the PL/SQL and OCI environments.</p>
+<p>In PL/SQL, reference on read, copy on write semantics are illustrated as follows:</p>
+<pre>
+LOCATOR1 BLOB; 
+LOCATOR2 BLOB; 
+DBMS_LOB.CREATETEMPORARY (LOCATOR1,TRUE,DBMS_LOB.SESSION); 
+
+-- LOB data is not copied in this assignment operation:  
+LOCATOR2 := LOCATOR;  
+-- These read operations refer to the same physical LOB copy: 
+DBMS_LOB.READ(LOCATOR1, ...); 
+DBMS_LOB.GETLENGTH(LOCATOR2, ...); 
+
+-- A physical copy of the LOB data is made on WRITE:  
+DBMS_LOB.WRITE(LOCATOR2, ...); 
+</pre>
+<p>In OCI, to ensure value semantics of LOB locators and data, <code>OCILobLocatorAssign()</code> is used to copy temporary LOB locators and the LOB Data. <code>OCILobLocatorAssign()</code> does not make a round trip to the server. The physical temporary LOB copy is made when LOB updates happen in the same round trip as the LOB update API as illustrated in the following:</p>
+<pre>
+OCILobLocator *LOC1;
+OCILobLocator *LOC2;
+OCILobCreateTemporary(... LOC1, ... TRUE,OCI_DURATION_SESSION);
+
+/* No round-trip is incurred in the following call. */
+OCILobLocatorAssign(... LOC1, LOC2);
+
+/* Read operations refer to the same physical LOB copy. */
+OCILobRead2(... LOC1 ...)
+
+/* One round-trip is incurred to make a new copy of the
+ * LOB data and to write to the new LOB copy.
+ */
+OCILobWrite2(... LOC1 ...)
+
+/* LOC2 does not see the same LOB data as LOC1. */
+OCILobRead2(... LOC2 ...)
+
+</pre>
+<p>If LOB value semantics are not intended, then you can use C pointers to achieve reference semantics as illustrated in the following:</p>
+<pre>
+OCILobLocator *LOC1;
+OCILobLocator *LOC2;
+OCILobCreateTemporary(... LOC1, ... TRUE,OCI_DURATION_SESSION);
+
+/* Pointer is copied. LOC1 and LOC2 refer to the same LOB data. */
+LOC2 = LOC1;
+
+/* Write to LOC2. */
+OCILobWrite2(...LOC2...)
+
+/* LOC1 sees the change made to LOC2. */
+OCILobRead2(...LOC1...)
+</pre></li>
+<li>
+<p><span class="bolditalic">Use OCI_OBJECT mode for temporary LOBs</span></p>
+<p>To improve the performance of temporary LOBs on LOB assignment, use <code>OCI_OBJECT</code> mode for <code>OCILobLocatorAssign()</code>. In <code>OCI_OBJECT</code> mode, the database tries to minimize the number of deep copies to be done. Hence, after <code>OCILobLocatorAssign()</code> is done on a source temporary LOB in <code>OCI_OBJECT</code> mode, the source and the destination locators point to the same LOB until any modification is made through either LOB locator.</p>
+</li>
+<li id="i1006223">
+<p><span class="bolditalic">Free up temporary LOBs returned from SQL queries and PL/SQL programs.</span></p>
+<p>In PL/SQL, C (OCI), Java and other programmatic interfaces, SQL query results or PL/SQL program executions return temporary LOBs for operation/function calls on LOBs. For example:</p>
+<pre>
+SELECT substr(CLOB_Column, 4001, 32000) FROM ... 
+</pre>
+<p>If the query is executed in PL/SQL, then the returned temporary LOBs are automatically freed at the end of a PL/SQL program block. You can also explicitly free the temporary LOBs at any time. In OCI and Java, the returned temporary LOB must be explicitly freed.</p>
+<p>Without proper de-allocation of the temporary LOBs returned from SQL queries, temporary tablespace is filled and you may observe performance degradation.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="i1007301"></a>
+<div id="ADLOB45554" class="sect2">
+<h3 class="sect2">Performance Considerations for SQL Semantics and LOBs</h3>
+<p>Be aware of the following performance issues when using SQL semantics with LOBs:</p>
+<ul>
+<li>
+<p>Ensure that your temporary tablespace is large enough to accommodate LOBs stored out-of-line. Persistent LOBs that are greater than approximately 4000 bytes in size are stored outside of the LOB column.</p>
+</li>
+<li>
+<p>When possible, free unneeded temporary LOB instances. Unless you explicitly free a temporary LOB instance, the LOB remains in existence while your application is executing. More specifically, the instance exists while the scope in which the LOB was declared is executing.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="adlob_sql_semantics.htm#BABBFDDF">Chapter 16, "SQL Semantics and LOBs"</a> for details on SQL semantics support for LOBs.</div>
+</li>
+</ul>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006231"></a>
+<div id="ADLOB45555" class="sect1">
+<h2 class="sect1">Moving Data to LOBs in a Threaded Environment</h2>
+<p>There are two possible procedures that you can use to move data to LOBs in a threaded environment, one of which should be avoided.</p>
+<p class="subhead1"><a id="ADLOB45556"></a>Recommended Procedure</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+<ul>
+<li>
+<p>There is no requirement to create an empty LOB in this procedure.</p>
+</li>
+<li>
+<p>You can use the <code>RETURNING</code> clause as part of the <code>INSERT/UPDATE</code> statement to return a locked LOB locator. This eliminates the need for doing a <code>SELECT-FOR-UPDATE</code>, as mentioned in step 3.</p>
+</li>
+</ul>
+</div>
+<p>The recommended procedure is as follows:</p>
+<ol>
+<li>
+<p><code>INSERT</code> an empty LOB, <code>RETURNING</code> the LOB locator.</p>
+</li>
+<li>
+<p>Move data into the LOB using this locator.</p>
+</li>
+<li>
+<p><code>COMMIT</code>. This releases the ROW locks and makes the LOB data persistent.</p>
+</li>
+</ol>
+<p>Alternatively, you can insert more than 4000 bytes of data directly for the LOB columns or LOB attributes.</p>
+<p class="subhead1"><a id="ADLOB45557"></a>Procedure to Avoid</p>
+<p>The following sequence requires a new connection when using a threaded environment, adversely affects performance, and is not recommended:</p>
+<ol>
+<li>
+<p>Create an empty (non-<code>NULL</code>) LOB</p>
+</li>
+<li>
+<p>Perform <code>INSERT</code> using the empty LOB</p>
+</li>
+<li>
+<p><code>SELECT-FOR-UPDATE</code> of the row just entered</p>
+</li>
+<li>
+<p>Move data into the LOB</p>
+</li>
+<li>
+<p><code>COMMIT</code>. This releases the <code>ROW</code> locks and makes the LOB data persistent.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect1" -->
+<a id="CIAJIFAE"></a>
+<div id="ADLOB0710" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><a id="sthref834"></a><a id="sthref835"></a>LOB Access Statistics</h2>
+<p>After Oracle Database 10<span class="italic">g</span> Release 2, three session-level statistics specific to LOBs are available to users: LOB reads, LOB writes, and LOB writes unaligned. Session statistics are accessible through the <code>V$MYSTAT</code>, <code>V$SESSTAT</code>, and <code>V$SYSSTAT</code> dynamic performance views. To query these views, the user must be granted the privileges <code>SELECT_CATALOG_ROLE</code>, <code>SELECT ON SYS.V_$MYSTAT</code> view, and <code>SELECT ON SYS.V_$STATNAME</code> view.</p>
+<p><a id="sthref836"></a><a id="sthref837"></a><a id="sthref838"></a>LOB reads is defined as the number of LOB API read operations performed in the session/system. A single LOB API read may correspond to multiple physical/logical disk block reads.</p>
+<p>LOB writes is defined as the number of LOB API write operations performed in the session/system. A single LOB API write may correspond to multiple physical/logical disk block writes.</p>
+<p>LOB writes unaligned is defined as the number of LOB API write operations whose start offset or buffer size is not aligned to the internal chunk size of the LOB. Writes aligned to chunk boundaries are the most efficient write operations. The internal chunk size of a LOB is available through the LOB API (for example, using PL/SQL, by <code>DBMS_LOB.GETCHUNKSIZE()</code>).</p>
+<p>The following simple example demonstrates how LOB session statistics are updated as the user performs read/write operations on LOBs.</p>
+<p>It is important to note that session statistics are aggregated across operations to all LOBs accessed in a session; the statistics are not separated or categorized by objects (that is, table, column, segment, object numbers, and so on).</p>
+<p>In these examples, you reconnect to the database for each demonstration to clear the <code>V$MYSTAT</code>. This enables you to see how the lob statistics change for the specific operation you are testing, without the potentially obscuring effect of past LOB operations within the same session.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See also:</p>
+<a class="olink REFRN" href="../../server.112/e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a>, appendix E, "Statistics Descriptions"</div>
+<div id="ADLOB45558" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref839"></a>
+<h3 class="sect2"><a id="sthref840"></a><a id="sthref841"></a>Example of Retrieving LOB Access Statistics</h3>
+<p>This example was created for retrieving LOB access statistics.</p>
+<pre>
+rem
+rem Set up the user
+rem
+ 
+CONNECT / AS SYSDBA;
+SET ECHO ON; 
+GRANT SELECT_CATALOG_ROLE TO pm;
+GRANT SELECT ON sys.v_$mystat TO pm;
+GRANT SELECT ON sys.v_$statname TO pm;
+ 
+rem
+rem Create a simplified view for statistics queries
+rem
+ 
+CONNECT pm;
+SET ECHO ON;
+ 
+DROP VIEW mylobstats;
+CREATE VIEW mylobstats
+AS
+SELECT  SUBSTR(n.name,1,20) name,
+        m.value             value
+FROM    v$mystat    m,
+        v$statname  n
+WHERE   m.statistic# = n.statistic#
+    AND n.name LIKE 'lob%';
+ 
+rem
+rem Create a test table
+rem
+ 
+DROP TABLE t;
+CREATE TABLE t (i NUMBER, c CLOB)
+    lob(c) STORE AS (DISABLE STORAGE IN ROW);
+ 
+rem
+rem Populate some data
+rem
+rem This should result in unaligned writes, one for
+rem each row/lob populated.
+rem
+
+CONNECT pm
+SELECT * FROM mylobstats;
+INSERT INTO t VALUES (1, 'a');
+INSERT INTO t VALUES (2, rpad('a',4000,'a'));
+COMMIT;
+SELECT * FROM mylobstats;
+ 
+rem
+rem Get the lob length
+rem
+rem Computing lob length does not read lob data, no change
+rem in read/write stats.
+rem
+ 
+CONNECT pm;
+SELECT * FROM mylobstats;
+SELECT LENGTH(c) FROM t;
+SELECT * FROM mylobstats;
+ 
+rem
+rem Read the lobs
+rem
+rem Lob reads are performed, one for each lob in the table.
+rem
+ 
+CONNECT pm;
+SELECT * FROM mylobstats;
+SELECT * FROM t;
+SELECT * FROM mylobstats;
+ 
+rem
+rem Read and manipulate the lobs (through temporary lobs)
+rem
+rem The use of complex operators like "substr()" results in
+rem the implicit creation and use of temporary lobs. operations
+rem on temporary lobs also update lob statistics.
+rem
+ 
+CONNECT pm;
+SELECT * FROM mylobstats;
+SELECT substr(c, length(c), 1) FROM t;
+SELECT substr(c, 1, 1) FROM t;
+SELECT * FROM mylobstats;
+ 
+rem
+rem Perform some aligned overwrites
+rem
+rem Only lob write statistics are updated because both the
+rem byte offset of the write, and the size of the buffer
+rem being written are aligned on the lob chunksize.
+rem
+ 
+CONNECT pm;
+SELECT * FROM mylobstats;
+DECLARE
+    loc     CLOB;
+    buf     LONG;
+    chunk   NUMBER;
+BEGIN
+    SELECT c INTO loc FROM t WHERE i = 1
+        FOR UPDATE;
+ 
+    chunk := DBMS_LOB.GETCHUNKSIZE(loc);
+    buf   := rpad('b', chunk, 'b');
+ 
+    -- aligned buffer length and offset
+    DBMS_LOB.WRITE(loc, chunk, 1, buf);
+    DBMS_LOB.WRITE(loc, chunk, 1+chunk, buf);
+    COMMIT;
+END;
+/
+SELECT * FROM mylobstats;
+ 
+rem
+rem Perform some unaligned overwrites
+rem 
+rem Both lob write and lob unaligned write statistics are
+rem updated because either one or both of the write byte offset
+rem and buffer size are unaligned with the lob's chunksize.
+rem 
+ 
+CONNECT pm;
+SELECT * FROM mylobstats;
+DECLARE
+    loc CLOB;
+    buf LONG;
+BEGIN
+    SELECT c INTO loc FROM t WHERE i = 1
+        FOR UPDATE;
+ 
+    buf := rpad('b', DBMS_LOB.GETCHUNKSIZE(loc), 'b');
+ 
+    -- unaligned buffer length
+    DBMS_LOB.WRITE(loc, DBMS_LOB.GETCHUNKSIZE(loc)-1, 1, buf);
+ 
+    -- unaligned start offset
+    DBMS_LOB.WRITE(loc, DBMS_LOB.GETCHUNKSIZE(loc), 2, buf);
+ 
+    -- unaligned buffer length and start offset
+    DBMS_LOB.WRITE(loc, DBMS_LOB.GETCHUNKSIZE(loc)-1, 2, buf);
+ 
+    COMMIT;
+END;
+/
+SELECT * FROM mylobstats;
+DROP TABLE t;
+DROP VIEW mylobstats;
+ 
+CONNECT / AS SYSDBA
+REVOKE SELECT_CATALOG_ROLE FROM pm;
+REVOKE SELECT ON sys.v_$mystat FROM pm;
+REVOKE SELECT ON sys.v_$statname FROM pm;
+ 
+QUIT;
+</pre></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment898">
+<tr>
+<td class="cellalignment907">
+<table class="cellalignment903">
+<tr>
+<td class="cellalignment902"><a href="adlob_api_overview.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment902"><a href="part_sql.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1996, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment909">
+<table class="cellalignment901">
+<tr>
+<td class="cellalignment902"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment902"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment902"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment902"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment902"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment902"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

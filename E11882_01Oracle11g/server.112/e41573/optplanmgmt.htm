@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Using SQL Plan Management</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1023" />
+<meta name="dcterms.created" content="2014-06-30T4:25:6Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Performance Tuning Guide" />
+<meta name="dcterms.identifier" content="E41573-04" />
+<meta name="dcterms.isVersionOf" content="PFGRF" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2000, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="data_acc.htm" title="Previous" type="text/html" />
+<link rel="Next" href="sql_overview.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e41573.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">23/31</span> <!-- End Header -->
+<div id="PFGRF007" class="chapter"><a id="BABEAFGG"></a>
+<h1 class="chapter"><span class="secnum">15</span> <a id="sthref1275"></a>Using SQL Plan Management</h1>
+<p>This chapter describes how to manage SQL execution plans using SQL plan management. SQL plan management prevents performance regressions resulting from sudden changes to the execution plan of a SQL statement by providing components for capturing, selecting, and evolving SQL plan information.</p>
+<p>This chapter contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#BABDBIBI">Overview of SQL Plan Baselines</a></p>
+</li>
+<li>
+<p><a href="#BABEGJGB">Managing SQL Plan Baselines</a></p>
+</li>
+<li>
+<p><a href="#BABIDDEG">Using SQL Plan Baselines with SQL Tuning Advisor</a></p>
+</li>
+<li>
+<p><a href="#BABBDJHJ">Using Fixed SQL Plan Baselines</a></p>
+</li>
+<li>
+<p><a href="#BABECFFG">Displaying SQL Plan Baselines</a></p>
+</li>
+<li>
+<p><a href="#BABIJABB">SQL Management Base</a></p>
+</li>
+<li>
+<p><a href="#BABHFHIC">Importing and Exporting SQL Plan Baselines</a></p>
+</li>
+<li>
+<p><a href="#BABFCFHC">Migrating Stored Outlines to SQL Plan Baselines</a></p>
+</li>
+</ul>
+<a id="BABDBIBI"></a>
+<div id="PFGRF95105" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">15.1</span> Overview of SQL Plan Baselines</h2>
+<p><span class="bold">SQL plan management</span> is a preventative mechanism that records and evaluates the execution plans of SQL statements over time. This mechanism can build a <span class="bold">SQL plan baseline</span>, which is a set of accepted plans for a SQL statement. The accepted plans have been proven to perform well.</p>
+<div id="PFGRF95106" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1276"></a>
+<h3 class="sect2"><span class="secnum">15.1.1</span> Purpose of SQL Plan Baselines</h3>
+<p>The goal of SQL plan baselines is to preserve the performance of corresponding SQL statements, regardless of changes in the database. Examples of changes include:</p>
+<ul>
+<li>
+<p>New optimizer version</p>
+</li>
+<li>
+<p>Changes to optimizer statistics and optimizer parameters</p>
+</li>
+<li>
+<p>Changes to schema and metadata definitions</p>
+</li>
+<li>
+<p>Changes to system settings</p>
+</li>
+<li>
+<p>SQL profile creation</p>
+</li>
+</ul>
+<p>SQL plan baselines cannot help in cases where an event has caused irreversible execution plan changes, such as dropping an index.</p>
+<p>The SQL tuning features of Oracle Database generate SQL profiles that help the optimizer to produce well-tuned plans. However, this mechanism is reactive and cannot guarantee stable performance when drastic database changes occur. SQL tuning can only resolve performance issues after they have occurred and are identified. For example, a SQL statement may become high-load because of a plan change, but SQL tuning cannot solve this problem until after the plan change occurs.</p>
+<p>Common scenarios where SQL plan management can improve or preserve SQL performance include:</p>
+<ul>
+<li>
+<p>A database upgrade that installs a new optimizer version usually results in plan changes for a small percentage of SQL statements. Most of these plan changes result in either no performance change or improvement. However, some plan changes may cause performance regressions. SQL plan baselines significantly minimize potential regressions resulting from an upgrade.</p>
+</li>
+<li>
+<p>Ongoing system and data changes can impact plans for some SQL statements, potentially causing performance regressions. SQL plan baselines help minimize performance regressions and stabilize SQL performance.</p>
+</li>
+<li>
+<p>Deployment of new application modules means introducing new SQL statements into the database. The application software may use appropriate SQL execution plans developed in a standard test configuration for the new statements. If the system configuration is significantly different from the test configuration, then the database can evolve SQL plan baselines over time to produce better performance.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<div id="PFGRF95107" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1277"></a>
+<h3 class="sect2"><span class="secnum">15.1.2</span> Architecture of SQL Plan Baselines</h3>
+<p>A SQL plan baseline contains one or more accepted plans, each of which contains the following information:</p>
+<ul>
+<li>
+<p>Set of hints</p>
+</li>
+<li>
+<p>Plan hash value</p>
+</li>
+<li>
+<p>Plan-related information</p>
+</li>
+</ul>
+<p>The <span class="bold">plan history</span> is the set of plans, both accepted and not accepted, that the optimizer generates for a SQL statement over time. Because only accepted plans are in the SQL plan baseline, the plans in the baseline form a susbset of the plan history. For example, after the optimizer generates the first acceptable plan for a SQL plan baseline, subsequent plans are part of the plan history but not part of the plan baseline.</p>
+<p>The process of adding plans to a SQL plan baseline is <span class="bold">plan evolution</span>. To be eligible to be evolved, a plan must be enabled for use by the optimizer.</p>
+<p><a href="#BABCHJAF">Figure 15-1</a> shows a single <code>SELECT</code> statement that has two accepted plans in its SQL plan baseline. The SQL plan history includes two other plans for the statement that have not been proven to perform well.</p>
+<div id="PFGRF95108" class="figure">
+<p class="titleinfigure"><a id="BABCHJAF"></a>Figure 15-1 SQL Plan Baseline and SQL Plan History</p>
+<img width="312" height="480" src="img/pfgrf233.gif" alt="Description of Figure 15-1 follows" /><br />
+<a id="sthref1278" href="img_text/pfgrf233.htm">Description of "Figure 15-1 SQL Plan Baseline and SQL Plan History"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>The <span class="bold">SQL management base (SMB)</span>, which is part of the data dictionary, stores the SQL plan baselines and plan history in the <code>SYSAUX</code> tablespace. The SMB also contains SQL profiles. The SMB uses automatic space management.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BABEGJGB"></a>
+<div id="PFGRF95109" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">15.2</span> Managing SQL Plan Baselines</h2>
+<p>Managing <a id="sthref1279"></a><a id="sthref1280"></a>SQL plan baselines involves the following phases:</p>
+<ul>
+<li>
+<p><a href="#BABCBFGI">Capturing SQL Plan Baselines</a></p>
+</li>
+<li>
+<p><a href="#BABFHGHF">Selecting SQL Plan Baselines</a></p>
+</li>
+<li>
+<p><a href="#BABBCACI">Evolving SQL Plan Baselines</a></p>
+</li>
+</ul>
+<a id="BABCBFGI"></a>
+<div id="PFGRF95110" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">15.2.1</span> Capturing SQL Plan Baselines</h3>
+<p>During the SQL plan baseline capture phase<a id="sthref1281"></a><a id="sthref1282"></a>, the database detects plan changes and records the new plan so that it can be evolved (verified) by the database administrator. To this end, the database maintains a plan history for individual SQL statements. Because ad hoc SQL statements do not repeat and thus do not suffer performance degradation, the database maintains plan history only for repeatable SQL statements.</p>
+<p>To recognize repeatable SQL statements, the database maintains a statement log<a id="sthref1283"></a> that contains the SQL ID of various SQL statements that the optimizer has evaluated. The database recognizes a SQL statement as repeatable when it is parsed or executed again after it has been logged.</p>
+<p>For each repeatable SQL statement, the database maintains a plan history<a id="sthref1284"></a> that contains all plans generated by the optimizer. The set of all accepted plans in the plan history is the SQL plan baseline<a id="sthref1285"></a>.</p>
+<p>You can configure the SQL Plan Baseline Capture phase for automatic capture of plan history and SQL plan baselines for repeatable SQL statements. Alternatively, you can manually load plans as SQL plan baselines.</p>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#BABHDCFB">Capturing Plans Automatically</a></p>
+</li>
+<li>
+<p><a href="#BABCCFED">Creating Baselines from Existing Plans</a></p>
+</li>
+</ul>
+<a id="BABHDCFB"></a>
+<div id="PFGRF95111" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">15.2.1.1</span> Capturing Plans Automatically</h4>
+<p>When automatic plan capture<a id="sthref1286"></a><a id="sthref1287"></a> is enabled, the database automatically creates and maintains the plan history for SQL statements using information provided by the optimizer. The plan history includes relevant information used by the optimizer to reproduce an execution plan, such as the SQL text, outline, bind variables, and compilation environment.</p>
+<p>The optimizer marks the initial plan generated for a SQL statement as accepted for use, and represents both the plan history and SQL plan baseline. The plan history includes all subsequent plans. During the SQL plan baseline evolution phase, the database adds plans to the baseline that have been verified not to cause performance regressions.</p>
+<p>To enable automatic plan capture, set the <code>OPTIMIZER_CAPTURE_SQL_PLAN_BASELINES</code> initialization parameter to <code>TRUE</code>. By default, this parameter is <code>FALSE</code>.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BABCCFED"></a>
+<div id="PFGRF95112" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">15.2.1.2</span> Creating Baselines from Existing Plans</h4>
+<p>You can create SQL plan baselines by manually loading<a id="sthref1288"></a><a id="sthref1289"></a> existing plans for a set of SQL statements as plan baselines. The database does not verify manually loaded plans for performance, but adds them as accepted plans to existing or new SQL plan baselines. You can use manual plan loading with or as an alternative to automatic plan capture.</p>
+<p>You can perform manual plan loading by:</p>
+<ul>
+<li>
+<p><a href="#BABCGFGG">Loading Plans from SQL Tuning Sets and AWR Snapshots</a></p>
+</li>
+<li>
+<p><a href="#BABJBABA">Loading Plans from the Shared SQL Area</a></p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#BABIJABB">"SQL Management Base"</a></div>
+<a id="BABCGFGG"></a>
+<div id="PFGRF95113" class="sect4"><!-- infolevel="all" infotype="General" -->
+<h5 class="sect4"><span class="secnum">15.2.1.2.1</span> Loading Plans from SQL Tuning Sets and AWR Snapshots</h5>
+<p>To load plans from a SQL tuning set<a id="sthref1290"></a><a id="sthref1291"></a>, use the <code>LOAD_PLANS_FROM_SQLSET</code> function of the <code>DBMS_SPM</code> package. The following example loads the plans stored in the SQL tuning set named <code>tset1</code>:</p>
+<pre>
+DECLARE
+  my_plans PLS_INTEGER;
+BEGIN
+  my_plans := DBMS_SPM.LOAD_PLANS_FROM_SQLSET( sqlset_name =&gt; 'tset1');
+END;
+/
+</pre>
+<p>To load plans from Automatic Workload Repository (AWR)<a id="sthref1292"></a><a id="sthref1293"></a>, load the plans stored in AWR snapshots into a SQL tuning set before using the <code>LOAD_PLANS_FROM_SQLSET</code> function as described in this section.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="autostat.htm#i27008">"Overview of the Automatic Workload Repository"</a></p>
+</li>
+<li>
+<p><a href="sql_tune.htm#i34915">"Managing SQL Tuning Sets"</a></p>
+</li>
+<li>
+<p><a class="olink ARPLS150" href="../../appdev.112/e40758/d_spm.htm#ARPLS150"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> to learn about additional parameters used by the <code>LOAD_PLANS_FROM_SQLSET</code> function</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect4" -->
+<a id="BABJBABA"></a>
+<div id="PFGRF95114" class="sect4"><!-- infolevel="all" infotype="General" -->
+<h5 class="sect4"><span class="secnum">15.2.1.2.2</span> Loading Plans from the Shared SQL Area</h5>
+<p>To load plans from the shared SQL area<a id="sthref1294"></a><a id="sthref1295"></a>, use the <code>LOAD_PLANS_FROM_CURSOR_CACHE</code> function of the <code>DBMS_SPM</code> package. In the following example, Oracle Database loads the plans located in the shared SQL area for the SQL statement identified by its <code>sql_id</code>:</p>
+<pre>
+DECLARE
+  my_plans PLS_INTEGER;
+BEGIN
+  my_plans := DBMS_SPM.LOAD_PLANS_FROM_CURSOR_CACHE( sql_id =&gt; '99twu5t2dn5xd');
+END;
+/
+</pre>
+<p>You can identify plans in the shared SQL area by:</p>
+<ul>
+<li>
+<p>SQL identifier (<code>SQL_ID</code>)</p>
+</li>
+<li>
+<p>SQL text (<code>SQL_TEXT</code>)</p>
+</li>
+<li>
+<p>One of the following attributes:</p>
+<ul>
+<li>
+<p><code>PARSING_SCHEMA_NAME</code></p>
+</li>
+<li>
+<p><code>MODULE</code></p>
+</li>
+<li>
+<p><code>ACTION</code></p>
+</li>
+</ul>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ARPLS150" href="../../appdev.112/e40758/d_spm.htm#ARPLS150"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> to learn how to use the <code>LOAD_PLANS_FROM_CURSOR_CACHE</code> function</div>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BABFHGHF"></a>
+<div id="PFGRF95115" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">15.2.2</span> Selecting SQL Plan Baselines</h3>
+<p>During the SQL plan baseline selection phase<a id="sthref1296"></a><a id="sthref1297"></a>, Oracle Database detects plan changes based on the stored plan history, and selects plans to avoid potential performance regressions for a set of SQL statements.</p>
+<p>Each time the database compiles a SQL statement, the optimizer does the following:</p>
+<ol>
+<li>
+<p>Uses a cost-based search method to build a best-cost plan</p>
+</li>
+<li>
+<p>Tries to find a matching plan in the SQL plan baseline</p>
+</li>
+<li>
+<p>Does either of the following depending on whether a match is found:</p>
+<ul>
+<li>
+<p>If found, then the optimizer proceeds using the matched plan</p>
+</li>
+<li>
+<p>If not found, then the optimizer evaluates the cost of each accepted plan in the SQL plan baseline and selects the plan with the lowest cost</p>
+</li>
+</ul>
+</li>
+</ol>
+<p>The best-cost plan found by the optimizer that does not match any plans in the plan history for the SQL statement represents a new plan. The database adds this plan as a nonaccepted plan to the plan history. The database does not use the new plan until it is verified to not cause a performance regression. However, if a change in the system (such as a dropped index) causes all accepted plans to become non-reproducible, then the optimizer selects the best-cost plan. Thus, the presence of a SQL plan baseline causes the optimizer to use conservative plan selection strategy for the SQL statement.</p>
+<p>To enable the use of SQL plan baselines<a id="sthref1298"></a>, set the <code>OPTIMIZER_USE_SQL_PLAN_BASELINES</code> initialization parameter to <code>TRUE</code> (default).</p>
+</div>
+<!-- class="sect2" -->
+<a id="BABBCACI"></a>
+<div id="PFGRF95116" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">15.2.3</span> Evolving SQL Plan Baselines</h3>
+<p>During the SQL plan baseline evolution phase<a id="sthref1299"></a><a id="sthref1300"></a>, the database evaluates the performance of new plans and integrates plans with better performance into SQL plan baselines.</p>
+<p>When the optimizer finds a new plan for a SQL statement, the database adds the plan to the plan history as a nonaccepted plan. The database can verify the plan for performance relative to the SQL plan baseline performance. A successful verification of a nonaccepted plan consists of comparing its performance to that of a plan selected from the SQL plan baseline and ensuring that it delivers better performance. When the database verifies that a nonaccepted plan will not cause a performance regression, the database changes it to an accepted plan and integrates it into the baseline.</p>
+<p>This section describes how to evolve SQL plan baselines and contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#BABCDCBI">Evolving Plans with Manual Plan Loading</a></p>
+</li>
+<li>
+<p><a href="#BABEFAEG">Evolving Plans with DBMS_SPM.EVOLVE_SQL_PLAN_BASELINE</a></p>
+</li>
+</ul>
+<a id="BABCDCBI"></a>
+<div id="PFGRF95117" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">15.2.3.1</span> Evolving Plans with Manual Plan Loading</h4>
+<p><a id="sthref1301"></a>You can evolve an existing SQL plan baseline by manually loading plans from the shared SQL area or from a SQL tuning set. When you manually load plans into a SQL plan baseline, the database adds these loaded plans as accepted plans.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#BABCCFED">"Creating Baselines from Existing Plans"</a></div>
+</div>
+<!-- class="sect3" -->
+<a id="BABEFAEG"></a>
+<div id="PFGRF95118" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">15.2.3.2</span> Evolving Plans with DBMS_SPM.EVOLVE_SQL_PLAN_BASELINE</h4>
+<p><a id="sthref1302"></a><a id="sthref1303"></a>The PL/SQL function <code>DBMS_SPM.EVOLVE_SQL_PLAN_BASELINE</code> tries to evolve new plans that have been added by the optimizer to the plan history of existing plan baselines. If the function can verify that the new plan performs better than a plan chosen from the corresponding SQL plan baseline, then the database adds the new plan as an accepted plan.</p>
+<p>The following example of the <code>DBMS_SPM.EVOLVE_SQL_PLAN_BASELINE</code> function evolves a new plan for a SQL statement identified by its SQL handle, which is its unique SQL identifier in string form. You can find the SQL handle by querying <code>DBA_SQL_PLAN_BASELINES.SQL_HANDLE</code>.</p>
+<pre>
+SET SERVEROUTPUT ON
+SET LONG 10000
+DECLARE
+    report clob;
+BEGIN
+    report := DBMS_SPM.EVOLVE_SQL_PLAN_BASELINE(
+                  sql_handle =&gt; 'SYS_SQL_593bc74fca8e6738');
+    DBMS_OUTPUT.PUT_LINE(report);
+END;
+/
+</pre>
+<p>The following output shows that Oracle Database successfully evolved a plan:</p>
+<pre>
+REPORT
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+                       Evolve SQL Plan Baseline Report
+--------------------------------------------------------------------------------
+ 
+Inputs:
+-------
+ SQL_HANDLE = SYS_SQL_593bc74fca8e6738
+ PLAN_NAME  =
+ TIME_LIMIT = DBMS_SPM.AUTO_LIMIT
+ VERIFY     = YES
+ COMMIT     = YES
+ 
+Plan: SYS_SQL_PLAN_ca8e6738a57b5fc2
+-----------------------------------
+ Plan was verified: Time used .07 seconds.
+ Passed performance criterion: Compound improvement ratio &gt;= 7.32.
+ Plan was changed to an accepted plan.
+ 
+                     Baseline Plan      Test Plan     Improv. Ratio
+                     -------------      ---------     -------------
+ Execution Status:        COMPLETE       COMPLETE
+ Rows Processed:                40             40
+ Elapsed Time(ms):              23              8              2.88
+ CPU Time(ms):                  23              8              2.88
+ Buffer Gets:                  450             61              7.38
+ Disk Reads:                     0              0
+ Direct Writes:                  0              0
+ Fetches:                        0              0
+ Executions:                     1              1
+ 
+-------------------------------------------------------------------------------
+                                Report Summary
+-------------------------------------------------------------------------------
+Number of SQL plan baselines verified: 1.
+Number of SQL plan baselines evolved: 1.
+</pre>
+<p>Alternatively, you can use the <code>DBMS_SPM.EVOLVE_SQL_PLAN_BASELINE</code> function to specify:</p>
+<ul>
+<li>
+<p>The name of a particular plan to evolve</p>
+</li>
+<li>
+<p>A list of plans to evolve</p>
+</li>
+<li>
+<p>No value</p>
+<p>By specifying no value, you enable Oracle Database to evolve all nonaccepted plans currently in the SMB.</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ARPLS150" href="../../appdev.112/e40758/d_spm.htm#ARPLS150"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for information about using the <code>DBMS_SPM.EVOLVE_SQL_PLAN_BASELINE</code> function</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BABIDDEG"></a>
+<div id="PFGRF95119" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">15.3</span> Using SQL Plan Baselines with SQL Tuning Advisor</h2>
+<p>When tuning SQL statements with SQL Tuning Advisor<a id="sthref1304"></a>, if the advisor finds a tuned plan and verifies its performance to be better than a plan chosen from the corresponding SQL plan baseline, then it makes a recommendation to accept a SQL profile. When the SQL profile is accepted, the database adds the tuned plan to the corresponding SQL plan baseline. However, SQL Tuning Advisor does not verify existing unaccepted plans in the plan history.</p>
+<p>In Oracle Database 11<span class="italic">g</span>, an automatically configured task runs SQL Tuning Advisor during a maintenance window. This task targets high-load SQL statements as identified by the execution performance data collected in the Automatic Workload Repository (AWR) snapshots. The automatic SQL tuning task implements the SQL profile recommendations made by SQL Tuning Advisor. Thus, the database automatically adds tuned plans to the SQL plan baselines of the identified high-load SQL statements.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="sql_tune.htm#i34782">"Tuning Reactively with SQL Tuning Advisor"</a></p>
+</li>
+<li>
+<p><a href="sql_tune.htm#i36634">"Managing SQL Profiles"</a></p>
+</li>
+<li>
+<p><a href="autostat.htm#i27008">"Overview of the Automatic Workload Repository"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="BABBDJHJ"></a>
+<div id="PFGRF95120" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">15.4</span> Using Fixed SQL Plan Baselines</h2>
+<p><a id="sthref1305"></a>A SQL plan baseline is fixed when it contains at least one enabled plan whose <code>FIXED</code> attribute is set to <code>YES</code>. You can use fixed SQL plan baselines to fix the set of possible plans (usually one plan) for a SQL statement, or migrate an existing stored outline by loading the "outlined" plan as a fixed plan.</p>
+<p>If a fixed SQL plan baseline also contains non-fixed plans, then the optimizer gives preference to fixed plans over non-fixed ones. Thus, the optimizer picks the fixed plan with the least cost even though a non-fixed plan may have an even lower cost. If none of the fixed plans is reproducible, then the optimizer picks the best non-fixed plan.</p>
+<p>The optimizer does not add new plans to a fixed SQL plan baseline. Because the optimizer does not automatically add new plans, the database does not evolve a fixed SQL plan baseline when you execute <code>DBMS_SPM.EVOLVE_SQL_PLAN_BASELINE</code>. However, you can evolve a fixed SQL plan baseline by manually loading new plans into it from the shared SQL area or a SQL tuning set.</p>
+<p>When you tune a SQL statement with a fixed SQL plan baseline using SQL Tuning Advisor, a SQL profile recommendation has special meaning. When the SQL profile is accepted, the database adds the tuned plan to the fixed SQL plan baseline as a non-fixed plan. However, as described above, the optimizer does not use the tuned plan when a reproducible fixed plan is present. Therefore, the benefit of SQL tuning may not be realized. To enable the use of the tuned plan, manually alter the tuned plan to a fixed plan by setting its <code>FIXED</code> attribute to <code>YES</code>.</p>
+</div>
+<!-- class="sect1" -->
+<a id="BABECFFG"></a>
+<div id="PFGRF95121" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">15.5</span> Displaying SQL Plan Baselines</h2>
+<p>To view the plans stored in the SQL plan baseline for a given statement, use the <code>DISPLAY_SQL_PLAN_BASELINE</code> function<a id="sthref1306"></a> of the <code>DBMS_XPLAN</code> package. The following example displays one or more execution plans for the specified SQL statement, specified by the handle (<code>sql_handle</code>):</p>
+<pre>
+SELECT * FROM TABLE( 
+    DBMS_XPLAN.DISPLAY_SQL_PLAN_BASELINE( 
+        sql_handle=&gt;'SYS_SQL_209d10fabbedc741', 
+        format=&gt;'basic'));
+</pre>
+<p>Alternatively, you can display a single plan by supplying a plan name (<code>plan_name</code>).</p>
+<p>This function uses plan information stored in the SQL management base to explain and display the plans. In this example, the <code>DISPLAY_SQL_PLAN_BASELINE</code> function displays the execution plans for the SQL statement specified by the handle <code>SYS_SQL_209d10fabbedc741</code>:</p>
+<pre>
+SQL handle: SYS_SQL_209d10fabbedc741
+SQL text: select cust_last_name, amount_sold from customers c,
+          sales s where c.cust_id=s.cust_id and cust_year_of_birth=:yob
+----------------------------------------------------------------------------------
+----------------------------------------------------------------------------------
+Plan name: SYS_SQL_PLAN_bbedc741a57b5fc2
+Enabled: YES      Fixed: NO      Accepted: NO      Origin: AUTO-CAPTURE
+----------------------------------------------------------------------------------
+Plan hash value: 2776326082
+
+----------------------------------------------------------------------------------
+| Id  | Operation                                | Name                          |
+----------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT                         |                               |
+|   1 | HASH JOIN                                |                               |
+|   2 |   TABLE ACCESS BY INDEX ROWID            | CUSTOMERS                     |
+|   3 |     BITMAP CONVERSION TO ROWIDS          |                               |
+|   4 |     BITMAP INDEX SINGLE VALUE            | CUSTOMERS_YOB_BIX             |
+|   5 |    PARTITION RANGE ALL                   |                               |
+|   6 |    TABLE ACCESS FULL                     | SALES                         |
+----------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------
+Plan name: SYS_SQL_PLAN_bbedc741f554c408
+Enabled: YES     Fixed: NO      Accepted: YES       Origin: MANUAL-LOAD
+----------------------------------------------------------------------------------
+Plan hash value: 4115973128
+
+----------------------------------------------------------------------------------
+| Id  | Operation                                | Name                          |
+----------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT                         |                               |
+|   1 |   NESTED LOOPS                           |                               |
+|   2 |     NESTED LOOPS                         |                               |
+|   3 |       TABLE ACCESS BY INDEX ROWID        | CUSTOMERS                     |
+|   4 |         BITMAP CONVERSION TO ROWIDS      |                               |
+|   5 |           BITMAP INDEX SINGLE VALUE      | CUSTOMERS_YOB_BIX             |
+|   6 |       PARTITION RANGE                    |                               |
+|   7 |        BITMAP CONVERSION TO ROWIDS       |                               |
+|   8 |          BITMAP INDEX SINGLE VALUE       | SALES_CUST_BIX                |
+|   9 |     TABLE ACCESS BY LOCAL INDEX ROWID    | SALES                         |
+----------------------------------------------------------------------------------
+</pre>
+<p>You can also display SQL plan baseline information using a <code>SELECT</code> statement directly on the <code>DBA_SQL_PLAN_BASELINES</code> view, as shown in the following example:</p>
+<pre>
+SELECT SQL_HANDLE, PLAN_NAME, ENABLED, ACCEPTED, FIXED 
+FROM   DBA_SQL_PLAN_BASELINES;
+ 
+SQL_HANDLE                PLAN_NAME                      ENA  ACC    FIX
+------------------------------------------------------------------------
+SYS_SQL_209d10fabbedc741  SYS_SQL_PLAN_bbedc741a57b5fc2  YES  NO     NO
+SYS_SQL_209d10fabbedc741  SYS_SQL_PLAN_bbedc741f554c408  YES  YES    NO
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ARPLS378" href="../../appdev.112/e40758/d_xplan.htm#ARPLS378"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> to learn about additional parameters used by the <code>DISPLAY_SQL_PLAN_BASELINE</code> function</div>
+</div>
+<!-- class="sect1" -->
+<a id="BABIJABB"></a>
+<div id="PFGRF95122" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">15.6</span> SQL Management Base</h2>
+<p>The <span class="bold">SQL management base<a id="sthref1307"></a> (SMB)</span> is a part of the data dictionary that resides in the <code>SYSAUX</code> tablespace. It stores statement logs, plan histories, SQL plan baselines, and SQL profiles. To allow weekly purging of unused plans and logs, the SMB uses automatic space management.</p>
+<p>You can also add plans manually to the SMB for a set of SQL statements. This feature is especially useful when upgrading the database from a version before Oracle Database 11<span class="italic">g</span> because it helps to minimize plan regressions resulting from the use of a new optimizer version.</p>
+<p>Because the SMB is located entirely within <code>SYSAUX</code>, the database does not use SQL plan management and SQL tuning features when this tablespace is unavailable.</p>
+<div id="PFGRF95123" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1308"></a>
+<h3 class="sect2"><span class="secnum">15.6.1</span> Disk Space Usage</h3>
+<p>Disk space used by the SMB<a id="sthref1309"></a> is regularly checked against a limit based on the size of the <code>SYSAUX</code> tablespace. By default, the limit for the SMB is no more than 10% of the size of <code>SYSAUX</code>. The allowable range for this limit is between 1% and 50%.</p>
+<p>A weekly background process measures the total space occupied by the SMB. When the defined limit is exceeded, the process writes a warning to the alert log. The database generates alerts weekly until one of the following conditions is met:</p>
+<ul>
+<li>
+<p>The SMB space limit is increased</p>
+</li>
+<li>
+<p>The size of the <code>SYSAUX</code> tablespace is increased</p>
+</li>
+<li>
+<p>The disk space used by the SMB is decreased by purging SQL management objects (SQL plan baselines or SQL profiles)</p>
+</li>
+</ul>
+<p>To change the percentage limit, use the <code>CONFIGURE</code> procedure of the <code>DBMS_SPM</code> package. The following example changes the space limit to 30%:</p>
+<pre>
+BEGIN
+  DBMS_SPM.CONFIGURE('space_budget_percent',30);
+END;
+/
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ARPLS150" href="../../appdev.112/e40758/d_spm.htm#ARPLS150"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> to learn about additional parameters used by the <code>CONFIGURE</code> procedure</div>
+</div>
+<!-- class="sect2" -->
+<div id="PFGRF95124" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1310"></a>
+<h3 class="sect2"><span class="secnum">15.6.2</span> Purging Policy</h3>
+<p>A weekly scheduled purging task<a id="sthref1311"></a> manages the disk space used by SQL plan management. The task runs as an automated task in the maintenance window.</p>
+<p>The database purges plans not used for more than 53 weeks, as identified by the <code>LAST_EXECUTED</code> timestamp stored in the SMB for that plan. The 53-week period ensures plan information is available during any yearly SQL processing. The unused plan retention period can range between 5 and 523 weeks (a little more than 10 years).</p>
+<p>To configure the retention period, use the <code>CONFIGURE</code> procedure of the <code>DBMS_SPM</code> PL/SQL package. The following example changes the retention period to 105 weeks:</p>
+<pre>
+BEGIN
+  DBMS_SPM.CONFIGURE( 'plan_retention_weeks',105);
+END;
+/
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ARPLS150" href="../../appdev.112/e40758/d_spm.htm#ARPLS150"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> to learn about additional parameters used by the <code>CONFIGURE</code> procedure</div>
+</div>
+<!-- class="sect2" -->
+<div id="PFGRF95125" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1312"></a>
+<h3 class="sect2"><span class="secnum">15.6.3</span> SQL Management Base Configuration Parameters</h3>
+<p>You can access the current configuration settings for the SQL management base using the <code>DBA_SQL_MANAGEMENT_CONFIG</code> view. The following query shows this information:</p>
+<pre>
+SELECT PARAMETER_NAME, PARAMETER_VALUE 
+FROM   DBA_SQL_MANAGEMENT_CONFIG;
+ 
+PARAMETER_NAME                 PARAMETER_VALUE
+------------------------------ ---------------
+SPACE_BUDGET_PERCENT                        30
+PLAN_RETENTION_WEEKS                       105
+</pre></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BABHFHIC"></a>
+<div id="PFGRF95126" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">15.7</span> Importing and Exporting SQL Plan Baselines</h2>
+<p>Oracle Database supports the export and import<a id="sthref1313"></a> of SQL plan baselines using the Oracle Data Pump Import and Export utilities. Use the <code>DBMS_SPM</code> package to define a staging table, which you can use to pack and unpack SQL plan baselines.</p>
+<p class="orderedlisttitle">To import a set of SQL plan baselines from one system to another:&nbsp;</p>
+<ol>
+<li>
+<p>On the original database, create a staging table using the <code>CREATE_STGTAB_BASELINE</code> procedure.</p>
+<p>The following example creates a staging table named <code>stage1</code>:</p>
+<pre>
+BEGIN
+  DBMS_SPM.CREATE_STGTAB_BASELINE(
+    table_name =&gt; 'stage1');
+END;
+/
+</pre></li>
+<li>
+<p>Pack the SQL plan baselines you want to export from the SQL management base into the staging table using the <code>PACK_STGTAB_BASELINE</code> function.</p>
+<p>The following example packs enabled plan baselines created by user <code>dba1</code> into staging table <code>stage1</code>. You can select SQL plan baselines using the plan name (<code>plan_name</code>), SQL handle (<code>sql_handle</code>), or any other plan criteria. The <code>table_name</code> parameter is mandatory.</p>
+<pre>
+DECLARE
+  my_plans number;
+BEGIN
+  my_plans := DBMS_SPM.PACK_STGTAB_BASELINE(
+    table_name =&gt; 'stage1',
+    enabled =&gt; 'yes',
+    creator =&gt; 'dba1');
+END;
+/
+</pre></li>
+<li>
+<p>Export the staging table <code>stage1</code> into a flat file using the Oracle Data Pump Export utility.</p>
+</li>
+<li>
+<p>Transfer the flat file to the target system.</p>
+</li>
+<li>
+<p>Import the staging table <code>stage1</code> from the flat file using the Oracle Data Pump Import utility.</p>
+</li>
+<li>
+<p>Unpack the SQL plan baselines from the staging table into the SQL management base on the target system using the <code>UNPACK_STGTAB_BASELINE</code> function.</p>
+<p>The following example unpacks all fixed plan baselines stored in the staging table <code>stage1</code>:</p>
+<pre>
+DECLARE
+  my_plans number;
+BEGIN
+  my_plans := DBMS_SPM.UNPACK_STGTAB_BASELINE(
+    table_name =&gt; 'stage1',
+    fixed =&gt; 'yes');
+END;
+/
+</pre></li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ARPLS150" href="../../appdev.112/e40758/d_spm.htm#ARPLS150"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information about using the <code>DBMS_SPM</code> package</p>
+</li>
+<li>
+<p><a class="olink SUTIL100" href="../../server.112/e22490/dp_overview.htm#SUTIL100"><span class="italic">Oracle Database Utilities</span></a> for detailed information about using the Data Pump Export and Import utilities</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="BABFCFHC"></a>
+<div id="PFGRF3616" class="sect1">
+<h2 class="sect1"><span class="secnum">15.8</span> Migrating Stored Outlines to SQL Plan Baselines</h2>
+<p>This section explains the concepts and tasks relating to stored outline migration. This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#BABDBCJA">Overview of Stored Outline Migration</a></p>
+</li>
+<li>
+<p><a href="#BABIBHHF">Preparing for Stored Outline Migration</a></p>
+</li>
+<li>
+<p><a href="#BABBJJGB">Migrating Outlines to Utilize SQL Plan Management Features</a></p>
+</li>
+<li>
+<p><a href="#BABJIDAH">Migrating Outlines to Preserve Stored Outline Behavior</a></p>
+</li>
+<li>
+<p><a href="#BABGFGAG">Performing Follow-Up Tasks After Stored Outline Migration</a></p>
+</li>
+</ul>
+<a id="BABDBCJA"></a>
+<div id="PFGRF95127" class="sect2">
+<h3 class="sect2"><span class="secnum">15.8.1</span> Overview of Stored Outline Migration</h3>
+<p>A <span class="bold">stored outline</span> is a set of hints for a SQL statement. The hints direct the optimizer to choose a specific plan for the statement. A stored outline is a legacy technique for providing plan stability.</p>
+<p><span class="bold">Stored outline migration</span> is the user-initiated process of converting stored outlines to SQL plan baselines. A SQL plan baseline is a set of plans proven to provide good performance.</p>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#BABEFBFI">Purpose of Stored Outline Migration</a></p>
+</li>
+<li>
+<p><a href="#BABIHHGF">How Stored Outline Migration Works</a></p>
+</li>
+<li>
+<p><a href="#BABJJFHB">User Interface for Stored Outline Migration</a></p>
+</li>
+<li>
+<p><a href="#BABDCFGB">Basic Steps in Stored Outline Migration</a></p>
+</li>
+</ul>
+<a id="BABEFBFI"></a>
+<div id="PFGRF95128" class="sect3">
+<h4 class="sect3"><span class="secnum">15.8.1.1</span> Purpose of Stored Outline Migration</h4>
+<p>This section assumes that you rely on stored outlines to maintain plan stability and prevent performance regressions. The goal of this section is to provide a convenient method to safely migrate from stored outlines to SQL plan baselines. After the migration, you can maintain the same plan stability that you had using stored outlines while being able to utilize the more advanced features provided by the SQL Plan Management framework.</p>
+<p>Specifically, the section explains how to address the following problems:</p>
+<ul>
+<li>
+<p>Stored outlines cannot automatically evolve over time. Consequently, a stored outline may be good when you create it, but become a bad plan after a database change, leading to performance degradation.</p>
+</li>
+<li>
+<p>Hints in a stored outline can become invalid, for example, an index hint on a dropped index. In such cases, the database still uses the outlines but excludes the invalid hints, producing a plan that is often worse than the original plan or the current best-cost plan generated by the optimizer.</p>
+</li>
+<li>
+<p>For a SQL statement, the optimizer can only choose the plan defined in the stored outline in the currently specified category. The optimizer cannot choose from other stored outlines in different categories or the current cost-based plan even if they improve performance.</p>
+</li>
+<li>
+<p>Stored outlines are a reactive tuning technique, which means that you only use a stored outline to address a performance problem after it has occurred. For example, you may implement a stored outline to correct the plan of a SQL statement that became high-load. In this case, you used stored outlines instead of proactively tuning the statement before it became high-load.</p>
+</li>
+</ul>
+<p>The stored outline migration PL/SQL API helps solve the preceding problems in the following ways:</p>
+<ul>
+<li>
+<p>SQL plan baselines enable the optimizer to use the same good plan and allow this plan to evolve over time.</p>
+<p>For a specified SQL statement, you can add new plans as SQL plan baselines after they are verified not to cause performance regressions.</p>
+</li>
+<li>
+<p>SQL plan baselines prevent plans from going bad because of invalid hints.</p>
+<p>If hints stored in a plan baseline become invalid, then the plan may not be reproducible by the optimizer. In this case, the optimizer selects an alternative reproducible plan baseline or the current best-cost plan generated by optimizer.</p>
+</li>
+<li>
+<p>For a specific SQL statement, the database can maintain multiple plan baselines.</p>
+<p>The optimizer can choose from a set of good plans for a specific SQL statement instead of being restricted to a single plan per category, as required by stored outlines.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<a id="BABIHHGF"></a>
+<div id="PFGRF95129" class="sect3">
+<h4 class="sect3"><span class="secnum">15.8.1.2</span> How Stored Outline Migration Works</h4>
+<p>This section explains how the database migrates stored outlines to SQL plan baselines. This information is important for performing the task of migrating stored outlines.</p>
+<div id="PFGRF95130" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref1315"></a>
+<h5 class="sect4"><span class="secnum">15.8.1.2.1</span> Stages of Stored Outline Migration</h5>
+<p>The following graphic shows the main stages in stored outline migration:</p>
+<img width="506" height="239" src="img/pfgrf231.gif" alt="Description of pfgrf231.gif follows" /><br />
+<a id="sthref1316" href="img_text/pfgrf231.htm">Description of the illustration pfgrf231.gif</a><br />
+<br />
+<p>The migration process has the following stages:</p>
+<ol>
+<li>
+<p>The user invokes a function that specifies which outlines should be migrated.</p>
+</li>
+<li>
+<p>The database processes the outlines as follows:</p>
+<ol>
+<li>
+<p>The database copies information in the outline needed by the plan baseline.</p>
+<p>The database copies it directly or calculates it based on information in the outline. For example, the text of the SQL statement exists in both schemas, so the database can copy the text from outline to baseline.</p>
+</li>
+<li>
+<p>The database reparses the hints to obtain information not in the outline.</p>
+<p>The plan hash value and plan cost cannot be derived from the existing information in the outline, which necessitates reparsing the hints.</p>
+</li>
+<li>
+<p>The database creates the baselines.</p>
+</li>
+</ol>
+</li>
+<li>
+<p>The database obtains missing information when it chooses the SQL plan baseline for the first time to execute the same SQL statement.</p>
+<p>The compilation environment and execution statistics are only available during execution when the plan baseline is parsed and compiled.</p>
+</li>
+</ol>
+<p>The migration is complete only after the preceding phases complete.</p>
+</div>
+<!-- class="sect4" -->
+<div id="PFGRF95131" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref1317"></a>
+<h5 class="sect4"><span class="secnum">15.8.1.2.2</span> Outline Categories and Baseline Modules</h5>
+<p>An outline is a set of hints, whereas a SQL plan baseline is a set of plans. Because they are different technologies, some functionality of outlines does not map exactly to functionality of baselines. For example, a single SQL statement can have multiple outlines, each of which is in a different outline <span class="bold">category</span>, but the only category that currently exists for baselines is <code>DEFAULT</code>.</p>
+<p>The equivalent of a category for an outline is a module for a SQL plan baseline. <a href="#BABIEGJF">Table 15-1</a> explains how outline categories map to modules.</p>
+<div id="PFGRF95132" class="tblruleformal">
+<p class="titleintable"><a id="sthref1318"></a><a id="BABIEGJF"></a>Table 15-1 Outline Categories</p>
+<table class="cellalignment1691" title="Outline Categories" summary="Outline categories" dir="ltr">
+<thead>
+<tr class="cellalignment1680">
+<th class="cellalignment1687" id="r1c1-t12">Concept</th>
+<th class="cellalignment1687" id="r1c2-t12">Description</th>
+<th class="cellalignment1687" id="r1c3-t12">Default Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r2c1-t12" headers="r1c1-t12">
+<p>Outline Category</p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t12 r1c2-t12">
+<p>Specifies a user-defined grouping for a set of stored outlines.</p>
+<p>You can use categories to maintain different stored outlines for a SQL statement. For example, a single statement can have an outline in the <code>OLTP</code> category and the <code>DW</code> category.</p>
+<p>Each SQL statement can have one or more stored outlines. Each stored outline is in one and only one outline category. A statement can have multiple stored outlines in different categories, but only one stored outline exists per category per statement.</p>
+<p>During migration, the database maps each outline category to a SQL plan baseline module.</p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t12 r1c3-t12">
+<p><code>DEFAULT</code></p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r3c1-t12" headers="r1c1-t12">
+<p>Baseline Module</p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t12 r1c2-t12">
+<p>Specifies a high-level function being performed.</p>
+<p>A SQL plan baseline can belong to one and only one module.</p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t12 r1c3-t12">
+<p>After an outline is migrated to a SQL plan baseline, module name defaults to outline category name</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r4c1-t12" headers="r1c1-t12">
+<p>Baseline Category</p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t12 r1c2-t12">
+<p>Only one SQL plan baseline category exists. This category is named <code>DEFAULT</code>. During stored outline migration, the module name of the SQL plan baseline is set to the category name of the stored outline.</p>
+<p>A statement can have multiple SQL plan baselines in the <code>DEFAULT</code> category.</p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t12 r1c3-t12">
+<p><code>DEFAULT</code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformal" -->
+<p>When migrating stored outlines to SQL plan baselines, Oracle Database maps every outline category to a SQL plan baseline module with the same name. As shown in the following diagram, the outline category <code>OLTP</code> is mapped to the baseline module <code>OLTP</code>. After migration, <code>DEFAULT</code> is a super-category that contains all SQL plan baselines.</p>
+<img width="492" height="243" src="img/pfgrf230.gif" alt="Description of pfgrf230.gif follows" /><br />
+<a id="sthref1319" href="img_text/pfgrf230.htm">Description of the illustration pfgrf230.gif</a><br />
+<br /></div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<a id="BABJJFHB"></a>
+<div id="PFGRF95133" class="sect3">
+<h4 class="sect3"><span class="secnum">15.8.1.3</span> User Interface for Stored Outline Migration</h4>
+<p>You can use the <code>DBMS_SPM</code> package to perform the stored outline migration. <a href="#BABBJACD">Table 15-2</a> describes the relevant functions in this package.</p>
+<div id="PFGRF95134" class="tblformalwide">
+<p class="titleintable"><a id="sthref1320"></a><a id="BABBJACD"></a>Table 15-2 DBMS_SPM Functions Relating to Stored Outline Migration</p>
+<table class="cellalignment1691" title="DBMS_SPM Functions Relating to Stored Outline Migration" summary="DBMS_SPM functions" dir="ltr">
+<thead>
+<tr class="cellalignment1680">
+<th class="cellalignment1687" id="r1c1-t13">DBMS_SPM Function</th>
+<th class="cellalignment1687" id="r1c2-t13">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r2c1-t13" headers="r1c1-t13">
+<p><code>MIGRATE_STORED_OUTLINE</code></p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t13 r1c2-t13">
+<p>Migrates existing stored outlines to plan baselines.</p>
+<p>Use either of the following formats:</p>
+<ul>
+<li>
+<p>Specify outline name, SQL text, outline category, or all stored outlines.</p>
+</li>
+<li>
+<p>Specify a list of outline names.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r3c1-t13" headers="r1c1-t13">
+<p><code>ALTER_SQL_PLAN_BASELINE</code></p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t13 r1c2-t13">
+<p>Changes an attribute of a single plan or all plans associated with a SQL statement.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r4c1-t13" headers="r1c1-t13">
+<p><code>DROP_MIGRATED_STORED_OUTLINE</code></p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t13 r1c2-t13">
+<p>Drops stored outlines that have been migrated to SQL plan baselines.</p>
+<p>The function finds stored outlines marked as <code>MIGRATED</code> in the <code>DBA_OUTLINES</code> view, and then drops these outlines from the database.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformalwide" -->
+<p>You can control stored outline and plan baseline behavior with initialization and session parameters. <a href="#BABGBBAC">Table 15-3</a> describes the relevant parameters. See <a href="#BABDJEHI">Table 15-5</a> and <a href="#BABDEIDC">Table 15-6</a> for an explanation of how these parameter settings interact.</p>
+<div id="PFGRF95135" class="tblformalwide">
+<p class="titleintable"><a id="sthref1321"></a><a id="BABGBBAC"></a>Table 15-3 Parameters Relating to Stored Outline Migration</p>
+<table class="cellalignment1691" title="Parameters Relating to Stored Outline Migration" summary="Initialization parameters" dir="ltr">
+<thead>
+<tr class="cellalignment1680">
+<th class="cellalignment1687" id="r1c1-t14">Initialization or Session Parameter</th>
+<th class="cellalignment1687" id="r1c2-t14">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r2c1-t14" headers="r1c1-t14">
+<p><code>CREATE_STORED_OUTLINES</code></p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t14 r1c2-t14">
+<p>Determines whether Oracle Database automatically creates and stores an outline for each query submitted during the session.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r3c1-t14" headers="r1c1-t14">
+<p><code>OPTIMIZER_CAPTURE_SQL_PLAN_BASELINES</code></p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t14 r1c2-t14">
+<p>Enables or disables the automatic recognition of repeatable SQL statement and the generation of SQL plan baselines for these statements.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r4c1-t14" headers="r1c1-t14">
+<p><code>USE_STORED_OUTLINES</code></p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t14 r1c2-t14">
+<p>Determines whether the optimizer uses stored outlines to generate execution plans.</p>
+<p><span class="bold">Note:</span> This is a <span class="italic">session</span> parameter, not an initialization parameter.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r5c1-t14" headers="r1c1-t14">
+<p><code>OPTIMIZER_USE_SQL_PLAN_BASELINES</code></p>
+</td>
+<td class="cellalignment1688" headers="r5c1-t14 r1c2-t14">
+<p>Enables or disables the use of SQL plan baselines stored in SQL Management Base.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformalwide" -->
+<p>You can use database views to access information relating to stored outline migration. <a href="#BABBFHIB">Table 15-4</a> describes the following main views.</p>
+<div id="PFGRF95136" class="tblruleformalwide">
+<p class="titleintable"><a id="sthref1322"></a><a id="BABBFHIB"></a>Table 15-4 Views Relating to Stored Outline Migration</p>
+<table class="cellalignment1691" title="Views Relating to Stored Outline Migration" summary="Fixed views" dir="ltr">
+<thead>
+<tr class="cellalignment1680">
+<th class="cellalignment1687" id="r1c1-t15">View</th>
+<th class="cellalignment1687" id="r1c2-t15">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r2c1-t15" headers="r1c1-t15">
+<p><code>DBA_OUTLINES</code></p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t15 r1c2-t15">
+<p>Describes all stored outlines in the database.</p>
+<p>The <code>MIGRATED</code> column is important for outline migration and shows one of the following values: <code>NOT-MIGRATED</code> and <code>MIGRATED</code>. When <code>MIGRATED</code>, the stored outline has been migrated to a plan baseline and is not usable.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r3c1-t15" headers="r1c1-t15">
+<p><code>DBA_SQL_PLAN_BASELINES</code></p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t15 r1c2-t15">
+<p>Displays information about the SQL plan baselines currently created for specific SQL statements.</p>
+<p>The <code>ORIGIN</code> column indicates how the plan baseline was created. The value <code>STORED-OUTLINE</code> indicates the baseline was created by migrating an outline.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformalwide" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ARPLS150" href="../../appdev.112/e40758/d_spm.htm#ARPLS150"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> to learn about the <code>DBMS_SPM</code> package</p>
+</li>
+<li>
+<p><a class="olink REFRN" href="../e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> to learn about database initialization parameters and database fixed views</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect3" -->
+<a id="BABDCFGB"></a>
+<div id="PFGRF95137" class="sect3">
+<h4 class="sect3"><span class="secnum">15.8.1.4</span> Basic Steps in Stored Outline Migration</h4>
+<p>This section explains the basic steps in using the PL/SQL API to perform stored outline migration. The basic steps are as follows:</p>
+<ol>
+<li>
+<p>Prepare for stored outline migration.</p>
+<p>Review the migration prerequisites and determine how you want the migrated plan baselines to behave.</p>
+<p>See <a href="#BABIBHHF">"Preparing for Stored Outline Migration"</a>.</p>
+</li>
+<li>
+<p>Do one of the following:</p>
+<ul>
+<li>
+<p>Migrate to baselines to utilize SQL Plan Management features.</p>
+<p>See <a href="#BABBJJGB">"Migrating Outlines to Utilize SQL Plan Management Features"</a>.</p>
+</li>
+<li>
+<p>Migrate to baselines while exactly preserving the behavior of the stored outlines.</p>
+<p>See <a href="#BABJIDAH">"Migrating Outlines to Preserve Stored Outline Behavior"</a>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Perform post-migration confirmation and cleanup.</p>
+<p>See <a href="#BABGFGAG">"Performing Follow-Up Tasks After Stored Outline Migration"</a>.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BABIBHHF"></a>
+<div id="PFGRF95138" class="sect2">
+<h3 class="sect2"><span class="secnum">15.8.2</span> Preparing for Stored Outline Migration</h3>
+<p>This section explains how to prepare for stored outline migration.</p>
+<p class="orderedlisttitle">To prepare for stored outline migration:&nbsp;</p>
+<ol>
+<li>
+<p>Start SQL*Plus and log on as a user with <code>SYSDBA</code> privileges or the <code>EXECUTE</code> privilege on the <code>DBMS_SPM</code> package.</p>
+<p>For example, do the following to use operating system authentication to log on to a database as <code>SYS</code>:</p>
+<pre>
+% sqlplus /nolog
+SQL&gt; CONNECT / AS SYSDBA
+</pre></li>
+<li>
+<p>Query the stored outlines in the database.</p>
+<p>The following example queries all stored outlines that have not been migrated to SQL plan baselines:</p>
+<pre>
+SELECT NAME, CATEGORY, SQL_TEXT
+FROM   DBA_OUTLINES
+WHERE  MIGRATED = 'NOT-MIGRATED';
+</pre></li>
+<li>
+<p>Determine which stored outlines meet the following prerequisites for migration eligibility:</p>
+<ul>
+<li>
+<p>The statement must <span class="italic">not</span> be a run-time <code>INSERT AS SELECT</code> statement.</p>
+</li>
+<li>
+<p>The statement must <span class="italic">not</span> reference a remote object.</p>
+</li>
+<li>
+<p>This statement must <span class="italic">not</span> be a private stored outline.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Decide whether to migrate all outlines, specified stored outlines, or outlines belonging to a specified outline category.</p>
+<p>If you do not decide to migrate all outlines, then list the outlines or categories that you intend to migrate.</p>
+</li>
+<li>
+<p>Decide whether the stored outlines migrated to SQL plan baselines should use <span class="bold">fixed plans</span> or <span class="bold">nonfixed plans</span>:</p>
+<ul>
+<li>
+<p>Fixed plans</p>
+<p>A fixed plan is frozen. If a fixed plan is reproducible using the hints stored in plan baseline, then the optimizer always chooses the lowest-cost fixed plan baseline over plan baselines that are not fixed. Essentially, a fixed plan baseline acts as a stored outline with valid hints.</p>
+<p>A fixed plan is <span class="bold">reproducible</span> when the database can parse the statement based on the hints stored in the plan baseline and create a plan with the same plan hash value as the one in the plan baseline. If one of more of the hints become invalid, then the database may not be able to create a plan with the same plan hash value. In this case, the plan is <span class="bold">nonreproducible</span>.</p>
+<p>If a fixed plan cannot be reproduced when parsed using its hints, then the optimizer chooses a different plan, which can be either of the following:</p>
+<ul>
+<li>
+<p>Another plan for the SQL plan baseline</p>
+</li>
+<li>
+<p>The current cost-based plan created by the optimizer</p>
+</li>
+</ul>
+<p>In some cases, a performance regression occurs because of the different plan, requiring SQL tuning.</p>
+</li>
+<li>
+<p>Nonfixed plans</p>
+<p>If a plan baseline does not contain fixed plans, then SQL Plan Management considers the plans equally when picking a plan for a SQL statement.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Before beginning the actual migration, ensure that the Oracle database meets the following prerequisites:</p>
+<ul>
+<li>
+<p>The database must be Enterprise Edition.</p>
+</li>
+<li>
+<p>The database must be open and must <span class="italic">not</span> be in a suspended state.</p>
+</li>
+<li>
+<p>The database must <span class="italic">not</span> be in restricted access (DBA), read-only, or migrate mode.</p>
+</li>
+<li>
+<p>OCI must be available.</p>
+</li>
+</ul>
+</li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ADMIN11046" href="../../server.112/e25494/dba.htm#ADMIN11046"><span class="italic">Oracle Database Administrator's Guide</span></a> to learn about administrator privileges</p>
+</li>
+<li>
+<p><a class="olink REFRN23153" href="../../server.112/e40402/statviews_4168.htm#REFRN23153"><span class="italic">Oracle Database Reference</span></a> to learn about the <code>DBA_OUTLINES</code> views</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="BABBJJGB"></a>
+<div id="PFGRF95139" class="sect2">
+<h3 class="sect2"><span class="secnum">15.8.3</span> Migrating Outlines to Utilize SQL Plan Management Features</h3>
+<p>The goals of this task are as follows:</p>
+<ul>
+<li>
+<p>To allow SQL Plan Management to select from all plans in a plan baseline for a SQL statement instead of applying the same fixed plan after migration</p>
+</li>
+<li>
+<p>To allow the SQL plan baseline to evolve in the face of database changes by adding new plans to the baseline</p>
+</li>
+</ul>
+<p>The scenario in this section assumes the following:</p>
+<ul>
+<li>
+<p>You migrate all outlines.</p>
+<p>To migrate specific outlines, see <a class="olink ARPLS150" href="../../appdev.112/e40758/d_spm.htm#ARPLS150"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for details about the <code>DBMS_SPM.MIGRATE_STORED_OUTLINE</code> function.</p>
+</li>
+<li>
+<p>You want the module names of the baselines to be identical to the category names of the migrated outlines.</p>
+</li>
+<li>
+<p>You do <span class="italic">not</span> want the SQL plans to be fixed.</p>
+<p>By default, generated plans are not fixed and SQL Plan Management considers all plans equally when picking a plan for a SQL statement. This situation permits the advanced feature of plan evolution to capture new plans for a SQL statement, verify their performance, and accept these new plans into the plan baseline.</p>
+</li>
+</ul>
+<p class="orderedlisttitle">To migrate stored outlines to SQL plan baselines:&nbsp;</p>
+<ol>
+<li>
+<p>In SQL*Plus, call PL/SQL function <code>MIGRATE_STORED_OUTLINE</code>.</p>
+<p>The following sample PL/SQL block migrates all stored outlines to fixed baselines:</p>
+<pre>
+DECLARE
+  my_report CLOB;
+BEGIN
+  my_report := DBMS_SPM.MIGRATE_STORED_OUTLINE( attribute_name =&gt; 'all' );
+END;
+/
+</pre></li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ARPLS150" href="../../appdev.112/e40758/d_spm.htm#ARPLS150"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> to learn about the <code>DBMS_SPM</code> package</p>
+</li>
+<li>
+<p><a class="olink SQLRF00902" href="../../server.112/e41084/statements_2014.htm#SQLRF00902"><span class="italic">Oracle Database SQL Language Reference</span></a> to learn about the <code>ALTER SYSTEM</code> statement</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="BABJIDAH"></a>
+<div id="PFGRF95140" class="sect2">
+<h3 class="sect2"><span class="secnum">15.8.4</span> Migrating Outlines to Preserve Stored Outline Behavior</h3>
+<p>The goal of this task is to migrate stored outlines to SQL plan baselines and preserve the original behavior of the stored outlines by creating fixed plan baselines. A fixed plan has higher priority over other plans for the same SQL statement. If a plan is fixed, then the plan baseline cannot be evolved. The database does not add new plans to a plan baseline that contains a fixed plan.</p>
+<p>This section assumes the following:</p>
+<ul>
+<li>
+<p>You want to migrate only the stored outlines in the category named <code>firstrow</code>.</p>
+<p>See <a class="olink ARPLS150" href="../../appdev.112/e40758/d_spm.htm#ARPLS150"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for syntax and semantics of the <code>DBMS_SPM.MIGRATE_STORED_OUTLINE</code> function.</p>
+</li>
+<li>
+<p>You want the module names of the baselines to be identical to the category names of the migrated outlines.</p>
+</li>
+</ul>
+<p class="orderedlisttitle">To migrate stored outlines to plan baselines:&nbsp;</p>
+<ol>
+<li>
+<p>In SQL*Plus, call PL/SQL function <code>MIGRATE_STORED_OUTLINE</code>.</p>
+<p>The following sample PL/SQL block migrates stored outlines in the category <code>firstrow</code> to fixed baselines:</p>
+<pre>
+DECLARE
+  my_report CLOB;
+BEGIN
+  my_outlines := DBMS_SPM.MIGRATE_STORED_OUTLINE( 
+    attribute_name =&gt; 'category', 
+    attribute_value =&gt; 'firstrow',
+    fixed =&gt; 'YES' );
+END;
+/
+</pre>
+<p>After migration, the SQL plan baselines is in module <code>firstrow</code> and category <code>DEFAULT</code>.</p>
+</li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ARPLS150" href="../../appdev.112/e40758/d_spm.htm#ARPLS150"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> to learn about the <code>DBMS_SPM</code> package</p>
+</li>
+<li>
+<p><a class="olink SQLRF00902" href="../../server.112/e41084/statements_2014.htm#SQLRF00902"><span class="italic">Oracle Database SQL Language Reference</span></a> to learn about the <code>ALTER SYSTEM</code> statement</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="BABGFGAG"></a>
+<div id="PFGRF95141" class="sect2">
+<h3 class="sect2"><span class="secnum">15.8.5</span> Performing Follow-Up Tasks After Stored Outline Migration</h3>
+<p>The goals of this task are as follows:</p>
+<ul>
+<li>
+<p>To configure the database to use plan baselines instead of stored outlines for stored outlines that have been migrated to SQL plan baselines</p>
+</li>
+<li>
+<p>To create SQL plan baselines instead of stored outlines for future SQL statements</p>
+</li>
+<li>
+<p>To drop the stored outlines that have been migrated to SQL plan baselines</p>
+</li>
+</ul>
+<p>This section assumes the following:</p>
+<ul>
+<li>
+<p>You have completed the basic steps in the stored outline migration.</p>
+</li>
+<li>
+<p>Some stored outlines may have been created before Oracle Database 10<span class="italic">g</span>.</p>
+<p>Hints in releases before Oracle Database 10<span class="italic">g</span> use a local hint format. After migration, hints stored in a plan baseline use the global hints format introduced in Oracle Database 10<span class="italic">g</span>.</p>
+</li>
+</ul>
+<p>This section explains how to set initialization parameters relating to stored outlines and plan baselines. The <code>OPTIMIZER_CAPTURE_SQL_PLAN_BASELINES</code> and <code>CREATE_STORED_OUTLINES</code> initialization parameters determine how and when the database creates stored outlines and SQL plan baselines. <a href="#BABDJEHI">Table 15-5</a> explains the interaction between these parameters.</p>
+<div id="PFGRF95142" class="tblruleformalwide">
+<p class="titleintable"><a id="sthref1326"></a><a id="BABDJEHI"></a>Table 15-5 Creation of Outlines and Baselines</p>
+<table class="cellalignment1691" title="Creation of Outlines and Baselines" summary="Explains interaction of parameters" dir="ltr">
+<thead>
+<tr class="cellalignment1680">
+<th class="cellalignment1687" id="r1c1-t20">CREATE_STORED_OUTLINES Initialization Parameter</th>
+<th class="cellalignment1687" id="r1c2-t20">OPTIMIZER_CAPTURE_SQL_PLAN_BASELINES Initialization Parameter</th>
+<th class="cellalignment1687" id="r1c3-t20">Database Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r2c1-t20" headers="r1c1-t20">
+<p><code>FALSE</code></p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t20 r1c2-t20">
+<p><code>FALSE</code></p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t20 r1c3-t20">
+<p>When executing a SQL statement, the database does not create stored outlines or SQL plan baselines.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r3c1-t20" headers="r1c1-t20">
+<p><code>FALSE</code></p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t20 r1c2-t20">
+<p><code>TRUE</code></p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t20 r1c3-t20">
+<p>The automatic recognition of repeatable SQL statements and the generation of SQL plan baselines for these statements is enabled. When executing a SQL statement, the database creates only new SQL plan baselines (if they do not exist) with the category name <code>DEFAULT</code> for the statement.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r4c1-t20" headers="r1c1-t20">
+<p><code>TRUE</code></p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t20 r1c2-t20">
+<p><code>FALSE</code></p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t20 r1c3-t20">
+<p>Oracle Database automatically creates and stores an outline for each query submitted during the session. When executing a SQL statement, the database creates only new stored outlines (if they do not exist) with the category name <code>DEFAULT</code> for the statement.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r5c1-t20" headers="r1c1-t20">
+<p><code><span class="codeinlineitalic">category</span></code></p>
+</td>
+<td class="cellalignment1688" headers="r5c1-t20 r1c2-t20">
+<p><code>FALSE</code></p>
+</td>
+<td class="cellalignment1688" headers="r5c1-t20 r1c3-t20">
+<p>When executing a SQL statement, the database creates only new stored outlines (if they do not exist) with the specified category name for the statement.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r6c1-t20" headers="r1c1-t20">
+<p><code>TRUE</code></p>
+</td>
+<td class="cellalignment1688" headers="r6c1-t20 r1c2-t20">
+<p><code>TRUE</code></p>
+</td>
+<td class="cellalignment1688" headers="r6c1-t20 r1c3-t20">
+<p>Oracle Database automatically creates and stores an outline for each query submitted during the session. The automatic recognition of repeatable SQL statements and the generation of SQL plan baselines for these statements is also enabled.</p>
+<p>When executing a SQL statement, the database creates both stored outlines and SQL plan baselines with the category name <code>DEFAULT</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r7c1-t20" headers="r1c1-t20">
+<p><code><span class="codeinlineitalic">category</span></code></p>
+</td>
+<td class="cellalignment1688" headers="r7c1-t20 r1c2-t20">
+<p><code>TRUE</code></p>
+</td>
+<td class="cellalignment1688" headers="r7c1-t20 r1c3-t20">
+<p>Oracle Database automatically creates and stores an outline for each query submitted during the session. The automatic recognition of repeatable SQL statements and the generation of SQL plan baselines for these statements is also enabled.</p>
+<p>When executing a SQL statement, the database creates stored outlines with the specified category name and SQL plan baselines with the category name <code>DEFAULT</code>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformalwide" -->
+<p>The <code>USE_STORED_OUTLINES</code> session parameter (it is <span class="italic">not</span> an initialization parameter) and <code>OPTIMIZER_USE_SQL_PLAN_BASELINES</code> initialization parameter determine how the database uses stored outlines and plan baselines. <a href="#BABDEIDC">Table 15-6</a> explains how these parameters interact.</p>
+<div id="PFGRF95143" class="tblruleformalwide">
+<p class="titleintable"><a id="sthref1327"></a><a id="BABDEIDC"></a>Table 15-6 Use of Stored Outlines and SQL Plan Baselines</p>
+<table class="cellalignment1691" title="Use of Stored Outlines and SQL Plan Baselines" summary="Explains interaction of parameters" dir="ltr">
+<thead>
+<tr class="cellalignment1680">
+<th class="cellalignment1687" id="r1c1-t21">USE_STORED_OUTLINES Session Parameter</th>
+<th class="cellalignment1687" id="r1c2-t21">OPTIMIZER_USE_SQL_PLAN_BASELINES Initialization Parameter</th>
+<th class="cellalignment1687" id="r1c3-t21">Database Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r2c1-t21" headers="r1c1-t21">
+<p><code>FALSE</code></p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t21 r1c2-t21">
+<p><code>FALSE</code></p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t21 r1c3-t21">
+<p>When choosing a plan for a SQL statement, the database does not use stored outlines or plan baselines.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r3c1-t21" headers="r1c1-t21">
+<p><code>FALSE</code></p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t21 r1c2-t21">
+<p><code>TRUE</code></p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t21 r1c3-t21">
+<p>When choosing a plan for a SQL statement, the database uses only SQL plan baselines.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r4c1-t21" headers="r1c1-t21">
+<p><code>TRUE</code></p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t21 r1c2-t21">
+<p><code>FALSE</code></p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t21 r1c3-t21">
+<p>When choosing a plan for a SQL statement, the database uses stored outlines with the category name <code>DEFAULT</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r5c1-t21" headers="r1c1-t21">
+<p><code><span class="codeinlineitalic">category</span></code></p>
+</td>
+<td class="cellalignment1688" headers="r5c1-t21 r1c2-t21">
+<p><code>FALSE</code></p>
+</td>
+<td class="cellalignment1688" headers="r5c1-t21 r1c3-t21">
+<p>When choosing a plan for a SQL statement, the database uses stored outlines with the specified category name.</p>
+<p>If a stored outline with the specified category name does not exist, then the database uses a stored outline in the <code>DEFAULT</code> category if it exists.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r6c1-t21" headers="r1c1-t21">
+<p><code>TRUE</code></p>
+</td>
+<td class="cellalignment1688" headers="r6c1-t21 r1c2-t21">
+<p><code>TRUE</code></p>
+</td>
+<td class="cellalignment1688" headers="r6c1-t21 r1c3-t21">
+<p>When choosing a plan for a SQL statement, stored outlines take priority over plan baselines.</p>
+<p>If a stored outline with the category name <code>DEFAULT</code> exists for the statement and is applicable, then the database applies the stored outline. Otherwise, the database uses SQL plan baselines.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r7c1-t21" headers="r1c1-t21">
+<p><code><span class="codeinlineitalic">category</span></code></p>
+</td>
+<td class="cellalignment1688" headers="r7c1-t21 r1c2-t21">
+<p><code>TRUE</code></p>
+</td>
+<td class="cellalignment1688" headers="r7c1-t21 r1c3-t21">
+<p>When choosing a plan for a SQL statement, stored outlines take priority over plan baselines.</p>
+<p>If a stored outline with the specified category name or the <code>DEFAULT</code> category exists for the statement and is applicable, then the database applies the stored outline. Otherwise, the database uses SQL plan baselines. However, if the stored outline has the property <code>MIGRATED</code>, then the database does not use the outline and uses the corresponding SQL plan baseline instead (if it exists).</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformalwide" -->
+<p class="orderedlisttitle">To place the database in the proper state after the migration:&nbsp;</p>
+<ol>
+<li>
+<p>Check that SQL plan baselines have been created as the result of migration.</p>
+<p>Ensure that the plans are enabled and accepted. For example, enter the following query (partial sample output included):</p>
+<pre>
+SELECT SQL_HANDLE, PLAN_NAME, ORIGIN, ENABLED, ACCEPTED, FIXED, MODULE
+FROM   DBA_SQL_PLAN_BASELINES;
+
+SQL_HANDLE                     PLAN_NAME  ORIGIN         ENA ACC FIX MODULE
+------------------------------ ---------- -------------- --- --- --- ------
+SYS_SQL_f44779f7089c8fab       STMT01     STORED-OUTLINE YES YES NO  DEFAULT
+.
+.
+.
+</pre></li>
+<li>
+<p>Optionally, change the attributes of the SQL plan baselines.</p>
+<p>For example, the following statement changes the status of the baseline for the specified SQL statement to <code>fixed</code>:</p>
+<pre>
+DECLARE
+  v_cnt PLS_INTEGER;
+BEGIN 
+  v_cnt := DBMS_SPM.ALTER_SQL_PLAN_BASELINE(               
+                           sql_handle=&gt;'SYS_SQL_f44779f7089c8fab', 
+                           attribute_name=&gt;'FIXED', 
+                           attribute_value=&gt;'NO');
+  DBMS_OUTPUT.PUT_LINE('Plans altered: ' || v_cnt);
+END;
+/
+</pre></li>
+<li>
+<p>Check the status of the original stored outlines.</p>
+<p>For example, enter the following query (partial sample output included):</p>
+<pre>
+SELECT NAME, OWNER, CATEGORY, USED, MIGRATED 
+FROM   DBA_OUTLINES
+ORDER BY NAME;
+
+NAME       OWNER      CATEGORY   USED   MIGRATED
+---------- ---------- ---------- ------ ------------
+STMT01     SYS        DEFAULT    USED   MIGRATED
+STMT02     SYS        DEFAULT    USED   MIGRATED
+.
+.
+.
+</pre></li>
+<li>
+<p>Drop all stored outlines that have been migrated to SQL plan baselines.</p>
+<p>For example, the following statements drops all stored outlines with status <code>MIGRATED</code> in <code>DBA_OUTLINES</code>:</p>
+<pre>
+DECLARE
+  v_cnt PLS_INTEGER;
+BEGIN 
+  v_cnt := DBMS_SPM.DROP_MIGRATED_STORED_OUTLINE();
+  DBMS_OUTPUT.PUT_LINE('Migrated stored outlines dropped: ' || v_cnt);
+END;
+/
+</pre></li>
+<li>
+<p>Set initialization parameters so that:</p>
+<ul>
+<li>
+<p>When executing a SQL statement, the database creates plan baselines but does not create stored outlines.</p>
+</li>
+<li>
+<p>The database only uses stored outlines when the equivalent SQL plan baselines do not exist.</p>
+</li>
+</ul>
+<p>For example, the following SQL statements instruct the database to create SQL plan baselines instead of stored outlines when a SQL statement is executed. The example also instructs the database to apply a stored outline in category <code>allrows</code> or <code>DEFAULT</code> only if it exists and has not been migrated to a SQL plan baseline. In other cases, the database applies SQL plan baselines instead.</p>
+<pre>
+ALTER SYSTEM 
+  SET CREATE_STORED_OUTLINE = false;
+
+ALTER SYSTEM 
+  SET OPTIMIZER_CAPTURE_SQL_PLAN_BASELINES = true;
+
+ALTER SYSTEM 
+   SET OPTIMIZER_USE_SQL_PLAN_BASELINES = true;
+
+ALTER SESSION
+   SET USE_STORED_OUTLINES = allrows;
+</pre></li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ARPLS150" href="../../appdev.112/e40758/d_spm.htm#ARPLS150"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> to learn about the <code>DBMS_SPM</code> package</p>
+</li>
+<li>
+<p><a class="olink REFRN" href="../e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> to learn about database fixed views</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1679">
+<tr>
+<td class="cellalignment1688">
+<table class="cellalignment1684">
+<tr>
+<td class="cellalignment1683"><a href="data_acc.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1683"><a href="sql_overview.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2000, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1690">
+<table class="cellalignment1682">
+<tr>
+<td class="cellalignment1683"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1683"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1683"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1683"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1683"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1683"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

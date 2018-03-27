@@ -1,0 +1,16 @@
+var chapters = [
+  { topic: "chapter", section: "1", title: "Introduction to Java in Oracle Database", anchor: "JJDEV01000", file: "chone.htm" },
+  { topic: "chapter", section: "2", title: "Java Applications on Oracle Database", anchor: "JJDEV02000", file: "chtwo.htm" },
+  { topic: "chapter", section: "3", title: "Calling Java Methods in Oracle Database", anchor: "JJDEV13168", file: "chthree.htm" },
+  { topic: "chapter", section: "4", title: "Java Installation and Configuration", anchor: "JJDEV13217", file: "chfour.htm" },
+  { topic: "chapter", section: "5", title: "Developing Java Stored Procedures", anchor: "JJDEV13237", file: "chfive.htm" },
+  { topic: "chapter", section: "6", title: "Publishing Java Classes With Call Specifications", anchor: "JJDEV13258", file: "chsix.htm" },
+  { topic: "chapter", section: "7", title: "Calling Stored Procedures", anchor: "JJDEV13283", file: "chseven.htm" },
+  { topic: "chapter", section: "8", title: "Java Stored Procedures Application Example", anchor: "JJDEV13298", file: "cheight.htm" },
+  { topic: "chapter", section: "9", title: "Oracle Database Java Application Performance", anchor: "JJDEV09000", file: "chnine.htm" },
+  { topic: "chapter", section: "10", title: "Security for Oracle Database Java Applications", anchor: "JJDEV10000", file: "chten.htm" },
+  { topic: "chapter", section: "11", title: "Schema Objects and Oracle JVM Utilities", anchor: "JJDEV13349", file: "cheleven.htm" },
+  { topic: "chapter", section: "12", title: "Database Web Services", anchor: "JJDEV13408", file: "chtwelve.htm" },
+  { topic: "appendix", section: "A", title: "DBMS_JAVA Package", anchor: "JJDEV13000", file: "appendixa.htm" },
+  { topic: "appendix", section: "B", title: "Classpath Extensions and User Classloaded Metadata", anchor: "JJDEV13482", file: "appendixb.htm" },
+  { } ];

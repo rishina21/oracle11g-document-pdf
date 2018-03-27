@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>PL/SQL Semantics for LOBs</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 737" />
+<meta name="dcterms.created" content="2013-07-18T13:32:41Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database SecureFiles and Large Objects Developer's Guide" />
+<meta name="dcterms.identifier" content="E18294-04" />
+<meta name="dcterms.isVersionOf" content="ADLOB" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1996, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="adlob_sql_semantics.htm" title="Previous" type="text/html" />
+<link rel="Next" href="adlob_long_lob.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e18294.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">28/37</span> <!-- End Header -->
+<div id="ADLOB45599" class="chapter"><a id="g1010194"></a><a id="i1008068"></a>
+<h1 class="chapter"><span class="secnum">17</span> PL/SQL Semantics for LOBs</h1>
+<p>This chapter contains these topics:</p>
+<ul>
+<li>
+<p><a href="#BEIDFIFC">PL/SQL Statements and Variables</a></p>
+</li>
+<li>
+<p><a href="#i1006148">Implicit Conversions Between CLOB and VARCHAR2</a></p>
+</li>
+<li>
+<p><a href="#i1006196">Explicit Conversion Functions</a></p>
+</li>
+<li>
+<p><a href="#i1006302">PL/SQL CLOB Comparison Rules</a></p>
+</li>
+<li>
+<p><a href="#BEIJGEGJ">PL/SQL Functions for Remote LOBs and BFILEs</a></p>
+</li>
+</ul>
+<a id="BEIDFIFC"></a>
+<div id="ADLOB45600" class="sect1">
+<h2 class="sect1"><a id="sthref881"></a>PL/SQL Statements and Variables</h2>
+<p>In PL/SQL, semantic changes have been made.</p>
+<div class="infobox-note">
+<p class="notep1"><span class="bold">Note</span>:</p>
+The following discussions, concerning <code>CLOB</code>s and <code>VARCHAR2</code>s, also apply to <code>BLOB</code>s and <code>RAW</code>s, unless otherwise noted. In the text, <code>BLOB</code> and <code>RAW</code> are not explicitly mentioned.</div>
+<p>PL/SQL semantics support is described in the following sections:</p>
+<ul>
+<li>
+<p><a href="#i1006148">Implicit Conversions Between CLOB and VARCHAR2</a></p>
+</li>
+<li>
+<p><a href="#i1006196">Explicit Conversion Functions</a></p>
+</li>
+<li>
+<p><a href="#i1006212">VARCHAR2 and CLOB in PL/SQL Built-In Functions</a></p>
+</li>
+<li>
+<p><a href="#i1006302">PL/SQL CLOB Comparison Rules</a></p>
+</li>
+</ul>
+</div>
+<!-- class="sect1" -->
+<a id="i1006148"></a>
+<div id="ADLOB45601" class="sect1">
+<h2 class="sect1">Implicit <a id="sthref882"></a>Conversions Between CLOB and VARCHAR2</h2>
+<p>Implicit conversions from <code>CLOB</code> to <code>VARCHAR2</code> and from <code>VARCHAR2</code> to <code>CLOB</code> data types are allowed in PL/SQL. These conversions enable you to perform the following operations in your application:</p>
+<ul>
+<li>
+<p><code>CLOB</code> columns can be selected into <code>VARCHAR2</code> PL/SQL variables</p>
+</li>
+<li>
+<p><code>VARCHAR2</code> columns can be selected into <code>CLOB</code> variables</p>
+</li>
+<li>
+<p>Assignment and parameter passing between <code>CLOB</code>s and <code>VARCHAR2</code>s</p>
+</li>
+</ul>
+<p class="subhead1"><a id="i1007664"></a><a id="ADLOB45602"></a>Accessing a CLOB as a <a id="sthref883"></a>VARCHAR2 in PL/SQL</p>
+<p>The following example illustrates the way <code>CLOB</code> data is accessed when the <code>CLOB</code>s are treated as <code>VARCHAR2</code>s:</p>
+<pre>
+declare
+   myStoryBuf VARCHAR2(4001);
+BEGIN
+   SELECT ad_sourcetext INTO myStoryBuf FROM print_media WHERE ad_id = 12001;
+   -- Display Story by printing myStoryBuf directly
+END;
+/
+</pre>
+<p class="subhead1"><a id="i1006179"></a><a id="ADLOB45603"></a><a id="sthref884"></a>Assigning a CLOB to a <a id="sthref885"></a>VARCHAR2 in PL/SQL</p>
+<pre>
+declare
+myLOB CLOB;
+BEGIN
+SELECT 'ABCDE' INTO myLOB FROM print_media WHERE ad_id = 11001;
+-- myLOB is a temporary LOB.
+-- Use myLOB as a lob locator
+  DBMS_OUTPUT.PUT_LINE('Is temp? '||DBMS_LOB.ISTEMPORARY(myLOB));
+END;
+/
+</pre></div>
+<!-- class="sect1" -->
+<a id="i1006196"></a>
+<div id="ADLOB45604" class="sect1">
+<h2 class="sect1">Explicit <a id="sthref886"></a><a id="sthref887"></a><a id="sthref888"></a><a id="sthref889"></a><a id="sthref890"></a>Conversion Functions</h2>
+<p>In SQL and PL/SQL, the following explicit conversion functions convert other data types to and from <code>CLOB</code>, <code>NCLOB</code>, and <code>BLOB</code> as part of the LONG-to-LOB migration:</p>
+<ul>
+<li>
+<p><code>TO_CLOB()</code>: Converting from <code>VARCHAR2</code>, <code>NVARCHAR2</code>, or <code>NCLOB</code> to a <code>CLOB</code></p>
+</li>
+<li>
+<p><code>TO_NCLOB()</code>: Converting from <code>VARCHAR2</code>, <code>NVARCHAR2</code>, or <code>CLOB</code> to an <code>NCLOB</code></p>
+</li>
+<li>
+<p><code>TO_BLOB()</code>: Converting from <code>RAW</code> to a <code>BLOB</code></p>
+</li>
+<li>
+<p><code><a id="sthref891"></a>TO_CHAR()</code> converts a <code>CLOB</code> to a <code>CHAR</code> type. When you use this function to convert a character LOB into the database character set, if the LOB value to be converted is larger than the target type, then the database returns an error. Implicit conversions also raise an error if the LOB data does not fit.</p>
+</li>
+<li>
+<p><code>TO_NCHAR()</code> converts an <code>NCLOB</code> to an NCHAR type. When you use this function to convert a character LOB into the national character set, if the LOB value to be converted is larger than the target type, then the database returns an error. Implicit conversions also raise an error if the LOB data does not fit.</p>
+</li>
+<li>
+<p><code><a id="sthref892"></a>CAST</code> does not directly support any of the LOB data types. When you use <code>CAST</code> to convert a <code>CLOB</code> value into a character data type, an <code>NCLOB</code> value into a national character data type, or a <code>BLOB</code> value into a <code>RAW</code> data type, the database implicitly converts the LOB value to character or raw data and then explicitly casts the resulting value into the target data type. If the resulting value is larger than the target type, then the database returns an error.</p>
+</li>
+</ul>
+<p>Other explicit conversion functions are not supported, such as, <code>TO_NUMBER()</code>, see <a href="adlob_sql_semantics.htm#g1016221">Table 16-1, "SQL VARCHAR2 Functions and Operators on LOBs"</a>. Conversion function details are explained in <a href="adlob_long_lob.htm#g1029181">Chapter 18, "Migrating Columns from LONGs to LOBs"</a>.</p>
+<a id="i1006212"></a>
+<div id="ADLOB45605" class="sect2">
+<h3 class="sect2">VARCHAR2 and CLOB in <a id="sthref893"></a>PL/SQL Built-In Functions</h3>
+<p><code>CLOB</code> and <code>VARCHAR2</code> are still two distinct types. But depending on the usage, a CLOB can be passed to SQL and PL/SQL <code>VARCHAR2</code> built-in functions, used exactly like a <code>VARCHAR2</code>. Or the variable can be passed into <code>DBMS_LOB</code> APIs, acting like a LOB locator. Please see the following combined example,<a href="#i1006221">"CLOB Variables in PL/SQL"</a>.</p>
+<p>PL/SQL <code>VARCHAR2</code> functions and operators can take <code>CLOB</code>s as arguments or operands.</p>
+<p>When the size of a <code>VARCHAR2</code> variable is not large enough to contain the result from a function that returns a <code>CLOB</code>, or a <code>SELECT</code> on a <code>CLOB</code> column, an error is raised and no operation is performed. This is consistent with <code>VARCHAR2</code> semantics.</p>
+<p class="subhead1"><a id="i1006221"></a><a id="ADLOB45606"></a><a id="sthref894"></a><a id="sthref895"></a>CLOB Variables in PL/SQL</p>
+<pre>
+1 declare
+2   myStory CLOB;
+3   revisedStory CLOB;
+4   myGist VARCHAR2(100);
+5   revisedGist VARCHAR2(100);
+6 BEGIN
+7  -- select a CLOB column into a CLOB variable
+8  SELECT Story INTO myStory FROM print_media WHERE product_id=10;
+9  -- perform VARCHAR2 operations on a CLOB variable
+10 revisedStory := UPPER(SUBSTR(myStory, 100, 1)); 
+11 -- revisedStory is a temporary LOB
+12 -- Concat a VARCHAR2 at the end of a CLOB
+13 revisedStory := revisedStory || myGist;
+14 -- The following statement raises an error because myStory is 
+15 -- longer than 100 bytes
+16 myGist := myStory;
+17 END;
+</pre>
+<p>Please note that in line 10 of <a href="#i1006221">"CLOB Variables in PL/SQL"</a>, a temporary <code>CLOB</code> is implicitly created and is pointed to by the <code>revisedStory</code> <code>CLOB</code> locator. In the current interface the line can be expanded as:</p>
+<pre>
+buffer VARCHAR2(32000)
+DBMS_LOB.CREATETEMPORARY(revisedStory);
+buffer := UPPER(DBMS_LOB.SUBSTR(myStory,100,1));
+DBMS_LOB.WRITE(revisedStory,length(buffer),1, buffer);
+</pre>
+<p>In line 13, <code>myGist</code> is appended to the end of the temporary LOB, which has the same effect of:</p>
+<pre>
+DBMS_LOB.WRITEAPPEND(revisedStory, myGist, length(myGist));
+</pre>
+<p>In some occasions, implicitly created temporary LOBs in PL/SQL statements can change the representation of LOB locators previously defined. Consider the next example.</p>
+<p class="subhead1"><a id="i1006258"></a><a id="ADLOB45607"></a><a id="sthref896"></a>Change in Locator-Data Linkage</p>
+<pre>
+1 declare
+2 myStory CLOB;
+3 amt number:=100;
+4 buffer VARCHAR2(100):='some data';
+5 BEGIN
+6 -- select a CLOB column into a CLOB variable
+7 SELECT Story INTO myStory FROM print_media WHERE product_id=10;
+8 DBMS_LOB.WRITE(myStory, amt, 1, buf);
+9 -- write to the persistent LOB in the table
+10
+11 myStory:= UPPER(SUBSTR(myStory, 100, 1));
+12 -- perform VARCHAR2 operations on a CLOB variable, temporary LOB created.
+13 -- Changes are not reflected in the database table from this point on.
+14 
+15 update print_media set Story = myStory WHERE product_id = 10;
+16 -- an update is necessary to synchronize the data in the table.
+17 END;
+</pre>
+<p>After line 7, <code>myStory</code> represents a persistent LOB in <code>print_media</code>.</p>
+<p>The <code>DBMS_LOB.WRITE</code> call in line 8 directly writes the data to the table.</p>
+<p>No <code>UPDATE</code> statement is necessary. Subsequently in line 11, a temporary LOB is created and assigned to <code>myStory</code> because <code>myStory</code> is now used like a local <code>VARCHAR2</code> variable. The LOB locator <code>myStory</code> now points to the newly-created temporary LOB.</p>
+<p>Therefore, modifications to <code>myStory</code> are no longer reflected in the database. To propagate the changes to the database table, an <code>UPDATE</code> statement becomes necessary now. Note again that for the previous persistent LOB, the <code>UPDATE</code> is not required.</p>
+<p>Temporary LOBs created in a program block as a result of a <code>SELECT</code> or an assignment are freed automatically at the end of the PL/SQL block or function or procedure. You must also free the temporary LOBs that were created with <code>DBMS_LOB.CREATETEMPORARY</code> to reclaim system resources and temporary tablespace. Do this by calling <code>DBMS_LOB.FREETEMPORARY</code> on the <code>CLOB</code> variable.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If the SQL statement returns a LOB or a LOB is an <code>OUT</code> parameter for a PL/SQL function or procedure, you must test if it is a temporary LOB, and if it is, then free it after you are done with it.</div>
+<p class="subhead1"><a id="i1006285"></a><a id="ADLOB45608"></a><a id="sthref897"></a>Freeing Temporary LOBs Automatically and Manually</p>
+<pre>
+declare
+   Story1 CLOB;
+   Story2 CLOB;
+   StoryCombined CLOB;
+   StoryLower CLOB;
+BEGIN
+   SELECT Story INTO Story1 FROM print_media WHERE product_ID = 1;
+   SELECT Story INTO Story2 FROM print_media WHERE product_ID = 2;
+   StoryCombined := Story1 || Story2; -- StoryCombined is a temporary LOB
+   -- Free the StoryCombined manually to free up space taken
+   DBMS_LOB.FREETEMPORARY(StoryCombined);
+   StoryLower := LOWER(Story1) || LOWER(Story2);
+END; -- At the end of block, StoryLower is freed.
+</pre></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006302"></a>
+<div id="ADLOB45609" class="sect1">
+<h2 class="sect1"><a id="sthref898"></a>PL/SQL CLOB Comparison Rules</h2>
+<p>Like <code>VARCHAR2</code>s, when a <code>CLOB</code> is compared with another <code>CLOB</code> or compared with a <code>VARCHAR2</code>, a set of rules determines the comparison. The rules are usually called a "collating sequence". In Oracle, <code>CHAR</code>s and <code>VARCHAR2</code>s have slightly different sequences due to the blank padding of <code>CHAR</code>s.</p>
+<div id="ADLOB45610" class="sect2"><a id="sthref899"></a>
+<h3 class="sect2">CLOBs Follow the VARCHAR2 Collating Sequence</h3>
+<p>As a rule, <code>CLOB</code>s follow the same collating sequence as <code>VARCHAR2</code>s. That is, when a <code>CLOB</code> is compared, the result is consistent with if the <code>CLOB</code> data content is retrieved into a <code>VARCHAR2</code> buffer and the <code>VARCHAR2</code> is compared. The rule applies to all cases including comparisons between <code>CLOB</code> and <code>CLOB</code>, <code>CLOB</code> and <code>VARCHAR2</code>, and <code>CLOB</code> and <code>CHAR</code>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+When a <code>CLOB</code> is compared with a <code>CHAR</code> string, it is always the <span class="italic">character</span> data of the <code>CLOB</code> being compared with the string. Likewise, when two <code>CLOB</code>s are compared, the data content of the two <code>CLOB</code>s are compared, <span class="italic">not their LOB locators</span>.</div>
+<p>It makes no sense to compare <code>CLOB</code>s with non-character data, or with <code>BLOB</code>s. An error is returned in these cases.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BEIJGEGJ"></a>
+<div id="ADLOB45611" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><a id="sthref900"></a><a id="sthref901"></a>PL/SQL Functions for Remote LOBs and BFILEs</h2>
+<p>Built-in and user-defined PL/SQL functions that are executed on the remote site and operate on remote LOBs and <code>BFILE</code>s are allowed, as long as the final value returned by nested functions is not a LOB. Examples are:</p>
+<pre>
+SELECT product_id FROM print_media@dbs2 WHERE foo@dbs2(ad_sourcetext, 'aa') &gt; 0;
+-- foo is a user-define function returning a NUMBER
+
+DELETE FROM print_media@dbs2 WHERE DBMS_LOB.GETLENGTH@dbs2(ad_graphic) = 0;
+</pre>
+<div id="ADLOB45612" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref902"></a>
+<h3 class="sect2">Restrictions on Remote User-Defined Functions</h3>
+<ol>
+<li>
+<p>The restrictions that apply to SQL functions apply here also.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="adlob_sql_semantics.htm#BABBFDGI">"Built-in Functions for Remote LOBs and BFILEs"</a></div>
+</li>
+<li>
+<p>A function in one <code>dblink</code> cannot operate on LOB data in another dblink. For example, <span class="bold">the following statement is not supported:</span></p>
+<pre>
+SELECT a.product_id FROM print_media@dbs1 a, print_media@dbs2 b WHERE 
+   CONTAINS@dbs1(b.ad_sourcetext, 'aa') &gt; 0;
+</pre></li>
+<li>
+<p>One query block cannot contain tables and functions at different <code>dblink</code>s. For example, <span class="bold">the following statement is not supported:</span></p>
+<pre>
+SELECT a.product_id FROM print_media@dbs2 a, print_media@dbs3 b
+    WHERE CONTAINS@dbs2(a.ad_sourcetext, 'aa') &gt; 0 AND
+    foo@dbs3(b.ad_sourcetext) &gt; 0;
+--  foo is a user-defined function in dbs3
+</pre></li>
+<li>
+<p>There is no support for performing remote LOB operations (that is, <code>DBMS_LOB</code>) from within PL/SQL, other than issuing SQL statements from PL/SQL.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<div id="ADLOB45613" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref903"></a>
+<h3 class="sect2">Remote Functions in PL/SQL, OCI, and JDBC</h3>
+<p>All the SQL statements listed above work the same if they are executed from inside PL/SQL, OCI, and JDBC. No additional functionality is provided.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment898">
+<tr>
+<td class="cellalignment907">
+<table class="cellalignment903">
+<tr>
+<td class="cellalignment902"><a href="adlob_sql_semantics.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment902"><a href="adlob_long_lob.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1996, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment909">
+<table class="cellalignment901">
+<tr>
+<td class="cellalignment902"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment902"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment902"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment902"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment902"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment902"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

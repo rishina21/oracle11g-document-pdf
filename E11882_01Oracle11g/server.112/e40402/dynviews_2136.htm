@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>V$RESOURCE_LIMIT</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1067" />
+<meta name="dcterms.created" content="2015-08-14T13:20:27Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Reference" />
+<meta name="dcterms.identifier" content="E40402-18" />
+<meta name="dcterms.isVersionOf" content="REFRN" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2002, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="dynviews_2135.htm" title="Previous" type="text/html" />
+<link rel="Next" href="dynviews_2137.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e40402.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">1980/2170</span> <!-- End Header -->
+<div id="REFRN30206" class="sect1"><a id="sthref3543"></a>
+<h1 class="sect1">V$RESOURCE_LIMIT<a id="sthref3544"></a></h1>
+<p><code dir="ltr">V$RESOURCE_LIMIT</code> displays information about global resource use for some of the system resources. Use this view to monitor the consumption of resources so that you can take corrective action, if necessary. Many of the resources correspond to initialization parameters listed in <a href="#g1431001">Table 8-5</a>.</p>
+<p>Some resources, those used by DLM for example, have an initial allocation (soft limit), and the hard limit, which is theoretically infinite (although in practice it is limited by SGA size). During SGA reservation/initialization, a place is reserved in SGA for the <code dir="ltr">INITIAL_ALLOCATION</code> of resources, but if this allocation is exceeded, additional resources are allocated up to the value indicated by <code dir="ltr">LIMIT_VALUE</code>. The <code dir="ltr">CURRENT_UTILIZATION</code> column indicates whether the initial allocation has been exceeded. When the initial allocation value is exceeded, the additional required resources are allocated from the shared pool, where they must compete for space with other resources.</p>
+<p>A good choice for the value of <code dir="ltr">INITIAL_ALLOCATION</code> will avoid the contention for space. For most resources, the value for <code dir="ltr">INITIAL_ALLOCATION</code> is the same as the <code dir="ltr">LIMIT_VALUE</code>. Exceeding <code dir="ltr">LIMIT_VALUE</code> results in an error.</p>
+<div class="inftblinformalwidemax">
+<table class="cellalignment1590" title="V$RESOURCE_LIMIT view" summary="This table is described in the preceding text" dir="ltr">
+<thead>
+<tr class="cellalignment1581">
+<th class="cellalignment1591" id="r1c1-t160">Column</th>
+<th class="cellalignment1591" id="r1c2-t160">Datatype</th>
+<th class="cellalignment1591" id="r1c3-t160">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1581">
+<td class="cellalignment1587" id="r2c1-t160" headers="r1c1-t160"><code dir="ltr">RESOURCE_NAME</code></td>
+<td class="cellalignment1587" headers="r2c1-t160 r1c2-t160"><code dir="ltr">VARCHAR2(30)</code></td>
+<td class="cellalignment1587" headers="r2c1-t160 r1c3-t160">Name of the resource (see <a href="#g1431001">Table 8-5</a>)</td>
+</tr>
+<tr class="cellalignment1581">
+<td class="cellalignment1587" id="r3c1-t160" headers="r1c1-t160"><code dir="ltr">CURRENT_UTILIZATION</code></td>
+<td class="cellalignment1587" headers="r3c1-t160 r1c2-t160"><code dir="ltr">NUMBER</code></td>
+<td class="cellalignment1587" headers="r3c1-t160 r1c3-t160">Number of (resources, locks, or processes) currently being used</td>
+</tr>
+<tr class="cellalignment1581">
+<td class="cellalignment1587" id="r4c1-t160" headers="r1c1-t160"><code dir="ltr">MAX_UTILIZATION</code></td>
+<td class="cellalignment1587" headers="r4c1-t160 r1c2-t160"><code dir="ltr">NUMBER</code></td>
+<td class="cellalignment1587" headers="r4c1-t160 r1c3-t160">Maximum consumption of this resource since the last instance start-up</td>
+</tr>
+<tr class="cellalignment1581">
+<td class="cellalignment1587" id="r5c1-t160" headers="r1c1-t160"><code dir="ltr">INITIAL_ALLOCATION</code></td>
+<td class="cellalignment1587" headers="r5c1-t160 r1c2-t160"><code dir="ltr">VARCHAR2(10)</code></td>
+<td class="cellalignment1587" headers="r5c1-t160 r1c3-t160">Initial allocation. This will be equal to the value specified for the resource in the initialization parameter file (<code dir="ltr">UNLIMITED</code> for infinite allocation).</td>
+</tr>
+<tr class="cellalignment1581">
+<td class="cellalignment1587" id="r6c1-t160" headers="r1c1-t160"><code dir="ltr">LIMIT_VALUE</code></td>
+<td class="cellalignment1587" headers="r6c1-t160 r1c2-t160"><code dir="ltr">VARCHAR2(10)</code></td>
+<td class="cellalignment1587" headers="r6c1-t160 r1c3-t160">Unlimited for resources and locks. This can be greater than the initial allocation value (<code dir="ltr">UNLIMITED</code> for infinite limit).</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformalwidemax" -->
+<div class="tblformalwidemax">
+<p class="titleintable"><a id="sthref3545"></a><a id="g1431001"></a>Table 8-5 Values for the RESOURCE_NAME Column</p>
+<table class="cellalignment1590" title="Values for the RESOURCE_NAME Column" summary="This table is described in the preceding text" dir="ltr">
+<thead>
+<tr class="cellalignment1581">
+<th class="cellalignment1591" id="r1c1-t161">Resource Name</th>
+<th class="cellalignment1591" id="r1c2-t161">Corresponds to</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1581">
+<td class="cellalignment1587" id="r2c1-t161" headers="r1c1-t161">
+<p><code dir="ltr">DML_LOCKS</code></p>
+</td>
+<td class="cellalignment1587" headers="r2c1-t161 r1c2-t161">
+<p>See <a href="initparams082.htm#i1127131">"DML_LOCKS"</a></p>
+</td>
+</tr>
+<tr class="cellalignment1581">
+<td class="cellalignment1587" id="r3c1-t161" headers="r1c1-t161">
+<p><code dir="ltr">ENQUEUE_LOCKS</code></p>
+</td>
+<td class="cellalignment1587" headers="r3c1-t161 r1c2-t161">
+<p>This value is computed by the Oracle Database. See <a href="dynviews_1126.htm#i1404538">V$ENQUEUE_LOCK</a> to obtain more information about the enqueue locks.</p>
+</td>
+</tr>
+<tr class="cellalignment1581">
+<td class="cellalignment1587" id="r4c1-t161" headers="r1c1-t161">
+<p><code dir="ltr">GES_LOCKS</code></p>
+</td>
+<td class="cellalignment1587" headers="r4c1-t161 r1c2-t161">
+<p>Global Enqueue Service locks</p>
+</td>
+</tr>
+<tr class="cellalignment1581">
+<td class="cellalignment1587" id="r5c1-t161" headers="r1c1-t161">
+<p><code dir="ltr">GES_PROCS</code></p>
+</td>
+<td class="cellalignment1587" headers="r5c1-t161 r1c2-t161">
+<p>Global Enqueue Service processes</p>
+</td>
+</tr>
+<tr class="cellalignment1581">
+<td class="cellalignment1587" id="r6c1-t161" headers="r1c1-t161">
+<p><code dir="ltr">GES_RESS</code></p>
+</td>
+<td class="cellalignment1587" headers="r6c1-t161 r1c2-t161">
+<p>Global Enqueue Service resources</p>
+</td>
+</tr>
+<tr class="cellalignment1581">
+<td class="cellalignment1587" id="r7c1-t161" headers="r1c1-t161">
+<p><code dir="ltr">MAX_SHARED_SERVERS</code></p>
+</td>
+<td class="cellalignment1587" headers="r7c1-t161 r1c2-t161">
+<p>See <a href="initparams141.htm#I1129638">"MAX_SHARED_SERVERS"</a></p>
+</td>
+</tr>
+<tr class="cellalignment1581">
+<td class="cellalignment1587" id="r8c1-t161" headers="r1c1-t161">
+<p><code dir="ltr">PARALLEL_MAX_SERVERS</code></p>
+</td>
+<td class="cellalignment1587" headers="r8c1-t161 r1c2-t161">
+<p>See <a href="initparams186.htm#i1132010">"PARALLEL_MAX_SERVERS"</a></p>
+</td>
+</tr>
+<tr class="cellalignment1581">
+<td class="cellalignment1587" id="r9c1-t161" headers="r1c1-t161">
+<p><code dir="ltr">PROCESSES</code></p>
+</td>
+<td class="cellalignment1587" headers="r9c1-t161 r1c2-t161">
+<p>See <a href="initparams202.htm#i1132608">"PROCESSES"</a></p>
+</td>
+</tr>
+<tr class="cellalignment1581">
+<td class="cellalignment1587" id="r10c1-t161" headers="r1c1-t161">
+<p><code dir="ltr">SESSIONS</code></p>
+</td>
+<td class="cellalignment1587" headers="r10c1-t161 r1c2-t161">
+<p>See <a href="initparams234.htm#i1133629">"SESSIONS"</a></p>
+</td>
+</tr>
+<tr class="cellalignment1581">
+<td class="cellalignment1587" id="r11c1-t161" headers="r1c1-t161">
+<p><code dir="ltr">SORT_SEGMENT_LOCKS</code></p>
+</td>
+<td class="cellalignment1587" headers="r11c1-t161 r1c2-t161">
+<p>This value is computed by the Oracle Database</p>
+</td>
+</tr>
+<tr class="cellalignment1581">
+<td class="cellalignment1587" id="r12c1-t161" headers="r1c1-t161">
+<p><code dir="ltr">TEMPORARY_LOCKS</code></p>
+</td>
+<td class="cellalignment1587" headers="r12c1-t161 r1c2-t161">
+<p>This value is computed by the Oracle Database</p>
+</td>
+</tr>
+<tr class="cellalignment1581">
+<td class="cellalignment1587" id="r13c1-t161" headers="r1c1-t161">
+<p><code dir="ltr">TRANSACTIONS</code></p>
+</td>
+<td class="cellalignment1587" headers="r13c1-t161 r1c2-t161">
+<p>See <a href="initparams262.htm#i1134827">"TRANSACTIONS"</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformalwidemax" --></div>
+<!-- class="sect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1580">
+<tr>
+<td class="cellalignment1587">
+<table class="cellalignment1585">
+<tr>
+<td class="cellalignment1584"><a href="dynviews_2135.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1584"><a href="dynviews_2137.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2002, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1589">
+<table class="cellalignment1583">
+<tr>
+<td class="cellalignment1584"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1584"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1584"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1584"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1584"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1584"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

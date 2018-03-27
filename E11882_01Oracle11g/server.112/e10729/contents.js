@@ -1,0 +1,18 @@
+var chapters = [
+  { topic: "chapter", section: "1", title: "Overview of Globalization Support", anchor: "NLSPG001", file: "ch1overview.htm" },
+  { topic: "chapter", section: "2", title: "Choosing a Character Set", anchor: "NLSPG002", file: "ch2charset.htm" },
+  { topic: "chapter", section: "3", title: "Setting Up a Globalization Support Environment", anchor: "NLSPG003", file: "ch3globenv.htm" },
+  { topic: "chapter", section: "4", title: "Datetime Data Types and Time Zone Support", anchor: "NLSPG004", file: "ch4datetime.htm" },
+  { topic: "chapter", section: "5", title: "Linguistic Sorting and String Searching", anchor: "NLSPG005", file: "ch5lingsort.htm" },
+  { topic: "chapter", section: "6", title: "Supporting Multilingual Databases with Unicode", anchor: "NLSPG006", file: "ch6unicode.htm" },
+  { topic: "chapter", section: "7", title: "Programming with Unicode", anchor: "NLSPG007", file: "ch7progrunicode.htm" },
+  { topic: "chapter", section: "8", title: "Oracle Globalization Development Kit", anchor: "NLSPG008", file: "ch8gdk.htm" },
+  { topic: "chapter", section: "9", title: "SQL and PL/SQL Programming in a Global Environment", anchor: "NLSPG009", file: "ch9sql.htm" },
+  { topic: "chapter", section: "10", title: "OCI Programming in a Global Environment", anchor: "NLSPG010", file: "ch10oci.htm" },
+  { topic: "chapter", section: "11", title: "Character Set Migration", anchor: "NLSPG011", file: "ch11charsetmig.htm" },
+  { topic: "chapter", section: "12", title: "Character Set Scanner Utilities", anchor: "NLSPG012", file: "ch12scanner.htm" },
+  { topic: "chapter", section: "13", title: "Customizing Locale Data", anchor: "NLSPG013", file: "ch13custlocale.htm" },
+  { topic: "appendix", section: "A", title: "Locale Data", anchor: "NLSPG014", file: "applocaledata.htm" },
+  { topic: "appendix", section: "B", title: "Unicode Character Code Assignments", anchor: "NLSPG015", file: "appunicode.htm" },
+  { topic: "glossary", section: "", title: "Glossary", anchor: "NLSPG971", file: "glossary.htm" },
+  { } ];

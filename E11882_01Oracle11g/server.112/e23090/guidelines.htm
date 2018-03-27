@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Oracle Database Vault Security Guidelines</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1088" />
+<meta name="dcterms.created" content="2016-11-14T16:25:11Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Vault Administrator's Guide" />
+<meta name="dcterms.identifier" content="E23090-13" />
+<meta name="dcterms.isVersionOf" content="DVADM" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2006, 2016,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="dvca.htm" title="Previous" type="text/html" />
+<link rel="Next" href="troubleshooting.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e23090.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">29/31</span> <!-- End Header -->
+<div id="DVADM019" class="appendix"><a id="CHDCAHJB"></a>
+<h1 class="appendix"><span class="secnum">D</span> Oracle Database Vault Security Guidelines</h1>
+<p><a id="ABC672966"></a>This appendix contains:</p>
+<ul>
+<li>
+<p><a href="#CHDHHGCA">Separation of Duty Guidelines</a></p>
+</li>
+<li>
+<p><a href="#CHDJCICG">Managing Oracle Database Administrative Accounts</a></p>
+</li>
+<li>
+<p><a href="#CHDBIAEC">Accounts and Roles Trusted by Oracle Database Vault</a></p>
+</li>
+<li>
+<p><a href="#CHDFJAEE">Accounts and Roles That Should be Limited to Trusted Individuals</a></p>
+</li>
+<li>
+<p><a href="#CHDGEHHJ">Guidelines for Using Oracle Database Vault in a Production Environment</a></p>
+</li>
+<li>
+<p><a href="#CHDCFBBG">Secure Configuration Guidelines</a></p>
+</li>
+</ul>
+<a id="CHDHHGCA"></a>
+<div id="DVADM71075" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Separation of Duty Guidelines</h2>
+<p>This section contains:</p>
+<ul>
+<li>
+<p><a href="#CHDDDIDB">How Oracle Database Vault Handles Separation of Duty</a></p>
+</li>
+<li>
+<p><a href="#CHDEHBDC">Defining Separate Tasks in an Oracle Database Vault Environment</a></p>
+</li>
+<li>
+<p><a href="#CHDECIIC">Creating a Separation of Duty Matrix</a></p>
+</li>
+<li>
+<p><a href="#CHDICBEG">Identifying and Documenting the Tasks of Users Who Access the Database System</a></p>
+</li>
+</ul>
+<a id="CHDDDIDB"></a>
+<div id="DVADM71076" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">How Oracle Database Vault Handles Separation of Duty</h3>
+<p>Separation<a id="sthref1392"></a> of duty means that you restrict each user's privileges <span class="italic">only</span> to the tasks he or she is responsible for, and <span class="italic">no more</span>. You should assign specific categories of privileges to specific users, rather than granting many privileges to one user. Simply put, separation of duty creates accountability for each task that your organization requires.</p>
+<p>Separation of duty has taken on increased importance over the past 10 years. For many organizations, separation of duty is a new concept that continues to evolve. Database consolidation, regulatory compliance, and outsourcing are just a few of the drivers for increased separation of duty. Oracle Database Vault separation of duty strengthens security by separating security-related administration from day-to-day DBA operations. You can tailor your Database Vault separation of duty implementation to easily adapt to current and future business requirements. Small organizations, in particular, need flexibility as they attempt to increase their security profile with limited resources.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDEHBDC"></a>
+<div id="DVADM71077" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Defining Separate Tasks in an Oracle Database Vault Environment</h3>
+<p>Oracle <a id="sthref1393"></a>Database Vault defines the following main responsibilities:</p>
+<ul>
+<li>
+<p><span class="bold">Account management.</span> Account management entails creating, modifying, and dropping user accounts. The <code dir="ltr">DV_ACCTMGR</code> role provides these privileges.</p>
+</li>
+<li>
+<p><span class="bold">Security administration.</span> Security administration covers basic security tasks such as creating realms and command rules, setting security policies for database users' access, and authorizing database users for jobs they are allowed to perform. Security administrators also run security audit reports. The <code dir="ltr">DV_OWNER</code> and <code dir="ltr">DV_ADMIN</code> roles provide these privileges. (For an in-depth look at how the Oracle Database Vault roles provide for separation of duty, see <a href="db_objects.htm#BABHBCCH">"Oracle Database Vault Roles"</a>.)</p>
+<p>Optionally, you can consolidate the account management and security administrative responsibilities.</p>
+</li>
+<li>
+<p><span class="bold">Resource management.</span> Resource management refers to managing the database system but not accessing business data. It includes the following operations:</p>
+<ul>
+<li>
+<p>Backup operations require a predefined time to perform the backup using predefined tools.</p>
+</li>
+<li>
+<p>Tuning and monitoring operations require ongoing performance monitoring and analysis.</p>
+</li>
+<li>
+<p>Patching operations require temporary access only during the time the patching takes place</p>
+</li>
+</ul>
+<p>For resource management, you should create a named account and a backup account for each of these tasks. Add these accounts as owners of the Data Dictionary realm. Use these accounts as the primary resource managers in the database.</p>
+</li>
+</ul>
+<p>You should have separate accounts for database account management, database security administration, and additional named accounts for backup operations. Auditors check for separate database accounts for different responsibilities and being able to track the actions of each account. Less important is the number of users assigned to specific tasks. Remember that Oracle Database Vault audit events are protected and that the Database Vault reports show all attempted violations.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDECIIC"></a>
+<div id="DVADM71078" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Creating a Separation of Duty Matrix</h3>
+<p>Before <a id="sthref1394"></a><a id="sthref1395"></a>separation of duty can be successful, you must understand who performs basic administration tasks in your environment and what these administration tasks are. Even if a single database administrator is responsible for managing both new database account provisioning and application patching, it is important to document and plan for each of these tasks.Using separate administration accounts for these types of tasks provides increased accountability and reduces associated risks. In midsize to large organizations, database administrators typically must perform common administration tasks but they do not need access to business data managed by the application. Creating a matrix for your separation of duty can help you plan your Database Vault deployment. As needed, you can include additional tasks and associated users to this list. This information should become part of the overall enterprise security documentation for your organization.</p>
+<p><a href="#CHDGHCFH">Table D-1</a> shows an example of a separation of duty matrix.</p>
+<div id="DVADM71079" class="tblruleformalwidekeymax">
+<p class="titleintable"><a id="sthref1396"></a><a id="CHDGHCFH"></a>Table D-1 Example Separation of Duty Matrix</p>
+<table class="cellalignment1647" title="Example Separation of Duty Matrix" summary="Separation of Duty Matrix This table has a legend." dir="ltr">
+<thead>
+<tr class="cellalignment1639">
+<th class="cellalignment1648" id="r1c1-t2" rowspan="2">User, Process or Application</th>
+<th class="cellalignment1648" id="r1c2-t2" rowspan="2">Account Creation</th>
+<th class="cellalignment1648" id="r1c3-t2" colspan="5">Database Administration</th>
+<th class="cellalignment1648" id="r1c4-t2" rowspan="2">Security Administrator</th>
+</tr>
+<tr class="cellalignment1639">
+<th class="cellalignment1648" id="r2c1-t2" headers="r1c1-t2 r1c1-t2">SYSDBA</th>
+<th class="cellalignment1648" id="r2c2-t2" headers="r1c1-t2 r2c1-t2 r1c2-t2">Backup</th>
+<th class="cellalignment1648" id="r2c3-t2" headers="r1c1-t2 r2c1-t2 r1c3-t2">Tuning</th>
+<th class="cellalignment1648" id="r2c4-t2" headers="r1c1-t2 r2c1-t2 r1c3-t2 r1c4-t2">Patching</th>
+<th class="cellalignment1648" id="r2c5-t2" headers="r1c1-t2 r2c1-t2 r1c3-t2">Monitoring</th>
+</tr>
+</thead>
+<tfoot>
+<tr class="cellalignment1639">
+<td class="cellalignment1639"><br />
+...</td>
+<td class="cellalignment1639"></td>
+<td class="cellalignment1639"></td>
+<td class="cellalignment1639"></td>
+<td class="cellalignment1639"></td>
+<td class="cellalignment1639"></td>
+<td class="cellalignment1639"></td>
+<td class="cellalignment1639"></td>
+</tr>
+</tfoot>
+<tbody>
+<tr class="cellalignment1639">
+<td class="cellalignment1646" id="r3c1-t2" headers="r1c1-t2 r2c1-t2">
+<p><code dir="ltr">JSMITH</code></p>
+</td>
+<td class="cellalignment1646" headers="r3c1-t2 r1c2-t2 r2c2-t2">
+<p>X</p>
+</td>
+<td class="cellalignment1646" headers="r3c1-t2 r1c3-t2 r2c3-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r3c1-t2 r1c3-t2 r1c4-t2 r2c4-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r3c1-t2 r1c3-t2 r2c5-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r3c1-t2 r1c3-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r3c1-t2 r1c3-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r3c1-t2">&nbsp;</td>
+</tr>
+<tr class="cellalignment1639">
+<td class="cellalignment1646" id="r4c1-t2" headers="r1c1-t2 r2c1-t2">
+<p><code dir="ltr">SHARDY</code></p>
+</td>
+<td class="cellalignment1646" headers="r4c1-t2 r1c2-t2 r2c2-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r4c1-t2 r1c3-t2 r2c3-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r4c1-t2 r1c3-t2 r1c4-t2 r2c4-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r4c1-t2 r1c3-t2 r2c5-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r4c1-t2 r1c3-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r4c1-t2 r1c3-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r4c1-t2">
+<p>X</p>
+</td>
+</tr>
+<tr class="cellalignment1639">
+<td class="cellalignment1646" id="r5c1-t2" headers="r1c1-t2 r2c1-t2">
+<p><code dir="ltr">PKESTNER</code></p>
+</td>
+<td class="cellalignment1646" headers="r5c1-t2 r1c2-t2 r2c2-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r5c1-t2 r1c3-t2 r2c3-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r5c1-t2 r1c3-t2 r1c4-t2 r2c4-t2">
+<p>X</p>
+</td>
+<td class="cellalignment1646" headers="r5c1-t2 r1c3-t2 r2c5-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r5c1-t2 r1c3-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r5c1-t2 r1c3-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r5c1-t2">&nbsp;</td>
+</tr>
+<tr class="cellalignment1639">
+<td class="cellalignment1646" id="r6c1-t2" headers="r1c1-t2 r2c1-t2">
+<p><code dir="ltr">RTYLER</code></p>
+</td>
+<td class="cellalignment1646" headers="r6c1-t2 r1c2-t2 r2c2-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r6c1-t2 r1c3-t2 r2c3-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r6c1-t2 r1c3-t2 r1c4-t2 r2c4-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r6c1-t2 r1c3-t2 r2c5-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r6c1-t2 r1c3-t2">
+<p>X</p>
+</td>
+<td class="cellalignment1646" headers="r6c1-t2 r1c3-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r6c1-t2">&nbsp;</td>
+</tr>
+<tr class="cellalignment1639">
+<td class="cellalignment1646" id="r7c1-t2" headers="r1c1-t2 r2c1-t2">
+<p><code dir="ltr">SANDERSON</code></p>
+</td>
+<td class="cellalignment1646" headers="r7c1-t2 r1c2-t2 r2c2-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r7c1-t2 r1c3-t2 r2c3-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r7c1-t2 r1c3-t2 r1c4-t2 r2c4-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r7c1-t2 r1c3-t2 r2c5-t2">
+<p>X</p>
+</td>
+<td class="cellalignment1646" headers="r7c1-t2 r1c3-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r7c1-t2 r1c3-t2">
+<p>X</p>
+</td>
+<td class="cellalignment1646" headers="r7c1-t2">&nbsp;</td>
+</tr>
+<tr class="cellalignment1639">
+<td class="cellalignment1646" id="r8c1-t2" headers="r1c1-t2 r2c1-t2">
+<p><code dir="ltr">SYSTEM</code></p>
+</td>
+<td class="cellalignment1646" headers="r8c1-t2 r1c2-t2 r2c2-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r8c1-t2 r1c3-t2 r2c3-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r8c1-t2 r1c3-t2 r1c4-t2 r2c4-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r8c1-t2 r1c3-t2 r2c5-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r8c1-t2 r1c3-t2">
+<p>EBS patching</p>
+</td>
+<td class="cellalignment1646" headers="r8c1-t2 r1c3-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r8c1-t2">&nbsp;</td>
+</tr>
+<tr class="cellalignment1639">
+<td class="cellalignment1646" id="r9c1-t2" headers="r1c1-t2 r2c1-t2">
+<p><code dir="ltr">RMAN</code></p>
+</td>
+<td class="cellalignment1646" headers="r9c1-t2 r1c2-t2 r2c2-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r9c1-t2 r1c3-t2 r2c3-t2">
+<p>X</p>
+</td>
+<td class="cellalignment1646" headers="r9c1-t2 r1c3-t2 r1c4-t2 r2c4-t2">
+<p>X</p>
+</td>
+<td class="cellalignment1646" headers="r9c1-t2 r1c3-t2 r2c5-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r9c1-t2 r1c3-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r9c1-t2 r1c3-t2">&nbsp;</td>
+<td class="cellalignment1646" headers="r9c1-t2">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformalwidekeymax" -->
+<p>In some cases, system management tasks may require temporary access to data through specific tools and programs. When this happens, build provisions for this temporary or emergency access into the Oracle Database Vault rules and rule sets.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDICBEG"></a>
+<div id="DVADM71080" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Identifying and Documenting the Tasks of Users Who Access the Database System</h3>
+<p>You <a id="sthref1397"></a>should document the following areas of the tasks your organization needs:</p>
+<ul>
+<li>
+<p>The responsibilities of each administrative user</p>
+</li>
+<li>
+<p>The kind of access users need. For example, application owners should have data access and developers need access to development instances only.</p>
+</li>
+<li>
+<p>Who must manage the system without accessing business data (for example, users who perform backup, patching, tuning, and monitoring operations)</p>
+</li>
+<li>
+<p>The duties of each category of tasks (for example, the files that must be backed up, the applications that require patching, what exactly is monitored). Include the alternate user accounts for each of these tasks.</p>
+</li>
+<li>
+<p>The databases and applications that must be protected. This includes Oracle applications, partner applications, and custom applications.</p>
+</li>
+<li>
+<p>Who must be authorized to access business data, including the following:</p>
+<ul>
+<li>
+<p>Application owners through middle tier processes</p>
+</li>
+<li>
+<p>Business users through an application interface</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Emergency "what if" scenarios, such as how to handle a security breach</p>
+</li>
+<li>
+<p>Reporting in a production environment, which should include the following:</p>
+<ul>
+<li>
+<p>Who runs the reports</p>
+</li>
+<li>
+<p>Which reports must be run</p>
+</li>
+<li>
+<p>The frequency with which each report is run</p>
+</li>
+<li>
+<p>The users who must receive a copy of each report</p>
+</li>
+</ul>
+</li>
+<li>
+<p>In addition to a separation of duty matrix, the creation of the following matrices:</p>
+<ul>
+<li>
+<p>An Oracle Database Vault-specific matrix, which can cover the names and tasks of users who have been granted Database Vault roles</p>
+</li>
+<li>
+<p>An application protection matrix, which can cover the applications to be protected and the types of protections you have put in place.</p>
+</li>
+</ul>
+<p><a href="#CHDEDEFE">Table D-2</a> shows an example of protections Oracle created for PeopleSoft Applications. You can download the scripts to create these security policies from the following URL:</p>
+<p><code dir="ltr"><a href="http://www.oracle.com/technetwork/database/options/database-vault/index-085211.html">http://www.oracle.com/technetwork/database/options/database-vault/index-085211.html</a></code></p>
+<div id="DVADM71081" class="tblruleformal">
+<p class="titleintable"><a id="sthref1398"></a><a id="CHDEDEFE"></a>Table D-2 Example Application Protection Maxtrix</p>
+<table class="cellalignment1647" title="Example Application Protection Maxtrix" summary="Application Protextion Matrix" dir="ltr">
+<thead>
+<tr class="cellalignment1639">
+<th class="cellalignment1648" id="r1c1-t3" rowspan="2">Protection Type</th>
+<th class="cellalignment1648" id="r1c2-t3" colspan="4">Authorized with Rule Set</th>
+</tr>
+<tr class="cellalignment1639">
+<th class="cellalignment1648" id="r2c1-t3" headers="r1c1-t3 r1c1-t3">SYSADM</th>
+<th class="cellalignment1648" id="r2c2-t3" headers="r1c1-t3 r2c1-t3 r1c2-t3">PSFTDBA</th>
+<th class="cellalignment1648" id="r2c3-t3" headers="r1c1-t3 r2c1-t3 r1c2-t3">SYSTEM</th>
+<th class="cellalignment1648" id="r2c4-t3" headers="r1c1-t3 r2c1-t3 r1c2-t3">DBA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1639">
+<td class="cellalignment1646" id="r3c1-t3" headers="r1c1-t3 r2c1-t3">
+<p>PeopleSoft Realm</p>
+</td>
+<td class="cellalignment1646" headers="r3c1-t3 r1c2-t3 r2c2-t3">
+<p>Owner</p>
+</td>
+<td class="cellalignment1646" headers="r3c1-t3 r1c2-t3 r2c3-t3">
+<p>Owner</p>
+</td>
+<td class="cellalignment1646" headers="r3c1-t3 r1c2-t3 r2c4-t3">
+<p>No Access</p>
+</td>
+<td class="cellalignment1646" headers="r3c1-t3 r1c2-t3">
+<p>No Access</p>
+</td>
+</tr>
+<tr class="cellalignment1639">
+<td class="cellalignment1646" id="r4c1-t3" headers="r1c1-t3 r2c1-t3">
+<p>SELECT Command Rule</p>
+</td>
+<td class="cellalignment1646" headers="r4c1-t3 r1c2-t3 r2c2-t3">
+<p>Not Restricted</p>
+</td>
+<td class="cellalignment1646" headers="r4c1-t3 r1c2-t3 r2c3-t3">
+<p>Limit PSFTDB Rule Set</p>
+</td>
+<td class="cellalignment1646" headers="r4c1-t3 r1c2-t3 r2c4-t3">
+<p>No Access</p>
+</td>
+<td class="cellalignment1646" headers="r4c1-t3 r1c2-t3">
+<p>No Access</p>
+</td>
+</tr>
+<tr class="cellalignment1639">
+<td class="cellalignment1646" id="r5c1-t3" headers="r1c1-t3 r2c1-t3">
+<p>CONNECT Command Rule</p>
+</td>
+<td class="cellalignment1646" headers="r5c1-t3 r1c2-t3 r2c2-t3">
+<p>PeopleSoftAccess Rule Set</p>
+</td>
+<td class="cellalignment1646" headers="r5c1-t3 r1c2-t3 r2c3-t3">
+<p>Not Restricted</p>
+</td>
+<td class="cellalignment1646" headers="r5c1-t3 r1c2-t3 r2c4-t3">
+<p>Not Restricted</p>
+</td>
+<td class="cellalignment1646" headers="r5c1-t3 r1c2-t3">
+<p>Not Restricted</p>
+</td>
+</tr>
+<tr class="cellalignment1639">
+<td class="cellalignment1646" id="r6c1-t3" headers="r1c1-t3 r2c1-t3">
+<p>DROP TABLESPACE Command Rule</p>
+</td>
+<td class="cellalignment1646" headers="r6c1-t3 r1c2-t3 r2c2-t3">
+<p>Disabled Rule Set</p>
+</td>
+<td class="cellalignment1646" headers="r6c1-t3 r1c2-t3 r2c3-t3">
+<p>Disabled Rule Set</p>
+</td>
+<td class="cellalignment1646" headers="r6c1-t3 r1c2-t3 r2c4-t3">
+<p>Disabled Rule Set</p>
+</td>
+<td class="cellalignment1646" headers="r6c1-t3 r1c2-t3">
+<p>Disabled Rule Set</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformal" --></li>
+</ul>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDJCICG"></a>
+<div id="DVADM71082" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Managing Oracle Database Administrative Accounts</h2>
+<p>This section contains:</p>
+<ul>
+<li>
+<p><a href="#CHDIHHGC">Using the SYSTEM User Account for General Administrative Uses</a></p>
+</li>
+<li>
+<p><a href="#CHDCICJF">Using the SYSTEM Schema for Application Tables</a></p>
+</li>
+<li>
+<p><a href="#CHDDJHDC">Limiting the SYSDBA Administrative Privilege</a></p>
+</li>
+<li>
+<p><a href="#CHDJGGHB">Managing Root and Operating System Access</a></p>
+</li>
+</ul>
+<a id="CHDIHHGC"></a>
+<div id="DVADM71083" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Using the SYSTEM User Account for General Administrative Uses</h3>
+<p>If you use the<a id="sthref1399"></a> <code dir="ltr">SYSTEM</code> account <a id="sthref1400"></a>for general database administrative purposes, create named database administrative accounts for your database administrators. Doing so increases accountability for administrative actions in the database.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDCICJF"></a>
+<div id="DVADM71084" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Using the SYSTEM Schema for Application Tables</h3>
+<p>If your site <a id="sthref1401"></a>holds application tables <a id="sthref1402"></a>in the <code dir="ltr">SYSTEM</code> schema, then you should add the <code dir="ltr">SYSTEM</code> account to your realm authorizations for these tables so that these applications can continue to work normally. You can place restrictions on the <code dir="ltr">SYSTEM</code> account to increase or fine-tune security for these applications. For example, you can create a Database Vault rule set to restrict the <code dir="ltr">SYSTEM</code> user's access to specific IP addresses.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDDJHDC"></a>
+<div id="DVADM71085" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Limiting the SYSDBA Administrative Privilege</h3>
+<p>Limit <a id="sthref1403"></a>the <code dir="ltr">SYSDBA</code> privilege <a id="sthref1404"></a>only to users who must connect using this privilege when absolutely necessary and for applications that still require <code dir="ltr">SYSDBA</code> access, such as Oracle Recovery Manager (RMAN) and mandatory patching processes. For all other cases, create named database accounts to perform daily database administration. Members of the <code dir="ltr">OSDBA</code> user group are also given the <code dir="ltr">SYSDBA</code> administrative privilege.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDJGGHB"></a>
+<div id="DVADM71086" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Managing Root and Operating System Access</h3>
+<p>Oracle Database Vault <a id="sthref1405"></a><a id="sthref1406"></a>prevents <a id="sthref1407"></a><a id="sthref1408"></a>highly privileged database users from accessing sensitive data. In addition, if you are using Oracle Database itself, you can use transparent data encryption to prevent the most highly privileged operating system users from accessing sensitive data. Transparent data encryption enables you to hide individual table columns. (See <a class="olink ASOAG" href="../../network.112/e40393/toc.htm"><span class="italic">Oracle Database Advanced Security Administrator's Guide</span></a> for more information about transparent data encryption.) As a best practice, always carefully review and restrict direct access to the operating system.</p>
+<p>You should have personalized accounts access the operating system. These personalized accounts should, in the Linux or UNIX environments, login using <code dir="ltr">sudo</code> to the <code dir="ltr">oracle</code> software owner when needed. With <code dir="ltr">sudo</code>, you can control which specific command each personalized user can execute. Be sure to prevent the use of the <code dir="ltr">make</code>, <code dir="ltr">relink</code>, <code dir="ltr">gdb</code>, or other commands that could potentially harm the database, for these users. However, if an administrative user must install a patch or perform some other emergency operation, you can enable the <code dir="ltr">make</code> and <code dir="ltr">relink</code> commands for a limited time, and audit their actions during this period.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDBIAEC"></a>
+<div id="DVADM71087" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Accounts and Roles Trusted by Oracle Database Vault</h2>
+<p><a id="sthref1409"></a>Oracle Database Vault restricts access to application data from many privileged users and roles in the database. However, in some cases, Oracle Database Vaults trusts certain roles and privileges. <a id="sthref1410"></a></p>
+<p><a href="#CHDJFFGF">Table D-3</a> lists the trusted roles and privileges that are created when you install Oracle Database Vault.</p>
+<div id="DVADM71088" class="tblhruleformal">
+<p class="titleintable"><a id="sthref1411"></a><a id="CHDJFFGF"></a>Table D-3 Trusted Oracle Database Vault Roles and Privileges</p>
+<table class="cellalignment1647" title="Trusted Oracle Database Vault Roles and Privileges" summary="Trusted Database Vault accounts and roles" dir="ltr">
+<thead>
+<tr class="cellalignment1639">
+<th class="cellalignment1648" id="r1c1-t4">Role&nbsp;or&nbsp;Privilege&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+<th class="cellalignment1648" id="r1c2-t4">Status&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+<th class="cellalignment1648" id="r1c3-t4">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1639">
+<td class="cellalignment1646" id="r2c1-t4" headers="r1c1-t4">
+<p><code dir="ltr">DV_ACCTMGR</code> role</p>
+</td>
+<td class="cellalignment1646" headers="r2c1-t4 r1c2-t4">
+<p>Open</p>
+</td>
+<td class="cellalignment1646" headers="r2c1-t4 r1c3-t4">
+<p>Role created during installation and used for creating new database accounts</p>
+</td>
+</tr>
+<tr class="cellalignment1639">
+<td class="cellalignment1646" id="r3c1-t4" headers="r1c1-t4">
+<p><code dir="ltr">DV_OWNER</code> role</p>
+</td>
+<td class="cellalignment1646" headers="r3c1-t4 r1c2-t4">
+<p>Open</p>
+</td>
+<td class="cellalignment1646" headers="r3c1-t4 r1c3-t4">
+<p>Role created during installation and used for managing realms, factors and command rules. This user can add himself or herself to realm authorizations. Users who have the <code dir="ltr">DV_ACCTMGR</code> role cannot alter this user.</p>
+</td>
+</tr>
+<tr class="cellalignment1639">
+<td class="cellalignment1646" id="r4c1-t4" headers="r1c1-t4">
+<p><code dir="ltr">SYSDBA</code> privilege</p>
+</td>
+<td class="cellalignment1646" headers="r4c1-t4 r1c2-t4">
+<p>Enabled</p>
+</td>
+<td class="cellalignment1646" headers="r4c1-t4 r1c3-t4">
+<p>Privilege created during Oracle Database installation. Required by some Oracle features. See <a href="#CHDIGHIE">"Managing SYSDBA Access"</a> for guidelines on managing <code dir="ltr">SYSDBA</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1639">
+<td class="cellalignment1646" id="r5c1-t4" headers="r1c1-t4">
+<p><code dir="ltr">SYSOPER</code> privilege</p>
+</td>
+<td class="cellalignment1646" headers="r5c1-t4 r1c2-t4">
+<p>Enabled</p>
+</td>
+<td class="cellalignment1646" headers="r5c1-t4 r1c3-t4">
+<p>Privilege created during Oracle Database installation. Database startup and shutdown. Granted to <code dir="ltr">SYS</code> only by default. See <a href="#CHDGIDJE">"Managing SYSOPER Access"</a> for guidelines on managing <code dir="ltr">SYSOPER</code>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblhruleformal" --></div>
+<!-- class="sect1" -->
+<a id="CHDFJAEE"></a>
+<div id="DVADM71089" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Accounts and Roles That Should be Limited to Trusted Individuals</h2>
+<p><a id="ABC672928"></a>Several accounts and roles have very powerful privileges in a default Oracle Database installation. You should limit these accounts and roles only to trusted individuals.</p>
+<ul>
+<li>
+<p><a href="#CHDIAAGD">Managing Users with Root Access to the Operating System</a></p>
+</li>
+<li>
+<p><a href="#CHDBBABI">Managing the Oracle Software Owner</a></p>
+</li>
+<li>
+<p><a href="#CHDIGHIE">Managing SYSDBA Access</a></p>
+</li>
+<li>
+<p><a href="#CHDGIDJE">Managing SYSOPER Access</a></p>
+</li>
+</ul>
+<a id="CHDIAAGD"></a>
+<div id="DVADM71090" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Managing Users with Root Access to the Operating System</h3>
+<p><a id="sthref1412"></a><a id="sthref1413"></a>Users <a id="sthref1414"></a>who have root user access have full control over the system, including the following activities:</p>
+<ul>
+<li>
+<p>Reading unencrypted files</p>
+</li>
+<li>
+<p>Moving and deleting any files</p>
+</li>
+<li>
+<p>Starting or stopping any program on the system</p>
+</li>
+<li>
+<p>Logging in as any user, including the user who owns the Oracle Database installation</p>
+</li>
+</ul>
+<p>Oracle Database Vault does not provide protection against the operating system root access. Ensure that you grant root user privileges only to the appropriate people with the appropriate responsibility.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDBBABI"></a>
+<div id="DVADM71091" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Managing the Oracle Software Owner</h3>
+<p><a id="sthref1415"></a>Users <a id="sthref1416"></a>who have access to a system as the Oracle software owner have control over the Oracle software, including the following activities:</p>
+<ul>
+<li>
+<p>Reading unencrypted database files</p>
+</li>
+<li>
+<p>Moving and deleting database files</p>
+</li>
+<li>
+<p>Starting or stopping Oracle programs in the system</p>
+</li>
+</ul>
+<p>Oracle Database Vault does not provide protection against the operating system access of the Oracle software owner. Ensure that you grant Oracle software owner access only to the appropriate people with the appropriate responsibility.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDIGHIE"></a>
+<div id="DVADM71092" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Managing SYSDBA Access<a id="sthref1417"></a></h3>
+<p>By default, Oracle Database limits <code dir="ltr">SYSDBA</code> access to administrative users in the <code dir="ltr">OSDBA</code> group and to the user <code dir="ltr">SYS</code>. The<a id="sthref1418"></a> <code dir="ltr">SYSDBA</code> privilege is a trusted privilege in Oracle Database Vault. Grant this privilege to trusted users only.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDGIDJE"></a>
+<div id="DVADM71093" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Managing SYSOPER Access</h3>
+<p>By <a id="sthref1419"></a>default, Oracle Database limits <a id="sthref1420"></a><code dir="ltr">SYSOPER</code> access to operating system users in the <code dir="ltr">OSOPER</code> group and to the user <code dir="ltr">SYS</code>. It prevents <code dir="ltr">SYSOPER</code> from modifying the Oracle data dictionary directly. The <code dir="ltr">SYSOPER</code> privilege has limited privileges within the database, but individuals with this role can start and shut down the Oracle database. Only grant the <code dir="ltr">SYSOPER</code> privilege to trusted individuals. <a id="sthref1421"></a></p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDGEHHJ"></a>
+<div id="DVADM71094" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Guidelines for Using Oracle Database Vault in a Production Environment</h2>
+<p>Follow <a id="sthref1422"></a><a id="sthref1423"></a>these guidelines when running Oracle Database Vault in a production environment:</p>
+<ul>
+<li>
+<p>Run a full test of your applications to ensure that the Database Vault policies you have created are working as expected</p>
+</li>
+<li>
+<p>Monitor the performance of your applications, and if necessary, tune your rule expressions</p>
+</li>
+<li>
+<p>Assign responsibilities to the appropriate production support and security groups, as follows:</p>
+<ul>
+<li>
+<p>Assign security responsibilities to the database security administrator.</p>
+</li>
+<li>
+<p>Assign account management to the database account manager.</p>
+</li>
+<li>
+<p>Assign resource management tasks to database administrators.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Back up your Database Vault API scripts to a secure server.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect1" -->
+<a id="CHDCFBBG"></a>
+<div id="DVADM71095" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Secure Configuration Guidelines</h2>
+<p>Follow these configuration and security guidelines:</p>
+<ul>
+<li>
+<p><a href="#CHDDADCE">Security Considerations for the UTL_FILE and DBMS_FILE_TRANSFER Packages</a></p>
+</li>
+<li>
+<p><a href="#CHDGAFAG">Security Considerations for the Recycle Bin</a></p>
+</li>
+<li>
+<p><a href="#CHDJJCBF">Security Considerations for the CREATE ANY JOB Privilege</a></p>
+</li>
+<li>
+<p><a href="#CHDIJBBH">Security Considerations for the CREATE EXTERNAL JOB Privilege</a></p>
+</li>
+<li>
+<p><a href="#CHDJCCDE">Security Considerations for the LogMiner Packages</a></p>
+</li>
+<li>
+<p><a href="#CHDGBDFC">Security Considerations for the ALTER SYSTEM and ALTER SESSION Privileges</a></p>
+</li>
+</ul>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+<ul>
+<li>
+<p><a id="sthref1424"></a><a id="sthref1425"></a>Installing patches and new applications might re-grant some of the privileges that Oracle recommends that you revoke in this section. Check these privileges after you install patches and new applications to verify that they are still revoked.</p>
+</li>
+<li>
+<p>When you revoke <code dir="ltr">EXECUTE</code> privileges on packages, ensure that you grant <code dir="ltr">EXECUTE</code> on the packages to the owner, check the package dependencies, and recompile any invalid packages after the revoke.</p>
+<p>To find users who have access to the package, log in to SQL*Plus as <code dir="ltr">SYSTEM</code> and issue the following query.</p>
+<pre dir="ltr">
+SELECT * FROM DBA_TAB_PRIVS WHERE TABLE_NAME = <span class="italic">package_name</span>;
+</pre>
+<p><code dir="ltr"><span class="codeinlineitalic">package_name</span></code> is the name of the package you are looking for.</p>
+<p>To find the users, packages, procedures, and functions that are dependent on the package, issue this query:</p>
+<pre dir="ltr">
+SELECT OWNER, NAME, TYPE  FROM ALL_DEPENDENCIES 
+WHERE REFERENCED_NAME = <span class="italic">package_name</span>;
+</pre>
+<p>Note that these two queries do not identify references to packages made through dynamic SQL.</p>
+</li>
+</ul>
+</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="dv_impact.htm#BABCFCBE">"Privileges That Are Revoked from Existing Users and Roles"</a></p>
+</li>
+<li>
+<p><a href="db_objects.htm#BABDIHJG">Table 11-1, "Privileges of Oracle Database Vault Roles"</a></p>
+</li>
+</ul>
+</div>
+<a id="CHDDADCE"></a>
+<div id="DVADM71100" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Security Considerations for the UTL_FILE and DBMS_FILE_TRANSFER Packages</h3>
+<p><a id="sthref1426"></a><a id="sthref1427"></a>The <code dir="ltr">UTL_FILE</code> <a id="sthref1428"></a><a id="sthref1429"></a>package is owned by <code dir="ltr">SYS</code> and granted to <code dir="ltr">PUBLIC</code>. However, a user must have access to the directory object to manipulate the files in that operating system directory. You can configure the <code dir="ltr">UTL_FILE</code> package securely; see <a class="olink ARPLS069" href="../../appdev.112/e40758/u_file.htm#ARPLS069"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information.</p>
+<p>The <code dir="ltr">DBMS_FILE_TRANSFER</code> package is owned by <code dir="ltr">SYS</code> and granted to the <code dir="ltr">EXECUTE_CATALOG_ROLE</code>. Users with <code dir="ltr">EXECUTE</code> access on this package can move files from one location to another on the same file system. They also can move files between database instances, including databases on remote systems.</p>
+<p>To secure the <code dir="ltr">DBMS_FILE_TRANSFER</code> package, do the following:</p>
+<ul>
+<li>
+<p>Revoke the <code dir="ltr">EXECUTE</code> privilege from the <code dir="ltr">DBMS_FILE_TRANSFER</code> package and grant the <code dir="ltr">EXECUTE</code> privilege only to trusted users who need it.</p>
+</li>
+<li>
+<p>Create command rules to control the <code dir="ltr">CREATE DATABASE LINK</code> and <code dir="ltr">CREATE DIRECTORY</code> SQL statements. See <a href="cfcmdaut.htm#CHDFIFHJ">"Creating and Editing a Command Rule"</a> for information on creating command rules by using Oracle Database Vault Administrator.</p>
+</li>
+</ul>
+<p>Alternatively, <a href="#CHDJBBGE">Example D-1</a> and <a href="#CHDIGHAH">Example D-2</a> show how you can use the Oracle Database Vault <code dir="ltr">DBMS_MACADM</code> package to create command rules that limit and enable access to the <code dir="ltr">CREATE DATABASE LINK</code> statement, which is used to establish connections to remote databases. To use this method, log in to SQL*Plus using the Oracle Database Vault Owner account.</p>
+<div id="DVADM71101" class="example">
+<p class="titleinexample"><a id="CHDJBBGE"></a>Example D-1 Creating a Command Rule to Deny Access to CREATE DATABASE LINK</p>
+<pre dir="ltr">
+BEGIN 
+ DBMS_MACADM.CREATE_COMMAND_RULE (
+  command       =&gt; 'CREATE DATABASE LINK', 
+  rule_set_name =&gt; 'Disabled', 
+  object_owner  =&gt; '%', 
+  object_name   =&gt; '%', 
+  enabled       =&gt; DBMS_MACUTL.G_YES); 
+  END; 
+  / 
+COMMIT;
+</pre></div>
+<!-- class="example" -->
+<p>When a valid user must use the <code dir="ltr">CREATE DATABASE LINK</code> statement, the Oracle Database Vault owner can reenable it from Oracle Database Vault Administrator or issue the following commands in SQL*Plus.</p>
+<div id="DVADM71102" class="example">
+<p class="titleinexample"><a id="CHDIGHAH"></a>Example D-2 Creating a Command Rule to Enable Access to CREATE DATABASE LINK</p>
+<pre dir="ltr">
+BEGIN 
+ DBMS_MACADM.UPDATE_COMMAND_RULE (
+  command       =&gt; 'CREATE DATABASE LINK', 
+  rule_set_name =&gt; 'Enabled', 
+  object_owner  =&gt; '%', 
+  object_name   =&gt; '%', 
+  enabled       =&gt; DBMS_MACUTL.G_YES); 
+ END; 
+ /  
+COMMIT;
+</pre></div>
+<!-- class="example" -->
+<p>Similarly, <a href="#CHDBAGDF">Example D-3</a> shows command rules that disable and enable access to <code dir="ltr">CREATE DIRECTORY</code>.</p>
+<div id="DVADM71103" class="example">
+<p class="titleinexample"><a id="CHDBAGDF"></a>Example D-3 Command Rules to Disable and Enable Access to CREATE DIRECTORY</p>
+<pre dir="ltr">
+<span class="bold">-- Disable access to CREATE DIRECTORY</span>
+BEGIN
+ DBMS_MACADM.CREATE_COMMAND_RULE (
+  command       =&gt; 'CREATE DIRECTORY', 
+  rule_set_name =&gt; 'Disabled', 
+  object_owner  =&gt; '%', 
+  object_name   =&gt; '%', 
+  enabled       =&gt; dbms_macutl.g_yes); 
+ END; 
+  / 
+COMMIT;
+
+<span class="bold">-- Enable access to CREATE DIRECTORY</span>
+BEGIN 
+ dbms_macadm.update_command_rule (
+  command       =&gt; 'CREATE DIRECTORY', 
+  rule_set_name =&gt; 'Enabled', 
+  object_owner  =&gt; '%', 
+  object_name   =&gt; '%', 
+  enabled       =&gt; dbms_macutl.g_yes); 
+ END; 
+ /
+COMMIT;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" -->
+<a id="CHDGAFAG"></a>
+<div id="DVADM71105" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Security Considerations for the Recycle Bin</h3>
+<p>In Oracle Database Vault,<a id="sthref1430"></a> the <code dir="ltr">ALTER SYSTEM</code> <a id="sthref1431"></a>command <a id="sthref1432"></a>rule prevents the recycle bin feature from being enabled, but if the recycle bin is already enabled, it cannot prevent you from disabling it. When the recycle bin feature is enabled, realm-protected objects that are dropped go into the recycle bin. Once there, the objects are no longer protected by the realm. The exception is objects in the <code dir="ltr">DVSYS</code> schema: To keep <code dir="ltr">DVSYS</code> as a protected schema, you cannot drop its objects, even if the recycle bin is disabled. For better security for other realms, you should disable the recycle bin.</p>
+<p>In SQL*Plus, you can check the contents of the recycle bin as follows:</p>
+<pre dir="ltr">
+SELECT * FROM RECYCLEBIN;
+SELECT * FROM USER_RECYCLEBIN;
+</pre>
+<p>To purge the contents of the recycle bin, use the <code dir="ltr">PURGE</code> SQL statement:</p>
+<pre dir="ltr">
+PURGE RECYCLEBIN;
+PURGE USER_RECYCLEBIN;
+</pre>
+<p>To disable the recycle bin:</p>
+<ol>
+<li>
+<p>Log in to SQL*Plus as <code dir="ltr">SYS</code> using the <code dir="ltr">SYSDBA</code> privilege.</p>
+<pre dir="ltr">
+sqlplus sys as sysdba
+Enter password: <span class="italic">password</span>
+</pre></li>
+<li>
+<p>Ensure that the recycle bin is disabled.</p>
+<pre dir="ltr">
+SHOW PARAMETER RECYCLEBIN
+</pre></li>
+<li>
+<p>If the recycle bin is on, then disable it.</p>
+<pre dir="ltr">
+ALTER SYSTEM SET RECYCLEBIN=OFF SCOPE=SPFILE;
+</pre></li>
+<li>
+<p>Restart Oracle Database.</p>
+<pre dir="ltr">
+SHUTDOWN IMMEDIATE
+STARTUP
+</pre></li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="CHDJJCBF"></a>
+<div id="DVADM71106" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Security Considerations for the CREATE ANY JOB Privilege</h3>
+<p>The<a id="sthref1433"></a><a id="sthref1434"></a><a id="sthref1435"></a><a id="sthref1436"></a> <code dir="ltr">CREATE ANY JOB</code> <a id="sthref1437"></a><a id="sthref1438"></a>privilege has been revoked from the <code dir="ltr">DBA</code> and the <code dir="ltr">SCHEDULER_ADMIN</code> roles. Ensure that this change does not affect your applications.</p>
+<p>See <a href="dba.htm#CHDICCJG">"Scheduling Database Jobs in an Oracle Database Vault Environment"</a> for more information.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDIJBBH"></a>
+<div id="DVADM71107" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Security Considerations for the CREATE EXTERNAL JOB Privilege</h3>
+<p>The <a id="sthref1439"></a><a id="sthref1440"></a><code dir="ltr">CREATE EXTERNAL JOB</code> <a id="sthref1441"></a>privilege was introduced in Oracle Database 10<span class="italic">g</span> Release 2 (10.2). It is required for database users who want to execute jobs that run on the operating system outside the database. By default, this privilege is granted to all users who have been granted the <code dir="ltr">CREATE JOB</code> privilege. For greater security, revoke this privilege from users who do not need it and then grant it only to those users who do need it.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDJCCDE"></a>
+<div id="DVADM71108" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Security Considerations for the LogMiner Packages<a id="sthref1442"></a><a id="sthref1443"></a></h3>
+<p>In this release of Oracle Database Vault, the role <code dir="ltr">EXECUTE_CATALOG_ROLE</code> no longer has the <code dir="ltr">EXECUTE</code> privilege granted by default on the following LogMiner packages:</p>
+<ul>
+<li>
+<p><code dir="ltr">DBMS_LOGMNR</code></p>
+</li>
+<li>
+<p><code dir="ltr">DBMS_LOGMNR_D</code></p>
+</li>
+<li>
+<p><code dir="ltr">DBMS_LOGMNR_LOGREP_DICT</code></p>
+</li>
+<li>
+<p><code dir="ltr">DBMS_LOGMNR_SESSION</code></p>
+</li>
+</ul>
+<p>Ensure that this change does not affect your applications.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDGBDFC"></a>
+<div id="DVADM71109" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Security Considerations for the ALTER SYSTEM and ALTER SESSION Privileges</h3>
+<p><a id="sthref1444"></a>Be aware <a id="sthref1445"></a>that <a id="sthref1446"></a>trace <a id="sthref1447"></a>and debug commands have the potential to show Oracle database memory information. Oracle Database Vault does not protect against these commands. To help secure the Oracle database memory information, Oracle recommends that you strictly control access to the <code dir="ltr">ALTER SYSTEM</code> and <code dir="ltr">ALTER SESSION</code> privileges. These privileges can be granted by the user <code dir="ltr">SYS</code> when connected as <code dir="ltr">SYSDBA</code> and by any user granted the <code dir="ltr">DBA</code> role.</p>
+<p>Oracle also recommends that you add rules to the existing command rule for <code dir="ltr">ALTER SYSTEM</code> statement. You can use Oracle Database Vault Administrator to create a rule and add it to a rule set. You should grant the <code dir="ltr">ALTER SESSION</code> privilege only to trusted users. (For example, the <code dir="ltr">ALTER SESSION</code> statement can enable tracing.)</p>
+<p><a href="#CHDDDDDA">Example D-4</a> shows how you can create this type of rule. This rule prevent users with <code dir="ltr">ALTER SYSTEM</code> privilege from issuing the command <code dir="ltr">ALTER SYSTEM DUMP</code>. Log in to SQL*Plus as the Oracle Database Vault Owner when you create this command rule.</p>
+<div id="DVADM71110" class="example">
+<p class="titleinexample"><a id="CHDDDDDA"></a>Example D-4 Adding Rules to the Existing ALTER SYSTEM Command Rule</p>
+<pre dir="ltr">
+CONNECT amalcolm_dvacctmgr
+Enter password: <span class="italic">password</span>
+
+BEGIN
+ DBMS_MACADM.CREATE_RULE('NO_SYSTEM_DUMP',
+ '(INSTR(UPPER(DVSYS.DV_SQL_TEXT),''DUMP'') = 0)');
+ END;
+/
+EXEC DBMS_MACADM.ADD_RULE_TO_RULE_SET
+  ('Allow Fine Grained Control of System Parameters','NO_SYSTEM_DUMP');
+
+COMMIT;
+</pre></div>
+<!-- class="example" -->
+<p>Alternatively, you can use Oracle Database Vault Administrator to create and add this rule to the rule set. See <a href="cfrulset.htm#CHDGIFCE">"Creating a Rule to Add to a Rule Set"</a> for more information. <a id="sthref1448"></a></p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="appendix" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1638">
+<tr>
+<td class="cellalignment1646">
+<table class="cellalignment1643">
+<tr>
+<td class="cellalignment1642"><a href="dvca.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1642"><a href="troubleshooting.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2006, 2016,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1650">
+<table class="cellalignment1641">
+<tr>
+<td class="cellalignment1642"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1642"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1642"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1642"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1642"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1642"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

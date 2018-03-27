@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Event and Rule Class Configurations</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 033" />
+<meta name="dcterms.created" content="2011-08-16T11:52:3Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Rules Manager and Expression Filter Developer's Guide" />
+<meta name="dcterms.identifier" content="E14919-04" />
+<meta name="dcterms.isVersionOf" content="EXPRN" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2003, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="exprn_brm_eventpolicies.htm" title="Previous" type="text/html" />
+<link rel="Next" href="exprn_brm_rule_cond.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e14919.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">12/36</span> <!-- End Header --><a id="EXPRN472"></a><a id="sthref82"></a>
+<h1 class="chapter"><span class="secnum">4</span> Event and Rule Class Configurations</h1>
+<p>For a rule application, the types of data you include in an event structure and the event sources are application dependent. Rules Manager makes use of the Oracle rich type system to support rules applications involving complex data types such as XML, Spatial, and Text. Similarly, it leverages from its integration with the database to capture transactional and non-transaction modifications to the data as the source of events.</p>
+<p>This chapter discusses various event and rule class configurations that provide the ultimate flexibility in designing rules applications in the database.</p>
+<a id="CIHEIDBB"></a><a id="EXPRN085"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">4.1</span> Rules Specified on Relational Tables</h2>
+<p>The rule applications considered so far use rule conditions that you define on some application data. That is, the concept of an event instance exists in the application and it may or may not be stored in the database. Often however, the data in the event instances correspond to some rows stored in relational tables. For such applications, you can use the row identifiers (ROWIDs) of these rows to pass the data by reference to the Rules Manager procedures, for example, using the <code>event_inst</code> parameter to represent an event instance of the <code>PROCESS_RULES</code> call (<code>event_inst =&gt; :FlightDataRowid</code>). For this purpose, you should model the corresponding event structure using Expression Filter's table alias<a id="sthref83"></a><a id="sthref84"></a><a id="sthref85"></a><a id="sthref86"></a> constructs. See the <a class="olink ARPLS157" href="../../appdev.112/e40758/d_expfilref.htm#ARPLS157"><code>ADD_ELEMENTARY_ATTRIBUTE</code> procedure</a> for more information. See <a href="exprn_brm_usecases.htm#CIHICBBC">Section 10.2</a> and <a href="exprn_app_a.htm#BGBDFBEG">Appendix A</a> for more examples.</p>
+<p>For the travel services application considered in <a href="exprn_brm_intro.htm#CEGDEAAI">Section 2.4</a>, if you store the <code>AddFlight</code> and <code>AddRentalCar</code> primitive events in two relational tables <code>FlightData</code> and <code>RentalCarData</code> respectively, you can create the corresponding composite event structure to refer to rows in these tables as follows:</p>
+<pre>
+BEGIN  DBMS_RLMGR.CREATE_EVENT_STRUCTURE (event_structure =&gt; 'TSCompEvent');
+  DBMS_RLMGR.ADD_ELEMENTARY_ATTRIBUTE (
+                           event_structure =&gt; 'TSCompEvent',
+                           attr_name =&gt; '<span class="codeinlinebold">Flt</span>', --- Prim event name
+                           tab_alias =&gt; rlm$table_alias('<span class="codeinlinebold">FlightData</span>'));
+  DBMS_RLMGR.ADD_ELEMENTARY_ATTRIBUTE (
+                           event_structure =&gt; 'TSCompEvent',
+                           attr_name =&gt; '<span class="codeinlinebold">Car</span>', --- Prim event name
+                           tab_alias =&gt; rlm$table_alias('<span class="codeinlinebold">RentalCarData</span>'));
+END;
+</pre>
+<p>Now you can use the composite event structure <code>TSCompEvent</code> to configure a rule class (Same as step <a href="exprn_brm_intro.htm#BHCIBCAJ">2</a> in <a href="exprn_brm_intro.htm#CEGHGEAE">Section 2.4.1</a>). The representation of the rules in the rule class does not vary with this event structure. However, within the action callback procedure, the primitive event instances that match a rule are each passed in as ROWIDs from the corresponding tables and you use these ROWIDs to obtain the original event data. Also, with this new event structure, the primitive event instances, for which the rules are processed, are passed in by reference using the ROWIDs for the corresponding table rows.</p>
+<pre>
+BEGIN
+  dbms_rlmgr.process_rules (
+            rule_set_nm =&gt; 'TravelPromotion',
+            event_type =&gt; '<span class="codeinlinebold">FlightData</span>',
+            event_inst =&gt; <span class="codeinlinebold">:FlightDataRowid</span>); -- rowid of a row ---
+END;
+</pre>
+<p>Note that you evaluate the conditions corresponding to a primitive event when the <code>dbms_rlmgr.process_rules</code> procedure is invoked with the appropriate ROWID. However, Rules Manager does not keep track of any changes to the original row through an <code>UPDATE</code> operation.</p>
+<p>Optionally, you can eliminate the <code>PROCESS_RULES</code> call by configuring the preceding rule class to consider all the DML (<code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code>) operations on the corresponding tables as events. This is done using the <code>DMLEVENTS</code> or <code>CNFEVENTS</code> property at the time of rule class creation. (See <a href="exprn_brm_eventpolicies.htm#CIHCFFGF">Section 3.7</a> and <a href="exprn_brm_eventpolicies.htm#CJAGGIBF">Section 3.8</a>).</p>
+<p>When the duration and consumption policies are set for the primitive events derived from relational data, it is the references to the table rows that are consumed or deleted from the rule class. The original rows are not affected by these event management policies.A composite event structure can be formed using a combination of table alias constructs and embedded abstract data types (ADTs) (for various primitive events). The rule conditions defined for a composite event structure consisting of one or more table alias constructs may not use the (short form of) the <code>SEQUENCE</code> property to enforce sequencing among primitive events (see <a href="exprn_brm_rule_cond.htm#CIHGBIID">Section 5.2</a>). This is because the implicit attribute <code>rlm$crttime</code> may not exist for the rows stored in the relational tables. You can enforce partial sequencing using the join property in the rule conditions.</p>
+</div>
+<!-- class="sect1" -->
+<a id="EXPRN086"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" --><a id="sthref87"></a>
+<h2 class="sect1"><span class="secnum">4.2</span> Rule Conditions For XML Events</h2>
+<p>You can use the <code>XMLType</code> data type supplied by Oracle Database to create attributes in the event structures and rule classes that can process rules defined on XML documents. For this purpose, a primitive event structure can be created with one or more <code>XMLType</code> attributes (along with some non-XML attributes), such as the following:</p>
+<pre>
+CREATE or REPLACE TYPE AddFlight AS OBJECT (
+                  CustId NUMBER,
+                  Airline VARCHAR(20),
+                  FromCity VARCHAR(30),
+                  ToCity VARCHAR(30),
+                  Depart DATE,
+                  Return DATE,
+                  <span class="codeinlinebold">Details sys.XMLType</span>)
+</pre>
+<p>If a primitive <a id="sthref88"></a><a id="sthref89"></a>event is just an XML document, then the preceding object type can be created with just one attribute, that is of <code>XMLType</code>. You specify the predicates on the <code>XMLType</code> attributes using the <code>EXTRACT</code> and <code>EXISTSNODE</code> operators supplied by Oracle, as shown in the following example.</p>
+<pre>
+&lt;condition&gt; &lt;!-- optional for conditions on primitive events --&gt;
+   Airline='Abcair' and ToCity='Orlando' and
+            EXTRACT(doc, '/preferences/seat[@class="economy"]') is not null
+&lt;/condition&gt;
+</pre>
+<p>You can form a composite event structure for XML events by including two or more primitive event types that contain an <code>XMLType</code> attribute. So, you create the composite event structure as an object type with embedded primitive event types (as described in <a href="exprn_brm_intro.htm#CEGDEAAI">Section 2.4</a>). Once you create the event structures with <code>XMLType</code> attributes, all the other concepts described in <a href="exprn_brm_intro.htm#CEGJACJG">Section 2.2</a> apply to the XML data that is part of the events.</p>
+<p>For a better understanding of how XPath predicates are handled and how they are indexed, see <a href="exprn_xpathpredicates.htm#BABCGCGD">Chapter 13</a>.</p>
+</div>
+<!-- class="sect1" -->
+<a id="EXPRN480"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" --><a id="sthref90"></a>
+<h2 class="sect1"><span class="secnum">4.3</span> Rule Conditions with Spatial Predicates</h2>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The Oracle Spatial or the Locator components must be installed in order to use spatial predicates in stored expressions.</div>
+<p>The <code>SDO_GEOMETRY</code> data type supplied by Oracle Database can be used to create event structures and rule classes<a id="sthref91"></a><a id="sthref92"></a> that can process rules defined on spatial geometries. For this purpose, you can create a primitive event structure with one or more attributes of the <code>MDSYS.SDO_GEOMETRY</code> type, as follows:</p>
+<pre>
+CREATE or REPLACE TYPE AddHotel AS OBJECT (
+       CustId    NUMBER,
+       Type      VARCHAR(20),
+       CheckIn   DATE,
+       CheckOut  DATE,
+       Location  MDSYS.SDO_GEOMETRY)
+</pre>
+<p>In order to specify predicates<a id="sthref93"></a><a id="sthref94"></a> on the spatial attributes and index them for efficiency, you should associate the geometry metadata describing the dimension, lower and upper bounds, and tolerance in each dimension with each spatial geometry attribute. You can insert this metadata information into the <code>USER_SDO_GEOM_METADATA</code> view using the event structure name in the place of the table name. For more information on the <code>USER_SDO_GEOM_METADATA</code> view and its semantics, see <a class="olink SPATL" href="../e11830/toc.htm"><span class="italic">Oracle Spatial Developer's Guide</span></a>.</p>
+<pre>
+INSERT INTO user_sdo_geom_metadata VALUES ('ADDHOTEL','LOCATION',
+        mdsys.sdo_dim_array(
+             mdsys.sdo_dim_element('X',  -180, 180, 0.5),
+             mdsys.sdo_dim_element('Y',  -90, 90, 0.5)), 8307);
+</pre>
+<p>When you use the event structure with spatial attribute to create a rule class, the rule conditions stored in the rule class table can include predicates in these attributes using <code>SDO_WITHIN_DISTANCE</code> or <code>SDO_RELATE</code> operators, as shown in the following examples:</p>
+<pre>
+&lt;condition&gt;
+  Type = 'Luxury' and CheckOut-CheckIn &gt; 3 and  
+    SDO_WITHIN_DISTANCE (Location,
+      SDO_GEOMETRY(2001, 8307, 
+        SDO_POINT_TYPE(-77.03644, 37.89868, NULL), NULL, NULL), 
+      'distance=0.5 units=mile') = 'TRUE'
+&lt;/condition&gt;
+</pre>
+<pre>
+&lt;condition&gt;
+  Type = 'Luxury' and CheckOut-CheckIn &gt; 3 and  
+    SDO_RELATE (Location,
+      SDO_GEOMETRY(2001, 8307, NULL, SDO_ELEM_INFO_ARRAY(1, 1003, 3), 
+         SDO_ORDINATE_ARRAY(-77.03644, 37.89868, -75, 39), 
+      'mask=anyinteract') = 'TRUE'
+&lt;/condition&gt;
+</pre>
+<p>You can form a composite event structure involving spatial attributes by including two or more primitive event structures that contain <code>SDO_GEOMETRY</code> attributes. In the case of rules specified for composite events, the spatial predicates involving <code>SDO_WITHIN_DISTANCE</code> or <code>SDO_RELATE</code> operators are not allowed in the join clause of the rule condition. If needed, you can use functions defined in the <code>MDSYS.SDO_GEOM</code> package to achieve this functionality. See <a class="olink SPATL" href="../e11830/toc.htm"><span class="italic">Oracle Spatial Developer's Guide</span></a> for additional information.</p>
+</div>
+<!-- class="sect1" -->
+<a id="CJADDDBG"></a><a id="EXPRN473"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">4.4</span> Rule Conditions for Text Events</h2>
+<p>You can configure the event structure associated with a rule class for one or more text attributes such that the corresponding rule conditions may include text predicates on these attributes. You specify the text predicates in the rule conditions using the Oracle Text <code>CONTAINS</code> operator. The <code>CONTAINS</code> operator refers to the text attribute defined in the event structure and applies a text query expression on the documents bound to this attribute.</p>
+<p>You can define the text attributes in an event structure to be of CLOB or VARCHAR data type with associated text preferences. You can create such attributes using the <code>DBMS_RLMGR.ADD_ELEMENTARY_ATTRIBUTE</code> procedure. You specify the text preferences for an attribute using an instance of <code>EXF$TEXT</code> type, which accepts the text preferences in string format, for example: (LEXER hotelreserv_lexer WORDLIST hotelreserv_wordlist). Use the preferences specified through this argument for parsing the document bound to the attribute and for indexing the text query expressions within the rule conditions. Alternately, you can assign an <code>EXF$TEXT</code> instance with an empty preferences string to use default preferences.</p>
+<p>For the travel services application considered in <a href="exprn_brm_intro.htm#CEGDEAAI">Section 2.4</a>, if each hotel reservation includes some addition information, you can model the <code>AddHotel</code> event structure as follows.</p>
+<pre>
+BEGIN
+  DBMS_RLMGR.CREATE_EVENT_STRUCT (EVENT_STRUCT =&gt; 'AddFlight'); 
+  DBMS_RLMGR.ADD_ELEMENTARY_ATTRIBUTE (
+                       EVENT_STRUCT =&gt; 'AddHotel',
+                       ATTR_NAME =&gt; 'CustId',
+                       ATTR_TYPE =&gt; 'NUMBER'); 
+  DBMS_RLMGR.ADD_ELEMENTARY_ATTRIBUTE (
+                       EVENT_STRUCT =&gt; 'AddHotel',
+                       ATTR_NAME =&gt; 'Type',
+                       ATTR_TYPE =&gt; 'VARCHAR2(20)'); 
+  . . . 
+  DBMS_RLMGR.ADD_ELEMENTARY_ATTRIBUTE (
+                       EVENT_STRUCT =&gt; 'AddHotel',
+                       ATTR_NAME =&gt; 'AddlInfo',
+                       ATTR_TYPE =&gt; 'CLOB',
+                       TEXT_PREF =&gt; EXF$TEXT('LEXER hotelreserv_lexer')); 
+END;
+</pre>
+<p>The rule conditions specified for the previous event structure can now include text predicates on the <code>AddlInfo</code> attribute shown as follows.</p>
+<pre>
+    Type = 'Luxury' and CONTAINS (AddlInfo, 'Disney World') = 1
+</pre>
+<p>The event structure created with one or more text attributes could be part of composite event structure so that you can specify the text predicates on the individual primitive events as follows.</p>
+<pre>
+     &lt;condition&gt;
+        &lt;and equal="Car.CustId, Hotel.CustId"&gt;
+           &lt;object name="Car"&gt; carType = 'Luxury' &lt;/object&gt;
+           &lt;object name="Hotel"&gt; Type = 'Luxury' and
+                          CONTAINS (AddlInfo, 'Disney World') = 1 &lt;/object&gt;
+        &lt;/and&gt;
+     &lt;/condition&gt;
+</pre>
+<p>In the case of rules specified for composite events, the predicates involving text attributes are not allowed in the join clauses of the rule condition. The use of <code>CONTAINS</code> operator is only valid within the primitive event conditions. The text predicates in the rule conditions are processed using the <code>CTXRULE</code> index that is implicitly created for each text attribute. Unlike other forms of indexes, the <code>CTXRULE</code> index is not transactional in nature. That is, any modifications made to the rule conditions are not automatically reflected in the corresponding <code>CTXRULE</code> indexes. This could result in incorrect matching of events with rule conditions until you synchronize the text indexes with the updated rule conditions. You can synchronize all the text indexes associated with a rule class with the following command.</p>
+<pre>
+BEGIN
+  DBMS_RLMGR.SYNC_TEXT_INDEXES (rule_class =&gt; 'CompTravelPromo');
+END;
+</pre>
+<p>The user must have the <code>EXECUTE</code> privilege on the <code>CTX_DDL</code> package in order to run the previous command.</p>
+</div>
+<!-- class="sect1" -->
+<a id="CJAHDDCI"></a><a id="EXPRN474"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">4.5</span> Disabling and Enabling Rules</h2>
+<p>Often there is a need to add rules to the rule class and keep them disabled. Such rules still belong to the rule class and they can be enabled at a later point in time. For this purpose, you can create a rule class table with <code>DBMS_RLMGR.CREATE_RULE_CLASS</code> procedure that implicitly has an <code>rlm$enabled</code> column in which to store the status of each rule. In the case of a rule class resulting from an upgrade of an Oracle 10g database, this column does not exist and thus the rules in such rule classes cannot be disabled. The <code>rlm$enabled</code> column in the rule class table defaults to a value of <code>Y</code> to indicate that a rule by default is always enabled. Optionally, a value <code>N</code> can be assigned to this column during the insert of a new rule or update of an existing rule. A rule with <code>N</code> assigned to the <code>rlm$enabled</code> column is disabled and it cannot match any incoming events. Any modification to the <code>rlm$enabled</code> column (to enable or disable the rule) or a modification to the rule condition itself discards any intermediate state information associated with the rule. In effect, when an existing rule is enabled after being disabled, it is equivalent to a new rule with no prior state information.</p>
+</div>
+<!-- class="sect1" -->
+<a id="CJAIFEJJ"></a><a id="EXPRN475"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">4.6</span> Shareable Primitive Rule Conditions</h2>
+<p>The rules defined for composite events have conditions on individual primitive events and a join condition that relates these primitive events. In many rule-based applications, multiple rule conditions involving composite events use the same conditional expressions on the primitive events. For example, in the Travel Services application described in <a href="exprn_brm_intro.htm#CEGDEAAI">Section 2.4</a>, a vacation in Orlando is defined as a round trip to Orlando with a minimum stay of 4 days (ToCity = 'Orlando' and Return-Depart &gt;= 4). The same vacation in the Orlando scenario can be combined with a primitive event condition capturing a Luxury car rental and another condition capturing a car rental with a child seat option to form two different rule conditions. For such applications, Rules Manager has provisions to share parts of the rule condition across rules by using references into primitive rule condition repositories. Within a repository, each primitive rule condition has a unique identifier that can be referenced from one or more rules sharing the primitive condition. The ability to share primitive conditions simplifies the construction of the rule conditions for composite events and also allows managing them as one logical unit for any modifications made to the shared primitive rule condition.</p>
+<p>The shareable rule conditions are associated with a primitive events structure and they do not belong to a particular rule class. So, a common list of rule conditions defined for a primitive event structure can be shared across multiple rules in a rule class as well as rules defined in multiple rule classes (configured with the same primitive event structure).</p>
+<p>In addition to the basic steps for creating the event structure, the rule class, and the action callback procedure, a rules application with sharable primitive rule conditions has the following steps:</p>
+<ol>
+<li>
+<p><a id="BHCHCEDJ"></a>Create a primitive rule conditions repository for a given object type (to be configured as a primitive event structure) or an existing primitive event structure.</p>
+<pre>
+BEGIN
+  dbms_rlmgr.create_conditions_table(
+        cond_table    =&gt; 'FlightConditions',
+        pevent_struct =&gt; 'AddFlight');
+END;
+</pre>
+<p>The previous step creates a relational table to store the primitive rule conditions. This table is created with the user-specified name (<code>FlightConditions</code>) and it has a set of columns to store the unique identifier (primary key) for each rule condition (<code>rlm$condid</code>), the rule conditions (<code>rlm$condition</code>), and their descriptions in plain text (<code>rlm$conddesc</code>).At the time of operation, if the primitive event structure specified for the primitive event argument is just an object type in the database and thus not associated with a rule class, the object type is converted into an event structure and it is later assigned as expression metadata to the <code>rlm$condition</code> column.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+There can only be at most one primitive rule conditions table associated with an event structure.</div>
+</li>
+<li>
+<p>Insert a primitive rule condition into the table created in Step <a href="#BHCHCEDJ">1</a>. The values stored in the condition column (<code>rlm$condition</code>) are automatically validated using the event structure associated with it.</p>
+<pre>
+INSERT INTO FlightConditions (rlm$condid, rlm$conddesc, rlm$condition)
+ VALUES ('OrlandoVacation', 'Vacation in Orlando',
+         'ToCity = ''Orlando'' and Return-Depart &gt;= 4');
+</pre></li>
+<li>
+<p>Once you create one or more rule classes using the primitive event structure (<code>AddFlight</code>), the rules added to the rule classes can refer to the conditions in the corresponding primitive rule conditions table (<code>FlightConditions</code>). This is done by assigning the primary key of a shared primitive rule condition to the ref attribute of the corresponding object element within the rule condition.</p>
+<pre>
+INSERT INTO CompTravelPromo
+  (rlm$ruleid, promoType, offeredBy, rlm$rulecond) VALUES
+  ('PARKS_PROMO', 'TICKETS','THEME_PARKS_ASSOC',
+   '&lt;condition&gt;
+      &lt;and join="Flt.CustId = Car.CustId"&gt;
+        &lt;object name="Flt" ref="OrlandoVacation"/&gt;
+        &lt;object name="Car" ref="LuxuryCarRental"/&gt;
+      &lt;/and&gt;
+    &lt;/condition&gt;');
+</pre>
+<p>In the previous rule definition, the primitive rule condition references OrlandoVacation and LuxuryCarRental are resolved through the event structure names (<code>AddFlight</code>, <code>AddRentalCar</code> respectively) to the corresponding primitive rule condition tables and the primary keys within those tables. Multiple rules in the <code>CompTravelPromo</code> table can refer to the same primitive rule condition.</p>
+<p>The primitive rule condition references within a rule condition for composite event are resolved at the time of rule definition. The runtime characteristics of such rules are similar to those of rules with in-place primitive rule conditions and the steps involved in evaluating the rules remain unchanged.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+When a primitive condition that is shared by one or more rules is updated, the changes are propagated to all the rules referring to it. Effectively, the rules themselves are considered updated and any intermediate state associated with these rules is discarded.</div>
+<p>A primitive rule condition cannot be deleted when one or more rules in one or more rule classes refer to it. You cannot use a <code>SQL DROP TABLE</code> command to drop the primitive rule conditions table. You must use the <code>DBMS_RLMGR.DROP_CONDITIONS_TABLE</code> procedure instead. A primitive conditions table may not be truncated (with <code>SQL TRUNCATE TABLE</code> command) if a rule class is configured with the corresponding primitive event structure.</p>
+<p>The list of rule conditions that have references to conditions defined in a conditions table can be obtained by joining the rule class table with the condition table using a join predicate with the <code>DBMS_RLMGR.CONDITION_REF</code> function. Given a rule condition and a primitive event name, this function returns the identifier (key) for the condition reference. This function returns <code>NULL</code> if the rule condition does not use a reference for that primitive event. The following query identifies all the rule conditions that refer to any shared conditions stored in the <code>FlightConditions</code> table.</p>
+<pre>
+select ctp.rlm$ruleid from CompTravelPromo ctp, FlightConditions fc
+where dbms_rlmgr.condition_ref(ctp.rlm$rulecond, 'FLT') = fc.rlm$condid; 
+</pre>
+<p>The previous query uses a functional index defined to retrieve rows from the rule class table based on the condition references they use. Note that if the rule class is configured for duplicate primitive events of the same type, the previous query should include multiple join predicates (combined with disjunctions). Also note that the primitive event name passed to the <code>CONDITION_REF</code> function must be case-sensitive for the previous query to benefit from the functional index. When a primitive event name requires quotes to preserve the case or special characters in the name, the quoted name must be passed to the <code>CONDITION_REF</code> function.</p>
+</li>
+</ol>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+When a rule class with one or more condition references is exported, the corresponding conditions tables are not automatically exported. The conditions table can be explicitly exported using the tables clause of the EXPORT command. The conditions tables are implicitly included in a schema export. During an IMPORT operation, all the references in the rule conditions are resolved using the conditions table that existed prior to import or that are exported with the rule class. The import of a rule class fails with an ORA-41704 error message when one of its rules refers to a missing conditions table or a condition. In such cases, the rules with invalid references are marked invalid by storing the value <code>F</code> under the corresponding <code>RLM$ENABLED</code> column.</div>
+</div>
+<!-- class="sect1" -->
+<a id="CJAIECGJ"></a><a id="EXPRN476"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">4.7</span> Events Through Continuous Query Notification (Formerly Database Change Notification)</h2>
+<p>When the event structure used for a rule class is defined with one or more table alias attributes, the rule class can be configured to treat all INSERT, UPDATE, and DELETE operations on the underlying tables as the events for which the rules are evaluated (see <a href="exprn_brm_eventpolicies.htm#CIHCFFGF">Section 3.7</a> and <a href="#CIHEIDBB">Section 4.1</a>). You specify this using the <code>DMLEVENTS</code> property at the time of rule class creation. In this case, the row level triggers on the relational tables capture the events and invoke the <code>PROCESS_RULES</code> procedure from within the trigger body. As the rules are processed as part of DML operations, this configuration poses some restrictions on the types of rule actions possible (for example, rule actions cannot commit) and the <code>AUTOCOMMIT</code> policy for the rule class. Also, a long running transaction holding some locks on the matching rules in a rule class can often lead to deadlocks.</p>
+<p>Identifying the events after committing the DML operations is often desirable to avoid the side effects of <code>DMLEVENTS</code> configuration. Rules Manager provides an option to process the rules for the net data changes within a transaction after the end of the transaction. In this case, Rules Manager makes use of the continuous query notification (formerly database change notification) feature (see <span class="italic">Oracle Database Advanced Application Developer's Guide</span>) to receive notifications of net data changes (within a transaction) after the end of each transaction. These notifications are used to capture the modified rows or the event data and match them with the rules in the rule class.</p>
+<p>A rule class using an event structure with one or more table alias attributes can be configured for continuous query notification (CNF) events with the <code>CNFEVENTS</code> property at the time of rule class creation. The rule class can be configured to treat just INSERT notifications or all INSERT, UPDATE, and DELETE notifications as events with CNFEVENTS="I" or CNFEVENTS="IUD" specifications respectively. The configuration CNFEVENTS="I" is ideal for append-only databases. The user creating a rule class with the <code>CNFEVENTS</code> property should be granted the <code>CHANGE NOTIFICATION</code> privilege and the execute privilege on the <code>DBMS_CHANGE_NOTIFICATION</code> package. A rule class cannot be configured for both DML events and CNF events. Using a combination of table alias and embedded primitive event types in the composite event structure, a rule class can be configured to obtain a subset of the events automatically through continuous query notification while others are explicitly added by the application.</p>
+<p>Unlike in the case of <code>DMLEVENTS</code>, where the rules are processed synchronously with a DML operation, a <code>CNFEVENTS</code> configuration processes the rules asynchronously after the commit of a transaction. Since the order in which the continuous query notifications for a set of transactions are processed is not guaranteed, rules that are sensitive to the order of events may yield inconsistent results. Also, the version of the row picked up at the time of rule evaluation could be different from the version of the row at the end of transaction (with potential race conditions). By picking the latest version of the row for rule evaluation, it is ensured that the rule class with CNFEVENTS="IUD" configuration has the correct persistent state information after all the events (notifications) are processed.</p>
+</div>
+<!-- class="sect1" -->
+<a id="CJAGFIDJ"></a><a id="EXPRN477"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">4.8</span> Collection Events</h2>
+<p>A class of rule-based applications requires support for conditional expressions on collections of events as opposed to individual events. The rule conditions in such applications compute aggregate values over a finite but potentially large number of primitive events of the same type and specify predicates on the resulting aggregates. For this purpose, primitive events of a specific type are grouped based on certain event attributes and aggregate operators such as <code>SUM</code>, <code>AVG</code>, <code>MIN</code>, <code>MAX</code>, and <code>COUNT</code> on the other event attributes are used to apply predicates. For example, a rule condition may test the sum of amounts transferred from a particular account. In this scenario, if each bank transaction is an individual event, these events are grouped based on the account identifier and the predicate is specified on the sum of the amounts (<code>SUM(amount) &gt; 10000</code>).</p>
+<p>Rules Manager supports aggregate operators in rule conditions with the use of collection events. A collection event consists of one or more primitive events of a specific type grouped by one or more event attributes and optionally satisfying user-specified conditions described with the having clause and/or a text node within the collection element. For example, a collection event could represent a set of BankTransaction events that share a common account identifier attribute and for a withdrawal type. The items needed to define a collection event include at least one primitive event structure, a composite rule class enabled for collection events, a composite event, and a named collection specified by a <code>&lt;collection&gt;</code> element in a rule condition as follows:</p>
+<pre>
+&lt;condition&gt; 
+  &lt;collection name="bank" groupby = "subjectId" 
+                          having  = "SUM(amount) &gt; 10000"&gt;
+      tranType = 'Withdrawal'
+  &lt;/collection&gt;
+&lt;/condition&gt;
+</pre>
+<p>The <code>name</code> attribute of the <code>&lt;collection&gt;</code> element restricts the type of primitive events considered for the collection and the value specified for the <code>groupby</code> attribute combined with predicates on the other event attributes define the properties that are common across all the primitive events in the collection. The <code>having</code> attribute specifies the aggregate predicates that should be evaluated for the events in the collection. A rule condition involving a <code>&lt;collection&gt;</code> element can be viewed as operating as a standard SQL query with WHERE, GROUP BY and HAVING clauses. For example, the preceding rule condition can be mapped to the following SQL query on the conceptual Transactions table.</p>
+<pre>
+SELECT DISTINCT subjectId FROM Transaction 
+WHERE tranType = 'Withdrawal'
+GROUP BY subjectId
+HAVING SUM(amount) &gt; 10000
+</pre>
+<p>In the preceding rule condition, each bank transaction primitive event is tested for the <code>Withdrawal</code> transaction type and the matching primitive events are grouped based on their <code>subjectId</code> attribute resulting in one collection event for each distinct <code>subjectId</code>.</p>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref95"></a>
+<h3 class="sect2"><span class="secnum">4.8.1</span> Setting a Fixed Window Size or Length to Restrict the Number of Primitive Events</h3>
+<p>The primitive events participating in a particular collection may be further restricted using moving window semantics. Rules Manager supports two types of moving windows with collection events:</p>
+<ul>
+<li>
+<p>Fixed window length: The window length for a collection is specified as <code><span class="codeinlineitalic">n</span></code> units of time (fraction of a day). A collection with a fixed window length only consists of the primitive events that are generated within the last <code><span class="codeinlineitalic">n</span></code> units of time. Any primitive event generated prior to this time are not considered for evaluating the aggregate conditions. With a <code>windowlen="1"</code> specification in the following example, the SUM is computed only for the bank transactions that are generated within 24 hours of the last event in the collection. This rule identifies the situation where over $10,000 is withdrawn from an account within the past 24 hours.</p>
+<pre>
+&lt;condition&gt;
+       &lt;collection name="bank" groupby = "subjectId" 
+                               having  = "SUM(amount) &gt; 10000"
+                               windowlen ="1"&gt;
+          tranType = 'Withdrawal'
+       &lt;/collection&gt;
+&lt;/condition&gt;
+</pre></li>
+<li>
+<p>Fixed window size: The window size for a collection is specified as <code><span class="codeinlineitalic">n</span></code> number of primitive events. A collection with a fixed window size specification only consists of the most recent <code><span class="codeinlineitalic">n</span></code> primitive events that belong in that collection. With a <code>windowsize="10"</code> specification in the place of the <code>windowlen</code> specification in the preceding example would compute the SUM for the last 10 withdrawal transactions for each account.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref96"></a>
+<h3 class="sect2"><span class="secnum">4.8.2</span> Using Collection Primitive Events to Form Composite Events</h3>
+<p>With some restrictions, a rule condition can combine a collection event with other collection events or primitive events to form composite events involving collections (see <a href="exprn_brm_rule_cond.htm#BEIFEFAH">Section 5.6</a>). You can use the basic rule condition syntax for composite events to relate one collection with other events within a composite event.</p>
+<p>Unlike in the case of rule conditions involving set semantics (see <a href="exprn_brm_rule_cond.htm#CIHJGEGJ">Section 5.4</a>), the number of primitive events participating in the rule conditions through collections is not restricted by the event structure definition. A subset of the primitive event types within a composite event are configured for collections and each rule condition in the corresponding rule class can consider varying number of primitive events using varying window specifications. Consider a Law enforcement application that relates BankTransaction, Transportation, and FieldReport events to raise some security alerts (see <a href="exprn_brm_usecases.htm#CIHBEJGC">Section 10.1</a>). In this application, if there is a need to specify aggregate predicates on BankTransaction events, the rule class created with the LawEnforcement composite event structure should be configured as follows.</p>
+<pre>
+BEGIN
+   DBMS_RLMGR.CREATE_RULE_CLASS(
+      rule_class =&gt; 'LawEnforcementRC',
+      event_struct =&gt; 'LawEnforcement',
+      action_cbk =&gt; 'LawEnforcementCBK',
+      actprf_spec =&gt; 'actionType VARCHAR2(40), actionParam VARCHAR2(100)',
+      rslt_viewnm =&gt; 'MatchedCriteria',
+      rlcls_prop =&gt; 
+         '&lt;composite
+              equal="bank.subjectId, transport.subjectId, fldrpt.subjectId"
+              ordering="rlm$rule.rlm$ruleid, bank.subjectId, transport.subjectId"&gt;
+            <span class="codeinlinebold">&lt;collection type = "BankTransaction"</span>
+                        <span class="codeinlinebold">groupby = "subjectId, tranType"/&gt;</span> 
+          &lt;/composite&gt;');
+END;
+/
+</pre>
+<p>For each primitive event type participating in collections, the rule class properties should include a <code>&lt;collection&gt;</code> element with the name of the type and a <code>groupby</code> specification. The <code>groupby</code> specification lists all possible <code>groupby</code> attributes expected with this primitive event. The rule class created with the preceding command can include rule conditions that group bank transactions just on the <code>subjectId</code> or <code>transType</code> attributes or a combination of these two attributes, (<code>subjectId</code>, <code>transType</code>). Note that grouping of events could also be based on some expression involving the attributes in the event structure. For example, if some rules need to group the events based on the region from which the events originated, a user defined function, which maps a country to a broader region can be included in the <code>groupby</code> specification. (Example: <code>groupby = "subjectId, tranType, regionOf(fundFrom)"</code> ).</p>
+<p>The use of a <code>&lt;collection&gt;</code> element in the place of an <code>&lt;object&gt;</code> element in rule class properties enables the specific event type for collections. The <code>&lt;collection&gt;</code> element can also include the attributes that are allowed with the <code>&lt;object&gt;</code> elements such as <code>consumption</code> and <code>duration</code>. A rule class configured for collection events internally uses some additional database objects to maintain the incremental state information pertaining to collections. Such rule classes can store and manage rule conditions involving individual events as well as those involving collection events.</p>
+<p>When a rule class is configured for collections involving specific primitive event type, the corresponding rules can create collection events out of individual primitive event instances using the <code>&lt;collection&gt;</code> element within the rule condition syntax for composite events. The rule condition syntax for collection events has provisions for grouping a set of primitive events to form collection events and for testing aggregate predicates on these events. The attributes over which the primitive events are grouped is a subset of the attributes listed in the rule class properties for the given event type. Each rule in the rule class may use a different <code>groupby</code> specification for the collection event. The aggregate predicates for the collection events are specified using the SQL operators <code>COUNT</code> for counting the number of events, <code>AVG</code> for computing the average value for an attribute, <code>SUM</code> for computing the sum of certain attribute, <code>MIN</code> for computing the minimum values for an attribute, and <code>MAX</code> for computing the maximum values for an attribute. The aggregate predicates expressed in SQL-HAVING clause syntax are assigned to the <code>having</code> attribute of the <code>&lt;collection&gt;</code> element.</p>
+<pre>
+&lt;condition&gt;
+       &lt;collection name="bank" groupby = "subjectId" 
+                               having  = "SUM(amount) &gt; 10000 or COUNT(*) &gt; 10"
+                               windowlen ="1"&gt;
+          tranType = 'Withdrawal'
+       &lt;/collection&gt;
+&lt;/condition&gt;
+</pre>
+<p>Unlike the primitive events that are shared across multiple rules that match the event, a collection event is specific to the rule matching it. Based on the number of unique combinations of the attributes the primitive events are grouped on, one rule condition may have multiple collection events associated with it. These collection events are maintained as some primitive events are added to the collection or (dropped for the collection owing to window specification). Each collection event and the corresponding aggregate values are computed incrementally and the resulting state is stored persistently in the database. Note that the aggregate values are computed only upon the arrival of a new event and a primitive event dropping out of a window due to elapsed time does not force the computation.</p>
+<p>When a rule condition involving collections evaluates to true, the corresponding action can be executed using the action callback mechanism or the results views as discussed in <a href="exprn_brm_intro.htm#CEGDEAAI">Section 2.4</a> and <a href="exprn_brm_intro.htm#CEGJBHJB">Section 2.6</a>. For the action execution, an instance of the collection event is passed into the callback procedure. The collection event is of the same type as the primitive events of which it consists. However, in the collection event, only the attributes on which the events are grouped (native attributes from the collections's <code>GROUP BY</code> clause) are initialized, while the rest are each set to <code>NULL</code>. For example, a collection event matching the previous rule condition will be an instance of BankTransaction type that only has the <code>subjectId</code> (known to be common across all primitive events in the collection) initialized. In order to provide access to the aggregate values computed for the collection event, the action callback procedure (and the results view) is created with an additional argument for passing in the collection event identifier (<code>ROWID</code> type). This event identifier is passed into the <code>DBMS_RLMGR.GET_AGGREGATE_VALUE</code> call to fetch the computed values for an aggregate function such as <code>SUM(amount)</code>.</p>
+<pre>
+CREATE OR REPLACE PROCEDURE LawEnforcementCBK (
+    bank        BankTransaction,
+    bank_evtid  ROWID,   -- event identifier for the "bank" collection events --
+    transport   Transportation,
+    fldrpt      FieldReport,
+    rlm$rule    LawEnforcementRC%ROWTYPE) IS 
+BEGIN
+  .. 
+  dbms_rlmgr.get_aggregate_value(rule_class  =&gt; 'LawEnforcementRC', 
+                                 event_ident =&gt;  bank_evtid, 
+                                 aggr_func   =&gt;  'SUM(amount)'); 
+END;
+</pre>
+<p>Note that the <code>DBMS_RLMGR.GET_AGGREGATE_VALUE</code> call returns a non-null value only if the signature of the aggregate function passed in matches one of the aggregate operators computed for that collection.</p>
+</div>
+<!-- class="sect2" -->
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref97"></a>
+<h3 class="sect2"><span class="secnum">4.8.3</span> Collection Events Have NULL Values Stored in its rlm$CrtTime (Timestamp) Attribute</h3>
+<p>Since the collection event is created over a period of time, there is no precise timestamp associated with such an event. A null value is stored in its <code>rlm$CrtTime</code> (timestamp) attribute and thus operations involving this attribute (such as <code>SEQUENCE</code>) are invalid. For the same reason, a duration policy that is specified as elapsed time has no impact on collection events. Note that when you configure the rule class with <code>SESSION</code> or <code>TRANSACTION</code> event duration policies, the collection events are also expired at the end of <code>SESSION</code> or <code>TRANSACTION</code> respectively. Since a collection event is private to a rule, consuming such an event (using an <code>EXCLUSIVE</code> or <code>RULE</code> consumption policy) will reset the collection (empty the collection) and does not impact the number of rules that are executed. Recall that when multiple rules evaluate to true with a primitive event (no use of collections), consuming the event by one or more of these matching rules will automatically stop the action execution for the other rules.</p>
+<p>When the rule conditions with collection constructs coexist with the rule conditions with individual primitive events (no collections), the consumption of the primitive events owing to the <code>EXCLUSIVE</code> or <code>RULE</code> consumption policy does not drop the primitive event from the existing collection events. Similarly, when the primitive events expire due to an elapsed time duration policy, the collection events depending on this event are not impacted.</p>
+<p>A rule class can be configured for multiple primitive event types that are collections. However, in this release, the primitive events modeled as table aliases to some relational table cannot be configured as collections. Also, the composite event structure used for the rule class may not have multiple primitive events of the same type.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="EXPRN478"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" --><a id="sthref98"></a>
+<h2 class="sect1"><span class="secnum">4.9</span> Performance Tuning</h2>
+<p>Tuning a rule class for optimal performance falls into three broad areas:</p>
+<ul>
+<li>
+<p>Choosing the appropriate <code>EQUAL</code> property</p>
+<p>In the case of a rule class for composite events, identifying the most-common equality join predicates in all the rule conditions and specifying them using the <code>EQUAL</code> rule class property is important for performance. Different forms of <code>EQUAL</code> property specifications and their syntax is discussed in <a href="exprn_brm_eventpolicies.htm#CIHHIEFE">Section 3.4</a>.</p>
+</li>
+<li>
+<p>Tuning Expression Filter indexes</p>
+<p>The indexes used to identify the candidate rules that match a given event can be tuned for better performance.</p>
+</li>
+<li>
+<p>Creating Rule Class Interface package</p>
+<p>A rule class specific interface package helps reduce the overhead involved with the generic interfaces.</p>
+</li>
+</ul>
+<p class="subhead2"><a id="EXPRN508"></a>Tuning Expression Filter Indexes</p>
+<p>A rule class created for simple or composite events implicitly creates one or more Expression Filter indexes to process the rule conditions for incoming events. These default indexes, created at the time of rule class creation, assume that predicates with all scalar attributes in the event structures are equally likely in the rule conditions and this assumption may not hold true for most applications. The performance of a rules application can be improved by tuning the indexes to the specific workload. This is possible either with the domain knowledge or by analyzing a representative workload from the rules application.</p>
+<p>When using the domain knowledge to tune the Expression Filter indexes created for a rule class, treat the primitive event structures (or a simple event structure) as the Expression Filter attribute sets (see <a href="exprn_expconcepts.htm#BABJAAJB">Section 11.2</a>).</p>
+<p>The default index parameters associated with an attribute set can be obtained by querying the <code>USER_EXPFIL_DEF_INDEX_PARAMS</code> view and they can be changed using the <code>DBMS_EXPFIL.DEFAULT_INDEX_PARAMETERS</code> call (see <a href="exprn_indexexpressions.htm#CIHDGIJC">Section 12.6</a>). These default index parameters are used any time a corresponding Expression Filter index is created. The default indexes created for a rule class can be dropped using the <code>DBMS_RLMGR.DROP_EXPFIL_INDEXES</code> call and they can be recreated to use the user assigned index parameters using the <code>DBMS_RLMGR.CREATE_EXPFIL_INDEXES</code> call.</p>
+<p>When using a workload to tune Expression Filter indexes created for a rule class, the most common predicate constructs in the rule conditions can be identified by collecting statistics on a representative set of rules already defined in the rule class. The Expression Filter indexes are created from these statistics by setting the <code>coll_stats</code> argument of the <code>DBMS_RLMGR.CREATE_EXPFIL_INDEXES</code> call to <code>YES</code>.</p>
+<p>When the event structure used for a rule class has one or more XMLType attributes, the default Expression Filter indexes and the indexes created from statistics are not optimized for the XPath predicates on these attributes. Hence, the XPath index parameters should be explicitly assigned to the event structure using the <code>DBMS_RLMGR.DEFAULT_XPINDEX_PARAMETERS</code> call as discussed in <a href="exprn_xpathpredicates.htm#CIHDBFHG">Section 13.2.4</a>.</p>
+<p class="subhead2"><a id="EXPRN509"></a>Create Rule Class Interface Package</p>
+<p>A way to improve the runtime performance of a rules application is to create a rule class interface package that is specific to the rule class. This avoids the overhead involved in using the generic <code>DBMS_RLMGR</code> package. The <code>DBMS_RLMGR</code> procedures used for the run time operations such as processing the rules for some events, consuming the events and resetting the session make use of the rule class name passed in as one of the arguments and map them to the corresponding operations on the rule class. This step can be avoided by creating a rule class interface package that is used to directly operate on the rule class. The rule class interface package is most effective when the rules in the rule class are selective or they often do not match any incoming events. This package is created using the <code>DBMS_RLMGR.CREATE_INTERFACE</code> call and this has a set of procedures to perform all runtime operations on the rule class. See the <a class="olink ARPLS467" href="../../appdev.112/e40758/d_rlmgrref.htm#ARPLS467"><code>DBMS_RLMGR.CREATE_INTERFACE</code></a> call in <a class="olink ARPLS" href="../e40758/toc.htm"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for additional information.</p>
+</div>
+<!-- class="sect1" -->
+<a id="EXPRN087"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" --><a id="sthref99"></a>
+<h2 class="sect1"><span class="secnum">4.10</span> Database State in Rule Conditions</h2>
+<p>The predicates in a rule condition may use user-defined functions, references to database table data, and database state information. In the case of a condition specified for a simple or a primitive event, the corresponding predicates are evaluated using the state information at the time the event is added to the rule class (using either the <code>PROCESS_RULES</code> or the <code>ADD_EVENT</code> call. This is the case even for conditions specified for individual primitive events within a composite event. So, when multiple primitive events are used to capture a composite event, the predicates associated with individual primitive events are evaluated at different times, corresponding to the occurrences of their respective event. Only the predicates specified in the join attribute of the composite condition are evaluated at the time of composite event creation. So, this aspect should be considered when using database state or schema object references in the rule conditions.</p>
+</div>
+<!-- class="sect1" -->
+<a id="CJAHGAFE"></a><a id="EXPRN479"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">4.11</span> Resetting Events for Development Environments</h2>
+<p>When developing rule applications using Rules Manager, rules defined in the rule class can be tested using some hypothetical events. Because these events could match some rules in the rule class partially, they could contribute to the incremental states stored in the database. So before you deploy your application in a production environment, you must purge this partial state information so as not to cause any unexpected rule actions. Use the <code>DBMS_RLMGR.PURGE_EVENTS</code> procedure call to purge any state information and the events from the database prior to deploying the application in a production environment.</p>
+</div>
+<!-- class="sect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment988">
+<tr>
+<td class="cellalignment995">
+<table class="cellalignment993">
+<tr>
+<td class="cellalignment992"><a href="exprn_brm_eventpolicies.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment992"><a href="exprn_brm_rule_cond.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2003, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment997">
+<table class="cellalignment991">
+<tr>
+<td class="cellalignment992"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment992"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment992"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment992"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment992"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment992"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

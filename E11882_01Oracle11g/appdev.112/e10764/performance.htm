@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Optimizing Performance of OCCI Applications</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 711" />
+<meta name="dcterms.created" content="2013-02-06T9:20:49Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="C++ Call Interface Programmer's Guide," />
+<meta name="dcterms.identifier" content="E10764-04" />
+<meta name="dcterms.isVersionOf" content="LNCPP" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1999, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="xa.htm" title="Previous" type="text/html" />
+<link rel="Next" href="reference.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10764.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">19/54</span> <!-- End Header --><a id="CHDFIEBG"></a><a id="LNCPP012"></a>
+<h1 class="chapter"><span class="secnum">12</span> <a id="sthref600"></a>Optimizing Performance of OCCI Applications</h1>
+<p>This chapter describes a few suggestions that lead to better performance for your OCCI custom applications.</p>
+<p>This chapter contains these topics:</p>
+<ul>
+<li>
+<p><a href="#CHDJEAFF">Transparent Application Failover</a></p>
+</li>
+<li>
+<p><a href="#CHDIHDIH">Connection Sharing</a></p>
+</li>
+<li>
+<p><a href="#CHDCFGJF">Application-Managed Data Buffering</a></p>
+</li>
+<li>
+<p><a href="#CHDIDIDE">Array Fetch Using next() Method</a></p>
+</li>
+<li>
+<p><a href="#CHDJJDAI">Modifying Rows Iteratively</a></p>
+</li>
+<li>
+<p><a href="#CIAJFEHB">Run-time Load Balancing of the Stateless Connection Pool</a></p>
+</li>
+<li>
+<p><a href="#CHDCIAHJ">Fault Diagnosability</a></p>
+</li>
+<li>
+<p><a href="#CIAJBDEF">Client Result Cache</a></p>
+</li>
+</ul>
+<div align="center">
+<div class="inftblinformal"><br />
+<table class="cellalignment1079">
+<tbody>
+<tr class="cellalignment1067">
+<td class="cellalignment1075">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="reference.htm#CIAJIDCF">Chapter 13, "OCCI Application Programming Interface"</a></p>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformal" --></div>
+<a id="CHDJEAFF"></a><a id="LNCPP20011"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><a id="sthref601"></a><a id="sthref602"></a>Transparent Application Failover</h2>
+<p>OCCI <span class="bold">Transparent Application Failover</span> (TAF) enables OCCI to be more robust in handling database instance failures in distributed applications at run time. If a server node becomes unavailable, applications automatically reconnect to another surviving node.</p>
+<p>TAF occurs when the client application, during a roundtrip operation, detects that the database instance is down. It establishes a connection to the backup database configured for TAF. This backup can be another node in an Oracle RAC configuration, a hot standby database, or the same database instance itself.</p>
+<p>The OCCI/OCI API responsible for the roundtrip on the failed connection will typically return one of the following errors:</p>
+<ul>
+<li>
+<p><code>ORA-25401: can not continue fetches</code></p>
+</li>
+<li>
+<p><code>ORA-25402: transaction must roll back</code></p>
+</li>
+<li>
+<p><code>ORA-25408: can not safely replay call</code></p>
+</li>
+</ul>
+<p>The new connection is may be used for subsequent application requests and for any ongoing work that must be restarted.Idle connections in the application are not affected.</p>
+<p>Some design options should be considered when including Transparent Application Failover in an application:</p>
+<ul>
+<li>
+<p>Because of the delays inherent to failover processing, the design of the application may include a notice to the user that a failover is in progress and that normal operation should resume shortly.</p>
+</li>
+<li>
+<p>If the session on the initial instance received <code>ALTER SESSION</code> commands before the failover began, they are not automatically replayed on the second instance.</p>
+<p>Consequently, the developer may want to replay these <code>ALTER SESSION</code> commands on the second instance.</p>
+</li>
+</ul>
+<p>It is the user's responsibility to track changes to the <code>SESSION</code> parameters.</p>
+<p>To address these problems, the application can register a failover callback function. After a failover, the callback function is invoked at different times while reestablishing the user's session.</p>
+<ul>
+<li>
+<p>The first call to the callback function occurs when Oracle first detects an instance connection loss. This callback is intended to allow the application to inform the user of an upcoming delay.</p>
+</li>
+<li>
+<p>If failover is successful, a second call to the callback function occurs when the connection is reestablished and usable. At this time the client may want to replay <code>ALTER SESSION</code> commands and inform the user that failover has happened. Note that you must keep track of <code>SESSION</code> parameter changes and then replay them after the failover is complete.</p>
+<p>If failover is unsuccessful, then the callback function is called to inform the application that failover cannot take place.</p>
+</li>
+<li>
+<p>An initial attempt at failover may not always successful. The failover callback should return <code>FO_RETRY</code> to indicate that the failover should be attempted again.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p>Definition of <code>FailOverType</code> and <code>FailOverEventType</code> in <a href="reference010.htm#BBAEAHAH">Table 13-11, "Enumerated Values Used by Connection Class"</a> in <a href="reference.htm#CIAJIDCF">Chapter 13, "OCCI Application Programming Interface"</a></p>
+</li>
+<li>
+<p><a class="olink NETAG455" href="../../network.112/e41945/advcfg.htm#NETAG455"><span class="italic">Oracle Database Net Services Administrator's Guide</span></a> for more detailed information about application failover.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+<a id="LNCPP20477"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref603"></a>
+<h3 class="sect2"><a id="sthref604"></a>Using Transparent Application Failover</h3>
+<p>To enable TAF, the connect string has to be configured for failover and registered on <code>Connection</code> (created from <code>Environment</code>, <code>ConnectionPool</code> and <code>StatelessConnectionPool</code>). To register the callback function, use the <a href="reference010.htm#i1118650">Connection Class</a> interface <a href="reference010.htm#CIAIIFEA">setTAFNotify()</a>:</p>
+<pre>
+void Connection::setTAFNotify(
+   int (*notifyFn)(
+      Environment *env,
+      Connection *conn,
+      void *ctx,
+      FailOverType foType,
+      FailOverEventType foEvent),
+   void *ctxTAF);
+</pre>
+<p>Note that TAF support for <code>ConnectionPool</code>s does not include <code>BACKUP</code> and <code>PRECONNECT</code> clauses; these should not be used in the connect string.</p>
+</div>
+<!-- class="sect2" -->
+<a id="LNCPP20478"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref605"></a>
+<h3 class="sect2"><a id="sthref606"></a><a id="sthref607"></a>Objects and Transparent Application Failover</h3>
+<p>Transparent application failover works with the OCCI navigational and associative access models and the object cache. In a non-Oracle RAC setup, you must ensure that the object type definitions and object OIDs in primary and backup instances are identical.</p>
+<p>If the application receives <code>ORA-25402: transaction must roll back</code> error after the failover, then it must initiate a rollback to correctly reset the object cache on the client. If a transaction has not started before the failover, the application should still initiate a rollback after the failover to refresh the objects on the client object cache from the new instance.</p>
+</div>
+<!-- class="sect2" -->
+<a id="LNCPP20479"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref608"></a>
+<h3 class="sect2"><a id="sthref609"></a><a id="sthref610"></a>Connection Pooling and Transparent Application Failover</h3>
+<p>If the transparent application failover feature is activated, connections created in a connection pool are also failed over. The application failover callback must be specified for each connection obtained from the connection pool; these connections are failed over when used after the primary instance failure.</p>
+<p>Note that connections in a custom connection pool must be explicitly cleaned and repaired. Consider an application that has 500 connections in a pool; 10 of the connections are busy (doing a round-trip) and 490 are free or idle. If the database instance fails, then TAF will work on 10 active connections, and client requests on these connections must be restarted. When each of the other 490 connections are picked up by the application, TAF is performed and OCCI returns one of error codes <code>ORA-25401</code>, <code>ORA-24502</code>, or <code>ORA-25408</code>, forcing a restart of the user request. The application can avoid these errors on the 490 idle connections by repairing or purging these connections by using the knowledge that TAF was previously activated on 10 connections in the connection pool.</p>
+<p>To repair connections in OCCI, use the <a href="reference010.htm#i1118650">Connection Class</a> interface <a href="reference010.htm#BBAIHEEF">getServerVersion()</a>, a light-weight, data-neutral database call for starting TAF on connections to failed instances:</p>
+<pre>
+string getServerVersion() const;
+</pre>
+<p>In the OCCI TAF callback, applications may invoke <a href="reference010.htm#BBAIHEEF">getServerVersion()</a> on idle connections in the custom pool, to start and complete failover for these connections.</p>
+<p><a href="#BBACAHGD">Example 12-1</a> demonstrates how to use OCCI for TAF callbacks and for repairing bad connections. Note that the example does not show custom pool data structure or mutexing and concurrency control.</p>
+<p>Note that TAF behavior is the same for standalone connections and connections in a custom connection pool.</p>
+<div class="example">
+<p class="titleinexample"><a id="BBACAHGD"></a><a id="LNCPP21907"></a>Example 12-1 How to Enable TAF for Connection Pooling</p>
+<pre>
+#include &lt;occi.h&gt;
+#include &lt;iostream&gt;
+#include &lt;time.h&gt;
+ 
+using namespace std;
+using namespace oracle::occi;
+ 
+//Application custom pool of 3 connections
+Environment *env;
+Connection *conn1,*conn2,*conn3;
+bool conn1free,conn2free,conn3free;
+bool repairing = false;
+ 
+int taf_callback(Environment *env, Connection *conn, void *ctx,  
+  Connection::FailOverType foType, Connection::FailOverEventType foEvent)
+{
+   cout &lt;&lt; "TAF callback for connection " &lt;&lt; conn &lt;&lt; endl;
+
+   if(foEvent == Connection::FO_ERROR)
+   {
+      cout &lt;&lt; "Retrying" &lt;&lt; endl;
+      return FO_RETRY;
+   }
+ 
+   if (foEvent ==  Connection::FO_END)
+   {
+     cout &lt;&lt; "TAF complete for connnection " &lt;&lt; conn &lt;&lt; endl;
+     if (repairing == false)
+     {
+      repairing = true;
+      cout &lt;&lt; "repairing other idle connections" &lt;&lt; endl;
+   
+      //ignore errors during TAF
+      try
+      {
+         if (conn1free) conn1-&gt;getServerVersion();
+      }
+      catch (...)
+      {
+      }
+      try
+      {
+         if (conn2free) conn2-&gt;getServerVersion();
+      }
+      catch (...)
+      {
+      }
+      try
+      {
+         if (conn3free) conn3-&gt;getServerVersion();
+      }
+      catch (...)
+      {
+      }
+      repairing = false;
+     }//if
+   }//if
+ 
+   return 0; //continue failover
+}
+ 
+main()
+{
+try
+{ 
+env = Environment::createEnvironment(Environment::THREADED_MUTEXED);
+//open 3 connections;
+ conn1 = env-&gt;createConnection("hr","<span class="italic">password</span>","inst1_failback");
+ conn2 = env-&gt;createConnection("hr","<span class="italic">password</span>","inst1_failback");
+ conn3 = env-&gt;createConnection("hr","<span class="italic">password</span>","inst1_failback");
+ 
+//all connections are 'free'
+conn1free = conn2free = conn3free = true;
+ 
+//set TAF callbacks on all connection
+conn1-&gt;setTAFNotify(taf_callback,NULL);
+conn2-&gt;setTAFNotify(taf_callback,NULL);
+conn3-&gt;setTAFNotify(taf_callback,NULL);
+ 
+//use 1 connection
+conn1free=false;
+cout &lt;&lt; "Using conn1" &lt;&lt; endl;
+Statement *stmt = conn1-&gt;createStatement ("select * from employees");
+ResultSet *rs  = stmt-&gt;executeQuery();
+while (rs-&gt;next())
+{
+   cout &lt;&lt; (rs-&gt;getString(2)) &lt;&lt; endl;
+}
+stmt-&gt;closeResultSet(rs);
+conn1-&gt;terminateStatement(stmt);
+ 
+cout &lt;&lt; "Shutdown and restart the database" &lt;&lt; endl;
+string buf;
+cin &gt;&gt; buf;
+ 
+Statement *stmt2;
+try
+{
+   cout &lt;&lt; "Trying a update on EMP table" &lt;&lt; endl;
+   stmt2 = conn1-&gt;createStatement("delete from employees");
+   stmt2-&gt;executeUpdate();
+}
+catch (SQLException &amp;ex)
+{
+   cout &lt;&lt; "Update EMPLOYEES returned error : " &lt;&lt; ex.getMessage() &lt;&lt; endl;
+   cin &gt;&gt; buf;
+}
+ 
+cout &lt;&lt; "Done" &lt;&lt; endl;
+env-&gt;terminateConnection(conn1);
+env-&gt;terminateConnection(conn2);
+env-&gt;terminateConnection(conn3);
+Environment::terminateEnvironment(env);
+}
+catch(SQLException &amp;ex)
+{
+cout &lt;&lt; ex.getMessage() &lt;&lt; endl;
+}
+}
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDIHDIH"></a><a id="LNCPP1202"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Connection Sharing<a id="sthref611"></a><a id="sthref612"></a></h2>
+<p>This section covers the following topics:</p>
+<ul>
+<li>
+<p><a href="#CHDJFAIG">Introduction to Thread Safety</a></p>
+</li>
+<li>
+<p><a href="#BAGFABIH">Implementing Thread Safety</a></p>
+</li>
+<li>
+<p><a href="#BAGFAFEF">Serialization</a></p>
+</li>
+<li>
+<p><a href="#BBAFAIHG">Operating System Considerations</a></p>
+</li>
+</ul>
+<a id="CHDJFAIG"></a><a id="LNCPP20480"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Introduction to Thread Safe<a id="sthref613"></a><a id="sthref614"></a><a id="sthref615"></a><a id="sthref616"></a><a id="sthref617"></a>ty</h3>
+<p>Threads are lightweight processes that exist within a larger process. Threads each share the same code and data segments, but have their own program counters, system registers, and stack. Global and static variables are common to all threads, and a mutual exclusivity mechanism may be required to manage access to these variables from multiple threads within an application.</p>
+<p>Once spawned, threads run asynchronously to one another. They can access common data elements and make OCCI calls in any order. Because of this shared access to data elements, a mechanism is required to maintain the integrity of data being accessed by multiple threads. The mechanism to manage data access takes the form of mutexes (mutual exclusivity locks), which ensure that no conflicts arise between multiple threads that are accessing shared resources within an application. In OCCI, mutexes are granted on an OCCI environment basis.</p>
+<p>This thread safety feature of the Oracle database server and OCCI library enables developers to use OCCI in a multithreaded application with these added benefits:</p>
+<ul>
+<li>
+<p>Multiple threads of execution can make OCCI calls with the same result as successive calls made by a single thread.</p>
+</li>
+<li>
+<p>When multiple threads make OCCI calls, there are no side effects between threads.</p>
+</li>
+<li>
+<p>Even if you do not write a multithreaded program, you do not pay any performance penalty for including thread-safe OCCI calls.</p>
+</li>
+<li>
+<p>Use of multiple threads can improve program performance. You can discern gains on multiprocessor systems where threads run concurrently on separate processors, and on single processor systems where overlap can occur between slower operations and faster operations.</p>
+</li>
+</ul>
+<p>In addition to client/server applications, where the client can be a multithreaded program, thread safety is typically used in three-tier or client/agent/server architectures. In this architecture, the client is concerned only with presentation services. The agent (or application server) processes the application logic for the client application. Typically, this relationship is a many-to-one relationship, with multiple clients sharing the same application server.</p>
+<p>The server tier in the three-tier architecture is an Oracle database server. The applications server (agent) supports multithreading, with each thread serving a separate client application. In an Oracle environment, this middle-tier application server is an OCCI or precompiler program.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BAGFABIH"></a><a id="LNCPP20481"></a>
+<div class="sect2">
+<h3 class="sect2">Implementing Threa<a id="sthref618"></a><a id="sthref619"></a>d Safety</h3>
+<p>To take advantage of thread safety by using OCCI, an application must be running in a thread-safe operating system. Then the application must inform OCCI that the application is running in multithreaded mode by specifying <code>THREADED_MUTEXED</code> or <code>THREADED_UNMUTEXED</code> for the mode parameter of the <code>createEnvironment()</code> method. For example, to turn on mutual exclusivity locking, issue the following statement:</p>
+<pre>
+Environment *env = Environment::createEnvironment( 
+          Environment::THREADED_MUTEXED);
+</pre>
+<p>Note that once <code>createEnvironment</code> is called with <code>THREADED_MUTEXED</code> or <code>THREADED_UNMUTEXED</code>, all subsequent calls to the <code>createEnvironment</code> method must also be made with <code>THREADED_MUTEXED</code> or <code>THREADED_UNMUTEXED</code> modes.</p>
+<p>If a multithreaded application is running in a thread-safe operating system, then the OCCI library manages mutexes for the application on a for each-OCCI-environment basis. However, you can override this feature and have your application maintain its own mutex scheme. This is done by specifying a mode value of <code>THREADED_UNMUTEXED</code> to the <code>createEnvironment()</code> method.</p>
+<p>Applications that run on non-thread-safe platforms should not pass a value of <code>THREADED_MUTEXED</code> or <code>THREADED_UNMUTEXED</code> to the <code>createEnvironment()</code> method.</p>
+<p>If an application is single threaded, regardless of whether the platform is thread safe, the application should pass a value of <code>Environment::DEFAULT</code> to the <code>createEnvironment()</code> method. This is also the default value for the mode parameter. Single threaded applications which run in <code>THREADED_MUTEXED</code> mode may incur performance degradation.</p>
+<p>OCCI does not support nonblocking mode.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BAGFAFEF"></a><a id="LNCPP20482"></a>
+<div class="sect2">
+<h3 class="sect2">Serialization</h3>
+<p>As an application programmer, you have two basic options regarding concurrency in a multithreaded application:</p>
+<ul>
+<li>
+<p>Automatic serialization, in which you use OTIS's transparent mechanisms</p>
+</li>
+<li>
+<p>Application-provided serialization, in which you manage the contingencies involved in maintaining multiple threads</p>
+</li>
+</ul>
+<a id="i1010921"></a><a id="LNCPP20483"></a>
+<div class="sect3">
+<h4 class="sect3">Automatic <a id="sthref620"></a><a id="sthref621"></a>Serialization</h4>
+<p>In cases where there are multiple threads operating on objects (connections and connection pools) derived from an OCCI environment, you can elect to let OCCI serialize access to those objects. The first step is to pass a value of <code>THREADED_MUTEXED</code> to the <code>createEnvironment</code> method. At this point, the OCCI library automatically acquires a mutex on thread-safe objects in the environment.</p>
+<p>When the OCCI environment is created with <code>THREADED_MUTEXED</code> mode, then only the <code>Environment</code>, <code>Map</code>, <code>ConnectionPool</code>, <code>StatelessConnectionPool</code> and <code>Connection</code> objects are thread-safe. That is, if two threads make simultaneous calls on one of these objects, then OCCI serializes them internally. However, note that all other OCCI objects, such as <code>Statement</code>, <code>ResultSet</code>, <code>SQLException</code>, <code>Stream</code>, and so on, are not thread-safe as, applications should not operate on these objects simultaneously from multiple threads.</p>
+<p>Note that the bulk of processing for an OCCI call happens on the server, so if two threads that use OCCI calls go to the same connection, then one of them could be blocked while the other finishes processing at the server.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i1010926"></a><a id="LNCPP20484"></a>
+<div class="sect3">
+<h4 class="sect3">Application-<a id="sthref622"></a><a id="sthref623"></a><a id="sthref624"></a>Provided Serialization</h4>
+<p>In cases where there are multiple threads operating on objects derived from an OCCI environment, you can chose to manage serialization. The first step is to pass a value of <code>THREADED_UNMUTEXED</code> for the <code>createEnvironment</code> mode. In this case the application must mutual exclusively lock OCCI calls made on objects derived from the same OCCI environment. This has the advantage that the mutex scheme can be optimized based on the application design to gain greater concurrency.</p>
+<p>When an OCCI environment is created in this mode, OCCI recognizes that the application is running in a multithreaded application, but that OCCI need not acquire its internal mutexes. OCCI assumes that all calls to methods of objects derived from that OCCI environment are serialized by the application. You can achieve this two different ways:</p>
+<ul>
+<li>
+<p>Each thread has its own environment. That is, the environment and all objects derived from it (connections, connection pools, statements, result sets, and so on) are not shared across threads. In this case your application need not apply any mutexes.</p>
+</li>
+<li>
+<p>If the application shares an OCCI environment or any object derived from the environment across threads, then it must serialize access to those objects (by using a mutex, and so on) such that only one thread is calling an OCCI method on any of those objects.</p>
+</li>
+</ul>
+<p>In both cases, no mutexes are acquired by OCCI. You must ensure that only one OCCI call is in process on any object derived from the OCCI environment at any given time when <code>THREADED_UNMUTEXED</code> is used.</p>
+<p>OCCI is optimized to reuse objects as much as possible. Since each environment has its own heap, multiple environments result in increased consumption of memory. Having multiple environments may imply duplicating work regarding connections, connection pools, statements, and result set objects. This results in further memory consumption.</p>
+<p>Having multiple connections to the server results in more resource consumption on both the server and the network. Having multiple environments normally entails more connections.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BBAFAIHG"></a><a id="LNCPP21906"></a>
+<div class="sect2">
+<h3 class="sect2">Operating System Considerations</h3>
+<p>Some operating systems provide facilities for spawning processes that allow child processes to reuse states created by their parent process.</p>
+<p>After a parent process spawns a child process, the child process <span class="italic">must not</span> use the database connection created by the parent. Because SQL*Net expects only one user process to use a particular connection to the database, attempts by the child process to use the same database connection as the parent may cause undesired connection interference, and result in intermittent <code>ORA-03137</code> errors.</p>
+<p>When the application requires multiple concurrent connections, Oracle recommends using threads on platforms that support threading. Oracle supports concurrent connections in both single-threaded and multi-threaded applications.</p>
+<p>See <a href="#CHDJFAIG">"Introduction to Thread Safety"</a> and <a href="#BAGFABIH">"Implementing Thread Safety"</a> for more information about threads.</p>
+<p>For improving performance with many concurrently opened connections, see <a href="relational.htm#BAGDHEFJ">"Pooling Connections"</a>.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDCFGJF"></a><a id="LNCPP1203"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><a id="sthref625"></a><a id="sthref626"></a><a id="sthref627"></a><a id="sthref628"></a>Application-Managed Data Buffering</h2>
+<p>When you provide data for bind parameters by the <code>set</code><span class="italic">xxx</span> methods in parameterized statements, the values are copied into an internal data buffer, and the copied values are then provided to the database server for insertion. To reduce overhead of copying <code>string</code> type data that is available in user buffers, use the <a href="reference027.htm#i1082531">setDataBuffer()</a> and <a href="reference027.htm#i1082533">next()</a> methods of the <a href="reference027.htm#i1079050">ResultSet Class</a> and the <a href="reference030.htm#i1104912">execute()</a> method of the <a href="reference030.htm#i1079052">Statement Class</a>.</p>
+<a id="LNCPP20485"></a>
+<div class="sect2"><a id="sthref629"></a>
+<h3 class="sect2">setD<a id="sthref630"></a><a id="sthref631"></a>ataBuffer() Method</h3>
+<p>For high performance applications, OCCI provides the <code>setDataBuffer</code> method whereby the data buffer is managed by the application. The following example shows the <a href="reference027.htm#i1082531">setDataBuffer()</a> method:</p>
+<pre>
+void setDataBuffer(int paramIndex,
+   void *buffer,
+   Type type,
+   sb4 size,
+   ub2 *length,
+   sb2 *ind = NULL, 
+   ub2 *rc = NULL); 
+</pre>
+<p>The following parameters are used in the previous method example:</p>
+<ul>
+<li>
+<p><code>paramIndex</code>: Parameter number</p>
+</li>
+<li>
+<p><code>buffer</code>: Data buffer containing data</p>
+</li>
+<li>
+<p><code>type</code>: Type of the data in the data buffer</p>
+</li>
+<li>
+<p><code>size</code>: Size of the data buffer</p>
+</li>
+<li>
+<p><code>length</code>: Current length of data in the data buffer</p>
+</li>
+<li>
+<p><code>ind</code>: Indicator information. This indicates whether the data is <code>NULL</code> or not. For parameterized statements, a value of <code>-1</code> means a <code>NULL</code> value is to be inserted. For data returned from callable statements, a value of <code>-1</code> means <code>NULL</code> data is retrieved.</p>
+</li>
+<li>
+<p><code>rc</code>: Return code. This variable is not applicable to data provided to the <code>Statement</code> method. However, for data returned from callable statements, the return code specifies parameter-specific error numbers.</p>
+</li>
+</ul>
+<p>Not all data types can be provided and retrieved by the <code>setDataBuffer()</code> method. For instance, C++ Standard Library strings cannot be provided with the <code>setDataBuffer()</code> interface.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="types.htm#CJAFHAAD">Table 5-2, "External Data Types and Corresponding C++ and OCCI Types"</a> in <a href="types.htm#BABBHJGB">Chapter 5, "Data Types"</a> for specific cases</div>
+<p>There is an important difference between the data provided by the <code>set</code><span class="italic">xxx</span><code>()</code> methods and <code>setDataBuffer()</code> method. When data is copied in the <code>set</code><span class="italic">xxx</span><code>()</code> methods, the original can change once the data is copied. For example, you can use a <code>setString(str1)</code> method, then change the value of <code>str1</code> before execute. The value of <code>str1</code> that is used is the value at the time <code>setString(str1)</code> is called. However, for data provided by the <code>setDataBuffer()</code> method, the buffer must remain valid until the execution is completed.</p>
+<p>If iterative executes or the <code>executeArrayUpdate()</code> method is used, then data for multiple rows and iterations can be provided in a single buffer. In this case, the data for the <span class="italic">i</span>th iteration is at <code>buffer + (i-1) *size address</code> and the length, indicator, and return codes are at <code>*(length + i)</code>, <code>*(ind + i)</code>, and <code>*(rc + i)</code> respectively.</p>
+<p>This interface is also meant for use with array executions and callable statements that have array or <code>OUT</code> bind parameters.</p>
+<p>The same method is available in the <code>ResultSet</code> class to retrieve data without re-allocating the buffer for each fetch.</p>
+</div>
+<!-- class="sect2" -->
+<a id="LNCPP20486"></a>
+<div class="sect2"><a id="sthref632"></a>
+<h3 class="sect2">executeArra<a id="sthref633"></a><a id="sthref634"></a>yUpdate() Method</h3>
+<p>If all data is provided with the <code>setDataBuffer()</code> methods or output streams (that is, no <code>set</code><span class="italic">xxx()</span> methods besides <code>setDataBuffer()</code> or <code>getStream()</code> are called), then there is a simplified way of doing iterative execution.</p>
+<p>In this case, you should not call <code>setMaxIterations()</code> and <code>setMaxParamSize()</code>. Instead, call the <code>setDataBuffer()</code> or <code>getStream()</code> method for each parameter with the appropriate size arrays to provide data for each iteration, followed by the <code>executeArrayUpdate(int</code> <code>arrayLength)</code> method. The <code>arrayLength</code> parameter specifies the number of elements provided in each buffer. Essentially, this is same as setting the number of iterations to <code>arrayLength</code> and executing the statement.</p>
+<p>Since the stream parameters are specified only once, they can be used with array executes as well. However, if any <code>set</code><span class="italic">xxx</span><code>()</code> methods are used, then the <code>addIteration()</code> method is called to provide data for multiple rows. To compare the two approaches, consider <a href="#CIAEIFHJ">Example 12-2</a> that inserts two employees in the <code>employees</code> table:</p>
+<div class="example">
+<p class="titleinexample"><a id="CIAEIFHJ"></a><a id="LNCPP20487"></a>Example 12-2 How to Insert Records Using the addIteration() method</p>
+<pre>
+Statement *stmt = conn-&gt;createStatement(
+  "insert into departments (department_id, department_name) values(:1, :2)"); 
+char dnames[][100] = {"Community Outreach", "University Recruiting"}; 
+ub2 dnameLen[2]; 
+
+for (int i = 0; i &lt; 2; i++) 
+  dnameLen[i] = strlen(dnames[i] + 1);
+
+stmt-&gt;setMaxIterations(2);    // set maximum number of iterations 
+
+stmt-&gt;setInt(1, 7369);        // specify data for the first row 
+stmt-&gt;setDataBuffer(2, dnames, OCCI_SQLT_STR, sizeof(dnames[0]), dnameLen); 
+stmt-&gt;addIteration(); 
+
+stmt-&gt;setInt(1, 7654);        // specify data for the second row 
+                              // a setDatBuffer is unnecessary for the second 
+                              // bind parameter as data provided through
+                              // setDataBuffer is specified only once. 
+stmt-&gt;executeUpdate(); 
+</pre></div>
+<!-- class="example" -->
+<p>However, if the first parameter could also be provided through the <code>setDataBuffer()</code> interface, then, instead of the <code>addIteration()</code> method, you would use the <code>executeArrayUpdate()</code> method, as shown in <a href="#CIAIGGHF">Example 12-3</a>:</p>
+<div class="example">
+<p class="titleinexample"><a id="CIAIGGHF"></a><a id="LNCPP20488"></a>Example 12-3 How to Insert Records Using the executeArrayUpdate() Method</p>
+<pre>
+Statement *stmt = conn-&gt;createStatement(
+  "insert into departments (department_id, department_name) values(:1, :2)"); 
+char dnames[][100] = {"Community Outreach", "University Recruiting"}; 
+ub2 dnameLen[2]; 
+
+for (int i = 0; i &lt; 2; i++) 
+  dnameLen[i] = strlen(dnames[i] + 1); 
+
+int ids[2] = {7369, 7654}; 
+ub2 idLen[2] = {sizeof(ids[0]), sizeof(ids[1])}; 
+stmt-&gt;setDataBuffer(1, ids, OCCIINT, sizeof(ids[0]), idLen); 
+stmt-&gt;setDataBuffer(2, dnames, OCCI_SQLT_STR, sizeof(dnames[0]), dnameLen); 
+
+stmt-&gt;executeArrayUpdate(2);      // data for two rows is inserted. 
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDIDIDE"></a><a id="LNCPP1204"></a>
+<div class="sect1">
+<h2 class="sect1">Arr<a id="sthref635"></a>ay Fetch Using next() Method</h2>
+<p>If the application is fetching data with only the <code>setDataBuffer()</code> interface or the stream interface, then an array fetch can be executed. The array fetch is implemented through the <code>next(</code>) method of the <code>ResultSet</code> class. You must process the results obtained through next() before calling it again.</p>
+<div class="example">
+<p class="titleinexample"><a id="LNCPP20489"></a><a id="sthref636"></a>Example 12-4 How to use Array Fetch with a ResultSet</p>
+<pre>
+ResultSet *resultSet = stmt-&gt;executeQuery(...);
+resultSet-&gt;setDataBuffer(...);
+while (resultSet-&gt;next(<span class="italic">numRows</span>) == DATA_AVAILABLE)
+   process(resultSet-&gt;getNumArrayRows() );
+</pre></div>
+<!-- class="example" -->
+<p>This causes up to <code><span class="codeinlineitalic">numRows</span></code> amount of data to be fetched for each column. The buffers specified with the <code>setDataBuffer()</code> interface should large enough to hold at least <code><span class="codeinlineitalic">numRows</span></code> of data.</p>
+</div>
+<!-- class="sect1" -->
+<a id="CHDJJDAI"></a><a id="LNCPP1205"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><a id="sthref637"></a><a id="sthref638"></a><a id="sthref639"></a>Modifying Rows Iteratively</h2>
+<p>To process batch errors, specify that the <code>Statement</code> object is in a <code>batchMode</code> of execution using the <a href="reference030.htm#CIAJGDBG">setBatchErrorMode()</a> method. Once the <code>batchMode</code> is set and a batch update runs, any resulting errors are reported through the <a href="reference005.htm#CIAFIFFE">BatchSQLException Class</a>.</p>
+<p>The <code>BatchSQLException</code> class provides methods that handle batch errors. <a href="#CHDHIIJD">Example 12-5</a> illustrates how batch handling can be implemented within any OCCI application.</p>
+<div class="example">
+<p class="titleinexample"><a id="CHDHIIJD"></a><a id="LNCPP20490"></a>Example 12-5 How to Modify Rows Iteratively and Handle Errors</p>
+<ol>
+<li>
+<p>Create the Statement object and set its batch error mode to <code>TRUE</code>.</p>
+<pre>
+Statement *stmt = conn-&gt;createStatement ("...");
+stmt-&gt;setBatchErrorMode (true);
+</pre></li>
+<li>
+<p>Perform programmatic changes necessary by the application.</p>
+</li>
+<li>
+<p><a id="CHDIHDDG"></a>Update the statement.</p>
+<pre>
+try {
+  updateCount = stmt-&gt;executeUpdate ();
+}
+</pre></li>
+<li>
+<p>Catch and handle any errors generated during the batch insert or update.</p>
+<pre>
+catch (BatchSQLException &amp;batchEx)
+{
+  cout&lt;&lt;"Batch Exception: "&lt;&lt;batchEx.what()&lt;&lt;endl;
+  int errCount = batchEx.getFailedRowCount();
+  cout &lt;&lt; "Number of rows failed " &lt;&lt; errCount &lt;endl;
+  for (int i = 0; i &lt; errCount; i++ )
+  {
+    SQLException err = batchEx.getException(i);
+    unsigned int rowIndex = batchEx.getRowNum(i);
+    cout&lt;&lt;"Row " &lt;&lt; rowIndex &lt;&lt; " failed because of "
+       &lt;&lt; err.getErrorCode() &lt;&lt; endl; 
+  }
+  // take recovery action on the failed rows
+}
+</pre></li>
+<li>
+<p>Catch and handle other errors generated during the statement update. Note that statement-level errors are still thrown as instances of a <code>SQLException</code>.</p>
+<pre>
+catch( SQLException &amp;ex) // to catch other SQLExceptions.
+{
+   cout &lt;&lt; "SQLException: " &lt;&lt; e.what() &lt;&lt; endl;
+}
+</pre></li>
+</ol>
+</div>
+<!-- class="example" --></div>
+<!-- class="sect1" -->
+<a id="CIAJFEHB"></a><a id="LNCPP20028"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Run-time Load Balancing of the Stateless Connection Pool</h2>
+<p>Run-time load balancing in a stateless connection pool dynamically routs connection requests to the least loaded instance of the database. This is achieved by use of service metrics, which are distributed by the Oracle RAC load-balancing advisory.</p>
+<p>The feature modifies the stateless connection pool in the following ways:</p>
+<ul>
+<li>
+<p>The pool receives periodic notifications about the instance load.</p>
+</li>
+<li>
+<p>When a request for a connection is received, the pool picks the best possible connection for the type of request, based on the load of the instance.</p>
+</li>
+<li>
+<p>The stateless connection pool periodically terminates connections of overloaded instances, maintaining the connection topology that corresponds to the instance load.</p>
+</li>
+<li>
+<p>Since the connections to overloaded instances may be terminated, the pool creates new connections to maintain the concurrency requirement. These new connections are created using the connect-time load balancing of the Oracle RAC listener.</p>
+</li>
+</ul>
+<p>Run-time load balancing is turned on by default when the OCCI environment is created in <code>THREADED_MUTEXED</code> and <code>EVENTS</code> modes, and when the server is configured to issue event notifications.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink LNOCI09100" href="../../appdev.112/e10646/oci09adv.htm#LNOCI09100"><span class="italic">Oracle Call Interface Programmer's Guide</span></a></div>
+<a id="LNCPP20491"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref640"></a>
+<h3 class="sect2">API Support</h3>
+<p>New <code>NO_RLB</code> option for the <code>PoolType</code> attribute of the <a href="reference029.htm#i1155046">StatelessConnectionPool Class</a> disables run-time load balancing.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDCIAHJ"></a><a id="LNCPP1206"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Fault Diagnosability</h2>
+<p><a id="sthref641"></a>Fault diagnosability captures diagnostic data, such as dump files or core dump files, on the OCCI client when a problem incident occurs. For each incident, the fault diagnosability feature creates an <a id="sthref642"></a><a id="sthref643"></a>Automatic Diagnostic Repository (ADR) subdirectory for storing this diagnostic data. For example, if either a Linux or a UNIX application fails with a null pointer reference, then the core file appears in the ADR home directory (if it exists), not in the operating system directory. This section discusses the ADR subdirectory structure and the utility to manage its output, the <a id="sthref644"></a><a id="sthref645"></a>ADR Command Interpreter (ADRCI).</p>
+<p>An ADR home is the root directory for all diagnostic data for an instance of a product, such as OCCI, and a particular operating system user. All ADR homes appear under the same root directory, the ADR base.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ADMIN11007" href="../../server.112/e25494/diag.htm#ADMIN11007"><span class="italic">Oracle Database Administrator's Guide</span></a></div>
+<a id="LNCPP20492"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref646"></a>
+<h3 class="sect2"><a id="sthref647"></a>ADR Base Location</h3>
+<p>The location of the ADR base is determined in the following order:</p>
+<ol>
+<li>
+<p>In the <code>sqlnet.ora</code> file (on <span class="bolditalic">Windows</span>, in the <code>%TNS_ADMIN%</code> directory, or on <span class="bolditalic">Linux</span> or <span class="bolditalic">UNIX</span>, in the <code>$TNS_ADMIN</code> directory).</p>
+<p>If there is no <code>TNS_ADMIN</code> directory, then <code>sqlnet.ora</code> is stored in the current directory.</p>
+<p>If the ADR base is listed in the <code>sqlnet.ora</code> file, it is a statement of the type:</p>
+<pre>
+ADR_BASE=<span class="italic">/directory/adr</span>
+</pre>
+<p>where:</p>
+<ul>
+<li>
+<p>The <code><span class="codeinlineitalic">adr</span></code> argument is a directory that must exist and be writable by all operating system users who execute OCCI applications and want to share the same ADR base.</p>
+</li>
+<li>
+<p>The <code><span class="codeinlineitalic">directory</span></code> argument is the path name</p>
+</li>
+</ul>
+<p>If <code>ADR_BASE</code> is set, and if all users share a single <code>sqlnet.ora</code> file, then OCCI stops searching when directory <code>adr</code> does not exist or if it is not writable. If <code>ADR_BASE</code> is not set, then OCCI continues the search, testing for the existence of other specific directories.</p>
+<p>For example, if <code>sqlnet.ora</code> contains the entry <code>ADR_BASE=/home/chuck/test</code> then:</p>
+<ul>
+<li>
+<p>ADR base is:</p>
+<pre>
+/home/chuck/test/oradiag_chuck
+</pre></li>
+<li>
+<p>ADR home may be:</p>
+<pre>
+/home/chuck/test/oradiag_chuck/diag/clients/user_chuck/host_4144260688_11
+</pre></li>
+</ul>
+</li>
+<li>
+<p>If the Oracle base exists (on <span class="bolditalic">Windows</span>: <code><span class="codeinlineitalic">%ORACLE_BASE%</span></code>, or on <span class="bolditalic">Linux</span> and <span class="bolditalic">UNIX</span>: <code><span class="codeinlineitalic">$ORACLE_BASE</span></code>), the client subdirectory also exists because it is created by the Oracle Universal Installer when the database is installed.</p>
+<p>For example, if <code><span class="codeinlineitalic">$ORACLE_BASE</span></code> is <code>/home/chuck/obase</code> , then:</p>
+<ul>
+<li>
+<p>ADR base is:</p>
+<pre>
+/home/chuck/obase
+</pre></li>
+<li>
+<p>ADR home may be:</p>
+<pre>
+/home/chuck/obase/diag/clients/user_chuck/host_4144260688_11
+</pre></li>
+</ul>
+</li>
+<li>
+<p>If the Oracle home exists (on <span class="bolditalic">Windows</span>: <code><span class="codeinlineitalic">%ORACLE_HOME%</span></code>, or on <span class="bolditalic">Linux</span> and <span class="bolditalic">UNIX</span>: <code><span class="codeinlineitalic">$ORACLE_HOME</span></code>), the client subdirectory also exists because it is created by the Oracle Universal Installer when the database is installed.</p>
+<p>For example, if <code><span class="codeinlineitalic">$ORACLE_HOME</span></code> is <code>/ade/chuck_l1/oracle</code> , then:</p>
+<ul>
+<li>
+<p>ADR base is:</p>
+<pre>
+/ade/chuck_l1/oracle/log
+</pre></li>
+<li>
+<p>ADR home may be:</p>
+<pre>
+/ade/chuck_l1/oracle/log/diag/clients/user_chuck/host_4144260688_11
+</pre></li>
+</ul>
+</li>
+<li>
+<p>On the operating system home directory.</p>
+<ul>
+<li>
+<p>On <span class="bolditalic">Windows</span>, the operating system home directory is <code><span class="codeinlineitalic">%USERPROFILE%</span></code>.</p>
+<p>The location of folder <code>Oracle</code> is at:</p>
+<pre>
+C:\Documents and Settings\chuck
+</pre>
+<p>If the application runs as a service, the home directory option is skipped.</p>
+</li>
+<li>
+<p>On <span class="bolditalic">Linux</span> and <span class="bolditalic">UNIX</span>, the operating system home directory is <code><span class="codeinlineitalic">$HOME</span></code>.</p>
+<p>The location may be:</p>
+<pre>
+/home/chuck/oradiag_chuck
+</pre></li>
+</ul>
+<p>For example, in an Instant Client, if <code><span class="codeinlineitalic">$HOME</span></code> is <code>/home/chuck</code>, then:</p>
+<ul>
+<li>
+<p>ADR base is:</p>
+<pre>
+/home/chuck/oradiag_chuck
+</pre></li>
+<li>
+<p>ADR home may be:</p>
+<pre>
+/home/chuck/oradiag_chuck/diag/clients/user_chuck/host_4144260688_11
+</pre></li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="install.htm#CACFFGHF">"Instant Client"</a></div>
+</li>
+<li>
+<p>In the temporary directory.</p>
+<ul>
+<li>
+<p>On <span class="bolditalic">Windows</span>, the temporary directories are searched in the following order:</p>
+<ul>
+<li>
+<p><code>%TMP%</code></p>
+</li>
+<li>
+<p><code>%TEMP%</code></p>
+</li>
+<li>
+<p><code>%USERPROFILE%</code></p>
+</li>
+<li>
+<p>Windows system directory</p>
+</li>
+</ul>
+</li>
+<li>
+<p>On <span class="bolditalic">Linux</span> and <span class="bolditalic">UNIX</span>, the temporary directory is in <code>/var/tmp</code>.</p>
+</li>
+</ul>
+<p>For example, in an Instant Client, if <code><span class="codeinlineitalic">$HOME</span></code> is not writable, then:</p>
+<ul>
+<li>
+<p>ADR base is:</p>
+<pre>
+/var/tmp/oradiag_chuck
+</pre></li>
+<li>
+<p>ADR home may be:</p>
+<pre>
+/var/tmp/oradiag_chuck/diag/clients/user_chuck/host_4144260688_11
+</pre></li>
+</ul>
+</li>
+</ol>
+<p>If none of these directory choices are available and writable, ADR is not created and diagnostics are not stored.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink NETRF398" href="../../network.112/e10835/sqlnet.htm#NETRF398"><span class="italic">Oracle Database Net Services Reference</span></a></div>
+</div>
+<!-- class="sect2" -->
+<a id="LNCPP20493"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref648"></a>
+<h3 class="sect2">Using ADRCI<a id="sthref649"></a></h3>
+<p><a id="sthref650"></a>ADRCI is a command-line tool that enables you to view diagnostic data within the ADR, and to package incident and problem information into a zip file that can be shared with Oracle Support. ADRCI can be used either interactively and through a script.</p>
+<p>A <span class="bold">problem</span> is a critical error in OCI or the client. Each problem has a problem key. An <span class="bold">incident</span> is a single occurrence of a problem, and it is identified by a unique numeric incident ID. Each incident has a problem key which has a set of attributes: the <code>ORA</code> error number, error parameter values, and similar information. Two incidents have the same root cause if their problem keys match.</p>
+<p>The following examples demonstrate how to use ADRCI on a Linux operating system. Note that ARDCI commands are case-insensitive. All user input is in bold typeface.</p>
+<div class="example">
+<p class="titleinexample"><a id="LNCPP20494"></a><a id="sthref651"></a>Example 12-6 How to Use ADRCI for OCCI Application Incidents</p>
+<p>To launch ADRCI in a Linux system, use the <code>adrci</code> command. Once ADRCI starts, find out the particulars of the <code>show base</code> command with <code>help</code>, and then determine the base of a particular client using the <code>-product client</code> option (necessary for OCCI applications). To set the ADRCI base, use the set base command. Once <code>ADRCI</code> starts, then the default ADR base is for the <code>rdbms</code> server. The <code><span class="codeinlineitalic">$ORACLE_HOME</span></code> is set to <code>/ade/chuck_l3/oracle</code>. To view the incidents, use the <code>show incidents</code> command. to exit ADRCI, use the <code>quit</code> command.</p>
+<pre>
+% <span class="bold">adrci</span> 
+
+ADRCI: Release 11.2. - on Wed November 25 16:16:55 2008
+ 
+Copyright (c) 1982, 2008, Oracle.  All rights reserved.
+
+adrci&gt; <span class="bold">help show base</span>
+ 
+  Usage: SHOW BASE [-product &lt;product_name&gt;]
+ 
+  Purpose: Show the current ADR base setting.
+ 
+  Options:
+    [-product &lt;product_name&gt;]: This option allows users to show the
+    given product's ADR Base location. The current registered products are
+    "CLIENT" and "ADRCI".
+ 
+  Examples: 
+    show base -product client
+    show base
+ 
+adrci&gt; <span class="bold">show base -product client</span>
+ADR base is "/ade/chuck_l3/oracle/log"
+
+adrci&gt; <span class="bold">help set base</span>
+ 
+  Usage:  SET BASE &lt;base_str&gt;
+ 
+  Purpose: Set the ADR base to use in the current ADRCI session.
+           If there are valid ADR homes under the base, all homes 
+           are added to the current ADRCI session.
+ 
+  Arguments:
+    &lt;base_str&gt;: It is the ADR base directory, which is a system-dependent
+    directory path string.
+ 
+  Notes:
+    On platforms that use "." to signify current working directory,
+    it can be used as base_str.
+ 
+  Example: 
+    set base /net/sttttd1/scratch/someone/view_storage/someone_v1/log
+    set base .
+
+adrci&gt; <span class="bold">set base /ade/chuck_l3/oracle/log</span>
+
+adrci&gt; <span class="bold">show incidents</span>
+...
+adrci&gt; <span class="bold">quit</span>
+</pre></div>
+<!-- class="example" -->
+<div class="example">
+<p class="titleinexample"><a id="LNCPP20495"></a><a id="sthref652"></a>Example 12-7 How to Use ADRCI for Instant Client</p>
+<p>Because Instant Client does not use <code><span class="codeinlineitalic">$ORACLE_HOME</span></code>, the default ADR base is the user's home directory.</p>
+<pre>
+adrci&gt; <span class="bold">show base -product client</span>
+ADR base is "/home/chuck/oradiag_chuck"
+adrci&gt; <span class="bold">set base /home/chuck/oradiag_chuck</span>
+adrci&gt; <span class="bold">show incidents</span>
+ 
+ADR Home = /home/chuck/oradiag_chuck/diag/clients/user_chuck/host_4144260688_11:
+*************************************************************************
+INCIDENT_ID    PROBLEM_KEY           CREATE_TIME
+-------------------------------------------------------------------------
+1                     oci 24550 [6]              2007-05-01 17:20:02.803697 -07:00                      
+1 rows fetched
+ 
+adrci&gt; <span class="bold">quit</span>
+</pre></div>
+<!-- class="example" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink SUTIL700" href="../../server.112/e22490/adrci.htm#SUTIL700"><span class="italic">Oracle Database Utilities</span></a> for an introduction to the ADRCI</p>
+</li>
+<li>
+<p><a href="install.htm#CACFFGHF">"Instant Client"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="LNCPP20496"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref653"></a>
+<h3 class="sect2"><a id="sthref654"></a>Controlling ADR Creation and Disabling<a id="sthref655"></a> Fault Diagnosability</h3>
+<p>To disable the fault diagnosability feature, you must turn off the capture of diagnostics. Edit the <code>sqlnet.ora</code> file by changing the values of the <code>DIAG_ADR_ENABLED</code> and <code>DIAG_DDE_ENABLED</code> parameters to either <code>FALSE</code> or <code>OFF</code>; the default values are either <code>TRUE</code> or <code>ON</code>.</p>
+<p>To turn off the OCCI signal handler and to re-enable standard operating system failure processing, edit the <code>sqlnet.ora</code> file by adding the corresponding parameter: <code>DIAG_SIGHANDLER_ENABLED=FALSE</code>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink NETRF418" href="http://www.oracle.com/pls/topic/lookup?ctx=db112&amp;id=NETRF418"><span class="italic">Oracle Database Net Services Reference</span></a></div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CIAJBDEF"></a><a id="LNCPP21896"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><a id="sthref656"></a>Client Result Cache</h2>
+<p>The Client Result Cache improves the response times of queries that are executed repeatedly. This feature uses client memory to cache results of SQL queries executed and fetched from the database. Subsequent execution of the same query fetches the results from the client cache, reducing server CPU usage. Because database round-trips are eliminated, applications have improved response times.</p>
+<p>OCCI applications may transparently use the Client Result Cache feature by enabling OCCI statement caching. Note that <code>SELECT</code> queries that must be cached are annotated with a <a id="sthref657"></a><code>/*+ result_cache */</code> hint. <a href="#CIADDJCA">Example 12-8</a> shows how to create a OCCI Statement object that uses such a <code>SELECT</code> query.</p>
+<div class="example">
+<p class="titleinexample"><a id="CIADDJCA"></a><a id="LNCPP21897"></a>Example 12-8 How to Enable and Use the Client Result Cache</p>
+<pre>
+Connection *conn;
+Statement *stmt;
+ResultSet *rs;
+ 
+...
+//enable OCCI Statement Caching
+conn-&gt;setStmtCacheSize(20);
+ 
+//Specify the hint in the SELECT query
+stmt = conn-&gt;createStatement("select /*+ result_cache */ * from products \
+                              where product_id = :1");
+ 
+//the following execute fetches rows from the client cache if
+//the query results are cached. If this is the first execute
+//of the query, the results fetched from the server are
+//cached on the client side.
+rs = stmt-&gt;executeQuery();
+</pre></div>
+<!-- class="example" -->
+<p>For usage guidelines, cache consistency, and restrictions, see <a class="olink LNOCI10103" href="../../appdev.112/e10646/oci10new.htm#LNOCI10103"><span class="italic">Oracle Call Interface Programmer's Guide</span></a>.</p>
+</div>
+<!-- class="sect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1066">
+<tr>
+<td class="cellalignment1075">
+<table class="cellalignment1071">
+<tr>
+<td class="cellalignment1070"><a href="xa.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1070"><a href="reference.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1999, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1078">
+<table class="cellalignment1069">
+<tr>
+<td class="cellalignment1070"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1070"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1070"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1070"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1070"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1070"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Defining Operators</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1" />
+<meta name="dcterms.created" content="2010-03-08T13:16:27Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Data Cartridge Developer's Guide" />
+<meta name="dcterms.identifier" content="E10765-02" />
+<meta name="dcterms.isVersionOf" content="ADDCI" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1996, 2010,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="dom_idx.htm" title="Previous" type="text/html" />
+<link rel="Next" href="ext_optimizer.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10765.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">18/36</span> <!-- End Header --><a id="BACJHBGC"></a><a id="ADDCI2100"></a>
+<h1 class="chapter"><span class="secnum">9</span> Defining Operators</h1>
+<p>This chapter introduces user-defined operators and then demonstrates how to use them, both with and without indextypes.</p>
+<p>This chapter contains these topics:</p>
+<ul>
+<li>
+<p><a href="#BABIICDH">User-Defined Operators</a></p>
+</li>
+<li>
+<p><a href="#BABBGCIA">Operators and Indextypes</a></p>
+</li>
+</ul>
+<a id="BABIICDH"></a><a id="ADDCI4508"></a>
+<div class="sect1">
+<h2 class="sect1">User-Defined Operators</h2>
+<p>A <a id="sthref398"></a><span class="glossaryterm">user-defined operator</span> is a top-level schema object. In many ways, user-defined operators act like the built-in operators such as &lt;, &gt;, and =; for instance, they can be invoked in all the same situations. They contribute to ease of use by simplifying SQL statements, making them shorter and more readable.</p>
+<p>User-defined operators are:</p>
+<ul>
+<li>
+<p>Identified by names, which are in the same namespace as tables, views, types, and standalone functions</p>
+</li>
+<li>
+<p>Bound to functions, which define operator behavior in specified contexts</p>
+</li>
+<li>
+<p>Controlled by privileges, which indicate the circumstances in which each operator can be used</p>
+</li>
+<li>
+<p>Often associated with indextypes, which can be used to define indexes that are not built into the database</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<span class="italic">Oracle Database SQL Language Reference</span> for detailed information on syntax and privileges</div>
+<a id="ADDCI4509"></a>
+<div class="sect2"><a id="sthref399"></a>
+<h3 class="sect2">Operator Bindings</h3>
+<p>An operator <span class="glossaryterm"><a id="sthref400"></a>binding</span> associates the operator with the <span class="glossaryterm"><a id="sthref401"></a>signature</span> of a function that implements the operator. A signature consists of a list of the data types of the arguments of the function, in order of occurrence, and the function's return type. Operator bindings tell Oracle which function to execute when the operator is invoked. An operator can be bound to several functions if each function has a different signature. To be considered different, functions must have different argument lists. Functions whose argument lists match, but whose return data types do not match, are not considered different and cannot be bound to the same operator.</p>
+<p>Operators can be bound to:</p>
+<ul>
+<li>
+<p>Standalone functions</p>
+</li>
+<li>
+<p>Package functions</p>
+</li>
+<li>
+<p>User-defined type member methods</p>
+</li>
+</ul>
+<p>Operators can be bound to functions and methods in any accessible schema. Each operator must have at least one binding when you create it. If you attempt to specify non-unique operator bindings, the Oracle server raises an error.</p>
+</div>
+<!-- class="sect2" -->
+<a id="ADDCI4510"></a>
+<div class="sect2"><a id="sthref402"></a>
+<h3 class="sect2">Operator Privileges</h3>
+<p>To create an operator and its bindings, you must have:</p>
+<ul>
+<li>
+<p><code>CREATE</code> <code>OPERATOR</code> or <code>CREATE</code> <code>ANY</code> <code>OPERATOR</code> privilege</p>
+</li>
+<li>
+<p><code>EXECUTE</code> privilege on the function, operator, package, or type referenced</p>
+</li>
+</ul>
+<p>To drop a user-defined operator, you must own the operator or have the <code>DROP</code> <code>ANY</code> <code>OPERATOR</code> privilege.</p>
+<p>To invoke a user-defined operator in an expression, you must own the operator or have <code>EXECUTE</code> privilege on it.</p>
+</div>
+<!-- class="sect2" -->
+<a id="ADDCI4511"></a>
+<div class="sect2"><a id="sthref403"></a>
+<h3 class="sect2">Creating Operators</h3>
+<p>To create an operator, specify its name and its bindings with the <code>CREATE OPERATOR</code> statement. <a href="#CHDCGBDC">Example 9-1</a> creates the operator <code>Contains()</code>, binding it to functions that provide implementations in the Text and Spatial domains.</p>
+<div class="example">
+<p class="titleinexample"><a id="CHDCGBDC"></a><a id="ADDCI4512"></a>Example 9-1 Creating an Operator</p>
+<pre>
+CREATE OPERATOR Contains
+BINDING
+(VARCHAR2, VARCHAR2) RETURN NUMBER USING text.contains,
+(Spatial.Geo, Spatial.Geo) RETURN NUMBER USING Spatial.contains;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" -->
+<a id="ADDCI4513"></a>
+<div class="sect2"><a id="sthref404"></a>
+<h3 class="sect2">Dropping Operators</h3>
+<p>To drop an operator and all its bindings, specify its name with the <code>DROP</code> <code>OPERATOR</code> statement. <a href="#CHDIFGFI">Example 9-2</a> drops the operator <code>Contains()</code>.</p>
+<div class="example">
+<p class="titleinexample"><a id="CHDIFGFI"></a><a id="ADDCI4514"></a>Example 9-2 Dropping an Operator; RESTRICT Option</p>
+<pre>
+DROP OPERATOR Contains;
+</pre></div>
+<!-- class="example" -->
+<p>The default <code>DROP</code> behavior is <code>DROP</code> <code>RESTRICT</code>: if there are dependent indextypes or ancillary operators for any of the operator bindings, then the <code>DROP</code> operation is disallowed.</p>
+<p>To override the default behavior, use the <code>FORCE</code> option. <a href="#CHDCDEBA">Example 9-3</a> drops the operator and all its bindings and marks any dependent indextype objects and dependent ancillary operators invalid.</p>
+<div class="example">
+<p class="titleinexample"><a id="CHDCDEBA"></a><a id="ADDCI4515"></a>Example 9-3 Dropping an Operator; FORCE Option</p>
+<pre>
+DROP OPERATOR Contains FORCE;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" -->
+<a id="ADDCI4516"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref405"></a>
+<h3 class="sect2">Altering Operators</h3>
+<p>You can add bindings to or drop bindings from an existing operator with the <code>ALTER OPERATOR</code> statement. <a href="#CHDCBJJE">Example 9-4</a> adds a binding to the operator <code>Contains().</code></p>
+<div class="example">
+<p class="titleinexample"><a id="CHDCBJJE"></a><a id="ADDCI4517"></a>Example 9-4 Adding a Binding to an Operator</p>
+<pre>
+ALTER OPERATOR Contains
+  ADD BINDING (music.artist, music.artist) RETURN NUMBER
+  USING music.contains;
+</pre></div>
+<!-- class="example" -->
+<p>You need certain privileges to perform alteration operations:</p>
+<ul>
+<li>
+<p>To alter an operator, the operator must be in your own schema, or you must have the <code>ALTER ANY OPERATOR</code> privilege.</p>
+</li>
+<li>
+<p>You must have <code>EXECUTE</code> privileges on the operators and functions referenced.</p>
+</li>
+</ul>
+<p>The following restrictions apply to the <code>ALTER OPERATOR</code> statement:</p>
+<ul>
+<li>
+<p>You can only issue <code>ALTER OPERATOR</code> statements that relate to existing operators.</p>
+</li>
+<li>
+<p>You can only add or drop one binding in each <code>ALTER OPERATOR</code> statement.</p>
+</li>
+<li>
+<p>You cannot drop an operator's only binding with <code>ALTER OPERATOR</code>; use the <code>DROP OPERATOR</code> statement to drop the operator. An operator cannot exist without any bindings.</p>
+</li>
+<li>
+<p>If you add a binding to an operator associated with an indextype, the binding is not associated to the indextype unless you also issue the <code>ALTER INDEXTYPE ADD OPERATOR</code> statement</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="ADDCI4518"></a>
+<div class="sect2"><a id="sthref406"></a>
+<h3 class="sect2">Commenting Operators</h3>
+<p>To add comment text to an operator, specify the name and text with the <code>COMMENT</code> statement. <a href="#CHDBGIBB">Example 9-5</a> supplies information about the <code>Contains()</code> operator:</p>
+<div class="example">
+<p class="titleinexample"><a id="CHDBGIBB"></a><a id="ADDCI4519"></a>Example 9-5 Adding COMMENTs to an Operator</p>
+<pre>
+COMMENT ON OPERATOR
+Contains IS 'a number that indicates if the text contains the key';
+</pre></div>
+<!-- class="example" -->
+<p>Comments on operators are available in the data dictionary through these views:</p>
+<ul>
+<li>
+<p><code>USER_OPERATOR_COMMENTS</code></p>
+</li>
+<li>
+<p><code>ALL_OPERATOR_COMMENTS</code></p>
+</li>
+<li>
+<p><code>DBA_OPERATOR_COMMENTS</code></p>
+</li>
+</ul>
+<p>You can only comment operators in your own schema unless you have the <code>COMMENT ANY OPERATOR</code> privilege.</p>
+</div>
+<!-- class="sect2" -->
+<a id="ADDCI4520"></a>
+<div class="sect2"><a id="sthref407"></a>
+<h3 class="sect2">Invoking Operators</h3>
+<p>Like built-in operators, user-defined operators can be invoked wherever expressions can occur. For example, user-defined operators can be used in:</p>
+<ul>
+<li>
+<p>The select list of a <code>SELECT</code> command.</p>
+</li>
+<li>
+<p>The condition of a <code>WHERE</code> clause.</p>
+</li>
+<li>
+<p>The <code>ORDER</code> <code>BY</code> and <code>GROUP</code> <code>BY</code> clauses.</p>
+</li>
+</ul>
+<p>When an operator is invoked, Oracle evaluates the operator by executing a function bound to it. When several functions are bound to the operator, Oracle executes the function whose argument data types match those of the invocation (after any implicit type conversions). Invoking an operator with an argument list that does not match the signature of any function bound to that operator causes an error to be raised. Because user-defined operators can have multiple bindings, they can be used as overloaded functions.</p>
+<p>Assume that <a href="#CHDEFCGA">Example 9-6</a> creates the operator <code>Contains()</code>.</p>
+<div class="example">
+<p class="titleinexample"><a id="CHDEFCGA"></a><a id="ADDCI4521"></a>Example 9-6 Creating the Contains() Operator</p>
+<pre>
+CREATE OPERATOR Contains
+BINDING 
+(VARCHAR2, VARCHAR2) RETURN NUMBER 
+USING text.contains, 
+(spatial.geo, spatial.geo) RETURN NUMBER 
+USING spatial.contains;
+</pre></div>
+<!-- class="example" -->
+<p>If <code>Contains()</code> is used in <a href="#CHDFIEGI">Example 9-7</a>, the operator invocation <code>Contains(resume,</code> <code>'Oracle')</code> causes Oracle to execute the function <code>text.contains(resume,</code> <code>'Oracle')</code> because the signature of the function matches the data types of the operator arguments. Similarly, the operator invocation <code>Contains(location</code><span class="italic">,</span> <code>:bay_area)</code> executes the function <code>spatial.contains(location</code><span class="italic">,</span> <code>:bay_area)</code>.</p>
+<div class="example">
+<p class="titleinexample"><a id="CHDFIEGI"></a><a id="ADDCI4522"></a>Example 9-7 Using the Operator Contains() in a Query</p>
+<pre>
+SELECT * FROM MyEmployees
+WHERE Contains(resume, 'Oracle')=1 AND Contains(location, :bay_area)=1;
+</pre></div>
+<!-- class="example" -->
+<p>Executing the statement in <a href="#CHDIHJFG">Example 9-8</a> raises an error because none of the operator bindings satisfy the argument data types.</p>
+<div class="example">
+<p class="titleinexample"><a id="CHDIHJFG"></a><a id="ADDCI4523"></a>Example 9-8 An Incorrect Use of the Operator Contains()</p>
+<pre>
+SELECT * FROM MyEmployees
+WHERE Contains(address, employee_addr_type('123 Main Street', 'Anytown', 'CA',
+  '90001'))=1; 
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BABBGCIA"></a><a id="ADDCI4524"></a>
+<div class="sect1">
+<h2 class="sect1">Operators and Indextypes</h2>
+<p>Operators are often defined in connection with <a id="sthref408"></a>indextypes. After creating the operators with their functional implementations, you can create an indextype that supports evaluations of these operators using an index scan.</p>
+<p>Operators that occur outside <code>WHERE</code> clauses are essentially stand-ins for the functions that implement them; the meaning of such an operator is determined by its functional implementation. Operators that occur in <code>WHERE</code> clauses are sometimes evaluated using functional implementations; at other times they are evaluated by index scans. This section describes the various situations and the methods of evaluation.</p>
+<a id="ADDCI4525"></a>
+<div class="sect2"><a id="sthref409"></a>
+<h3 class="sect2">Operators in the WHERE Clause</h3>
+<p>Operators appearing in the <code>WHERE</code> clause can be evaluated efficiently by an index scan using the scan methods provided by the indextype. This process involves:</p>
+<ol>
+<li>
+<p>Creating an indextype that supports the evaluation of the operator</p>
+</li>
+<li>
+<p>Recognizing operator predicates of a certain form</p>
+</li>
+<li>
+<p>Selecting a domain index</p>
+</li>
+<li>
+<p>Setting up an appropriate index scan</p>
+</li>
+<li>
+<p>Executing the index scan methods</p>
+</li>
+</ol>
+<p>The following sections describe each of these steps in detail.</p>
+<a id="ADDCI4526"></a>
+<div class="sect3"><a id="sthref410"></a>
+<h4 class="sect3">Operator Predicates</h4>
+<p>An indextype supports efficient evaluation of operator predicates that can be represented by a range of lower and upper bounds on the operator return values. Specifically, predicates of the forms listed in <a href="#CHDFDBCI">Example 9-9</a> are candidates for index scan-based evaluation.</p>
+<div class="example">
+<p class="titleinexample"><a id="CHDFDBCI"></a><a id="ADDCI4527"></a>Example 9-9 Operator Predicates</p>
+<pre>
+op(...) LIKE <span class="italic">value_expression</span>
+op(...) <span class="italic">relop</span> <span class="italic">value_expression</span>
+</pre>
+<p>&nbsp;&nbsp;&nbsp;where <code><span class="codeinlineitalic">value_expression</span></code> must evaluated to a constant (not a column) that can be used as a domain index key, and <code><span class="codeinlineitalic">relop</span></code> is one of <code>&lt;</code>, <code>&lt;=</code>, <code>=</code>, <code>&gt;=</code>, or <code>&gt;</code></p>
+</div>
+<!-- class="example" -->
+<p>Operator predicates that Oracle can convert internally into one of the forms in <a href="#CHDFDBCI">Example 9-9</a> can also make use of the index scan-based evaluation.</p>
+<p>Using the operators in expressions, such as <code>op(...) + 2 = 3</code>, precludes index scan-based evaluation.</p>
+<p>Predicates of the form <code>op() is NULL</code> are evaluated using the functional implementation.</p>
+</div>
+<!-- class="sect3" -->
+<a id="ADDCI4528"></a>
+<div class="sect3"><a id="sthref411"></a>
+<h4 class="sect3">Operator Resolution</h4>
+<p>An index scan-based evaluation of an operator is only possible if the operator operates on a column or object attribute indexed by an indextype. The optimizer makes the final decision between the indexed implementation and the functional implementation, taking into account the selectivity and cost while generating the query execution plan.</p>
+<p>Consider the query in <a href="#CHDFDCBC">Example 9-10</a>.</p>
+<div class="example">
+<p class="titleinexample"><a id="CHDFDCBC"></a><a id="ADDCI4529"></a>Example 9-10 Using the Contains() Operator in a Simple Query</p>
+<pre>
+SELECT * FROM MyEmployees WHERE Contains(resume, 'Oracle') = 1;
+</pre></div>
+<!-- class="example" -->
+<p>The optimizer can choose to use a domain index in evaluating the <code>Contains()</code> operator if</p>
+<ul>
+<li>
+<p>The <code>resume</code> column has a defined index.</p>
+</li>
+<li>
+<p>The index is of type <code>TextIndexType</code>.</p>
+</li>
+<li>
+<p><code>TextIndexType</code> supports the appropriate <code>Contains()</code> operator.</p>
+</li>
+</ul>
+<p>If any of these conditions do not hold, Oracle performs a complete scan of the <code>MyEmployees</code> table and applies the functional implementation of <code>Contains()</code> as a post-filter. However, if all these conditions are met, the optimizer uses selectivity and cost functions to compare the cost of index-based evaluation with the full table scan and generates the appropriate execution plan.</p>
+<p>Consider a slightly different query in <a href="#CHDCEIDE">Example 9-11</a>.</p>
+<div class="example">
+<p class="titleinexample"><a id="CHDCEIDE"></a><a id="ADDCI4530"></a>Example 9-11 Using the Contains() Operator in a Complex Query</p>
+<pre>
+SELECT * FROM MyEmployees WHERE Contains(resume, 'Oracle') =1 AND id =100;
+</pre></div>
+<!-- class="example" -->
+<p>Here, you can access the <code>MyEmployees</code> table through an index on the <code>id</code> column, one on the <code>resume</code> column, or a bitmap merge of the two. The optimizer estimates the costs of the three plans and picks the least expensive variant one, which could be to use the index on <code>id</code> and apply the <code>Contains()</code> operator on the resulting rows. In that case, Oracle would use the functional implementation of <code>Contains()</code> rather than the domain index.</p>
+</div>
+<!-- class="sect3" -->
+<a id="ADDCI4531"></a>
+<div class="sect3"><a id="sthref412"></a>
+<h4 class="sect3">Index Scan Setup</h4>
+<p>If a domain index is selected for the evaluation of an operator predicate, an index <a id="sthref413"></a>scan is set up. The index scan is performed by the scan methods <a href="ext_idx_ref.htm#i78634">ODCIIndexStart()</a>, <a href="ext_idx_ref.htm#i76798">ODCIIndexFetch()</a>, and <a href="ext_idx_ref.htm#i77457">ODCIIndexClose()</a>, specified as part of the corresponding indextype implementation. The <a href="ext_idx_ref.htm#i78634">ODCIIndexStart()</a> method is invoked with the operator-related information, including name and arguments and the lower and upper bounds describing the predicate. After the <a href="ext_idx_ref.htm#i78634">ODCIIndexStart()</a> call, a series of fetches are performed to obtain row identifiers of rows satisfying the predicate, and finally the <a href="ext_idx_ref.htm#i77457">ODCIIndexClose()</a> is called when the SQL cursor is destroyed.</p>
+</div>
+<!-- class="sect3" -->
+<a id="ADDCI4532"></a>
+<div class="sect3"><a id="sthref414"></a>
+<h4 class="sect3">Execution Model for Index Scan Methods</h4>
+<p>To implement the index scan routines, you must understand how they are invoked and how multiple sets of invocations can be combined.</p>
+<p>As an example, consider the query in <a href="#CHDBBGGJ">Example 9-12</a>.</p>
+<div class="example">
+<p class="titleinexample"><a id="CHDBBGGJ"></a><a id="ADDCI4533"></a>Example 9-12 Using the Contains() Operator in a Multiple Table Query</p>
+<pre>
+SELECT * FROM MyEmployees1, MyEmployees2 
+WHERE 
+  Contains(MyEmployees1.resume, 'Oracle') =1 AND 
+  Contains(MyEmployees2.resume, 'UNIX') =1 AND 
+  MyEmployees1.employee_id = MyEmployees2.employee_id;
+</pre></div>
+<!-- class="example" -->
+<p>If the optimizer choses to use the domain indexes on the <code>resume</code> columns of both tables, the indextype routines might be invoked in the sequence demonstrated in <a href="#CHDDDGFD">Example 9-13</a>.</p>
+<div class="example">
+<p class="titleinexample"><a id="CHDDDGFD"></a><a id="ADDCI4534"></a>Example 9-13 Invoking Indextype Routines for the Contains() Operator Query</p>
+<pre>
+start(ctx1, ...); /* corr. to Contains(MyEmployees1.resume, 'Oracle') */
+start(ctx2, ...); /* corr. to Contains(MyEmployees2.resume, 'UNIX');
+fetch(ctx1, ...);
+fetch(ctx2, ...);
+fetch(ctx1, ...);
+...
+close(ctx1);
+close(ctx2);
+</pre></div>
+<!-- class="example" -->
+<p>In this example, a single indextype routine is invoked several times for different instances of the <code>Contains()</code> operator. It is possible that many operators are being evaluated concurrently through the same indextype routines. A routine that gets all the information it needs through its parameters, such as the <code>CREATE</code> routine, does not maintain any state across calls, so evaluating multiple operators concurrently is not a problem. Other routines that must maintain state across calls, like the <code>FETCH</code> routine, must know which row to return next. These routines should maintain state information in the <code>SELF</code> parameter that is passed in to each call. The <code>SELF</code> parameter, an instance of the implementation type, can be used to store either the entire state or a handle to the cursor-duration memory that stores the state (if the state information is large).</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="ADDCI4535"></a>
+<div class="sect2"><a id="sthref415"></a>
+<h3 class="sect2">Using Operators Outside the WHERE Clause</h3>
+<p>Operators that are used outside the <code>WHERE</code> clause are evaluated using the functional implementation. To execute the statement in <a href="#CHDEJFJD">Example 9-14</a>, Oracle scans the <code>MyEmployees</code> table and invokes the functional implementation for <code>Contains()</code> on each instance of <code>resume</code>, passing it the actual value of the <code>resume</code>, the text data, in the current row. Note that this function would not make use of any domain indexes built on the <code>resume</code> column.</p>
+<div class="example">
+<p class="titleinexample"><a id="CHDEJFJD"></a><a id="ADDCI4536"></a>Example 9-14 Using Operators Outside the WHERE Clause</p>
+<pre>
+SELECT Contains(resume, 'Oracle') FROM MyEmployees;
+</pre></div>
+<!-- class="example" -->
+<p>Because functional implementations can make use of domain indexes, the following sections discuss how to write functions that use domain indexes and how they are invoked by the system.</p>
+<a id="ADDCI4537"></a>
+<div class="sect3"><a id="sthref416"></a>
+<h4 class="sect3">Creating Index-based Functional Implementations</h4>
+<p>For many domain-specific operators, such as <code>Contains()</code>, the functional implementation has two options:</p>
+<ul>
+<li>
+<p>If the operator is operating on a column or <code>OBJECT</code> attribute that has a domain index, the function can evaluate the operator by looking at the index data rather than the actual argument value.</p>
+<p>For example, when <code>Contains(resume</code>, <code>'Oracle')</code> is invoked on a particular row of the <code>MyEmployees</code> table, it is easier for the function to look up the text domain index defined on the <code>resume</code> column and evaluate the operator based on the row identifier for the row containing the <code>resume</code> than to work on the <code>resume</code> text data argument.</p>
+</li>
+<li>
+<p>If the operator is operating on a column that does not have an appropriate domain index defined on it or if the operator is invoked with literal values (non-columns), the functional implementation evaluates the operator based on the argument values. This is the default behavior for all operator bindings.</p>
+</li>
+</ul>
+<p>To make your operator handle both options, provide a functional implementation that has three arguments in addition to the original arguments to the operator:</p>
+<ul>
+<li>
+<p>Index context: domain index information and the row identifier of the row on which the operator is being evaluated</p>
+</li>
+<li>
+<p>Scan context: a context value to share state with subsequent invocations of the same operator operating on other rows of the table</p>
+</li>
+<li>
+<p>Scan flag: indicates whether the current call is the last invocation during which all cleanup operations should be performed</p>
+</li>
+</ul>
+<p>The function <code>TextContains()</code> in <a href="#CHDHHDDI">Example 9-15</a> provides the index-based functional implementation for the <code>Contains()</code> operator.</p>
+<div class="example">
+<p class="titleinexample"><a id="CHDHHDDI"></a><a id="ADDCI4538"></a>Example 9-15 Implementing the Contains() Operator in Index-Based Functions</p>
+<pre>
+CREATE FUNCTION TextContains (Text IN VARCHAR2, Key IN VARCHAR2,
+indexctx IN ODCIIndexCtx, scanctx IN OUT TextIndexMethods, scanflg IN NUMBER)
+RETURN NUMBER AS
+BEGIN
+.......
+END TextContains;
+</pre></div>
+<!-- class="example" -->
+<p>The <code>Contains()</code> operator is bound to the functional implementation, as demonstrated in <a href="#CHDBFEHA">Example 9-16</a>.</p>
+<div class="example">
+<p class="titleinexample"><a id="CHDBFEHA"></a><a id="ADDCI4539"></a>Example 9-16 Binding the Contains() Operator to the Functional Implementation</p>
+<pre>
+CREATE OPERATOR Contains
+BINDING (VARCHAR2, VARCHAR2) RETURN NUMBER 
+WITH INDEX CONTEXT, SCAN CONTEXT TextIndexMethods
+USING TextContains;
+</pre></div>
+<!-- class="example" -->
+<p>The <code>WITH INDEX CONTEXT</code> clause specifies that the functional implementation can make use of any applicable domain indexes. The <code>SCAN CONTEXT</code> specifies the data type of the scan context argument, which must be identical to the implementation type of the indextype that supports this operator.</p>
+</div>
+<!-- class="sect3" -->
+<a id="ADDCI4540"></a>
+<div class="sect3"><a id="sthref417"></a>
+<h4 class="sect3">Operator Resolution</h4>
+<p>Oracle invokes the functional implementation for the operator if the operator appears outside the <code>WHERE</code> clause. If the functional implementation is index-based, or defined to use an indextype, the additional index information is passed in as arguments , but only if the operator's first argument is a column or object attribute with a domain index of the appropriate indextype.</p>
+<p>For example, in the query <code>SELECT Contains(resume, 'Oracle &amp; Unix') FROM MyEmployees</code>, Oracle evaluates the operator <code>Contains()</code> using the index-based functional implementation, passing it the index information about the domain index on the <code>resume</code> column instead of the <code>resume</code> data.</p>
+</div>
+<!-- class="sect3" -->
+<a id="ADDCI4541"></a>
+<div class="sect3"><a id="sthref418"></a>
+<h4 class="sect3">Operator Execution</h4>
+<p>To execute the index-based functional implementation, Oracle sets up the arguments in the following manner:</p>
+<ul>
+<li>
+<p>The initial set of arguments is identical to those specified by the user for the operator.</p>
+</li>
+<li>
+<p>If the first argument is not a column, the <code>ODCIIndexCtx</code> attributes are set to <code>NULL</code>.</p>
+</li>
+<li>
+<p>If the first argument is a column, the <code>ODCIIndexCtx</code> attributes are set up as follows.</p>
+<ul>
+<li>
+<p>If there is an applicable domain index, the <code>ODCIIndexInfo</code> attribute contains information about it; otherwise the attribute is set to <code>NULL</code>.</p>
+</li>
+<li>
+<p>The <code>rowid</code> attribute holds the row identifier of the row being operated on.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>The scan context is set to <code>NULL</code> on the first invocation of the operator. Because it is an <code>IN</code>/<code>OUT</code> parameter, the return value from the first invocation is passed in to the second invocation and so on.</p>
+</li>
+<li>
+<p>The scan flag is set to <code>RegularCall</code> for all normal invocations of the operator. After the last invocation, the functional implementation is invoked one more time, at which time any cleanup actions can be performed. During this call, the scan flag is set to <code>CleanupCall</code> and all other arguments except the scan context are set to <code>NULL</code>.</p>
+</li>
+</ul>
+<p>When index information is passed in, the implementation can compute the operator value with a domain index lookup using the row identifier as key. The index metadata is used to identify the index structures associated with the domain index. The scan context is typically used to share state with the subsequent invocations of the same operator.</p>
+<p>If there is no indextype that supports the operator, or if there is no domain index on the column passed to the operator as its first argument, then the index context argument is null. However, the scan context argument is still available and can be used as described in this section. Thus, the operator can maintain state between invocations even if no index is used by the query.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="ADDCI4542"></a>
+<div class="sect2"><a id="sthref419"></a>
+<h3 class="sect2">Operators that Return Ancillary Data</h3>
+<p>In addition to filtering rows, operators in <code>WHERE</code> clauses sometimes must return ancillary data. Ancillary data is modeled as one or more operators, each of which has</p>
+<ul>
+<li>
+<p>A single literal number argument, which ties it to the corresponding primary operator</p>
+</li>
+<li>
+<p>A functional implementation with access to state generated by the index scan-based implementation of the primary operator</p>
+</li>
+</ul>
+<p>In the query in <a href="#CHDIFCGD">Example 9-17</a>, the primary operator, <code>Contains()</code>, can be evaluated using an index scan that determines which rows satisfy the predicate, and computes a score value for each row. The functional implementation for the <code>Score</code> operator accesses the state generated by the index scan to obtain the score for a given row identified by its row identifier. The literal argument <code>1</code> associates the ancillary operator <code>Score</code> to the primary operator <code>Contains()</code>, which generates the ancillary data.</p>
+<div class="example">
+<p class="titleinexample"><a id="CHDIFCGD"></a><a id="ADDCI4543"></a>Example 9-17 Accessing Ancillary Data with the Contains() Operator</p>
+<pre>
+SELECT Score(1) FROM MyEmployees 
+WHERE Contains(resume, 'OCI &amp; UNIX', 1) =1;
+</pre></div>
+<!-- class="example" -->
+<p>The functional implementation of an ancillary operator can use either the domain index or the state generated by the primary operator. When invoked, the functional implementation is passed three extra arguments:</p>
+<ul>
+<li>
+<p>The index context, which contains the domain index information</p>
+</li>
+<li>
+<p>The scan context, which provides access to the state generated by the primary operator</p>
+</li>
+<li>
+<p>A scan flag to indicate whether the functional implementation is being invoked for the last time</p>
+</li>
+</ul>
+<p>The following sections discuss how operators modeling ancillary data are defined and invoked.</p>
+<a id="ADDCI4544"></a>
+<div class="sect3"><a id="sthref420"></a>
+<h4 class="sect3">Operator Bindings that Compute Ancillary Data</h4>
+<p>An operator binding that computes ancillary data is called a <a id="sthref421"></a><span class="glossaryterm">primary binding</span>. <a href="#CHDHBIBJ">Example 9-18</a> defines a primary binding for the operator <code>Contains()</code>.</p>
+<div class="example">
+<p class="titleinexample"><a id="CHDHBIBJ"></a><a id="ADDCI4545"></a>Example 9-18 Comparing Ancillary Data with the Contains() Operator</p>
+<pre>
+CREATE OPERATOR Contains
+BINDING (VARCHAR2, VARCHAR2) RETURN NUMBER
+WITH INDEX CONTEXT, SCAN CONTEXT TextIndexMethods COMPUTE ANCILLARY DATA
+USING TextContains;
+</pre></div>
+<!-- class="example" -->
+<p>This definition registers two bindings for <code>Contains()</code>:</p>
+<ul>
+<li>
+<p><code>CONTAINS(VARCHAR2</code>, <code>VARCHAR2)</code>, used when ancillary data is not required</p>
+</li>
+<li>
+<p><code>CONTAINS(VARCHAR2</code>, <code>VARCHAR2</code>, <code>NUMBER)</code>, used when ancillary data is required (the <code>NUMBER</code> argument associates this binding with the ancillary operator binding)</p>
+</li>
+</ul>
+<p>The two bindings have a single functional implementation, as shown in <a href="#CHDGEJDJ">Example 9-19</a>:</p>
+<div class="example">
+<p class="titleinexample"><a id="CHDGEJDJ"></a><a id="ADDCI4546"></a>Example 9-19 Implementing Bindings for Computations</p>
+<pre>
+TextContains(VARCHAR2, VARCHAR2, ODCIIndexCtx, TextIndexMethods, NUMBER).
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect3" -->
+<a id="ADDCI4547"></a>
+<div class="sect3"><a id="sthref422"></a>
+<h4 class="sect3">Operator Bindings That Model Ancillary Data</h4>
+<p>An operator binding that models ancillary data is called an <a id="sthref423"></a><span class="glossaryterm">ancillary binding</span>. Functional implementations for ancillary data operators are similar to index-based functional implementations. When you have defined the function, you bind it to the operator with an additional <code>ANCILLARY</code> <code>TO</code> attribute, indicating that the functional implementation must share its state with the primary operator binding.</p>
+<p>Note that the functional implementation for the ancillary operator binding must have the same signature as the functional implementation for the primary operator binding.</p>
+<p><a href="#CHDHHHCD">Example 9-20</a> demonstrates how to evaluate the ancillary operator inside a <code>TextScore</code>() function.</p>
+<div class="example">
+<p class="titleinexample"><a id="CHDHHHCD"></a><a id="ADDCI4548"></a>Example 9-20 Evaluating an Ancillary Operator</p>
+<pre>
+CREATE FUNCTION TextScore (Text IN VARCHAR2, Key IN VARCHAR2,
+  indexctx IN ODCIIndexCtx, scanctx IN OUT TextIndexMethods, scanflg IN NUMBER)
+RETURN NUMBER AS
+BEGIN
+.......
+END TextScore;
+</pre></div>
+<!-- class="example" -->
+<p>Using the <code>TextScore()</code> definition, you could create an ancillary binding, as in <a href="#CHDCJEBH">Example 9-21</a>.</p>
+<div class="example">
+<p class="titleinexample"><a id="CHDCJEBH"></a><a id="ADDCI4549"></a>Example 9-21 Creating an Ancillary Operator Binding</p>
+<pre>
+CREATE OPERATOR Score
+BINDING (NUMBER) RETURN NUMBER
+ANCILLARY TO Contains(VARCHAR2, VARCHAR2) 
+USING TextScore;
+</pre></div>
+<!-- class="example" -->
+<p>The <code>ANCILLARY</code> <code>TO</code> clause specifies that <code>Score</code> shares state with the primary operator binding <code>CONTAINS(VARCHAR2</code>, <code>VARCHAR2)</code>.</p>
+<p>The ancillary operator binding is invoked with a single literal number argument, such as <code>Score</code>(1), <code>Score</code>(2), and so on.</p>
+</div>
+<!-- class="sect3" -->
+<a id="ADDCI4550"></a>
+<div class="sect3"><a id="sthref424"></a>
+<h4 class="sect3">Operator Resolution</h4>
+<p>The operators corresponding to ancillary data are invoked by the user with a single number argument. This number argument must be a literal in both the ancillary operation, and in the primary operator invocation, so that the operator association can be done at query compilation time.</p>
+<p>To determine the corresponding primary operator, Oracle matches the number passed to the ancillary operator with the number passed as the last argument to the primary operator. It is an error to find zero or more than one matching primary operator invocation. After the matching primary operator invocation is found,</p>
+<ul>
+<li>
+<p>The arguments to the primary operator become operands of the ancillary operator.</p>
+</li>
+<li>
+<p>The ancillary and primary operator executions are passed the same scan context.</p>
+</li>
+</ul>
+<p>For example, in the <a href="#CHDIFCGD">Example 9-17</a> query, the invocation of <code>Score</code> is determined to be ancillary to <code>Contains()</code> based on the number argument <code>1</code>, and the functional implementation for <code>Score</code> gets the operands <code>(resume</code>, <code>'Oracle&amp;Unix'</code>, <code>indexctx</code>, <code>scanctx, scanflg)</code>, where <code>scanctx</code> is shared with the invocation of <code>Contains()</code>.</p>
+</div>
+<!-- class="sect3" -->
+<a id="ADDCI4551"></a>
+<div class="sect3"><a id="sthref425"></a>
+<h4 class="sect3">Operator Execution</h4>
+<p>Operator execution uses an index scan to process the <code>Contains()</code> operator. For each of the rows returned by the <code>fetch()</code> call of the index scan, the functional implementation of <code>Score</code> is invoked by passing to it the <code>ODCIIndexCtx</code> argument, which contains the index information, row identifier, and a handle to the index scan state. The functional implementation can use the handle to the index scan state to compute the score.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1236">
+<tr>
+<td class="cellalignment1243">
+<table class="cellalignment1241">
+<tr>
+<td class="cellalignment1240"><a href="dom_idx.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1240"><a href="ext_optimizer.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1996, 2010,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1245">
+<table class="cellalignment1239">
+<tr>
+<td class="cellalignment1240"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1240"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1240"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1240"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1240"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1240"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

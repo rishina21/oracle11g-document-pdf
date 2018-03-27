@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Creating a Standby Database with Recovery Manager</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 748" />
+<meta name="dcterms.created" content="2014-02-25T8:43:2Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Data Guard Concepts and Administration" />
+<meta name="dcterms.identifier" content="E41134-03" />
+<meta name="dcterms.isVersionOf" content="SBYDB" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1999, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="rac_support.htm" title="Previous" type="text/html" />
+<link rel="Next" href="trace.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e41134.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">32/34</span> <!-- End Header -->
+<div id="SBYDB01500" class="appendix"><a id="g648533"></a> <a id="i636377"></a>
+<h1 class="appendix"><span class="secnum">E</span> Creating a Standby Database with Recovery Manager</h1>
+<p>This appendix describes how to use Oracle Recovery Manager to create a standby database. This appendix contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#CHDCJHGE">Prerequisites</a></p>
+</li>
+<li>
+<p><a href="#i636427">Overview of Standby Database Creation with RMAN</a></p>
+</li>
+<li>
+<p><a href="#i637825">Using the DUPLICATE Command to Create a Standby Database</a></p>
+</li>
+</ul>
+<a id="CHDCJHGE"></a>
+<div id="SBYDB4978" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">E.1</span> Prerequisites</h2>
+<p>This appendix assumes that you have read the chapter on database duplication in <a class="olink BRADV010" href="../../backup.112/e10642/rcmdupdb.htm#BRADV010"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a>. Because you use the <code>DUPLICATE</code> command to create a standby database with RMAN, you should familiarize yourself with the <code>DUPLICATE</code> command entry in <a class="olink RCMRF126" href="../../backup.112/e10643/rcmsynta020.htm#RCMRF126"><span class="italic">Oracle Database Backup and Recovery Reference</span></a>.</p>
+<p>Familiarize yourself with how to create a standby database in <a href="create_ps.htm#g88234">Chapter 3, "Creating a Physical Standby Database"</a> and <a href="create_ls.htm#g105412">Chapter 4, "Creating a Logical Standby Database"</a> <span class="italic">before</span> you attempt the RMAN creation procedures described in this chapter.</p>
+</div>
+<!-- class="sect1" -->
+<a id="i636427"></a>
+<div id="SBYDB4979" class="sect1">
+<h2 class="sect1"><span class="secnum">E.2</span> Overview of Standby Database Creation with RMAN</h2>
+<p>This section explains the purpose and basic concepts involved in standby database creation with RMAN.</p>
+<div id="SBYDB4980" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1426"></a>
+<h3 class="sect2"><span class="secnum">E.2.1</span> Purpose of Standby Database Creation with RMAN</h3>
+<p><a id="sthref1427"></a><a id="sthref1428"></a>You can use either manual techniques or the RMAN <code>DUPLICATE<a id="sthref1429"></a><a id="sthref1430"></a></code> command to create a standby database from backups of your primary database. Creating a standby database with RMAN has the following advantages over manual techniques:</p>
+<ul>
+<li>
+<p>RMAN can create a standby database by copying the files currently in use by the primary database. No backups are required.</p>
+</li>
+<li>
+<p>RMAN can create a standby database by restoring backups of the primary database to the standby site. Thus, the primary database is not affected during the creation of the standby database.</p>
+</li>
+<li>
+<p>RMAN automates renaming of files, including Oracle Managed Files (OMF) and directory structures.</p>
+</li>
+<li>
+<p>RMAN restores archived redo log files from backups and performs media recovery so that the standby and primary databases are synchronized.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<div id="SBYDB4981" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1431"></a>
+<h3 class="sect2"><span class="secnum">E.2.2</span> Basic Concepts of Standby Creation with RMAN</h3>
+<p>The procedure for creating a standby database with RMAN is almost the same as for creating a duplicate database. You need to amend the duplication procedures described in <a class="olink BRADV" href="../../backup.112/e10642/toc.htm"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a> to account for issues specific to a standby database.<a id="sthref1432"></a><a id="sthref1433"></a></p>
+<p>To create a standby database with the <code>DUPLICATE</code> command you must connect as target to the primary database and specify the <code>FOR STANDBY</code> option. You cannot connect to a standby database and create an additional standby database. RMAN creates the standby database by restoring and mounting a control file. RMAN can use an existing backup of the primary database control file, so you do not need to create a control file backup especially for the standby database.</p>
+<p>A standby database, unlike a duplicate database created by <code>DUPLICATE</code> <span class="italic">without</span> the <code>FOR</code> <code>STANDBY</code> <code>OPTION</code>, does not get a new DBID. Thus, you should not register the standby database with your recovery catalog.</p>
+<div id="SBYDB4982" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1434"></a>
+<h4 class="sect3"><span class="secnum">E.2.2.1</span> Active Database and Backup-Based Duplication</h4>
+<p>You must choose between active and backup-based duplication. If you specify <code>FROM ACTIVE DATABASE</code>, then RMAN copies the datafiles directly from the primary database to the standby database. The primary database must be mounted or open.</p>
+<p>If you not specify <code>FROM ACTIVE DATABASE</code>, then RMAN performs backup-based duplication. RMAN restores backups of the primary datafiles to the standby database. All backups and archived redo log files needed for creating and recovering the standby database must be accessible by the server session on the standby host. RMAN restores the most recent datafiles unless you execute the <code>SET UNTIL</code> command.</p>
+</div>
+<!-- class="sect3" -->
+<div id="SBYDB4983" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1435"></a>
+<h4 class="sect3"><span class="secnum">E.2.2.2</span> DB_UNIQUE_NAME Values in an RMAN Environment</h4>
+<p>A standby database, unlike a duplicate database created by <code>DUPLICATE</code> without the <code>FOR STANDBY</code> option, does not get a new DBID. When using RMAN in a Data Guard environment, you should always connect it to a recovery catalog. The recovery catalog can store the metadata for all primary and standby databases in the environment. You should not explicitly register the standby database in the recovery catalog.</p>
+<p>A database in a Data Guard environment is uniquely identified by means of the <code>DB_UNIQUE_NAME</code> parameter in the initialization parameter file. The <code>DB_UNIQUE_NAME</code> must be unique across all the databases with the same DBID for RMAN to work correctly in a Data Guard environment.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink BRADV89379" href="../../backup.112/e10642/rcmarchi.htm#BRADV89379"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a> for a conceptual overview of RMAN operation in a Data Guard environment</div>
+</div>
+<!-- class="sect3" -->
+<div id="SBYDB4984" class="sect3"><a id="sthref1436"></a>
+<h4 class="sect3"><span class="secnum">E.2.2.3</span> Recovery of a Standby Database</h4>
+<p>By default, RMAN does not recover the standby database after creating it. RMAN leaves the standby database mounted, but does not place the standby database in manual or managed recovery mode. RMAN disconnects and does not perform media recovery of the standby database.</p>
+<p>If you want RMAN to recover the standby database after creating it, then the standby control file must be usable for the recovery. The following conditions must be met:</p>
+<ul>
+<li>
+<p>The end recovery time of the standby database must be greater than or equal to the checkpoint SCN of the standby control file.</p>
+</li>
+<li>
+<p>An archived redo log file containing the checkpoint SCN of the standby control file must be available at the standby site for recovery.</p>
+</li>
+</ul>
+<p>One way to ensure these conditions are met is to issue the <code>ALTER</code> <code>SYSTEM</code> <code>ARCHIVE</code> <code>LOG</code> <code>CURRENT</code> statement after backing up the control file on the primary database. This statement archives the online redo log files of the primary database. Then, either back up the most recent archived redo log file with RMAN or move the archived redo log file to the standby site.</p>
+<p>Use the <code>DORECOVER</code> option of the <code>DUPLICATE</code> command to specify that RMAN should recover the standby database. RMAN performs the following steps after creating the standby database files:</p>
+<ol>
+<li>
+<p>RMAN begins media recovery. If recovery requires archived redo log files, and if the log files are not already on disk, then RMAN attempts to restore backups.</p>
+</li>
+<li>
+<p>RMAN recovers the standby database to the specified time, system change number (SCN), or log file sequence number, or to the latest archived redo log file generated if none of the preceding are specified.</p>
+</li>
+<li>
+<p>RMAN leaves the standby database mounted after media recovery is complete, but does <span class="italic">not</span> place the standby database in manual or managed recovery mode.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<div id="SBYDB4985" class="sect3"><a id="sthref1437"></a>
+<h4 class="sect3"><span class="secnum">E.2.2.4</span> Standby Database Redo Log Files</h4>
+<p>RMAN automatically creates the standby redo log files on the standby database. After the log files are created, the standby database maintains and archives them according to the normal rules for log files.</p>
+<p>If you use backup-based duplication, then the only option when naming the standby redo log files on the standby database is the file names for the log files, as specified in the standby control file. If the log file names on the standby must be different from the primary file names, then one option is to specify file names for the standby redo logs by setting <code>LOG_FILE_NAME_CONVERT</code><a id="sthref1438"></a><a id="sthref1439"></a><a id="sthref1440"></a> in the standby initialization parameter file.</p>
+<p>Note the following restrictions when specifying file names for the standby redo log files on the standby database:</p>
+<ul>
+<li>
+<p>You must use the <code>LOG_FILE_NAME_CONVERT</code> parameter to name the standby redo log files if the primary and standby databases use different naming conventions for the log files.</p>
+</li>
+<li>
+<p>You cannot use the <code><a id="sthref1441"></a></code><code>SET</code> <code>NEWNAME</code> or <code><a id="sthref1442"></a></code><code>CONFIGURE</code> <code>AUXNAME</code> commands to rename the standby redo log files.</p>
+</li>
+<li>
+<p>You cannot use the <code>LOGFILE</code> clause of the <code>DUPLICATE</code> command to specify file names for the standby redo log files.</p>
+</li>
+<li>
+<p>If you want the standby redo log file names on the standby database to be the same as the primary redo log file names, then you must specify the <code>NOFILENAMECHECK</code> clause of the <code>DUPLICATE</code> command. Otherwise, RMAN signals an error even if the standby database is created on a different host.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<div id="SBYDB4986" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1443"></a>
+<h4 class="sect3"><span class="secnum">E.2.2.5</span> Password Files for the Standby Database</h4>
+<p>If you are using active database duplication, then RMAN always copies the password file to the standby host because the password file on the standby database must be an exact copy of the password file on the target database. In this case, the <code>PASSWORD FILE</code> clause is not necessary. RMAN overwrites any existing password file for the auxiliary instance. With backup-based duplication you must copy the password file used on the primary to the standby, for Data Guard to ship logs.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i637825"></a>
+<div id="SBYDB4987" class="sect1">
+<h2 class="sect1"><span class="secnum">E.3</span> Using the DUPLICATE Command to Create a Standby Database</h2>
+<p><a id="sthref1444"></a>The procedure for creating a standby database is basically identical to the duplication procedure described in <a class="olink BRADV168" href="../../backup.112/e10642/rcmdupdb.htm#BRADV168"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a>.</p>
+<div id="SBYDB4988" class="sect2"><a id="sthref1445"></a>
+<h3 class="sect2"><span class="secnum">E.3.1</span> Creating a Standby Database with Active Database Duplication</h3>
+<p>To create a standby database from files that are active in the primary database, specify both <code>FOR STANDBY</code> and <code>FROM ACTIVE DATABASE</code>. Optionally, specify the <code>DORECOVER</code> option to recover the database after standby creation.</p>
+<p>This scenario assumes that the standby host and primary database host have the same directory structure.</p>
+<p><span class="bold">To create a standby database from active database files:</span></p>
+<ol>
+<li>
+<p>Prepare the auxiliary database instance as explained in <a class="olink BRADV167" href="../../backup.112/e10642/rcmdupdb.htm#BRADV167"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a>.</p>
+<p>Because you are using active database duplication, you must create a password file for the auxiliary instance and establish Oracle Net connectivity. This is a temporary password file as it will be overwritten during the duplicate operation.</p>
+</li>
+<li>
+<p>Decide how to provide names for the standby control files, datafiles, online redo logs, and tempfiles. This step is explained in <a class="olink BRADV298" href="../../backup.112/e10642/rcmdupdb.htm#BRADV298"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a>.</p>
+<p>In this scenario, the standby database files will be named the same as the primary database files.</p>
+</li>
+<li>
+<p>Start and configure RMAN as explained in <a class="olink BRADV299" href="../../backup.112/e10642/rcmdupdb.htm#BRADV299"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a>.</p>
+</li>
+<li>
+<p>Execute the <code>DUPLICATE</code> command.</p>
+<p>The following example illustrates how to use <code>DUPLICATE</code> for active duplication. This example requires the <code>NOFILENAMECHECK</code> option because the primary database files have the same names as the standby database files. The <code>SET</code> clauses for SPFILE are required for log shipping to work properly. The <code>db_unique_name</code> must be set to ensure that the catalog and Data Guard can identify this database as being different from the primary.</p>
+<pre>
+<a id="CHDFBBDA"></a>
+DUPLICATE TARGET DATABASE
+  FOR STANDBY
+  FROM ACTIVE DATABASE
+  DORECOVER
+  SPFILE
+    SET "db_unique_name"="foou" COMMENT ''Is a duplicate''
+    SET LOG_ARCHIVE_DEST_2="service=inst3 ASYNC REGISTER
+     VALID_FOR=(online_logfile,primary_role)"
+    SET FAL_SERVER="inst1" COMMENT "Is primary"
+  NOFILENAMECHECK;
+</pre>
+<p>RMAN automatically copies the server parameter file to the standby host, starts the auxiliary instance with the server parameter file, restores a backup control file, and copies all necessary database files and archived redo logs over the network to the standby host. RMAN recovers the standby database, but does not place it in manual or managed recovery mode.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<div id="SBYDB4989" class="sect2"><a id="sthref1446"></a>
+<h3 class="sect2"><span class="secnum">E.3.2</span> Creating a Standby Database with Backup-Based Duplication</h3>
+<p>To create a standby database from backups, specify <code>FOR STANDBY</code> but do not specify <code>FROM ACTIVE DATABASE</code>. Optionally, specify the <code>DORECOVER</code> option to recover the database after standby creation.</p>
+<p>This scenario assumes that the standby host and primary database host have the same directory structure.</p>
+<p><span class="bold">To create a standby database from backups:</span></p>
+<ol>
+<li>
+<p>Make database backups and archived redo logs available to the auxiliary instance on the duplicate host as explained in <a class="olink BRADV89931" href="../../backup.112/e10642/rcmdupdb.htm#BRADV89931"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a>.</p>
+</li>
+<li>
+<p>Prepare the auxiliary database instance as explained in <a class="olink BRADV167" href="../../backup.112/e10642/rcmdupdb.htm#BRADV167"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a>.</p>
+</li>
+<li>
+<p>Decide how to provide names for the standby control files, datafiles, online redo logs, and tempfiles. This step is explained in <a class="olink BRADV298" href="../../backup.112/e10642/rcmdupdb.htm#BRADV298"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a>.</p>
+<p>In this scenario, the standby database files will be named the same as the primary database files.</p>
+</li>
+<li>
+<p>Start and configure RMAN as explained in <a class="olink BRADV299" href="../../backup.112/e10642/rcmdupdb.htm#BRADV299"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a>.</p>
+</li>
+<li>
+<p>Execute the <code>DUPLICATE</code> command.</p>
+<p>The following example illustrates how to use <code>DUPLICATE</code> for backup-based duplication. This example requires the <code>NOFILENAMECHECK</code> option because the primary database files have the same names as the standby database files.</p>
+<pre>
+<a id="CHDFGFBI"></a>
+DUPLICATE TARGET DATABASE
+  FOR STANDBY
+  DORECOVER
+  SPFILE
+    SET "db_unique_name"="foou" COMMENT ''Is a duplicate''
+    SET LOG_ARCHIVE_DEST_2="service=inst3 ASYNC REGISTER
+     VALID_FOR=(online_logfile,primary_role)"
+    SET FAL_SERVER="inst1" COMMENT "Is primary"
+  NOFILENAMECHECK;
+</pre>
+<p>RMAN automatically copies the server parameter file to the standby host, starts the auxiliary instance with the server parameter file, and restores all necessary database files and archived redo logs to the standby host. RMAN recovers the standby database, but does not place it in manual or managed recovery mode.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="appendix" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1813">
+<tr>
+<td class="cellalignment1820">
+<table class="cellalignment1818">
+<tr>
+<td class="cellalignment1817"><a href="rac_support.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1817"><a href="trace.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1999, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1822">
+<table class="cellalignment1816">
+<tr>
+<td class="cellalignment1817"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1817"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1817"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1817"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1817"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1817"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

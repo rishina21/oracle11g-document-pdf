@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Role Transitions</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 748" />
+<meta name="dcterms.created" content="2014-02-25T8:43:1Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Data Guard Concepts and Administration" />
+<meta name="dcterms.identifier" content="E41134-03" />
+<meta name="dcterms.isVersionOf" content="SBYDB" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1999, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="log_apply.htm" title="Previous" type="text/html" />
+<link rel="Next" href="manage_ps.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e41134.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">16/34</span> <!-- End Header -->
+<div id="SBYDB00600" class="chapter"><a id="g1068999"></a> <a id="i1033702"></a>
+<h1 class="chapter"><span class="secnum">8</span> Role Transitions</h1>
+<p>A D<a id="sthref476"></a>ata Guard configuration consists of one database that functions in the primary role and one or more databases that function in the standby role. To see the current role of the databases, query the <code>DATABASE_ROLE</code> column in the <code>V$DATABASE</code> view.</p>
+<p>The number, location, and type of standby databases in a Data Guard configuration and the way in which redo data from the primary database is propagated to each standby database determine the role-management options available to you in response to a primary database outage.</p>
+<p>This chapter describes how to manage role transitions in a Data Guard configuration. It contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1027411">Introduction to Role Transitions</a></p>
+</li>
+<li>
+<p><a href="#i1026398">Role Transitions Involving Physical Standby Databases</a></p>
+</li>
+<li>
+<p><a href="#i1055473">Role Transitions Involving Logical Standby Databases</a></p>
+</li>
+<li>
+<p><a href="#DAFEEJCH">Using Flashback Database After a Role Transition</a></p>
+</li>
+</ul>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+This chapter describes how to perform role transitions manually, using SQL statements. Do not use the procedures described in this chapter to perform role transitions in a Data Guard configuration that is managed by the broker. The role transition procedures provided in <a class="olink DGBKR" href="../e40771/toc.htm"><span class="italic">Oracle Data Guard Broker</span></a> should be used instead.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink DGBKR" href="../e40771/toc.htm"><span class="italic">Oracle Data Guard Broker</span></a> for information about using the <a id="sthref477"></a><a id="sthref478"></a>Oracle Data Guard broker to:
+<ul>
+<li>
+<p>Simplify <a id="sthref479"></a><a id="sthref480"></a><a id="sthref481"></a><a id="sthref482"></a>switchovers and <a id="sthref483"></a><a id="sthref484"></a><a id="sthref485"></a><a id="sthref486"></a>failovers by allowing you to invoke them using either a single key click in Oracle Enterprise Manager or a single command in the DGMGRL command-line interface.</p>
+</li>
+<li>
+<p>Enable <a id="sthref487"></a><a id="sthref488"></a><a id="sthref489"></a><span class="glossaryterm">fast-start failover</span> to fail over <span class="italic">automatically</span> when the primary database becomes unavailable. When fast-start failover is enabled, the Data Guard broker determines if a failover is necessary and initiates the failover to the specified target standby database automatically, with no need for DBA intervention.</p>
+</li>
+</ul>
+</div>
+<a id="i1027411"></a>
+<div id="SBYDB00605" class="sect1">
+<h2 class="sect1"><span class="secnum">8.1</span> Introduction to Role Transitions</h2>
+<p>A d<a id="sthref490"></a><a id="sthref491"></a>atabase operates in one of the following mutually exclusive roles: <span class="bold">p<a id="sthref492"></a><a id="sthref493"></a>rimary</span> or <span class="bold">standby</span>. Data Guard enables you to change these roles dynamically by issuing the SQL statements described in this chapter, or by using either of the Data Guard broker's interfaces. Oracle Data Guard supports the following role transitions:</p>
+<ul>
+<li>
+<p><span class="bold">Sw<a id="sthref494"></a>i</span><a id="sthref495"></a><span class="bold">tchover</span></p>
+<p>Allows the primary database to switch roles with one of its standby databases. There is no d<a id="sthref496"></a><a id="sthref497"></a>ata loss during a switchover. After a switchover, each database continues to participate in the Data Guard configuration with its new role.</p>
+</li>
+<li>
+<p><span class="bold">F</span><a id="sthref498"></a><a id="sthref499"></a><span class="bold">ailover</span></p>
+<p>Changes a standby database to the primary role in response to a primary database failure. If the primary database was not operating in either maximum protection mode or maximum availability mode before the failure, some data loss may occur. If Flashback Database is enabled on the primary database, it can be reinstated as a standby for the new primary database once the reason for the failure is corrected.</p>
+</li>
+</ul>
+<p><a href="#i1030646">Section 8.1.1, "Preparing for a Role Transition"</a> helps you choose the role transition that best minimizes downtime and risk of data loss. Switchovers and failovers are described in more detail in <a href="#i1026400">Section 8.1.3, "Switchovers"</a> and <a href="#i1026404">Section 8.1.4, "Failovers"</a>, respectively.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink DGBKR3425" href="../../server.112/e40771/sofo.htm#DGBKR3425"><span class="italic">Oracle Data Guard Broker</span></a> for information about event notification and database connection failover support available to database clients when a broker-managed failover occurs</div>
+<a id="i1030646"></a>
+<div id="SBYDB4769" class="sect2">
+<h3 class="sect2"><span class="secnum">8.1.1</span> Preparing for a Role Transition</h3>
+<p>Before starting any ro<a id="sthref500"></a>le transition, perform the following preparations:</p>
+<ul>
+<li>
+<p>Verify that each database is properly configured for the role that it is about to assume. See <a href="create_ps.htm#g88234">Chapter 3, "Creating a Physical Standby Database"</a> and <a href="create_ls.htm#g105412">Chapter 4, "Creating a Logical Standby Database"</a> for information about how to configure database initialization parameters, <code>ARCHIVELOG</code> mode, standby redo logs, and online redo logs on primary and standby databases.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You must define the <code>LOG_ARCHIVE_DEST_</code><code><span class="codeinlineitalic">n</span></code> and <code>LOG_ARCHIVE_DEST_STATE_</code><code><span class="codeinlineitalic">n</span></code> parameters on each standby database so that when a switchover or failover occurs, all standby sites continue to receive redo data from the new primary database.</div>
+</li>
+<li>
+<p>Verify that there are no redo transport errors or redo gaps at the standby database by querying the <code>V$ARCHIVE_DEST_STATUS</code> view on the primary database.</p>
+<p>For example, the following query would be used to check the status of the standby database associated with <code>LOG_ARCHIVE_DEST_2</code>:</p>
+<pre>
+SQL&gt; SELECT STATUS, GAP_STATUS FROM V$ARCHIVE_DEST_STATUS WHERE DEST_ID = 2;
+ 
+STATUS GAP_STATUS
+--------- ------------------------
+VALID NO GAP
+</pre>
+<p>Do not proceed until the value of the <code>STATUS</code> column is <code>VALID</code> and the value of the <code>GAP_STATUS</code> column is <code>NOGAP</code>, for the row that corresponds to the standby database.</p>
+</li>
+<li>
+<p>Ensure temporary files exist on the standby database that match the temporary files on the primary database.</p>
+</li>
+<li>
+<p>Remove any delay in applying redo that may be in effect on the standby database that will become the new primary database.</p>
+</li>
+<li>
+<p>Before performing a switchover from an Oracle RAC primary database to a physical standby database, shut down all but one primary database instance. Any primary database instances shut down at this time can be started after the switchover completes.</p>
+</li>
+<li>
+<p>Before performing a switchover to a physical standby database that is in real-time query mode, consider bringing all instances of that standby database to the mounted but not open state to achieve the fastest possible role transition and to cleanly terminate any user sessions connected to the physical standby database prior to the role transition.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="DAFGFEHG"></a>
+<div id="SBYDB4770" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">8.1.2</span> Choosing a Target Standby Database for a Role Transition<a id="sthref501"></a><a id="sthref502"></a></h3>
+<p>For a Data Guard configuration with multiple standby databases, there are a number of factors to consider when choosing the target standby database for a role transition. These include the following:</p>
+<ul>
+<li>
+<p>Locality of the standby database.</p>
+</li>
+<li>
+<p>The capability of the standby database (hardware specifications&mdash;such as the number of CPUs, I/O bandwidth available, and so on).</p>
+</li>
+<li>
+<p>The time it will take to perform the role transition. This is affected by how far behind the standby database is in terms of application of redo data, and how much flexibility you have in terms of trading off application availability with data loss.</p>
+</li>
+<li>
+<p>Standby database type.</p>
+</li>
+</ul>
+<p>The type of standby chosen as the role transition target determines how other standby databases in the configuration will behave after the role transition. If the new primary was a physical standby before the role transition, all other standby databases in the configuration will become standbys of the new primary. If the new primary was a logical standby before the role transition, then all other logical standbys in the configuration will become standbys of the new primary, but physical standbys in the configuration will continue to be standbys of the old primary and will therefore not protect the new primary. In the latter case, a future switchover or failover back to the original primary database will return all standbys to their original role as standbys of the current primary. For the reasons described above, a physical standby is generally the best role transition target in a configuration that contains both physical and logical standbys.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+A snapshot standby cannot be the target of a role transition. If you wish to use a snapshot standby database as a target for a role transition, first convert it to a physical standby database and allow all redo received from the primary database to be applied. See <a href="manage_ps.htm#CHDIFADF">Section 9.7.3, "Converting a Snapshot Standby Database into a Physical Standby Database"</a>.</div>
+<p>Data Guard provides the <a id="sthref503"></a><code>V$DATAGUARD_STATS</code> view that can be used to evaluate each standby database in terms of the currency of the data in the standby database, and the time it will take to perform a role transition if all available redo data is applied to the standby database. For example:</p>
+<pre>
+SQL&gt; COLUMN NAME FORMAT A24
+SQL&gt; COLUMN VALUE FORMAT A16     
+SQL&gt; COLUMN DATUM_TIME FORMAT A24
+SQL&gt; SELECT NAME, VALUE, DATUM_TIME FROM V$DATAGUARD_STATS;
+ 
+NAME                     VALUE            DATUM_TIME
+------------------------ ---------------- ------------------------
+transport lag            +00 00:00:00     06/18/2009 12:22:06
+apply lag                +00 00:00:00     06/18/2009 12:22:06
+apply finish time        +00 00:00:00.000
+estimated startup time   9
+</pre>
+<p>This query output shows that the standby database has received and applied all redo generated by the primary database. These statistics were computed using data received from the primary database as of 12:22.06 on 06/18/09.</p>
+<p>The <code>apply</code> <code>lag</code> and <code>transport</code> <code>lag</code> metrics are computed based on data received from the primary database. These metrics become stale if communications between the primary and standby database are disrupted. An unchanging value in the <code>DATUM_TIME</code> column for the <code>apply</code> <code>lag</code> and <code>transport</code> <code>lag</code> metrics indicates that these metrics are not being updated and have become stale, possibly due to a communications fault between the primary and standby databases.<a id="sthref504"></a><a id="sthref505"></a><a id="sthref506"></a></p>
+</div>
+<!-- class="sect2" -->
+<a id="i1026400"></a>
+<div id="SBYDB00610" class="sect2">
+<h3 class="sect2"><span class="secnum">8.1.3</span> Switchovers</h3>
+<p>A switchover is ty<a id="sthref507"></a>pically used to reduce p<a id="sthref508"></a>rimary database downtime during planned outages, such as operating system or hardware upgrades, or rolling upgrades of the Oracle database software and patch sets (described in <a href="rollup.htm#BABGHIGF">Chapter 12, "Using SQL Apply to Upgrade the Oracle Database"</a>).</p>
+<p>A switchover takes place in two phases. In the first phase, the existing primary database undergoes a transition to a standby role. In the second phase, a standby database undergoes a transition to the primary role.</p>
+<p><a href="#DAFDEHCI">Figure 8-1</a> shows a two-site Data Guard configuration before the roles of the databases are switched. The primary database is in San Francisco, and the standby database is in Boston.</p>
+<div id="SBYDB5135" class="figure">
+<p class="titleinfigure"><a id="DAFDEHCI"></a>Figure 8-1 Data Guard Configuration Before Switchover</p>
+<img width="428" height="362" src="img/sbydb044.gif" alt="Description of Figure 8-1 follows" /><br />
+<a id="sthref509" href="img_text/sbydb044.htm">Description of "Figure 8-1 Data Guard Configuration Before Switchover"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p><a href="#i1032037">Figure 8-2</a> shows the Data Guard environment after the original primary database was switched over to a standby database, but before the original standby database has become the new primary database. At this stage, the Data Guard configuration temporarily has two standby databases.</p>
+<div id="SBYDB5034" class="figure">
+<p class="titleinfigure"><a id="i1032037"></a>Figure 8-2 Standby Databases Before Switchover to the New Primary Database</p>
+<img width="348" height="323" src="img/sbydb045.gif" alt="Description of Figure 8-2 follows" /><br />
+<a id="sthref510" href="img_text/sbydb045.htm">Description of "Figure 8-2 Standby Databases Before Switchover to the New Primary Database"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p><a href="#i1026434">Figure 8-3</a> shows the Data Guard environment after a switchover took place. The original standby database became the new primary database. The primary database is now in Boston, and the standby database is now in San Francisco.</p>
+<div id="SBYDB5035" class="figure">
+<p class="titleinfigure"><a id="i1026434"></a>Figure 8-3 Data Guard Environment After Switchover</p>
+<img width="431" height="362" src="img/sbydb033.gif" alt="Description of Figure 8-3 follows" /><br />
+<a id="sthref511" href="img_text/sbydb033.htm">Description of "Figure 8-3 Data Guard Environment After Switchover"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p class="subhead2"><a id="SBYDB5036"></a>Preparing for a Switchover<a id="sthref512"></a></p>
+<p>Ensure the prerequisites listed in <a href="#i1030646">Section 8.1.1</a> are satisfied. In addition, the following prerequisites must be met for a switchover:</p>
+<ul>
+<li>
+<p>For switchovers involving a physical standby database, verify that the primary database is open and that Redo Apply is active on the standby database. See <a href="log_apply.htm#i1020855">Section 7.3, "Applying Redo Data to Physical Standby Databases"</a> for more information about Redo Apply.</p>
+</li>
+<li>
+<p>For switchovers involving a logical standby database, verify both the primary and standby database instances are open and that SQL Apply is active. See <a href="log_apply.htm#i1040509">Section 7.4, "Applying Redo Data to Logical Standby Databases"</a> for more information about SQL Apply.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="i1026404"></a>
+<div id="SBYDB00615" class="sect2">
+<h3 class="sect2"><span class="secnum">8.1.4</span> F<a id="sthref513"></a><a id="sthref514"></a>ailovers</h3>
+<p>A failover is typically used only when the primary database becomes unavailable, and there is no possibility of restoring it to service within a reasonable period of time. The specific actions performed during a failover vary based on whether a logical or a physical standby database is involved in the failover, the state of the Data Guard configuration at the time of the failover, and on the specific SQL statements used to initiate the failover.</p>
+<p><a href="#i1026472">Figure 8-4</a> shows the result of a failover from a primary database in San Francisco to a physical standby database in Boston.</p>
+<div id="SBYDB5037" class="figure">
+<p class="titleinfigure"><a id="i1026472"></a>Figure 8-4 Failover to a Standby Database</p>
+<img width="429" height="380" src="img/sbydb048.gif" alt="Description of Figure 8-4 follows" /><br />
+<a id="sthref515" href="img_text/sbydb048.htm">Description of "Figure 8-4 Failover to a Standby Database"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p class="subhead2"><a id="SBYDB5038"></a>Preparing for a Failover</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If managed standby recovery at a physical standby database chosen for failover has stopped with error <code>ORA-752</code> or <code>ORA-600</code> <code>[3020]</code>, then proceed directly to <a href="scenarios.htm#BACJHHFF">Section 13.6, "Recovering From Lost-Write Errors on a Primary Database."</a>
+<p>Also see <a class="olink HABPT5206" href="../../server.112/e10803/outage.htm#HABPT5206"><span class="italic">Oracle Database High Availability Best Practices</span></a> for further information about recovering from data corruption.</p>
+</div>
+<p>If possible, before performing a fa<a id="sthref516"></a><a id="sthref517"></a><a id="sthref518"></a>ilover, you should transfer as much of the available and unapplied primary database redo data as possible to the standby database.</p>
+<p>Ensure the prerequisites listed in <a href="#i1030646">Section 8.1.1, "Preparing for a Role Transition"</a> are satisfied. In addition, the following prerequisites must be met for a failover:</p>
+<ul>
+<li>
+<p>If a standby database currently running in maximum protection mode will be involved in the fail<a id="sthref519"></a><a id="sthref520"></a>over, first place it in maxi<a id="sthref521"></a><a id="sthref522"></a>mum performance mode by issuing the following statement on the standby database:</p>
+<pre>
+SQL&gt; <a id="sthref523"></a><a id="sthref524"></a>ALTER DATABASE SET STANDBY DATABASE TO MAXIMIZE PERFORMANCE;
+</pre>
+<p>Then, if appropriate standby databases are available, you can reset the desired protection mode on the new primary database after the failover completes.</p>
+<p>This is required because you cannot fail over to a standby database that is in maximum protection mode. In addition, if a primary database in maximum protection mode is still actively communicating with the standby database, issuing the <code>ALTER DATABASE</code> statement to change the standby database from maximum protection mode to maximum performance mode will not succeed. Because a failover removes the original primary database from the Data Guard configuration, these features serve to protect a primary database operating in maximum protection mode from the effects of an unintended failover.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Do not fail over to a standby database to test whether or not the sta<a id="sthref525"></a>ndby database is being updated correctly. Instead:
+<ul>
+<li>
+<p>See <a href="create_ps.htm#i77231">Section 3.2.7, "Verify the Physical Standby Database Is Performing Properly"</a></p>
+</li>
+<li>
+<p>See <a href="create_ls.htm#i70028">Section 4.2.6, "Verify the Logical Standby Database Is Performing Properly"</a></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<div id="SBYDB4771" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref526"></a>
+<h3 class="sect2"><span class="secnum">8.1.5</span> Role Transition Triggers<a id="sthref527"></a></h3>
+<p>The <code>DB_ROLE_CHANGE</code> system event<a id="sthref528"></a> is signaled whenever a role transition<a id="sthref529"></a><a id="sthref530"></a><a id="sthref531"></a> occurs. This system event is signaled immediately if the database is open when the role transition occurs, or the next time the database is opened if it is closed when a role transition occurs.</p>
+<p>The <code>DB_ROLE_CHANGE</code> system event can be used to fire a trigger that performs a set of actions whenever a role transition occurs.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1026398"></a>
+<div id="SBYDB4772" class="sect1">
+<h2 class="sect1"><span class="secnum">8.2</span> Role Transitions Involving Physical Standby Databases</h2>
+<p>The following sections describe how to perform a switchover or failover to a physic<a id="sthref532"></a><a id="sthref533"></a>al standby database:</p>
+<ul>
+<li>
+<p><a href="#i1026464">Performing a Switchover to a Physical Standby Database</a></p>
+</li>
+<li>
+<p><a href="#i1026491">Performing a Failover to a Physical Standby Database</a></p>
+</li>
+</ul>
+<a id="i1026464"></a>
+<div id="SBYDB00620" class="sect2">
+<h3 class="sect2"><span class="secnum">8.2.1</span> Performing a Switchover to a Physical Standby Database</h3>
+<p>This section describes how to perform a switchover to a physical standby database.A switchover is initiated on the primary database and is completed on the target standby database.</p>
+<dl>
+<dd><a id="SBYDB5169"></a><a id="sthref534"></a></dd>
+<dt class="seghead">Step 1&nbsp;&nbsp;&nbsp;Verify that the primary database can be switched to the standby role.</dt>
+<dd>
+<p>Query the <code>SWITCHOVER_STATUS</code> column of the <code>V$DATABASE</code> view on the primary database.For example:</p>
+<pre>
+SQL&gt; SELECT SWITCHOVER_STATUS FROM V$DATABASE;
+
+SWITCHOVER_STATUS 
+ ----------------- 
+ TO STANDBY 
+ 1 row selected 
+</pre>
+<p>A value of <code>TO STANDBY</code> or <code>SESSIONS ACTIVE</code> indicates that the primary database can be switched to the standby role. If neither of these values is returned, a switchover is not possible because redo transport is either misconfigured or is not functioning properly. See <a href="log_transport.htm#g1296022">Chapter 6</a> for information about configuring and monitoring redo transport.</p>
+</dd>
+<dd><a id="SBYDB5170"></a><a id="DAFGDEDI"></a></dd>
+<dt class="seghead">Step 2&nbsp;&nbsp;&nbsp;Initiate the switchover on the primary database.</dt>
+<dd>
+<p>Issue the following SQL statement on the primary database to switch it to the standby role:</p>
+<pre>
+SQL&gt; ALTER DATABASE COMMIT TO SWITCHOVER TO PHYSICAL STANDBY WITH -
+&gt; SESSION SHUTDOWN;
+</pre>
+<p>This statement converts the primary database into a physical standby database. The current control file is backed up to the current SQL session trace file before the switchover. This makes it possible to reconstruct a current control file, if necessary.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The <code>WITH SESSION SHUTDOWN</code> clause can be omitted from the switchover statement if the query performed in the previous step returned a value of <code>TO STANDBY</code>.</div>
+</dd>
+<dd><a id="SBYDB5171"></a><a id="sthref535"></a></dd>
+<dt class="seghead">Step 3&nbsp;&nbsp;&nbsp;Shut down and then mount the former primary database.</dt>
+<dd>
+<pre>
+SQL&gt; SHUTDOWN ABORT;
+SQL&gt; STARTUP MOUNT;
+</pre>
+<p>At this point in the switchover process, the original primary database is a physical standby database (see <a href="#i1032037">Figure 8-2</a>).</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+In Oracle Database 11<span class="italic">g</span> release 2 (11.2.0.4) and later, it is not necessary to issue the <code>SHUTDOWN</code> <code>ABORT</code> statement in this step because the database instance is shut down by default when the <code>ALTER</code> <code>DATABASE</code> <code>COMMIT</code> <code>TO</code> <code>SWITCHOVER</code> <code>TO</code> <code>PHYSICAL</code> <code>STANDBY</code> <code>WITH</code> <code>SESSION</code> <code>SHUTDOWN</code> statement is issued.</div>
+</dd>
+<dd><a id="SBYDB5172"></a><a id="sthref536"></a></dd>
+<dt class="seghead">Step 4&nbsp;&nbsp;&nbsp;Verify that the switchover target is ready to be switched to the primary role.</dt>
+<dd>
+<p>Query the <code>SWITCHOVER_STATUS</code> column of the <code>V$DATABASE</code> view on the standby database.</p>
+<p>For example:</p>
+<pre>
+SQL&gt; SELECT SWITCHOVER_STATUS FROM V$DATABASE;
+
+SWITCHOVER_STATUS 
+----------------- 
+TO_PRIMARY 
+1 row selected
+</pre>
+<p>A value of <code>TO PRIMARY</code> or <code>SESSIONS ACTIVE</code> indicates that the standby database is ready to be switched to the primary role. If neither of these values is returned, verify that Redo Apply is active and that redo transport is configured and working properly. Continue to query this column until the value returned is either <code>TO PRIMARY</code> or <code>SESSIONS ACTIVE</code>.</p>
+</dd>
+<dd><a id="SBYDB5173"></a><a id="DAFEFAFD"></a></dd>
+<dt class="seghead">Step 5&nbsp;&nbsp;&nbsp;Switch the target physical standby database role to the primary role.</dt>
+<dd>
+<p>Issue the following SQL statement on the target physical standby database:</p>
+<pre>
+SQL&gt; ALTER DATABASE COMMIT TO SWITCHOVER TO PRIMARY WITH SESSION SHUTDOWN;
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The <code>WITH SESSION SHUTDOWN</code> clause can be omitted from the switchover statement if the query performed in the previous step returned a value of <code>TO PRIMARY</code>.</div>
+</dd>
+<dd><a id="SBYDB5174"></a><a id="sthref537"></a></dd>
+<dt class="seghead">Step 6&nbsp;&nbsp;&nbsp;Open the new primary database.</dt>
+<dd>
+<pre>
+SQL&gt; ALTER DATABASE OPEN;
+</pre></dd>
+<dd><a id="SBYDB5175"></a><a id="DAFJFFFB"></a></dd>
+<dt class="seghead">Step 7&nbsp;&nbsp;&nbsp;Start Redo Apply on the new physical standby database.</dt>
+<dd>
+<p>For example:</p>
+<pre>
+SQL&gt; ALTER DATABASE RECOVER MANAGED STANDBY DATABASE USING CURRENT LOGFILE -
+&gt; DISCONNECT FROM SESSION;
+</pre></dd>
+<dd><a id="SBYDB5176"></a><a id="sthref538"></a></dd>
+<dt class="seghead">Step 8&nbsp;&nbsp;&nbsp;Restart Redo Apply if it has stopped at any of the other physical standby databases in your Data Guard configuration.</dt>
+<dd>
+<p>For example:</p>
+<pre>
+SQL&gt; ALTER DATABASE RECOVER MANAGED STANDBY DATABASE USING CURRENT LOGFILE -
+&gt; DISCONNECT FROM SESSION;
+</pre></dd>
+</dl>
+</div>
+<!-- class="sect2" -->
+<a id="i1026491"></a>
+<div id="SBYDB00625" class="sect2">
+<h3 class="sect2"><span class="secnum">8.2.2</span> Performing a Failover to a Physical Standby Database</h3>
+<p>This section describes how to perform a failover to a physical standby database.</p>
+<a id="i1035354"></a>
+<dl>
+<dd><a id="SBYDB5177"></a><a id="DAFJFCGH"></a></dd>
+<dt class="seghead">Step 1&nbsp;&nbsp;&nbsp;Flush any unsent redo from the primary database to the target standby database.</dt>
+<dd>
+<p>If the primary database can be mounted, it may be possible to flush any unsent archived and current redo from the primary database to the standby database. If this operation is successful, a zero data loss failover is possible even if the primary database is not in a zero data loss data protection mode.</p>
+<p>Ensure that Redo Apply is active at the target standby database.</p>
+<p>Mount, but do not open the primary database. If the primary database cannot be mounted, go to <a href="#DAFFFHJD">Step 2</a>.</p>
+<p>Issue the following SQL statement at the primary database:</p>
+<pre>
+SQL&gt; ALTER SYSTEM FLUSH REDO TO target_db_name;
+</pre>
+<p>For <code>target_db_name</code>, specify the <code>DB_UNIQUE_NAME</code> of the standby database that is to receive the redo flushed from the primary database.</p>
+<p>This statement flushes any unsent redo from the primary database to the standby database, and waits for that redo to be applied to the standby database.</p>
+<p>If this statement completes without any errors, go to <a href="#DAFFIJCG">Step 5</a>. If the statement completes with any error, or if it must be stopped because you cannot wait any longer for the statement to complete, continue with <a href="#DAFFFHJD">Step 2</a>.</p>
+</dd>
+<dd><a id="SBYDB5178"></a><a id="DAFFFHJD"></a></dd>
+<dt class="seghead">Step 2&nbsp;&nbsp;&nbsp;Verify that the standby database has the most recently archived redo log file for each primary database redo thread.</dt>
+<dd>
+<p>Query the <code>V$ARCHIVED_LOG</code> view on the target standby database to obtain the highest log sequence number for each redo thread.</p>
+<p>For example:</p>
+<pre>
+SQL&gt; SELECT UNIQUE THREAD# AS THREAD, MAX(SEQUENCE#) -
+&gt; OVER (PARTITION BY thread#) AS LAST from V$ARCHIVED_LOG;
+
+    THREAD       LAST
+---------- ----------
+         1        100
+</pre>
+<p>If possible, copy the most recently archived redo log file for each primary database redo thread to the standby database if it does not exist there, and register it. This must be done for each redo thread.</p>
+<p>For example:</p>
+<pre>
+SQL&gt; ALTER DATABASE REGISTER PHYSICAL LOGFILE 'filespec1';
+</pre></dd>
+<dd><a id="SBYDB5179"></a><a id="DAFBABGC"></a></dd>
+<dt class="seghead">Step 3&nbsp;&nbsp;&nbsp;Identify and resolve any archived redo log gaps.</dt>
+<dd>
+<p>Query the <code>V$ARCHIVE_GAP</code> view on the target standby database to determine if there are any redo gaps on the target standby database.</p>
+<p>For example:</p>
+<pre>
+SQL&gt; SELECT THREAD#, LOW_SEQUENCE#, HIGH_SEQUENCE# FROM V$ARCHIVE_GAP;
+
+THREAD#    LOW_SEQUENCE# HIGH_SEQUENCE#
+---------- ------------- --------------
+         1            90             92
+</pre>
+<p>In this example the gap comprises archived redo log files with sequence numbers 90, 91, and 92 for thread 1.</p>
+<p>If possible, copy any missing archived redo log files to the target standby database from the primary database and register them at the target standby database. This must be done for each redo thread.</p>
+<p>For example:</p>
+<pre>
+SQL&gt; ALTER DATABASE REGISTER PHYSICAL LOGFILE 'filespec1';
+</pre></dd>
+<dd><a id="SBYDB5180"></a><a id="DAFFABGB"></a></dd>
+<dt class="seghead">Step 4&nbsp;&nbsp;&nbsp;Repeat Step 3 until all gaps are resolved.</dt>
+<dd>
+<p>The query executed in <a href="#DAFBABGC">Step 3</a> displays information for the highest gap only. After resolving a gap, you must repeat the query until no more rows are returned.</p>
+<p>If, after performing <a href="#DAFFFHJD">Step 2</a> through <a href="#DAFFABGB">Step 4</a>, you are not able to resolve all gaps in the archived redo log files (for example, because you do not have access to the system that hosted the failed primary database), some data loss will occur during the failover.</p>
+</dd>
+<dd><a id="SBYDB5181"></a><a id="DAFFIJCG"></a></dd>
+<dt class="seghead">Step 5&nbsp;&nbsp;&nbsp;Stop Redo Apply.</dt>
+<dd>
+<p>Issue the following SQL statement on the target standby database:</p>
+<pre>
+SQL&gt; ALTER DATABASE RECOVER MANAGED STANDBY DATABASE CANCEL;
+</pre></dd>
+<dd><a id="SBYDB5182"></a><a id="DAFIDGBC"></a></dd>
+<dt class="seghead">Step 6&nbsp;&nbsp;&nbsp;Finish applying all received redo data.</dt>
+<dd>
+<p>Issue the following SQL statement on the target standby database:</p>
+<pre>
+SQL&gt; ALTER DATABASE RECOVER MANAGED STANDBY DATABASE FINISH;
+</pre>
+<p>If this statement completes without any errors, proceed to <a href="#DAFBDCEC">Step 7</a>.</p>
+<p>If an error occurs, some received redo data was not applied. Try to resolve the cause of the error and re-issue the statement before proceeding to the next step.</p>
+<p>Note that if there is a redo gap that was not resolved in <a href="#DAFBABGC">Step 3</a> and <a href="#DAFFABGB">Step 4</a>, you will receive an error stating that there is a redo gap.</p>
+<p>If the error condition cannot be resolved, a failover can still be performed (with some data loss) by issuing the following SQL statement on the target standby database:</p>
+<pre>
+SQL&gt; ALTER DATABASE ACTIVATE PHYSICAL STANDBY DATABASE;
+</pre>
+<p>Proceed to <a href="#DAFJBICD">Step 9</a> when the <code>ACTIVATE</code> statement completes.</p>
+</dd>
+<dd><a id="SBYDB5183"></a><a id="DAFBDCEC"></a></dd>
+<dt class="seghead">Step 7&nbsp;&nbsp;&nbsp;Verify that the target standby database is ready to become a primary database.</dt>
+<dd>
+<p>Query the <code>SWITCHOVER_STATUS</code> column of the <code>V$DATABASE</code> view on the target standby database.</p>
+<p>For example:</p>
+<pre>
+SQL&gt; SELECT SWITCHOVER_STATUS FROM V$DATABASE;
+
+SWITCHOVER_STATUS
+-----------------
+TO PRIMARY
+1 row selected
+</pre>
+<p>A value of either <code>TO PRIMARY</code> or <code>SESSIONS ACTIVE</code> indicates that the standby database is ready to be switched to the primary role. If neither of these values is returned, verify that Redo Apply is active and continue to query this view until either <code>TO PRIMARY</code> or <code>SESSIONS ACTIVE</code> is returned.</p>
+</dd>
+<dd><a id="SBYDB5184"></a><a id="DAFHECED"></a></dd>
+<dt class="seghead">Step 8&nbsp;&nbsp;&nbsp;Switch the physical standby database to the primary role.</dt>
+<dd>
+<p>Issue the following SQL statement on the target standby database:</p>
+<pre>
+SQL&gt; ALTER DATABASE COMMIT TO SWITCHOVER TO PRIMARY WITH SESSION SHUTDOWN;
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The <code>WITH SESSION SHUTDOWN</code> clause can be omitted from the switchover statement if the query of the <code>SWITCHOVER_STATUS</code> column performed in the previous step returned a value of <code>TO PRIMARY</code>.</div>
+</dd>
+<dd><a id="SBYDB5185"></a><a id="DAFJBICD"></a></dd>
+<dt class="seghead">Step 9&nbsp;&nbsp;&nbsp;Open the new primary database.</dt>
+<dd>
+<pre>
+SQL&gt; ALTER DATABASE OPEN;
+</pre></dd>
+<dd><a id="SBYDB5186"></a><a id="sthref539"></a></dd>
+<dt class="seghead">Step 10&nbsp;&nbsp;&nbsp;Back up the new primary database.</dt>
+<dd>
+<p>Oracle recommends that a full backup be taken of the new primary database.</p>
+</dd>
+<dd><a id="SBYDB5187"></a><a id="sthref540"></a></dd>
+<dt class="seghead">Step 11&nbsp;&nbsp;&nbsp;Restart Redo Apply if it has stopped at any of the other physical standby databases in your Data Guard configuration.</dt>
+<dd>
+<p>For example:</p>
+<pre>
+SQL&gt; ALTER DATABASE RECOVER MANAGED STANDBY DATABASE USING CURRENT LOGFILE -
+&gt; DISCONNECT FROM SESSION;
+</pre></dd>
+<dd><a id="SBYDB5188"></a><a id="sthref541"></a></dd>
+<dt class="seghead">Step 12&nbsp;&nbsp;&nbsp;Optionally, restore the failed primary database.</dt>
+<dd>
+<p>After a failover, the original primary database can be converted into a physical standby database of the new primary database using the method described in <a href="scenarios.htm#i1049997">Section 13.2</a> or <a href="scenarios.htm#BACJCDGH">Section 13.7</a>, or it can be re-created as a physical standby database from a backup of the new primary database using the method described in <a href="create_ps.htm#i67520">Section 3.2</a>.</p>
+<p>Once the original primary database is running in the standby role, a switchover can be performed to restore it to the primary role.</p>
+</dd>
+</dl>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1055473"></a>
+<div id="SBYDB4773" class="sect1">
+<h2 class="sect1"><span class="secnum">8.3</span> Role Transitions Involving Logical Standby Databases</h2>
+<p>The following sections <a id="sthref542"></a>describe how to perform switchovers and failovers involving a logical standby database:</p>
+<ul>
+<li>
+<p><a href="#i1026468">Performing a Switchover to a Logical Standby Database</a></p>
+</li>
+<li>
+<p><a href="#i1026495">Performing a Failover to a Logical Standby Database</a></p>
+</li>
+</ul>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Logical standby does not replicate database services. In the event of a failover or switchover to a logical standby, mid-tiers connecting to services in the primary will not be able to connect (since the creation of the service is not replicated), or will connect to an incorrect edition (since the modification of the service attribute is not replicated).
+<p>Oracle Clusterware does not replicate the services it manages to logical standbys. You must manually keep them synchronized between the primary and standby. See <a class="olink CWADD" href="../../rac.112/e41959/toc.htm"><span class="italic">Oracle Clusterware Administration and Deployment Guide</span></a> for more information about Oracle Clusterware.</p>
+</div>
+<a id="i1026468"></a>
+<div id="SBYDB00630" class="sect2">
+<h3 class="sect2"><span class="secnum">8.3.1</span> Performing a Switchover to<a id="sthref543"></a> a Logical Standby Database</h3>
+<p>When you perform a switchover that changes roles between a primary database and a logical standby database, alw<a id="sthref544"></a><a id="sthref545"></a>ays initiate the switchover on the primary database and complete it on the logical standby database. These steps must be performed in the order in which they are described or the switchover will not succeed.</p>
+<dl>
+<dd><a id="SBYDB5189"></a><a id="sthref546"></a></dd>
+<dt class="seghead">Step 1&nbsp;&nbsp;&nbsp;Verify it is possible to perform a switchover on the primary database.</dt>
+<dd>
+<p>On the current primary database, query the <code>SWITCHOVER_STATUS</code> column of the <code>V$DATABASE</code> fixed view on the primary database to verify it is possible to perform a switchover.</p>
+<p>For example:</p>
+<pre>
+SQL&gt; SELECT SWITCHOVER_STATUS FROM V$DATABASE;
+
+SWITCHOVER_STATUS
+-----------------
+TO STANDBY
+1 row selected
+</pre>
+<p>A value of <code>TO STANDBY</code> or <code>SESSIONS ACTIVE</code> in the <code>SWITCHOVER_STATUS</code> column indicates that it is possible to switch the primary database to the logical standby role. If one of these values is not displayed, then verify the Data Guard configuration is functioning correctly (for example, verify all <code>LOG_ARCHIVE_DEST_</code><code><span class="codeinlineitalic">n</span></code> parameter values are specified correctly). See <a class="olink REFRN" href="../e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for information about other valid values for the <code>SWITCHOVER_STATUS</code> column of the <code>V$DATABASE</code> view.</p>
+</dd>
+<dd><a id="SBYDB5190"></a><a id="sthref547"></a></dd>
+<dt class="seghead">Step 2&nbsp;&nbsp;&nbsp;Prepare the current primary database for the switchover.</dt>
+<dd>
+<p>To prepare the current primary database for a logical standby database role, issue the following SQL statement on the primary database:</p>
+<pre>
+SQL&gt; <a id="sthref548"></a><a id="sthref549"></a>ALTER DATABASE PREPARE TO SWITCHOVER TO LOGICAL STANDBY;
+</pre>
+<p>This statement notifies the current primary database that it will soon switch to the logical standby role and begin receiving redo data from a new primary database. You perform this step on the primary database in preparation to receive the LogMiner dictionary to be recorded in the redo stream of the current logical standby database, as described in <a href="#DAFJAGAJ">Step 3</a>.</p>
+<p>The value <code>PREPARING SWITCHOVER</code> is displayed in the <code>V$DATABASE.SWITCHOVER_STATUS</code> column if this operation succeeds.</p>
+</dd>
+<dd><a id="SBYDB5191"></a><a id="DAFJAGAJ"></a></dd>
+<dt class="seghead">Step 3&nbsp;&nbsp;&nbsp;Prepare the target logical standby database for the switchover.</dt>
+<dd>
+<p>Use the following statement to build a LogMiner dictionary on the logical standby database that is the target of the switchover:</p>
+<pre>
+SQL&gt; <a id="sthref550"></a><a id="sthref551"></a>ALTER DATABASE PREPARE TO SWITCHOVER TO PRIMARY; 
+</pre>
+<p>This statement also starts redo transport services on the logical standby database that begins transmitting its redo data to the current primary database and to other standby databases in the Data Guard configuration. The sites receiving redo data from this logical standby database accept the redo data but they do not apply it.</p>
+<p>The <code>V$DATABASE.SWITCHOVER_STATUS</code> on the logical standby database initially shows <code>PREPARING DICTIONARY</code> while the LogMiner dictionary is being recorded in the redo stream. Once this has completed successfully, the <code>SWITCHOVER_STATUS</code> column shows <code>PREPARING SWITCHOVER</code>.</p>
+</dd>
+<dd><a id="SBYDB5192"></a><a id="sthref552"></a></dd>
+<dt class="seghead">Step 4&nbsp;&nbsp;&nbsp;Ensure the current primary database is ready for the future primary database's redo stream.</dt>
+<dd>
+<p>Before you can complete the role transition of the primary database to the logical standby role, verify the LogMiner dictionary was received by the primary database by querying the <code>SWITCHOVER_STATUS</code> column of the <code>V$DATABASE</code> fixed view on the primary database. Without the receipt of the LogMiner dictionary, the switchover cannot proceed, because the current primary database will not be able to interpret the redo records sent from the future primary database. The <code>SWITCHOVER_STATUS</code> column shows the progress of the switchover.</p>
+<p>When the query returns the <code>TO LOGICAL STANDBY</code> value, you can proceed with <a href="#DAFBJEGD">Step 5</a>. For example:</p>
+<pre>
+SQL&gt; SELECT SWITCHOVER_STATUS FROM V$DATABASE;
+
+SWITCHOVER_STATUS
+-----------------
+TO LOGICAL STANDBY
+1 row selected
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You can cancel the switchover operation by issuing the following statements in the order shown:
+<ol>
+<li>
+<p>Cancel switchover on the primary database:</p>
+<pre>
+SQL&gt; ALTER DATABASE PREPARE TO SWITCHOVER CANCEL;
+</pre></li>
+<li>
+<p>Cancel the switchover on the logical standby database:</p>
+<pre>
+SQL&gt; ALTER DATABASE PREPARE TO SWITCHOVER CANCEL;
+</pre></li>
+</ol>
+</div>
+</dd>
+<dd><a id="SBYDB5193"></a><a id="DAFBJEGD"></a></dd>
+<dt class="seghead">Step 5&nbsp;&nbsp;&nbsp;Switch the primary database to the logical standby database role.</dt>
+<dd>
+<p>To complete the role transition of the primary database to a logical standby database, issue the following SQL statement:</p>
+<pre>
+SQL&gt; <a id="sthref553"></a><a id="sthref554"></a>ALTER DATABASE COMMIT TO SWITCHOVER TO LOGICAL STANDBY; 
+</pre>
+<p>This statement waits for all current transactions on the primary database to end and prevents any new users from starting new transactions, and establishes a point in time where the switchover will be committed.</p>
+<p>Executing this statement will also prevent users from making any changes to the data being maintained in the logical standby database. To ensure faster execution, ensure the primary database is in a quiet state with no update activity before issuing the switchover statement (for example, have all users temporarily log off the primary database). You can query the <code>V$TRANSACTION</code> view for information about the status of any current in-progress transactions that could delay execution of this statement.</p>
+<p>The primary database has now undergone a role transition to run in the standby database role.</p>
+<p>When a primary database undergoes a role transition to a logical standby database role, you do not have to shut down and restart the database.</p>
+</dd>
+<dd><a id="SBYDB5194"></a><a id="sthref555"></a></dd>
+<dt class="seghead">Step 6&nbsp;&nbsp;&nbsp;Ensure all available redo has been applied to the target logical standby database that is about to become the new primary database.</dt>
+<dd>
+<p>After you complete the role transition of the primary database to the logical standby role and the switchover notification is received by the standby databases in the configuration, you should verify the switchover notification was processed by the target standby database by querying the <code>SWITCHOVER_STATUS</code> column of the <code>V$DATABASE</code> fixed view on the target standby database. Once all available redo records are applied to the logical standby database, SQL Apply automatically shuts down in anticipation of the expected role transition.</p>
+<p>The <code>SWITCHOVER_STATUS</code> value is updated to show progress during the switchover. When the status is <code>TO PRIMARY</code>, you can proceed with <a href="#DAFFFCGA">Step 7</a>.</p>
+<p>For example:</p>
+<pre>
+SQL&gt; SELECT SWITCHOVER_STATUS FROM V$DATABASE;
+
+SWITCHOVER_STATUS
+-----------------
+TO PRIMARY
+1 row selected
+</pre>
+<p>See <a class="olink REFRN" href="../e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for information about other valid values for the <code>SWITCHOVER_STATUS</code> column of the <code>V$DATABASE</code> view.</p>
+</dd>
+<dd><a id="SBYDB5195"></a><a id="DAFFFCGA"></a></dd>
+<dt class="seghead">Step 7&nbsp;&nbsp;&nbsp;Switch the target logical standby database to the primary database role.</dt>
+<dd>
+<p>On the logical standby database that you want to switch to the primary role, use the follo<code><a id="sthref556"></a><a id="sthref557"></a></code>wing SQL statement to switch the logical standby database to the primary role:</p>
+<pre>
+SQL&gt; A<a id="sthref558"></a><a id="sthref559"></a>LTER DATABASE COMMIT TO SWITCHOVER TO PRIMARY;
+</pre>
+<p>There is no need to shut down and restart any logical standby databases that are in the Data Guard configuration. As described in <a href="#DAFGFEHG">Section 8.1.2</a>, all other logical standbys in the configuration will become standbys of the new primary, but any physical standby databases will remain standbys of the original primary database.</p>
+</dd>
+<dd><a id="SBYDB5196"></a><a id="sthref560"></a></dd>
+<dt class="seghead">Step 8&nbsp;&nbsp;&nbsp;Start SQL Apply on the new logical standby database.</dt>
+<dd>
+<p>On the new logical standby database, start SQL Apply:</p>
+<pre>
+SQL&gt; ALTER DATABASE START LOGICAL STANDBY APPLY IMMEDIATE;
+</pre></dd>
+</dl>
+</div>
+<!-- class="sect2" -->
+<a id="i1026495"></a>
+<div id="SBYDB00635" class="sect2">
+<h3 class="sect2"><span class="secnum">8.3.2</span> Performing a Failover to a Logical Standby Database</h3>
+<p>This <a id="sthref561"></a><a id="sthref562"></a>section describes how to perform failovers involving a logical standby database. A failover role transition involving a logical standby database necessitates taking corrective actions on the failed primary database and on all bystander logical standby databases. If Flashback Database was not enabled on the failed primary database, you must re-create the database from backups taken from the current primary database. Otherwise, you can follow the procedure described in <a href="scenarios.htm#i1049997">Section 13.2</a> to convert a failed primary database to be a logical standby database for the new primary database.</p>
+<p>Depending on the protection mode for the configuration and the attributes you chose for redo transport services, it might be possible to automatically recover all or some of the primary database modifications.</p>
+<a id="i1037903"></a>
+<dl>
+<dd><a id="SBYDB5197"></a><a id="sthref563"></a></dd>
+<dt class="seghead">Step 1&nbsp;&nbsp;&nbsp;Flush any unsent redo from the primary database to the target standby database.</dt>
+<dd>
+<p>If the primary database can be mounted, it may be possible to flush any unsent archived and current redo from the primary database to the standby database. If this operation is successful, a zero data loss failover is possible even if the primary database is not in a zero data loss data protection mode.</p>
+<p>Ensure that Redo Apply is active at the target standby database.</p>
+<p>Mount, but do not open the primary database.</p>
+<p>Issue the following SQL statement at the primary database:</p>
+<pre>
+SQL&gt; ALTER SYSTEM FLUSH REDO TO target_db_name;
+</pre>
+<p>For <code>target_db_name</code>, specify the <code>DB_UNIQUE_NAME</code> of the standby database that is to receive the redo flushed from the primary database.</p>
+<p>This statement flushes any unsent redo from the primary database to the standby database, and waits for that redo to be applied to the standby database.</p>
+</dd>
+<dd><a id="SBYDB5198"></a><a id="DAFBBECH"></a></dd>
+<dt class="seghead">Step 2&nbsp;&nbsp;&nbsp;Copy and register any missing archived redo log files to the target logical standby database slated to become the new primary database.</dt>
+<dd>
+<p>Depending on the condition of the components in the configuration, you might have access to the archived redo log files on the primary database. If so, do the following:</p>
+<ol>
+<li>
+<p>Determine if any archived redo log files are missing on the logical standby database.</p>
+</li>
+<li>
+<p>Copy missing log files from the primary database to the logical standby database.</p>
+</li>
+<li>
+<p>Register the copied log files.</p>
+</li>
+</ol>
+<p><a id="sthref564"></a><a id="sthref565"></a><a id="sthref566"></a><a id="sthref567"></a>You can register an archived redo log file with the logical standby database by issuing the following statement. For example:</p>
+<pre>
+SQL&gt; ALTER DATABASE REGISTER LOGICAL LOGFILE -
+&gt; '/disk1/oracle/dbs/log-%r_%s_%t.arc';
+Database altered.
+</pre></dd>
+<dd><a id="SBYDB5199"></a><a id="sthref568"></a></dd>
+<dt class="seghead">Step 3&nbsp;&nbsp;&nbsp;Enable remote destinations.</dt>
+<dd>
+<p>If you have not previously configured role-based destinations, identify the initialization parameters that correspond to the remote logical standby destinations for the new primary database, and manually enable archiving of redo data for each of these destinations.</p>
+<p>For example, to enable archiving for the remote destination defined by the <code>LOG_ARCHIVE_DEST_2</code> parameter, issue the following statement:</p>
+<pre>
+SQL&gt; ALTER SYSTEM SET LOG_ARCHIVE_DEST_STATE_2=ENABLE SCOPE=BOTH;
+</pre>
+<p>To ensure this change will persist if the new primary database is later restarted, update the appropriate text initialization parameter file or server parameter file. In general, when the database operates in the primary role, you must enable archiving to remote destinations, and when the database operates in the standby role, you must disable archiving to remote destinations.</p>
+</dd>
+<dd><a id="SBYDB5200"></a><a id="sthref569"></a></dd>
+<dt class="seghead">Step 4&nbsp;&nbsp;&nbsp;Activate the new primary database.</dt>
+<dd>
+<p>Issue the following statement on the target logical standby database (that you are transitioning to the new primary role):</p>
+<pre>
+SQL&gt; <a id="sthref570"></a>ALTER DATABASE ACTIVATE <a id="sthref571"></a>LOGICAL STANDBY DATABASE FINISH APPLY;
+</pre>
+<p>This statement stops <a id="sthref572"></a><a id="sthref573"></a>the RFS process, applies remaining redo data in the standby redo log file before the logical standby database becomes a primary database, stops SQL Apply, and activates the database in the primary database role.</p>
+<p>If the <code>FINISH APPLY</code> clause is not specified, then unapplied redo from the current standby redo log file will not be applied before the standby database becomes the primary database.</p>
+</dd>
+<dd><a id="SBYDB5201"></a><a id="sthref574"></a></dd>
+<dt class="seghead">Step 5&nbsp;&nbsp;&nbsp;Recovering other standby databases after a failover</dt>
+<dd>
+<p>Follow the method described in <a href="scenarios.htm#CIHEIIEA">Section 13.1</a> to ensure existing logical standby databases can continue to provide protection for the new primary database.</p>
+</dd>
+<dd><a id="SBYDB5202"></a><a id="sthref575"></a></dd>
+<dt class="seghead">Step 6&nbsp;&nbsp;&nbsp;Back up the new primary database<a id="sthref576"></a><a id="sthref577"></a><a id="sthref578"></a>.</dt>
+<dd>
+<p>Back up the new primary database immediately after the Data Guard database failover. Immediately performing a backup is a necessary safety measure, because you cannot recover changes made after the failover without a complete backup copy of the database.</p>
+</dd>
+<dd><a id="SBYDB5203"></a><a id="sthref579"></a></dd>
+<dt class="seghead">Step 7&nbsp;&nbsp;&nbsp;Restore the failed primary database.</dt>
+<dd>
+<p>After a failover, the original primary database can be converted into a logical standby database of the new primary database using the method described in <a href="scenarios.htm#i1049997">Section 13.2</a>, or it can be recreated as a logical standby database from a backup of the new primary database as described in <a href="create_ls.htm#g105412">Chapter 4</a>.</p>
+<p>Once the original primary database has been converted into a standby database, a switchover can be performed to restore it to the primary role.</p>
+</dd>
+</dl>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="DAFEEJCH"></a>
+<div id="SBYDB4774" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">8.4</span> Using Flashback Database After a Role Transition<a id="sthref580"></a><a id="sthref581"></a><a id="sthref582"></a></h2>
+<p>After a <a id="sthref583"></a><a id="sthref584"></a>role transition, you can optionally use the <code>FLASHBACK DATABASE</code> command to revert the databases to a point in time or system change number (SCN) prior to when the role transition occurred. If you flash back a primary database, you must flash back all of its standby databases to either the same (or earlier) SCN or time.When flashing back primary or standby databases in this way, you do not have to be aware of past switchovers. Oracle can automatically flashback across past switchovers if the SCN/time is before any past switchover.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Flashback Database must be enabled on the databases before the role transition occurs. See <a class="olink BRADV" href="../../backup.112/e10642/toc.htm"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a> for more information</div>
+<div id="SBYDB00717" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref585"></a>
+<h3 class="sect2"><span class="secnum">8.4.1</span> Using Flashback Database After a Switchover</h3>
+<p>After a switchover, you can return databases to a time or system change number (SCN) prior to when the switchover occurred using the <code>FLASHBACK DATABASE</code> command.</p>
+<p>If the switchover involved a physical standby database, the primary and standby database roles are preserved during the flashback operation. That is, the role in which the database is running does not change when the database is flashed back to the target SCN or time to which you flashed back the database. A database running in the physical standby role after the switchover but prior to the flashback will still be running in the physical standby database role after the Flashback Database operation.</p>
+<p>If the switchover involved a logical standby database, flashing back changes the role of the standby database to what it was at the target SCN or time to which you flashed back the database.</p>
+</div>
+<!-- class="sect2" -->
+<div id="SBYDB4775" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref586"></a>
+<h3 class="sect2"><span class="secnum">8.4.2</span> Using Flashback Database After a Failover</h3>
+<p>You can use Flashback Database to convert the failed primary database to a point in time before the failover occurred and then convert it into a standby database. See <a href="scenarios.htm#i1049997">Section 13.2, "Converting a Failed Primary Into a Standby Database Using Flashback Database"</a> for the complete step-by-step procedure.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1813">
+<tr>
+<td class="cellalignment1820">
+<table class="cellalignment1818">
+<tr>
+<td class="cellalignment1817"><a href="log_apply.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1817"><a href="manage_ps.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1999, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1822">
+<table class="cellalignment1816">
+<tr>
+<td class="cellalignment1817"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1817"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1817"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1817"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1817"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1817"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

@@ -1,0 +1,18 @@
+var chapters = [
+  { topic: "chapter", section: "1", title: "About these Tutorials", anchor: "BABBFGGG", file: "about.htm" },
+  { topic: "chapter", section: "2", title: "	 How to Create a Tabular Form", anchor: "HTMAD001", file: "frm_tabular.htm" },
+  { topic: "chapter", section: "3", title: "How to Create a Parameterized Report", anchor: "HTMAD002", file: "rprt_query.htm" },
+  { topic: "chapter", section: "4", title: "Using Advanced Report Techniques", anchor: "HTMAD003", file: "rprt_adv.htm" },
+  { topic: "chapter", section: "5", title: "How to Control Form Layout", anchor: "HTMAD004", file: "frm_layout.htm" },
+  { topic: "chapter", section: "6", title: "How to Work with Check Boxes", anchor: "HTMAD005", file: "check_box.htm" },
+  { topic: "chapter", section: "7", title: "How to Implement a Web Service", anchor: "HTMAD006", file: "web_serv.htm" },
+  { topic: "chapter", section: "8", title: "How to Create a Stacked Bar Chart", anchor: "HTMAD007", file: "bar_chart.htm" },
+  { topic: "chapter", section: "9", title: "How to Upload and Download Files in an Application", anchor: "HTMAD008", file: "up_dn_files.htm" },
+  { topic: "chapter", section: "10", title: "How to Incorporate JavaScript into an Application", anchor: "HTMAD009", file: "javascript.htm" },
+  { topic: "chapter", section: "11", title: "How to Build an Access Control Page", anchor: "HTMAD011", file: "acl.htm" },
+  { topic: "chapter", section: "12", title: "How to Review a Packaged Application", anchor: "HTMAD012", file: "pckg_app.htm" },
+  { topic: "chapter", section: "13", title: "How to Create a Master Detail PDF Report", anchor: "HTMAD013", file: "pdf_report.htm" },
+  { topic: "chapter", section: "14", title: "How to Design an Issue Tracking Application", anchor: "HTMAD010", file: "issue_track_obj.htm" },
+  { topic: "chapter", section: "15", title: "How to Build and Deploy an Issue Tracking Application", anchor: "HTMAD014", file: "issue_track_ui.htm" },
+  { topic: "appendix", section: "A", title: "DDLs and Scripts", anchor: "", file: "scripts.htm" },
+  { } ];

@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Monitoring a Database on Windows</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1033" />
+<meta name="dcterms.created" content="2014-12-28T3:22:19Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Platform Guide" />
+<meta name="dcterms.identifier" content="E10845-13" />
+<meta name="dcterms.isVersionOf" content="NTQRF" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1996, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="admin.htm" title="Previous" type="text/html" />
+<link rel="Next" href="tuning.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10845.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">10/27</span> <!-- End Header -->
+<div id="NTQRF080" class="chapter"><a id="g1012722"></a> <a id="i1008607"></a>
+<h1 class="chapter"><span class="secnum">6</span> Monitoring a Database on Windows</h1>
+<p>This chapter describes how to monitor Oracle Database for Windows.</p>
+<p>This chapter contains these topics:</p>
+<ul>
+<li>
+<p><a href="#i1005642">Database Monitoring Overview</a></p>
+</li>
+<li>
+<p><a href="#i1005706">Using Oracle Counters for Windows Performance Monitor</a></p>
+</li>
+<li>
+<p><a href="#i1006063">Using Event Viewer</a></p>
+</li>
+<li>
+<p><a href="#i1008147">Trace Files</a></p>
+</li>
+<li>
+<p><a href="#i1008149">Alert Logs</a></p>
+</li>
+<li>
+<p><a href="#CHDIFIDG">Viewing Threads</a></p>
+</li>
+</ul>
+<a id="i1005642"></a>
+<div id="NTQRF232" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><a id="sthref266"></a><a id="sthref267"></a><a id="sthref268"></a><a id="sthref269"></a><a id="sthref270"></a>Database <a id="sthref271"></a><a id="sthref272"></a><a id="sthref273"></a><a id="sthref274"></a><a id="sthref275"></a><a id="sthref276"></a><a id="sthref277"></a>Monitoring Overview</h2>
+<p><a href="#CHDFAIBA">Table 6-1</a> describes tools that enable you to monitor Oracle Database.</p>
+<div id="NTQRF233" class="tblhruleformal">
+<p class="titleintable"><a id="sthref278"></a><a id="CHDFAIBA"></a>Table 6-1 Database Monitoring Tools</p>
+<table class="cellalignment2318" title="Database Monitoring Tools" summary="Rows are tools. For each tool, the first column is its name, and the second column summarizes its function." dir="ltr">
+<thead>
+<tr class="cellalignment2307">
+<th class="cellalignment2317" id="r1c1-t2">Tool</th>
+<th class="cellalignment2317" id="r1c2-t2">Functionality</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2307">
+<td class="cellalignment2313" id="r2c1-t2" headers="r1c1-t2">
+<p>Oracle Counters for Windows Performance Monitor</p>
+</td>
+<td class="cellalignment2313" headers="r2c1-t2 r1c2-t2">
+<p>Monitor database objects, such as CPU usage, buffer cache, or a background <a href="glossary.htm#i432454"><span class="xrefglossterm">process</span></a>.</p>
+</td>
+</tr>
+<tr class="cellalignment2307">
+<td class="cellalignment2313" id="r3c1-t2" headers="r1c1-t2">
+<p>Event Viewer</p>
+</td>
+<td class="cellalignment2313" headers="r3c1-t2 r1c2-t2">
+<p>Monitor database events.</p>
+</td>
+</tr>
+<tr class="cellalignment2307">
+<td class="cellalignment2313" id="r4c1-t2" headers="r1c1-t2">
+<p>Trace Files</p>
+</td>
+<td class="cellalignment2313" headers="r4c1-t2 r1c2-t2">
+<p>Record occurrences and exceptions of database operations</p>
+</td>
+</tr>
+<tr class="cellalignment2307">
+<td class="cellalignment2313" id="r5c1-t2" headers="r1c1-t2">
+<p>Alert Logs</p>
+</td>
+<td class="cellalignment2313" headers="r5c1-t2 r1c2-t2">
+<p>Record important information about error messages and exceptions during database operations.</p>
+</td>
+</tr>
+<tr class="cellalignment2307">
+<td class="cellalignment2313" id="r6c1-t2" headers="r1c1-t2">
+<p>Oracle Enterprise Manager Database Management Packs</p>
+</td>
+<td class="cellalignment2313" headers="r6c1-t2 r1c2-t2">
+<p>Monitor and tune using tools with real-time graphical performance information.</p>
+<p><span class="bold">See Also</span>: Your Oracle Enterprise Manager documentation set for more information</p>
+</td>
+</tr>
+<tr class="cellalignment2307">
+<td class="cellalignment2313" id="r7c1-t2" headers="r1c1-t2">
+<p>Oracle Administration Assistant for Windows</p>
+</td>
+<td class="cellalignment2313" headers="r7c1-t2 r1c2-t2">
+<p>View information on or terminate any Oracle <a href="glossary.htm#i432558"><span class="xrefglossterm">thread</span></a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblhruleformal" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink PFGRF" href="../../server.112/e41573/toc.htm"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for general tuning information</div>
+</div>
+<!-- class="sect1" -->
+<a id="i1005706"></a>
+<div id="NTQRF234" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><a id="sthref279"></a><a id="sthref280"></a>Using Oracle Counters for Windows Performance Monitor</h2>
+<p>Oracle Counters for Windows Performance Monitor is a graphical tool for measuring the performance of Oracle Database for Windows objects on a local server or other servers on a network. This tool is the same in appearance and operation as Windows Performance Monitor, except it has been loaded with Oracle Database performance elements.</p>
+<p>On each computer, you can view behavior of objects, such as buffer cache, <a href="glossary.htm#i432229"><span class="xrefglossterm">data dictionary</span></a> cache, datafiles, threads, and processes. An object is a graphical representation of an element in your system. Every element, resource, and device in your system can be represented as an object.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Before using Oracle Counters for Windows Performance Monitor to view Oracle-specific counters, you must specify the <code dir="ltr">SYSTEM</code> password using <code dir="ltr">operfcfg</code><code dir="ltr">.exe</code> or Oracle Administration Assistant for Windows. See <a href="registry.htm#i1006308">"Using operfcfg"</a> or <a href="registry.htm#CBABDDDB">"Using Oracle Administration Assistant for Windows"</a> for instructions.</div>
+<p>A set of counters is associated with each object. A counter is a unit of measurement used by Performance Monitor to display activity. The type of activity the counter measures depends on the type of object.</p>
+<p>Certain types of objects and their respective counters are present on all systems. Other counters, such as application-specific counters, appear only if the computer is the associated software.</p>
+<p>Each of these objects has an associated set of counters that provide information about device usage, queue lengths, delays, and information used to measure throughput and internal congestion.</p>
+<div id="NTQRF235" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref281"></a>
+<h3 class="sect2"><a id="sthref282"></a><a id="sthref283"></a><a id="sthref284"></a><a id="sthref285"></a><a id="sthref286"></a><a id="sthref287"></a><a id="sthref288"></a>Registry <a id="sthref289"></a><a id="sthref290"></a><a id="sthref291"></a><a id="sthref292"></a>Information<a id="sthref293"></a><a id="sthref294"></a></h3>
+<p>When you install Oracle Counters for Windows Performance Monitor, values are automatically set in the <a href="glossary.htm#i432474"><span class="xrefglossterm">registry</span></a> as described in <a href="registry.htm#g1015622">Chapter 15, "Configuration Parameters and the Registry"</a>.</p>
+<p>Oracle Counters for Windows Performance Monitor lets you monitor only one database <a href="glossary.htm#CHDFBCHH"><span class="xrefglossterm">instance</span></a> at a time. For this reason, the registry contains the following values:</p>
+<ul>
+<li>
+<p><code dir="ltr">Hostname</code></p>
+</li>
+<li>
+<p><code dir="ltr">Username</code></p>
+</li>
+<li>
+<p><code dir="ltr">Password</code></p>
+</li>
+</ul>
+<p>Use <code dir="ltr">operfcfg</code> to change these values. Oracle recommends setting the security level on each of these registry values.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="registry.htm#g1015622">Chapter 15, "Configuration Parameters and the Registry"</a> for instructions on how to use <code dir="ltr">operfcfg</code></div>
+<p>To use Oracle Counters for Windows Performance Monitor for another database instance on the same computer or a UNIX computer, change the values appropriately in the registry. You can also monitor non-Windows installations of Oracle Database by changing <code dir="ltr">Hostname</code> registry value so it points to another computer specified in file <code dir="ltr">tnsnames.ora</code>.</p>
+</div>
+<!-- class="sect2" -->
+<div id="NTQRF236" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref295"></a>
+<h3 class="sect2"><a id="sthref296"></a><a id="sthref297"></a>Accessing Oracle Counters for Windows Performance Monitor</h3>
+<p>To access Oracle Counters for Windows Performance Monitor:</p>
+<p>From the <span class="bold">Start</span> menu, select <span class="bold">Programs</span>, then select <span class="bold">Oracle -</span> <span class="bolditalic">HOME_NAME</span><span class="italic">,</span> then select <span class="bold">Configuration and Migration Tools</span> and then select <span class="bold">Oracle Counters for Windows Performance Monitor</span>.</p>
+<p>Oracle Counters for Windows Performance Monitor has four views you can choose from the View menu:</p>
+<ul>
+<li>
+<p>Chart view displays database activity as it occurs.</p>
+</li>
+<li>
+<p>Alert view lets you know when certain minimum performance criteria are not being met, or maximum criteria are being exceeded.</p>
+</li>
+<li>
+<p>Log view maintains continuous records on performance.</p>
+</li>
+<li>
+<p>Report view saves information about specific criteria.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+Your operating system documentation for complete information about the four views</div>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<div id="NTQRF237" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref298"></a>
+<h3 class="sect2">Modifying Views</h3>
+<p>For each view you can decide objects to monitor, what counters to use for each object, and graphical attributes of the view. When an object is chosen, it is assigned a counter, a color, and added to the status bar at the bottom of Oracle Counters for Windows Performance Monitor.</p>
+<p>To add objects to a view:</p>
+<ol>
+<li>
+<p>Choose <span class="bold">Add To</span> (Chart, Alert, Log, Report) from the <span class="bold">Edit</span> menu. (This example uses Add to Chart, but other dialogs are similar.)</p>
+<p>The Add to Chart dialog appears.</p>
+</li>
+<li>
+<p>In the <span class="bold">Computer</span> list, select the computer to monitor.</p>
+</li>
+<li>
+<p>In the <span class="bold">Object</span> list, select the object or objects to monitor, then click <span class="bold">Add</span>.</p>
+<p>If no data or Oracle Database objects appear, then either Oracle Database is not or an invalid host string or password has been entered. If the database is not started, then exit Oracle Counters for Windows Performance Monitor, start the database, and restart Oracle Counters for Windows Performance Monitor.</p>
+</li>
+<li>
+<p>In the <span class="bold">Counter</span> list, select one or more counters for each object you have selected. Note that the contents of the Counter list change depending upon your selection in the Object list. For details on how a counter works, highlight the counter and click <span class="bold">Explain</span>.</p>
+</li>
+<li>
+<p>In the <span class="bold">Instance</span> list, select an instance for this counter.</p>
+</li>
+<li>
+<p>In the <span class="bold">Color</span> list, choose a color for the display of the selected counter.</p>
+</li>
+<li>
+<p>In the <span class="bold">Scale</span> list, choose the scale at which to display the counter.</p>
+</li>
+<li>
+<p>In the <span class="bold">Width</span> list, specify the width of the line on the graph.</p>
+</li>
+<li>
+<p>In the <span class="bold">Style</span> list, choose a style for your graph line.</p>
+</li>
+<li>
+<p>Click <span class="bold">Done</span> when you are finished.</p>
+<p>The selections you have chosen to monitor are displayed.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="i1005867"></a>
+<div id="NTQRF238" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Understanding Oracle Database Performance Objects</h3>
+<p>All Oracle Database system resources that can be monitored through Oracle Counters for Windows Performance Monitor begin with 'Oracle Database'. This section lists Oracle Database objects and describes their associated counters. These measures are defined in:</p>
+<pre dir="ltr">
+<span class="italic">ORACLE_HOME</span>\dbs\PERF<span class="italic">ver</span>.ora
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink PFGRF014" href="../../server.112/e41573/memory.htm#PFGRF014"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for additional information on these objects</div>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You can monitor only one instance at a time using Oracle Counters for Windows Performance Monitor on a given computer.</div>
+<p class="subhead2"><a id="NTQRF239"></a>Oracle Database Buffer Cache</p>
+<p>The counter is phyrds/gets %. The percentage of phyrds/gets is calculated as a Miss ratio. The lower the Miss counter, the better. To improve performance, increase the number of buffers in the buffer cache, if memory is available on the computer. This value is not time-derived.</p>
+<p class="subhead2"><a id="NTQRF240"></a>Oracle Database Redo Log Buffer</p>
+<p>The counter is redo log space requests. The value of this counter must be near zero. If this value increments consistently, then processes have had to wait for space in the <a href="glossary.htm#i433327"><span class="xrefglossterm">redo log buffer</span></a>. In this case, it may be necessary to increase the size of the redo log buffer.</p>
+<p class="subhead2"><a id="NTQRF241"></a>Oracle Database Data Dictionary Cache</p>
+<p>The counter is getmisses/gets %. The value of this counter must be less than 10 or 15% for frequently accessed data dictionary caches. If the ratio continues to increase over this threshold while your application is, then increase the amount of memory available to the data dictionary cache.</p>
+<p>To increase the memory available to the cache, increase the value of initialization parameter <code dir="ltr">SHARED_POOL_SIZE</code>. This value is not time-derived.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink PFGRF014" href="../../server.112/e41573/memory.htm#PFGRF014"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for more detailed information on tuning memory allocation in Oracle Database</div>
+<p class="subhead2"><a id="NTQRF242"></a>Oracle Database Library Cache</p>
+<p>The counter is reloads/pins %. This is the percentage of SQL statements, <a href="glossary.htm#i432445"><span class="xrefglossterm">PL/SQL</span></a> blocks, and object definitions that required reparsing. Total Reloads must be near zero. If the ratio of Reloads to Pins is greater than 1%, then reduce the library cache misses. This value is not time-derived.</p>
+<p class="subhead2"><a id="NTQRF243"></a>Oracle Database Datafiles</p>
+<p>The counters are phyrds/sec and phywrts/sec. These values are time-derived. Disk contention occurs when multiple processes try to access the same disk simultaneously. Depending on results from monitoring disk activity, corrective actions could include:</p>
+<ul>
+<li>
+<p>Distributing I/O</p>
+</li>
+<li>
+<p>Separating datafiles and <a href="glossary.htm#i432471"><span class="xrefglossterm">redo log files</span></a></p>
+</li>
+<li>
+<p>Separating tables and indexes</p>
+</li>
+<li>
+<p>Striping table data</p>
+</li>
+</ul>
+<p class="subhead2"><a id="NTQRF244"></a>Oracle Database DBWR stats1</p>
+<p>The two counters available, buffers scanned/sec and LRU scans/sec, are helpful in tuning Buffer Cache. Buffers scanned/sec is the number of buffers DBWR scanned in each second. The buffers scanned are on the LRU (Least Recently Used) list. LRU scans/sec is the number of times DBWR scanned the (Least Recently Used) buffer list in each second.</p>
+<p class="subhead2"><a id="NTQRF245"></a>Oracle Database DBWR stats2</p>
+<p>The two counters available, timeouts/sec and checkpoints/sec, are helpful in determining how much work DBWR has been requested to perform. Timeouts/sec is the number of times DBWR timed-out in each second. DBWR is on a three second timeout interval. If DBWR has not been posted within a three second interval, then it times out.</p>
+<p>Checkpoints/sec is the number of checkpoint messages processed by database writer in each second. Whenever a checkpoint occurs, DBWR must be messaged (posted) to "write dirty buffers to disk".</p>
+<p class="subhead2"><a id="NTQRF246"></a>Oracle Database Dynamic Space Management</p>
+<p>The counter is recursive calls/sec. Dynamic extension causes Oracle Database to execute SQL statements in addition to those SQL statements issued by user processes. These SQL statements are called recursive calls.</p>
+<p>If Oracle Database makes excessive recursive calls while an application is, then it may be necessary to determine the cause. Examine the recursive calls statistic through dynamic performance table <code dir="ltr">V$SYSSTAT</code>.</p>
+<p class="subhead2"><a id="NTQRF247"></a>Oracle Database Free List</p>
+<p>The counter is free list waits/requests %. Contention for free lists is reflected by contention for free data blocks in buffer cache. You can determine if contention for free lists is reducing performance by querying <code dir="ltr">V$WAITSTAT</code>.</p>
+<p>If the number of free list waits for free blocks is greater than 1% of the total number of requests, then consider adding more free lists to reduce contention.</p>
+<p class="subhead2"><a id="NTQRF248"></a>Oracle Database Sorts</p>
+<p>The available counters are sorts in memory/sec and sorts on disk/sec. The default sort area size is adequate to hold all data for most sorts. However, if your application often performs large sorts on data that does not fit into the sort area, then you may increase sort area size.</p>
+</div>
+<!-- class="sect2" -->
+<div id="NTQRF249" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref299"></a>
+<h3 class="sect2"><a id="sthref300"></a>Oracle Counters for Windows Performance Monitor Troubleshooting Information</h3>
+<p>If no data or Oracle Database objects appear in the Objects list of the Add to (Chart, Alert, Log, Report) dialog, then:</p>
+<ol>
+<li>
+<p>Ensure that Oracle Database instance is up. If it is not, then exit Oracle Counters for Windows Performance Monitor, and start the database.</p>
+</li>
+<li>
+<p>If the database instance is up but no data or Oracle Database objects appear, then check the error file for Oracle Counters for Windows Performance Monitor:</p>
+<pre dir="ltr">
+<span class="italic">ORACLE_HOME</span>\dbs\OPERF<span class="italic">ver</span>.log
+</pre>
+<p>If the log file indicates an invalid host string or password, then check the registry for correct values for <code dir="ltr">Hostname</code>, <code dir="ltr">Password</code>, and <code dir="ltr">Username</code>. See <a href="registry.htm#i1005920">"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services"</a> for further information about these values.</p>
+</li>
+<li>
+<p>Restart Oracle Counters for Windows Performance Monitor.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006063"></a>
+<div id="NTQRF251" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><a id="sthref301"></a><a id="sthref302"></a><a id="sthref303"></a><a id="sthref304"></a><a id="sthref305"></a>Using Event Viewer</h2>
+<p>Oracle Database for Windows problems and other significant occurrences are recorded as events in an application event log. View and manage these recorded events in Event Viewer.</p>
+<p>To access Event Viewer:</p>
+<ol>
+<li>
+<p>From the <span class="bold">Start</span> menu, select <span class="bold">Programs</span>, then select <span class="bold">Administrative Tools</span> and then select <span class="bold">Event Viewer</span>.</p>
+<p>The Event Viewer window appears.</p>
+</li>
+<li>
+<p>Choose <span class="bold">Application</span> from the <span class="bold">Log</span> menu.</p>
+</li>
+</ol>
+<p><a href="#i1006649">Figure 6-1</a> displays the Application view window, <a href="#g1010121">Table 6-2</a> shows what is recorded in each column, and <a href="#g1010158">Table 6-3</a> interprets icons that appear at the left edge of the viewer.</p>
+<div id="NTQRF252" class="figure">
+<p class="titleinfigure"><a id="i1006649"></a>Figure 6-1 Application View Window</p>
+<img width="574" height="311" src="img/ev_vwr.gif" alt="Description of Figure 6-1 follows" /><br />
+<a id="sthref306" href="img_text/ev_vwr.htm">Description of "Figure 6-1 Application View Window"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<div id="NTQRF253" class="tblhruleformal">
+<p class="titleintable"><a id="sthref307"></a><a id="g1010121"></a>Table 6-2 Application View Definitions</p>
+<table class="cellalignment2318" title="Application View Definitions" summary="Names and definitions of columns in the preceding Event Viewer graphic (Figure 8-2)." dir="ltr">
+<thead>
+<tr class="cellalignment2307">
+<th class="cellalignment2317" id="r1c1-t10">Column Name</th>
+<th class="cellalignment2317" id="r1c2-t10">Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2307">
+<td class="cellalignment2313" id="r2c1-t10" headers="r1c1-t10">
+<p>Date</p>
+</td>
+<td class="cellalignment2313" headers="r2c1-t10 r1c2-t10">
+<p>Date event took place</p>
+</td>
+</tr>
+<tr class="cellalignment2307">
+<td class="cellalignment2313" id="r3c1-t10" headers="r1c1-t10">
+<p>Time</p>
+</td>
+<td class="cellalignment2313" headers="r3c1-t10 r1c2-t10">
+<p>Time event took place</p>
+</td>
+</tr>
+<tr class="cellalignment2307">
+<td class="cellalignment2313" id="r4c1-t10" headers="r1c1-t10">
+<p>Source</p>
+</td>
+<td class="cellalignment2313" headers="r4c1-t10 r1c2-t10">
+<p>Application that recorded event</p>
+</td>
+</tr>
+<tr class="cellalignment2307">
+<td class="cellalignment2313" id="r5c1-t10" headers="r1c1-t10">
+<p>Category</p>
+</td>
+<td class="cellalignment2313" headers="r5c1-t10 r1c2-t10">
+<p>Classification of event</p>
+</td>
+</tr>
+<tr class="cellalignment2307">
+<td class="cellalignment2313" id="r6c1-t10" headers="r1c1-t10">
+<p>Event</p>
+</td>
+<td class="cellalignment2313" headers="r6c1-t10 r1c2-t10">
+<p>Unique number assigned to event</p>
+</td>
+</tr>
+<tr class="cellalignment2307">
+<td class="cellalignment2313" id="r7c1-t10" headers="r1c1-t10">
+<p>Computer</p>
+</td>
+<td class="cellalignment2313" headers="r7c1-t10 r1c2-t10">
+<p>Computer name on which event occurred</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblhruleformal" -->
+<div id="NTQRF254" class="tblhruleformal">
+<p class="titleintable"><a id="sthref308"></a><a id="g1010158"></a>Table 6-3 Event Viewer Icons</p>
+<table class="cellalignment2318" title="Event Viewer Icons" summary="Information about icons in preceding graphic (Figure 8-2). For each icon, the first column describes it, the second column is its event type, and the third column is a suggested action." dir="ltr">
+<thead>
+<tr class="cellalignment2307">
+<th class="cellalignment2317" id="r1c1-t11">Icon</th>
+<th class="cellalignment2317" id="r1c2-t11">Event Type</th>
+<th class="cellalignment2317" id="r1c3-t11">Suggested Action</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2307">
+<td class="cellalignment2313" id="r2c1-t11" headers="r1c1-t11">
+<p>Red Stop Sign</p>
+</td>
+<td class="cellalignment2313" headers="r2c1-t11 r1c2-t11">
+<p>Error</p>
+</td>
+<td class="cellalignment2313" headers="r2c1-t11 r1c3-t11">
+<p>Always check these icons.</p>
+</td>
+</tr>
+<tr class="cellalignment2307">
+<td class="cellalignment2313" id="r3c1-t11" headers="r1c1-t11">
+<p>Lower-case "i" in Blue Circle</p>
+</td>
+<td class="cellalignment2313" headers="r3c1-t11 r1c2-t11">
+<p>Information</p>
+</td>
+<td class="cellalignment2313" headers="r3c1-t11 r1c3-t11">
+<p>Noncritical system events. Check these icons only to track a specific event.</p>
+</td>
+</tr>
+<tr class="cellalignment2307">
+<td class="cellalignment2313" id="r4c1-t11" headers="r1c1-t11">
+<p>Exclamation Point in Yellow Circle</p>
+</td>
+<td class="cellalignment2313" headers="r4c1-t11 r1c2-t11">
+<p>Warning</p>
+</td>
+<td class="cellalignment2313" headers="r4c1-t11 r1c3-t11">
+<p>Special events, such as instance termination or services shutdown. Investigate these icons, but they are usually noncritical.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblhruleformal" -->
+<div id="NTQRF255" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref309"></a>
+<h3 class="sect2"><a id="sthref310"></a><a id="sthref311"></a>Reading Event Viewer</h3>
+<p>Oracle Database for Windows events display with a source of Oracle.<code dir="ltr"><span class="codeinlineitalic">SID</span></code>.</p>
+<p>Event number 34 specifies an audit trail event. These events are recorded if parameter <code dir="ltr">AUDIT_TRAIL</code> is set to <code dir="ltr">db</code> (<code dir="ltr">true</code>) or <code dir="ltr">os</code> in the initialization parameter file. Option <code dir="ltr">os</code> enables system wide auditing and causes audited records to be written to Event Viewer. Option <code dir="ltr">db</code> enables system wide auditing and causes audited records to be written to the database audit trail (table <code dir="ltr">SYS.AUD$</code>). Some records, however, are written to Event Viewer.</p>
+<p>Event numbers other than 34 specify general database activities, such as an instance being started or stopped.</p>
+<p>When you double-click an icon in Event Viewer, the Event Detail dialog appears with more information about the selected event. <a href="#i1006778">Figure 6-2</a>, for example, shows details about EventID 1011. In the Description field you will find a text description of the event. In the Data field you can choose Bytes to see the information in hexadecimal format or Words to see DWORDS for the same data.</p>
+<div id="NTQRF256" class="figure">
+<p class="titleinfigure"><a id="i1006778"></a>Figure 6-2 Event Detail Dialog</p>
+<img width="391" height="338" src="img/ev_dtl.gif" alt="Description of Figure 6-2 follows" /><br />
+<a id="sthref312" href="img_text/ev_dtl.htm">Description of "Figure 6-2 Event Detail Dialog"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+Microsoft operating system documentation for more information on using Event Viewer</div>
+</div>
+<!-- class="sect2" -->
+<div id="NTQRF257" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref313"></a>
+<h3 class="sect2"><a id="sthref314"></a><a id="sthref315"></a>Managing Event Viewer</h3>
+<p>Setting <code dir="ltr">AUDIT_TRAIL</code> to <code dir="ltr">db</code> or <code dir="ltr">os</code> causes more records to be written to Event Viewer. This can fill up the Event Viewer log file. Follow these procedures to increase log file size:</p>
+<ol>
+<li>
+<p>Choose <span class="bold">Log Settings</span> from the <span class="bold">Log</span> menu.</p>
+<p>The Event Log Settings dialog appears.</p>
+</li>
+<li>
+<p>Adjust the setting in the <span class="bold">Maximum Log Size</span> field to an appropriate level.</p>
+</li>
+<li>
+<p>Click <span class="bold">OK</span>.</p>
+<p>You are returned to Event Viewer.</p>
+<div class="infobox-note">
+<p class="notep1">Caution:</p>
+<a id="sthref316"></a><a id="sthref317"></a>Audit information cannot be spooled to a file. Parameter <code dir="ltr">AUDIT_FILE_DEST</code> is supported on Windows to write XML format audit files when <code dir="ltr">AUDIT_TRAIL</code> is set to <code dir="ltr">XML</code> or <code dir="ltr">XML</code>,<code dir="ltr">EXTENDED</code> format and thus must be added to the initialization parameter file.</div>
+</li>
+</ol>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1008147"></a>
+<div id="NTQRF258" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><a id="sthref318"></a><a id="sthref319"></a><a id="sthref320"></a><a id="sthref321"></a><a id="sthref322"></a><a id="sthref323"></a><a id="sthref324"></a>Trace Files</h2>
+<p>Oracle Database for Windows background threads use trace files to record occurrences and exceptions of database operations, and errors. Background thread trace files are created and stored in the ADR directory specified by parameter <code dir="ltr">DIAGNOSTIC_DEST</code> in the initialization parameter file.</p>
+<p>Oracle Database creates a different <a href="glossary.htm#i433345"><span class="xrefglossterm">trace file</span></a> for each foreground and background thread. The name of the trace file contains the name of the thread, followed by the extension ".<code dir="ltr">trc"</code>. The following are examples of foreground trace file names:</p>
+<ul>
+<li>
+<p><code dir="ltr">ops_ora_5804.trc</code></p>
+</li>
+<li>
+<p><code dir="ltr">ops_ora_4160.trc</code></p>
+</li>
+</ul>
+<p>The following are examples of background trace file names:</p>
+<ul>
+<li>
+<p><code dir="ltr">ops_pmon_1556.trc</code></p>
+</li>
+<li>
+<p><code dir="ltr">ops_mmon_3768.trc</code></p>
+</li>
+<li>
+<p><code dir="ltr">ops_lgwr_2356.trc</code></p>
+</li>
+<li>
+<p><code dir="ltr">ops_dbw0_132.trc</code></p>
+</li>
+</ul>
+<p>Trace files are also created for user threads and stored in the ADR directory specified by parameter <code dir="ltr">DIAGNOSTIC_DEST</code> in the initialization parameter file. Trace files for user threads have the form <code dir="ltr">ora</code><code dir="ltr"><span class="codeinlineitalic">xxxxx</span></code><code dir="ltr">.trc</code>, where <code dir="ltr"><span class="codeinlineitalic">xxxxx</span></code> is a 5-digit number indicating the Windows thread <code dir="ltr">ID</code>.</p>
+</div>
+<!-- class="sect1" -->
+<a id="i1008149"></a>
+<div id="NTQRF259" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Alert Logs</h2>
+<p>Alert logs contain important information about error messages and exceptions that occur during database operations. Each Oracle Database for Windows instance has one alert log; information is appended to the file each time you start the instance. All threads can write to the alert log.</p>
+<p>For example, when automatic archiving of redo logs is halted because no disk space is available, a message is placed in the alert log. The alert log is the first place to check if something goes wrong with the database and the cause is not immediately obvious.</p>
+<p><a id="i1006251"></a>The alert log is named <code dir="ltr">alert_</code><code dir="ltr"><span class="codeinlineitalic">SID</span></code><code dir="ltr">.log</code> and is found in the ADR directory specified by parameter <code dir="ltr">DIAGNOSTIC_DEST</code> in the initialization parameter file. Alert logs should be deleted or archived periodically.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="create.htm#i1015399">"Modifying the Initialization Parameter File"</a></p>
+</li>
+<li>
+<p>"ADMIN Directory" section in <a class="olink NTDBI" href="../../install.112/e47798/toc.htm"><span class="italic">Oracle Database Installation Guide for Microsoft Windows</span></a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="CHDIFIDG"></a>
+<div id="NTQRF260" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Viewing Threads</h2>
+<p>To view information on Oracle Database threads using Oracle Administration Assistant for Windows, you must either enable Windows native authentication for the database or run utility <code dir="ltr">ocfgutil.exe</code> with arguments <code dir="ltr"><span class="codeinlineitalic">username</span></code> and <code dir="ltr"><span class="codeinlineitalic">password</span></code>. The utility stores the user name and password in the following registry location:</p>
+<pre dir="ltr">
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\OracleOraConfig
+</pre>
+<p>When Windows native authentication is not enabled, Oracle Remote Configuration Agent retrieves the user name and password from this registry key to log in to the database.</p>
+<p>To view information on Oracle Database threads using Oracle Administration Assistant for Windows:</p>
+<ol>
+<li>
+<p>From the <span class="bold">Start</span> menu, select <span class="bold">Programs</span>, then select <span class="bold">Oracle -</span> <span class="bolditalic">HOME_NAME</span>, then select <span class="bold">Configuration and Migration Tools</span> and then select <span class="bold">Administration Assistant for Windows</span>.</p>
+</li>
+<li>
+<p>Right-click the <code dir="ltr"><span class="codeinlineboldital">SID</span></code>, where <code dir="ltr"><span class="codeinlineitalic">SID</span></code> is a specific instance name, such as <code dir="ltr">orcl</code>.</p>
+</li>
+<li>
+<p>Choose <span class="bold">Process Information</span>.</p>
+<p>The Process Information dialog appears, listing name, type, user, thread ID, and CPU usage for each Oracle Database thread.</p>
+</li>
+<li>
+<p>To terminate a thread, select it and click <span class="bold">Kill Thread</span>.</p>
+</li>
+</ol>
+<img width="412" height="241" src="img/procinfo.gif" alt="Description of procinfo.gif follows" /><br />
+<a id="sthref325" href="img_text/procinfo.htm">Description of the illustration procinfo.gif</a><br />
+<br /></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment2306">
+<tr>
+<td class="cellalignment2313">
+<table class="cellalignment2311">
+<tr>
+<td class="cellalignment2310"><a href="admin.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment2310"><a href="tuning.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1996, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment2315">
+<table class="cellalignment2309">
+<tr>
+<td class="cellalignment2310"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment2310"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment2310"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment2310"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment2310"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment2310"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

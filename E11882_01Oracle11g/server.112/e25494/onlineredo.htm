@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Managing the Redo Log</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1055" />
+<meta name="dcterms.created" content="2015-05-05T8:27:34Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Administrator's Guide" />
+<meta name="dcterms.identifier" content="E25494-07" />
+<meta name="dcterms.isVersionOf" content="ADMIN" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2001, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="control.htm" title="Previous" type="text/html" />
+<link rel="Next" href="archredo.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e25494.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">20/49</span> <!-- End Header -->
+<div id="ADMIN007" class="chapter"><a id="g1011287"></a> <a id="i1007497"></a>
+<h1 class="chapter"><span class="secnum">12</span> Managing the Redo Log</h1>
+<p><a id="sthref1267"></a>In this chapter:</p>
+<ul>
+<li>
+<p><a href="#i1006163">What Is the Redo Log?</a></p>
+</li>
+<li>
+<p><a href="#i1306224">Planning the Redo Log</a></p>
+</li>
+<li>
+<p><a href="#i1006398">Creating Redo Log Groups and Members</a></p>
+</li>
+<li>
+<p><a href="#i1006447">Relocating and Renaming Redo Log Members</a></p>
+</li>
+<li>
+<p><a href="#i1006489">Dropping Redo Log Groups and Members</a></p>
+</li>
+<li>
+<p><a href="#i1006533">Forcing Log Switches</a></p>
+</li>
+<li>
+<p><a href="#i1006546">Verifying Blocks in Redo Log Files</a></p>
+</li>
+<li>
+<p><a href="#i1006568">Clearing a Redo Log File</a></p>
+</li>
+<li>
+<p><a href="#i1006593">Redo Log Data Dictionary Views</a></p>
+<div class="infoboxnotealso">
+<p class="notep1"><span class="bold">See Also</span>:</p>
+<a href="omf.htm#g1018000">Chapter 17, "Using Oracle Managed Files"</a> for information about redo log files that are both created and managed by the Oracle Database server</div>
+</li>
+</ul>
+<a id="i1006163"></a>
+<div id="ADMIN11302" class="sect1">
+<h2 class="sect1">What Is the Redo Log?</h2>
+<p><a id="sthref1268"></a><a id="sthref1269"></a>The most crucial structure for recovery operations is the <span class="bold">redo log</span>, which consists of two or more preallocated files that store all changes made to the database as they occur. Every instance of an Oracle Database has an associated redo log to protect the database in case of an instance failure.</p>
+<div id="ADMIN11303" class="sect2"><a id="sthref1270"></a>
+<h3 class="sect2">Redo Threads</h3>
+<p><a id="sthref1271"></a><a id="sthref1272"></a><a id="sthref1273"></a>When speaking in the context of multiple database instances, the redo log for each database instance is also referred to as a <span class="italic">redo thread</span>. In typical configurations, only one database instance accesses an Oracle Database, so only one thread is present. In an Oracle Real Application Clusters environment, however, two or more instances concurrently access a single database and each instance has its own thread of redo. A separate redo thread for each instance avoids contention for a single set of redo log files, thereby eliminating a potential performance bottleneck.</p>
+<p>This chapter describes how to configure and manage the redo log on a standard single-instance Oracle Database. The thread number can be assumed to be 1 in all discussions and examples of statements. For information about redo log groups in an Oracle Real Application Clusters environment, see <a class="olink RACAD704" href="../../rac.112/e41960/storage.htm#RACAD704"><span class="italic">Oracle Real Application Clusters Administration and Deployment Guide</span></a>.</p>
+</div>
+<!-- class="sect2" -->
+<div id="ADMIN11304" class="sect2"><a id="sthref1274"></a>
+<h3 class="sect2">Redo Log Contents</h3>
+<p><a id="sthref1275"></a><a id="sthref1276"></a><a id="sthref1277"></a><a id="sthref1278"></a><a id="sthref1279"></a>Redo log files are filled with <span class="bold">redo records</span>. A redo record, also called a <span class="bold">redo entry</span>, is made up of a group of <span class="bold">change vectors</span>, each of which is a description of a change made to a single block in the database. For example, if you change a salary value in an employee table, you generate a redo record containing change vectors that describe changes to the data segment block for the table, the undo segment data block, and the transaction table of the undo segments.</p>
+<p>Redo entries record data that you can use to reconstruct all changes made to the database, including the undo segments. Therefore, the redo log also protects rollback data. When you recover the database using redo data, the database reads the change vectors in the redo records and applies the changes to the relevant blocks.</p>
+<p>Redo records are buffered in a circular fashion in the redo log buffer of the SGA (see <a href="#i1006187">"How Oracle Database Writes to the Redo Log"</a>) and are written to one of the redo log files by the Log Writer (LGWR) database background process. Whenever a transaction is committed, LGWR writes the transaction redo records from the redo log buffer of the SGA to a redo log file, and assigns a <span class="bold">system change number</span> (SCN) to identify the redo records for each committed transaction. Only when all redo records associated with a given transaction are safely on disk in the online logs is the user process notified that the transaction has been committed.</p>
+<p>Redo records can also be written to a redo log file before the corresponding transaction is committed. If the redo log buffer fills, or another transaction commits, LGWR flushes all of the redo log entries in the redo log buffer to a redo log file, even though some redo records may not be committed. If necessary, the database can roll back these changes.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1006187"></a>
+<div id="ADMIN11305" class="sect2">
+<h3 class="sect2">How Oracle Database Writes to the Redo Log</h3>
+<p><a id="sthref1280"></a>The redo log of a database consists of two or more redo log files. The database requires a minimum of two files to guarantee that one is always available for writing while the other is being archived (if the database is in <code dir="ltr">ARCHIVELOG</code> mode). See <a href="archredo.htm#g1015189">"Managing Archived Redo Logs"</a> for more information.</p>
+<p><a id="sthref1281"></a><a id="sthref1282"></a><a id="sthref1283"></a>LGWR writes to redo log files in a circular fashion. When the current redo log file fills, LGWR begins writing to the next available redo log file. When the last available redo log file is filled, LGWR returns to the first redo log file and writes to it, starting the cycle again. <a href="#i1006202">Figure 12-1</a> illustrates the circular writing of the redo log file. The numbers next to each line indicate the sequence in which LGWR writes to each redo log file.</p>
+<p><a id="sthref1284"></a><a id="sthref1285"></a>Filled redo log files are available to LGWR for reuse depending on whether archiving is enabled.</p>
+<ul>
+<li>
+<p>If archiving is disabled (the database is in <code dir="ltr">NOARCHIVELOG</code> mode), a filled redo log file is available after the changes recorded in it have been written to the data files.</p>
+</li>
+<li>
+<p>If archiving is enabled (the database is in <code dir="ltr">ARCHIVELOG</code> mode), a filled redo log file is available to LGWR after the changes recorded in it have been written to the data files <span class="italic">and</span> the file has been archived.</p>
+</li>
+</ul>
+<div id="ADMIN13039" class="figure">
+<p class="titleinfigure"><a id="i1006202"></a>Figure 12-1 Reuse of Redo Log Files by LGWR</p>
+<img width="364" height="406" src="img/admin054.gif" alt="Description of Figure 12-1 follows" /><br />
+<a id="sthref1286" href="img_text/admin054.htm">Description of "Figure 12-1 Reuse of Redo Log Files by LGWR"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<div id="ADMIN11306" class="sect3"><a id="sthref1287"></a>
+<h4 class="sect3">Active (Current) and Inactive Redo Log Files</h4>
+<p><a id="sthref1288"></a><a id="sthref1289"></a>Oracle Database uses only one redo log file at a time to store redo records written from the redo log buffer. The redo log file that LGWR is actively writing to is called the <span class="bold">current</span> redo log file.</p>
+<p>Redo log files that are required for instance recovery are called <span class="bold">active</span> redo log files. Redo log files that are no longer required for instance recovery are called<a id="sthref1290"></a> <span class="bold">inactive</span> redo log files.</p>
+<p>If you have enabled archiving (the database is in <code dir="ltr">ARCHIVELOG</code> mode), then the database cannot reuse or overwrite an active online log file until one of the archiver background processes (ARC<span class="italic">n</span>) has archived its contents. If archiving is disabled (the database is in <code dir="ltr">NOARCHIVELOG</code> mode), then when the last redo log file is full, LGWR continues by overwriting the next log file in the sequence when it becomes inactive.</p>
+</div>
+<!-- class="sect3" -->
+<div id="ADMIN11307" class="sect3"><a id="sthref1291"></a>
+<h4 class="sect3">Log Switches and Log Sequence Numbers</h4>
+<p><a id="sthref1292"></a><a id="sthref1293"></a>A <span class="bold">log switch</span> is the point at which the database stops writing to one redo log file and begins writing to another. Normally, a log switch occurs when the current redo log file is completely filled and writing must continue to the next redo log file. However, you can configure log switches to occur at regular intervals, regardless of whether the current redo log file is completely filled. You can also force log switches manually.</p>
+<p><a id="sthref1294"></a>Oracle Database assigns each redo log file a new <span class="bold">log sequence number</span> every time a log switch occurs and LGWR begins writing to it. When the database archives redo log files, the archived log retains its log sequence number. A redo log file that is cycled back for use is given the next available log sequence number.</p>
+<p><a id="sthref1295"></a><a id="sthref1296"></a>Each online or archived redo log file is uniquely identified by its log sequence number. During crash, instance, or media recovery, the database properly applies redo log files in ascending order by using the log sequence number of the necessary archived and redo log files.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1306224"></a>
+<div id="ADMIN11308" class="sect1">
+<h2 class="sect1">Planning the Redo Log<a id="sthref1297"></a></h2>
+<p><a id="sthref1298"></a>This section provides guidelines you should consider when configuring a database instance redo log and contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1006249">Multiplexing Redo Log Files</a></p>
+</li>
+<li>
+<p><a href="#i1106324">Placing Redo Log Members on Different Disks</a></p>
+</li>
+<li>
+<p><a href="#i1006341">Planning the Size of Redo Log Files</a></p>
+</li>
+<li>
+<p><a href="#CHDFBDJC">Planning the Block Size of Redo Log Files</a></p>
+</li>
+<li>
+<p><a href="#i1006351">Choosing the Number of Redo Log Files</a></p>
+</li>
+<li>
+<p><a href="#i1006367">Controlling Archive Lag</a></p>
+</li>
+</ul>
+<a id="i1006249"></a>
+<div id="ADMIN11309" class="sect2">
+<h3 class="sect2">Multiplexing Redo Log Files</h3>
+<p><a id="sthref1299"></a><a id="sthref1300"></a><a id="sthref1301"></a>To protect against a failure involving the redo log itself, Oracle Database allows a <span class="bold">multiplexed</span> redo log, meaning that two or more identical copies of the redo log can be automatically maintained in separate locations. For the most benefit, these locations should be on separate disks. Even if all copies of the redo log are on the same disk, however, the redundancy can help protect against I/O errors, file corruption, and so on. When redo log files are multiplexed, LGWR concurrently writes the same redo log information to multiple identical redo log files, thereby eliminating a single point of redo log failure.</p>
+<p><a id="sthref1302"></a><a id="sthref1303"></a><a id="sthref1304"></a><a id="sthref1305"></a><a id="sthref1306"></a>Multiplexing is implemented by creating <span class="italic">groups</span> of redo log files. A <span class="bold">group</span> consists of a redo log file and its multiplexed copies. Each identical copy is said to be a <span class="bold">member</span> of the group. Each redo log group is defined by a number, such as group 1, group 2, and so on.</p>
+<div id="ADMIN13040" class="figure">
+<p class="titleinfigure"><a id="i1006259"></a>Figure 12-2 Multiplexed Redo Log Files</p>
+<img width="501" height="298" src="img/admin052.gif" alt="Description of Figure 12-2 follows" /><br />
+<a id="sthref1307" href="img_text/admin052.htm">Description of "Figure 12-2 Multiplexed Redo Log Files"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>In <a href="#i1006259">Figure 12-2</a>, <code dir="ltr">A_LOG1</code> and <code dir="ltr">B_LOG1</code> are both members of Group 1, <code dir="ltr">A_LOG2</code> and <code dir="ltr">B_LOG2</code> are both members of Group 2, and so forth. Each member in a group must be the same size.</p>
+<p>Each member of a log file group is concurrently active&mdash;that is, concurrently written to by LGWR&mdash;as indicated by the identical log sequence numbers assigned by LGWR. In <a href="#i1006259">Figure 12-2</a>, first LGWR writes concurrently to both <code dir="ltr">A_LOG1</code> and <code dir="ltr">B_LOG1</code>. Then it writes concurrently to both <code dir="ltr">A_LOG2</code> and <code dir="ltr">B_LOG2</code>, and so on. LGWR never writes concurrently to members of different groups (for example, to <code dir="ltr">A_LOG1</code> and <code dir="ltr">B_LOG2</code>).</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Oracle recommends that you multiplex your redo log files. The loss of the log file data can be catastrophic if recovery is required. Note that when you multiplex the redo log, the database must increase the amount of I/O that it performs. Depending on your configuration, this may impact overall database performance.</div>
+<div id="ADMIN11310" class="sect3"><a id="sthref1308"></a>
+<h4 class="sect3">Responding to Redo Log Failure<a id="sthref1309"></a><a id="sthref1310"></a></h4>
+<p><a id="sthref1311"></a><a id="sthref1312"></a>Whenever LGWR cannot write to a member of a group, the database marks that member as <code dir="ltr">INVALID</code> and writes an error message to the LGWR trace file and to the database alert log to indicate the problem with the inaccessible files. The specific reaction of LGWR when a redo log member is unavailable depends on the reason for the lack of availability, as summarized in the table that follows.</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="LGWR Background Process" summary="This table describes the action of Log Writer (LGWR) when responding to various conditions. The condition is listed in the left column of the table with the corresponding LGWR action described in the right column." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t4">Condition</th>
+<th class="cellalignment1334" id="r1c2-t4">LGWR Action</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t4" headers="r1c1-t4">LGWR can successfully write to at least one member in a group</td>
+<td class="cellalignment1335" headers="r2c1-t4 r1c2-t4">Writing proceeds as normal. LGWR writes to the available members of a group and ignores the unavailable members.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t4" headers="r1c1-t4"><a id="sthref1313"></a><a id="sthref1314"></a><a id="sthref1315"></a>LGWR cannot access the next group at a log switch because the group must be archived</td>
+<td class="cellalignment1335" headers="r3c1-t4 r1c2-t4">Database operation temporarily halts until the group becomes available or until the group is archived.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t4" headers="r1c1-t4">All members of the next group are inaccessible to LGWR at a log switch because of media failure</td>
+<td class="cellalignment1335" headers="r4c1-t4 r1c2-t4">Oracle Database returns an error, and the database instance shuts down. In this case, you may need to perform media recovery on the database from the loss of a redo log file.
+<p>If the database checkpoint has moved beyond the lost redo log, media recovery is not necessary, because the database has saved the data recorded in the redo log to the data files. You need only drop the inaccessible redo log group. If the database did not archive the bad log, use <code dir="ltr"><a id="sthref1316"></a><a id="sthref1317"></a><a id="sthref1318"></a>ALTER DATABASE CLEAR LOFGILE UNARCHIVED</code> to disable archiving before the log can be dropped.</p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r5c1-t4" headers="r1c1-t4"><a id="sthref1319"></a>All members of a group suddenly become inaccessible to LGWR while it is writing to them</td>
+<td class="cellalignment1335" headers="r5c1-t4 r1c2-t4">Oracle Database returns an error and the database instance immediately shuts down. In this case, you may need to perform media recovery. If the media containing the log is not actually lost--for example, if the drive for the log was inadvertently turned off--media recovery may not be needed. In this case, you need only turn the drive back on and let the database perform automatic instance recovery.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" --></div>
+<!-- class="sect3" -->
+<div id="ADMIN11311" class="sect3"><a id="sthref1320"></a>
+<h4 class="sect3"><a id="sthref1321"></a>Legal and Illegal Configurations</h4>
+<p>In most cases, a multiplexed redo log should be symmetrical: all groups of the redo log should have the same number of members. However, the database does not require that a multiplexed redo log be symmetrical. For example, one group can have only one member, and other groups can have two members. This configuration protects against disk failures that temporarily affect some redo log members but leave others intact.</p>
+<p><a id="sthref1322"></a>The only requirement for an instance redo log is that it have at least two groups. <a href="#i1206318">Figure 12-3</a> shows legal and illegal multiplexed redo log configurations. The second configuration is illegal because it has only one group.</p>
+<div id="ADMIN13041" class="figure">
+<p class="titleinfigure"><a id="i1206318"></a>Figure 12-3 Legal and Illegal Multiplexed Redo Log Configuration</p>
+<img width="537" height="711" src="img/admin053.gif" alt="Description of Figure 12-3 follows" /><br />
+<a id="sthref1323" href="img_text/admin053.htm">Description of "Figure 12-3 Legal and Illegal Multiplexed Redo Log Configuration"</a><br />
+<br /></div>
+<!-- class="figure" --></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1106324"></a>
+<div id="ADMIN11312" class="sect2">
+<h3 class="sect2">Placing Redo Log Members on Different Disks</h3>
+<p><a id="sthref1324"></a><a id="sthref1325"></a>When setting up a multiplexed redo log, place members of a group on different physical disks. If a single disk fails, then only one member of a group becomes unavailable to LGWR and other members remain accessible to LGWR, so the instance can continue to function.</p>
+<p>If you archive the redo log, spread redo log members across disks to eliminate contention between the LGWR and ARC<span class="italic">n</span> background processes. For example, if you have two groups of multiplexed redo log members (a <span class="italic">duplexed</span> redo log), place each member on a different disk and set your archiving destination to a fifth disk. Doing so will avoid contention between LGWR (writing to the members) and ARC<span class="italic">n</span> (reading the members).</p>
+<p>Data files should also be placed on different disks from redo log files to reduce contention in writing data blocks and redo records.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1006341"></a>
+<div id="ADMIN11313" class="sect2">
+<h3 class="sect2">Planning the Size of Redo Log Files</h3>
+<p>When setting the size of redo log files, consider whether you will be archiving the redo log. Redo log files should be sized so that a filled group can be archived to a single unit of offline storage media (such as a tape or disk), with the least amount of space on the medium left unused. For example, suppose only one filled redo log group can fit on a tape and 49% of the tape storage capacity remains unused. In this case, it is better to decrease the size of the redo log files slightly, so that two log groups could be archived on each tape.</p>
+<p><a id="sthref1326"></a>All members of the same multiplexed redo log group must be the same size. Members of different groups can have different sizes. However, there is no advantage in varying file size between groups. If checkpoints are not set to occur between log switches, make all groups the same size to guarantee that checkpoints occur at regular intervals.</p>
+<p>The minimum size permitted for a redo log file is 4 MB.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+Your operating system&ndash;specific Oracle documentation. The default size of redo log files is operating system dependent.</div>
+</div>
+<!-- class="sect2" -->
+<a id="CHDFBDJC"></a>
+<div id="ADMIN12891" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Planning the Block Size of Redo Log Files</h3>
+<p><a id="sthref1327"></a><a id="sthref1328"></a>Unlike the database block size, which can be between 2K and 32K, redo log files always default to a block size that is equal to the physical sector size of the disk. Historically, this has typically been 512 bytes (512B).</p>
+<p>Some newer high-capacity disk drives offer 4K byte (4K) sector sizes for both increased ECC capability and improved format efficiency. Most Oracle Database platforms are able to detect this larger sector size. The database then automatically creates redo log files with a 4K block size on those disks.</p>
+<p>However, with a block size of 4K, there is increased redo wastage. In fact, the amount of redo wastage in 4K blocks versus 512B blocks is significant. You can determine the amount of redo wastage by viewing the statistics stored in the <code dir="ltr">V$SESSTAT</code> and <code dir="ltr">V$SYSSTAT</code> views.</p>
+<pre dir="ltr">
+SQL&gt; SELECT name, value FROM v$sysstat WHERE name = 'redo wastage';
+ 
+NAME                                  VALUE
+-------------------------------- ----------
+redo wastage                       17941684
+</pre>
+<p>To avoid the additional redo wastage, if you are using emulation-mode disks&mdash;4K sector size disk drives that emulate a 512B sector size at the disk interface&mdash;you can override the default 4K block size for redo logs by specifying a 512B block size or, for some platforms, a 1K block size. However, you will incur a significant performance degradation when a redo log write is not aligned with the beginning of the 4K physical sector. Because seven out of eight 512B slots in a 4K physical sector are not aligned, performance degradation typically does occur. Thus, you must evaluate the trade-off between performance and disk wastage when planning the redo log block size on 4K sector size emulation-mode disks.</p>
+<p>Beginning with Oracle Database 11<span class="italic">g</span> Release 2, you can specify the block size of online redo log files with the <code dir="ltr">BLOCKSIZE</code> keyword in the <code dir="ltr">CREATE</code> <code dir="ltr">DATABASE</code>, <code dir="ltr">ALTER</code> <code dir="ltr">DATABASE</code>, and <code dir="ltr">CREATE</code> <code dir="ltr">CONTROLFILE</code> statements. The permissible block sizes are 512, 1024, and 4096.</p>
+<p>The following statement adds a redo log file group with a block size of 512B. The <code dir="ltr">BLOCKSIZE</code> <code dir="ltr">512</code> clause is valid but not required for 512B sector size disks. For 4K sector size emulation-mode disks, the <code dir="ltr">BLOCKSIZE</code> <code dir="ltr">512</code> clause overrides the default 4K size.</p>
+<pre dir="ltr">
+ALTER DATABASE orcl ADD LOGFILE
+  GROUP 4 ('/u01/logs/orcl/redo04a.log','/u01/logs/orcl/redo04b.log')
+  SIZE 100M BLOCKSIZE 512 REUSE;
+</pre>
+<p>To ascertain the redo log file block size, run the following query:</p>
+<pre dir="ltr">
+SQL&gt; SELECT BLOCKSIZE FROM V$LOG;
+
+BLOCKSIZE
+---------
+      512
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink SQLRF00802" href="../../server.112/e41084/statements_1004.htm#SQLRF00802"><span class="italic">Oracle Database SQL Language Reference</span></a> for information about the <code dir="ltr">ALTER</code> <code dir="ltr">DATABASE</code> command.</p>
+</li>
+<li>
+<p><a class="olink REFRN" href="../e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for information about the <code dir="ltr">V$SESSTAT</code> and <code dir="ltr">V$SYSSTAT</code> views</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1006351"></a>
+<div id="ADMIN11314" class="sect2">
+<h3 class="sect2">Choosing the Number of Redo Log Files</h3>
+<p><a id="sthref1329"></a><a id="sthref1330"></a><a id="sthref1331"></a>The best way to determine the appropriate number of redo log files for a database instance is to test different configurations. The optimum configuration has the fewest groups possible without hampering LGWR from writing redo log information.</p>
+<p>In some cases, a database instance may require only two groups. In other situations, a database instance may require additional groups to guarantee that a recycled group is always available to LGWR. During testing, the easiest way to determine whether the current redo log configuration is satisfactory is to examine the contents of the LGWR trace file and the database alert log. If messages indicate that LGWR frequently has to wait for a group because a checkpoint has not completed or a group has not been archived, add groups.</p>
+<p>Consider the parameters that can limit the number of redo log files before setting up or altering the configuration of an instance redo log. The following parameters limit the number of redo log files that you can add to a database:</p>
+<ul>
+<li>
+<p><a id="sthref1332"></a><a id="sthref1333"></a>The <code dir="ltr">MAXLOGFILES</code> parameter used in the <code dir="ltr">CREATE</code> <code dir="ltr">DATABASE</code> statement determines the maximum number of groups of redo log files for each database. Group values can range from 1 to <code dir="ltr">MAXLOGFILES</code>. When the compatibility level is set earlier than 10.2.0, the only way to override this upper limit is to re-create the database or its control file. Therefore, it is important to consider this limit before creating a database. When compatibility is set to 10.2.0 or later, you can exceed the <code dir="ltr">MAXLOGFILES</code> limit, and the control files expand as needed. If <code dir="ltr">MAXLOGFILES</code> is not specified for the <code dir="ltr">CREATE</code> <code dir="ltr">DATABASE</code> statement, then the database uses an operating system specific default value.</p>
+</li>
+<li>
+<p><a id="sthref1334"></a><a id="sthref1335"></a><a id="sthref1336"></a><a id="sthref1337"></a><a id="sthref1338"></a>The <code dir="ltr">MAXLOGMEMBERS</code> parameter used in the <code dir="ltr">CREATE</code> <code dir="ltr">DATABASE</code> statement determines the maximum number of members for each group. As with <code dir="ltr">MAXLOGFILES</code>, the only way to override this upper limit is to re-create the database or control file. Therefore, it is important to consider this limit before creating a database. If no <code dir="ltr">MAXLOGMEMBERS</code> parameter is specified for the <code dir="ltr">CREATE</code> <code dir="ltr">DATABASE</code> statement, then the database uses an operating system default value.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p>Your operating system specific Oracle documentation for the default and legal values of the <code dir="ltr">MAXLOGFILES</code> and <code dir="ltr">MAXLOGMEMBERS</code> parameters<a id="sthref1339"></a></p>
+</li>
+<li>
+<p><a class="olink PFGRF13009" href="../../server.112/e41573/instance_tune.htm#PFGRF13009"><span class="italic">Oracle Database Performance Tuning Guide</span></a></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="i1006367"></a>
+<div id="ADMIN11315" class="sect2">
+<h3 class="sect2">Controlling Archive Lag<a id="sthref1340"></a><a id="sthref1341"></a><a id="sthref1342"></a></h3>
+<p>You can force all enabled redo log threads to switch their current logs at regular time intervals. In a primary/standby database configuration, changes are made available to the standby database by archiving redo logs at the primary site and then shipping them to the standby database. The changes that are being applied by the standby database can lag behind the changes that are occurring on the primary database, because the standby database must wait for the changes in the primary database redo log to be archived (into the archived redo log) and then shipped to it. To limit this lag, you can set the <code dir="ltr">ARCHIVE_LAG_TARGET</code> initialization parameter. Setting this parameter lets you specify in seconds how long that lag can be.</p>
+<div id="ADMIN11316" class="sect3"><a id="sthref1343"></a>
+<h4 class="sect3">Setting the ARCHIVE_LAG_TARGET Initialization Parameter</h4>
+<p>When you set the <code dir="ltr"><a id="sthref1344"></a><a id="sthref1345"></a>ARCHIVE_LAG_TARGET</code> initialization parameter, you cause the database to examine the current redo log of the instance periodically. If the following conditions are met, then the instance will switch the log:</p>
+<ul>
+<li>
+<p>The current log was created prior to <span class="italic">n</span> seconds ago, and the estimated archival time for the current log is <span class="italic">m</span> seconds (proportional to the number of redo blocks used in the current log), where <span class="italic">n</span> + <span class="italic">m</span> exceeds the value of the <code dir="ltr">ARCHIVE_LAG_TARGET</code> initialization parameter.</p>
+</li>
+<li>
+<p>The current log contains redo records.</p>
+</li>
+</ul>
+<p>In an Oracle Real Application Clusters environment, the instance also causes other threads to switch and archive their logs if they are falling behind. This can be particularly useful when one instance in the cluster is more idle than the other instances (as when you are running a 2-node primary/secondary configuration of Oracle Real Application Clusters).</p>
+<p>The <code dir="ltr">ARCHIVE_LAG_TARGET</code> initialization parameter provides an upper limit for how long (in seconds) the current log of the database can span. Because the estimated archival time is also considered, this is not the exact log switch time.</p>
+<p>The following initialization parameter setting sets the log switch interval to 30 minutes (a typical value).</p>
+<pre dir="ltr">
+ARCHIVE_LAG_TARGET = 1800
+</pre>
+<p>A value of 0 disables this time-based log switching functionality. This is the default setting.</p>
+<p>You can set the <code dir="ltr">ARCHIVE_LAG_TARGET</code> initialization parameter even if there is no standby database. For example, the <code dir="ltr">ARCHIVE_LAG_TARGET</code> parameter can be set specifically to force logs to be switched and archived.</p>
+<p><code dir="ltr">ARCHIVE_LAG_TARGET</code> is a dynamic parameter and can be set with the <code dir="ltr">ALTER SYSTEM SET</code> statement.</p>
+<div class="infobox-note">
+<p class="notep1">Caution:</p>
+The <code dir="ltr">ARCHIVE_LAG_TARGET</code> parameter must be set to the same value in all instances of an Oracle Real Application Clusters environment. Failing to do so results in unpredictable behavior.</div>
+</div>
+<!-- class="sect3" -->
+<div id="ADMIN11317" class="sect3"><a id="sthref1346"></a>
+<h4 class="sect3">Factors Affecting the Setting of ARCHIVE_LAG_TARGET</h4>
+<p>Consider the following factors when determining if you want to set the <code dir="ltr">ARCHIVE_LAG_TARGET</code> parameter and in determining the value for this parameter.</p>
+<ul>
+<li>
+<p>Overhead of switching (as well as archiving) logs</p>
+</li>
+<li>
+<p>How frequently normal log switches occur as a result of log full conditions</p>
+</li>
+<li>
+<p>How much redo loss is tolerated in the standby database</p>
+</li>
+</ul>
+<p>Setting <code dir="ltr">ARCHIVE_LAG_TARGET</code> may not be very useful if natural log switches already occur more frequently than the interval specified. However, in the case of irregularities of redo generation speed, the interval does provide an upper limit for the time range each current log covers.</p>
+<p>If the <code dir="ltr">ARCHIVE_LAG_TARGET</code> initialization parameter is set to a very low value, there can be a negative impact on performance. This can force frequent log switches. Set the parameter to a reasonable value so as not to degrade the performance of the primary database.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006398"></a>
+<div id="ADMIN11318" class="sect1">
+<h2 class="sect1">Creating Redo Log Groups and Members</h2>
+<p><a id="sthref1347"></a><a id="sthref1348"></a><a id="sthref1349"></a>Plan the redo log of a database and create all required groups and members of redo log files during database creation. However, there are situations where you might want to create additional groups or members. For example, adding groups to a redo log can correct redo log group availability problems.</p>
+<p><a id="sthref1350"></a>To create new redo log groups and members, you must have the <code dir="ltr">ALTER DATABASE</code> system privilege. A database can have up to <code dir="ltr">MAXLOGFILES</code> groups.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SQLRF00802" href="../../server.112/e41084/statements_1004.htm#SQLRF00802"><span class="italic">Oracle Database SQL Language Reference</span></a> for a complete description of the <code dir="ltr">ALTER DATABASE</code> statement</div>
+<div id="ADMIN11319" class="sect2"><a id="sthref1351"></a>
+<h3 class="sect2">Creating Redo Log Groups</h3>
+<p><a id="sthref1352"></a><a id="sthref1353"></a>To create a new group of redo log files, use the SQL statement <code dir="ltr">ALTER DATABASE</code> with the <code dir="ltr">ADD LOGFILE</code> clause.</p>
+<p>The following statement adds a new group of redo logs to the database:</p>
+<pre dir="ltr">
+ALTER DATABASE
+  ADD LOGFILE ('/oracle/dbs/log1c.rdo', '/oracle/dbs/log2c.rdo') SIZE 100M;
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Provide full path names of new log members to specify their location. Otherwise, the files are created in either the default or current directory of the database server, depending upon your operating system.</div>
+<p>You can also specify the number that identifies the group using the <code dir="ltr">GROUP</code> clause:</p>
+<pre dir="ltr">
+ALTER DATABASE 
+  ADD LOGFILE GROUP 10 ('/oracle/dbs/log1c.rdo', '/oracle/dbs/log2c.rdo')
+      SIZE 100M BLOCKSIZE 512;
+</pre>
+<p>Using group numbers can make administering redo log groups easier. However, the group number must be between 1 and <code dir="ltr">MAXLOGFILES</code>. Do not skip redo log file group numbers (that is, do not number your groups 10, 20, 30, and so on), or you will consume unnecessary space in the control files of the database.</p>
+<p>In the preceding statement, the <code dir="ltr">BLOCKSIZE</code> clause is optional. See <a href="#CHDFBDJC">"Planning the Block Size of Redo Log Files"</a> for more information.</p>
+</div>
+<!-- class="sect2" -->
+<div id="ADMIN11320" class="sect2"><a id="sthref1354"></a>
+<h3 class="sect2">Creating Redo Log Members</h3>
+<p><a id="sthref1355"></a><a id="sthref1356"></a>In some cases, it might not be necessary to create a complete group of redo log files. A group could already exist, but not be complete because one or more members of the group were dropped (for example, because of a disk failure). In this case, you can add new members to an existing group.</p>
+<p><a id="sthref1357"></a><a id="sthref1358"></a>To create new redo log members for an existing group, use the SQL statement <code dir="ltr">ALTER DATABASE</code> with the <code dir="ltr">ADD LOGFILE MEMBER</code> clause. The following statement adds a new redo log member to redo log group number 2:</p>
+<pre dir="ltr">
+ALTER DATABASE ADD LOGFILE MEMBER '/oracle/dbs/log2b.rdo' TO GROUP 2;
+</pre>
+<p>Notice that filenames must be specified, but sizes need not be. The size of the new members is determined from the size of the existing members of the group.</p>
+<p>When using the <code dir="ltr">ALTER DATABASE</code> statement, you can alternatively identify the target group by specifying all of the other members of the group in the <code dir="ltr">TO</code> clause, as shown in the following example:</p>
+<pre dir="ltr">
+ALTER DATABASE ADD LOGFILE MEMBER '/oracle/dbs/log2c.rdo'
+    TO ('/oracle/dbs/log2a.rdo', '/oracle/dbs/log2b.rdo'); 
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Fully specify the filenames of new log members to indicate where the operating system files should be created. Otherwise, the files will be created in either the default or current directory of the database server, depending upon your operating system. You may also note that the status of the new log member is shown as <code dir="ltr">INVALID</code>. This is normal and it will change to active (blank) when it is first used.</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006447"></a>
+<div id="ADMIN11321" class="sect1">
+<h2 class="sect1">Relocating and Renaming Redo Log Members</h2>
+<p><a id="sthref1359"></a>You can use operating system commands to relocate redo logs, then use the <code dir="ltr">ALTER DATABASE</code> statement to make their new names (locations) known to the database. This procedure is necessary, for example, if the disk currently used for some redo log files is going to be removed, or if data files and several redo log files are stored on the same disk and should be separated to reduce contention.</p>
+<p><a id="sthref1360"></a>To rename redo log members, you must have the <code dir="ltr">ALTER DATABASE</code> system privilege. Additionally, you might also need operating system privileges to copy files to the desired location and privileges to open and back up the database.</p>
+<p>Before relocating your redo logs, or making any other structural changes to the database, completely back up the database in case you experience problems while performing the operation. As a precaution, after renaming or relocating a set of redo log files, immediately back up the database control file.</p>
+<p><a id="sthref1361"></a><a id="sthref1362"></a>Use the following steps for relocating redo logs. The example used to illustrate these steps assumes:</p>
+<ul>
+<li>
+<p>The log files are located on two disks: <code dir="ltr">diska</code> and <code dir="ltr">diskb</code>.</p>
+</li>
+<li>
+<p>The redo log is duplexed: one group consists of the members <code dir="ltr">/diska/logs/log1a.rdo</code> and <code dir="ltr">/diskb/logs/log1b.rdo</code>, and the second group consists of the members <code dir="ltr">/diska/logs/log2a.rdo</code> and <code dir="ltr">/diskb/logs/log2b.rdo</code>.</p>
+</li>
+<li>
+<p>The redo log files located on <code dir="ltr">diska</code> must be relocated to <code dir="ltr">diskc</code>. The new filenames will reflect the new location: <code dir="ltr">/diskc/logs/log1c.rdo</code> and <code dir="ltr">/diskc/logs/log2c.rdo</code>.</p>
+</li>
+</ul>
+<p><a id="ADMIN12596"></a><span class="subhead3">Steps for Renaming Redo Log Members&nbsp;</span></p>
+<ol>
+<li>
+<p>Shut down the database.</p>
+<pre dir="ltr">
+SHUTDOWN
+</pre></li>
+<li>
+<p>Copy the redo log files to the new location.</p>
+<p>Operating system files, such as redo log members, must be copied using the appropriate operating system commands. See your operating system specific documentation for more information about copying files.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You can execute an operating system command to copy a file (or perform other operating system commands) without exiting SQL*Plus by using the <code dir="ltr">HOST</code> command. Some operating systems allow you to use a character in place of the word <code dir="ltr">HOST</code>. For example, you can use an exclamation point (!) in UNIX.</div>
+<p>The following example uses operating system commands (UNIX) to move the redo log members to a new location:</p>
+<pre dir="ltr">
+mv /diska/logs/log1a.rdo /diskc/logs/log1c.rdo
+mv /diska/logs/log2a.rdo /diskc/logs/log2c.rdo
+</pre></li>
+<li>
+<p>Startup the database, mount, but do not open it.</p>
+<pre dir="ltr">
+CONNECT / as SYSDBA
+STARTUP MOUNT
+</pre></li>
+<li>
+<p>Rename the redo log members.</p>
+<p>Use the <code dir="ltr">ALTER DATABASE</code> statement with the <code dir="ltr">RENAME FILE</code> clause to rename the database redo log files.</p>
+<pre dir="ltr">
+ALTER DATABASE 
+  RENAME FILE '/diska/logs/log1a.rdo', '/diska/logs/log2a.rdo' 
+           TO '/diskc/logs/log1c.rdo', '/diskc/logs/log2c.rdo';
+</pre></li>
+<li>
+<p>Open the database for normal operation.</p>
+<p>The redo log alterations take effect when the database is opened.</p>
+<pre dir="ltr">
+ALTER DATABASE OPEN; 
+</pre></li>
+</ol>
+</div>
+<!-- class="sect1" -->
+<a id="i1006489"></a>
+<div id="ADMIN11322" class="sect1">
+<h2 class="sect1">Dropping Redo Log Groups and Members</h2>
+<p><a id="sthref1363"></a><a id="sthref1364"></a><a id="sthref1365"></a>In some cases, you may want to drop an entire group of redo log members. For example, you want to reduce the number of groups in an instance redo log. <a id="sthref1366"></a>In a different case, you may want to drop one or more specific redo log members. For example, if a disk failure occurs, you may need to drop all the redo log files on the failed disk so that the database does not try to write to the inaccessible files. In other situations, particular redo log files become unnecessary. For example, a file might be stored in an inappropriate location.</p>
+<div id="ADMIN11323" class="sect2"><a id="sthref1367"></a>
+<h3 class="sect2">Dropping Log Groups</h3>
+<p><a id="sthref1368"></a>To drop a redo log group, you must have the <code dir="ltr">ALTER DATABASE</code> system privilege. Before dropping a redo log group, consider the following restrictions and precautions:</p>
+<ul>
+<li>
+<p>An instance requires at least two groups of redo log files, regardless of the number of members in the groups. (A group comprises one or more members.)</p>
+</li>
+<li>
+<p>You can drop a redo log group only if it is inactive. If you must drop the current group, then first force a log switch to occur.</p>
+</li>
+<li>
+<p>Make sure a redo log group is archived (if archiving is enabled) before dropping it. To see whether this has happened, use the <code dir="ltr">V$LOG</code> view.</p>
+<pre dir="ltr">
+SELECT GROUP#, ARCHIVED, STATUS FROM V$LOG;
+
+   GROUP# ARC STATUS
+--------- --- ----------------
+        1 YES ACTIVE
+        2 NO  CURRENT
+        3 YES INACTIVE
+        4 YES INACTIVE
+</pre></li>
+</ul>
+<p>Drop a redo log group with the SQL statement <a id="sthref1369"></a><a id="sthref1370"></a><code dir="ltr">ALTER DATABASE</code> with the <code dir="ltr">DROP LOGFILE</code> clause.</p>
+<p>The following statement drops redo log group number 3:</p>
+<pre dir="ltr">
+ALTER DATABASE DROP LOGFILE GROUP 3;
+</pre>
+<p>When a redo log group is dropped from the database, and you are not using the Oracle Managed Files feature, the operating system files are not deleted from disk. Rather, the control files of the associated database are updated to drop the members of the group from the database structure. After dropping a redo log group, ensure that the drop completed successfully, and then use the appropriate operating system command to delete the dropped redo log files.</p>
+<p>When using Oracle Managed Files, the cleanup of operating systems files is done automatically for you.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1006517"></a>
+<div id="ADMIN11324" class="sect2">
+<h3 class="sect2">Dropping Redo Log Members</h3>
+<p><a id="sthref1371"></a>To drop a redo log member, you must have the <code dir="ltr">ALTER DATABASE</code> system privilege. Consider the following restrictions and precautions before dropping individual redo log members:</p>
+<ul>
+<li>
+<p>It is permissible to drop redo log files so that a multiplexed redo log becomes temporarily asymmetric. For example, if you use duplexed groups of redo log files, you can drop one member of one group, even though all other groups have two members each. However, you should rectify this situation immediately so that all groups have at least two members, and thereby eliminate the single point of failure possible for the redo log.</p>
+</li>
+<li>
+<p>An instance always requires at least two valid groups of redo log files, regardless of the number of members in the groups. (A group comprises one or more members.) If the member you want to drop is the last valid member of the group, you cannot drop the member until the other members become valid. To see a redo log file status, use the <code dir="ltr">V$LOGFILE</code> view. <a id="sthref1372"></a><a id="sthref1373"></a><a id="sthref1374"></a><a id="sthref1375"></a><a id="sthref1376"></a>A redo log file becomes <code dir="ltr">INVALID</code> if the database cannot access it. It becomes <code dir="ltr">STALE</code> if the database suspects that it is not complete or correct. A stale log file becomes valid again the next time its group is made the active group.</p>
+</li>
+<li>
+<p>You can drop a redo log member only if it is <span class="italic">not</span> part of an active or current group. To drop a member of an active group, first force a log switch to occur.</p>
+</li>
+<li>
+<p>Make sure the group to which a redo log member belongs is archived (if archiving is enabled) before dropping the member. To see whether this has happened, use the <code dir="ltr">V$LOG</code> view.</p>
+</li>
+</ul>
+<p><a id="sthref1377"></a><a id="sthref1378"></a>To drop specific inactive redo log members, use the <code dir="ltr">ALTER DATABASE</code> statement with the <code dir="ltr">DROP LOGFILE MEMBER</code> clause.</p>
+<p>The following statement drops the redo log <code dir="ltr">/oracle/dbs/log3c.rdo</code>:</p>
+<pre dir="ltr">
+ALTER DATABASE DROP LOGFILE MEMBER '/oracle/dbs/log3c.rdo';
+</pre>
+<p>When a redo log member is dropped from the database, the operating system file is not deleted from disk. Rather, the control files of the associated database are updated to drop the member from the database structure. After dropping a redo log file, ensure that the drop completed successfully, and then use the appropriate operating system command to delete the dropped redo log file.</p>
+<p>To drop a member of an active group, you must first force a log switch.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006533"></a>
+<div id="ADMIN11325" class="sect1">
+<h2 class="sect1">Forcing Log Switches</h2>
+<p>A log switch occurs when LGWR stops writing to one redo log group and starts writing to another. By default, a log switch occurs automatically when the current redo log file group fills.</p>
+<p><a id="sthref1379"></a><a id="sthref1380"></a><a id="sthref1381"></a><a id="sthref1382"></a>You can force a log switch to make the currently active group inactive and available for redo log maintenance operations. For example, you want to drop the currently active group, but are not able to do so until the group is inactive. You may also want to force a log switch if the currently active group must be archived at a specific time before the members of the group are completely filled. This option is useful in configurations with large redo log files that take a long time to fill.</p>
+<p><a id="sthref1383"></a><a id="sthref1384"></a><a id="sthref1385"></a><a id="sthref1386"></a><a id="sthref1387"></a>To force a log switch, you must have the <code dir="ltr">ALTER SYSTEM</code> privilege. Use the <code dir="ltr">ALTER SYSTEM</code> statement with the <code dir="ltr">SWITCH LOGFILE</code> clause.</p>
+<p>The following statement forces a log switch:</p>
+<pre dir="ltr">
+ALTER SYSTEM SWITCH LOGFILE;
+</pre></div>
+<!-- class="sect1" -->
+<a id="i1006546"></a>
+<div id="ADMIN11326" class="sect1">
+<h2 class="sect1">Verifying Blocks in Redo Log Files<a id="sthref1388"></a></h2>
+<p><a id="sthref1389"></a><a id="sthref1390"></a><a id="sthref1391"></a><a id="sthref1392"></a><a id="sthref1393"></a>You can configure the database to use checksums to verify blocks in the redo log files. If you set the initialization parameter <code dir="ltr">DB_BLOCK_CHECKSUM</code> to <code dir="ltr">TYPICAL</code> (the default), the database computes a checksum for each database block when it is written to disk, including each redo log block as it is being written to the current log. The checksum is stored the header of the block.</p>
+<p>Oracle Database uses the checksum to detect corruption in a redo log block. The database verifies the redo log block when the block is read from an archived log during recovery and when it writes the block to an archive log file. An error is raised and written to the alert log if corruption is detected.</p>
+<p>If corruption is detected in a redo log block while trying to archive it, the system attempts to read the block from another member in the group. If the block is corrupted in all members of the redo log group, then archiving cannot proceed.</p>
+<p>The value of the <code dir="ltr">DB_BLOCK_CHECKSUM</code> parameter can be changed dynamically using the <code dir="ltr">ALTER SYSTEM</code> statement.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+There is a slight overhead and decrease in database performance with <code dir="ltr">DB_BLOCK_CHECKSUM</code> enabled. Monitor your database performance to decide if the benefit of using data block checksums to detect corruption outweighs the performance impact.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink REFRN10030" href="../../server.112/e40402/initparams049.htm#REFRN10030"><span class="italic">Oracle Database Reference</span></a> for a description of the <code dir="ltr">DB_BLOCK_CHECKSUM</code> initialization parameter</div>
+</div>
+<!-- class="sect1" -->
+<a id="i1006568"></a>
+<div id="ADMIN11327" class="sect1">
+<h2 class="sect1">Clearing a Redo Log File<a id="sthref1394"></a><a id="sthref1395"></a><a id="sthref1396"></a></h2>
+<p><a id="sthref1397"></a><a id="sthref1398"></a>A redo log file might become corrupted while the database is open, and ultimately stop database activity because archiving cannot continue. In this situation the <code dir="ltr">ALTER DATABASE CLEAR LOGFILE</code> statement can be used to reinitialize the file without shutting down the database.</p>
+<p>The following statement clears the log files in redo log group number 3:</p>
+<pre dir="ltr">
+ALTER DATABASE CLEAR LOGFILE GROUP 3;
+</pre>
+<p>This statement overcomes two situations where dropping redo logs is not possible:</p>
+<ul>
+<li>
+<p>If there are only two log groups</p>
+</li>
+<li>
+<p>The corrupt redo log file belongs to the current group</p>
+</li>
+</ul>
+<p>If the corrupt redo log file has not been archived, use the <code dir="ltr">UNARCHIVED</code> keyword in the statement.</p>
+<pre dir="ltr">
+ALTER DATABASE CLEAR UNARCHIVED LOGFILE GROUP 3;
+</pre>
+<p>This statement clears the corrupted redo logs and avoids archiving them. The cleared redo logs are available for use even though they were not archived.</p>
+<p>If you clear a log file that is needed for recovery of a backup, then you can no longer recover from that backup. The database writes a message in the alert log describing the backups from which you cannot recover.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If you clear an unarchived redo log file, you should make another backup of the database.</div>
+<p><a id="sthref1399"></a><a id="sthref1400"></a>To clear an unarchived redo log that is needed to bring an offline tablespace online, use the <code dir="ltr">UNRECOVERABLE DATAFILE</code> clause in the <code dir="ltr">ALTER DATABASE CLEAR LOGFILE</code> statement.</p>
+<p>If you clear a redo log needed to bring an offline tablespace online, you will not be able to bring the tablespace online again. You will have to drop the tablespace or perform an incomplete recovery. Note that tablespaces taken offline normal do not require recovery.</p>
+</div>
+<!-- class="sect1" -->
+<a id="i1006593"></a>
+<div id="ADMIN11328" class="sect1">
+<h2 class="sect1">Redo Log Data Dictionary Views <a id="sthref1401"></a><a id="sthref1402"></a><a id="sthref1403"></a><a id="sthref1404"></a><a id="sthref1405"></a><a id="sthref1406"></a></h2>
+<p>The following views provide information on redo logs.</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="Viewing Redo Log Information" summary="The first column of this table lists the views that are used for providing information about redo logs. The second column contains a corresponding description of each view." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t16">View</th>
+<th class="cellalignment1334" id="r1c2-t16">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t16" headers="r1c1-t16"><code dir="ltr">V$LOG</code></td>
+<td class="cellalignment1335" headers="r2c1-t16 r1c2-t16">Displays the redo log file information from the control file</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t16" headers="r1c1-t16"><code dir="ltr">V$LOGFILE</code></td>
+<td class="cellalignment1335" headers="r3c1-t16 r1c2-t16">Identifies redo log groups and members and member status</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t16" headers="r1c1-t16"><code dir="ltr">V$LOG_HISTORY</code></td>
+<td class="cellalignment1335" headers="r4c1-t16 r1c2-t16">Contains log history information</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" -->
+<p>The following query returns the control file information about the redo log for a database.</p>
+<pre dir="ltr">
+SELECT * FROM V$LOG;
+
+GROUP# THREAD#   SEQ   BYTES  MEMBERS  ARC STATUS     FIRST_CHANGE# FIRST_TIM
+------ ------- ----- -------  -------  --- ---------  ------------- ---------
+     1       1 10605 1048576        1  YES ACTIVE          11515628 16-APR-00
+     2       1 10606 1048576        1  NO  CURRENT         11517595 16-APR-00
+     3       1 10603 1048576        1  YES INACTIVE        11511666 16-APR-00
+     4       1 10604 1048576        1  YES INACTIVE        11513647 16-APR-00
+</pre>
+<p>To see the names of all of the member of a group, use a query similar to the following:</p>
+<pre dir="ltr">
+SELECT * FROM V$LOGFILE;
+
+GROUP#   STATUS  MEMBER
+------  -------  ----------------------------------
+     1           D:\ORANT\ORADATA\IDDB2\REDO04.LOG
+     2           D:\ORANT\ORADATA\IDDB2\REDO03.LOG
+     3           D:\ORANT\ORADATA\IDDB2\REDO02.LOG
+     4           D:\ORANT\ORADATA\IDDB2\REDO01.LOG
+</pre>
+<p>If <code dir="ltr">STATUS</code> is blank for a member, then the file is in use.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink REFRN" href="../e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for detailed information about these views</div>
+</div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1326">
+<tr>
+<td class="cellalignment1335">
+<table class="cellalignment1331">
+<tr>
+<td class="cellalignment1330"><a href="control.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1330"><a href="archredo.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2001, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1337">
+<table class="cellalignment1329">
+<tr>
+<td class="cellalignment1330"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1330"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1330"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1330"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1330"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1330"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

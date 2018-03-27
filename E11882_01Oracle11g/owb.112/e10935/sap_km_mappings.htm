@@ -1,0 +1,2726 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Using SQL*Loader, SAP, and Code Template Mappings</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 037" />
+<meta name="dcterms.created" content="2011-09-21T18:21:29Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Warehouse Builder Data Modeling, ETL, and Data Quality Guide" />
+<meta name="dcterms.identifier" content="E10935-05" />
+<meta name="dcterms.isVersionOf" content="WBETL" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2000, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="dim_mappings.htm" title="Previous" type="text/html" />
+<link rel="Next" href="design_processflows.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10935.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">12/37</span> <!-- End Header --><a id="BEIJCEDC"></a><a id="WBETL07000"></a>
+<h1 class="chapter"><span class="secnum">7</span> Using SQL*Loader, SAP, and Code Template Mappings</h1>
+<p>Oracle Warehouse Builder enables you use mappings to extract data from disparate sources such as flat files and SAP. Code Template (CT) mappings help in open connectivity and enable customizing of how data is moved.</p>
+<p>This chapter describes the steps used to create SAP and CT mappings. It also includes examples of performing ETL on SAP systems and other heterogeneous databases.</p>
+<p>This chapter contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#CHDHIIJE">"Creating SQL*Loader Mappings to Extract Data from Flat Files"</a></p>
+</li>
+<li>
+<p><a href="#BEIDGFEC">"Creating SAP Extraction Mappings"</a></p>
+</li>
+<li>
+<p><a href="#CACCAGIC">"Retrieving Data from the SAP System"</a></p>
+</li>
+<li>
+<p><a href="#BABIFJIA">"Creating Code Template (CT) Mappings"</a></p>
+</li>
+<li>
+<p><a href="#BABJHFHI">"Setting Options for Code Templates in Code Template Mappings"</a></p>
+</li>
+<li>
+<p><a href="#CHDIBEFH">"Auditing the Execution of Code Template Mappings"</a></p>
+</li>
+<li>
+<p><a href="#CHDCIJFI">"Using Code Template Mappings to Perform Change Data Capture (CDC)"</a></p>
+</li>
+<li>
+<p><a href="#CHDDAHCD">"Using Control Code Templates"</a></p>
+</li>
+<li>
+<p><a href="#CHDGEFCC">"Using Oracle Target CTs in Code Template Mappings"</a></p>
+</li>
+<li>
+<p><a href="#CHDDGBGG">"Moving Data from Heterogeneous Databases to Oracle Database"</a></p>
+</li>
+</ul>
+<a id="CHDHIIJE"></a><a id="WBETL07002"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Creating SQL*Loader Mappings to Extract Data from Flat Files</h2>
+<p>Use the Flat File operator in a mapping to extract data from and load data into flat files. <a id="sthref1020"></a><a id="sthref1021"></a>You can use Flat File operators as either sources or targets, but not a combination of both.</p>
+<p>Define mappings to extract data from flat files as described in <a href="#BEIFEGGJ">"Extracting Data from Flat Files"</a>.</p>
+<p>Define mappings to load data into flat files as described in <a href="#BEIJGCBJ">"Loading Data into a Flat File"</a>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="etl_performance.htm#BBABEBIG">"Best Practices for Designing SQL*Loader Mappings"</a> for more information about best practices to follow while using SQL*Loader mappings.</div>
+<p class="subhead2"><a id="sthref1022"></a>Subsequent Steps</p>
+<p>After you design a mapping and generate its code, you can create a process flow or proceed directly with deployment followed by execution.</p>
+<p>Use process flows to interrelate mappings. For example, you can design a process flow such that the completion of one mapping triggers an e-mail notification and starts another mapping. For more information, see <a href="design_processflows.htm#CHDHGEAA">Chapter 8, "Designing Process Flows"</a>.</p>
+<p>Deploy the mapping, and any associated process flows you created, and then run the mapping as described in <a href="deploy.htm#BABBDACA">Chapter 12, "Deploying to Target Schemas and Executing ETL Logic"</a>.</p>
+<a id="BEIFEGGJ"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Extracting Data from Flat Files</h3>
+<p>To extract data from a flat file, use a Flat File operator as a source in a mapping.</p>
+<p>Alternatively, you can define an external table based on the flat file definition and use an External Table operator as a source. If you are loading large volumes of data, then loading from a flat file enables you to use the DIRECT PATH SQL*Loader option, which results in better performance. If you are not loading large volumes of data, then you can benefit from many of the relational transformations available when using external tables.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink WBDOD" href="../e10582/toc.htm"><span class="italic">Oracle Warehouse Builder Sources and Targets Guide</span></a> for a comparison of external tables and flat files.</div>
+<p>As a source, the Flat File operator acts as a row set generator that reads from a flat file using the SQL*Loader utility. The targets in a flat file mapping can be relational objects such as tables. An External Table operator cannot be a target, because external tables are read-only.</p>
+<p>When you design a mapping with a Flat File source operator, you can use the following operators:</p>
+<ul>
+<li>
+<p><a href="data_flow_opers.htm#i1175751">"Filter Operator"</a></p>
+</li>
+<li>
+<p><a href="src_tgt_opers.htm#i1175748">"Constant Operator"</a></p>
+</li>
+<li>
+<p><a href="src_tgt_opers.htm#i1175749">"Data Generator Operator"</a></p>
+</li>
+<li>
+<p><a href="src_tgt_opers.htm#i1175826">"Sequence Operator"</a></p>
+</li>
+<li>
+<p><a href="data_flow_opers.htm#i1175750">"Expression Operator"</a></p>
+</li>
+<li>
+<p><a href="data_flow_opers.htm#i1175595">"Transformation Operator"</a></p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If you use the Sequence, Expression, or Transformation operators, you cannot use the SQL*Loader Direct Load setting as a configuration parameter.</div>
+</li>
+</ul>
+<p>When you use a flat file as a source, ensure that a connector is created from the flat file source to the relational target. It the connector is not created, the mapping cannot be deployed successfully.</p>
+<p class="subhead2"><a id="sthref1023"></a>Defining a Mapping that Extracts Data from Flat Files</p>
+<ol>
+<li>
+<p>Import the flat file metadata into Oracle Warehouse Builder workspace.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink WBDOD" href="../e10582/toc.htm"><span class="italic">Oracle Warehouse Builder Sources and Targets Guide</span></a> for more information about importing flat file metadata.</div>
+</li>
+<li>
+<p>In the Projects Navigator, create a mapping as described in <a href="mappings.htm#BEIIJICH">"Steps to Define a Mapping"</a>.</p>
+</li>
+<li>
+<p>From the Projects Navigator, drag and drop the flat file from which data is to be extracted onto the Mapping Editor canvas.</p>
+</li>
+<li>
+<p>On the Mapping Editor canvas, add the operators that represent the target objects into which data extracted from the flat file is to be loaded. Also add the transformation operators needed to transform the source data.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="mappings.htm#i1171414">"Adding Operators to Mappings"</a> for information about adding operators.</div>
+</li>
+<li>
+<p>On the Mapping Editor canvas, create the data flows between the source, transformation, and target operators.</p>
+</li>
+<li>
+<p>Validate the mapping by selecting <span class="bold">Validate</span> from the File menu. Rectify validation errors, if any.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="BEIJGCBJ"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Loading Data into a Flat File</h3>
+<p>To load data into a flat file, use a Flat File operator as a target in a mapping.</p>
+<p>A mapping with a flat file target generates a PL/SQL package that loads data into a flat file instead of loading data into rows in a table.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+A mapping can contain a maximum of 50 Flat File target operators.</div>
+<p>You can use an existing flat file with either a single record type or multiple record types. If you use a multiple-record-type flat file as a target, then you can only map to one of the record types. To load all of the record types in the flat file from the same source, then you can drop the same flat file into the mapping as a target again and map to a different record type. For an example of this usage, see <a href="etl_performance.htm#i1147024">"Using Direct Path Loading to Ensure Referential Integrity in SQL*Loader Mappings"</a>. Alternatively, create a separate mapping for each record type to load.</p>
+<p class="subhead2"><a id="BEIHEHED"></a>Creating Flat File Targets</p>
+<p>Use one of the following methods to create a Flat File target operator:</p>
+<ul>
+<li>
+<p>Import an existing flat file definition into the repository and use this flat file as a target in a mapping.</p>
+</li>
+<li>
+<p>Define a flat file using the Create Flat File Wizard and use this as a target in the mapping.</p>
+</li>
+<li>
+<p>Create a new flat file as described in <a href="#BEIDAAGI">"Creating a New Flat File Target"</a>.</p>
+</li>
+</ul>
+<p class="subhead2"><a id="sthref1024"></a>Defining a Mapping That Loads Data into a Flat File</p>
+<p>Use the following steps to define a mapping that loads data into a flat file.</p>
+<ol>
+<li>
+<p>In your target module, define the flat file into which you want to load data using one of the methods described in <a href="#BEIHEHED">"Creating Flat File Targets"</a>.</p>
+</li>
+<li>
+<p>In the Projects Navigator, create a mapping as described in <a href="mappings.htm#BEIIJICH">"Steps to Define a Mapping"</a>.</p>
+</li>
+<li>
+<p>From the Projects Navigator, drag and drop the flat file into which data is to be loaded onto the Mapping Editor canvas.</p>
+</li>
+<li>
+<p>On the Mapping Editor canvas, add operators representing the source objects from which data is to be loaded into the flat file. Also add the transformation operators used to transform the source data.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="mappings.htm#i1171414">"Adding Operators to Mappings"</a> for information about adding operators.</div>
+</li>
+<li>
+<p>On the Mapping Editor canvas, create the data flows between the source, transformation, and target operators.</p>
+</li>
+<li>
+<p>Validate the mapping by selecting <span class="bold">Validate</span> from the File menu. Rectify validation errors, is any.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="BEIDAAGI"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Creating a New Flat File Target</h3>
+<ol>
+<li>
+<p>If you have not done so, create a flat file module.</p>
+<p>A flat file module is necessary to enable you to create the physical flat file later in these instructions.</p>
+</li>
+<li>
+<p>Define a mapping as described in <a href="mappings.htm#i1170011">"Defining Mappings"</a>.</p>
+</li>
+<li>
+<p>Drag and drop a Flat File operator onto the canvas.</p>
+</li>
+<li>
+<p>On the Add Flat File Operator dialog box, select <a href="mappings.htm#i1170985"><span class="xreftitlebold">Create Unbound Operator with No Attributes</span></a> and assign a name to the new target operator.</p>
+</li>
+<li>
+<p>Edit the new operator as described in <a href="mappings.htm#i1159210">"Editing Operators"</a>.</p>
+<p>Thus far, you have defined an operator that represents a flat file but have not created the actual flat file target.</p>
+</li>
+<li>
+<p><a id="BABDGDGF"></a>To create the flat file in the database, right-click the operator and select <span class="bold">Create and Bind</span>.</p>
+<p>The dialog box prompts you to select a flat file module and enables you to assign a unique name to the flat file. When you click <span class="bold">OK</span>, Oracle Warehouse Builder displays the new target in the Files node, under the module that you specified.</p>
+</li>
+<li>
+<p>Continue to define your mapping as described in <a href="mappings.htm#CHDDCJIE">"Steps to Perform Extraction, Transformation, and Loading (ETL) Using Mappings"</a>.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BEIDGFEC"></a><a id="WBETL07003"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Creating SAP Extraction Mappings<a id="sthref1025"></a><a id="sthref1026"></a></h2>
+<p>After importing metadata from SAP tables, you must define the extraction mapping to retrieve data from the SAP system.</p>
+<div class="sect2"><a id="sthref1027"></a>
+<h3 class="sect2">Defining an SAP Extraction Mapping</h3>
+<p>Use the Mapping Editor to create a mapping containing SAP tables. Creating a mapping with SAP tables is similar to creating mappings with other database objects. However, there are restrictions on the operators that can be used in the mapping. You can only use Table, Filter, Joiner, and Mapping Input Parameter mapping operators in a mapping containing SAP tables.</p>
+<p>A typical SAP extraction mapping consists of one or more SAP source tables (transparent, cluster, or pooled), one or more Filter or Joiner operators, and a non-SAP target table (typically an Oracle Database table) to store the retrieved data.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You cannot have both SAP and non-SAP (Oracle Database) source tables in a mapping. However, you can use an Oracle Database table as a staging table.</div>
+<p><a href="#CACGAFBB">Figure 7-1</a> displays a mapping that extracts data from an SAP source.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CACGAFBB"></a>Figure 7-1 SAP Extraction Mapping</p>
+<img width="754" height="465" src="img/sap_mapping.gif" alt="SAP Extraction Mapping" /><br />
+<a id="sthref1028" href="img_text/sap_mapping.htm">Description of "Figure 7-1 SAP Extraction Mapping"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>In this example, the Input Parameter holds a Date value, and the data from table <code>BKPF</code> is filtered based on this date. The Joiner operator enables you to join data from multiple tables, and the combined data set is stored in a staging table.</p>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#CACDGBDF">"Adding SAP Tables to the Mapping"</a></p>
+</li>
+<li>
+<p><a href="#BABFBJIF">"Setting the Loading Type"</a></p>
+</li>
+<li>
+<p><a href="#CACIAFDG">"Setting Configuration Properties for the Mapping"</a></p>
+</li>
+<li>
+<p><a href="#BEIBAHGE">"Setting the Join Rank"</a></p>
+</li>
+</ul>
+<a id="CACDGBDF"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Adding SAP Tables to the Mapping</h4>
+<p><span class="bold">To add an SAP table to a mapping:</span></p>
+<p>On the Mapping Editor, drag and drop the required SAP table onto the Mapping Editor canvas.</p>
+<p>The editor places a Table operator on the mapping canvas to represent the SAP table.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BABFBJIF"></a>
+<div class="sect3">
+<h4 class="sect3">Setting the <a id="sthref1029"></a><a id="sthref1030"></a><a id="sthref1031"></a>Loading Type</h4>
+<p>Use the Property Inspector to set the SQL*Loader properties for the tables in the mapping.</p>
+<p><span class="bold">To set the loading type for an SAP source table:</span></p>
+<ol>
+<li>
+<p>On the Mapping Editor, select the SAP source table. The Property Inspector displays the properties of the SAP table.</p>
+</li>
+<li>
+<p>Select a loading type from the Loading Type list. With ABAP code as the language for the mapping, the SQL*Loader code is generated as indicated in <a href="#BABFBECG">Table 7-1</a>.</p>
+<div class="tblformal">
+<p class="titleintable"><a id="sthref1032"></a><a id="BABFBECG"></a>Table 7-1 SQL*Loader Code Generated in ABAP</p>
+<table class="cellalignment2975" title="SQL*Loader Code Generated in ABAP" summary="This table show the loading types and resulting SQL*Loader code generated in the ABAP code." dir="ltr">
+<thead>
+<tr class="cellalignment2969">
+<th class="cellalignment2976" id="r1c1-t10">Loading Type</th>
+<th class="cellalignment2976" id="r1c2-t10">Resulting Load Type in SQL*Loader</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r2c1-t10" headers="r1c1-t10">
+<p>INSERT</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t10 r1c2-t10">
+<p>APPEND</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r3c1-t10" headers="r1c1-t10">
+<p>CHECK/INSERT</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t10 r1c2-t10">
+<p>INSERT</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r4c1-t10" headers="r1c1-t10">
+<p>TRUNCATE/INSERT</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t10 r1c2-t10">
+<p>TRUNCATE</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r5c1-t10" headers="r1c1-t10">
+<p>DELETE/INSERT</p>
+</td>
+<td class="cellalignment2977" headers="r5c1-t10 r1c2-t10">
+<p>REPLACE</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r6c1-t10" headers="r1c1-t10">
+<p>All other types</p>
+</td>
+<td class="cellalignment2977" headers="r6c1-t10 r1c2-t10">
+<p>APPEND</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" --></li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<a id="CACIAFDG"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Setting Configuration Properties for the Mapping</h4>
+<p>Perform the following steps to configure a mapping containing SAP tables:</p>
+<ul>
+<li>
+<p>Use the Configuration tab to define the code generation language as described in <a href="#CACGGDFH">"Setting the Language Parameter"</a>.</p>
+</li>
+<li>
+<p>Set ABAP specific parameters, and the directory and initialization file settings in the Configuration tab as described in <a href="#CACCEFIG">"Setting the Runtime Parameters"</a>.</p>
+</li>
+</ul>
+<p class="subhead2"><a id="CACGGDFH"></a>Setting the <a id="sthref1033"></a><a id="sthref1034"></a><a id="sthref1035"></a>Language Parameter</p>
+<p>The Language parameter enables you to choose the type of code you want to generate for a mapping. For mappings containing SAP source tables, Oracle Warehouse Builder automatically sets the language parameter to ABAP. Verify that this parameter has been set to ABAP.</p>
+<p class="subhead2"><a id="CACCEFIG"></a>Setting the <a id="sthref1036"></a><a id="sthref1037"></a><a id="sthref1038"></a>Runtime Parameters</p>
+<p>With the Language set to ABAP, expand the Runtime Parameters node in the Configuration tab to display settings specific to ABAP code generation.</p>
+<p>Some of these settings come with preset properties that optimize code generation. Oracle recommends that you retain these settings, as altering them may slow the code generation process.</p>
+<p>The following Runtime parameters are available for <a id="sthref1039"></a>SAP mappings:</p>
+<ul>
+<li>
+<p><span class="bold">Background Job</span>: Select this option to run the ABAP report as a background job in the SAP system. Enable this option for the longer running jobs. Foreground batch jobs that run for a long duration are considered hanging in SAP after a certain time. Therefore, it is ideal to run a background job for such extracts.</p>
+</li>
+<li>
+<p><span class="bold"><a id="sthref1040"></a>File Delimiter for Staging File:</span> Specifies the column separator in a SQL data file.</p>
+</li>
+<li>
+<p><span class="bold"><a id="sthref1041"></a>Data File Name:</span> Specifies the name of the data file that is generated when the ABAP code for the mapping is run in the SAP system.</p>
+</li>
+<li>
+<p><span class="bold"><a id="sthref1042"></a>SQL Join Collapsing:</span> Specifies the following hint, if possible, to generate ABAP code.</p>
+<pre>
+SELECT &lt; &gt; INTO &lt; &gt; FROM (T1 as T1 inner join T2 as T2) ON &lt;condition &gt; 
+</pre>
+<p>The default setting is TRUE.</p>
+</li>
+<li>
+<p><span class="bold">Primary Foreign Key for Join:</span> Specifies the primary key to be used for a join.</p>
+</li>
+<li>
+<p><span class="bold">ABAP Report Name</span>: Specifies the name of the ABAP code file generated by the mapping. This is required only when you run a custom function module to run the ABAP code.</p>
+</li>
+<li>
+<p><span class="bold"><a id="sthref1043"></a>SAP System Version</span>: Specifies the SAP system version number to which you want to deploy the ABAP code. For MySAP ERP and all other versions, select SAP R/3 4.7. Different ABAP code is required for versions before 4.7.</p>
+</li>
+<li>
+<p><span class="bold"><a id="sthref1044"></a>Staging File Directory:</span> Specifies the location of the directory in the SAP system where the data file generated by ABAP code resides.</p>
+</li>
+<li>
+<p><span class="bold">SAP Location</span>: Specifies the location of the SAP instance from where the data can be extracted.</p>
+</li>
+<li>
+<p><span class="bold"><a id="sthref1045"></a>Use Select Single:</span> Indicates whether Select Single is generated, if possible.</p>
+</li>
+<li>
+<p><span class="bold"><a id="sthref1046"></a>Nested Loop:</span> Specifies a hint to generate nested loop code for a join, if possible.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<a id="BEIBAHGE"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Setting the Join Rank</h4>
+<p>You must set the Join Rank parameter only if the mapping contains the Joiner operator, and you want to explicitly specify the driving table. Unlike SQL, ABAP code generation is rule-based. Therefore, you must design the mapping so that the tables are loaded in the right order. Or you can explicitly specify the order in which the tables must be joined. From the Configuration tab, expand <span class="bold">Table Operators</span>, and then for each table, specify the Join Rank. The driving table must have the Join Rank value set to 1, with increasing values for the subsequent tables.</p>
+<p>You can also let Oracle Warehouse Builder decide the driving table and the order of joining the other tables. In such cases, do not enter values for Join Rank.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CACCAGIC"></a><a id="WBETL07004"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Retrieving Data from the SAP System</h2>
+<p>After designing the extraction mapping, you must validate, generate, and deploy the mapping, as you do with all mappings in Oracle Warehouse Builder.</p>
+<p><span class="bold">To generate the script for the SAP mapping:</span></p>
+<ol>
+<li>
+<p>Right-click the SAP mapping and select <span class="bold">Generate.</span></p>
+<p>The generation results are displayed in the Log window, under the Scripts node.</p>
+</li>
+<li>
+<p>Expand the Scripts node, select the script name, and click <span class="bold">View Script</span> on the Log window toolbar.</p>
+<p>The generated code is displayed in the Code Viewer.</p>
+<p>You can edit, print, or save the file using the code editor. Close the Code Viewer to return to the Design Center.</p>
+</li>
+<li>
+<p>To save the script, right-click the script and click <span class="bold">Save Script As</span> on the Log window toolbar.</p>
+</li>
+</ol>
+<p>After you generate the SAP mapping, you must deploy the mapping to create the logical objects in the target location. To deploy an SAP mapping, right-click the mapping and select <span class="bold">Deploy</span>. You can also deploy the mapping from the Control Center Manager.</p>
+<p>For detailed information about deployment, see <a href="deploy.htm#BABBDACA">Chapter 12, "Deploying to Target Schemas and Executing ETL Logic"</a>.</p>
+<p>When an SAP mapping is deployed, an ABAP mapping is created and stored in the Oracle Warehouse Builder run time schema. Oracle Warehouse Builder also saves the <code>ABAP</code> file under <code><span class="codeinlineitalic">OWB_HOME</span></code><code>\owb\deployed_files</code> directory, where <code><span class="codeinlineitalic">OWB_HOME</span></code> is the location of the Oracle Database home directory of your Oracle Warehouse Builder installation. If you are using Oracle Warehouse Builder installation that comes with Oracle Database, then this equals the database home.</p>
+<p>Depending on whether data retrieval from the SAP system is fully automated, semiautomated, or manual, you must perform the subsequent tasks. This section consists of the following topics:</p>
+<ul>
+<li>
+<p><a href="#CACHCFFG">"Automated System"</a></p>
+</li>
+<li>
+<p><a href="#CACGHBDA">"Semiautomated System"</a></p>
+</li>
+<li>
+<p><a href="#CACDAGCI">"Manual System"</a></p>
+</li>
+</ul>
+<a id="CACHCFFG"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Automated System</h3>
+<p>In a completely automated system, as an Oracle Warehouse Builder user you have access to the predefined function module in the SAP system. It enables you to run any ABAP code and retrieve data directly from the SAP system without being dependent on the SAP administrator.</p>
+<p><a href="#CACFFFHE">Figure 7-2</a>. displays a diagrammatic representation of the automated data retrieval mechanism.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CACFFFHE"></a>Figure 7-2 Automated Data Retrieval</p>
+<img width="705" height="444" src="img/sap_runtime_1.gif" alt="Description of Figure 7-2 follows" /><br />
+<a id="sthref1047" href="img_text/sap_runtime_1.htm">Description of "Figure 7-2 Automated Data Retrieval"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>Because there is no dependence, you can automate the process of sending the ABAP code to the SAP system and retrieving the data file from the SAP system. Oracle Warehouse Builder uses FTP to transfer the data file to Oracle Warehouse Builder system, and load the target file with the retrieved data using SQL*Loader.</p>
+<p>An automated system works as follows:</p>
+<ol>
+<li>
+<p>You design the extraction mapping and generate the ABAP code for this mapping.</p>
+</li>
+<li>
+<p>Before deploying the mapping, ensure that you have set the following configuration parameters for the mapping:</p>
+<ul>
+<li>
+<p><span class="bold">ABAP Report Name</span>: The file that stores the ABAP code generated for the mapping.</p>
+</li>
+<li>
+<p><span class="bold">SAP Location</span>: The location on the SAP system from where data is retrieved.</p>
+</li>
+<li>
+<p><span class="bold">Data File Name</span>: Name of the data file to store the data generated by the execution of ABAP code.</p>
+</li>
+</ul>
+<p>Also ensure that you have provided the following additional connection details for the SAP location:</p>
+<ul>
+<li>
+<p><span class="bold">Execution Function Module</span>: Provide the name of the predefined SAP function module. Upon execution, this function module takes the ABAP report name as the parameter, and run the ABAP code.</p>
+</li>
+<li>
+<p><span class="bold">FTP Directory</span>: The directory on Oracle Warehouse Builder system. The data file generated upon the execution of the function module is sent using FTP to this directory.</p>
+</li>
+<li>
+<p>Also provide a user name that has write permissions on the FTP directory.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>You then start the mapping. The following which the following tasks are automatically performed:</p>
+<ul>
+<li>
+<p>Oracle Warehouse Builder deploys the ABAP and uses RFC_ABAP_INSTALL_AND_RUN to both load the ABAP and run it in SAP.</p>
+<p>The ABAP code is sent to the SAP system using a Remote Function Call (RFC).</p>
+</li>
+</ul>
+</li>
+<li>
+<p>In the SAP system, the code retrieves data from the source tables and creates a data file.</p>
+<p>This data file is stored in the location specified by Runtime parameter Staging File Directory.</p>
+</li>
+<li>
+<p>Oracle Warehouse Builder uses FTP to transfer this data file back to Oracle Warehouse Builder system.</p>
+<p>The file is stored in the location specified in the FTP Directory field.</p>
+</li>
+<li>
+<p>Using SQL*Loader, Oracle Warehouse Builder loads the target table in the mapping with the data from the data file.</p>
+</li>
+</ol>
+<p>The advantage of this system is that you can create a fully automated end-to-end solution to retrieve SAP data. As a user, you just create the extraction mapping and run it from Oracle Warehouse Builder, which then creates the ABAP code, sends it to the SAP system, retrieves the resultant data file, and loads the target table with the retrieved data.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CACGHBDA"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Semiautomated System</h3>
+<p>In a semiautomated system, as an Oracle Warehouse Builder user, you do not have access to the predefined function module, and therefore cannot use this function module to run ABAP code. You create an extraction mapping, deploy it, and then send the ABAP code to the SAP administrator who verifies the code before enabling you to run it in the SAP system.</p>
+<p><a href="#CACIBGJD">Figure 7-3</a> displays a diagrammatic representation of a semi automated system.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CACIBGJD"></a>Figure 7-3 Semiautomated Implementation</p>
+<img width="487" height="398" src="img/sap_runtime_2.gif" alt="Description of Figure 7-3 follows" /><br />
+<a id="sthref1048" href="img_text/sap_runtime_2.htm">Description of "Figure 7-3 Semiautomated Implementation"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>A semiautomated system works as follows:</p>
+<ol>
+<li>
+<p>You design the extraction mapping and generate the ABAP code for this mapping.</p>
+</li>
+<li>
+<p>You then transport the ABAP code to the test system to test the code.</p>
+</li>
+<li>
+<p>You then send the ABAP code to the SAP administrator, who loads it to the SAP repository.</p>
+</li>
+<li>
+<p>The SAP administrator creates a new ABAP report name.</p>
+</li>
+<li>
+<p>You can then call this ABAP report name to run the ABAP code in the production environment.</p>
+</li>
+<li>
+<p>Before you run the mapping in the SAP system, ensure that you have set the following configuration parameters for the mapping:</p>
+<ul>
+<li>
+<p><span class="bold">ABAP Report Name</span>: The SAP administrator provides the report name after verifying the ABAP code. You run this ABAP file.</p>
+</li>
+<li>
+<p><span class="bold">SAP Location</span>: The location on the SAP system from where data is retrieved.</p>
+</li>
+<li>
+<p><span class="bold">Data File Name</span>: Name of the data file to store the data generated during execution of ABAP code.</p>
+</li>
+</ul>
+<p>Also ensure that you have provided the following additional connection details for the SAP location:</p>
+<ul>
+<li>
+<p><span class="bold">Execution Function Module</span>: Provide the name of the custom function module created by the SAP administrator. On execution, this function module takes the ABAP report name as the parameter, and run the ABAP code. You must obtain the function module name from the SAP administrator.</p>
+</li>
+<li>
+<p><span class="bold">FTP Directory</span>: A directory on Oracle Warehouse Builder system. The data file generated by the execution of the ABAP code is sent using FTP to this directory.</p>
+</li>
+<li>
+<p>Also provide a user name that has Write permissions on the FTP directory.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>In the production environment, when you run the mapping, Oracle Warehouse Builder generates the ABAP code and sends it to the SAP system using a Remote Function Call (RFC).</p>
+</li>
+<li>
+<p>In the SAP system, the ABAP code is run using the customized function module and a data file is generated.</p>
+<p>This data file is stored in the location specified by the Runtime parameter Staging File Directory.</p>
+</li>
+<li>
+<p>Oracle Warehouse Builder uses FTP to transfer this data file back to Oracle Warehouse Builder system.</p>
+<p>The file is stored in the location specified in the FTP Directory field.</p>
+</li>
+<li>
+<p>Oracle Warehouse Builder uses SQL*Loader to load the target table with data from the data file.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="CACDAGCI"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Manual System</h3>
+<p>In a manual system, your role as an Oracle Warehouse Builder user is restricted to generating the ABAP code for the mapping, and sending the ABAP code to the SAP administrator. The tasks involved in this system are:</p>
+<ol>
+<li>
+<p>You create an extraction mapping, and generate the ABAP code for the mapping.</p>
+</li>
+<li>
+<p>While designing the mapping, ensure that you specify the Data File Name to store the data file.</p>
+</li>
+<li>
+<p>You send the ABAP code to the SAP administrator.</p>
+</li>
+<li>
+<p>The SAP administrator runs the ABAP code in the SAP system.</p>
+</li>
+<li>
+<p>On execution of the code, a data file is generated.</p>
+</li>
+</ol>
+<p>On Oracle Warehouse Builder end, you can create a Process Flow to retrieve the data file. The process flow must contain the following activities.</p>
+<ol>
+<li>
+<p>A File Exists activity to check for the presence of the data file.</p>
+</li>
+<li>
+<p>If the file exists, then an FTP activity transfers the file to Oracle Warehouse Builder system.</p>
+</li>
+<li>
+<p>If the file does not exist, then it must wait till the file is made available, and then perform an FTP.</p>
+</li>
+<li>
+<p>Using SQL*Loader, the target table is loaded with data from the data file.</p>
+</li>
+</ol>
+<p><a href="#CACFHDIB">Figure 7-4</a> displays the process flow that retrieves the data file.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CACFHDIB"></a>Figure 7-4 Process Flow to Retrieve SAP Data</p>
+<img width="890" height="236" src="img/sap_proc_flow_data_detect.gif" alt="Process Flow to retrieve SAP data" /><br />
+<a id="sthref1049" href="img_text/sap_proc_flow_data_detect.htm">Description of "Figure 7-4 Process Flow to Retrieve SAP Data"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>In certain environments, the SAP administrator may not enable any other user to access the SAP system. In such cases, implementing the manual system may be the only viable option.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BABIFJIA"></a><a id="WBETL07005"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Creating <a id="sthref1050"></a><a id="sthref1051"></a>Code Template (CT) Mappings</h2>
+<p>Once you create or import a code template and deploy it, the template to perform a certain task on a certain platform is available in the workspace. To use this template to load or transform your data, you must create a mapping that uses this code template.</p>
+<p>Some of the tasks that you can perform using code templates are:</p>
+<ul>
+<li>
+<p>Integrate with heterogeneous databases such as DB2 or SQL Server by extracting data from these databases</p>
+</li>
+<li>
+<p>Leverage functionality beyond that of the current Code Template library. For example, you can construct new code templates to use Oracle Database functionality such as Data Pump to move data between Oracle systems at high speed.</p>
+</li>
+</ul>
+<p>You can also use code templates in situations where the code generated for PL/SQL mappings does not meet the requirements of your application.</p>
+<p class="subhead2"><a id="sthref1052"></a>What are <a id="sthref1053"></a>Code Template (CT) Mappings?</p>
+<p>Mappings that contain an association with code templates are called <span class="italic">Code Template (CT) mappings</span>. Typically, they are used to extract or load data (both with and without transformations) from non-Oracle databases such as IBM DB2 and Microsoft SQL Server. You can also use Oracle Gateways to extract from and write to non-Oracle systems.</p>
+<p>To extract data from an Oracle Database and transform and load it into another Oracle Database, you can either use Code Template mappings or create mappings under the Mappings node of the Oracle target module.</p>
+<p class="subhead2"><a id="sthref1054"></a>When <a id="sthref1055"></a>Can I Use Code Template (CT) Mappings?</p>
+<p>Use Code Template mappings to extract data from, transform, or load data into Oracle and non-Oracle databases using code templates.</p>
+<p>When moving data between Oracle databases, the main reason to use CT mappings is moving data using technologies other than database links. You can use Code templates to implement bulk data movement based on functionality such as Data Pump.</p>
+<p class="subhead2"><a id="sthref1056"></a>Where Are Code Template Mappings Defined?</p>
+<p>To create a Code Template mapping, use the Template Mappings node under a project in the Projects Navigator. This node is used to include non-Oracle mappings (not PL/SQL, SQL*Loader, or ABAP).</p>
+<p>When you create a CT mapping, the Mapping Editor contains two tabs: <a href="mappings.htm#CHDCAGAD">"Logical View"</a> and <a href="mappings.htm#CHDCHAGG">"Execution View"</a>. Use the Logical View to define the mapping by adding mapping operators and creating data flows between operators. Use the Execution View to define execution units that specify how the mapping should be run. For more information about execution units, see <a href="#BABDBEBE">"Defining Execution Units"</a>.</p>
+<p class="subhead2"><a id="sthref1057"></a>What Operators Can Be Used in Code Template Mappings?</p>
+<p>You can use any mapping operator, except the ones listed in <a href="#BABBIFHB">"Mapping Operators Only Supported in Oracle Target CT Execution Units"</a>, in CT mappings.</p>
+<p>You can also use pluggable mappings in CT mappings. However, ensure that the pluggable mappings do not contain any of the operators listed in <a href="#BABBIFHB">"Mapping Operators Only Supported in Oracle Target CT Execution Units"</a>.</p>
+<p class="subhead2"><a id="sthref1058"></a>What are the <a id="sthref1059"></a>Types of Code Templates?</p>
+<p>Code templates in Oracle Warehouse Builder are classified into the following categories:</p>
+<ul>
+<li>
+<p>Load Code Template (Load CT)</p>
+</li>
+<li>
+<p>Integration Code Template (Integration CT)</p>
+</li>
+<li>
+<p>Control Code Template (Control CT)</p>
+</li>
+<li>
+<p>Change Data Capture Code Template (CDC CT)</p>
+</li>
+<li>
+<p>Oracle Target Code Template (Oracle Target CT)</p>
+</li>
+<li>
+<p>Function Code Template (Function CT)</p>
+</li>
+</ul>
+<p>For more details about the types of code templates, see <a class="olink WBDOD" href="../e10582/toc.htm"></a><a href="code_tempates.htm#CJAJAIDF">Chapter 29, "Oracle Warehouse Builder Code Template Tools and Substitution Methods Reference"</a>.</p>
+<a id="BEIBHJBB"></a><a id="WBETL07001"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">About Prebuilt Code <a id="sthref1060"></a><a id="sthref1061"></a>Templates Shipped with Oracle Warehouse Builder</h3>
+<p>Oracle Warehouse Builder includes some prebuilt code templates that you can use in CT mappings to perform data transformations. These code templates, defined to perform certain ETL tasks on the specified source or target, are available under the BUILT_IN_CT node under the Public Code Templates node of the Globals Navigator.</p>
+<p><a href="#BEIDHBFG">Table 7-2</a> provides a brief description of the code templates supplied by Oracle Warehouse Builder and details any restrictions in their usage. Use specific Load CTs for your target staging area whenever possible as they are more optimized for performance. For example, if you are loading to an Oracle database, use LCT_FILE_TO_ORACLE_SQLLDR or LCT_FILE_TO_ORACLE_EXTER_TABLE instead.</p>
+<p>For more details about these code templates, see the Oracle Data Integrator (ODI) documentation set. In ODI, code templates are called knowledge modules.</p>
+<div class="tblformalwidemax">
+<p class="titleintable"><a id="sthref1062"></a><a id="BEIDHBFG"></a>Table 7-2 Prebuilt Code Templates Supplied by Oracle Warehouse Builder</p>
+<table class="cellalignment2978" title="Prebuilt Code Templates Supplied by Oracle Warehouse Builder" summary="This table describes the prebuilt code templates and their functionality." dir="ltr">
+<thead>
+<tr class="cellalignment2969">
+<th class="cellalignment2976" id="r1c1-t11">Code Template Name</th>
+<th class="cellalignment2976" id="r1c2-t11">Code Template Type</th>
+<th class="cellalignment2976" id="r1c3-t11">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r2c1-t11" headers="r1c1-t11">
+<p>LCT_FILE_TO_ORACLE_EXTER_TABLE</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t11 r1c2-t11">
+<p>Load CT</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t11 r1c3-t11">
+<p>Loads data from a file to an Oracle Database staging area using the EXTERNAL TABLE SQL command.</p>
+<p>This CT is more efficient than the LCT_FILE_TO_SQL when dealing with large volumes of data. However, the loaded file must be accessible from the Oracle Database computer.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r3c1-t11" headers="r1c1-t11">
+<p>LCT_FILE_TO_ORACLE_SQLLDR</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t11 r1c2-t11">
+<p>Load CT</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t11 r1c3-t11">
+<p>Loads data from a file to an Oracle Database staging area using the native SQL*LOADER command line utility. Because it uses SQL*LOADER, this CT is more efficient than LCT_FILE_TO_SQL when dealing with large volumes of data.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r4c1-t11" headers="r1c1-t11">
+<p>LCT_FILE_TO_SQL</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t11 r1c2-t11">
+<p>Load CT</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t11 r1c3-t11">
+<p>Loads data from an ASCII or EBCDIC file to any SQL-compliant database used as a staging area.Consider using this Load CT if one of your source data stores is an ASCII or EBCDIC file.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r5c1-t11" headers="r1c1-t11">
+<p>LCT_ORACLE_TO_ORACLE_DBLINK</p>
+</td>
+<td class="cellalignment2977" headers="r5c1-t11 r1c2-t11">
+<p>Load CT</p>
+</td>
+<td class="cellalignment2977" headers="r5c1-t11 r1c3-t11">
+<p>Loads data from an Oracle database to an Oracle staging area database using the native database links feature.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r6c1-t11" headers="r1c1-t11">
+<p>LCT_SQL_TO_ORACLE</p>
+</td>
+<td class="cellalignment2977" headers="r6c1-t11 r1c2-t11">
+<p>Load CT</p>
+</td>
+<td class="cellalignment2977" headers="r6c1-t11 r1c3-t11">
+<p>Loads data from any Generic SQL source database to an Oracle staging area. This Load CT is similar to the standard LCT_SQL_TO_SQL, except that you can specify some additional specific Oracle Database parameters.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r7c1-t11" headers="r1c1-t11">
+<p>LCT_SQL_TO_SQL</p>
+</td>
+<td class="cellalignment2977" headers="r7c1-t11 r1c2-t11">
+<p>Load CT</p>
+</td>
+<td class="cellalignment2977" headers="r7c1-t11 r1c3-t11">
+<p>Loads data from a SQL-compliant database to a SQL-compliant staging area.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r8c1-t11" headers="r1c1-t11">
+<p>LCT_SQL_TO_SQL_ROW_BY_ROW</p>
+</td>
+<td class="cellalignment2977" headers="r8c1-t11 r1c2-t11">
+<p>Load CT</p>
+</td>
+<td class="cellalignment2977" headers="r8c1-t11 r1c3-t11">
+<p>Loads data from a SQL-compliant database to a SQL-compliant staging area. This CT uses Jython scripting to read selected data from the source database and write the result into the staging temporary table created dynamically.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r9c1-t11" headers="r1c1-t11">
+<p>ICT_ORACLE_INCR_UPD</p>
+</td>
+<td class="cellalignment2977" headers="r9c1-t11 r1c2-t11">
+<p>Integration CT</p>
+</td>
+<td class="cellalignment2977" headers="r9c1-t11 r1c3-t11">
+<p>Loads your Oracle target table, in incremental update mode, to insert missing records and to update existing ones.</p>
+<p>Inserts and updates are done in bulk set-based processing to maximize performance. You can also perform data integrity checks by invoking the Control CT.</p>
+<p><span class="bold">Note:</span> When you use this Integration CT, the following restrictions apply:</p>
+<ul>
+<li>
+<p>The Loading Type property of the target Table operator should be set to either INSERT_UPDATE or UPDATE_INSERT.</p>
+</li>
+<li>
+<p>A unique key or primary key must be defined for the target Table operator.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r10c1-t11" headers="r1c1-t11">
+<p>ICT_ORACLE_INCR_UPD_MERGE</p>
+</td>
+<td class="cellalignment2977" headers="r10c1-t11 r1c2-t11">
+<p>Integration CT</p>
+</td>
+<td class="cellalignment2977" headers="r10c1-t11 r1c3-t11">
+<p>Loads your Oracle target table, in incremental update mode, to insert missing records and to update existing ones.</p>
+<p>Inserts and updates are performed by the bulk set-based <code>MERGE</code> statement to maximize performance. It also enables performing data integrity checks by invoking the Control CT.</p>
+<p><span class="bold">Note:</span> When you use this Integration CT, the following restrictions apply:</p>
+<ul>
+<li>
+<p>The Loading Type property of the target Table operator should be set to either INSERT_UPDATE or UPDATE_INSERT.</p>
+</li>
+<li>
+<p>A unique key or primary key must be defined for the target Table operator.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r11c1-t11" headers="r1c1-t11">
+<p>ICT_ORACLE_INCR_UPD_PL_SQL</p>
+</td>
+<td class="cellalignment2977" headers="r11c1-t11 r1c2-t11">
+<p>Integration CT</p>
+</td>
+<td class="cellalignment2977" headers="r11c1-t11 r1c3-t11">
+<p>Loads your Oracle target table to insert missing records and to update existing ones.</p>
+<p>Use this CT if your records contain long or binary long object (BLOB) data types. Avoid using this CT to load large volumes of data because inserts and updates are performed in row-by-row PL/SQL processing.</p>
+<p><span class="bold">Note:</span> When you use this Integration CT, the following restrictions apply:</p>
+<ul>
+<li>
+<p>The Loading Type property of the target Table operator should be set to either INSERT_UPDATE or UPDATE_INSERT.</p>
+</li>
+<li>
+<p>A unique key or primary key must be defined for the target Table operator.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r12c1-t11" headers="r1c1-t11">
+<p>ICT_ORACLE_SCD</p>
+</td>
+<td class="cellalignment2977" headers="r12c1-t11 r1c2-t11">
+<p>Integration CT</p>
+</td>
+<td class="cellalignment2977" headers="r12c1-t11 r1c3-t11">
+<p>Loads a Type 2 Slowly Changing Dimension.</p>
+<p>This CT relies on the Slowly Changing Dimension metadata set on the target table to determine which records should be inserted as new versions or updated as existing versions.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r13c1-t11" headers="r1c1-t11">
+<p>ICT_SQL_CONTROL_APPEND</p>
+</td>
+<td class="cellalignment2977" headers="r13c1-t11 r1c2-t11">
+<p>Integration CT</p>
+</td>
+<td class="cellalignment2977" headers="r13c1-t11 r1c3-t11">
+<p>Loads your SQL-compliant target table in replace/append mode, with or without data integrity check.</p>
+<p>When flow data must be checked using a Control CT, this CT creates a temporary staging table before invoking the Control CT.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r14c1-t11" headers="r1c1-t11">
+<p>ICT_SQL_INCR_UPD</p>
+</td>
+<td class="cellalignment2977" headers="r14c1-t11 r1c2-t11">
+<p>Integration CT</p>
+</td>
+<td class="cellalignment2977" headers="r14c1-t11 r1c3-t11">
+<p>Loads your SQL-compliant target table, in incremental update mode, to insert missing records and to update existing ones.</p>
+<p>You can also perform data integrity checks by invoking the Control CT. Because not all databases support the same bulk update syntax, updates are done row by row.</p>
+<p><span class="bold">Note:</span> When you use this Integration CT, the following restrictions apply:</p>
+<ul>
+<li>
+<p>The Loading Type property of the target Table operator should be set to either INSERT_UPDATE or UPDATE_INSERT.</p>
+</li>
+<li>
+<p>A unique key or primary key must be defined for the target Table operator.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r15c1-t11" headers="r1c1-t11">
+<p>ICT_SQL_TO_FILE_APPEND</p>
+</td>
+<td class="cellalignment2977" headers="r15c1-t11 r1c2-t11">
+<p>Integration CT</p>
+</td>
+<td class="cellalignment2977" headers="r15c1-t11 r1c3-t11">
+<p>Integrates data in a target file from any SQL-compliant staging area in replace mode.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r16c1-t11" headers="r1c1-t11">
+<p>ICT_SQL_TO_SQL_APPEND</p>
+</td>
+<td class="cellalignment2977" headers="r16c1-t11 r1c2-t11">
+<p>Integration CT</p>
+</td>
+<td class="cellalignment2977" headers="r16c1-t11 r1c3-t11">
+<p>Enables you to use a staging area different from the target. It integrates data in a target SQL-compliant table from any SQL-compliant staging area in replace mode.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r17c1-t11" headers="r1c1-t11">
+<p>CCT_Oracle</p>
+</td>
+<td class="cellalignment2977" headers="r17c1-t11 r1c2-t11">
+<p>Control CT</p>
+</td>
+<td class="cellalignment2977" headers="r17c1-t11 r1c3-t11">
+<p>Checks for data integrity against constraints defined on an Oracle table. Rejects invalid records in the error table created dynamically. Can be used for static controls and flow controls.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r18c1-t11" headers="r1c1-t11">
+<p>CCT_SQL</p>
+</td>
+<td class="cellalignment2977" headers="r18c1-t11 r1c2-t11">
+<p>Control CT</p>
+</td>
+<td class="cellalignment2977" headers="r18c1-t11 r1c3-t11">
+<p>Checks for data integrity against constraints defined on a SQL-compliant database.</p>
+<p>Rejects invalid records in the error table created dynamically. Can be used for static controls and flow controls.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r19c1-t11" headers="r1c1-t11">
+<p>JCT_DB2_UDB_CONSISTENT</p>
+</td>
+<td class="cellalignment2977" headers="r19c1-t11 r1c2-t11">
+<p>CDC CT</p>
+</td>
+<td class="cellalignment2977" headers="r19c1-t11 r1c3-t11">
+<p>Creates the infrastructure required for consistent Change Data Capture on IBM DB2 UDB tables using triggers.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r20c1-t11" headers="r1c1-t11">
+<p>JCT_DB2_UDB_SIMPLE</p>
+</td>
+<td class="cellalignment2977" headers="r20c1-t11 r1c2-t11">
+<p>CDC CT</p>
+</td>
+<td class="cellalignment2977" headers="r20c1-t11 r1c3-t11">
+<p>Creates the infrastructure required for simple Change Data Capture on IBM DB2 UDB tables using triggers.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r21c1-t11" headers="r1c1-t11">
+<p>JCT_MSSQL_CONSISTENT</p>
+</td>
+<td class="cellalignment2977" headers="r21c1-t11 r1c2-t11">
+<p>CDC CT</p>
+</td>
+<td class="cellalignment2977" headers="r21c1-t11 r1c3-t11">
+<p>Creates the journalizing infrastructure for consistent journalizing on Microsoft SQL Server tables using triggers.</p>
+<p>Enables consistent Change Data Capture on Microsoft SQL Server.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r22c1-t11" headers="r1c1-t11">
+<p>JCT_MSSQL_SIMPLE</p>
+</td>
+<td class="cellalignment2977" headers="r22c1-t11 r1c2-t11">
+<p>CDC CT</p>
+</td>
+<td class="cellalignment2977" headers="r22c1-t11 r1c3-t11">
+<p>Creates the journalizing infrastructure for simple journalizing on Microsoft SQL Server tables using triggers.</p>
+<p>Enables simple Change Data Capture on Microsoft SQL Server.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r23c1-t11" headers="r1c1-t11">
+<p>JCT_ORACLE_10G_CONSISTEN_MINER</p>
+</td>
+<td class="cellalignment2977" headers="r23c1-t11 r1c2-t11">
+<p>CDC CT</p>
+</td>
+<td class="cellalignment2977" headers="r23c1-t11 r1c3-t11">
+<p>Enables consistent Change Data Capture on Oracle tables. Creates the journalizing infrastructure for consistent journalizing on Oracle 10<span class="italic">g</span> tables. Changed data is captured by the Oracle 10<span class="italic">g</span> LogMiner-specific utility.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r24c1-t11" headers="r1c1-t11">
+<p>JCT_ORACLE_11G_CONSISTEN_MINER</p>
+</td>
+<td class="cellalignment2977" headers="r24c1-t11 r1c2-t11">
+<p>CDC CT</p>
+</td>
+<td class="cellalignment2977" headers="r24c1-t11 r1c3-t11">
+<p>Enables consistent Change Data Capture on Oracle tables. Creates the journalizing infrastructure for consistent journalizing on Oracle 11<span class="italic">g</span> tables. Changed data is captured by the Oracle 11<span class="italic">g</span> LogMiner-specific utility.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r25c1-t11" headers="r1c1-t11">
+<p>JCT_ORACLE_9I_CONSISTENT_MINER</p>
+</td>
+<td class="cellalignment2977" headers="r25c1-t11 r1c2-t11">
+<p>CDC CT</p>
+</td>
+<td class="cellalignment2977" headers="r25c1-t11 r1c3-t11">
+<p>Enables consistent Change Data Capture on Oracle tables. Creates the journalizing infrastructure for consistent journalizing on Oracle 9<span class="italic">i</span> tables. Changed data is captured by the Oracle 9<span class="italic">i</span> LogMiner-specific utility.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r26c1-t11" headers="r1c1-t11">
+<p>JCT_ORACLE_CONSISTENT</p>
+</td>
+<td class="cellalignment2977" headers="r26c1-t11 r1c2-t11">
+<p>CDC CT</p>
+</td>
+<td class="cellalignment2977" headers="r26c1-t11 r1c3-t11">
+<p>Enables consistent Change Data Capture on Oracle tables. Creates the journalizing infrastructure for consistent Change Data Capture on Oracle tables using triggers.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r27c1-t11" headers="r1c1-t11">
+<p>JCT_ORACLE_CONSISTENT_UPD_DATE</p>
+</td>
+<td class="cellalignment2977" headers="r27c1-t11 r1c2-t11">
+<p>CDC CT</p>
+</td>
+<td class="cellalignment2977" headers="r27c1-t11 r1c3-t11">
+<p>Enables consistent Change Data Capture on Oracle tables. Creates the infrastructure for consistent Change Data Capture on Oracle tables using a source tables column that indicates the last update date.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r28c1-t11" headers="r1c1-t11">
+<p>JCT_ORACLE_SIMPLE</p>
+</td>
+<td class="cellalignment2977" headers="r28c1-t11 r1c2-t11">
+<p>CDC CT</p>
+</td>
+<td class="cellalignment2977" headers="r28c1-t11 r1c3-t11">
+<p>Enables simple Change Data Capture on Oracle tables. Creates the journalizing infrastructure for simple Change Data Capture on Oracle tables using triggers.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformalwidemax" -->
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1063"></a>
+<h4 class="sect3">Limitations of <a id="sthref1064"></a><a id="sthref1065"></a>Using Certain Prebuilt Code Templates</h4>
+<ul>
+<li>
+<p>When you use ICT_ORACLE_INCR_UPD_MERGE, sequences are not supported.</p>
+</li>
+<li>
+<p>When you use ICT_SQL_CONTROL_APPEND in a mapping, an ORDER BY clause associated with this CT does not work. No error message is displayed during the execution of a CT mapping containing this CT. However, the rows are not ordered as specified in the ORDER BY property.</p>
+</li>
+<li>
+<p>When you use Incremental Update Integration CTs, the Loading Type property of the target Table operator should be set to either INSERT_UPDATE or UPDATE_INSERT. Also, the target Table operator must have Unique key or Primary key defined on it.</p>
+</li>
+<li>
+<p>ICT_SQL_TO_SQL_APPEND uses two different credentials (one credential to the source schema and another credential to the target schema as defined in the location) to perform the loading. As a result, the map can be run successfully without a permission problem.</p>
+</li>
+<li>
+<p>ICT_SQL_CONTROL_APPEND uses a single credential (the credential to connect to the target schema) to perform the loading. In other words, the security behavior is similar to existing Oracle Warehouse Builder PL/SQL mapping. As a result, if the target schema has not been granted the permission to access the source schema, an "Insufficient privileges" error is reported.</p>
+<p>In general, Oracle Data Integrator Knowledge Modules (KMs) with "multiple connections" property set to true in its KM falls into the first category described above. Please refer to Oracle Data Integrator documentation for details.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BABBIFHB"></a><a id="WBETL07012"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Mapping Operators Only Supported in Oracle Target CT Execution Units</h3>
+<p>Certain transformation operators are designed to leverage functionality provided by the Oracle Database. This functionality is not available in other heterogeneous databases. Thus, you cannot assign execution units that contain these operators directly to Load CTs or Integration CTs. These operators are only supported if you add them to an execution unit that has an Oracle Target CT assigned to it.</p>
+<p>The list of operators that you cannot use directly in CT mappings, if the execution unit containing these operators is associated with an Integration CT or Load CT, is as follows:</p>
+<ul>
+<li>
+<p>Anydata Cast</p>
+</li>
+<li>
+<p>Construct Object</p>
+</li>
+<li>
+<p>Cube</p>
+</li>
+<li>
+<p>Dimension</p>
+</li>
+<li>
+<p>Expand Object</p>
+</li>
+<li>
+<p>LCR Cast</p>
+</li>
+<li>
+<p>LCR Splitter</p>
+</li>
+<li>
+<p>Lookup</p>
+</li>
+<li>
+<p>Mapping Input Parameter</p>
+</li>
+<li>
+<p>Mapping Output Parameter</p>
+</li>
+<li>
+<p>Match Merge</p>
+</li>
+<li>
+<p>Name and Address</p>
+</li>
+<li>
+<p>Pivot</p>
+</li>
+<li>
+<p>Post-Mapping Process</p>
+</li>
+<li>
+<p>Pre-Mapping Process</p>
+</li>
+<li>
+<p>Queue</p>
+</li>
+<li>
+<p>Set Operation</p>
+</li>
+<li>
+<p>Sorter</p>
+</li>
+<li>
+<p>Splitter</p>
+</li>
+<li>
+<p>Table Function</p>
+</li>
+<li>
+<p>Unpivot</p>
+</li>
+<li>
+<p>Varray Iterator</p>
+</li>
+</ul>
+<p class="subhead2"><a id="sthref1066"></a>Using Restricted Mapping Operators in Code Template Mappings</p>
+<p>Execution units that are associated with Oracle Target CTs enable you to use restricted mapping operators in CT mappings. You can use the operators listed in <a href="#BABBIFHB">"Mapping Operators Only Supported in Oracle Target CT Execution Units"</a> in execution units, if the execution unit containing these operators is associated with an Oracle Target CT. Hybrid mappings can be constructed which leverage flexible integration capabilities using the loading code templates in addition with the powerful transformation capabilities supported with the use of the Oracle Target CTs.</p>
+<p>Certain operations that cannot be performed using CT mappings can be performed using traditional Oracle Warehouse Builder mappings that are deployed as PL/SQL packages. You can perform such mappings as separate execution units.</p>
+</div>
+<!-- class="sect2" -->
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1067"></a>
+<h3 class="sect2">Steps to <a id="sthref1068"></a>Perform ETL Using Code Template Mappings</h3>
+<p>Performing ETL using CT mappings involves the following steps:</p>
+<ol>
+<li>
+<p>(Optional) <a href="#BABFHBEB">"Creating Template Mapping Modules"</a></p>
+<p>If you have not done so, create a Mappings module that contains the mapping.</p>
+</li>
+<li>
+<p><a href="#BABFHGJB">"Creating Mappings Using Code Templates"</a></p>
+</li>
+<li>
+<p><a href="#BABDBEBE">"Defining Execution Units"</a></p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+After you define execution units, you can optionally configure the CT mapping parameters as described in the following sections:
+<ul>
+<li>
+<p><a href="ref_maps_processflows.htm#i1113472">"Configuring Mappings Reference"</a></p>
+</li>
+<li>
+<p><a href="ref_maps_processflows.htm#CHDHBHAG">"Configuring Code Template (CT) Mappings"</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><a href="#BABECFDC">"Starting the Control Center Agent (CCA)"</a></p>
+</li>
+<li>
+<p><a href="#CIHCADIA">"Validating Code Template Mappings"</a></p>
+</li>
+<li>
+<p><a href="#BABJCIJG">"Generating Code Template Mappings"</a></p>
+</li>
+<li>
+<p><a href="#BABDEFIE">"Deploying Code Template Mappings"</a></p>
+</li>
+<li>
+<p><a href="#BABJCCEI">"Executing Code Template Mappings"</a></p>
+</li>
+</ol>
+<p>After you run the CT mapping, you can view the execution results as described in <a href="#BEIIIJIG">"Viewing Execution Results for Code Template Mappings"</a>.</p>
+<p>You can also audit errors caused during the execution of the CT mapping as described in <a href="#CHDIBEFH">"Auditing the Execution of Code Template Mappings"</a>.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BABFHBEB"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Creating <a id="sthref1069"></a><a id="sthref1070"></a>Template Mapping Modules</h3>
+<p>A template mapping module is a container for the mappings that use code templates. You can create a mapping that contains a code template only from the Template Mappings node of the Design Center. Similar to other modules in Oracle Warehouse Builder, each template mapping module is associated with a location that specifies where the mappings in this module should be deployed. Mappings containing code templates are deployed to Oracle Warehouse Builder Control Center Agent.</p>
+<p><span class="bold">To create a template mapping module:</span></p>
+<ol>
+<li>
+<p>In the Projects Navigator, expand the project node under which you want to create a template mapping module.</p>
+</li>
+<li>
+<p>Right-click the Template Mappings node and select <span class="bold">New Mapping Module</span>.</p>
+<p>The Create Module Wizard is displayed.</p>
+</li>
+<li>
+<p>On the Welcome page, click <span class="bold">Next</span>.</p>
+</li>
+<li>
+<p>On the Name and Description page, enter values for the following fields and click <span class="bold">Next</span>.</p>
+<p><span class="bold">Name:</span> Enter the name of the template mapping module. The name should conform to Oracle Warehouse Builder naming conventions.</p>
+<p><span class="bold">Description:</span> Enter an optional description for the template mapping module.</p>
+<p><span class="bold">Select the Module Status:</span> Select the status as Development, Quality Assurance, or Production.</p>
+</li>
+<li>
+<p>On the Connection Information page, specify the details of the location pointing to the Control Center Agent (CCA) to which the CT mappings are deployed. Click <span class="bold">Next</span>.</p>
+<p>If you previously created a location corresponding to the Control Center Agent, select this location using the <span class="bold">Location</span> list. You can also use the default location corresponding to the CCA, DEFAULT_AGENT, that is created by Oracle Warehouse Builder.</p>
+<p>To create a location, enter the following details for the Control Center Agent.</p>
+<p><span class="bold">Username:</span> User name for the OC4J user that you use to deploy to the CCA. To deploy to the Control Center Agent that is installed with Oracle Warehouse Builder, use oc4jadmin as the user name.</p>
+<p><span class="bold">Password:</span> Password for the OC4J user that you use to deploy to the CCA.</p>
+<p><span class="bold">Host:</span> The host name of the computer on which the Control Center Agent is installed.</p>
+<p><span class="bold">Port:</span> The value of the RMI port used by the OC4J server.</p>
+<p><span class="bold">Port Type:</span> To deploy to the agent location associated with the CCA that is installed along with Oracle Warehouse Builder, use RMI as the port type.</p>
+<p>The other options you can choose for port type are OPMN and RMIS.</p>
+<p><span class="bold">Instance:</span> Name of the OC4J instance corresponding to the CCA. To deploy to the default CCA installed with Oracle Warehouse Builder, leave this field blank.</p>
+<p><span class="bold">Application Name:</span> Name of the application to which CT mappings should be deployed. To deploy to the default CCA installed with Oracle Warehouse Builder, use jrt as the application name.</p>
+</li>
+<li>
+<p>On the Summary page, review the information that you entered in the wizard. Click <span class="bold">Finish</span> to create the template mapping module. Click <span class="bold">Back</span> to modify any entered values.</p>
+</li>
+</ol>
+<p>The Template mapping module is created and added to the navigator tree under the project.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BABFHGJB"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Creating Mappings Using Code Templates</h3>
+<p>To use the functionality defined by code templates in your environment, you create a Code Template (CT) mapping. The process to create a CT mapping is similar to a regular PL/SQL mapping, except for the additional step of defining execution units and associating them with code templates.</p>
+<p>Every CT mapping must belong to a mapping module.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Do not use CT mappings with Joiner Input Roles if the join is performed on 2 or more tables.</div>
+<p><span class="bold">To create a CT mapping:</span></p>
+<ol>
+<li>
+<p>In the Projects Navigator, expand the project node and then the Template Mappings node under which you want to create a CT mapping.</p>
+</li>
+<li>
+<p>Right-click the mapping module in which you want to create the CT mapping and select <span class="bold">New Mapping</span>.</p>
+<p>The Create Mapping dialog box is displayed.</p>
+</li>
+<li>
+<p>Enter the name and an optional description for the CT mapping and click <span class="bold">OK</span>.</p>
+<p>The Mapping Editor for the CT mapping is displayed.</p>
+</li>
+<li>
+<p>On the Logical View tab, add the required operators and establish data flows that perform the required data transformation.</p>
+<p>For more information about how to add operators and establish data flows between them, see <a href="mappings.htm#BEIGDJAE">Chapter 5, "Creating PL/SQL Mappings"</a>.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="BABDBEBE"></a><a id="WBETL07013"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Defining <a id="sthref1071"></a><a id="sthref1072"></a>Execution Units</h3>
+<p>The Execution View tab of the Mapping Editor enables you to define execution units. Use execution units to break up your mapping execution into smaller, related units and to associate a part of your mapping with a code template. Oracle Warehouse Builder generates code separately for each execution unit that you define.</p>
+<p>The Execution View tab of the Mapping Editor displays the operators and data flows from the Logical View in an iconized form. You cannot edit operators or create data flows in the Execution View. You must perform these operations using the Logical View. Create execution units as defined in <a href="#CIHFAABG">"Creating Execution Units"</a>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If you do not explicitly assign a code template to an execution unit, Oracle Warehouse Builder assigns a default code template to the execution unit. For more details about default code templates, see <a href="#CIHJBIIG">"Default Code Template for An Execution Unit"</a>.</div>
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1073"></a>
+<h4 class="sect3">Execution <a id="sthref1074"></a><a id="sthref1075"></a>View Menu and Toolbars</h4>
+<p>When you select the Execution View tab, the Design Center displays an additional menu called Execution and an Execution toolbar. Use these to:</p>
+<ul>
+<li>
+<p>Create and delete execution units</p>
+</li>
+<li>
+<p>Define default execution units</p>
+</li>
+<li>
+<p>Associate code templates with execution units</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<a id="CIHFAABG"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Creating Execution Units</h4>
+<p>Create an execution unit for a group of operators for which code generation and execution are controlled by a specific code template.</p>
+<p><span class="bold">To create an execution unit:</span></p>
+<ol>
+<li>
+<p>In the Execution View of the mapping, select the operators to group into an execution unit.</p>
+<p>You can do this by drawing a rectangle around the operators. Hold down the mouse button at the top of the first operator, drag the mouse so that you cover the required operators and then release the mouse button. Alternatively, hold down the Ctrl key and click the headers of all the operators to include in an execution unit.</p>
+</li>
+<li>
+<p>From the Execution menu, select <span class="bold">Create Execution Unit</span>. Or click <span class="bold">Create Execution Unit</span> on the Execution View toolbar.</p>
+<p>Oracle Warehouse Builder creates an execution unit for the selected operators and assigns a default name to it. To rename the execution unit, right-click the name and select <span class="bold">Open Details</span>. In the Edit Execution Unit dialog box, enter the new name for the execution unit.</p>
+</li>
+</ol>
+<p><span class="bold">To associate a code template with an execution unit:</span></p>
+<ol>
+<li>
+<p>If the Code Template panel is not displayed, from the View menu, select <span class="bold">Code Template</span>.</p>
+<p>The Code Templates tab is displayed in the Log window panel.</p>
+</li>
+<li>
+<p>In the Execution View tab of the Mapping Editor, select the execution unit with which you want to associate a code template.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#BEIGJIAD">"How Oracle Warehouse Builder Displays Code Templates that Can be Associated with Execution Units"</a></div>
+</li>
+<li>
+<p>In the Code Templates tab, use the list to select the code template with which the selected execution unit should be associated.</p>
+<p>The code templates displayed in the list depend on the source and target platforms of the operators in the selected execution unit. They also depend on the nature of the execution unit. For example, you can associate a Load CT with an execution unit that does not contain any operators bound to data objects. You can associate an Integration CT with an execution unit that contains one target operator bound to a repository data object.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1076"></a>
+<h4 class="sect3">Adding <a id="sthref1077"></a>Operators to an Execution Unit</h4>
+<p><span class="bold">To add operators to an execution unit:</span></p>
+<ol>
+<li>
+<p>In the Execution View of the Mapping Editor, select both the execution unit and the operators to add to the execution unit.</p>
+<p>You can select multiple objects by holding down the Ctrl key while selecting objects.</p>
+</li>
+<li>
+<p>From the Execution menu, select <span class="bold">Add Operator to Execution Unit</span>. Or click <span class="bold">Add Operator to Execution Unit</span> on the Execution View toolbar.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1078"></a>
+<h4 class="sect3">Adding Operators to Multiple Execution Units</h4>
+<p>An operator may appear in multiple execution unit, such as when it is a target in one execution unit and a source in another.</p>
+<p>For example, you have a Table operator <code>cust_tab</code> in the execution unit <code>CUST_EXEC_UNIT</code>. You can copy <code>cust_tab</code> to another execution unit <code>EX_UNIT_2</code> (which exists) by selecting both <code>cust_tab</code> and <code>EX_UNIT_2</code> and then clicking <span class="bold">Add Operator to Execution Unit</span>. A copy of <code>cust_tab</code> is added to <code>EX_UNIT_2</code>.</p>
+<p>Consider the Table operator <code>cust_tab</code>, which is a target in the execution unit <code>CUST_EXEC_UNIT</code>. Select <code>cust_tab</code> and then click <span class="bold">Create Execution Unit</span> to create an execution unit containing a copy of <code>cust_tab</code>. The label of this copy must be &lt;cust_tab&gt;, using the angle brackets as a visual cue that the operator appears in multiple execution units.</p>
+</div>
+<!-- class="sect3" -->
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1079"></a>
+<h4 class="sect3">Removing <a id="sthref1080"></a>Operators from an Execution Unit</h4>
+<p><span class="bold">To remove operators from an execution unit:</span></p>
+<ol>
+<li>
+<p>In the Execution View of the Mapping Editor, select the operator or operators to remove from an execution unit.</p>
+</li>
+<li>
+<p>From the Execution menu, select <span class="bold">Remove Operator from Execution Unit</span>. Or click <span class="bold">Remove Operator from Execution Unit</span> on the Mapping Editor toolbar.</p>
+<p>The selected operators are removed from the execution unit and displayed separately in the Execution View.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You cannot remove an operator from an execution unit when it is the only operator in the execution unit.</div>
+</li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1081"></a>
+<h4 class="sect3">Removing <a id="sthref1082"></a>Execution Units</h4>
+<p>When you remove an existing execution unit, the operators that were part of the execution unit are not associated with any execution unit. You must associate these operators with other execution units, if required.</p>
+<p>If you remove execution units, you must regenerate and deploy updated code for the mapping before your changes take effect.</p>
+<p><span class="bold">To remove an execution unit:</span></p>
+<ol>
+<li>
+<p>In the Execution View of the Mapping Editor, select the execution unit to remove.</p>
+</li>
+<li>
+<p>From the Execution menu, select <span class="bold">Remove Execution Unit</span>. Or click <span class="bold">Remove Execution Unit</span> on the Execution View toolbar.</p>
+<p>The execution unit is removed. Any operators that were contained in this execution unit are displayed individually, instead of grouped under the execution unit.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1083"></a>
+<h4 class="sect3">Creating <a id="sthref1084"></a>Default Execution Units</h4>
+<p>You can create a default set of execution units by clicking <span class="bold">Default Execution Units</span> or by selecting <span class="bold">Default Execution Units</span> from the Execution menu. Oracle Warehouse Builder first removes all existing execution units and then creates a new set of execution units such that all operators are assigned to some execution unit.</p>
+<p>The operators are assigned to execution units based on factors such as their location. Operators that are at a different location are assigned to different execution units. If all operators are at the same location, then the default may consist of a single execution unit containing all operators.</p>
+<p>The names of the default execution units depend on whether the location associated with the operators in the execution units is known. When the execution unit location (location associated with operators in the execution unit) is known, the name of the default execution unit is set to the location name followed by "_EU". If the location associated with the execution unit is not known, then the execution unit name starts with "MAP_EX_UNIT_",</p>
+</div>
+<!-- class="sect3" -->
+<a id="CIHJBIIG"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Default Code <a id="sthref1085"></a>Template for An Execution Unit</h4>
+<p>If you do not explicitly associate a code template with an execution unit, during code generation, Oracle Warehouse Builder assigns a default code template. The default code template depends on the platform of the target operators. You can define default code templates for each platform.</p>
+<p>For example, you can define a default Load CT, Integration CT, and Oracle Target CT for the Oracle Database platform. When you do not assign a code template to an execution unit that contains operators referencing Oracle Database objects, Oracle Warehouse Builder Code Generator performs the following steps:</p>
+<ul>
+<li>
+<p>Identifies the type of code template that is necessary for that particular execution unit</p>
+</li>
+<li>
+<p>Retrieves the default code template that should be assigned to the execution unit using the platform of the location with which the execution unit is associated</p>
+</li>
+<li>
+<p>Assigns the retrieved code template to the execution unit</p>
+</li>
+</ul>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You can define default code templates for a platform only using OMB*Plus. For more information about OMB*Plus, see <a class="olink WBSCR" href="../e10584/toc.htm"><span class="italic">Oracle Warehouse Builder API and Scripting Reference</span></a>.</div>
+<p>If no default code templates are defined for a particular platform, Oracle Warehouse Builder picks a code template from the available code templates and assigns it to the execution unit. It then updates the platform definition and assigns the selected code template as the default code template definition for that platform.</p>
+<p>A default code template can be assigned to an execution unit only if the CT mapping containing the code template and the default code template belong to the same project.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BEIGJIAD"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">How Oracle Warehouse Builder Displays Code Templates that Can be Associated with Execution Units</h4>
+<p>When associating a CT with execution units, the CTs displayed in the UI list are filtered by the source and the target platforms. For example, if the execution unit containing your source tables is an Oracle database, the CTs available for selection for this execution unit are ones that can be used for Oracle sources.</p>
+<p>In certain simple mappings, you may create a single execution unit that contains the source and target operators. In this case, the list of available Integration CTs is limited by the following:</p>
+<ul>
+<li>
+<p>Source Platform</p>
+</li>
+<li>
+<p>Platform</p>
+</li>
+<li>
+<p>The value set for the Multi-Connections property of the CT</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BABECFDC"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Starting the Control Center Agent (CCA)</h3>
+<p>The Control Center Agent is the agent that runs the code templates in the OC4J server. You must start the Control Center Agent before you deploy code templates or CT mappings.</p>
+<p class="subhead2"><a id="BEICAIEE"></a>Starting the <a id="sthref1086"></a><a id="sthref1087"></a><a id="sthref1088"></a><a id="sthref1089"></a>Control Center Agent (CCA)</p>
+<p>On Windows, start the Control Center Agent by running the <code>ccastart.bat</code> script located in the <code><span class="codeinlineitalic">OWB_HOME</span></code><code>/owb/bin/win32</code> directory.</p>
+<p>On UNIX, start the Control Center Agent by running the <code>ccastart</code> file located in the <code><span class="codeinlineitalic">OWB_HOME</span></code><code>/owb/bin/unix</code> directory.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+It is recommended that you not run <code>ccastart.bat</code> or <code>ccastart</code> multiple times to start multiple CCA instances. You must run multiple CCA instances, then install separate CCA instances on the Application Server using the installation steps required to install a CCA on the Application Server.</div>
+<p class="subhead2"><a id="sthref1090"></a>Stopping the <a id="sthref1091"></a><a id="sthref1092"></a><a id="sthref1093"></a><a id="sthref1094"></a>Control Center Agent (CCA)</p>
+<p>On Windows, stop the Control Center Agent by running the <code>ccashut.bat</code> script located in the <code><span class="codeinlineitalic">OWB_HOME</span></code><code>/owb/bin/win32</code> directory. This script takes the password of the oc4jadmin user as an input parameter.</p>
+<p>On UNIX, stop the Control Center Agent by running the <code>ccashut</code> file located in the <code><span class="codeinlineitalic">OWB_HOME</span></code><code>/owb/bin/unix</code> directory. This script takes the password of the oc4jadmin user as an input parameter.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CIHCADIA"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Validating <a id="sthref1095"></a>Code Template Mappings</h3>
+<p>Validating a Code Template (CT) mapping verifies the metadata definitions and configuration parameters to ensure that they are valid according to the rules defined by Oracle Warehouse Builder. As part of validation, Oracle Warehouse Builder verifies the assignment of operators to execution units. It also ensures that the code generated to perform the ETL task defined in the CT mapping can be generated correctly.</p>
+<p>During validation, Oracle Warehouse Builder checks the following rules:</p>
+<ul>
+<li>
+<p>An operator cannot be connected to two or more downstream operators in different execution units.</p>
+</li>
+<li>
+<p>An execution unit cannot contain non-Oracle source or target operators and other restricted mapping operators.</p>
+</li>
+<li>
+<p>Only Oracle Target CTs can be assigned to an execution unit with restricted operators.</p>
+</li>
+<li>
+<p>A transformation or data target operator containing multiple incoming connection cannot exist in multiple execution unit.</p>
+</li>
+<li>
+<p>An execution unit cannot have outgoing connections to multiple execution unit.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="BABJCIJG"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Generating <a id="sthref1096"></a>Code Template Mappings</h3>
+<p>Generating a Code Template (CT) mapping creates the scripts necessary to perform the ETL task in Oracle Warehouse Builder workspace. For CT mappings, Tcl scripts are generated.</p>
+<p>When you generate a CT mapping, Oracle Warehouse Builder first validates it. After the validation is successful, the CT mapping is generated. Generation <a id="sthref1097"></a>produces the following scripts, which are part of an <code>.ear</code> file:</p>
+<ul>
+<li>
+<p>Variable script, <code>var.tcl</code></p>
+<p>This script contains the variables that must be substituted in the substitution method calls of the code template script. The script collects all the defined mapping variables into a single Tcl variable that contains a map of name to value.</p>
+<p>This script stores all metadata, as described by the mapping, and this metadata is used by the code template (through its substitution methods). During execution of the CT mapping, the substitution methods in the code template are run in the Control Center Agent and their return values are computed from the appropriate metadata in the variable script. The metadata variable names do not directly match the names or patterns defined in the substitution methods; the implementation of the substitution methods performs that translation.</p>
+</li>
+<li>
+<p>Driver script, <code>driver.tcl</code></p>
+<p>The driver script first invokes the variable script to load the metadata variable values into the Jacl interpreter of the Control Center Agent. Next, for each execution unit, it invokes the main method of the code template associated with that execution unit.</p>
+<p>The order of execution of the code templates is automatically derived from the topology of the mapping in the Execution View.</p>
+</li>
+</ul>
+<p>If any errors occurred during generation, use the Mapping Editor to correct them and then regenerate the CT mapping.</p>
+<p class="subhead2"><a id="sthref1098"></a>Viewing Generation Results</p>
+<p>The results of the generation are displayed in a Results tab in the Log window. The Results tab displays a parent node that indicates whether the generation was successful. Under this node is one that uses the same name as the CT mapping that you generated. This node contains the validation results under the Validation node and the generated scripts under the Scripts node. Expand the node containing the results you want to view.</p>
+<p class="subhead2"><a id="sthref1099"></a>Viewing Generated Code</p>
+<p>The Scripts node under the generation results contains the <code>var.tcl</code> and <code>driver.tcl</code> scripts that contain the code generated to create the CT mapping.</p>
+<p>To view the generated code, expand the Scripts node. Right-click <code>var.tcl</code> or <code>driver.tcl</code> and click <span class="bold">View Script</span>. Or double-click the <code>.tcl</code> files to display their contents in a new tab in the Mapping Editor.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If the Mapping Editor displays a tab that contains generated code for a CT mapping, ensure that you close this tab before you view the generated code for another CT mapping. If you do not close the tab containing previous generated code, then you may see conflicting results for the generated code.</div>
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1100"></a>
+<h4 class="sect3">Sample Code Generated for CT Mapping<a id="sthref1101"></a>s</h4>
+<p>Following are some code examples from a code template and its associated metadata script, showing the substitution. The following code block displays a single procedural step of a code template, creating a temporary flow table.</p>
+<pre>
+proc 3_CREATE_FLOW_TABLE_I__main {  }
+{
+# Input Flow Parameters
+  variable SRC_LOCATION
+  variable TGT_LOCATION
+  variable KM_PARAMS
+  variable LOG_LEVEL
+  variable INSERT
+  variable UPDATE
+  variable COMMIT
+  variable SYNC_JRN_DELETE
+  variable FLOW_CONTROL
+  variable RECYCLE_ERRORS
+  variable STATIC_CONTROL
+  variable TRUNCATE
+  variable DELETE_ALL
+  variable CREATE_TARG_TABLE
+  variable FLOW_TABLE_OPTIONS
+  variable ANALYZE_TARGET
+  variable OPTIMIZER_HINT
+
+# Output parameters
+  variable EXIT_CODE 
+  variable RETURN_VALUE {}
+
+# Global variables
+  global errorInfo
+  global g_iud
+
+        set g_iud ""
+        set tgt_stmt [process "create table &lt;%=snpRef.getTable(\"L\", \"INT_NAME\", \"W\")%&gt;\n(\n&lt;%=snpRef.getColList(\"\", \"\\t\[COL_NAME\]\\t\[DEST_WRI_DT\] NULL\", \",\\n\", \"\", \"\")%&gt;,\n\tIND_UPDATE \tchar(1)\n)\n&lt;%=snpRef.getUserExit(\"FLOW_TABLE_OPTIONS\")%&gt;"]
+        puts $tgt_stmt
+        execjdbc $tgt_stmt "TGT_AC" "$TGT_LOCATION" "" "true" "false" "false"
+}
+</pre>
+<p>Notice that a target SQL statement, variable <code>tgt_stmt</code>, is assigned an actual SQL statement which is then run using the <code>execjdbc</code> procedure call. The <code>execjdbc</code> tcl procedure makes a Java call to run the statement through JDBC. The target statement is a string produced by the <code>process</code> procedure. The &lt;%...%&gt; delimiters require special processing to substitute required components into the SQL string. The <code>snpRef</code> tag is the prefix for a substitution method callout. <code>snpRef.getTable</code> is replaced by the actual table name. <code>snpRef.getColList</code> is another universal method to retrieve the list of table columns participating in the DML. In addition to <code>snpRef</code>, <code>odiRef</code> is supported (as in Oracle Data Integrator 10.2).</p>
+<p>The substitution method (<code>snpRef</code>) calls are completed by an Oracle Warehouse Builder Tcl module which extracts the associated data from a variable of the metadata script. The following is an example of a metadata script section showing the table name and column list:</p>
+<pre>
+set M1_params {
+  {CKM_CALL ""}
+  {COLUMN_GENERIC_DATATYPE "NUMERIC VARCHAR"}
+  {COLUMN_LIST "EMPLOYEES.EMPLOYEE_ID EMPLOYEES.LAST_NAME"}
+  {COLUMN_LIST_ALIAS "EMPLOYEE_ID LAST_NAME"}
+  {COLUMN_LIST_DATATYPE "NUMBER(6) VARCHAR2(25)"}
+  {EXECUTION_UNIT_NAME "EX_UNIT_2"}
+  {FROM_LIST "EMPLOYEES"}
+  {FROM_LIST_ALIAS "EMPLOYEES"}
+  {HAS_JRN "0"}
+  {INSERT_COLUMN_LIST "EMPID ENAME"}
+  {IS_DISTINCT "FALSE"}
+  {JOURNAL_IN_CURRENT_SCHEMA "false"}
+  {JOURNAL_IN_SOURCE_SCHEMA "false"}
+  {JOURNAL_IN_STAGING_AREA "false"}
+  {JRN_FILTER ""}
+  {JRN_METHOD "NONE"}
+  {JRN_TABLE "."}
+  {KM_NAME "KM_IKM_ORACLE_INCREMENTAL_UPD"}
+  {MAP_NAME "MAPPING_2"}
+  {SELECT_STATEMENT "SELECT EMPLOYEES.EMPLOYEE_ID EMPLOYEE_ID,
+         EMPLOYEES.LAST_NAME LAST_NAME
+FROM
+  EMPLOYEES  EMPLOYEES"}
+  {SQL_STATEMENT "INSERT INTO TGT(EMPID, ENAME)
+  (SELECT EMPLOYEES.EMPLOYEE_ID EMPLOYEE_ID,EMPLOYEES.LAST_NAME LAST_NAME
+FROM
+  EMPLOYEES  EMPLOYEES
+  )
+;"}
+  {TARGET_COLUMN_DATATYPE "NUMBER(15) VARCHAR2(100)"}
+  {TARGET_COLUMN_LIST "EMPID ENAME"}
+  {TARGET_GENERIC_DATATYPE "NUMERIC VARCHAR"}
+  {TARGET_NAME "TGT"}
+}
+</pre></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BABDEFIE"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Deploying <a id="sthref1102"></a><a id="sthref1103"></a>Code Template Mappings</h3>
+<p>To deploy a Code Template (CT) mapping, use the Control Center Manager. In the Control Center navigation tree, CT mappings are listed under the agent location that is associated with the mapping module containing the CT mappings.</p>
+<p>Deploying a CT mapping copies the generated scripts to the CCA.</p>
+<p>Before you deploy a CT mapping, ensure that you deploy all the code templates associated with it.</p>
+<p><span class="bold">To deploy a code template mapping:</span></p>
+<ol>
+<li>
+<p>From the Design Center, open the Control Center by selecting <span class="bold">Control Center Manager</span> from the Tools menu.</p>
+</li>
+<li>
+<p>In the Control Center navigation tree, expand the project node under which you created the CT mapping. Then expand the location node associated with the mapping module that contains the CT mapping.</p>
+</li>
+<li>
+<p>Expand the mapping module node that contains the CT mapping.</p>
+</li>
+<li>
+<p>Select the CT mapping to be deployed and, in the Object Details panel, select <span class="bold">Create</span> as the Deploy Action.</p>
+</li>
+<li>
+<p>Click <span class="bold">Deploy</span>.</p>
+</li>
+</ol>
+<p>The Control Center Jobs panel contains a new entry for to the deployment job corresponding to the deployed CT mapping. If the deployment is successful, then the status displays a success message. If the deployment fails, then double-click the error message to view the details of the error.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BABJCCEI"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Executing Code <a id="sthref1104"></a><a id="sthref1105"></a>Template Mappings</h3>
+<p>When you run a Code Template (CT) mapping, the code template is used to perform the data integration task defined in the CT mapping. Before you run a CT mapping, ensure that the CT mapping is deployed as described in <a href="#BABDEFIE">"Deploying Code Template Mappings"</a>.</p>
+<p>To run a CT mapping, in the Control Center Manager, select the CT mapping and click <span class="bold">Start</span>.</p>
+<p>Or, from the Projects Navigator, right-click the CT mapping and select <span class="bold">Start</span>.</p>
+<p>The CT mapping is run and the ETL defined by it is performed.</p>
+<p>J2EE Runtime environment referred to as the CCA (Control Center Agent) controls the execution of CT mappings. The CCA is separate from the Runtime Platform. The CCA runs a mapping by executing Tcl/Java (Jacl) scripts. Because the execution is performed entirely by the CCA, it can be invoked separately from Service Oriented Architecture (SOA) interfaces.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+While executing complex CT mappings that could take more than a day to run, it is recommended that you split the job into smaller ones. The default transaction timeout for the OC4J is set to one day. If your job execution takes more than a day, then the execution times out and unexpected errors may be encountered.</div>
+</div>
+<!-- class="sect2" -->
+<a id="BEIIIJIG"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Viewing Execution <a id="sthref1106"></a>Results for Code Template Mappings</h3>
+<p>You can view execution results for a Code Template (CT) mapping by using the Results tab or Audit Information panel.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The number of rows selected is not audited during CT mapping execution. Thus, the execution results do not contain the number of rows selected.</div>
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1107"></a>
+<h4 class="sect3">Viewing Execution Results by Using the Results Tab</h4>
+<p>When you run a CT mapping using the Design Center, a new Results tab is created in the Log window to display the CT mapping execution results. The Results tab contains a node called Execution that contains the execution results. This displays details about the number of rows inserted, updated, and deleted during the CT mapping execution.</p>
+</div>
+<!-- class="sect3" -->
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1108"></a>
+<h4 class="sect3">Viewing Execution Results by Using the Audit Information Panel</h4>
+<p>The Audit Information panel enables you to view additional details about the CT mapping execution. You can also view results for previous executions of the CT mapping. To display the Audit Information panel, from the View menu, select <span class="bold">Audit Information</span>.</p>
+<p>Expand the location node to which the CT mapping is deployed to view the jobs for this CT mapping. Because you can run a CT mapping multiple times, each execution is represented by a job. Each job contains a node for execution units, which in turn contains a node for steps. Details such as number of rows inserted, updated, deleted, and selected are displayed. Use the Execute Statement tab to view the statement used to run a step.</p>
+<p>While running the CT mapping or Change Data Capture process, the Audit Information panel displays the job and its child nodes, such as Execution Units (for CT mapping only), Tasks, and Steps, as they are being run. The status for each job is also displayed. You can filter tasks for a Job in the Audit Information panel based on the status (such as Skipped, Warnings, and so on). The default is set to Filter None, which means that no filtering is performed. You can also sort Jobs by Timestamps.</p>
+<p>Use the Message tab to view any message during the execution of the steps, such as an exception from the JDBC driver during the execution of a JDBC task.</p>
+<p class="subhead2"><a id="sthref1109"></a>Modes of Operation for the Audit Information Panel</p>
+<p>The Audit Information panel can display audit information in the following modes:</p>
+<ul>
+<li>
+<p>If a CT mapping is selected in the Projects Navigator, only the execution audit for that CT mapping is displayed.</p>
+</li>
+<li>
+<p>If you select a Function CT in the Projects Navigator, only execution audit information for the selected CT is displayed.</p>
+</li>
+<li>
+<p>If you select a module containing CDC tables in the Projects Navigator, the audit information for CDC is displayed.</p>
+</li>
+<li>
+<p>If you select an agent in the Locations Navigator, the execution audits for all the jobs run in that agent (including CT mapping, CDC execution, and CT function deployment) are displayed.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BABJHFHI"></a><a id="WBETL07006"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Setting Options for Code Templates in Code Template Mappings</h2>
+<p>When you use a code template in a CT mapping, the options that you can set for the code template depends on the type of code template.</p>
+<p>Oracle Warehouse Builder is not aware of the options that work with each platform or database. Thus, validating and generating your CT mappings does not automatically verify if the option that you set works with the platform or database associated with the code template. For example, Teradata does not support the TRUNCATE statement. Thus, if you set the Truncate property to true for a code template associated with a Teradata source or target, you encounter errors while executing the CT mapping.</p>
+<p><a href="#CIHDEGAD">Table 7-3</a> describes the options that you can set for each type of code template in a CT mapping. You can add new options to code templates and use them in CT mappings.</p>
+<div class="tblformalwide">
+<p class="titleintable"><a id="sthref1110"></a><a id="CIHDEGAD"></a>Table 7-3 Options for Code Templates in Code Template Mappings</p>
+<table class="cellalignment2978" title="Options for Code Templates in Code Template Mappings" summary="This table describes the options you can set for code templates." dir="ltr">
+<thead>
+<tr class="cellalignment2969">
+<th class="cellalignment2976" id="r1c1-t22">Option Name</th>
+<th class="cellalignment2976" id="r1c2-t22">Description</th>
+<th class="cellalignment2976" id="r1c3-t22">Option applicable for Code Template Types</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r2c1-t22" headers="r1c1-t22">
+<p>After ICT</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t22 r1c2-t22">
+<p>Set to True to clean up work tables after the ICT has completed integration in the target. This property enables you to decide to keep work tables after the mapping completes (primarily for debugging purposes).</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t22 r1c3-t22">
+<p>Load CT</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r3c1-t22" headers="r1c1-t22">
+<p>Commit</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t22 r1c2-t22">
+<p>Set to True to indicate that a commit should be performed after the integration task is completed.</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t22 r1c3-t22">
+<p>Integration CT</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r4c1-t22" headers="r1c1-t22">
+<p>Create_targ_table</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t22 r1c2-t22">
+<p>Set to True to create the target table. Set to False if the table exists.</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t22 r1c3-t22">
+<p>Integration CT</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r5c1-t22" headers="r1c1-t22">
+<p>Delete_all</p>
+</td>
+<td class="cellalignment2977" headers="r5c1-t22 r1c2-t22">
+<p>Set to True to delete all rows from the target table.</p>
+</td>
+<td class="cellalignment2977" headers="r5c1-t22 r1c3-t22">
+<p>Integration CT</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r6c1-t22" headers="r1c1-t22">
+<p>Delete_temporary_objects</p>
+</td>
+<td class="cellalignment2977" headers="r6c1-t22 r1c2-t22">
+<p>Set to True to delete temporary objects created during the Integration CT execution, if any.</p>
+</td>
+<td class="cellalignment2977" headers="r6c1-t22 r1c3-t22">
+<p>Integration CT</p>
+<p>Load CT</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r7c1-t22" headers="r1c1-t22">
+<p>Drop_check_table</p>
+</td>
+<td class="cellalignment2977" headers="r7c1-t22 r1c2-t22">
+<p>Set to True to drop the check table. The check table contains statistics about the errors found.</p>
+</td>
+<td class="cellalignment2977" headers="r7c1-t22 r1c3-t22">
+<p>Control CT</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r8c1-t22" headers="r1c1-t22">
+<p>Drop_error_table</p>
+</td>
+<td class="cellalignment2977" headers="r8c1-t22 r1c2-t22">
+<p>Set to True to delete the error table containing information about specific errors detected.</p>
+</td>
+<td class="cellalignment2977" headers="r8c1-t22 r1c3-t22">
+<p>Control CT</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r9c1-t22" headers="r1c1-t22">
+<p>Flow_Control</p>
+</td>
+<td class="cellalignment2977" headers="r9c1-t22 r1c2-t22">
+<p>Set to True to activate flow control. Flow control detects errors before inserting data into the target table.</p>
+</td>
+<td class="cellalignment2977" headers="r9c1-t22 r1c3-t22">
+<p>Integration CT</p>
+<p>Control CT</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r10c1-t22" headers="r1c1-t22">
+<p>Flow_table_options</p>
+</td>
+<td class="cellalignment2977" headers="r10c1-t22 r1c2-t22">
+<p>Specify the options for flow table creation.</p>
+</td>
+<td class="cellalignment2977" headers="r10c1-t22 r1c3-t22">
+<p>Integration CT</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r11c1-t22" headers="r1c1-t22">
+<p>Insert</p>
+</td>
+<td class="cellalignment2977" headers="r11c1-t22 r1c2-t22">
+<p>Set to True to indicate that the code template can insert new rows into the target table.</p>
+</td>
+<td class="cellalignment2977" headers="r11c1-t22 r1c3-t22">
+<p>Integration CT</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r12c1-t22" headers="r1c1-t22">
+<p>Deploy_files</p>
+</td>
+<td class="cellalignment2977" headers="r12c1-t22 r1c2-t22">
+<p>Indicates if the CT always deploys the associated PL/SQL code.</p>
+<p>Set to False to only deploy the PL/SQL code if the mapping does not exist in the database or if the mapping is different version as the deployed mapping. Set to True if a previous code template is creating the tables for this mapping. In general this should be set to false.</p>
+</td>
+<td class="cellalignment2977" headers="r12c1-t22 r1c3-t22">
+<p>Oracle Target CT</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r13c1-t22" headers="r1c1-t22">
+<p>Log_level</p>
+</td>
+<td class="cellalignment2977" headers="r13c1-t22 r1c2-t22">
+<p>Represents the level of log reporting when the code template is run. Valid values are between 0 and 5, with 5 representing the most detailed logging.</p>
+</td>
+<td class="cellalignment2977" headers="r13c1-t22 r1c3-t22">
+<p>Integration CT</p>
+<p>Load CT</p>
+<p>CDC CT</p>
+<p>Oracle Target CT</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r14c1-t22" headers="r1c1-t22">
+<p>Static_control</p>
+</td>
+<td class="cellalignment2977" headers="r14c1-t22 r1c2-t22">
+<p>Used for postintegration control. Detects errors on the target table after integration has been completed.</p>
+</td>
+<td class="cellalignment2977" headers="r14c1-t22 r1c3-t22">
+<p>Integration CT</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r15c1-t22" headers="r1c1-t22">
+<p>Target_location</p>
+</td>
+<td class="cellalignment2977" headers="r15c1-t22 r1c2-t22">
+<p>Represents the Oracle location to which the PL/SQL mapping is to be deployed.</p>
+</td>
+<td class="cellalignment2977" headers="r15c1-t22 r1c3-t22">
+<p>Oracle Target CT</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r16c1-t22" headers="r1c1-t22">
+<p>Truncate</p>
+</td>
+<td class="cellalignment2977" headers="r16c1-t22 r1c2-t22">
+<p>Set to True to truncate the target table before loading data.</p>
+</td>
+<td class="cellalignment2977" headers="r16c1-t22 r1c3-t22">
+<p>Integration CT</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r17c1-t22" headers="r1c1-t22">
+<p>Update</p>
+</td>
+<td class="cellalignment2977" headers="r17c1-t22 r1c2-t22">
+<p>Set to True to indicate that the code template can update rows in the target table.</p>
+</td>
+<td class="cellalignment2977" headers="r17c1-t22 r1c3-t22">
+<p>Integration CT</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformalwide" -->
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1111"></a>
+<h3 class="sect2">Setting Properties for Bound Operators in CT Mappings</h3>
+<p>For operators in CT mappings that are bound to data objects, you can set properties for the operator attributes. These attribute values are used in the substitution methods when the CT mapping is run.</p>
+<p>Operators, in CT mappings, that are bound to data objects have the following additional properties. These operators are listed under the Code Template Metadata Tags node in the Property Inspector.</p>
+<p class="subhead2"><a id="BEIEJDAG"></a>SCD</p>
+<p>Use the SCD property to specify the role played by the attribute when using the Slowly Changing Dimension code template. The values you can set for this property are:</p>
+<ul>
+<li>
+<p><span class="bold">Surrogate Key:</span> The attribute is used as a unique record identifier (primary key) in the target table. You must map a sequence to this attribute.</p>
+</li>
+<li>
+<p><span class="bold">Natural Key:</span> The attribute is mapped from the unique record identifier (business key of the record) in the source table.</p>
+</li>
+<li>
+<p><span class="bold">Current Record Flag:</span> The attribute is used to identify the current active record. The current record has the flag set to 1 and old records have the flag set to 0. The attribute must be numeric and is loaded automatically, you should not map it.</p>
+</li>
+<li>
+<p><span class="bold">Update Row on Change:</span> If a new value is loaded for this attribute, the value of its corresponding column is overwritten, for the record with the same natural key.</p>
+</li>
+<li>
+<p><span class="bold">Add Row on Change:</span> If a new value is loaded for this attribute, a row with a new surrogate key but with the same natural key is inserted into the target table. The inserted record is marked as current.</p>
+</li>
+<li>
+<p><span class="bold">Starting Timestamp:</span> The start time of the time period when the record is current. If the new row is inserted, then the Starting Timestamp of new record and Ending Timestamp of the old record are set to <code>SYSDATE</code>.</p>
+</li>
+<li>
+<p><span class="bold">Ending Timestamp:</span> The end time of the time period when the record is current. For the current record, the ending timestamp column value is usually 01-01-2400.</p>
+</li>
+</ul>
+<p class="subhead2"><a id="BEIDAGAA"></a>UD1</p>
+<p>Set this property to True to include this attribute in code template functions using the UD1 tag.</p>
+<p class="subhead2"><a id="BEIHIEEC"></a>UD2</p>
+<p>Set this property to True to include this attribute in code template functions using the UD2 tag.</p>
+<p class="subhead2"><a id="BEIBDACB"></a>UD3</p>
+<p>Set this property to True to include this attribute in code template functions using the UD3 tag.</p>
+<p class="subhead2"><a id="BEIFIDAE"></a>UD4</p>
+<p>Set this property to True to include this attribute in code template functions using the UD4 tag.</p>
+<p class="subhead2"><a id="BEIFFHIA"></a>UD5</p>
+<p>Set this property to True to include this attribute in code template functions using the UD5 tag.</p>
+<p class="subhead2"><a id="BEIDECIA"></a>UPD</p>
+<p>This property controls which columns are updated when Update Code Templates, such as ICT_SQL_ INCR_UPD or ICT_ORACLE_INCR_UPD_MERGE are used.</p>
+<p>To specify which constraint to use for matching, use the Match by Constraint property of the target operator. If the UPD property is not set, then the operator's match by constraint key is used.</p>
+</div>
+<!-- class="sect2" -->
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1112"></a>
+<h3 class="sect2">Setting Configuration Properties for Code Template Mappings</h3>
+<p>You can set certain configuration properties for operators that are used in CT mappings. This section describes the configuration properties.</p>
+<p class="subhead2"><a id="sthref1113"></a>Source <a id="sthref1114"></a><a id="sthref1115"></a>File Operator</p>
+<p>You can set the Source File Operator configuration property for Flat File operators that are used in CT mappings. This property identifies the Flat File operator with which the data file is associated.</p>
+<p>For CT mappings that contain multiple Flat File operators, you must set the Source File Operator property. When your CT mapping contains only one Flat File operator, setting this property is optional.</p>
+<p>Use the following steps to set the Source File Operator configuration property:</p>
+<ol>
+<li>
+<p>Right-click the CT mapping that contains the Flat File operators and select <span class="bold">Configure</span>.</p>
+<p>The Configuration tab for the CT mapping is displayed.</p>
+</li>
+<li>
+<p>Click the Ellipsis on the SQL Loader Data Files property.</p>
+<p>The SQL Loader Data Files dialog box is displayed.</p>
+</li>
+<li>
+<p>Select the file name on the left of the dialog box and, on the right, set the Source File Operator property.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDIBEFH"></a><a id="WBETL07007"></a>
+<div class="sect1">
+<h2 class="sect1">Auditing the <a id="sthref1116"></a><a id="sthref1117"></a>Execution of Code Template Mappings</h2>
+<p>The Audit Information panel in the Design Center provides detailed information about each task that was run as part of a CT mapping execution. You can use this information to audit errors caused during the execution of CT mappings.</p>
+<p>However, for the Audit Information panel to display execution details, you must set certain properties as described in <a href="#CHDJGJCA">"Prerequisites for Auditing Code Template Mappings"</a>.</p>
+<p><a href="#CHDGHIIH">Figure 7-5</a> displays the Audit Information panel for a CT mapping execution.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CHDGHIIH"></a>Figure 7-5 Audit Information Panel with Details about Executed Tasks</p>
+<img width="883" height="609" src="img/debug_km_map.gif" alt="Description of Figure 7-5 follows" /><br />
+<a id="sthref1118" href="img_text/debug_km_map.htm">Description of "Figure 7-5 Audit Information Panel with Details about Executed Tasks"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>The Audit Information panel displays the individual steps that are run as part of the CT mapping execution. The details displayed for each step include the name of the task, the number of rows inserted, updated, or deleted for the task, and its status.</p>
+<p>Detailed information about the steps within the CT mapping is displayed. For each step, you can see error messages, if any. You can also view the statements that are run for each task. Expand the node representing each task to view details of the task execution.</p>
+<p>Not all tasks are listed in the Audit Information panel. If the settings of a task exclude it from the audit, then the task is not displayed. For more information about including a code template task in audits, see <a href="#CHDJGJCA">"Prerequisites for Auditing Code Template Mappings"</a>.</p>
+<p>For example, in the Audit Information panel displayed in <a href="#CHDGHIIH">Figure 7-5</a>, the CT mapping contains the following tasks: CREATE_TARGET_TABLE, TRUNCATE_TARGET_TABLE, DELETE_TARGET_TABLE, INSERT_NEW_ROWS, COMMIT, and POST_INTEGRATION_CONTROL. The statements that are run as part of the INSERT_NEW_ROWS task are displayed in the panel on the right. Notice that task 4 is not listed in the Audit Information panel. This is because the settings of this task exclude it from the audit.</p>
+<p class="subhead2"><a id="CHDJGJCA"></a>Prerequisites for <a id="sthref1119"></a><a id="sthref1120"></a>Auditing Code Template Mappings</p>
+<p>For Oracle Warehouse Builder to provide detailed information about the execution of a CT mapping, you must set the following properties:</p>
+<ul>
+<li>
+<p>Log Audit Level</p>
+<p>Every task in a code template contains a property called Log Audit Level. You can set a value between 0 and 5 for this property. Setting a value of 0 means that the details of this task are not included in the audit. Set this property to a value between 1 and 5 to include the details for this task execution in the audit log.</p>
+</li>
+<li>
+<p>Log Level</p>
+<p>Every execution unit in a CT mapping contains a property called Log Level. This property represents the level of logging performed for the execution unit. You can set a value between 0 and 5 for this property. Set a value of 0 to exclude this execution unit from being logged. Set this property to a value between 1 and 5 to specify the level of detail used to log the execution of this execution unit.</p>
+</li>
+</ul>
+<div class="sect2"><a id="sthref1121"></a>
+<h3 class="sect2">Steps to Audit the Execution of Code Template Mappings</h3>
+<ol>
+<li>
+<p>In the Projects Navigator, select the CT mapping whose execution must be audited.</p>
+</li>
+<li>
+<p>From the View menu, select <span class="bold">Audit Information</span>.</p>
+<p>The Audit Information panel is displayed in the Log window.</p>
+</li>
+<li>
+<p>Expand the node that represents the CT mapping execution job.</p>
+<p>Separate nodes are displayed for each task in the CT mapping that is included in the audit.</p>
+</li>
+<li>
+<p>Expand a task node to view the list of steps performed as part of this task.</p>
+</li>
+<li>
+<p>To view the statements that are run as part of a particular step, select the step and then select <span class="bold">Executed Statement</span>.</p>
+<p>The statements that are run are displayed on the right.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDCIJFI"></a><a id="WBETL07008"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Using Code <a id="sthref1122"></a><a id="sthref1123"></a><a id="sthref1124"></a>Template Mappings to Perform Change Data Capture (CDC)</h2>
+<p>In a typical data warehousing environment, you extract data from source systems, transform data, and then load it into the data warehouse. However, when the data in the source system changes, you must update the data warehouse with these changes. Change Data Capture (CDC) quickly identifies and processes only data that has changed and then makes this changed data available for further use. Oracle Warehouse Builder enables you to perform CDC by using CDC CTs.</p>
+<div class="sect2"><a id="sthref1125"></a>
+<h3 class="sect2">Types of Change Data Capture (CDC)</h3>
+<p>Oracle Warehouse Builder enables you to perform the following types of CDC:</p>
+<ul>
+<li>
+<p>Consistent</p>
+<p>Consistent Change Data Capture ensures the consistency of the captured data. For example, you have the <code>ORDER</code> and <code>ORDER_LINE</code> tables (with a referential integrity constraint because an <code>ORDER_LINE</code> record should have an associated <code>ORDER</code> record). When the changes to <code>ORDER_LINE</code> are captured, the associated <code>ORDER</code> change is also be captured, and vice versa.</p>
+<p>The set of available changes for which consistency is guaranteed is called the Consistency Window. Changes in this window should be processed in the correct sequence (<code>ORDER</code> followed by <code>ORDER_LINE</code>) by designing and sequencing integration interfaces into packages.Although consistent Change Data Capture is more powerful, it is more difficult to set up. Use this method when referential integrity constraints must be ensured while capturing the data changes. For performance reasons, consistent Change Data Capture is also recommended when a large number of subscribers are required.</p>
+<p><span class="bold">Note:</span> You cannot journalize a model (or data stores within a model) using both consistent set and simple journalizing.</p>
+</li>
+<li>
+<p>Simple</p>
+<p>Simple Change Data Capture enables you to journalize one or more data stores. Each journalized data store is treated separately when capturing the changes.</p>
+<p>This approach has a limitation, illustrated in the following example: You must process changes in the <code>ORDER</code> and <code>ORDER_LINE</code> tables (with a referential integrity constraint because an <code>ORDER_LINE</code> record should have an associated <code>ORDER</code> record). If you have captured insertions into <code>ORDER_LINE</code>, then you have no guarantee that the associated new records in <code>ORDERS</code> have also been captured. Processing <code>ORDER_LINE</code> records with no associated <code>ORDER</code> records may cause referential constraint violations in the integration process.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="BEIFJBFE"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Change Data Capture <a id="sthref1126"></a>Commands</h3>
+<p>Consistent Change Data Capture uses the following module commands: <a href="#BEIIFJFA">"Start"</a>, <a href="#BEIGDEJI">"Drop"</a>, <a href="#BEIJBJAC">"Subscribe"</a>, <a href="#BEICAJHF">"Unsubscribe"</a>, <a href="#BEIGIIJG">"Extend Window"</a>, <a href="#BEIHGFFF">"Lock Subscriber"</a>, <a href="#BEIJBJDF">"Unlock Subscriber"</a>, and <a href="#BEIJBEEA">"Purge Data"</a>.</p>
+<p>Simple Change Data Capture provides the following commands for modules and tables: <a href="#BEIIFJFA">"Start"</a>, <a href="#BEIGDEJI">"Drop"</a>, <a href="#BEIJBJAC">"Subscribe"</a>, and <a href="#BEICAJHF">"Unsubscribe"</a>. The commands Lock Subscriber and Unlock Subscriber are available but not used.</p>
+<p class="subhead2"><a id="BEIIFJFA"></a>Start</p>
+<p>The Start command sets up the Change Data Capture infrastructure.</p>
+<p class="subhead2"><a id="BEIGDEJI"></a>Drop</p>
+<p>The Drop command removes the Change Data Capture infrastructure.</p>
+<p class="subhead2"><a id="BEIJBJAC"></a>Subscribe</p>
+<p>The Subscribe command adds a subscriber to this Change Data Capture</p>
+<p class="subhead2"><a id="BEICAJHF"></a>Unsubscribe</p>
+<p>The Unsubscribe command removes a subscriber from this Change Data Capture</p>
+<p class="subhead2"><a id="BEIGIIJG"></a>Extend Window</p>
+<p>The Consistency Window is a range of available changes in all the tables of the consistency set for which the insert/update/delete are possible without violating referential integrity. The Extend Window operation computes this window to consider new changes captured since the latest Extend Window operation.</p>
+<p class="subhead2"><a id="BEIHGFFF"></a>Lock Subscriber</p>
+<p>Although the extend window is applied to the entire consistency set, subscribers consume the changes separately. The Lock Subscriber operation performs a subscriber-specific snapshot of the changes in the consistency window. This snapshot includes all the changes within the consistency window that have not yet been consumed by the subscriber.</p>
+<p class="subhead2"><a id="BEIJBJDF"></a>Unlock Subscriber</p>
+<p>The Unlock Subscriber command commits the use of the changes that where locked during the Lock Subscribers operations for the subscribers. This operation should be processed only after all the changes for the subscribers have been processed.</p>
+<p class="subhead2"><a id="BEIJBEEA"></a>Purge Data</p>
+<p>After all subscribers have consumed the changes they have subscribed to, entries still remain in the capture tables and must be deleted. This deletion is performed by the Purge Data command.</p>
+</div>
+<!-- class="sect2" -->
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1127"></a>
+<h3 class="sect2">Example: Performing Change Data Capture Using Code Templates</h3>
+<p class="subhead2"><a id="sthref1128"></a>Scenario for Performing Change Data Capture</p>
+<p>The <code>ORDERS</code> table, in the source schema <code>SRC</code>, stores order details. Data from this table is loaded into the <code>WH_ORDERS</code> table in the data warehouse target schema <code>WH_TGT</code>. The data in the <code>ORDERS</code> table changes when an order status or dispatch date is updated. The data in the data warehouse must be updated based on changes made to the source data.</p>
+<p>You can set up Change Data Capture using CDC CTs and load only the changed data to the target table in the data warehouse.</p>
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1129"></a>
+<h4 class="sect3">Steps to Perform Change Data Capture Using CDC CTs</h4>
+<p>Performing Change Data Capture includes the following steps:</p>
+<ol>
+<li>
+<p><a href="#CIHCDCIE">"Selecting the Objects for Change Data Capture"</a></p>
+</li>
+<li>
+<p><a href="#CIHJJFGJ">"Creating the Mapping that Loads Changes"</a></p>
+</li>
+<li>
+<p><a href="#CIHDIHIH">"Deploying the Change Data Capture Solution"</a></p>
+</li>
+<li>
+<p><a href="#CIHFADEG">"Starting the Change Data Capture Process"</a></p>
+</li>
+<li>
+<p><a href="#CIHGGHGC">"Adding a Subscriber to the Change Data Capture Process"</a></p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<a id="CIHCDCIE"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Selecting the Objects for Change Data Capture</h4>
+<p>You can perform Change Data Capture for any source or target for which code templates are available. The first step in performing CDC is to identify and select the objects for which you want to capture changes.</p>
+<p><span class="bold">To specify the objects for which data changes must be captured:</span></p>
+<ol>
+<li>
+<p>If you have not done so, create a module and import the source objects whose data changes you want to capture.</p>
+<p>In this example, the source schema <code>SRC</code> contains the <code>ORDERS</code> table whose changes you want to capture. Create an Oracle module called <code>SRC_MOD</code>, whose location points to the <code>SRC</code> schema, and import the <code>ORDERS</code> table into this module.</p>
+</li>
+<li>
+<p>Double-click the <code>SRC_MOD</code> module to display the Edit Module dialog box.</p>
+</li>
+<li>
+<p>In the left panel, click <span class="bold">CDC Code Template</span>. On the CDC Code Template page, in the Code Template list, select the code template that you imported to perform Change Data Capture.</p>
+<p>In this example, select PUBLIC_PROJECT/BUILT_IN_CT/JCT_ORACLE_SIMPLE.</p>
+</li>
+<li>
+<p>In the left panel, click <span class="bold">CDC Tables</span>. On the CDC Tables page, use the buttons to move tables whose changes must be captured from the Available section to the Selected section.</p>
+<p>In this example, move the <code>ORDERS</code> table from the Available list to the Selected list.</p>
+</li>
+</ol>
+<p>The <code>ORDERS</code> table is now set up for Change Data Capture.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CIHJJFGJ"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Creating the Mapping that Loads Changes</h4>
+<p>Use the following steps to create the CT mapping that loads changes.</p>
+<ol>
+<li>
+<p>If you have not done so, create a template mapping module to contain the CT mapping that performs Change Data Capture.</p>
+<p>Ensure that the location of this template mapping module is associated with the agent to which the CT mapping must be deployed.</p>
+<p>In this example, the template mapping module called <code>CDC_MAP_MOD</code> is associated with the DEFAULT_AGENT location. This location represents the OC4J server installed with Oracle Warehouse Builder.</p>
+</li>
+<li>
+<p>Under the template mapping module created in Step 1, create a CT mapping that contains the ETL logic for performing CDC.</p>
+<p>The mapping created in this example is called <code>CDC_LOAD_ORDERS_MAP</code>.</p>
+</li>
+<li>
+<p>Drag and drop the source object whose changes you want to capture.</p>
+<p>In this example, drag and drop the <code>ORDERS</code> table from the <code>SRC_MOD</code> module onto the Mapping Editor canvas.</p>
+</li>
+<li>
+<p>Select the operator representing the source object. In the Property Inspector, under the Change Data Capture node, select <span class="bold">Enable</span>.</p>
+<p>Notice that the <code>ORDERS</code> Table operator contains three additional attributes: <code>JRN_SUBSCRIBER</code>, <code>JRN_FLAG</code>, and <code>JRN_DATE</code>.</p>
+</li>
+<li>
+<p>In the Property Inspector, under the Change Data Capture node, set the Change Data Capture Filter property to define the condition that is used to select changed data for a particular subscriber.</p>
+</li>
+<li>
+<p>Drag and drop the table that stores the changed data onto the canvas.</p>
+<p>In this example, the table <code>ORDERS_CHANGE</code> in the <code>SRC_MOD</code> module stores the changes to the <code>ORDERS</code> table.</p>
+</li>
+<li>
+<p>Map the attributes from the source table, whose changes you want to capture, to the corresponding attributes in the target table that stores changed data.</p>
+<p>In this example, map the <code>order_Id</code>, <code>order_status</code>, <code>order_mode</code>, and <code>JRN_DATE</code> attributes from the <code>ORDERS</code> table to <code>order_id</code>, <code>order_status</code>, <code>order_mode</code>, and <code>change_date</code> attributes, respectively, in the <code>ORDERS_CHANGE</code> table.</p>
+</li>
+<li>
+<p>In the Execution View of the CT mapping, create the execution units to associate with code templates.</p>
+<p>In this example, select the <code>ORDERS</code> and <code>ORDERS_CHANGE</code> operators and click <span class="bold">Create Execution Unit</span> on the Execution View toolbar.</p>
+<p>Or, select <code>ORDERS</code> and <code>ORDERS_CHANGE</code> and select <span class="bold">Create Execution Unit</span> from the Execution menu.</p>
+</li>
+<li>
+<p>If the Code Templates panel is not displayed in the Log window, from the View menu, select <span class="bold">Code Templates</span>.</p>
+</li>
+<li>
+<p>Select the Integration/Load Code Template tab in the Code Templates panel.</p>
+</li>
+<li>
+<p>In the Code Template for EX_UNIT1 field, select the code template to be used.</p>
+<p>In this example, select JCT_ORACLE_SIMPLE as the code template used to perform the ETL.</p>
+</li>
+<li>
+<p>Validate the mapping and rectify any errors.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<a id="CIHDIHIH"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Deploying the Change Data Capture Solution</h4>
+<p>After you set up the tables for Change Data Capture and create the CT mapping that loads changes from the source table, deploy the Change Data Capture solution using the following steps:</p>
+<ol>
+<li>
+<p>If you have not done so, start the Control Center Agent as described in <a href="#BABECFDC">"Starting the Control Center Agent (CCA)"</a>.</p>
+</li>
+<li>
+<p>Deploy the target table that stores the changed data.</p>
+<p>In this example, deploy the <code>ORDERS_CHANGE</code> table using either the Design Center or Control Center Manager.</p>
+</li>
+<li>
+<p>Deploy the CT mapping that loads changed data into the target table using the Design Center or Control Center Manager.</p>
+<p>If you get an error saying application exists, go to the Control Center Manager, select Replace as the Deployment Option, and deploy the mapping.</p>
+<p>In this example, deploy the <code>CDC_ORDERS_LOAD_MAP</code> mapping using the Design Center or Control Center Manager.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<a id="CIHFADEG"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Starting the Change Data Capture Process</h4>
+<p>When you start the Change Data Capture process, Oracle Warehouse Builder creates triggers on the source table for which you want to capture changes and on the target table. For your CT mapping to run successfully, ensure that you grant the required privileges on the source schema to the user performing CDC.</p>
+<p>To start the capture process, in the Projects Navigator, right-click the module containing the source table for which you want to capture changes, select <span class="bold">Change Data Capture,</span> then <span class="bold">Start</span>.</p>
+<p>In this example, right-click <code>SRC_MOD</code>, select <span class="bold">Change Data Capture</span>, then <span class="bold">Start</span>.</p>
+<p>A new tab is displayed in the Message Log containing messages about the CDC operation. During this process, Oracle Warehouse Builder generates DDL scripts to create triggers on the source table and deploys the DDL scripts.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CIHGGHGC"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Adding a Subscriber to the Change Data Capture Process</h4>
+<p>After you start the Change Data Capture process, you must add a subscriber to the capture system. The subscriber consumes the changes generated by the Change Data Capture process.</p>
+<p><span class="bold">To add a subscriber:</span></p>
+<ol>
+<li>
+<p>In the Projects Navigator, right-click the module containing the source table, select <span class="bold">Change Data Capture</span>, then <span class="bold">Subscribe</span>.</p>
+<p>The Add Subscriber dialog box is displayed containing the list of current subscribers.</p>
+<p>In this example, right-click <code>SRC_MOD</code>, select <span class="bold">Change Data Capture</span>, then <span class="bold">Subscribe</span>.</p>
+</li>
+<li>
+<p>In the Subscriber Name column of the Subscriber to add section, enter a subscriber name.</p>
+<p>In this example, enter <code>Ord_subscriber</code> in the Subscriber Name column.</p>
+</li>
+<li>
+<p>Click <span class="bold">OK</span> to close the Add Subscriber dialog box.</p>
+<p>The Log window displays a new panel for the Subscribe action that lists the actions being performed for the Subscribe action and the results of the actions. If this log displays errors, rectify them and then run the steps to add a subscriber.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1130"></a>
+<h4 class="sect3">Testing the Change Data Capture Process</h4>
+<p>After you set up your Change Data Capture process, you can optionally test this system to verify that changes to the source are being captured and made available to the subscriber.</p>
+<p><span class="bold">To test your Change Data Capture system:</span></p>
+<ol>
+<li>
+<p>In SQL*Plus, log in to the schema that contains the source table for which you want to capture changes.</p>
+<p>In this example, log in to the <code>SRC</code> schema.</p>
+</li>
+<li>
+<p>Insert a row into the source table.</p>
+<p>In this example, insert a row into the <code>ORDERS</code> table.</p>
+</li>
+<li>
+<p>In the Control Center Manager, select the CT mapping that performs Change Data Capture and click <span class="bold">Start</span>.</p>
+<p>In this example, start the <code>CDC_LOAD_ORDERS_MAP</code> mapping.</p>
+</li>
+</ol>
+<p>The row that you just added should be inserted into the target table.</p>
+<p>The Job Details panel displays the details about each operation being performed in the CT mapping.</p>
+</div>
+<!-- class="sect3" -->
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1131"></a>
+<h4 class="sect3">Performing Change Data Capture Actions in Oracle Warehouse Builder</h4>
+<p>After you set up your Change Data Capture solution, you manage the change capture process using predefined actions. If you publish the module or table with CDC tracking as a Web service, then the actions defined in these objects are contained in the generated Web service.</p>
+<p>To perform these actions, you right-click the module or table with CDC tracking, select <span class="bold">Change Data Capture</span>, and use the following actions available here: Start, Drop, Subscribe, Unsubscribe, Extend Window, Purge Data, Lock Subscriber, and Unlock Subscriber. This section describes the CDC actions that you can perform.</p>
+<p>Actions applicable depend on the type of Change Data Capture you are performing.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#BEIFJBFE">"Change Data Capture Commands"</a> for information about the Change Data Capture commands.</div>
+<p><a id="sthref1132"></a><span class="subhead3">Starting the Change Data Capture&nbsp;</span></p>
+<p>After you set up the source object for Change Data Capture, right-click the object and select <span class="bold">Start</span> to begin capturing changed data. For more details, see <a href="#CIHFADEG">"Starting the Change Data Capture Process"</a>.</p>
+<p><a id="sthref1133"></a><span class="subhead3">Stopping a Change Data Capture System&nbsp;</span></p>
+<p>The <a href="#BEIGDEJI">"Drop"</a> action stops the Change Data Capture process and drops the capture objects.</p>
+<p>To stop a Change Data Capture process, in the Projects Navigator, right-click the data object or module, select <span class="bold">Change Data Capture</span>, then <span class="bold">Drop</span>. Oracle Warehouse Builder displays a prompt asking to stop the capture and drop capture objects. Click <span class="bold">Yes</span>.</p>
+<p><a id="sthref1134"></a><span class="subhead3">Subscribing to a Change Data Capture System&nbsp;</span></p>
+<p>The <a href="#BEIJBJAC">"Subscribe"</a> action enables you to add a subscriber to the Change Data Capture system. For more information about adding subscribers, see <a href="#CIHGGHGC">"Adding a Subscriber to the Change Data Capture Process"</a>.</p>
+<p><a id="sthref1135"></a><span class="subhead3">Removing a Subscriber from a Change Data Capture System&nbsp;</span></p>
+<p>The <a href="#BEICAJHF">"Unsubscribe"</a> action enables you to remove a subscriber from the Change Data Capture system. Once you remove a subscriber, change data that is being captured is not available to the subscriber.</p>
+<p><span class="bold">To remove a subscriber:</span></p>
+<ol>
+<li>
+<p>In the Projects Navigator, right-click the data object or module from which you want to remove a subscriber and, from the Change Data Capture menu, select <span class="bold">Unsubscribe</span>.</p>
+<p>The Remove Subscriber dialog box is displayed. The Current Subscribers section contains the list of current subscribers of the Change Data Capture system.</p>
+</li>
+<li>
+<p>Select the subscriber you want to remove from the Current Subscriber section and use the buttons to move the subscriber to the section titled Subscribers to remove.</p>
+</li>
+<li>
+<p>Click <span class="bold">OK</span>.</p>
+<p>The Log window displays the details of the action being performed. Check this log to verify that the Unsubscribe action succeeded.</p>
+</li>
+</ol>
+<p class="subhead2"><a id="sthref1136"></a>Extending the Change Data Capture Window</p>
+<p>Use the <a href="#BEIGIIJG">"Extend Window"</a> action to extend the subscription window to receive a new set of change data. To extend the window and receive the latest changed data, right-click the module or table in the Projects Navigator, select <span class="bold">Change Data Capture</span>, and then <span class="bold">Extend Window</span>. Oracle Warehouse Builder displays a prompt asking to extend the window. Click <span class="bold">Yes</span>.</p>
+<p><a id="sthref1137"></a><span class="subhead3">Purging Capture Data&nbsp;</span></p>
+<p>After subscribers consume the change data that they subscribed to, use the <a href="#BEIJBEEA">"Purge Data"</a> action to remove the change data from the capture tables. To purge capture data, right-click the module or table in the Projects Navigator, select <span class="bold">Change Data Capture</span>, and then <span class="bold">Purge Data</span>. Oracle Warehouse Builder displays a prompt asking to purge all capture data. Click <span class="bold">Yes</span>.</p>
+<p><a id="sthref1138"></a><span class="subhead3">Locking a Subscriber&nbsp;</span></p>
+<p>The <a href="#BEIHGFFF">"Lock Subscriber"</a> operation enables you to lock a subscriber so that a subscriber-specific snapshot of the changes in the consistency window can be taken. The snapshot includes all the changes within the consistency window that have not yet been consumed by the subscriber.</p>
+<p><span class="bold">To lock a subscriber:</span></p>
+<ol>
+<li>
+<p>In the Projects Navigator, right-click the data object or module from which you want to lock a subscriber, select <span class="bold">Change Data Capture</span>, then <span class="bold">Lock Subscriber</span>.</p>
+<p>The Lock Subscriber dialog box is displayed. The Current Subscribers section contains the list of current subscribers of the Change Data Capture system.</p>
+</li>
+<li>
+<p>Select the subscriber you want to lock from the section titled Current Subscriber and use the buttons to move the subscriber to the section titled Subscribers to lock.</p>
+</li>
+<li>
+<p>Click <span class="bold">OK</span>.</p>
+<p>The Log window displays the details of the action being performed. Check this log to verify that the Lock Subscriber action succeeded.</p>
+</li>
+</ol>
+<p><a id="sthref1139"></a><span class="subhead3">Unlocking a Subscriber&nbsp;</span></p>
+<p>Use the <a href="#BEIJBJDF">"Unlock Subscriber"</a> action to commit the changes that where locked during the Lock Subscriber operation for the subscriber.</p>
+<p><span class="bold">To unlock a subscriber:</span></p>
+<ol>
+<li>
+<p>In the Projects Navigator, right-click the data object or module from which you want to unlock a subscriber, select <span class="bold">Change Data Capture</span>, then <span class="bold">Lock Subscriber</span>.</p>
+<p>The Unlock Subscriber dialog box is displayed. The Current Subscribers section contains the list of current subscribers of the Change Data Capture system.</p>
+</li>
+<li>
+<p>Select the subscriber you want to unlock from the section titled Current Subscriber and use the buttons to move the subscriber to the section titled Subscribers to lock.</p>
+</li>
+<li>
+<p>Click <span class="bold">OK</span>.</p>
+<p>The Log window displays the details of the action being performed. Check this log to verify that the Unlock Subscriber action succeeded.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDDAHCD"></a><a id="WBETL07009"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Using Control Code<a id="sthref1140"></a><a id="sthref1141"></a> Templates</h2>
+<p>Control Code Templates (Control CTs) enable you to maintain data integrity by checking if the records in a data object are consistent with defined constraints. Use Control CTs when you want to ensure that data that violates constraints specified for a data object is not loaded into the data object.</p>
+<p>The constraints checked by a Control CT are Check constraints, Primary Key, Alternate Key, and Not Null.</p>
+<p>Use Control CTs to check the following:</p>
+<ul>
+<li>
+<p>Consistency of existing data</p>
+<p>Set the STATIC_CONTROL property to True to check the data currently in the data object.</p>
+</li>
+<li>
+<p>Consistency of the incoming data, before loading the records to a target.</p>
+<p>Set the FLOW_CONTROL property to True. The Control CT simulates the constraints of the target data object on the resulting flow before writing to the target.</p>
+</li>
+</ul>
+<p>Control CTs can check either an existing table or the temporary table created by an Integration CT.</p>
+<p class="subhead2"><a id="sthref1142"></a>How Does a Control CT Work?</p>
+<p>A Control CT accepts a set of constraints and the name of the table to check. It either creates an error table to which all rejected records are written or removes the erroneous records from the checked result set.</p>
+<p>In both cases, a Control CT usually performs the following tasks:</p>
+<ol>
+<li>
+<p>Creates the error table. The error table contains the same columns as the target table and additional columns to trace error messages, check origin, and check date.</p>
+</li>
+<li>
+<p>Isolates the erroneous records in the error table for each primary key, alternate key, foreign key, condition, and mandatory column that must be checked.</p>
+</li>
+<li>
+<p>If required, remove erroneous records from the table that has been checked.</p>
+</li>
+</ol>
+<p class="subhead2"><a id="sthref1143"></a>Control CT Operating Modes</p>
+<p>Control CTs can operate in the following modes:</p>
+<ul>
+<li>
+<p>STATIC_CONTROL</p>
+<p>The Control CT reads the constraints of the table and checks them against the data of the table. Records that do not match the constraints are written to the error table.</p>
+</li>
+<li>
+<p>FLOW_CONTROL</p>
+<p>The Control CT reads the constraints of the target table and checks these constraints against the data contained in the "I$" flow table of the staging area. Records that violate these constraints are written to the error table.</p>
+</li>
+</ul>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1144"></a>
+<h3 class="sect2">Example: <a id="sthref1145"></a>Checking Data Constraints Using Control CTs</h3>
+<p class="subhead2"><a id="sthref1146"></a>Scenario</p>
+<p>Employee data is stored in a file called <code>EMP.dat</code>. You must load this data into the target table <code>EMP_TGT</code>. During the load, any records that violate constraints defined on the target table are written to the error table associated with the target table.</p>
+<p>The target table exists in an Oracle module called <code>WH_TGT</code>.</p>
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1147"></a>
+<h4 class="sect3">Steps to Log Constraint Violations While Loading Data Into a Target Table</h4>
+<p>Checking data constraints using Control CTs includes the following steps:</p>
+<ol>
+<li>
+<p><a href="#CIHIFHDH">"Creating the Source Module and Importing Source Objects"</a></p>
+</li>
+<li>
+<p><a href="#CIHDFJFD">"Creating the Code Template Mapping that Extracts Data, Checks Data Integrity, and Loads Data into an Oracle Target"</a></p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<a id="CIHIFHDH"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Creating the Source Module and Importing Source Objects</h4>
+<p>Because the source is a flat file, you create a flat file module in the Design Center and import the flat file into this module.</p>
+<p><span class="bold">To create a source module and import the source flat file:</span></p>
+<ol>
+<li>
+<p>In the Projects Navigator, right-click the Files node and select <span class="bold">New Flat File Module</span>.</p>
+<p>The Create Module Wizard is displayed. Use this wizard to create a flat file module.</p>
+<p>For more information about creating flat file modules, see <a class="olink WBDOD10547" href="../../owb.112/e10582/defining_flatfiles.htm#WBDOD10547"><span class="italic">Oracle Warehouse Builder Sources and Targets Guide</span></a>.</p>
+</li>
+<li>
+<p>Right-click the flat file module that you created and select <span class="bold">New File</span>.</p>
+<p>The Create Flat File Wizard is displayed. Use this wizard to define and sample the source flat file.</p>
+<p>For more information about creating flat files and sampling them, see <a class="olink WBDOD10552" href="../../owb.112/e10582/defining_flatfiles.htm#WBDOD10552"><span class="italic">Oracle Warehouse Builder Sources and Targets Guide</span></a>.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<a id="CIHDFJFD"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Creating the Code Template Mapping that Extracts Data, Checks Data Integrity, and Loads Data into an Oracle Target</h4>
+<ol>
+<li>
+<p>If you have not done so, create a template mapping module to contain the CT mapping that performs the data integrity check.</p>
+<p>Ensure that you set the location details of this mapping module to the Agent to which the mapping must be deployed.</p>
+<p>This example uses a mapping module called <code>CKM_MAP_MOD</code> that is associated with the DEFAULT_AGENT location. This location points to the OC4J server installed with Oracle Warehouse Builder.</p>
+</li>
+<li>
+<p>Create a CT mapping that contains the logic for extracting, checking, and loading data.</p>
+<p>In this example, create a CT mapping called <code>EMP_LOAD_CKM_MAP</code>.</p>
+</li>
+<li>
+<p>Drag and drop the source file from the source File source module onto the Mapping Editor canvas.</p>
+<p>In this example, drag and drop the file EMP.dat from the File module onto the canvas.</p>
+</li>
+<li>
+<p>Drag and drop the target table onto the canvas.</p>
+<p>In this example, drag and drop the <code>EMP_TGT</code> operator onto the canvas.</p>
+<p>The Table operator properties, in the Property Inspector, contain a node called Control CT. All existing constraints and data rules are displayed in the properties under this section. Use the properties in this group to define how data rules and integrity constraints should be applied.</p>
+</li>
+<li>
+<p>Map the source attributes to the corresponding target attributes.</p>
+</li>
+<li>
+<p>In the Execution View of the mapping, perform the following tasks:</p>
+<ul>
+<li>
+<p>Create an execution unit for Flat File operator and associate this execution unit with the LCT_FILE_TO_ORACLE_EXTER_TABLE code template.</p>
+</li>
+<li>
+<p>Create an execution unit containing the target table. Associate this execution unit with the CCT_ORACLE code template.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Validate and generate the CT mapping. In the Projects Navigator, right-click the CT mapping and select <span class="bold">Generate</span>.</p>
+</li>
+<li>
+<p>Deploy the CT mapping. In the Projects Navigator, right-click the CT mapping and select <span class="bold">Deploy</span>.</p>
+</li>
+<li>
+<p>Run the CT mapping. In the Projects Navigator, right-click the CT mapping and select <span class="bold">Start</span>.</p>
+<p>The records that violate constraints defined on the <code>EMP_TGT</code> table are not loaded into the target. These records are written to the error table associated with the target table.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDGEFCC"></a><a id="WBETL07010"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Using <a id="sthref1148"></a><a id="sthref1149"></a>Oracle Target CTs in Code Template Mappings</h2>
+<p>Oracle Target CTs provide a method for using operators that are otherwise only supported in Oracle Warehouse Builder PL/SQL mappings. You can use these operators to define your data transformation, create an execution unit containing these transformation operators, and then associate the execution unit with an Oracle Target CT.</p>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1150"></a>
+<h3 class="sect2">Example: Using <a id="sthref1151"></a>Oracle Target Code Templates</h3>
+<p class="subhead2"><a id="sthref1152"></a>Scenario</p>
+<p>You want to aggregate source data available in two different sources and then load it into the target table. The first source is an Oracle module that contains the source tables <code>CUSTOMERS</code>, <code>TIMES</code>, and <code>SALES</code>. The second source is an XML module that contains the tables <code>CHANNEL</code> and <code>COUNTRY</code>.</p>
+<p>The transformation required on the source data is to join data from all the source tables, aggregate it, and then load the aggregated data into the target table <code>SUMMARY_SALES</code>. Use the Joiner operator to join data from the source tables. The aggregation is performed using the Aggregator operator that leverages the Oracle Database SQL function <code>CUBE</code>. The summarized data is loaded into the target table.</p>
+<p class="subhead2"><a id="sthref1153"></a>Steps to Transform Source Data Using Oracle Target CTs</p>
+<p>Transforming source data using Oracle Target CTS involves the following tasks:</p>
+<ol>
+<li>
+<p><a href="#CIHEBBFE">"Creating the Source Module and Importing Source Objects"</a></p>
+</li>
+<li>
+<p><a href="#CIHBEJFE">"Creating the Target Module and Target Table"</a></p>
+</li>
+<li>
+<p><a href="#CIHIHIEF">"Creating the CT Mapping that Transforms Source Data Using Oracle Target CTs"</a></p>
+</li>
+</ol>
+<a id="CIHEBBFE"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Creating the Source Module and Importing Source Objects</h4>
+<p>In the Projects Navigator, create a source module and its associated location. Import the source objects into this module.</p>
+<p>In this example, create an XML module that represents the XML source data and import the <code>CHANNEL</code> and <code>COUNTRY</code> tables. The location associated with this XML module should point to the XML source. Create an Oracle module whose location points to the <code>SH</code> sample schema in the Oracle Database. Import the <code>CUSTOMERS</code>, <code>TIMES</code>, and <code>SALES</code> tables into this module.</p>
+<p>For more information about creating modules, see <a class="olink WBDOD10526" href="../../owb.112/e10582/importing_metadata.htm#WBDOD10526"><span class="italic">Oracle Warehouse Builder Sources and Targets Guide</span></a>.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CIHBEJFE"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Creating the Target Module and Target Table</h4>
+<ol>
+<li>
+<p>If you have not done so, create an Oracle module to store the target table.</p>
+</li>
+<li>
+<p>Under this Oracle module, create the target table that stores the transformed data. Right-click the Tables node, select <span class="bold">New Table</span> and use the Table Editor to define the table.</p>
+</li>
+<li>
+<p>Generate the target table by right-clicking the table name and selecting <span class="bold">Generate</span>. Rectify generation errors, if any.</p>
+</li>
+<li>
+<p>Deploy the target table by right-clicking the table name and selecting <span class="bold">Deploy</span>.</p>
+</li>
+</ol>
+<p>In this example, the module <code>WH_TGT</code> contains the target table <code>SUMMARY_SALES</code>.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CIHIHIEF"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Creating the CT Mapping that Transforms Source Data Using Oracle Target CTs</h4>
+<ol>
+<li>
+<p>If you have not done so, create a template mapping module to contain the CT mapping that performs the required data transformation.</p>
+<p>Ensure that you set the location details of this mapping module to the agent to which the mapping must be deployed.</p>
+<p>In this example, a mapping module called <code>ETL_MAP_MOD</code> is associated with the <code>DEFAULT_AGENT</code> location. This location points to the OC4J server installed with Oracle Warehouse Builder.</p>
+</li>
+<li>
+<p>Create a CT mapping to contain the required ETL logic for extracting, transforming, and loading data.</p>
+<p>In this example, create a mapping called <code>LOAD_SUMMARY_SALES_MAP</code>.</p>
+</li>
+<li>
+<p>Drag and drop the source tables onto the Mapping Editor canvas.</p>
+<p>In this example, drag and drop the <code>CHANNEL</code> and <code>COUNTRY</code> tables from the XML source module and the <code>CUSTOMERS</code>, <code>TIMES</code>, and <code>SALES</code> tables from the Oracle module.</p>
+</li>
+<li>
+<p>Drag and drop the operators that you must use to perform the required data transformation. Connect the operator attributes.</p>
+<p>In this example, you add the following operators:</p>
+<ul>
+<li>
+<p>A Joiner operator to join the data in the source tables. Set the Join Condition property for the Joiner operator to define how the source tables should be joined. In this example, you use the columns that are common between a pair of tables to join data from those tables.</p>
+</li>
+<li>
+<p>An Aggregator operator to aggregate the output of the Joiner operator. Data is aggregated based on the <code>CHANNEL_DESC</code> and <code>COUNTRY_ISO_CODE</code> attributes and the SQL function <code>CUBE</code> is leveraged to perform aggregation.</p>
+<p>Thus, in the Group by clause of the Aggregator operator, specify the following:</p>
+<p>CUBE(INGRP1.CHANNEL_DESC,INGRP1.COUNTRY_ISO_CODE)</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Drag and drop the target table onto the canvas.</p>
+<p>In this example, drag and drop the <code>SUMMARY_SALES</code> table onto the canvas.</p>
+</li>
+<li>
+<p>Create the data flows between the source and transformation operators. Map the transformed output to the target table.</p>
+<p>In this example, the tables <code>CHANNEL</code>, <code>CUSTOMERS</code>, <code>COUNTRY</code>, <code>TIMES</code>, and <code>SALES</code> are mapped to the Input groups of the Joiner operator. The Output group of the Joiner operator is mapped to the Aggregator operator. The output of the Aggregator operator is mapped to the target table <code>SUMMARY_SALES</code>.</p>
+</li>
+<li>
+<p>In the Execution View of the CT mapping, create the execution units required to perform the data transformation.</p>
+<p>Your CT mapping should look like the one in <a href="#CIHBADJA">Figure 7-6</a>.</p>
+<p>In this example, perform the following:</p>
+<ul>
+<li>
+<p>Create an execution unit for the <code>CHANNEL</code> table. Associate this execution unit with the LCT_SQL_TO_SQL code template.</p>
+</li>
+<li>
+<p>Create an execution unit for the <code>COUNTRY</code> table. Associate this execution unit with the LCT_SQL_TO_SQL code template.</p>
+</li>
+<li>
+<p>Create an execution unit containing the tables <code>CUSTOMERS</code>, <code>SALES</code>, and <code>TIMES</code>, the Joiner operator, the Aggregator operator, and the <code>SUMMARY_SALES</code> table. Associate this execution unit with the Oracle Target CT DEFAULT_ORACLE_TARGET_CT.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Validate and generate the CT mapping. In the Projects Navigator, right-click the CT mapping and select <span class="bold">Generate</span>.</p>
+</li>
+<li>
+<p>Deploy the CT mapping. In the Projects Navigator, right-click the CT mapping and select <span class="bold">Deploy</span>.</p>
+</li>
+<li>
+<p>Run the CT mapping to extract data from the XML and Oracle source, transform it, and load it into the Oracle target table. In the Projects Navigator, right-click the CT mapping and select <span class="bold">Start</span>.</p>
+</li>
+</ol>
+<p><a href="#CIHBADJA">Figure 7-6</a> displays the Execution View of the CT mapping that enables you to perform the required data transformation using Oracle Target CTs.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CIHBADJA"></a>Figure 7-6 Mapping That Uses Oracle Target CTs to Transform Source Data</p>
+<img width="652" height="303" src="img/map_kms_example.gif" alt="Description of Figure 7-6 follows" /><br />
+<a id="sthref1154" href="img_text/map_kms_example.htm">Description of "Figure 7-6 Mapping That Uses Oracle Target CTs to Transform Source Data"</a><br />
+<br /></div>
+<!-- class="figure" --></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDDGBGG"></a><a id="WBETL07011"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Moving Data <a id="sthref1155"></a><a id="sthref1156"></a>from Heterogeneous Databases to Oracle Database</h2>
+<p>You can use code templates to extract data from heterogeneous databases such as SQL Server, DB2, and Teradata. The code templates used to perform the data transfer depends on the source and target database.</p>
+<p>Oracle Warehouse Builder provides a set of code templates that you can use to transfer data between different databases. These code templates are located in the BUILT_IN_CT node under the Public Code Templates node of the Globals Navigator. Each code template performs a certain set of tasks on a certain platform.</p>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1157"></a>
+<h3 class="sect2">Example: <a id="sthref1158"></a><a id="sthref1159"></a><a id="sthref1160"></a>Moving Data from IBM DB2 to Oracle Database Using Integration CTs and Load CTs</h3>
+<p class="subhead2"><a id="sthref1161"></a>Scenario for Extracting Data</p>
+<p>The tables <code>ORDERS</code> and <code>ORDER_DETAILS</code> are stored in an IBM DB2 database. You must extract data from these two tables, transform it, and store it in a table called <code>ORDERS_AGG_CUST</code> in an Oracle database. The transformation consists of joining the data in these two tables and then aggregating the data for each customer.</p>
+<p class="subhead2"><a id="sthref1162"></a>Before You Extract Data from IBM DB2</p>
+<ul>
+<li>
+<p>Ensure that you have the drivers required to access an IBM DB2 database. The files that you need are <code>db2jcc.jar</code> and <code>db2jcc_license_cu.jar</code>. Copy these files to the <code><span class="codeinlineitalic">OWB_HOME</span></code><code>/owb/lib/ext</code> directory.</p>
+</li>
+<li>
+<p>In the script that starts the CCA, add the statement that loads the required libraries for the DB2 driver.</p>
+<p>On UNIX, add the following statement to <code><span class="codeinlineitalic">OWB_HOME</span></code><code>/owb/bin/unix/ccastart</code>:</p>
+<pre>
+-Dapi.ext.dirs=$OWB_HOME/owb/lib/ext
+</pre>
+<p>On Windows, add the following statement to <code><span class="codeinlineitalic">OWB_HOME</span></code><code>/owb/bin/win32/ccastart.bat</code>:</p>
+<pre>
+-Dapi.ext.dirs=%OWB_HOME%\owb\lib\ext
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink WBDOD90612" href="../../owb.112/e10582/jdbc_connection.htm#WBDOD90612"><span class="italic">Oracle Warehouse Builder Sources and Targets Guide</span></a> for more information about modifying the CCA start script.</div>
+</li>
+</ul>
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1163"></a>
+<h4 class="sect3">Steps to Extract Data from IBM DB2, Transform Data, and Load it into an Oracle Database</h4>
+<p>To extract data from IBM DB2, transform the data, and then load the data into an Oracle Database:</p>
+<ol>
+<li>
+<p><a href="#CIHDJIAB">"Create the Source Module"</a></p>
+</li>
+<li>
+<p><a href="#CIHHEHBJ">"Create the Target Module and Target Table"</a></p>
+</li>
+<li>
+<p><a href="#CIHJGCHF">"Create the CT Mapping that Extracts, Transforms, and Loads Data"</a></p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<a id="CIHDJIAB"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Create the Source Module</h4>
+<p>In the Projects Navigator, create a DB2 module that represents the source data. The location associated with this module should point to the DB2 database containing the source objects.</p>
+<p>In this example, create a DB2 module whose location points to the DB2 database containing the <code>ORDERS</code> and <code>ORDER_DETAILS</code> tables.</p>
+<p>For more information about creating a DB2 module, see <a class="olink WBDOD90601" href="../../owb.112/e10582/gateways_connection.htm#WBDOD90601"><span class="italic">Oracle Warehouse Builder Sources and Targets Guide</span></a>.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CIHHEHBJ"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Create the Target Module and Target Table</h4>
+<p>Use the following steps to create the target module and the target table.</p>
+<ol>
+<li>
+<p>If you have not done so, create an Oracle module to store the target table.</p>
+</li>
+<li>
+<p>Under this Oracle module, create the target table that stores the transformed data. Right-click the Tables node, select <span class="bold">New Table,</span> and use the Table Editor to define the table.</p>
+</li>
+<li>
+<p>Generate the target table by right-clicking the table name and selecting <span class="bold">Generate</span>. Rectify generation errors, if any.</p>
+</li>
+<li>
+<p>Deploy the target table by right-clicking the table name and selecting Deploy.</p>
+</li>
+</ol>
+<p>In this example, the module <code>WH_TGT</code> contains the target table <code>ORDERS_AGG_CUST</code>.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CIHJGCHF"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Create the CT Mapping that Extracts, Transforms, and Loads Data</h4>
+<p>Use the following steps to create the CT mapping that extracts data from DB2 tables, transforms it, and then loads it into and Oracle Database table.</p>
+<ol>
+<li>
+<p>If you have not done so, create a template mapping module to contain the CT mapping that performs the required ETL.</p>
+<p>Ensure that you set the location details of this mapping module to the agent to which the mapping must be deployed.</p>
+<p>In this example, a mapping module called <code>ETL_MAP_MOD</code> is associated with the DEFAULT_AGENT location. This location points to the OC4J server installed with Oracle Warehouse Builder.</p>
+</li>
+<li>
+<p>Create a mapping to contain the required ETL logic for extracting, transforming, and loading data.</p>
+<p>In this example, create a mapping called <code>LOAD_DB2_TO_ORACLE_MAP</code>.</p>
+</li>
+<li>
+<p>Drag and drop the source tables from the DB2 source module onto the Mapping Editor canvas.</p>
+<p>In this example, drag and drop the <code>ORDERS</code> and <code>ORDER_DETAILS</code> tables from the DB2 module source module.</p>
+</li>
+<li>
+<p>Drag and drop the operators that you must use to perform the required data transformation. Connect the operator attributes.</p>
+<p>In this example, you add the following operators:</p>
+<ul>
+<li>
+<p>A Joiner operator to join the data in the <code>ORDERS</code> and <code>ORDER_DETAILS</code> tables. Set the Join Condition property for the Joiner operator.</p>
+</li>
+<li>
+<p>An Aggregator operator to aggregate the output of the Joiner operator. Aggregate the data based on the <code>CUSTOMER_ID</code> attribute.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Drag and drop the target table onto the canvas.</p>
+<p>In this example, drag and drop the <code>ORDERS_TGT</code> operator onto the canvas.</p>
+</li>
+<li>
+<p>Map the transformed output to the target table.</p>
+</li>
+<li>
+<p>In the Execution View of the mapping, perform the following:</p>
+<ul>
+<li>
+<p>Create an execution unit for the <code>ORDERS</code> and <code>ORDER_DETAILS</code> operators. Associate this execution unit with the LCT_SQL_TO_ORACLE code template.</p>
+</li>
+<li>
+<p>Create an execution unit containing the Joiner, Aggregator, and <code>ORDERS_AGG_CUST</code> table. Associate this execution unit with the ICT_ORACLE_INCR_UPD code template.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Validate and generate the CT mapping. In the Projects Navigator, right-click the CT mapping and select <span class="bold">Generate</span>.</p>
+</li>
+<li>
+<p>Deploy the CT mapping. In the Projects Navigator, right-click the CT mapping and select <span class="bold">Deploy</span>.</p>
+</li>
+<li>
+<p>Run the CT mapping to extract data from the source DB2 tables, transform it, and load it into the Oracle target table. In the Projects Navigator, right-click the CT mapping and select <span class="bold">Start</span>.</p>
+</li>
+</ol>
+<p><a href="#CIHJABBH">Figure 7-7</a> displays the Execution View of the mapping LOAD_DB2_TO_ORACLE_MAP.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CIHJABBH"></a>Figure 7-7 Mapping to Extract Data from IBM DB2, Transform Data, and Load it into Oracle Database</p>
+<img width="520" height="205" src="img/load_db2_to_orcl_km.gif" alt="Description of Figure 7-7 follows" /><br />
+<a id="sthref1164" href="img_text/load_db2_to_orcl_km.htm">Description of "Figure 7-7 Mapping to Extract Data from IBM DB2, Transform Data, and Load it into Oracle Database"</a><br />
+<br /></div>
+<!-- class="figure" --></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment2968">
+<tr>
+<td class="cellalignment2977">
+<table class="cellalignment2973">
+<tr>
+<td class="cellalignment2972"><a href="dim_mappings.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment2972"><a href="design_processflows.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2000, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment2980">
+<table class="cellalignment2971">
+<tr>
+<td class="cellalignment2972"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment2972"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment2972"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment2972"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment2972"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment2972"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

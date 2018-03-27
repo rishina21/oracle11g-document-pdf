@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>I/O Configuration and Design</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1023" />
+<meta name="dcterms.created" content="2014-06-30T4:25:5Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Performance Tuning Guide" />
+<meta name="dcterms.identifier" content="E41573-04" />
+<meta name="dcterms.isVersionOf" content="PFGRF" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2000, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="memory.htm" title="Previous" type="text/html" />
+<link rel="Next" href="os.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e41573.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">15/31</span> <!-- End Header -->
+<div id="PFGRF015" class="chapter"><a id="g37279"></a> <a id="i20394"></a>
+<h1 class="chapter"><span class="secnum">8</span> I/O Configuration and Design</h1>
+<p>The I/O subsystem is a vital component of an Oracle database. This chapter introduces fundamental I/O concepts, discusses the I/O requirements of different parts of the database, and provides sample configurations for I/O subsystem design.</p>
+<p>This chapter includes the following topics:</p>
+<ul>
+<li>
+<p><a href="#i12331">About I/O</a></p>
+</li>
+<li>
+<p><a href="#i28412">I/O Configuration</a></p>
+</li>
+<li>
+<p><a href="#CHDFBGFB">I/O Calibration Inside the Database</a></p>
+</li>
+<li>
+<p><a href="#CACJEEDI">I/O Calibration with the Oracle Orion Calibration Tool</a></p>
+</li>
+</ul>
+<a id="i12331"></a>
+<div id="PFGRF94381" class="sect1">
+<h2 class="sect1"><span class="secnum">8.1</span> About I/O</h2>
+<p>Every Oracle Database reads or write data on disk, the database generates <span class="bold">disk I/O</span>. The performance of many software applications is inherently limited by disk I/O. Applications that spend the majority of CPU time waiting for I/O activity to complete are said to be <span class="bold">I/O-bound</span>.</p>
+<p>Oracle Database is designed so that if an application is well written, its performance should not be limited by I/O. Tuning I/O can enhance the performance of the application if the I/O system is operating at or near capacity and is not able to service the I/O requests within an acceptable time. However, tuning I/O cannot help performance if the application is not I/O-bound (for example, when CPU is the limiting factor).</p>
+<p>Consider the following database requirements when designing an I/O system:</p>
+<ul>
+<li>
+<p>Storage, such as minimum disk capacity</p>
+</li>
+<li>
+<p>Availability, such as continuous (24 x 7) or business hours only</p>
+</li>
+<li>
+<p>Performance, such as I/O throughput and application response times</p>
+</li>
+</ul>
+<p>Many I/O designs plan for storage and availability requirements with the assumption that performance will not be an issue. This is not always the case. Optimally, the number of disks and controllers to be configured should be determined by I/O throughput and redundancy requirements. The size of disks can then be determined by the storage requirements.</p>
+<p>When developing an I/O design plan, consider using <span class="bold">Oracle Automatic Storage Management (Oracle ASM)</span>. Oracle ASM is an integrated, high-performance database file system and disk manager that is based on the principle that the database should manage storage instead of requiring an administrator to do it.</p>
+<p>Oracle recommends that you use Oracle ASM for your database file storage, instead of raw devices or the operating system file system. Oracle ASM provides the following key benefits:</p>
+<ul>
+<li>
+<p>Striping</p>
+</li>
+<li>
+<p>Mirroring</p>
+</li>
+<li>
+<p>Online storage reconfiguration and dynamic rebalancing</p>
+</li>
+<li>
+<p>Managed file creation and deletion</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink OSTMG036" href="../../server.112/e18951/asmcon.htm#OSTMG036"><span class="italic">Oracle Automatic Storage Management Administrator's Guide</span></a> for additional information about Oracle ASM</div>
+</div>
+<!-- class="sect1" -->
+<a id="i28412"></a>
+<div id="PFGRF94385" class="sect1">
+<h2 class="sect1"><span class="secnum">8.2</span> I/O Configuration</h2>
+<p>This section describes the basic information to be gathered and decisions to be made when defining a system's I/O configuration. You want to keep the configuration as simple as possible, while maintaining the required availability, recoverability, and performance. The more complex a configuration becomes, the more difficult it is to administer, maintain, and tune.</p>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i35235">Lay Out the Files Using Operating System or Hardware Striping</a></p>
+</li>
+<li>
+<p><a href="#CHDJABEA">Manually Distributing I/O</a></p>
+</li>
+<li>
+<p><a href="#CHDGFJJD">When to Separate Files</a></p>
+</li>
+<li>
+<p><a href="#CHDJEGED">Three Sample Configurations</a></p>
+</li>
+<li>
+<p><a href="#CHDGIJDC">Oracle Managed Files</a></p>
+</li>
+<li>
+<p><a href="#i19636">Choosing Data Block Size</a></p>
+</li>
+</ul>
+<a id="i35235"></a>
+<div id="PFGRF94386" class="sect2">
+<h3 class="sect2"><span class="secnum">8.2.1</span> Lay Out the Files Using Operating System or Hardware Striping</h3>
+<p>If your operating system has LVM software or hardware-based striping, then it is possible to distribute I/O using these tools. Decisions to be made when using an LVM or hardware striping include <span class="glossaryterm">stripe depth</span> and <span class="glossaryterm">stripe width</span>.</p>
+<ul>
+<li>
+<p>Stripe depth is the size of the stripe, sometimes called stripe unit.</p>
+</li>
+<li>
+<p>Stripe width is the product of the stripe depth and the number of drives in the striped set.</p>
+</li>
+</ul>
+<p>Choose these values wisely so that the system is capable of sustaining the required throughput. For an Oracle database, reasonable stripe depths range from 256 KB to 1 MB. Different types of applications benefit from different stripe depths. The optimal stripe depth and stripe width depend on the following:</p>
+<ul>
+<li>
+<p><a href="#i28815">Requested I/O Size</a></p>
+</li>
+<li>
+<p><a href="#i28823">Concurrency of I/O Requests</a></p>
+</li>
+<li>
+<p><a href="#i28829">Alignment of Physical Stripe Boundaries with Block Size Boundaries</a></p>
+</li>
+<li>
+<p><a href="#i32369">Manageability of the Proposed System</a></p>
+</li>
+</ul>
+<a id="i28815"></a>
+<div id="PFGRF94387" class="sect3">
+<h4 class="sect3"><span class="secnum">8.2.1.1</span> Requested I/O Size</h4>
+<p><a href="#g35578">Table 8-1</a> lists the Oracle Database and operating system parameters that you can use to set I/O size:</p>
+<div id="PFGRF94388" class="tblformal">
+<p class="titleintable"><a id="sthref546"></a><a id="g35578"></a>Table 8-1 Oracle Database and Operating System Operational Parameters</p>
+<table class="cellalignment1686" title="Oracle Database and Operating System Operational Parameters" summary="This table describes the Oracle and operating system parameters that can be used to set I/O size." dir="ltr">
+<thead>
+<tr class="cellalignment1680">
+<th class="cellalignment1687" id="r1c1-t3">Parameter</th>
+<th class="cellalignment1687" id="r1c2-t3">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r2c1-t3" headers="r1c1-t3">
+<p><code>DB_BLOCK_SIZE</code></p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t3 r1c2-t3">
+<p>The size of single-block I/O requests. This parameter is also used in combination with multiblock parameters to determine multiblock I/O request size.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r3c1-t3" headers="r1c1-t3">
+<p>OS block size</p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t3 r1c2-t3">
+<p>Determines I/O size for redo log and archive log operations.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r4c1-t3" headers="r1c1-t3">
+<p>Maximum OS I/O size</p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t3 r1c2-t3">
+<p>Places an upper bound on the size of a single I/O request.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r5c1-t3" headers="r1c1-t3">
+<p><code>DB_FILE_MULTIB<a id="sthref547"></a>LOCK_READ_COUNT</code></p>
+</td>
+<td class="cellalignment1688" headers="r5c1-t3 r1c2-t3">
+<p>The maximum I/O size for full table scans is computed by multiplying this parameter with <code>DB_BLOCK_SIZE</code>. (the upper value is subject to operating system limits). If this value is not set explicitly (or is set to 0), the default value corresponds to the maximum I/O size that can be efficiently performed and is platform-dependent.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r6c1-t3" headers="r1c1-t3">
+<p><code>SORT_AREA_SIZE</code></p>
+</td>
+<td class="cellalignment1688" headers="r6c1-t3 r1c2-t3">
+<p>Determines I/O sizes and concurrency for sort operations.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r7c1-t3" headers="r1c1-t3">
+<p><code>HASH_AREA_SIZE</code></p>
+</td>
+<td class="cellalignment1688" headers="r7c1-t3 r1c2-t3">
+<p>Determines the I/O size for hash operations.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<p>In addition to I/O size, the degree of concurrency also helps in determining the ideal stripe depth. Consider the following when choosing stripe width and stripe depth:</p>
+<ul>
+<li>
+<p>On low-concurrency (sequential) systems, ensure that no single I/O visits the same disk twice. For example, assume that the stripe width is four disks, and the stripe depth is 32K. If a single 1MB I/O request (for example, for a full table scan) is issued by an Oracle server process, then each disk in the stripe must perform eight I/Os to return the requested data. To avoid this situation, the size of the average I/O should be smaller than the stripe width multiplied by the stripe depth. If this is not the case, then a single I/O request made by Oracle Database to the operating system results in multiple physical I/O requests to the same disk.</p>
+</li>
+<li>
+<p>On high-concurrency (random) systems, ensure that no single I/O request is broken up into multiple physical I/O calls. Failing to do this multiplies the number of physical I/O requests performed in your system, which in turn can severely degrade the I/O response times.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<a id="i28823"></a>
+<div id="PFGRF94389" class="sect3">
+<h4 class="sect3"><span class="secnum">8.2.1.2</span> Concurrency of I/O Requests</h4>
+<p>In a system with a high degree of concurrent small I/O requests, such as in a traditional OLTP environment, it is beneficial to keep the stripe depth large. Using stripe depths larger than the I/O size is called <span class="bold">coarse grain striping</span>. In high-concurrency systems, the stripe depth can be as follows, where <code><span class="codeinlineitalic">n</span></code> &gt; 1:</p>
+<pre>
+<span class="italic">n</span> * DB_BLOCK_SIZE
+</pre>
+<p>Coarse grain striping allows a disk in the array to service several I/O requests. In this way, a large number of concurrent I/O requests can be serviced by a set of striped disks with minimal I/O setup costs. Coarse grain striping strives to maximize overall I/O throughput. Multiblock reads, as in full table scans, will benefit when stripe depths are large and can be serviced from one drive. Parallel query in a data warehouse environment is also a candidate for coarse grain striping because many individual processes each issue separate I/Os. If coarse grain striping is used in systems that do not have high concurrent requests, then hot spots could result.</p>
+<p>In a system with a few large I/O requests, such as in a traditional DSS environment or a low-concurrency OLTP system, then it is beneficial to keep the stripe depth small. This is called <span class="bold">fine grain striping</span>. In such systems, the stripe depth is as follows, where <code><span class="codeinlineitalic">n</span></code> is smaller than the multiblock read parameters, such as <code>D<a id="sthref548"></a>B_FILE_MULTIBLOCK_READ_COUNT</code>:</p>
+<pre>
+<span class="italic">n</span> * DB_BLOCK_<a id="sthref549"></a>SIZE
+</pre>
+<p>Fine grain striping allows a single I/O request to be serviced by multiple disks. Fine grain striping strives to maximize performance for individual I/O requests or response time.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i28829"></a>
+<div id="PFGRF94390" class="sect3">
+<h4 class="sect3"><span class="secnum">8.2.1.3</span> Alignment of Physical Stripe Boundaries with Block Size Boundaries</h4>
+<p>On some Oracle Database ports, a database block boundary may not align with the stripe. If your stripe depth is the same size as the database block, then a single I/O issued by Oracle Database may result in two physical I/O operations.</p>
+<p>This is not optimal in an OLTP environment. To ensure a higher probability of one logical I/O resulting in no more than one physical I/O, the minimum stripe depth should be at least twice the Oracle block size. <a href="#g35619">Table 8-2</a> shows recommended minimum stripe depth for random access and for sequential reads.</p>
+<div id="PFGRF94391" class="tblformal">
+<p class="titleintable"><a id="sthref550"></a><a id="g35619"></a>Table 8-2 Minimum Stripe Depth</p>
+<table class="cellalignment1686" title="Minimum Stripe Depth" summary="This table displays recommended minimum stripe depth for randon access and for sequentiol reads." dir="ltr">
+<thead>
+<tr class="cellalignment1680">
+<th class="cellalignment1687" id="r1c1-t4">Disk Access</th>
+<th class="cellalignment1687" id="r1c2-t4">Minimum Stripe Depth</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r2c1-t4" headers="r1c1-t4">
+<p>Random reads and writes</p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t4 r1c2-t4">
+<p>The minimum stripe depth is twice the Oracle block size.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r3c1-t4" headers="r1c1-t4">
+<p>Sequential reads</p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t4 r1c2-t4">
+<p>The minimum stripe depth is twice the value of <code>DB_<a id="sthref551"></a>FILE_MULTIBLOCK_READ_COUNT</code>, multiplied by the Oracle block&nbsp;size.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+The specific documentation for your platform</div>
+</div>
+<!-- class="sect3" -->
+<a id="i32369"></a>
+<div id="PFGRF94392" class="sect3">
+<h4 class="sect3"><span class="secnum">8.2.1.4</span> Manageability of the Proposed System</h4>
+<p>With an LVM, the simplest configuration to manage is one with a single striped volume over all available disks. In this case, the stripe width encompasses all available disks. All database files reside within that volume, effectively distributing the load evenly. This single-volume layout provides adequate performance in most situations.</p>
+<p>A single-volume configuration is viable only when used in conjunction with RAID technology that allows easy recoverability, such as RAID 1. Otherwise, losing a single disk means losing all files concurrently and, hence, performing a full database restore and recovery.</p>
+<p>In addition to performance, there is a manageability concern: the design of the system must allow disks to be added simply, to allow for database growth. The challenge is to do so while keeping the load balanced evenly.</p>
+<p>For example, an initial configuration can involve the creation of a single striped volume over 64 disks, each disk being 16 GB. This is total disk space of 1 terabyte (TB) for the primary data. Sometime after the system is operational, an additional 80 GB (that is, five disks) must be added to account for future database growth.</p>
+<p>The options for making this space available to the database include creating a second volume that includes the five new disks. However, an I/O bottleneck might develop, if these new disks are unable to sustain the I/O throughput required for the files placed on them.</p>
+<p>Another option is to increase the size of the original volume. LVMs are becoming sophisticated enough to allow dynamic reconfiguration of the stripe width, which allows disks to be added while the system is online. This begins to make the placement of all files on a single striped volume feasible in a production environment.</p>
+<p>If your LVM cannot support dynamically adding disks to the stripe, then it is likely that you need to choose a smaller, more manageable stripe width. Then, when new disks are added, the system can grow by a stripe width.</p>
+<p>In the preceding example, eight disks might be a more manageable stripe width. This is only feasible if eight disks are capable of sustaining the required number of I/Os each second. Thus, when extra disk space is required, another eight-disk stripe can be added, keeping the I/O balanced across the volumes.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The smaller the stripe width becomes, the more likely it is that you will need to spend time distributing the files on the volumes, and the closer the procedure becomes to manually distributing I/O.</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CHDJABEA"></a>
+<div id="PFGRF94393" class="sect2">
+<h3 class="sect2"><span class="secnum">8.2.2</span> Manually Distributing I/O</h3>
+<p>If your system does not have an LVM or hardware striping, then I/O must be manually balanced across the available disks by distributing the files according to each file's I/O requirements. In order to make decisions on file placement, you should be familiar with the I/O requirements of the database files and the capabilities of the I/O system. If you are not familiar with this data and do not have a representative workload to analyze, you can make a first guess and then tune the layout as the usage becomes known.</p>
+<p><a id="sthref552"></a>To stripe disks manually, you need to relate a file's storage requirements to its I/O requirements.</p>
+<ol>
+<li>
+<p>Evaluate database disk-storage requirements by checking the size of the files and the disks.</p>
+</li>
+<li>
+<p>Identify the expected I/O throughput for each file. Determine which files have the highest I/O rate and which do not have many I/Os. Lay out the files on all the available disks so as to even out the I/O rate.</p>
+</li>
+</ol>
+<p><a id="sthref553"></a><a id="sthref554"></a>One popular approach to manual I/O distribution suggests separating a frequently used table from its index. This is not correct. During the course of a transaction, the index is read first, and then the table is read. Because these I/Os occur sequentially, the table and index can be stored on the same disk without contention. It is not sufficient to separate a data file simply because the data file contains indexes or table data. The decision to segregate a file should be made only when the I/O rate for that file affects database performance.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDGFJJD"></a>
+<div id="PFGRF94394" class="sect2">
+<h3 class="sect2"><span class="secnum">8.2.3</span> When to Separate Files</h3>
+<p>Regardless of whether you use operating system striping or manual I/O distribution, if the I/O system or I/O layout is not able to support the I/O rate required, then you need to separate files with high I/O rates from the remaining files. You can identify such files either at the planning stage or after the system is live.</p>
+<p>The decision to segregate files should only be driven by I/O rates, recoverability concerns, or manageability issues. (For example, if your LVM does not support dynamic reconfiguration of stripe width, then you might need to create smaller stripe widths to be able to add <span class="italic">n</span> disks at a time to create a new stripe of identical configuration.)</p>
+<p>Before segregating files, verify that the bottleneck is truly an I/O issue. The data produced from investigating the bottleneck identifies which files have the highest I/O rates.</p>
+<p>The following sections describe how to segregate the following file types:</p>
+<ul>
+<li>
+<p><a href="#CHDGJDBF">Tables, Indexes, and TEMP Tablespaces</a></p>
+</li>
+<li>
+<p><a href="#CHDBCDHG">Redo Log Files</a></p>
+</li>
+<li>
+<p><a href="#CHDIHICJ">Archived Redo Logs</a></p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="sql_overview.htm#i26072">"Identifying High-Load SQL"</a></div>
+<a id="CHDGJDBF"></a>
+<div id="PFGRF94395" class="sect3">
+<h4 class="sect3"><span class="secnum">8.2.3.1</span> Tables, Indexes, and TEMP Tablespaces</h4>
+<p>If the files with high I/O are data files belonging to tablespaces that contain tables and indexes, then identify whether the I/O for those files can be reduced by tuning SQL or application code.</p>
+<p>If the files with high-I/O are data files that belong to the <code>TEMP</code> tablespace, then investigate whether to tune the SQL statements performing disk sorts to avoid this activity, or to tune the sorting.</p>
+<p>After the application has been tuned to avoid unnecessary I/O, if the I/O layout is still not able to sustain the required throughput, then consider segregating the high-I/O files.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="sql_overview.htm#i26072">"Identifying High-Load SQL"</a></div>
+</div>
+<!-- class="sect3" -->
+<a id="CHDBCDHG"></a>
+<div id="PFGRF94396" class="sect3">
+<h4 class="sect3"><span class="secnum">8.2.3.2</span> Redo Log Files</h4>
+<p>If the high-I/O files are redo log files, then consider splitting the redo log files from the other files. <a id="sthref555"></a>Possible configurations can include the following:</p>
+<ul>
+<li>
+<p>Placing all redo logs on one disk without any other files. Also consider availability; members of the same group should be on different physical disks and controllers for recoverability purposes.</p>
+</li>
+<li>
+<p>Placing each redo log group on a separate disk that does not store any other files.</p>
+</li>
+<li>
+<p>Striping the redo log files across several disks, using an operating system striping tool. (Manual striping is not possible in this situation.)</p>
+</li>
+<li>
+<p>Avoiding the use of RAID 5 for redo logs.</p>
+</li>
+</ul>
+<p>Redo log files are written sequentially by the Log Writer (LGWR) process<a id="sthref556"></a>. This operation can be made faster if there is no concurrent activity on the same disk. Dedicating a separate disk to redo log files usually ensures that LGWR runs smoothly with no further tuning necessary. If your system supports asynchronous I/O but this feature is not currently configured, then test to see if using this feature is beneficial. Performance bottlenecks related to LGWR are rare.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CHDIHICJ"></a>
+<div id="PFGRF94397" class="sect3">
+<h4 class="sect3"><span class="secnum">8.2.3.3</span> Archived Redo Logs</h4>
+<p>If the archiver is slow, then it might be prudent to prevent I/O contention between the archiver process and LGWR by ensuring that archiver reads and LGWR writes are separated. This is achieved by placing logs on alternating drives.</p>
+<p>For example, suppose a system has four redo log groups, each group with two members. To create separate-disk access, the eight log files should be labeled 1a, 1b, 2a, 2b, 3a, 3b, 4a, and 4b. This requires at least four disks, plus one disk for archived files.</p>
+<p><a href="#i21803">Figure 8-1</a> illustrates how redo members should be distributed across disks to minimize contention.</p>
+<div id="PFGRF94398" class="figure">
+<p class="titleinfigure"><a id="i21803"></a>Figure 8-1 Distributing Redo Members Across Disks</p>
+<img width="496" height="208" src="img/pfgrf188.gif" alt="Description of Figure 8-1 follows" /><br />
+<a id="sthref557" href="img_text/pfgrf188.htm">Description of "Figure 8-1 Distributing Redo Members Across Disks"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>In this example, LGWR switches out of log group 1 (member 1a and 1b) and writes to log group 2 (2a and 2b). Concurrently, the archiver process reads from group 1 and writes to its archive destination. Note how the redo log files are isolated from contention.</p>
+<div class="infobox-note">
+<p class="notep1"><span class="bold">Note</span>:</p>
+Mirroring<a id="sthref558"></a> redo log files<a id="sthref559"></a>, or maintaining multiple copies of each redo log file on separate disks, does not slow LGWR considerably. LGWR writes to each disk in parallel and waits until each part of the parallel write is complete. Thus, a parallel write does not take longer than the longest possible single-disk write.</div>
+<p>Because redo logs are written serially, drives dedicated to redo log activity generally require limited head movement. This significantly accelerates log&nbsp;writing.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CHDJEGED"></a>
+<div id="PFGRF94399" class="sect2">
+<h3 class="sect2"><span class="secnum">8.2.4</span> Three Sample Configurations</h3>
+<p>This section contains three high-level examples of configuring I/O systems. These examples include sample calculations that define the disk topology, stripe depths, and so on:</p>
+<ul>
+<li>
+<p><a href="#CHDIFFFA">Stripe Everything Across Every Disk</a></p>
+</li>
+<li>
+<p><a href="#CHDGFDGH">Move Archive Logs to Different Disks</a></p>
+</li>
+<li>
+<p><a href="#CHDIBIIJ">Move Redo Logs to Separate Disks</a></p>
+</li>
+</ul>
+<a id="CHDIFFFA"></a>
+<div id="PFGRF94400" class="sect3">
+<h4 class="sect3"><span class="secnum">8.2.4.1</span> Stripe Everything Across Every Disk</h4>
+<p>The simplest approach to I/O configuration is to build one giant volume, striped across all available disks. To account for recoverability, the volume is mirrored (RAID 1). The striping unit for each disk should be larger than the maximum I/O size for the frequent I/O operations. This provides adequate performance for most cases.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CHDGFDGH"></a>
+<div id="PFGRF94401" class="sect3">
+<h4 class="sect3"><span class="secnum">8.2.4.2</span> Move Archive Logs to Different Disks</h4>
+<p>If archived redo log files are striped on the same set of disks as other files, then any I/O requests on those disks could suffer when the database is archiving the redo logs. Moving archived redo log files to separate disks provides the following benefits:</p>
+<ul>
+<li>
+<p>The archive can be performed at very high rate (using sequential I/O).</p>
+</li>
+<li>
+<p>Nothing else is affected by the degraded response time on the archive destination disks.</p>
+</li>
+</ul>
+<p>The number of disks for archive logs is determined by the rate of archive log generation and the amount of archive storage required.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CHDIBIIJ"></a>
+<div id="PFGRF94402" class="sect3">
+<h4 class="sect3"><span class="secnum">8.2.4.3</span> Move Redo Logs to Separate Disks</h4>
+<p>In high-update OLTP systems, the redo logs are write-intensive. Moving the redo log files to disks that are separate from other disks and from archived redo log files has the following benefits:</p>
+<ul>
+<li>
+<p>Writing redo logs is performed at the highest possible rate. Hence, transaction processing performance is at its best.</p>
+</li>
+<li>
+<p>Writing of the redo logs is not impaired with any other I/O.</p>
+</li>
+</ul>
+<p>The number of disks for redo logs is mostly determined by the redo log size, which is generally small compared to current technology disk sizes. Typically, a configuration with two disks (possibly mirrored to four disks for fault tolerance) is adequate. In particular, by having the redo log files alternating on two disks, writing redo log information to one file does not interfere with reading a completed redo log for archiving.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CHDGIJDC"></a>
+<div id="PFGRF94403" class="sect2">
+<h3 class="sect2"><span class="secnum">8.2.5</span> Oracle M<a id="sthref560"></a>anaged Files</h3>
+<p>When file systems can contain all Oracle Database data, database administration is simplified by using <span class="bold"><a id="sthref561"></a>Oracle Managed Files</span>. Oracle Database internally uses standard file system interfaces to create and delete files as needed for tablespaces, temp files, online logs, and control files. Administrators only specify the file system directory to be used for a particular type of file. You can specify one default location for data files and up to five multiplexed locations for the control and online redo log files.</p>
+<p>Oracle Database ensures that a unique file is created and then deleted when it is no longer needed. This reduces corruption caused by administrators specifying the wrong file, reduces wasted disk space consumed by obsolete files, and simplifies creation of test and development databases. It also makes development of portable third-party tools easier, because it eliminates the need to put operating system-specific file names in SQL scripts.</p>
+<p>New files can be created as Oracle Managed Files, while old ones are administered in the old way. Thus, a database can have a mixture of Oracle Managed Files and user-managed files.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Oracle Managed Files cannot be used with raw devices.</div>
+<p>Several points should be considered when tuning Oracle Managed Files:</p>
+<ul>
+<li>
+<p>Because Oracle Managed Files require the use of a file system, DBAs give up control over how the data is laid out. Therefore, it is important to correctly configure the file system.</p>
+</li>
+<li>
+<p>Build the file system for Oracle Managed Files on top of an LVM that supports striping. For load balancing and improved throughput, stripe the disks in the file system.</p>
+</li>
+<li>
+<p>Oracle Managed Files work best if used on an LVM that supports dynamically extensible logical volumes. Otherwise, configure the logical volumes as large as possible.</p>
+</li>
+<li>
+<p>Oracle Managed Files work best if the file system provides large extensible files.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ADMIN" href="../e25494/toc.htm"><span class="italic">Oracle Database Administrator's Guide</span></a> for detailed information on using Oracle Managed Files</div>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="i19636"></a>
+<div id="PFGRF94404" class="sect2">
+<h3 class="sect2"><span class="secnum">8.2.6</span> Choosing Data Block Size</h3>
+<p>A <a id="sthref562"></a><a id="sthref563"></a>block size of 8 KB is optimal for most systems. However, OLTP systems occasionally use smaller block sizes and DSS systems occasionally use larger block sizes. This section discusses considerations when choosing database block size for optimal performance and contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#CHDEFEGC">Reads</a></p>
+</li>
+<li>
+<p><a href="#CHDFJFIE">Writes</a></p>
+</li>
+<li>
+<p><a href="#CHDGGHJD">Block Size Advantages and Disadvantages</a></p>
+</li>
+</ul>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The use of multiple block sizes in a single database instance is not encouraged because of manageability issues.</div>
+<a id="CHDEFEGC"></a>
+<div id="PFGRF94405" class="sect3">
+<h4 class="sect3"><span class="secnum">8.2.6.1</span> Reads</h4>
+<p>Regardless of the size of the data, the goal is to minimize the number of reads required to retrieve the desired data.</p>
+<ul>
+<li>
+<p>If the rows are small and access is predominantly random, then choose a smaller block size.</p>
+</li>
+<li>
+<p>If the rows are small and access is predominantly sequential, then choose a larger block size.</p>
+</li>
+<li>
+<p>If the rows are small and access is both random and sequential, then it might be effective to choose a larger block size.</p>
+</li>
+<li>
+<p>If the rows are large, such as rows containing large object (LOB) data, then choose a larger block size.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<a id="CHDFJFIE"></a>
+<div id="PFGRF94406" class="sect3">
+<h4 class="sect3"><span class="secnum">8.2.6.2</span> Writes</h4>
+<p>For high-concurrency OLTP systems, consider appropriate values for <code>INITRANS</code>, <code>MAXTRANS</code>, and <code>FREELISTS</code> when using a larger block size. These parameters affect the degree of update concurrency allowed within a block. However, you do not need to specify the value for <code>FREELISTS</code> when using automatic se<a id="sthref564"></a>gment-space management.</p>
+<p>If you are uncertain about which block size to choose, then try a database block size of 8 KB for most systems that process a large number of transactions. This represents a good compromise and is usually effective. Only systems processing LOB data need more than 8 KB.</p>
+<div class="infoboxnotealso">
+<p class="notep1"><span class="bold">See Also</span>:</p>
+The Oracle Database installation documentation specific to your operating system for information about the minimum and maximum block size on your platform</div>
+</div>
+<!-- class="sect3" -->
+<a id="CHDGGHJD"></a>
+<div id="PFGRF94407" class="sect3">
+<h4 class="sect3"><span class="secnum">8.2.6.3</span> Block Size Advantages and Disadvantages</h4>
+<p><a href="#g35558">Table 8-3</a> lists the advantages and disadvantages of different block sizes.</p>
+<div id="PFGRF94408" class="tblformalwide">
+<p class="titleintable"><a id="sthref565"></a><a id="g35558"></a>Table 8-3 Block Size Advantages and Disadvantages</p>
+<table class="cellalignment1691" title="Block Size Advantages and Disadvantages" summary="This table lists the advantages and disadvantages of various block sizesl." dir="ltr">
+<thead>
+<tr class="cellalignment1680">
+<th class="cellalignment1687" id="r1c1-t14">Block Size</th>
+<th class="cellalignment1687" id="r1c2-t14">Advantages</th>
+<th class="cellalignment1687" id="r1c3-t14">Disadvantages</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r2c1-t14" headers="r1c1-t14">
+<p>Smaller</p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t14 r1c2-t14">
+<p>Good for small rows with lots of random access.</p>
+<p>Reduces block contention.</p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t14 r1c3-t14">
+<p>Has relatively large space overhead due to metadata (that is, block header).</p>
+<p>Not recommended for large rows. There might only be a few rows stored for each block, or worse, row chaining if a single row does not fit into a block,</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r3c1-t14" headers="r1c1-t14">
+<p>Larger</p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t14 r1c2-t14">
+<p>Has lower overhead, so there is more room to store data.</p>
+<p>Permits reading several rows into the buffer cache with a single I/O (depending on row size and block size).</p>
+<p>Good for sequential access or very large rows (such as LOB data).</p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t14 r1c3-t14">
+<p>Wastes space in the buffer cache, if you are doing random access to small rows and have a large block size. For example, with an 8 KB block size and 50 byte row size, you waste 7,950 bytes in the buffer cache when doing random access.</p>
+<p>Not good for index blocks used in an OLTP environment, because they increase block contention on the index leaf blocks.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformalwide" --></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDFBGFB"></a>
+<div id="PFGRF94382" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">8.3</span> I/O Calibration Inside the Database</h2>
+<p>The I/O calibration feature of Oracle Database enables you to assess the performance of the storage subsystem, and determine whether I/O performance problems are caused by the database or the storage subsystem. Unlike other external I/O calibration tools that issue I/Os sequentially, the I/O calibration feature of Oracle Database issues I/Os randomly using Oracle data files to access the storage media, producing results that more closely match the actual performance of the database.</p>
+<p>The section describes how to use the I/O calibration feature of Oracle Database and contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#CHDBBADG">Prerequisites for I/O Calibration</a></p>
+</li>
+<li>
+<p><a href="#CHDGBECA">Running I/O Calibration</a></p>
+</li>
+</ul>
+<p>Oracle Database also provides Orion, an I/O calibration tool. Orion is a tool for predicting the performance of an Oracle database without having to install Oracle or create a database. Unlike other I/O calibration tools, Oracle Orion is expressly designed for simulating Oracle database I/O workloads using the same I/O software stack as Oracle. Orion can also simulate the effect of striping performed by Oracle Automatic Storage Management. For more information, see <a href="#CACJEEDI">"I/O Calibration with the Oracle Orion Calibration Tool"</a>.</p>
+<a id="CHDBBADG"></a>
+<div id="PFGRF94383" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">8.3.1</span> Prerequisites for I/O Calibration</h3>
+<p>Before running I/O calibration, ensure that the following requirements are met:</p>
+<ul>
+<li>
+<p>The user must be granted the <code>SYSDBA</code> privilege</p>
+</li>
+<li>
+<p><code>timed_statistics</code> must be set to <code>TRUE</code></p>
+</li>
+<li>
+<p>Asynchronous I/O must be enabled</p>
+<p>When using file systems, asynchronous I/O can be enabled by setting the <code>FILESYSTEMIO_OPTIONS</code> initialization parameter to <code>SETALL</code>.</p>
+</li>
+<li>
+<p>Ensure that asynchronous I/O is enabled for data files by running the following query:</p>
+<pre>
+COL NAME FORMAT A50
+SELECT NAME,ASYNCH_IO FROM V$DATAFILE F,V$IOSTAT_FILE I
+WHERE  F.FILE#=I.FILE_NO
+AND    FILETYPE_NAME='Data File';
+</pre></li>
+</ul>
+<p>Additionally, only one calibration can be performed on a database instance at a time.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDGBECA"></a>
+<div id="PFGRF94384" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">8.3.2</span> Running I/O Calibration</h3>
+<p>The I/O calibration feature of Oracle Database is accessed using the <code>DBMS_RESOURCE_MANAGER</code>.<code>CALIBRATE_IO</code> procedure. This procedure issues an I/O intensive read-only workload, made up of one megabyte of random of I/Os, to the database files to determine the maximum IOPS (I/O requests per second) and MBPS (megabytes of I/O per second) that can be sustained by the storage subsystem.</p>
+<p>The I/O calibration occurs in two steps:</p>
+<ul>
+<li>
+<p>In the first step of I/O calibration with the <code>DBMS_RESOURCE_MANAGER</code>.<code>CALIBRATE_IO</code> procedure, the procedure issues random database-block-sized reads, by default, 8 KB, to all data files from all database instances. This step provides the maximum IOPS, in the output parameter <code>max_iops</code>, that the database can sustain. The value <code>max_iops</code> is an important metric for OLTP databases. The output parameter <code>actual_latency</code> provides the average latency for this workload. When you need a specific target latency, you can specify the target latency with the input parameter <code>max_latency</code> (specifies the maximum tolerable latency in milliseconds for database-block-sized IO requests).</p>
+</li>
+<li>
+<p>The second step of calibration using the <code>DBMS_RESOURCE_MANAGER</code>.<code>CALIBRATE_IO</code> procedure issues random, 1 MB reads to all data files from all database instances. The second step yields the output parameter <code>max_mbps</code>, which specifies the maximum MBPS of I/O that the database can sustain. This step provides an important metric for data warehouses.</p>
+</li>
+</ul>
+<p>The calibration runs more efficiently if the user provides the <code>num_physical_disks</code> input parameter, which specifies the approximate number of physical disks in the database storage system.</p>
+<p>Due to the overhead from running the I/O workload, I/O calibration should only be performed when the database is idle, or during off-peak hours, to minimize the impact of the I/O workload on the normal database workload.</p>
+<p>To run I/O calibration and assess the I/O capability of the storage subsystem used by Oracle Database, use the <code>DBMS_RESOURCE_MANAGER</code>.<code>CALIBRATE_IO</code> procedure:</p>
+<pre>
+SET SERVEROUTPUT ON
+DECLARE
+  lat  INTEGER;
+  iops INTEGER;
+  mbps INTEGER;
+BEGIN
+-- DBMS_RESOURCE_MANAGER.CALIBRATE_IO (&lt;DISKS&gt;, &lt;MAX_LATENCY&gt;, iops, mbps, lat);
+   DBMS_RESOURCE_MANAGER.CALIBRATE_IO (2, 10, iops, mbps, lat);
+ 
+  DBMS_OUTPUT.PUT_LINE ('max_iops = ' || iops);
+  DBMS_OUTPUT.PUT_LINE ('latency  = ' || lat);
+  dbms_output.put_line('max_mbps = ' || mbps);
+end;
+/
+</pre>
+<p>When running the <code>DBMS_RESOURCE_MANAGER</code>.<code>CALIBRATE_IO</code> procedure, consider the following:</p>
+<ul>
+<li>
+<p>Only run one calibration at a time on databases that use the same storage subsystem. If you simultaneously run the calibration across separate databases that use the same storage subsystem, the calibration will fail.</p>
+</li>
+<li>
+<p>Quiesce the database to minimize I/O on the instance.</p>
+</li>
+<li>
+<p>For Oracle Real Application Clusters (Oracle RAC) configurations, ensure that all instances are opened to calibrate the storage subsystem across nodes.</p>
+</li>
+<li>
+<p>For an Oracle Real Application Clusters (Oracle RAC) database, the workload is simultaneously generated from all instances.</p>
+</li>
+<li>
+<p>The <code>num_physical_disks</code> input parameter is optional. By setting the <code>num_physical_disks</code> parameter to the approximate number of physical disks in the database's storage system, the calibration can be faster and more accurate.</p>
+</li>
+<li>
+<p>In some cases, asynchronous I/O is permitted for data files, but the I/O subsystem for submitting asynchronous I/O may be maximized, and I/O calibration cannot continue. In such cases, refer to the port-specific documentation for information about checking the maximum limit for asynchronous I/O on the system.</p>
+</li>
+</ul>
+<p>At any time during the I/O calibration process, you can query the calibration status in the <code>V$IO_CALIBRATION_STATUS</code> view. After I/O calibration is successfully completed, you can view the results in the <code>DBA_RSRC_IO_CALIBRATE</code> table.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ARPLS050" href="../../appdev.112/e40758/d_resmgr.htm#ARPLS050"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information about running the <code>DBMS_RESOURCE_MANAGER</code>.<code>CALIBRATE_IO</code> procedure</p>
+</li>
+<li>
+<p><a class="olink REFRN" href="../e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for information about the <code>V$IO_CALIBRATION_STATUS</code> view and <code>DBA_RSRC_IO_CALIBRATE</code> table</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CACJEEDI"></a>
+<div id="PFGRF95244" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">8.4</span> I/O Calibration with the Oracle Orion Calibration Tool</h2>
+<p>This section describes the Oracle Orion Calibration Tool and includes the following sections:</p>
+<ul>
+<li>
+<p><a href="#BABFCFBC">Introduction to the Oracle Orion Calibration Tool</a></p>
+</li>
+<li>
+<p><a href="#BABFIHIE">Getting Started with Orion</a></p>
+</li>
+<li>
+<p><a href="#BABBCJJB">Orion Input Files</a></p>
+</li>
+<li>
+<p><a href="#BABEIFFG">Orion Parameters</a></p>
+</li>
+<li>
+<p><a href="#BABGFFBC">Orion Output Files</a></p>
+</li>
+<li>
+<p><a href="#BABBEJIH">Orion Troubleshooting</a></p>
+</li>
+</ul>
+<a id="BABFCFBC"></a>
+<div id="PFGRF95222" class="sect2">
+<h3 class="sect2"><span class="secnum">8.4.1</span> Introduction to the Oracle Orion Calibration Tool</h3>
+<p>Oracle Orion is a tool for predicting the performance of an Oracle database without having to install Oracle or create a database. Unlike other I/O calibration tools, Oracle Orion is expressly designed for simulating Oracle database I/O workloads using the same I/O software stack as Oracle. Orion can also simulate the effect of striping performed by Oracle Automatic Storage Management.</p>
+<p><a href="#BABCGCEJ">Table 8-4</a> lists the types of I/O workloads that Orion supports.</p>
+<p>For each type of workload shown in <a href="#BABCGCEJ">Table 8-4</a>, Orion can run tests using different I/O loads to measure performance metrics such as MBPS, IOPS, and I/O latency. Load is expressed in terms of the number of outstanding asynchronous I/Os. Internally, for each such load level, the Orion software keeps issuing I/O requests as fast as they complete to maintain the I/O load at that level. For random workloads, using either large or small sized I/Os, the load level is the number of outstanding I/Os. For large sequential workloads, the load level is a combination of the number of sequential streams and the number of outstanding I/Os per stream. Testing a given workload at a range of load levels can help you understand how performance is affected by load.</p>
+<p>Note the following when you use Orion:</p>
+<ul>
+<li>
+<p>Run Orion when the storage is idle (or pretty close to idle). Orion calibrates the performance of the storage based on the I/O load it generates; Orion is not able to properly assess the performance if non-Orion I/O workloads run simultaneously.</p>
+</li>
+<li>
+<p>If a database has been created on the storage, the storage can alternatively be calibrated using the PL/SQL routine <code>dbms_resource_manager.calibrate_io()</code>.</p>
+</li>
+</ul>
+<div id="PFGRF95223" class="tblformalwidemax">
+<p class="titleintable"><a id="sthref566"></a><a id="BABCGCEJ"></a>Table 8-4 Orion I/O Workload Support</p>
+<table class="cellalignment1691" title="Orion I/O Workload Support" summary="Orion supported I/O workloads" dir="ltr">
+<thead>
+<tr class="cellalignment1680">
+<th class="cellalignment1687" id="r1c1-t16">Workload</th>
+<th class="cellalignment1687" id="r1c2-t16">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r2c1-t16" headers="r1c1-t16">
+<p>Small Random I/O</p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t16 r1c2-t16">
+<p>OLTP applications typically generate random reads and writes whose size is equivalent to the database block size, typically 8 KB. Such applications typically care about the throughput in I/Os Per Second (IOPS) and about the average latency (I/O turn-around time) per request. These parameters translate to the transaction rate and transaction turn-around time at the application layer.</p>
+<p>Orion simulates a random I/O workload with a given percentage of reads compared to writes, a given I/O size, and a given number of outstanding I/Os. In this Orion workload simulation, the I/Os are distributed across all disks.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r3c1-t16" headers="r1c1-t16">
+<p>Large Sequential I/O</p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t16 r1c2-t16">
+<p>Data warehousing applications, data loads, backups, and restores generate sequential read and write streams composed of multiple outstanding 1 MB I/Os. Such applications are processing large amounts of data, such as a whole table or a whole database and they typically care about the overall data throughput in MegaBytes Per Second (MBPS).</p>
+<p>Orion can simulate a given number of sequential read or write streams of a given I/O size with a given number of outstanding I/Os. Orion can optionally simulate Oracle Automatic Storage Management striping when testing sequential streams.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r4c1-t16" headers="r1c1-t16">
+<p>Large Random I/O</p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t16 r1c2-t16">
+<p>A sequential stream typically accesses the disks concurrently with other database traffic. With striping, a sequential stream is spread across many disks. Consequently, at the disk level, multiple sequential streams are seen as random 1 MB I/Os.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r5c1-t16" headers="r1c1-t16">
+<p>Mixed Workloads</p>
+</td>
+<td class="cellalignment1688" headers="r5c1-t16 r1c2-t16">
+<p>Orion can simulate two simultaneous workloads: Small Random I/O and either Large Sequential I/O or Large Random I/O. This workload type enables you to simulate, for example, an OLTP workload of 8 KB random reads and writes with a backup workload of four sequential read streams of 1 MB I/Os.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformalwidemax" -->
+<p>Each Orion data point is a test for a specific mix of small and large I/O loads sustained for a duration. An Orion test consists of multiple data point tests. These data point tests can be represented as a two-dimensional matrix. Each column in the matrix represents data point tests with the same small I/O load, but varying large I/O loads. Each row represents data point tests with the same large I/O load, but varying small I/O loads. An Orion test can be for a single point, a single row, a single column, or for the whole matrix.</p>
+<div id="PFGRF95224" class="sect3"><a id="sthref567"></a>
+<h4 class="sect3"><span class="secnum">8.4.1.1</span> Orion Test Targets</h4>
+<p>You can use Orion to test any disk-based character device that supports asynchronous I/O. Orion has been tested on the following types of targets:</p>
+<ul>
+<li>
+<p>DAS (direct-attached) storage: You can use Orion to test the performance of one or more local disks, volumes, or files on the local host.</p>
+</li>
+<li>
+<p>SAN (storage-area network) storage: Orion can be run on any host that has all or parts of the SAN storage mapped as character devices. The devices can correspond to striped or un-striped volumes exported by the storage array(s), or individual disks, or one or more whole arrays.</p>
+</li>
+<li>
+<p>NAS (network-attached storage): You can use Orion to test the performance on data files on NAS storage. In general, the performance results on NAS storage are dependent on the I/O patterns with which the data files have been created and updated. Therefore, you should initialize the data files appropriately before running Orion.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<div id="PFGRF95225" class="sect3"><a id="sthref568"></a>
+<h4 class="sect3"><span class="secnum">8.4.1.2</span> Orion for Oracle Administrators</h4>
+<p>Oracle administrators can use Orion to evaluate and compare different storage arrays, based on the expected workloads. Oracle administrators can also use Orion to determine the optimal number of network connections, storage arrays, storage array controllers, and disks for the expected peak workloads.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BABFIHIE"></a>
+<div id="PFGRF95226" class="sect2">
+<h3 class="sect2"><span class="secnum">8.4.2</span> Getting Started with Orion</h3>
+<p>To get started using Orion, do the following:</p>
+<ol>
+<li>
+<p>Select a test name to use with the Orion <code>&ndash;testname</code> parameter. This parameter specifies a unique identifier for your Orion run. For example, use the test name "mytest". For more information, see <a href="#BABEIFFG">"Orion Parameters"</a>.</p>
+</li>
+<li>
+<p>Create an Orion input file, based on the test name. For example, create a file named <code>mytest.lun</code>. In the input file list the raw volumes or files to test. Add one volume name per line. Do not put comments or anything else in the <code>.lun</code> file.</p>
+<p>For example, an Orion input file could contain the following:</p>
+<pre>
+/dev/raw/raw1
+/dev/raw/raw2
+/dev/raw/raw3
+/dev/raw/raw4
+/dev/raw/raw5
+/dev/raw/raw6
+/dev/raw/raw7
+/dev/raw/raw8
+</pre>
+<p>For more information, see <a href="#BABBCJJB">"Orion Input Files"</a>.</p>
+</li>
+<li>
+<p>Verify that the all volumes specified in the input file, for example mytest.lun, are accessible using the command <code>dd</code> or another equivalent file viewing utility. For example, for a typical sanity-check try the following on a Linux system:</p>
+<pre>
+$ dd if=/dev/raw/raw1 of=/dev/null bs=32k count=1024
+</pre>
+<p>Depending on your platform, the file viewing utility you use and its interface may be different.</p>
+</li>
+<li>
+<p>Verify that your platform has the necessary libraries installed to do asynchronous I/Os. The Orion test is completely dependent on asynchronous I/O. On Linux and Solaris, the library <code>libaio</code> must be in the standard <code>lib</code> directories or accessible through the shell environment's library path variable (usually <code>LD_LIBRARY_PATH</code> or <code>LIBPATH</code>, depending on your shell). Windows has built-in asynchronous I/O libraries, so this issue does not apply.</p>
+</li>
+<li>
+<p>As a first test with Orion, use <code>&ndash;run</code> with either the <code>oltp</code> or <code>dss</code> option. If the database is primarily OLTP, then use <code>&ndash;run oltp</code>. If the database is primarily for data warehousing or analytics, then use <code>&ndash;run dss</code>.</p>
+<p>For example, use the following command to run an OLTP-like workload using the default input file name, <code>orion.lun</code>:</p>
+<pre>
+$ ./orion -run oltp
+</pre>
+<p>The I/O load levels generated by Orion take into account the number of disk spindles being tested (or specified with the <code>&ndash;num_disks</code> parameter). Keep in mind that the number of spindles <span class="italic">may or may not be</span> related to the number of volumes specified in the input file, depending on how these volumes are mapped.</p>
+</li>
+<li>
+<p>The section, <a href="#BABGFFBC">"Orion Output Files"</a> provides sample results showing the Orion output files. Using the sample file mytest_summary.txt is a good starting point for verifying the input parameters and analyzing the output. The sample files mytest_*.csv contain comma-delimited values for several I/O performance measures. For more information, see <a href="#BABGFFBC">"Orion Output Files"</a>.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="BABBCJJB"></a>
+<div id="PFGRF95227" class="sect2">
+<h3 class="sect2"><span class="secnum">8.4.3</span> Orion Input Files</h3>
+<p>When you specify the Orion <code>&ndash;testname</code> &lt;<span class="italic">testname</span>&gt; parameter, this sets the test name prefix for the Orion input and output filenames. The default value for the <code>&ndash;testname</code> option is "orion".</p>
+<p>The Orion input file, &lt;<span class="italic">testname</span>&gt;.<code>lun</code> should contain a carriage-return-separated list of LUNs.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BABEIFFG"></a>
+<div id="PFGRF95228" class="sect2">
+<h3 class="sect2"><span class="secnum">8.4.4</span> Orion Parameters</h3>
+<p><a id="sthref569"></a><a id="sthref570"></a>Use the Orion command parameters to specify the I/O workload type and to specify other Orion options.</p>
+<div id="PFGRF95229" class="sect3"><a id="sthref571"></a>
+<h4 class="sect3"><span class="secnum">8.4.4.1</span> Orion Required Parameter</h4>
+<p>The <code>&ndash;run</code> parameter is required with the Orion command. <a href="#BABCDGFJ">Table 8-5</a> describes the <code>&ndash;run</code> parameter.</p>
+<div id="PFGRF95230" class="tblformalwidemax">
+<p class="titleintable"><a id="sthref572"></a><a id="BABCDGFJ"></a>Table 8-5 Required Orion Parameter</p>
+<table class="cellalignment1691" title="Required Orion Parameter" summary="Summary of required Orion command line options" dir="ltr">
+<thead>
+<tr class="cellalignment1680">
+<th class="cellalignment1687" id="r1c1-t17">Option</th>
+<th class="cellalignment1687" id="r1c2-t17">Description</th>
+<th class="cellalignment1687" id="r1c3-t17">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r2c1-t17" headers="r1c1-t17">
+<p><code>&ndash;run</code> <span class="italic">level</span></p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t17 r1c2-t17">
+<p>Specifies the test run level to be <span class="italic">level</span>. This option provides the run level and allows complex commands to be specified at the advanced level. If not set as <code>&ndash;run advanced</code>, then setting any other parameter, besides <code>&ndash;cache_size</code> or <code>&ndash;verbose</code>, results in an error.</p>
+<p>Except <span class="bold">advanced</span>, all of the <code>&ndash;run</code> <span class="italic">level</span> settings use a pre-specified set of parameters.</p>
+<p>The <span class="italic">level</span> must be one of:</p>
+<ul>
+<li>
+<p><span class="bold">oltp</span></p>
+<p>Tests with random small (8K) I/Os at increasing loads to determine the maximum IOPS.</p>
+<p>This parameter corresponds to the following Orion invocation:</p>
+<pre>
+%&gt; ./orion -run advanced \
+        -num_large 0 -size_small 8 -type rand \
+        -simulate concat -write 0 -duration 60 \
+        -matrix row
+
+</pre></li>
+<li>
+<p><span class="bold">dss</span></p>
+<p>Tests with random large (1M) I/Os at increasing loads to determine the maximum throughput.</p>
+<p>This parameter corresponds to the following Orion invocation:</p>
+<pre>
+%&gt; ./orion -run advanced \
+        -num_small 0 -size_large 1024 -type rand \
+        -simulate concat -write 0 -duration 60 \
+        -matrix column
+</pre></li>
+<li>
+<p><span class="bold">simple</span></p>
+<p>Generates the Small Random I/O and the Large Random I/O workloads for a range of load levels. In this option, small and large I/Os are tested in isolation. The only optional parameters that can be specified at this run level are <code>&ndash;cache_size</code> and <code>&ndash;verbose</code>.</p>
+<p>This parameter corresponds to the following Orion invocation:</p>
+<pre>
+%&gt; ./orion -run advanced \
+-size_small 8 -size_large 1024 -type rand \
+-simulate concat -write 0 -duration 60 \
+-matrix basic
+</pre></li>
+<li>
+<p><span class="bold">normal</span></p>
+<p>Same as <code>simple</code>, but also generates combinations of the small random I/O and large random I/O workloads for a range of loads. The only optional parameters that can be specified at this run level are <code>&ndash;cache_size</code> and <code>&ndash;verbose</code>.</p>
+<p>This parameter corresponds to the following Orion invocation:</p>
+<pre>
+%&gt; ./orion -run advanced \
+-size_small 8 -size_large 1024 -type rand \
+-simulate concat -write 0 -duration 60 \
+-matrix detailed
+</pre></li>
+<li>
+<p><span class="bold">advanced</span></p>
+<p>Tests the workload you specify with optional parameters. Any of the optional parameters can be specified at this run level.</p>
+</li>
+</ul>
+</td>
+<td class="cellalignment1688" headers="r2c1-t17 r1c3-t17">
+<p><code>normal</code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformalwidemax" --></div>
+<!-- class="sect3" -->
+<div id="PFGRF95231" class="sect3"><a id="sthref573"></a>
+<h4 class="sect3"><span class="secnum">8.4.4.2</span> Orion Optional Parameters</h4>
+<div id="PFGRF95232" class="tblformalwidemax">
+<p class="titleintable"><a id="sthref574"></a><a id="sthref575"></a>Table 8-6 Optional Orion Parameters</p>
+<table class="cellalignment1691" title="Optional Orion Parameters" summary="Orion optional input parameters" dir="ltr">
+<thead>
+<tr class="cellalignment1680">
+<th class="cellalignment1687" id="r1c1-t18">Option</th>
+<th class="cellalignment1687" id="r1c2-t18">Description</th>
+<th class="cellalignment1687" id="r1c3-t18">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r2c1-t18" headers="r1c1-t18">
+<p><code>&ndash;cache_size</code> <span class="italic">num</span></p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t18 r1c2-t18">
+<p>Size of the storage array's read or write cache (in MB). For Large Sequential I/O workloads, Orion warms the cache by doing random large I/Os before each data point. Orion uses the cache size to determine the duration for this cache warming operation. If set to 0, do not perform cache warming.</p>
+<p>Unless this option is set to 0, Orion issues several unmeasured, random I/Os before each large sequential data point. These I/Os fill up the storage array's cache, if any, with random data so that I/Os from one data point do not result in cache hits for the next data point. Read tests are preceded with junk reads and write tests are preceded with junk writes. If specified, this 'cache warming' is performed until <span class="italic">num</span> MBs of I/O have been read or written.</p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t18 r1c3-t18">
+<p>Default Value:</p>
+<p>If not specified, warming occurs for a default amount of time (two minutes). That is, issue two minutes of unmeasured random I/Os before each data point.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r3c1-t18" headers="r1c1-t18">
+<p><code>&ndash;duration</code> <span class="italic">num_seconds</span></p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t18 r1c2-t18">
+<p>Set the duration to test each data point in seconds to the value <span class="italic">num_seconds</span>.</p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t18 r1c3-t18">
+<p>Default Value: <code>60</code></p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r4c1-t18" headers="r1c1-t18">
+<p><code>&ndash;help</code></p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t18 r1c2-t18">
+<p>Prints Orion help information. All other options are ignored with help set.</p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t18 r1c3-t18">&nbsp;</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r5c1-t18" headers="r1c1-t18">
+<p><code>&ndash;matrix</code> <span class="italic">type</span></p>
+</td>
+<td class="cellalignment1688" headers="r5c1-t18 r1c2-t18">
+<p>Type of mixed workloads to test over a range of loads. An Orion test consists of multiple data point tests. The data point tests can be represented as a two-dimensional matrix.</p>
+<p>Each column in the matrix represents data point tests with the same small I/O load, but varying large I/O loads. Each row represents data point tests with the same large I/O load, but varying small I/O loads. An Orion test can be for a single point, a single row, a single column, or the whole matrix, depending on the matrix <span class="italic">type</span>:</p>
+<ul>
+<li>
+<p><span class="bold">basic:</span> No mixed workload. The Small Random and Large Random/Sequential workloads are tested separately. Test small I/Os only, then large I/Os only.</p>
+</li>
+<li>
+<p><span class="bold">detailed:</span> Small Random and Large Random/Sequential workloads are tested in combination. Test entire matrix.</p>
+</li>
+<li>
+<p><span class="bold">point:</span> A single data point with <span class="italic">S</span> outstanding Small Random I/Os and <span class="italic">L</span> outstanding Large Random I/Os or sequential streams. <span class="italic">S</span> is set by the <code>&ndash;num_small</code> parameter. <span class="italic">L</span> is set by the <code>&ndash;num_large</code> parameter. Test with <code>&ndash;num_small</code> small I/Os, <code>&ndash;num_large</code> large I/Os.</p>
+</li>
+<li>
+<p><span class="bold">col:</span> Large Random/Sequential workloads only. Test a varying large I/O load with <code>&ndash;num_small</code> small I/Os.</p>
+</li>
+<li>
+<p><span class="bold">row:</span> Small Random workloads only. Test a varying small I/O load with <code>&ndash;num_large</code> large I/Os.</p>
+</li>
+<li>
+<p><span class="bold">max:</span> Same as detailed, but only tests the workload at the maximum load, specified by the <code>&ndash;num_small</code> and <code>&ndash;num_large</code> parameters. Test varying loads up to the <code>&ndash;num_small</code> and <code>&ndash;num_large</code> limits.</p>
+</li>
+</ul>
+</td>
+<td class="cellalignment1688" headers="r5c1-t18 r1c3-t18">
+<p>Default Value: <code>basic</code></p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r6c1-t18" headers="r1c1-t18">
+<p>&ndash;<code>num_disks</code> <span class="italic">value</span></p>
+</td>
+<td class="cellalignment1688" headers="r6c1-t18 r1c2-t18">
+<p>Specify the number of physical disks used by the test. Used to generate a range for the load. Specifies the number of disks (physical spindles). This number <span class="italic">value</span> is used to gauge the range of loads that Orion should test at. Increasing this parameter results in Orion using heavier I/O loads.</p>
+</td>
+<td class="cellalignment1688" headers="r6c1-t18 r1c3-t18">
+<p>Default Value: the number of LUNs in &lt;<span class="italic">testname</span>&gt;.lun.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r7c1-t18" headers="r1c1-t18">
+<p><code>&ndash;num_large</code> <span class="italic">value</span></p>
+</td>
+<td class="cellalignment1688" headers="r7c1-t18 r1c2-t18">
+<p>Controls the large I/O load.</p>
+<p>Note, this option only applies when <code>&ndash;matrix</code> is specified as: <code>row</code>, <code>point</code>, or <code>max</code>.</p>
+<p>When the <code>&ndash;type</code> option is set to <code>rand</code>, the parameter argument <span class="italic">value</span> specifies the number of outstanding large I/Os.</p>
+<p>When the <code>&ndash;type</code> option is set to <code>seq</code>, the parameter argument <span class="italic">value</span> specifies the number of sequential I/O streams.</p>
+</td>
+<td class="cellalignment1688" headers="r7c1-t18 r1c3-t18">
+<p>Default Value: no default</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r8c1-t18" headers="r1c1-t18">
+<p><code>&ndash;num_smal</code>l</p>
+</td>
+<td class="cellalignment1688" headers="r8c1-t18 r1c2-t18">
+<p>Specify the maximum number of outstanding I/Os for the Small Random I/O workload.</p>
+<p>Note: this only applies when <code>&ndash;matrix</code> is specified as <code>col</code>, <code>point</code>, or <code>max</code>.</p>
+</td>
+<td class="cellalignment1688" headers="r8c1-t18 r1c3-t18">
+<p>Default Value: no default</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r9c1-t18" headers="r1c1-t18">
+<p>&ndash;<code>num_streamIO</code> <span class="italic">num</span></p>
+</td>
+<td class="cellalignment1688" headers="r9c1-t18 r1c2-t18">
+<p>Specify the number of concurrent I/Os per stream as <span class="italic">num</span>.</p>
+<p>Note: this parameter is only used if <code>&ndash;type</code> is <code>seq</code>.</p>
+</td>
+<td class="cellalignment1688" headers="r9c1-t18 r1c3-t18">
+<p>Default Value: <code>4</code></p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r10c1-t18" headers="r1c1-t18">
+<p><code>&ndash;simulate</code> <span class="italic">type</span></p>
+</td>
+<td class="cellalignment1688" headers="r10c1-t18 r1c2-t18">
+<p>Data layout to simulate for Large Sequential I/O workload. Orion tests on a virtual LUN formed by combining specified LUNs in one of these ways. The <span class="italic">type</span> is one:</p>
+<ul>
+<li>
+<p><span class="bold">concat:</span> A virtual volume is simulated by serially chaining the specified LUNs. A sequential test over this virtual volume will go from some point to the end of each one LUN, followed by the beginning to end of the next LUN, and so on.</p>
+</li>
+<li>
+<p><span class="bold">raid0:</span> A virtual volume is simulated by striping across the specified LUNs. Each sequential stream issues I/Os across all LUNs using raid0 striping. The stripe depth is 1M by default, to match the Oracle Automatic Storage Management stripe depth, and can be changed with the <code>&ndash;stripe</code> parameter.</p>
+</li>
+</ul>
+<p>The offsets for I/Os are determined as follows:</p>
+<p>For Small Random and Large Random workloads:</p>
+<ul>
+<li>
+<p>The LUNs are concatenated into a single virtual LUN (VLUN) and random offsets are chosen within the VLUN.</p>
+</li>
+</ul>
+<p>For Large Sequential workloads:</p>
+<ul>
+<li>
+<p>With striping (<code>&ndash;simulate</code> <code>raid0</code>). The LUNs are used to create a single striped VLUN. With no concurrent Small Random workload, the sequential streams start at fixed offsets within the striped VLUN. For <span class="italic">n</span> streams, stream <span class="italic">i</span> start at offset VLUNsize * (<span class="italic">i</span> + 1) / (<span class="italic">n</span> + 1), unless <span class="italic">n</span> is 1, in which case the single stream start at offset 0. With a concurrent Small Random workload, streams start at random offsets within the striped VLUN.</p>
+</li>
+<li>
+<p>Without striping (<code>&ndash;simulate</code> <code>CONCAT</code>). The LUNs are concatenated into a single VLUN. The streams start at random offsets within the single VLUN.</p>
+</li>
+</ul>
+<p>This parameter is typically only used if <code>&ndash;type</code> is <code>seq</code>.</p>
+</td>
+<td class="cellalignment1688" headers="r10c1-t18 r1c3-t18">
+<p>Default Value: <code>concat</code></p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r11c1-t18" headers="r1c1-t18">
+<p><code>&ndash;size_large</code> <span class="italic">num</span></p>
+</td>
+<td class="cellalignment1688" headers="r11c1-t18 r1c2-t18">
+<p>Specify the <span class="italic">num</span>, size of the I/Os (in KB) for the Large Random or Sequential I/O workload.</p>
+</td>
+<td class="cellalignment1688" headers="r11c1-t18 r1c3-t18">
+<p>Default Value: <code>1024</code></p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r12c1-t18" headers="r1c1-t18">
+<p><code>&ndash;size_small</code> <span class="italic">num</span></p>
+</td>
+<td class="cellalignment1688" headers="r12c1-t18 r1c2-t18">
+<p>Specify the num, size of the I/Os (in KB) for the Small Random I/O workload.</p>
+</td>
+<td class="cellalignment1688" headers="r12c1-t18 r1c3-t18">
+<p>Default Value: <code>8</code></p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r13c1-t18" headers="r1c1-t18">
+<p><code>&ndash;storax</code> <span class="italic">type</span></p>
+</td>
+<td class="cellalignment1688" headers="r13c1-t18 r1c2-t18">
+<p>API to use for testing I/O workload.</p>
+<ul>
+<li>
+<p><span class="bold">skgfr:</span> Use operating system I/O layer.</p>
+</li>
+<li>
+<p><span class="bold">oss:</span> Use OSS API for I/O with Cell server in an Exadata machine.</p>
+</li>
+<li>
+<p><span class="bold">asmlib:</span> Use ASMLIB disk devices based storage API for I/O.</p>
+</li>
+<li>
+<p><span class="bold">odmlib:</span> Use Direct NFS storage based API for I/O.</p>
+</li>
+</ul>
+</td>
+<td class="cellalignment1688" headers="r13c1-t18 r1c3-t18">
+<p>Default Value: <code>skgfr</code></p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r14c1-t18" headers="r1c1-t18">
+<p><code>&ndash;testname</code> <span class="italic">tname</span></p>
+</td>
+<td class="cellalignment1688" headers="r14c1-t18 r1c2-t18">
+<p>Specify the <span class="italic">tname</span> identifier for the test run. When specified, the input file containing the LUN disk or file names must be named &lt;<span class="italic">tname</span>&gt;.lun.</p>
+<p>The output files are named with the prefix &lt;<span class="italic">tname</span>&gt;_.</p>
+</td>
+<td class="cellalignment1688" headers="r14c1-t18 r1c3-t18">
+<p>Default Value: <code>orion</code></p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r15c1-t18" headers="r1c1-t18">
+<p><code>&ndash;type</code> [<code>rand</code> | <code>seq</code>]</p>
+</td>
+<td class="cellalignment1688" headers="r15c1-t18 r1c2-t18">
+<p>Type of the Large I/O workload.</p>
+<ul>
+<li>
+<p><span class="bold">rand</span>: Randomly distributed large I/Os.</p>
+</li>
+<li>
+<p><span class="bold">seq</span>: Sequential streams of large I/Os.</p>
+</li>
+</ul>
+</td>
+<td class="cellalignment1688" headers="r15c1-t18 r1c3-t18">
+<p>Default Value: <code>rand</code></p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r16c1-t18" headers="r1c1-t18">
+<p><code>&ndash;verbose</code></p>
+</td>
+<td class="cellalignment1688" headers="r16c1-t18 r1c2-t18">
+<p>Prints status and tracing information to standard output.</p>
+</td>
+<td class="cellalignment1688" headers="r16c1-t18 r1c3-t18">
+<p>Default Value: option not set</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r17c1-t18" headers="r1c1-t18">
+<p><code>&ndash;write</code> <span class="italic">num_write</span></p>
+</td>
+<td class="cellalignment1688" headers="r17c1-t18 r1c2-t18">
+<p>Specify the percentage of I/Os that are writes to <span class="italic">num_write</span>; the rest being reads.</p>
+<p>This parameter applies to both the Large and Small I/O workloads. For Large Sequential I/Os, each stream is either read-only or write-only; the parameter specifies the percentage of streams that are write-only. The data written to disk is garbage and unrelated to any existing data on the disk.</p>
+<p><span class="bold">Caution</span>: write tests obliterate all data on the specified LUNS.</p>
+</td>
+<td class="cellalignment1688" headers="r17c1-t18 r1c3-t18">
+<p>Default Value: <code>0</code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformalwidemax" -->
+<div class="infobox-note">
+<p class="notep1">Caution:</p>
+Write tests obliterate all data on the specified LUNS.</div>
+</div>
+<!-- class="sect3" -->
+<div id="PFGRF95233" class="sect3"><a id="sthref576"></a>
+<h4 class="sect3"><span class="secnum">8.4.4.3</span> Orion Command Line Samples</h4>
+<p>The following provides sample Orion commands for different types of I/O workloads:</p>
+<ol>
+<li>
+<p>To evaluate storage for an OLTP database:</p>
+<pre>
+-run oltp
+</pre></li>
+<li>
+<p>To evaluate storage for a data warehouse:</p>
+<pre>
+-run dss
+</pre></li>
+<li>
+<p>For a basic set of data:</p>
+<pre>
+-run normal
+</pre></li>
+<li>
+<p>To understand your storage performance with read-only, small and large random I/O workload:</p>
+<pre>
+$ orion -run simple 
+</pre></li>
+<li>
+<p>To understand your storage performance with a mixed small and large random I/O workload:</p>
+<pre>
+$ orion -run normal 
+</pre></li>
+<li>
+<p>To generate combinations of 32KB and 1MB reads to random locations:</p>
+<pre>
+$ orion -run advanced -size_small 32 \
+-size_large 1024 -type rand -matrix detailed
+</pre></li>
+<li>
+<p>To generate multiple sequential 1 MB write streams, simulating 1 MB RAID-0 stripes:</p>
+<pre>
+$ orion -run advanced -simulate raid0 \
+-stripe 1024 -write 100 -type seq -matrix col -num_small 0
+</pre></li>
+<li>
+<p>To generate combinations of 32 KB and 1 MB reads to random locations:</p>
+<pre>
+ -run advanced -size_small 32 -size_large 1024 -type rand -matrix detailed
+</pre></li>
+<li>
+<p>To generate multiple sequential 1 MB write streams, simulating RAID0 striping:</p>
+<pre>
+ -run advanced -simulate raid0 -write 100 -type seq -matrix col -num_small 0
+</pre></li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BABGFFBC"></a>
+<div id="PFGRF95234" class="sect2">
+<h3 class="sect2"><span class="secnum">8.4.5</span> Orion Output Files</h3>
+<p>The output files for a test run are prefixed by &lt;<span class="italic">testname</span>&gt;_&lt;<span class="italic">date</span>&gt; where <span class="italic">date</span> is <span class="italic">yyyymmdd_hhmm</span>.</p>
+<p><a href="#BABHBEJC">Table 8-7</a> lists the Orion output files.</p>
+<div id="PFGRF95235" class="tblformalwidemax">
+<p class="titleintable"><a id="sthref577"></a><a id="BABHBEJC"></a>Table 8-7 Orion Generated Output Files</p>
+<table class="cellalignment1691" title="Orion Generated Output Files" summary="Orion generated output files" dir="ltr">
+<thead>
+<tr class="cellalignment1680">
+<th class="cellalignment1687" id="r1c1-t20">Output File</th>
+<th class="cellalignment1687" id="r1c2-t20">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r2c1-t20" headers="r1c1-t20">
+<p>&lt;<span class="italic">testname</span>&gt;_&lt;<span class="italic">date</span>&gt;_hist.csv</p>
+</td>
+<td class="cellalignment1688" headers="r2c1-t20 r1c2-t20">
+<p>Histogram of I/O latencies.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r3c1-t20" headers="r1c1-t20">
+<p>&lt;<span class="italic">testname</span>&gt;_&lt;<span class="italic">date</span>&gt;_iops.csv</p>
+</td>
+<td class="cellalignment1688" headers="r3c1-t20 r1c2-t20">
+<p>Performance results of small I/Os in IOPS.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r4c1-t20" headers="r1c1-t20">
+<p>&lt;<span class="italic">testname</span>&gt;_&lt;<span class="italic">date</span>&gt;_lat.csv</p>
+</td>
+<td class="cellalignment1688" headers="r4c1-t20 r1c2-t20">
+<p>Latency of small I/Os in microseconds.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r5c1-t20" headers="r1c1-t20">
+<p>&lt;<span class="italic">testname</span>&gt;_&lt;<span class="italic">date</span>&gt;_mbps.csv</p>
+</td>
+<td class="cellalignment1688" headers="r5c1-t20 r1c2-t20">
+<p>Performance results of large I/Os in MBPS.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r6c1-t20" headers="r1c1-t20">
+<p>&lt;<span class="italic">testname</span>&gt;_&lt;<span class="italic">date</span>&gt;_summary.txt</p>
+</td>
+<td class="cellalignment1688" headers="r6c1-t20 r1c2-t20">
+<p>Summary of the input parameters, along with the minimum small I/O latency (in secs), the maximum MBPS, and the maximum IOPS observed.</p>
+</td>
+</tr>
+<tr class="cellalignment1680">
+<td class="cellalignment1688" id="r7c1-t20" headers="r1c1-t20">
+<p>&lt;<span class="italic">testname</span>&gt;_&lt;<span class="italic">date</span>&gt;_trace.txt</p>
+</td>
+<td class="cellalignment1688" headers="r7c1-t20 r1c2-t20">
+<p>Extended, unprocessed output.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformalwidemax" -->
+<div class="infobox-note">
+<p class="notep1">Caution:</p>
+If you are performing write tests, be prepared to lose any data stored on the LUNs.</div>
+<div id="PFGRF95236" class="sect3"><a id="sthref578"></a>
+<h4 class="sect3"><span class="secnum">8.4.5.1</span> Orion Sample Output Files</h4>
+<p>Orion creates several output files as specified in <a href="#BABHBEJC">Table 8-7</a>. For the sample "mytest" shown in the section, <a href="#BABFIHIE">"Getting Started with Orion"</a>, the output files are:</p>
+<ul>
+<li>
+<p><span class="bold">mytest_summary.txt</span>: This file contains:</p>
+<ul>
+<li>
+<p>Input parameters</p>
+</li>
+<li>
+<p>Maximum throughput observed for the Large Random/Sequential workload</p>
+</li>
+<li>
+<p>Maximum I/O rate observed for the Small Random workload</p>
+</li>
+<li>
+<p>Minimum latency observed for the Small Random workload</p>
+</li>
+</ul>
+</li>
+<li>
+<p><span class="bold">mytest_mbps.csv:</span> comma-delimited value file containing the data transfer rate (MBPS) results for the Large Random/Sequential workload. In the general case, this and all other CSV files contains a two-dimensional table. Each row in the table corresponds to a large I/O load level and each column corresponds to a specific small I/O load level. Thus, the column headings are the number of outstanding small I/Os and the row headings are the number of outstanding large I/Os (for random large I/O tests) or the number of sequential streams (for sequential large I/O tests).</p>
+<p><a href="#BABFBCDI">Example 8-1</a> shows the first few data points of the Orion MBPS output CSV file for "mytest". The simple mytest command-line does not test combinations of large and small I/Os. Hence, the MBPS file has just one column corresponding to 0 outstanding small I/Os. In <a href="#BABFBCDI">Example 8-1</a>, at a load level of 8 outstanding large reads and no small I/Os, the report data indicates a throughput of 103.06 MBPS.</p>
+<div id="PFGRF95237" class="example">
+<p class="titleinexample"><a id="BABFBCDI"></a>Example 8-1 Mytest Sample Data Points</p>
+<pre>
+Large/Small,       <span class="bold">0</span>
+
+1,   <span class="bold">19.18</span>
+2,   <span class="bold">37.59</span>
+4,   <span class="bold">65.53</span>
+6,  <span class="bold"> 87.03</span>
+8,  <span class="bold">103.06</span>
+10, <span class="bold"> 109.67</span>
+. .   . . .
+. .   . . .
+</pre></div>
+<!-- class="example" -->
+<p><a href="#BABHCHCF">Figure 8-2</a> shows a sample data transfer rate measured at different large I/O load levels. This chart can be generated by loading mytest_mbps.csv into a spreadsheet and graphing the data points. Orion does not directly generate such graphs. The x-axis corresponds to the number of outstanding large reads and the y-axis corresponds to the throughput observed.</p>
+<p>The graph shown in <a href="#BABHCHCF">Figure 8-2</a> shows typical storage system behavior. As the number of outstanding I/O requests is increased, the throughput increases. However, at a certain point the throughput level stabilizes, indicating the storage system's maximum throughput value.</p>
+<div id="PFGRF95238" class="figure">
+<p class="titleinfigure"><a id="BABHCHCF"></a>Figure 8-2 Sample I/O Load Levels</p>
+<img width="615" height="272" src="img/pfgrf_orion1.gif" alt="Description of Figure 8-2 follows" /><br />
+<a id="sthref579" href="img_text/pfgrf_orion1.htm">Description of "Figure 8-2 Sample I/O Load Levels"</a><br />
+<br /></div>
+<!-- class="figure" --></li>
+<li>
+<p><span class="bold">mytest_iops.csv</span>: Comma-delimited value file containing the I/O throughput (in IOPS) results for the Small Random workload. Like in the MBPS file, the column headings are the number of outstanding small I/Os and the row headings are the number of outstanding large I/Os, when testing large random, or the number of sequential streams (for large sequential).</p>
+<p>In the general case, a CSV file contains a two-dimensional table. However, for a simple test where you are not testing combinations of large and small I/Os the results file has just one row. Hence, the IOPS results file just has one row with 0 large I/Os. As shown in <a href="#BABIJJBE">Example 8-2</a>, an example data point with 12 outstanding small reads and no large I/Os provides a sample throughput of 951 IOPS.</p>
+<div id="PFGRF95239" class="example">
+<p class="titleinexample"><a id="BABIJJBE"></a>Example 8-2 Sample Data Points with 12 Small Reads and No Large Reads</p>
+<pre>
+Large/Small,     1,     2,     3,     6,     9,    12 . . . .
+
+0,             105,   208,   309,   569,   782,   951 . . . .
+</pre></div>
+<!-- class="example" -->
+<p>The graph shown in <a href="#BABIBEJC">Figure 8-3</a>, generated by loading mytest_iops.csv into Excel and charting the data, illustrates the IOPS throughput seen at different small I/O load levels.</p>
+<p><a href="#BABIBEJC">Figure 8-3</a> shows typical storage system behavior. As the number of outstanding I/O requests is increased, the throughput increases. However, at a certain point, the throughput level stabilizes, indicating the storage system reaches a maximum throughput value. At higher throughput levels, the latency for the I/O requests also increase significantly. Therefore, it is important to view this data with the latency data provided in the generated latency results in mytest_lat.csv.</p>
+<div id="PFGRF95240" class="figure">
+<p class="titleinfigure"><a id="BABIBEJC"></a>Figure 8-3 I/O Throughput at Different Small I/O Load Levels</p>
+<img width="593" height="288" src="img/pfgrf_orion2.gif" alt="Description of Figure 8-3 follows" /><br />
+<a id="sthref580" href="img_text/pfgrf_orion2.htm">Description of "Figure 8-3 I/O Throughput at Different Small I/O Load Levels"</a><br />
+<br /></div>
+<!-- class="figure" --></li>
+<li>
+<p><span class="bold">mytest_lat.csv</span>: Comma-delimited value file containing the latency results for the Small Random workload. As with the MBPS and IOPS files, the column headings are the number of outstanding small I/Os and the row headings are the number of outstanding large I/Os (when testing large random I/Os) or the number of sequential streams.</p>
+<p>In the general case, a CSV file contains a two-dimensional table. However, for a simple test where you are not testing combinations of large and small I/Os the results file has just one row. Hence, the IOPS results file just has one row with 0 large I/Os. In the example shown in <a href="#BABDGJFH">Example 8-3</a>, at a sustained load level of 12 outstanding small reads and no large I/Os, the generated results show an I/O turn-around latency of 22.25 milliseconds.</p>
+<div id="PFGRF95241" class="example">
+<p class="titleinexample"><a id="BABDGJFH"></a>Example 8-3 Sample CSV file with 12 Small Reads and No Large Reads</p>
+<pre>
+Large/Small, 1, 2, 3, 6, 9, 12 . . . .
+
+0, 14.22, 14.69, 15.09, 16.98, 18.91, 21.25 . . . .
+</pre></div>
+<!-- class="example" -->
+<p>The graph in <a href="#BABEIHJB">Figure 8-4</a>, generated by loading mytest_lat.csv into Excel and charting the data, illustrates the small I/O latency at different small I/O load levels for mytest.</p>
+<div id="PFGRF95242" class="figure">
+<p class="titleinfigure"><a id="BABEIHJB"></a>Figure 8-4 I/O Latency at Small I/O Load Levels</p>
+<img width="539" height="237" src="img/pfgrf_orion3.gif" alt="Description of Figure 8-4 follows" /><br />
+<a id="sthref581" href="img_text/pfgrf_orion3.htm">Description of "Figure 8-4 I/O Latency at Small I/O Load Levels"</a><br />
+<br /></div>
+<!-- class="figure" --></li>
+<li>
+<p><span class="bold">mytest_trace.txt</span>: Contains the extended, unprocessed test output.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Orion reports errors that occur during a test on standard output.</div>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BABBEJIH"></a>
+<div id="PFGRF95243" class="sect2">
+<h3 class="sect2"><span class="secnum">8.4.6</span> Orion Troubleshooting</h3>
+<ol>
+<li>
+<p>If you are getting an I/O error on one or more of the volumes specified in the &lt;<span class="italic">testname</span>&gt;.lun file:</p>
+<ul>
+<li>
+<p>Verify that you can access the volume in the same mode as the test, read or write, using a file copy program such as <code>dd</code>.</p>
+</li>
+<li>
+<p>Verify that your host operating system version can do asynchronous I/O.</p>
+</li>
+<li>
+<p>On Linux and Solaris, the library <code>libaio</code> must be in the standard lib directories or accessible through the shell environment's library path variable (usually LD_LIBRARY_PATH or LIBPATH, depending on your shell).</p>
+</li>
+</ul>
+</li>
+<li>
+<p>If you run on NAS storage:</p>
+<ul>
+<li>
+<p>The file system must be properly mounted for Orion to run. Please consult your Oracle Installation Guide for directions (for example, the section, Appendix B "Using NAS Devices" in the Database Installation Guide for Linux x86).</p>
+</li>
+<li>
+<p>The mytest.lun file should contain one or more paths of existing files. Orion does not work on directories or mount points. The file has to be large enough for a meaningful test. The size of this file should represent the eventual expected size of your datafiles (say, after a few years of use).</p>
+</li>
+<li>
+<p>You may see poor performance doing asynchronous I/O over NFS on Linux (including 2.6 kernels).</p>
+</li>
+<li>
+<p>If you are doing read tests and the reads are hitting untouched blocks of the file that were not initialized or previously written, some smart NAS systems may "fake" the read by returning zeroed-out blocks. When this occurs, you see unexpectedly good performance.</p>
+<p>The workaround is to write all blocks, using a tool such as <code>dd</code>, before performing the read test.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>If you run Orion on Windows: Testing on raw partitions requires temporarily mapping the partitions to drive letters and specifying these drive letters in the test.lun file.</p>
+</li>
+<li>
+<p>If you run Orion 32-bit Linux/x86 binary on an x86_64 system: Please copy a 32-bit libaio.so file from a 32-bit computer running the same Linux version.</p>
+</li>
+<li>
+<p>If you are testing with a lot of disks (<code>num_disks</code> greater than around 30):</p>
+<ul>
+<li>
+<p>You should use the -duration option (see the optional parameters section for more details) to specify a long duration (like 120 seconds or more) for each data point. Since Orion tries to keep all the spindles running at a particular load level, each data point requires a ramp-up time, which implies a longer duration for the test.</p>
+</li>
+<li>
+<p>You may get the following error message, instructing you to increase the duration value:</p>
+<pre>
+Specify a longer -duration value.
+</pre>
+<p>A duration of 2x the number of spindles seems to be a good rule of thumb. Depending on your disk technology, your platform may need more or less time.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>If you get an error about libraries being used by Orion:</p>
+<ul>
+<li>
+<p>Linux/Solaris: See I/O error troubleshooting.</p>
+</li>
+<li>
+<p><span class="bold">NT-Only:</span> Do not move/remove the Oracle libraries included in the distribution. These must be in the same directory as orion.exe.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>If you are seeing performance numbers that are "unbelievably good":</p>
+<ul>
+<li>
+<p>You may have a large read or write cache, or read and write cache somewhere between the Orion program and the disk spindles. Typically, the storage array controller has the biggest effect. Find out the size of this cache and use the -cache_size advanced option to specify it to Orion (see the optional parameters section for more details).</p>
+</li>
+<li>
+<p>The total size of your volumes may be really small compared to one or more caches along the way. Try to turn off the cache. This is needed if the other volumes sharing your storage show significant I/O activity in a production environment (and end up using large parts of the shared cache).</p>
+</li>
+</ul>
+</li>
+<li>
+<p>If Orion is reporting a long estimated run time:</p>
+<ul>
+<li>
+<p>The run time increases when <code>-num_disks</code> is high. Orion internally uses a linear formula to determine how long it takes to saturate the given number of disks.</p>
+</li>
+<li>
+<p>The <code>-cache_size</code> parameter affects the run time, even when it is not specified. Orion does cache warming for two minutes per data point by default. If you have turned off the cache, specify <code>-cache_size 0</code>.</p>
+</li>
+<li>
+<p>The run time increases when a long -duration value is specified, as expected.</p>
+</li>
+</ul>
+</li>
+</ol>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1679">
+<tr>
+<td class="cellalignment1688">
+<table class="cellalignment1684">
+<tr>
+<td class="cellalignment1683"><a href="memory.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1683"><a href="os.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2000, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1690">
+<table class="cellalignment1682">
+<tr>
+<td class="cellalignment1683"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1683"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1683"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1683"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1683"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1683"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

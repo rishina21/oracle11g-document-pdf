@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Using Oracle Managed Files</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1055" />
+<meta name="dcterms.created" content="2015-05-05T8:27:35Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Administrator's Guide" />
+<meta name="dcterms.identifier" content="E25494-07" />
+<meta name="dcterms.isVersionOf" content="ADMIN" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2001, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="undo.htm" title="Previous" type="text/html" />
+<link rel="Next" href="part4.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e25494.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">25/49</span> <!-- End Header -->
+<div id="ADMIN003" class="chapter"><a id="g1018000"></a> <a id="i1007206"></a>
+<h1 class="chapter"><span class="secnum">17</span> Using Oracle Managed Files</h1>
+<p>In this chapter:<a id="sthref1806"></a></p>
+<ul>
+<li>
+<p><a href="#i1006122">What Are Oracle Managed Files?</a></p>
+</li>
+<li>
+<p><a href="#i1006164">Enabling the Creation and Use of Oracle Managed Files</a></p>
+</li>
+<li>
+<p><a href="#i1206224">Creating Oracle Managed Files</a></p>
+</li>
+<li>
+<p><a href="#i1006722">Operation of Oracle Managed Files</a></p>
+</li>
+<li>
+<p><a href="#i1006756">Scenarios for Using Oracle Managed Files</a></p>
+</li>
+</ul>
+<a id="i1006122"></a>
+<div id="ADMIN11481" class="sect1">
+<h2 class="sect1">What Are Oracle Managed Files?</h2>
+<p>Using <a id="sthref1807"></a>Oracle Managed Files simplifies the administration of an Oracle Database. Oracle Managed Files eliminate the need for you, the DBA, to directly manage the operating system files that comprise an Oracle Database. With Oracle Managed Files, you specify file system directories in which the database automatically creates, names, and manages files at the database object level. For example, you need only specify that you want to create a tablespace; you do not need to specify the name and path of the tablespace's data file with the <code dir="ltr">DATAFILE</code> clause. This feature works well with a logical volume manager (LVM).</p>
+<p>The database internally uses standard file system interfaces to create and delete files as needed for the following database structures:</p>
+<ul>
+<li>
+<p>Tablespaces</p>
+</li>
+<li>
+<p>Redo log files</p>
+</li>
+<li>
+<p>Control files</p>
+</li>
+<li>
+<p>Archived logs</p>
+</li>
+<li>
+<p>Block change tracking files</p>
+</li>
+<li>
+<p>Flashback logs</p>
+</li>
+<li>
+<p>RMAN backups</p>
+</li>
+</ul>
+<p>Through initialization parameters, you specify the file system directory to be used for a particular type of file. The database then ensures that a unique file, an Oracle managed file, is created and deleted when no longer needed.</p>
+<p>This feature does not affect the creation or naming of administrative files such as trace files, audit files, alert logs, and core files.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink OSTMG" href="../e18951/toc.htm"><span class="italic">Oracle Automatic Storage Management Administrator's Guide</span></a> for information about Oracle Automatic Storage Management (Oracle ASM), the Oracle Database integrated file system and volume manager that extends the power of Oracle Managed Files. With Oracle Managed Files, files are created and managed automatically for you, but with Oracle ASM, you get the additional benefits of features such as striping, software mirroring, and dynamic storage configuration, without the need to purchase a third-party logical volume manager.</div>
+<div id="ADMIN11482" class="sect2"><a id="sthref1808"></a>
+<h3 class="sect2">Who Can Use Oracle Managed Files?</h3>
+<p>Oracle Managed Files are most useful for the following types of databases:</p>
+<ul>
+<li>
+<p>Databases that are supported by the following:</p>
+<ul>
+<li>
+<p>A logical volume manager that supports striping/RAID and dynamically extensible logical volumes</p>
+</li>
+<li>
+<p>A file system that provides large, extensible files</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Low end or test databases</p>
+</li>
+</ul>
+<p>The Oracle Managed Files feature is not intended to ease administration of systems that use raw disks. This feature provides better integration with operating system functionality for disk space allocation. Since there is no operating system support for allocation of raw disks (it is done manually), this feature cannot help. However, because Oracle Managed Files require that you use the operating system file system (unlike raw disks), you lose control over how files are laid out on the disks and thus, you lose some I/O tuning ability.</p>
+<div id="ADMIN11483" class="sect3"><a id="sthref1809"></a>
+<h4 class="sect3">What Is a Logical Volume Manager?</h4>
+<p>A <a id="sthref1810"></a>logical volume manager (LVM) is a software package available with most operating systems. Sometimes it is called a logical disk manager (LDM). It allows pieces of multiple physical disks to be combined into a single contiguous address space that appears as one disk to higher layers of software. An LVM can make the logical volume have better capacity, performance, reliability, and availability characteristics than any of the underlying physical disks. It uses techniques such as mirroring, striping, concatenation, and RAID 5 to implement these characteristics.</p>
+<p>Some LVMs allow the characteristics of a logical volume to be changed after it is created, even while it is in use. The volume may be resized or mirrored, or it may be relocated to different physical disks.</p>
+</div>
+<!-- class="sect3" -->
+<div id="ADMIN11484" class="sect3"><a id="sthref1811"></a>
+<h4 class="sect3">What Is a File System?</h4>
+<p>A <a id="sthref1812"></a>file system is a data structure built inside a contiguous disk address space. A file manager (FM) is a software package that manipulates file systems, but it is sometimes called the file system. All operating systems have file managers. The primary task of a file manager is to allocate and deallocate disk space into files within a file system.</p>
+<p>A file system allows the disk space to be allocated to a large number of files. Each file is made to appear as a contiguous address space to applications such as Oracle Database. The files may not actually be contiguous within the disk space of the file system. Files can be created, read, written, resized, and deleted. Each file has a name associated with it that is used to refer to the file.</p>
+<p>A file system is commonly built on top of a logical volume constructed by an LVM. Thus all the files in a particular file system have the same performance, reliability, and availability characteristics inherited from the underlying logical volume. A file system is a single pool of storage that is shared by all the files in the file system. If a file system is out of space, then none of the files in that file system can grow. Space available in one file system does not affect space in another file system. However some LVM/FM combinations allow space to be added or removed from a file system.</p>
+<p>An operating system can support multiple file systems. Multiple file systems are constructed to give different storage characteristics to different files as well as to divide the available disk space into pools that do not affect each other.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<div id="ADMIN11485" class="sect2"><a id="sthref1813"></a>
+<h3 class="sect2">Benefits of Using Oracle Managed Files</h3>
+<p>Consider the following benefits of using <a id="sthref1814"></a>Oracle Managed Files:</p>
+<ul>
+<li>
+<p>They make the administration of the database easier.</p>
+<p>There is no need to invent filenames and define specific storage requirements. A consistent set of rules is used to name all relevant files. The file system defines the characteristics of the storage and the pool where it is allocated.</p>
+</li>
+<li>
+<p>They reduce corruption caused by administrators specifying the wrong file.</p>
+<p>Each Oracle managed file and filename is unique. Using the same file in two different databases is a common mistake that can cause very large down times and loss of committed transactions. Using two different names that refer to the same file is another mistake that causes major corruptions.</p>
+</li>
+<li>
+<p>They reduce wasted disk space consumed by obsolete files.</p>
+<p>Oracle Database automatically removes old Oracle Managed Files when they are no longer needed. Much disk space is wasted in large systems simply because no one is sure if a particular file is still required. This also simplifies the administrative task of removing files that are no longer required on disk and prevents the mistake of deleting the wrong file.</p>
+</li>
+<li>
+<p>They simplify creation of test and development databases.</p>
+<p>You can minimize the time spent making decisions regarding file structure and naming, and you have fewer file management tasks. You can focus better on meeting the actual requirements of your test or development database.</p>
+</li>
+<li>
+<p>Oracle Managed Files make development of portable third-party tools easier.</p>
+<p>Oracle Managed Files eliminate the need to put operating system specific file names in SQL scripts.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<div id="ADMIN11486" class="sect2"><a id="sthref1815"></a>
+<h3 class="sect2">Oracle Managed Files and Existing Functionality</h3>
+<p>Using Oracle Managed Files does not eliminate any existing functionality. Existing databases are able to operate as they always have. New files can be created as managed files while old ones are administered in the old way. Thus, a database can have a mixture of Oracle managed and unmanaged files.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006164"></a>
+<div id="ADMIN11487" class="sect1">
+<h2 class="sect1">Enabling the Creation and Use of <a id="sthref1816"></a>Oracle Managed Files</h2>
+<p>The following table lists the initialization parameters that enable the use of Oracle Managed Files.</p>
+<div class="inftblinformal">
+<table class="cellalignment1333" title="Oracle-Managed Files Initialization Parameters" summary="In column 1 this table lists the initialization parameters that enable the Oracle Managed Files feature. Column 2 describes each parameter." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t3">Initialization Parameter</th>
+<th class="cellalignment1334" id="r1c2-t3">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t3" headers="r1c1-t3"><code dir="ltr"><a id="sthref1817"></a>DB_CREATE_FILE_DEST</code></td>
+<td class="cellalignment1335" headers="r2c1-t3 r1c2-t3">Defines the location of the default file system directory or Oracle ASM disk group where the database creates data files or temp files when no file specification is given in the create operation. Also used as the default location for redo log and control files if <code dir="ltr">DB_CREATE_ONLINE_LOG_DEST_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code> are not specified.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t3" headers="r1c1-t3"><code dir="ltr"><a id="sthref1818"></a>DB_CREATE_ONLINE_LOG_DEST_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code></td>
+<td class="cellalignment1335" headers="r3c1-t3 r1c2-t3">Defines the location of the default file system directory or Oracle ASM disk group for redo log files and control file creation when no file specification is given in the create operation. By changing <code dir="ltr"><span class="codeinlineitalic">n</span></code>, you can use this initialization parameter multiple times, where <code dir="ltr"><span class="codeinlineitalic">n</span></code> specifies a multiplexed copy of the redo log or control file. You can specify up to five multiplexed copies.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t3" headers="r1c1-t3"><code dir="ltr"><a id="sthref1819"></a>DB_RECOVERY_FILE_DEST</code></td>
+<td class="cellalignment1335" headers="r4c1-t3 r1c2-t3">Defines the location of the <a id="sthref1820"></a>Fast Recovery Area, which is the default file system directory or Oracle ASM disk group where the database creates RMAN backups when no format option is used, archived logs when no other local destination is configured, and flashback logs. Also used as the default location for redo log and control files or multiplexed copies of redo log and control files if <code dir="ltr">DB_CREATE_ONLINE_LOG_DEST_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code> are not specified.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformal" -->
+<p>The file system directories specified by these parameters must already exist; the database does not create them. The directory must also have permissions to allow the database to create the files in it.</p>
+<p>The default location is used whenever a location is not explicitly specified for the operation creating the file. The database creates the filename, and a file thus created is an Oracle managed file.</p>
+<p>Both of these initialization parameters are dynamic, and can be set using the <code dir="ltr">ALTER SYSTEM</code> or <code dir="ltr">ALTER SESSION</code> statement.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink REFRN001" href="../../server.112/e40402/initparams_part.htm#REFRN001"><span class="italic">Oracle Database Reference</span></a> for additional information about initialization parameters</p>
+</li>
+<li>
+<p><a href="#i1006256">"How Oracle Managed Files Are Named"</a></p>
+</li>
+</ul>
+</div>
+<div id="ADMIN11488" class="sect2"><a id="sthref1821"></a>
+<h3 class="sect2">Setting the <a id="sthref1822"></a>DB_CREATE_FILE_DEST Initialization Parameter</h3>
+<p>Include the <code dir="ltr">DB_CREATE_FILE_DEST</code> initialization parameter in your initialization parameter file to identify the default location for the database server to create:</p>
+<ul>
+<li>
+<p>Data files</p>
+</li>
+<li>
+<p>Temp files</p>
+</li>
+<li>
+<p>Redo log files</p>
+</li>
+<li>
+<p>Control files</p>
+</li>
+<li>
+<p>Block change tracking files</p>
+</li>
+</ul>
+<p>You specify the name of a file system directory that becomes the default location for the creation of the operating system files for these entities. The following example sets <code dir="ltr">/u01/app/oracle/oradata</code> as the default directory to use when creating Oracle Managed Files:</p>
+<pre dir="ltr">
+DB_CREATE_FILE_DEST = '/u01/app/oracle/oradata'
+</pre></div>
+<!-- class="sect2" -->
+<div id="ADMIN11489" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1823"></a>
+<h3 class="sect2">Setting the <a id="sthref1824"></a>DB_RECOVERY_FILE_DEST Parameter</h3>
+<p>Include the <code dir="ltr">DB_RECOVERY_FILE_DEST</code> and <code dir="ltr">DB_RECOVERY_FILE_DEST_SIZE</code> parameters in your initialization parameter file to identify the default location for the Fast Recovery Area. The Fast Recovery Area contains:</p>
+<ul>
+<li>
+<p>Redo log files or multiplexed copies of redo log files</p>
+</li>
+<li>
+<p>Control files or multiplexed copies of control files</p>
+</li>
+<li>
+<p>RMAN backups (data file copies, control file copies, backup pieces, control file autobackups)</p>
+</li>
+<li>
+<p>Archived logs</p>
+</li>
+<li>
+<p>Flashback logs</p>
+</li>
+</ul>
+<p>You specify the name of file system directory that becomes the default location for creation of the operating system files for these entities. For example:</p>
+<pre dir="ltr">
+DB_RECOVERY_FILE_DEST = '/u01/app/oracle/fast_recovery_area'
+DB_RECOVERY_FILE_DEST_SIZE = 20G
+</pre></div>
+<!-- class="sect2" -->
+<div id="ADMIN11490" class="sect2"><a id="sthref1825"></a>
+<h3 class="sect2">Setting the <a id="sthref1826"></a>DB_CREATE_ONLINE_LOG_DEST_n Initialization Parameters</h3>
+<p>Include the <code dir="ltr">DB_CREATE_ONLINE_LOG_DEST_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code> initialization parameters in your initialization parameter file to identify the default locations for the database server to create:</p>
+<ul>
+<li>
+<p>Redo log files</p>
+</li>
+<li>
+<p>Control files</p>
+</li>
+</ul>
+<p>You specify the name of a file system directory or Oracle ASM disk group that becomes the default location for the creation of the files for these entities. You can specify up to five multiplexed locations.</p>
+<p><span class="italic">For the creation of redo log files and control files only</span>, this parameter overrides any default location specified in the <code dir="ltr">DB_CREATE_FILE_DEST</code> and <code dir="ltr">DB_RECOVERY_FILE_DEST</code> initialization parameters. If you do not specify a <code dir="ltr">DB_CREATE_FILE_DEST</code> parameter, but you do specify the <code dir="ltr">DB_CREATE_ONLINE_LOG_DEST_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code> parameter, then only redo log files and control files can be created as Oracle Managed Files.</p>
+<p>It is recommended that you specify at least two parameters. For example:</p>
+<pre dir="ltr">
+DB_CREATE_ONLINE_LOG_DEST_1 = '/u02/oradata'
+DB_CREATE_ONLINE_LOG_DEST_2 = '/u03/oradata'
+</pre>
+<p>This allows multiplexing, which provides greater fault-tolerance for the redo log and control file if one of the destinations fails.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1206224"></a>
+<div id="ADMIN11491" class="sect1">
+<h2 class="sect1">Creating <a id="sthref1827"></a><a id="sthref1828"></a><a id="sthref1829"></a>Oracle Managed Files</h2>
+<p>If you have met any of the following conditions, then Oracle Database creates Oracle Managed Files for you, as appropriate, when no file specification is given in the create operation:</p>
+<ul>
+<li>
+<p>You have included any of the <code dir="ltr">DB_CREATE_FILE_DEST</code>, <code dir="ltr">DB_RECOVERY_FILE_DEST</code>, or <code dir="ltr">DB_CREATE_ONLINE_LOG_DEST_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code> initialization parameters in your initialization parameter file.</p>
+</li>
+<li>
+<p>You have issued the <code dir="ltr">ALTER SYSTEM</code> statement to dynamically set any of <code dir="ltr">DB_RECOVERY_FILE_DEST</code>, <code dir="ltr">DB_CREATE_FILE_DEST</code>, or <code dir="ltr">DB_CREATE_ONLINE_LOG_DEST_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code> initialization parameters</p>
+</li>
+<li>
+<p>You have issued the <code dir="ltr">ALTER SESSION</code> statement to dynamically set any of the <code dir="ltr">DB_CREATE_FILE_DEST</code>, <code dir="ltr">DB_RECOVERY_FILE_DEST</code>, or <code dir="ltr">DB_CREATE_ONLINE_LOG_DEST_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code> initialization parameters.</p>
+</li>
+</ul>
+<p>If a statement that creates an Oracle managed file finds an error or does not complete due to some failure, then any Oracle Managed Files created by the statement are automatically deleted as part of the recovery of the error or failure. However, because of the large number of potential errors that can occur with file systems and storage subsystems, there can be situations where you must manually remove the files using operating system commands.</p>
+<p>The following topics are discussed in this section:</p>
+<ul>
+<li>
+<p><a href="#i1006256">How Oracle Managed Files Are Named</a></p>
+</li>
+<li>
+<p><a href="#i1106310">Creating Oracle Managed Files at Database Creation</a></p>
+</li>
+<li>
+<p><a href="#i1006430">Creating Data Files for Tablespaces Using Oracle Managed Files</a></p>
+</li>
+<li>
+<p><a href="#i1006538">Creating Temp Files for Temporary Tablespaces Using Oracle Managed Files</a></p>
+</li>
+<li>
+<p><a href="#i1006589">Creating Control Files Using Oracle Managed Files</a></p>
+</li>
+<li>
+<p><a href="#i1006661">Creating Redo Log Files Using Oracle Managed Files</a></p>
+</li>
+<li>
+<p><a href="#CACCJIDH">Creating Archived Logs Using Oracle Managed Files</a></p>
+</li>
+</ul>
+<a id="i1006256"></a>
+<div id="ADMIN11492" class="sect2">
+<h3 class="sect2">How Oracle Managed Files Are Named</h3>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The naming scheme described in this section applies only to files created in operating system file systems. The naming scheme for files created in Oracle Automatic Storage Management (Oracle ASM) disk groups is described in <a class="olink OSTMG10264" href="../../server.112/e18951/asmfiles.htm#OSTMG10264"><span class="italic">Oracle Automatic Storage Management Administrator's Guide</span></a>.</div>
+<p><a id="sthref1830"></a><a id="sthref1831"></a>The filenames of Oracle Managed Files comply with the Optimal Flexible Architecture (OFA) standard for file naming. The assigned names are intended to meet the following requirements:</p>
+<ul>
+<li>
+<p>Database files are easily distinguishable from all other files.</p>
+</li>
+<li>
+<p>Files of one database type are easily distinguishable from other database types.</p>
+</li>
+<li>
+<p>Files are clearly associated with important attributes specific to the file type. For example, a data file name may include the tablespace name to allow for easy association of data file to tablespace, or an archived log name may include the thread, sequence, and creation date.</p>
+</li>
+</ul>
+<p>No two Oracle Managed Files are given the same name. The name that is used for creation of an Oracle managed file is constructed from three sources:</p>
+<ul>
+<li>
+<p>The default creation location</p>
+</li>
+<li>
+<p>A file name template that is chosen based on the type of the file. The template also depends on the operating system platform and whether or not Oracle Automatic Storage Management is used.</p>
+</li>
+<li>
+<p>A unique string created by Oracle Database or the operating system. This ensures that file creation does not damage an existing file and that the file cannot be mistaken for some other file.</p>
+</li>
+</ul>
+<p>As a specific example, filenames for Oracle Managed Files have the following format on a Solaris file system:</p>
+<pre dir="ltr">
+<span class="italic">destination_prefix</span>/o1_mf_%t_%u_.dbf
+</pre>
+<p>where:</p>
+<ul>
+<li>
+<p><code dir="ltr"><span class="codeinlineitalic">destination_prefix</span></code> is <code dir="ltr"><span class="codeinlineitalic">destination_location</span></code>/<code dir="ltr"><span class="codeinlineitalic">db_unique_name</span></code>/<code dir="ltr"><span class="codeinlineitalic">datafile</span></code></p>
+<p>where:</p>
+<ul>
+<li>
+<p><code dir="ltr"><span class="codeinlineitalic">destination_location</span></code> is the location specified in <code dir="ltr">DB_CREATE_FILE_DEST</code></p>
+</li>
+<li>
+<p><code dir="ltr"><span class="codeinlineitalic">db_unique_name</span></code> is the globally unique name (<code dir="ltr">DB_UNIQUE_NAME</code> initialization parameter) of the target database. If there is no <code dir="ltr">DB_UNIQUE_NAME</code> parameter, then the <code dir="ltr">DB_NAME</code> initialization parameter value is used.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>%t is the tablespace name.</p>
+</li>
+<li>
+<p>%u is an eight-character string that guarantees uniqueness</p>
+</li>
+</ul>
+<p>For example, assume the following parameter settings:</p>
+<pre dir="ltr">
+DB_CREATE_FILE_DEST   = /u01/app/oracle/oradata
+DB_UNIQUE_NAME = PAYROLL
+</pre>
+<p>Then an example data file name would be:</p>
+<pre dir="ltr">
+/u01/app/oracle/oradata/PAYROLL/datafile/o1_mf_tbs1_2ixh90q_.dbf
+</pre>
+<p>Names for other file types are similar. Names on other platforms are also similar, subject to the constraints of the naming rules of the platform.</p>
+<p>The examples on the following pages use Oracle managed file names as they might appear with a Solaris file system as an OMF destination.</p>
+<div class="infobox-note">
+<p class="notep1">Caution:</p>
+Do not rename an Oracle managed file. The database identifies an Oracle managed file based on its name. If you rename the file, the database is no longer able to recognize it as an Oracle managed file and will not manage the file accordingly.</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1106310"></a>
+<div id="ADMIN11493" class="sect2">
+<h3 class="sect2">Creating Oracle Managed Files at Database Creation</h3>
+<p>The actions of the <a id="sthref1832"></a><a id="sthref1833"></a><a id="sthref1834"></a><code dir="ltr">CREATE DATABASE</code> statement when using Oracle Managed Files are discussed in this section.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The rules and defaults in this section also apply to creating a database with Database Configuration Assistant (DBCA). With DBCA, you use a graphical interface to enable Oracle Managed Files and to specify file locations that correspond to the initialization parameters described in this section.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SQLRF01204" href="../../server.112/e41084/statements_5004.htm#SQLRF01204"><span class="italic">Oracle Database SQL Language Reference</span></a> for a description of the <code dir="ltr">CREATE DATABASE</code> statement</div>
+<a id="i1006324"></a>
+<div id="ADMIN11494" class="sect3">
+<h4 class="sect3">Specifying Control Files at Database Creation</h4>
+<p>At database creation, the control file is created in the files specified by the <code dir="ltr">CONTROL_FILES</code> initialization parameter. If the <code dir="ltr">CONTROL_FILES</code> parameter is not set and at least one of the initialization parameters required for the creation of Oracle Managed Files is set, then an Oracle managed control file is created in the default control file destinations. In order of precedence, the default destination is defined as follows:</p>
+<ul>
+<li>
+<p>One or more control files as specified in the <code dir="ltr">DB_CREATE_ONLINE_LOG_DEST_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code> initialization parameter. The file in the first directory is the primary control file. When <code dir="ltr">DB_CREATE_ONLINE_LOG_DEST_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code> is specified, the database does not create a control file in <code dir="ltr">DB_CREATE_FILE_DEST</code> or in <code dir="ltr">DB_RECOVERY_FILE_DEST</code> (the Fast Recovery Area).</p>
+</li>
+<li>
+<p>If no value is specified for <code dir="ltr">DB_CREATE_ONLINE_LOG_DEST_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code>, but values are set for both the <code dir="ltr">DB_CREATE_FILE_DEST</code> and <code dir="ltr">DB_RECOVERY_FILE_DEST</code>, then the database creates one control file in each location. The location specified in <code dir="ltr">DB_CREATE_FILE_DEST</code> is the primary control file.</p>
+</li>
+<li>
+<p>If a value is specified only for <code dir="ltr">DB_CREATE_FILE_DEST</code>, then the database creates one control file in that location.</p>
+</li>
+<li>
+<p>If a value is specified only for <code dir="ltr">DB_RECOVERY_FILE_DEST</code>, then the database creates one control file in that location.</p>
+</li>
+</ul>
+<p>If the <code dir="ltr">CONTROL_FILES</code> parameter is not set and none of these initialization parameters are set, then the Oracle Database default action is operating system dependent. At least one copy of a control file is created in an operating system dependent default location. Any copies of control files created in this fashion are not Oracle Managed Files, and you must add a <code dir="ltr">CONTROL_FILES</code> initialization parameter to any initialization parameter file.</p>
+<p>If the database creates an Oracle managed control file, and if there is a server parameter file, then the database creates a <code dir="ltr">CONTROL_FILES</code> initialization parameter entry in the server parameter file. If there is no server parameter file, then you must manually include a <code dir="ltr">CONTROL_FILES</code> initialization parameter entry in the text initialization parameter file.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="control.htm#g1009963">Chapter 11, "Managing Control Files"</a></div>
+</div>
+<!-- class="sect3" -->
+<a id="i1006339"></a>
+<div id="ADMIN11495" class="sect3">
+<h4 class="sect3">Specifying <a id="sthref1835"></a>Redo Log Files at Database Creation</h4>
+<p>The <code dir="ltr">LOGFILE</code> clause is not required in the <code dir="ltr">CREATE DATABASE</code> statement, and omitting it provides a simple means of creating Oracle managed redo log files. If the <code dir="ltr">LOGFILE</code> clause is omitted, then redo log files are created in the default redo log file destinations. In order of precedence, the default destination is defined as follows:</p>
+<ul>
+<li>
+<p>If either the <code dir="ltr">DB_CREATE_ONLINE_LOG_DEST_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code> is set, then the database creates a log file member in each directory specified, up to the value of the <code dir="ltr">MAXLOGMEMBERS</code> initialization parameter.</p>
+</li>
+<li>
+<p>If the <code dir="ltr">DB_CREATE_ONLINE_LOG_DEST_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code> parameter is not set, but both the <code dir="ltr">DB_CREATE_FILE_DEST</code> and <code dir="ltr">DB_RECOVERY_FILE_DEST</code> initialization parameters are set, then the database creates one Oracle managed log file member in each of those locations. The log file in the <code dir="ltr">DB_CREATE_FILE_DEST</code> destination is the first member.</p>
+</li>
+<li>
+<p>If only the <code dir="ltr">DB_CREATE_FILE_DEST</code> initialization parameter is specified, then the database creates a log file member in that location.</p>
+</li>
+<li>
+<p>If only the <code dir="ltr">DB_RECOVERY_FILE_DEST</code> initialization parameter is specified, then the database creates a log file member in that location.</p>
+</li>
+</ul>
+<p>The default size of an Oracle managed redo log file is 100 MB.</p>
+<p>Optionally, you can create Oracle managed redo log files, and override default attributes, by including the <code dir="ltr">LOGFILE</code> clause but omitting a filename. Redo log files are created the same way, except for the following: If no filename is provided in the <code dir="ltr">LOGFILE</code> clause of <code dir="ltr">CREATE DATABASE</code>, and none of the initialization parameters required for creating Oracle Managed Files are provided, then the <code dir="ltr">CREATE DATABASE</code> statement fails.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="onlineredo.htm#g1011287">Chapter 12, "Managing the Redo Log"</a></div>
+</div>
+<!-- class="sect3" -->
+<a id="i1006355"></a>
+<div id="ADMIN11496" class="sect3">
+<h4 class="sect3">Specifying the SYSTEM and SYSAUX Tablespace Data Files at Database Creation</h4>
+<p>The <code dir="ltr">DATAFILE</code> or <code dir="ltr">SYSAUX</code> <code dir="ltr">DATAFILE</code> clause is not required in the <code dir="ltr">CREATE DATABASE</code> statement, and omitting it provides a simple means of creating Oracle managed data files for the <code dir="ltr">SYSTEM</code> and <code dir="ltr">SYSAUX</code> tablespaces. If the <code dir="ltr">DATAFILE</code> clause is omitted, then one of the following actions occurs:</p>
+<ul>
+<li>
+<p>If <code dir="ltr">DB_CREATE_FILE_DEST</code> is set, then one Oracle managed data file for the <code dir="ltr">SYSTEM</code> tablespace and another for the <code dir="ltr">SYSAUX</code> tablespace are created in the <code dir="ltr">DB_CREATE_FILE_DEST</code> directory.</p>
+</li>
+<li>
+<p>If <code dir="ltr">DB_CREATE_FILE_DEST</code> is not set, then the database creates one <code dir="ltr">SYSTEM</code> and one <code dir="ltr">SYSAUX</code> tablespace data file whose names and sizes are operating system dependent. Any <code dir="ltr">SYSTEM</code> or <code dir="ltr">SYSAUX</code> tablespace data file created in this manner is not an Oracle managed file.</p>
+</li>
+</ul>
+<p>By default, Oracle managed data files, including those for the <code dir="ltr">SYSTEM</code> and <code dir="ltr">SYSAUX</code> tablespaces, are 100MB and autoextensible. When autoextension is required, the database extends the data file by its existing size or 100 MB, whichever is smaller. You can also explicitly specify the autoextensible unit using the <code dir="ltr">NEXT</code> parameter of the <code dir="ltr">STORAGE</code> clause when you specify the data file (in a <code dir="ltr">CREATE</code> or <code dir="ltr">ALTER TABLESPACE</code> operation).</p>
+<p>Optionally, you can create an Oracle managed data file for the <code dir="ltr">SYSTEM</code> or <code dir="ltr">SYSAUX</code> tablespace and override default attributes. This is done by including the <code dir="ltr">DATAFILE</code> clause, omitting a filename, but specifying overriding attributes. When a filename is not supplied and the <code dir="ltr">DB_CREATE_FILE_DEST</code> parameter is set, an Oracle managed data file for the <code dir="ltr">SYSTEM</code> or <code dir="ltr">SYSAUX</code> tablespace is created in the <code dir="ltr">DB_CREATE_FILE_DEST</code> directory with the specified attributes being overridden. However, if a filename is not supplied and the <code dir="ltr">DB_CREATE_FILE_DEST</code> parameter is not set, then the <code dir="ltr">CREATE DATABASE</code> statement fails.</p>
+<p>When overriding the default attributes of an Oracle managed file, if a <code dir="ltr">SIZE</code> value is specified but no <code dir="ltr">AUTOEXTEND</code> clause is specified, then the data file is <span class="italic">not</span> autoextensible.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i1006363"></a>
+<div id="ADMIN11497" class="sect3">
+<h4 class="sect3">Specifying the <a id="sthref1836"></a>Undo Tablespace Data File at Database Creation</h4>
+<p>The <code dir="ltr">DATAFILE</code> subclause of the <code dir="ltr">UNDO TABLESPACE</code> clause is optional and a filename is not required in the file specification. If a filename is not supplied and the <code dir="ltr">DB_CREATE_FILE_DEST</code> parameter is set, then an Oracle managed data file is created in the <code dir="ltr">DB_CREATE_FILE_DEST</code> directory. If <code dir="ltr">DB_CREATE_FILE_DEST</code> is not set, then the statement fails with a syntax error.</p>
+<p>The <code dir="ltr">UNDO TABLESPACE</code> clause itself is optional in the <code dir="ltr">CREATE DATABASE</code> statement. If it is not supplied, and automatic undo management mode is enabled (the default), then a default undo tablespace named <code dir="ltr">SYS_UNDOTS</code> is created and a 20 MB data file that is autoextensible is allocated as follows:</p>
+<ul>
+<li>
+<p>If <code dir="ltr">DB_CREATE_FILE_DEST</code> is set, then an Oracle managed data file is created in the indicated directory.</p>
+</li>
+<li>
+<p>If <code dir="ltr">DB_CREATE_FILE_DEST</code> is not set, then the data file location is operating system specific.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="undo.htm#g1012303">Chapter 16, "Managing Undo"</a></div>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<a id="i1306377"></a>
+<div id="ADMIN11498" class="sect3">
+<h4 class="sect3">Specifying the <a id="sthref1837"></a>Default Temporary Tablespace Temp File at Database Creation</h4>
+<p>The <code dir="ltr">TEMPFILE</code> subclause is optional for the <code dir="ltr">DEFAULT TEMPORARY TABLESPACE</code> clause and a filename is not required in the file specification. If a filename is not supplied and the <code dir="ltr">DB_CREATE_FILE_DEST</code> parameter set, then an Oracle managed temp file is created in the <code dir="ltr">DB_CREATE_FILE_DEST</code> directory. If <code dir="ltr">DB_CREATE_FILE_DEST</code> is not set, then the <code dir="ltr">CREATE DATABASE</code> statement fails with a syntax error.</p>
+<p>The <code dir="ltr">DEFAULT TEMPORARY TABLESPACE</code> clause itself is optional. If it is not specified, then no default temporary tablespace is created.</p>
+<p>The default size for an Oracle managed temp file is 100 MB and the file is autoextensible with an unlimited maximum size.</p>
+</div>
+<!-- class="sect3" -->
+<div id="ADMIN11499" class="sect3"><a id="sthref1838"></a>
+<h4 class="sect3">CREATE DATABASE Statement Using Oracle Managed Files: Examples</h4>
+<p>This section contains examples of the <code dir="ltr"><a id="sthref1839"></a>CREATE DATABASE</code> statement when using the Oracle Managed Files feature.</p>
+<p><a id="ADMIN12609"></a><span class="subhead3">CREATE DATABASE: Example 1&nbsp;</span>This example creates a database with the following Oracle Managed Files:</p>
+<ul>
+<li>
+<p>A <code dir="ltr">SYSTEM</code> tablespace data file in directory <code dir="ltr">/u01/app/oracle/oradata</code> that is autoextensible up to an unlimited size.</p>
+</li>
+<li>
+<p>A <code dir="ltr">SYSAUX</code> tablespace data file in directory <code dir="ltr">/u01/app/oracle/oradata</code> that is autoextensible up to an unlimited size. The tablespace is locally managed with automatic segment-space management.</p>
+</li>
+</ul>
+<ul>
+<li>
+<p>Two online log groups with two members of 100 MB each, one each in <code dir="ltr">/u02/oradata</code> and <code dir="ltr">/u03/oradata.</code></p>
+</li>
+<li>
+<p>If automatic undo management mode is enabled (the default), then an undo tablespace data file in directory <code dir="ltr">/u01/app/oracle/oradata</code> that is 20 MB and autoextensible up to an unlimited size. An undo tablespace named <code dir="ltr">SYS_UNDOTS</code> is created.</p>
+</li>
+<li>
+<p>If no <code dir="ltr">CONTROL_FILES</code> initialization parameter is specified, then two control files, one each in <code dir="ltr">/u02/oradata</code> and <code dir="ltr">/u03/oradata</code>. The control file in <code dir="ltr">/u02/oradata</code> is the primary control file.</p>
+</li>
+</ul>
+<p>The following parameter settings relating to Oracle Managed Files, are included in the initialization parameter file:</p>
+<pre dir="ltr">
+DB_CREATE_FILE_DEST = '/u01/app/oracle/oradata'
+DB_CREATE_ONLINE_LOG_DEST_1 = '/u02/oradata'
+DB_CREATE_ONLINE_LOG_DEST_2 = '/u03/oradata'
+</pre>
+<p>The following statement is issued at the SQL prompt:</p>
+<pre dir="ltr">
+CREATE DATABASE sample;
+</pre>
+<p>To create the database with a locally managed <code dir="ltr">SYSTEM</code> tablespace, add the <code dir="ltr">EXTENT</code> <code dir="ltr">MANAGEMENT</code> <code dir="ltr">LOCAL</code> clause:</p>
+<pre dir="ltr">
+CREATE DATABASE sample EXTENT MANAGEMENT LOCAL;
+</pre>
+<p>Without this clause, the <code dir="ltr">SYSTEM</code> tablespace is dictionary managed. Oracle recommends that you create a locally managed <code dir="ltr">SYSTEM</code> tablespace.</p>
+<p><a id="ADMIN12610"></a><span class="subhead3">CREATE DATABASE: Example 2&nbsp;</span>This example creates a database with the following Oracle Managed Files:</p>
+<ul>
+<li>
+<p>A <code dir="ltr">SYSTEM</code> tablespace data file in directory <code dir="ltr">/u01/app/oracle/oradata</code> that is autoextensible up to an unlimited size.</p>
+</li>
+<li>
+<p>A <code dir="ltr">SYSAUX</code> tablespace data file in directory <code dir="ltr">/u01/app/oracle/oradata</code> that is autoextensible up to an unlimited size. The tablespace is locally managed with automatic segment-space management.</p>
+</li>
+</ul>
+<ul>
+<li>
+<p>Two redo log files of 100 MB each in directory <code dir="ltr">/u01/app/oracle/oradata.</code> They are not multiplexed.</p>
+</li>
+<li>
+<p>An undo tablespace data file in directory <code dir="ltr">/u01/app/oracle/oradata</code> that is 20 MB and autoextensible up to an unlimited size. An undo tablespace named <code dir="ltr">SYS_UNDOTS</code> is created.</p>
+</li>
+<li>
+<p>A control file in <code dir="ltr">/u01/app/oracle/oradata</code>.</p>
+</li>
+</ul>
+<p>In this example, it is assumed that:</p>
+<ul>
+<li>
+<p>No <code dir="ltr">DB_CREATE_ONLINE_LOG_DEST_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code> initialization parameters are specified in the initialization parameter file.</p>
+</li>
+<li>
+<p>No <code dir="ltr">CONTROL_FILES</code> initialization parameter was specified in the initialization parameter file.</p>
+</li>
+<li>
+<p>Automatic undo management mode is enabled.</p>
+</li>
+</ul>
+<p>The following statements are issued at the SQL prompt:</p>
+<pre dir="ltr">
+ALTER SYSTEM SET DB_CREATE_FILE_DEST = '/u01/app/oracle/oradata';
+CREATE DATABASE sample2 EXTENT MANAGEMENT LOCAL;
+</pre>
+<p>This database configuration is not recommended for a production database. The example illustrates how a very low-end database or simple test database can easily be created. To better protect this database from failures, at least one more control file should be created and the redo log should be multiplexed.</p>
+<p><a id="ADMIN12611"></a><span class="subhead3">CREATE DATABASE: Example 3&nbsp;</span>In this example, the file size for the Oracle Managed Files for the default temporary tablespace and undo tablespace are specified. A database with the following Oracle Managed Files is created:</p>
+<ul>
+<li>
+<p>A 400 MB <code dir="ltr">SYSTEM</code> tablespace data file in directory <code dir="ltr">/u01/app/oracle/oradata</code>. Because <code dir="ltr">SIZE</code> is specified, the file in not autoextensible.</p>
+</li>
+<li>
+<p>A 200 MB <code dir="ltr">SYSAUX</code> tablespace data file in directory <code dir="ltr">/u01/app/oracle/oradata.</code> Because <code dir="ltr">SIZE</code> is specified, the file in not autoextensible. The tablespace is locally managed with automatic segment-space management.</p>
+</li>
+<li>
+<p>Two redo log groups with two members of 100 MB each, one each in directories <code dir="ltr">/u02/oradata</code> and <code dir="ltr">/u03/oradata.</code></p>
+</li>
+<li>
+<p>For the default temporary tablespace <code dir="ltr">dflt_ts</code>, a 10 MB temp file in directory <code dir="ltr">/u01/app/oracle/oradata</code>. Because <code dir="ltr">SIZE</code> is specified, the file in not autoextensible.</p>
+</li>
+<li>
+<p>For the undo tablespace <code dir="ltr">undo_ts</code>, a 100 MB data file in directory <code dir="ltr">/u01/app/oracle/oradata</code>. Because <code dir="ltr">SIZE</code> is specified, the file is not autoextensible.</p>
+</li>
+<li>
+<p>If no <code dir="ltr">CONTROL_FILES</code> initialization parameter was specified, then two control files, one each in directories <code dir="ltr">/u02/oradata</code> and <code dir="ltr">/u03/oradata</code>. The control file in <code dir="ltr">/u02/oradata</code> is the primary control file.</p>
+</li>
+</ul>
+<p>The following parameter settings are included in the initialization parameter file:</p>
+<pre dir="ltr">
+DB_CREATE_FILE_DEST = '/u01/app/oracle/oradata'
+DB_CREATE_ONLINE_LOG_DEST_1 = '/u02/oradata'
+DB_CREATE_ONLINE_LOG_DEST_2 = '/u03/oradata'
+</pre>
+<p>The following statement is issued at the SQL prompt:</p>
+<pre dir="ltr">
+CREATE DATABASE sample3
+EXTENT MANAGEMENT LOCAL
+DATAFILE SIZE 400M
+SYSAUX DATAFILE SIZE 200M
+DEFAULT TEMPORARY TABLESPACE dflt_ts TEMPFILE SIZE 10M
+UNDO TABLESPACE undo_ts DATAFILE SIZE 100M;
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="create.htm#i1011260">"Creating a Locally Managed SYSTEM Tablespace"</a></div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1006430"></a>
+<div id="ADMIN11500" class="sect2">
+<h3 class="sect2">Creating Data Files for Tablespaces Using Oracle Managed Files</h3>
+<p>The following statements that can create <a id="sthref1840"></a><a id="sthref1841"></a><a id="sthref1842"></a><a id="sthref1843"></a>data files are relevant to the discussion in this section:</p>
+<ul>
+<li>
+<p><code dir="ltr">CREATE</code> <code dir="ltr">TABLESPACE</code></p>
+</li>
+<li>
+<p><code dir="ltr">CREATE</code> <code dir="ltr">UNDO</code> <code dir="ltr">TABLESPACE</code></p>
+</li>
+<li>
+<p><code dir="ltr">ALTER</code> <code dir="ltr">TABLESPACE</code> ... <code dir="ltr">ADD</code> <code dir="ltr">DATAFILE</code></p>
+</li>
+</ul>
+<p>When creating a tablespace, either a permanent tablespace or an undo tablespace, the <code dir="ltr">DATAFILE</code> clause is optional. When you include the <code dir="ltr">DATAFILE</code> clause the filename is optional. If the <code dir="ltr">DATAFILE</code> clause or filename is not provided, then the following rules apply:</p>
+<ul>
+<li>
+<p>If the <code dir="ltr">DB_CREATE_FILE_DEST</code> initialization parameter is specified, then an Oracle managed data file is created in the location specified by the parameter.</p>
+</li>
+<li>
+<p>If the <code dir="ltr">DB_CREATE_FILE_DEST</code> initialization parameter is not specified, then the statement creating the data file fails.</p>
+</li>
+</ul>
+<p>When you add a data file to a tablespace with the <code dir="ltr">ALTER TABLESPACE...ADD DATAFILE</code> statement the filename is optional. If the filename is not specified, then the same rules apply as discussed in the previous paragraph.</p>
+<p>By default, an Oracle managed data file for a permanent tablespace is 100 MB and is autoextensible with an unlimited maximum size. However, if in your <code dir="ltr">DATAFILE</code> clause you override these defaults by specifying a <code dir="ltr">SIZE</code> value (and no <code dir="ltr">AUTOEXTEND</code> clause), then the data file is <span class="italic">not</span> autoextensible.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#i1006355">"Specifying the SYSTEM and SYSAUX Tablespace Data Files at Database Creation"</a></p>
+</li>
+<li>
+<p><a href="#i1006363">"Specifying the Undo Tablespace Data File at Database Creation"</a></p>
+</li>
+<li>
+<p><a href="tspaces.htm#g1029288">Chapter 14, "Managing Tablespaces"</a></p>
+</li>
+</ul>
+</div>
+<div id="ADMIN11501" class="sect3"><a id="sthref1844"></a>
+<h4 class="sect3"><a id="sthref1845"></a>CREATE TABLESPACE: Examples</h4>
+<p>The following are some examples of creating tablespaces with Oracle Managed Files.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SQLRF01403" href="../../server.112/e41084/statements_7003.htm#SQLRF01403"><span class="italic">Oracle Database SQL Language Reference</span></a> for a description of the <code dir="ltr">CREATE TABLESPACE</code> statement</div>
+<p><a id="ADMIN12612"></a><span class="subhead3">CREATE TABLESPACE: Example 1&nbsp;</span>The following example sets the default location for data file creations to <code dir="ltr">/u01/oradata</code> and then creates a tablespace <code dir="ltr">tbs_1</code> with a data file in that location. The data file is 100 MB and is autoextensible with an unlimited maximum size.</p>
+<pre dir="ltr">
+SQL&gt; ALTER SYSTEM SET DB_CREATE_FILE_DEST = '/u01/oradata';
+SQL&gt; CREATE TABLESPACE tbs_1;
+</pre>
+<p><a id="ADMIN12613"></a><span class="subhead3">CREATE TABLESPACE: Example 2&nbsp;</span>This example creates a tablespace named <code dir="ltr">tbs_2</code> with a data file in the directory <code dir="ltr">/u01/oradata</code>. The data file initial size is 400 MB, and because the SIZE clause is specified, the data file is not autoextensible.</p>
+<p>The following parameter setting is included in the initialization parameter file:</p>
+<pre dir="ltr">
+DB_CREATE_FILE_DEST = '/u01/oradata'
+</pre>
+<p>The following statement is issued at the SQL prompt:</p>
+<pre dir="ltr">
+SQL&gt; CREATE TABLESPACE tbs_2 DATAFILE SIZE 400M;
+</pre>
+<p><a id="ADMIN12614"></a><span class="subhead3">CREATE TABLESPACE: Example 3&nbsp;</span>This example creates a tablespace named <code dir="ltr">tbs_3</code> with an autoextensible data file in the directory <code dir="ltr">/u01/oradata</code> with a maximum size of 800 MB and an initial size of 100 MB:</p>
+<p>The following parameter setting is included in the initialization parameter file:</p>
+<pre dir="ltr">
+DB_CREATE_FILE_DEST = '/u01/oradata'
+</pre>
+<p>The following statement is issued at the SQL prompt:</p>
+<pre dir="ltr">
+SQL&gt; CREATE TABLESPACE tbs_3 DATAFILE AUTOEXTEND ON MAXSIZE 800M;
+</pre>
+<p><a id="ADMIN12615"></a><span class="subhead3">CREATE TABLESPACE: Example 4&nbsp;</span>The following example sets the default location for data file creations to <code dir="ltr">/u01/oradata</code> and then creates a tablespace named <code dir="ltr">tbs_4</code> in that directory with two data files. Both data files have an initial size of 200 MB, and because a <code dir="ltr">SIZE</code> value is specified, they are not autoextensible</p>
+<pre dir="ltr">
+SQL&gt; ALTER SYSTEM SET DB_CREATE_FILE_DEST = '/u01/oradata';
+SQL&gt; CREATE TABLESPACE tbs_4 DATAFILE SIZE 200M, SIZE 200M;
+</pre></div>
+<!-- class="sect3" -->
+<div id="ADMIN11502" class="sect3"><a id="sthref1846"></a>
+<h4 class="sect3"><a id="sthref1847"></a>CREATE UNDO TABLESPACE: Example</h4>
+<p>The following example creates an undo tablespace named <code dir="ltr">undotbs_1</code> with a data file in the directory <code dir="ltr">/u01/oradata</code>. The data file for the undo tablespace is 100 MB and is autoextensible with an unlimited maximum size.</p>
+<p>The following parameter setting is included in the initialization parameter file:</p>
+<pre dir="ltr">
+DB_CREATE_FILE_DEST = '/u01/oradata'
+</pre>
+<p>The following statement is issued at the SQL prompt:</p>
+<pre dir="ltr">
+SQL&gt; CREATE UNDO TABLESPACE undotbs_1;
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SQLRF01403" href="../../server.112/e41084/statements_7003.htm#SQLRF01403"><span class="italic">Oracle Database SQL Language Reference</span></a> for a description of the <code dir="ltr">CREATE UNDO TABLESPACE</code> statement</div>
+</div>
+<!-- class="sect3" -->
+<div id="ADMIN11503" class="sect3"><a id="sthref1848"></a>
+<h4 class="sect3"><a id="sthref1849"></a>ALTER TABLESPACE: Example</h4>
+<p>This example adds an Oracle managed autoextensible data file to the <code dir="ltr">tbs_1</code> tablespace. The data file has an initial size of 100 MB and a maximum size of 800 MB.</p>
+<p>The following parameter setting is included in the initialization parameter file:</p>
+<pre dir="ltr">
+DB_CREATE_FILE_DEST = '/u01/oradata'
+</pre>
+<p>The following statement is entered at the SQL prompt:</p>
+<pre dir="ltr">
+SQL&gt; ALTER TABLESPACE tbs_1 ADD DATAFILE AUTOEXTEND ON MAXSIZE 800M;
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SQLRF01002" href="../../server.112/e41084/statements_3002.htm#SQLRF01002"><span class="italic">Oracle Database SQL Language Reference</span></a> for a description of the <code dir="ltr">ALTER TABLESPACE</code> statement</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1006538"></a>
+<div id="ADMIN11504" class="sect2">
+<h3 class="sect2">Creating Temp Files for Temporary Tablespaces Using Oracle Managed Files</h3>
+<p>The following statements that create <a id="sthref1850"></a><a id="sthref1851"></a><a id="sthref1852"></a>temp files are relevant to the discussion in this section:</p>
+<ul>
+<li>
+<p><code dir="ltr">CREATE</code> <code dir="ltr">TEMPORARY</code> <code dir="ltr">TABLESPACE</code></p>
+</li>
+<li>
+<p><code dir="ltr">ALTER</code> <code dir="ltr">TABLESPACE</code> ... <code dir="ltr">ADD</code> <code dir="ltr">TEMPFILE</code></p>
+</li>
+</ul>
+<p>When creating a temporary tablespace the <code dir="ltr">TEMPFILE</code> clause is optional. If you include the <code dir="ltr">TEMPFILE</code> clause, then the filename is optional. If the <code dir="ltr">TEMPFILE</code> clause or filename is not provided, then the following rules apply:</p>
+<ul>
+<li>
+<p>If the <code dir="ltr">DB_CREATE_FILE_DEST</code> initialization parameter is specified, then an Oracle managed temp file is created in the location specified by the parameter.</p>
+</li>
+<li>
+<p>If the <code dir="ltr">DB_CREATE_FILE_DEST</code> initialization parameter is not specified, then the statement creating the temp file fails.</p>
+</li>
+</ul>
+<p>When you add a temp file to a tablespace with the <code dir="ltr">ALTER TABLESPACE...ADD TEMPFILE</code> statement the filename is optional. If the filename is not specified, then the same rules apply as discussed in the previous paragraph.</p>
+<p>When overriding the default attributes of an Oracle managed file, if a <code dir="ltr">SIZE</code> value is specified but no <code dir="ltr">AUTOEXTEND</code> clause is specified, then the data file is <span class="italic">not</span> autoextensible.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#i1306377">"Specifying the Default Temporary Tablespace Temp File at Database Creation"</a></div>
+<div id="ADMIN11505" class="sect3"><a id="sthref1853"></a>
+<h4 class="sect3"><a id="sthref1854"></a>CREATE TEMPORARY TABLESPACE: Example</h4>
+<p>The following example sets the default location for data file creations to <code dir="ltr">/u01/oradata</code> and then creates a tablespace named <code dir="ltr">temptbs_1</code> with a temp file in that location. The temp file is 100 MB and is autoextensible with an unlimited maximum size.</p>
+<pre dir="ltr">
+SQL&gt; ALTER SYSTEM SET DB_CREATE_FILE_DEST = '/u01/oradata';
+SQL&gt; CREATE TEMPORARY TABLESPACE temptbs_1;
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SQLRF01403" href="../../server.112/e41084/statements_7003.htm#SQLRF01403"><span class="italic">Oracle Database SQL Language Reference</span></a> for a description of the <code dir="ltr">CREATE TABLESPACE</code> statement</div>
+</div>
+<!-- class="sect3" -->
+<div id="ADMIN11506" class="sect3"><a id="sthref1855"></a>
+<h4 class="sect3"><a id="sthref1856"></a>ALTER TABLESPACE... ADD TEMPFILE: Example</h4>
+<p>The following example sets the default location for data file creations to <code dir="ltr">/u03/oradata</code> and then adds a temp file in the default location to a tablespace named <code dir="ltr">temptbs_1</code>. The temp file initial size is 100 MB. It is autoextensible with an unlimited maximum size.</p>
+<pre dir="ltr">
+SQL&gt; ALTER SYSTEM SET DB_CREATE_FILE_DEST = '/u03/oradata';
+SQL&gt; ALTER TABLESPACE TBS_1 ADD TEMPFILE;
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SQLRF01002" href="../../server.112/e41084/statements_3002.htm#SQLRF01002"><span class="italic">Oracle Database SQL Language Reference</span></a> for a description of the <code dir="ltr">ALTER TABLESPACE</code> statement</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1006589"></a>
+<div id="ADMIN11507" class="sect2">
+<h3 class="sect2">Creating Control Files Using Oracle Managed Files</h3>
+<p>When you issue the <code dir="ltr">CREATE CONTROLFILE</code> statement, a <a id="sthref1857"></a><a id="sthref1858"></a><a id="sthref1859"></a>control file is created (or reused, if <code dir="ltr">REUSE</code> is specified) in the files specified by the <code dir="ltr">CONTROL_FILES</code> initialization parameter. If the <code dir="ltr">CONTROL_FILES</code> parameter is not set, then the control file is created in the default control file destinations. The default destination is determined according to the precedence documented in <a href="#i1006324">"Specifying Control Files at Database Creation"</a>.</p>
+<p>If Oracle Database creates an Oracle managed control file, and there is a server parameter file, then the database creates a <code dir="ltr">CONTROL_FILES</code> initialization parameter for the server parameter file. If there is no server parameter file, then you must create a <code dir="ltr">CONTROL_FILES</code> initialization parameter manually and include it in the initialization parameter file.</p>
+<p>If the data files in the database are Oracle Managed Files, then the database-generated filenames for the files must be supplied in the <code dir="ltr">DATAFILE</code> clause of the statement.</p>
+<p>If the redo log files are Oracle Managed Files, then the <code dir="ltr">NORESETLOGS</code> or <code dir="ltr">RESETLOGS</code> keyword determines what can be supplied in the <code dir="ltr">LOGFILE</code> clause:</p>
+<ul>
+<li>
+<p>If the <code dir="ltr">NORESETLOGS</code> keyword is used, then the database-generated filenames for the Oracle managed redo log files must be supplied in the <code dir="ltr">LOGFILE</code> clause.</p>
+</li>
+<li>
+<p>If the <code dir="ltr">RESETLOGS</code> keyword is used, then the redo log file names can be supplied as with the <code dir="ltr">CREATE DATABASE</code> statement. See <a href="#i1006339">"Specifying Redo Log Files at Database Creation"</a>.</p>
+</li>
+</ul>
+<p>The sections that follow contain examples of using the <code dir="ltr"><a id="sthref1860"></a>CREATE CONTROLFILE</code> statement with Oracle Managed Files.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink SQLRF01203" href="../../server.112/e41084/statements_5003.htm#SQLRF01203"><span class="italic">Oracle Database SQL Language Reference</span></a> for a description of the <code dir="ltr">CREATE CONTROLFILE</code> statement</p>
+</li>
+<li>
+<p><a href="#i1006324">"Specifying Control Files at Database Creation"</a></p>
+</li>
+</ul>
+</div>
+<div id="ADMIN11508" class="sect3"><a id="sthref1861"></a>
+<h4 class="sect3">CREATE CONTROLFILE Using NORESETLOGS Keyword: Example</h4>
+<p>The following <code dir="ltr">CREATE CONTROLFILE</code> statement is generated by an <code dir="ltr">ALTER DATABASE BACKUP CONTROLFILE TO TRACE</code> statement for a database with Oracle managed data files and redo log files:</p>
+<pre dir="ltr">
+CREATE CONTROLFILE
+     DATABASE sample
+     LOGFILE 
+       GROUP 1 ('/u01/oradata/SAMPLE/onlinelog/o1_mf_1_o220rtt9_.log',
+                '/u02/oradata/SAMPLE/onlinelog/o1_mf_1_v2o0b2i3_.log')
+                 SIZE 100M,
+       GROUP 2 ('/u01/oradata/SAMPLE/onlinelog/o1_mf_2_p22056iw_.log', 
+                '/u02/oradata/SAMPLE/onlinelog/o1_mf_2_p02rcyg3_.log') 
+                 SIZE 100M
+     NORESETLOGS
+     DATAFILE '/u01/oradata/SAMPLE/datafile/o1_mf_system_xu34ybm2_.dbf' 
+              SIZE 100M,
+              '/u01/oradata/SAMPLE/datafile/o1_mf_sysaux_aawbmz51_.dbf'
+              SIZE 100M,
+              '/u01/oradata/SAMPLE/datafile/o1_mf_sys_undo_apqbmz51_.dbf'
+              SIZE 100M
+     MAXLOGFILES 5
+     MAXLOGHISTORY 100
+     MAXDATAFILES 10
+     MAXINSTANCES 2
+     ARCHIVELOG;
+</pre></div>
+<!-- class="sect3" -->
+<div id="ADMIN11509" class="sect3"><a id="sthref1862"></a>
+<h4 class="sect3">CREATE CONTROLFILE Using RESETLOGS Keyword: Example</h4>
+<p>The following is an example of a <code dir="ltr">CREATE CONTROLFILE</code> statement with the <code dir="ltr">RESETLOGS</code> option. Some combination of <code dir="ltr">DB_CREATE_FILE_DEST</code>, <code dir="ltr">DB_RECOVERY_FILE_DEST</code>, and <code dir="ltr">DB_CREATE_ONLINE_LOG_DEST_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code> or must be set.</p>
+<pre dir="ltr">
+CREATE CONTROLFILE
+     DATABASE sample
+     RESETLOGS
+     DATAFILE '/u01/oradata/SAMPLE/datafile/o1_mf_system_aawbmz51_.dbf',
+              '/u01/oradata/SAMPLE/datafile/o1_mf_sysaux_axybmz51_.dbf',
+              '/u01/oradata/SAMPLE/datafile/o1_mf_sys_undo_azzbmz51_.dbf'
+     SIZE 100M
+     MAXLOGFILES 5
+     MAXLOGHISTORY 100
+     MAXDATAFILES 10
+     MAXINSTANCES 2
+     ARCHIVELOG;
+</pre>
+<p>Later, you must issue the <code dir="ltr">ALTER DATABASE OPEN RESETLOGS</code> statement to re-create the redo log files. This is discussed in <a href="#i1006712">"Using the ALTER DATABASE OPEN RESETLOGS Statement"</a>. If the previous log files are Oracle Managed Files, then they are not deleted.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1006661"></a>
+<div id="ADMIN11510" class="sect2">
+<h3 class="sect2">Creating Redo Log Files Using Oracle Managed Files</h3>
+<p><a id="sthref1863"></a><a id="sthref1864"></a>Redo log files are created at database creation time. They can also be created when you issue either of the following statements:</p>
+<ul>
+<li>
+<p><code dir="ltr">ALTER</code> <code dir="ltr">DATABASE</code> <code dir="ltr">ADD</code> <code dir="ltr">LOGFILE</code></p>
+</li>
+<li>
+<p><code dir="ltr">ALTER</code> <code dir="ltr">DATABASE</code> <code dir="ltr">OPEN</code> <code dir="ltr">RESETLOGS</code></p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SQLRF00802" href="../../server.112/e41084/statements_1004.htm#SQLRF00802"><span class="italic">Oracle Database SQL Language Reference</span></a> for a description of the <code dir="ltr">ALTER DATABASE</code> statement</div>
+</li>
+</ul>
+<div id="ADMIN11511" class="sect3"><a id="sthref1865"></a>
+<h4 class="sect3">Using the ALTER DATABASE ADD LOGFILE Statement</h4>
+<p>The <code dir="ltr"><a id="sthref1866"></a>ALTER DATABASE ADD LOGFILE</code> statement lets you later add a new group to your current redo log. The filename in the <code dir="ltr">ADD LOGFILE</code> clause is optional if you are using Oracle Managed Files. If a filename is not provided, then a redo log file is created in the default log file destination. The default destination is determined according to the precedence documented in <a href="#i1006339">"Specifying Redo Log Files at Database Creation"</a>.</p>
+<p>If a filename is not provided and you have not provided one of the initialization parameters required for creating Oracle Managed Files, then the statement returns an error.</p>
+<p>The default size for an Oracle managed log file is 100 MB.</p>
+<p>You continue to add and drop redo log file members by specifying complete filenames.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#i1006339">"Specifying Redo Log Files at Database Creation"</a></p>
+</li>
+<li>
+<p><a href="#i1006589">"Creating Control Files Using Oracle Managed Files"</a></p>
+</li>
+</ul>
+</div>
+<p><a id="ADMIN12616"></a><span class="subhead3">Adding New Redo Log Files: Example&nbsp;</span>The following example creates a log group with a member in <code dir="ltr">/u01/oradata</code> and another member in <code dir="ltr">/u02/oradata</code>. The size of each log file is 100 MB.</p>
+<p>The following parameter settings are included in the initialization parameter file:</p>
+<pre dir="ltr">
+DB_CREATE_ONLINE_LOG_DEST_1 = '/u01/oradata'
+DB_CREATE_ONLINE_LOG_DEST_2 = '/u02/oradata'
+</pre>
+<p>The following statement is issued at the SQL prompt:</p>
+<pre dir="ltr">
+SQL&gt; ALTER DATABASE ADD LOGFILE;
+</pre></div>
+<!-- class="sect3" -->
+<a id="i1006712"></a>
+<div id="ADMIN11512" class="sect3">
+<h4 class="sect3">Using the ALTER DATABASE OPEN RESETLOGS Statement</h4>
+<p>If you previously created a control file specifying <code dir="ltr">RESETLOGS</code> and either did not specify filenames or specified nonexistent filenames, then the database creates redo log files for you when you issue the <code dir="ltr">ALTER DATABASE OPEN RESETLOGS</code> statement. The rules for determining the directories in which to store redo log files, when none are specified in the control file, are the same as those discussed in <a href="#i1006339">"Specifying Redo Log Files at Database Creation"</a>.<a id="sthref1867"></a><a id="sthref1868"></a></p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CACCJIDH"></a>
+<div id="ADMIN11513" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Creating Archived Logs Using Oracle Managed Files</h3>
+<p>Archived logs are created in the <code dir="ltr">DB_RECOVERY_FILE_DEST</code> location when:</p>
+<ul>
+<li>
+<p>The <code dir="ltr">ARC</code> or <code dir="ltr">LGWR</code> background process archives an online redo log or</p>
+</li>
+<li>
+<p>An <code dir="ltr">ALTER SYSTEM ARCHIVE LOG CURRENT</code> statement is issued.</p>
+</li>
+</ul>
+<p>For example, assume that the following parameter settings are included in the initialization parameter file:</p>
+<pre dir="ltr">
+DB_RECOVERY_FILE_DEST_SIZE = 20G
+DB_RECOVERY_FILE_DEST      = '/u01/oradata'
+LOG_ARCHIVE_DEST_1         = 'LOCATION=USE_DB_RECOVERY_FILE_DEST'
+</pre></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006722"></a>
+<div id="ADMIN11514" class="sect1">
+<h2 class="sect1">Operation of Oracle Managed Files</h2>
+<p>The filenames of <a id="sthref1869"></a>Oracle Managed Files are accepted in SQL statements wherever a filename is used to identify an existing file. These filenames, like other filenames, are stored in the control file and, if using Recovery Manager (RMAN) for backup and recovery, in the RMAN catalog. They are visible in all of the usual fixed and dynamic performance views that are available for monitoring data files and temp files (for example, <code dir="ltr">V$DATAFILE</code> or <code dir="ltr">DBA_DATA_FILES</code>).</p>
+<p>The following are some examples of statements using database-generated filenames:</p>
+<pre dir="ltr">
+SQL&gt; ALTER DATABASE 
+  2&gt; RENAME FILE '/u01/oradata/mydb/datafile/o1_mf_tbs01_ziw3bopb_.dbf'
+  3&gt; TO '/u01/oradata/mydb/tbs0101.dbf';
+
+SQL&gt; ALTER DATABASE 
+  2&gt; DROP LOGFILE '/u01/oradata/mydb/onlinelog/o1_mf_1_wo94n2xi_.log';
+
+SQL&gt; ALTER TABLE emp 
+  2&gt; ALLOCATE EXTENT
+  3&gt; (DATAFILE '/u01/oradata/mydb/datafile/o1_mf_tbs1_2ixfh90q_.dbf');
+</pre>
+<p>You can backup and restore Oracle managed data files, temp files, and control files as you would corresponding non Oracle Managed Files. Using database-generated filenames does not impact the use of logical backup files such as export files. This is particularly important for tablespace point-in-time recovery (TSPITR) and transportable tablespace export files.</p>
+<p>There are some cases where Oracle Managed Files behave differently. These are discussed in the sections that follow.</p>
+<div id="ADMIN11515" class="sect2"><a id="sthref1870"></a>
+<h3 class="sect2">Dropping Data Files and Temp Files</h3>
+<p>Unlike files that are not managed by the database, when an Oracle managed data file<a id="sthref1871"></a><a id="sthref1872"></a><a id="sthref1873"></a> or temp file<a id="sthref1874"></a><a id="sthref1875"></a><a id="sthref1876"></a> is dropped, the filename is removed from the control file and the file is automatically deleted from the file system. The statements that delete Oracle Managed Files when they are dropped are:</p>
+<ul>
+<li>
+<p><code dir="ltr">DROP</code> <code dir="ltr">TABLESPACE</code></p>
+</li>
+<li>
+<p><code dir="ltr">ALTER</code> <code dir="ltr">DATABASE</code> <code dir="ltr">TEMPFILE</code> ... <code dir="ltr">DROP</code></p>
+</li>
+</ul>
+<p>You can also use these statements, which always delete files, Oracle managed or not:</p>
+<ul>
+<li>
+<p><code dir="ltr">ALTER</code> <code dir="ltr">TABLESPACE</code> ... <code dir="ltr">DROP</code> <code dir="ltr">DATAFILE</code></p>
+</li>
+<li>
+<p><code dir="ltr">ALTER</code> <code dir="ltr">TABLESPACE</code> ... <code dir="ltr">DROP</code> <code dir="ltr">TEMPFILE</code></p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<div id="ADMIN11516" class="sect2"><a id="sthref1877"></a>
+<h3 class="sect2">Dropping Redo Log Files</h3>
+<p>When an Oracle managed<a id="sthref1878"></a> redo log file is dropped its Oracle Managed Files are deleted. You specify the group or members to be dropped. The following statements drop and delete redo log files:</p>
+<ul>
+<li>
+<p><code dir="ltr">ALTER</code> <code dir="ltr">DATABASE</code> <code dir="ltr">DROP</code> <code dir="ltr">LOGFILE</code></p>
+</li>
+<li>
+<p><code dir="ltr">ALTER</code> <code dir="ltr">DATABASE</code> <code dir="ltr">DROP</code> <code dir="ltr">LOGFILE</code> <code dir="ltr">MEMBER</code></p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<div id="ADMIN11517" class="sect2"><a id="sthref1879"></a>
+<h3 class="sect2">Renaming Files</h3>
+<p><a id="sthref1880"></a><a id="sthref1881"></a>The following statements are used to rename files:</p>
+<ul>
+<li>
+<p><code dir="ltr">ALTER</code> <code dir="ltr">DATABASE</code> <code dir="ltr">RENAME</code> <code dir="ltr">FILE</code></p>
+</li>
+<li>
+<p><code dir="ltr">ALTER</code> <code dir="ltr">TABLESPACE</code> ... <code dir="ltr">RENAME</code> <code dir="ltr">DATAFILE</code></p>
+</li>
+</ul>
+<p>These statements do not actually rename the files on the operating system, but rather, the names in the control file are changed. If the old file is an Oracle managed file and it exists, then it is deleted. You must specify each filename using the conventions for filenames on your operating system when you issue this statement.</p>
+</div>
+<!-- class="sect2" -->
+<div id="ADMIN11518" class="sect2"><a id="sthref1882"></a>
+<h3 class="sect2">Managing Standby Databases</h3>
+<p>The data files, control files, and redo log files in a standby database can be managed by the database. This is independent of whether Oracle Managed Files are used on the primary database.</p>
+<p>When recovery of a standby database encounters redo for the creation of a data file, if the data file is an Oracle managed file, then the recovery process creates an empty file in the local default file system location. This allows the redo for the new file to be applied immediately without any human intervention.</p>
+<p>When recovery of a standby database encounters redo for the deletion of a tablespace, it deletes any Oracle managed data files in the local file system. Note that this is independent of the <code dir="ltr">INCLUDING DATAFILES</code> option issued at the primary database.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006756"></a>
+<div id="ADMIN11519" class="sect1">
+<h2 class="sect1">Scenarios for Using Oracle Managed Files</h2>
+<p>This section further demonstrates the use of <a id="sthref1883"></a>Oracle Managed Files by presenting scenarios of their use.</p>
+<div id="ADMIN11520" class="sect2"><a id="sthref1884"></a>
+<h3 class="sect2">Scenario 1: Create and Manage a Database with Multiplexed Redo Logs</h3>
+<p><a id="sthref1885"></a>In this scenario, a DBA creates a database where the data files and redo log files are created in separate directories. The redo log files and control files are multiplexed. The database uses an undo tablespace, and has a default temporary tablespace. The following are tasks involved with creating and maintaining this database.</p>
+<ol>
+<li>
+<p>Setting the initialization parameters</p>
+<p>The DBA includes three generic file creation defaults in the initialization parameter file before creating the database. Automatic undo management mode (the default) is also specified.</p>
+<pre dir="ltr">
+DB_CREATE_FILE_DEST = '/u01/oradata'
+DB_CREATE_ONLINE_LOG_DEST_1 = '/u02/oradata'
+DB_CREATE_ONLINE_LOG_DEST_2 = '/u03/oradata'
+UNDO_MANAGEMENT = AUTO
+</pre>
+<p>The <code dir="ltr">DB_CREATE_FILE_DEST</code> parameter sets the default file system directory for the data files and temp files.</p>
+<p>The <code dir="ltr">DB_CREATE_ONLINE_LOG_DEST_1</code> and <code dir="ltr">DB_CREATE_ONLINE_LOG_DEST_2</code> parameters set the default file system directories for redo log file and control file creation. Each redo log file and control file is multiplexed across the two directories.</p>
+</li>
+<li>
+<p>Creating a database</p>
+<p>Once the initialization parameters are set, the database can be created by using this statement:</p>
+<pre dir="ltr">
+SQL&gt; CREATE DATABASE sample
+2&gt;   DEFAULT TEMPORARY TABLESPACE dflttmp;
+</pre>
+<p>Because a <code dir="ltr">DATAFILE</code> clause is not present and the <code dir="ltr">DB_CREATE_FILE_DEST</code> initialization parameter is set, the <code dir="ltr">SYSTEM</code> tablespace data file is created in the default file system (<code dir="ltr">/u01/oradata</code> in this scenario). The filename is uniquely generated by the database. The file is autoextensible with an initial size of 100 MB and an unlimited maximum size. The file is an Oracle managed file. A similar data file is created for the <code dir="ltr">SYSAUX</code> tablespace.</p>
+<p>Because a <code dir="ltr">LOGFILE</code> clause is not present, two redo log groups are created. Each log group has two members, with one member in the <code dir="ltr">DB_CREATE_ONLINE_LOG_DEST_1</code> location and the other member in the <code dir="ltr">DB_CREATE_ONLINE_LOG_DEST_2</code> location. The filenames are uniquely generated by the database. The log files are created with a size of 100 MB. The log file members are Oracle Managed Files.</p>
+<p>Similarly, because the <code dir="ltr">CONTROL_FILES</code> initialization parameter is not present, and two <code dir="ltr">DB_CREATE_ONLINE_LOG_DEST_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code> initialization parameters are specified, two control files are created. The control file located in the <code dir="ltr">DB_CREATE_ONLINE_LOG_DEST_1</code> location is the primary control file; the control file located in the <code dir="ltr">DB_CREATE_ONLINE_LOG_DEST_2</code> location is a multiplexed copy. The filenames are uniquely generated by the database. They are Oracle Managed Files. Assuming there is a server parameter file, a <code dir="ltr">CONTROL_FILES</code> initialization parameter is generated.</p>
+<p>Automatic undo management mode is specified, but because an undo tablespace is not specified and the <code dir="ltr">DB_CREATE_FILE_DEST</code> initialization parameter is set, a default undo tablespace named <code dir="ltr">UNDOTBS</code> is created in the directory specified by <code dir="ltr">DB_CREATE_FILE_DEST</code>. The data file is a 20 MB data file that is autoextensible. It is an Oracle managed file.</p>
+<p>Lastly, a default temporary tablespace named <code dir="ltr">dflttmp</code> is specified. Because <code dir="ltr">DB_CREATE_FILE_DEST</code> is included in the parameter file, the temp file for <code dir="ltr">dflttmp</code> is created in the directory specified by that parameter. The temp file is 100 MB and is autoextensible with an unlimited maximum size. It is an Oracle managed file.</p>
+<p>The resultant file tree, with generated filenames, is as follows:</p>
+<pre dir="ltr">
+/u01
+     /oradata
+          /SAMPLE
+               /datafile
+                    /o1_mf_system_cmr7t30p_.dbf
+                    /o1_mf_sysaux_cmr7t88p_.dbf
+                    /o1_mf_sys_undo_2ixfh90q_.dbf
+                    /o1_mf_dflttmp_157se6ff_.tmp
+/u02
+     /oradata
+          /SAMPLE
+               /onlinelog
+                    /o1_mf_1_0orrm31z_.log
+                    /o1_mf_2_2xyz16am_.log
+               /controlfile
+                    /o1_mf_cmr7t30p_.ctl
+/u03
+     /oradata
+          /SAMPLE
+               /onlinelog
+                    /o1_mf_1_ixfvm8w9_.log
+                    /o1_mf_2_q89tmp28_.log
+               /controlfile
+                    /o1_mf_x1sr8t36_.ctl
+</pre>
+<p>The internally generated filenames can be seen when selecting from the usual views. For example:</p>
+<pre dir="ltr">
+SQL&gt; SELECT NAME FROM V$DATAFILE;
+
+NAME
+----------------------------------------------------
+/u01/oradata/SAMPLE/datafile/o1_mf_system_cmr7t30p_.dbf
+/u01/oradata/SAMPLE/datafile/o1_mf_sysaux_cmr7t88p_.dbf
+/u01/oradata/SAMPLE/datafile/o1_mf_sys_undo_2ixfh90q_.dbf
+
+3 rows selected
+</pre></li>
+<li>
+<p>Managing control files</p>
+<p>The control file was created when generating the database, and a <code dir="ltr">CONTROL_FILES</code> initialization parameter was added to the parameter file. If needed, then the DBA can re-create the control file or build a new one for the database using the <code dir="ltr"><a id="sthref1886"></a><a id="sthref1887"></a>CREATE CONTROLFILE</code> statement.</p>
+<p>The correct Oracle managed filenames must be used in the <code dir="ltr">DATAFILE</code> and <code dir="ltr">LOGFILE</code> clauses. The <code dir="ltr">ALTER DATABASE BACKUP CONTROLFILE TO TRACE</code> statement generates a script with the correct filenames. Alternatively, the filenames can be found by selecting from the <code dir="ltr">V$DATAFILE</code>, <code dir="ltr">V$TEMPFILE</code>, and <code dir="ltr">V$LOGFILE</code> views. The following example re-creates the control file for the sample database:</p>
+<pre dir="ltr">
+CREATE CONTROLFILE REUSE
+  DATABASE sample
+  LOGFILE 
+    GROUP 1('/u02/oradata/SAMPLE/onlinelog/o1_mf_1_0orrm31z_.log', 
+            '/u03/oradata/SAMPLE/onlinelog/o1_mf_1_ixfvm8w9_.log'), 
+    GROUP 2('/u02/oradata/SAMPLE/onlinelog/o1_mf_2_2xyz16am_.log',
+            '/u03/oradata/SAMPLE/onlinelog/o1_mf_2_q89tmp28_.log')
+  NORESETLOGS
+  DATAFILE '/u01/oradata/SAMPLE/datafile/o1_mf_system_cmr7t30p_.dbf',
+           '/u01/oradata/SAMPLE/datafile/o1_mf_sysaux_cmr7t88p_.dbf',
+           '/u01/oradata/SAMPLE/datafile/o1_mf_sys_undo_2ixfh90q_.dbf',
+           '/u01/oradata/SAMPLE/datafile/o1_mf_dflttmp_157se6ff_.tmp'
+  MAXLOGFILES 5
+  MAXLOGHISTORY 100
+  MAXDATAFILES 10
+  MAXINSTANCES 2
+  ARCHIVELOG;
+</pre>
+<p>The control file created by this statement is located as specified by the <code dir="ltr">CONTROL_FILES</code> initialization parameter that was generated when the database was created. The <code dir="ltr">REUSE</code> clause causes any existing files to be overwritten.</p>
+</li>
+<li>
+<p>Managing the redo log</p>
+<p>To create a new group of <a id="sthref1888"></a>redo log files, the DBA can use the <code dir="ltr">ALTER DATABASE ADD LOGFILE</code> statement. The following statement adds a log file with a member in the <code dir="ltr">DB_CREATE_ONLINE_LOG_DEST_1</code> location and a member in the <code dir="ltr">DB_CREATE_ONLINE_LOG_DEST_2</code> location. These files are Oracle Managed Files.</p>
+<pre dir="ltr">
+SQL&gt; ALTER DATABASE ADD LOGFILE;
+</pre>
+<p>Log file members continue to be added and dropped by specifying complete filenames.</p>
+<p>The <code dir="ltr">GROUP</code> clause can be used to drop a log group. In the following example the operating system file associated with each Oracle managed log file member is automatically deleted.</p>
+<pre dir="ltr">
+SQL&gt; ALTER DATABASE DROP LOGFILE GROUP 3;
+</pre></li>
+<li>
+<p>Managing <a id="sthref1889"></a>tablespaces</p>
+<p>The default storage for all data files for future tablespace creations in the <code dir="ltr">sample</code> database is the location specified by the <code dir="ltr">DB_CREATE_FILE_DEST</code> initialization parameter (<code dir="ltr">/u01/oradata</code> in this scenario). Any data files for which no filename is specified, are created in the file system specified by the initialization parameter <code dir="ltr">DB_CREATE_FILE_DEST</code>. For example:</p>
+<pre dir="ltr">
+SQL&gt; CREATE TABLESPACE tbs_1;
+</pre>
+<p>The preceding statement creates a tablespace whose storage is in <code dir="ltr">/u01/oradata</code>. A data file is created with an initial of 100 MB and it is autoextensible with an unlimited maximum size. The data file is an Oracle managed file.</p>
+<p>When the tablespace is dropped, the Oracle Managed Files for the tablespace are automatically removed. The following statement drops the tablespace and all the Oracle Managed Files used for its storage:</p>
+<pre dir="ltr">
+SQL&gt; DROP TABLESPACE tbs_1;
+</pre>
+<p>Once the first data file is full, the database does not automatically create a new data file. More space can be added to the tablespace by adding another Oracle managed data file. The following statement adds another data file in the location specified by <code dir="ltr">DB_CREATE_FILE_DEST</code>:</p>
+<pre dir="ltr">
+SQL&gt; ALTER TABLESPACE tbs_1 ADD DATAFILE;
+</pre>
+<p>The default file system can be changed by changing the initialization parameter. This does not change any existing data files. It only affects future creations. This can be done dynamically using the following statement:</p>
+<pre dir="ltr">
+SQL&gt; ALTER SYSTEM SET DB_CREATE_FILE_DEST='/u04/oradata';
+</pre></li>
+<li>
+<p>Archiving redo information</p>
+<p>Archiving of redo log files is no different for Oracle Managed Files, than it is for unmanaged files. A file system location for the archived log files can be specified using the <code dir="ltr">LOG_ARCHIVE_DEST_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code> initialization parameters. The filenames are formed based on the <code dir="ltr">LOG_ARCHIVE_FORMAT</code> parameter or its default. The archived logs are not Oracle Managed Files</p>
+</li>
+<li>
+<p>Backup, restore, and recover</p>
+<p>Since an Oracle managed file is compatible with standard operating system files, you can use operating system utilities to backup or restore Oracle Managed Files. All existing methods for backing up, restoring, and recovering the database work for Oracle Managed Files.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<div id="ADMIN11521" class="sect2"><a id="sthref1890"></a>
+<h3 class="sect2">Scenario 2: Create and Manage a Database with Database and Fast Recovery Areas</h3>
+<p><a id="sthref1891"></a>In this scenario, a DBA creates a database where the control files and redo log files are multiplexed. Archived logs and RMAN backups are created in the Fast Recovery Area. The following tasks are involved in creating and maintaining this database:</p>
+<ol>
+<li>
+<p>Setting the initialization parameters</p>
+<p>The DBA includes the following generic file creation defaults:</p>
+<pre dir="ltr">
+DB_CREATE_FILE_DEST = '/u01/oradata'
+DB_RECOVERY_FILE_DEST_SIZE = 10G
+DB_RECOVERY_FILE_DEST = '/u02/oradata'
+LOG_ARCHIVE_DEST_1 = 'LOCATION = USE_DB_RECOVERY_FILE_DEST'
+</pre>
+<p>The <code dir="ltr">DB_CREATE_FILE_DEST</code> parameter sets the default file system directory for data files, temp files, control files, and redo logs.</p>
+<p>The <code dir="ltr">DB_RECOVERY_FILE_DEST</code> parameter sets the default file system directory for control files, redo logs, and RMAN backups.</p>
+<p>The <code dir="ltr">LOG_ARCHIVE_DEST_1</code> configuration '<code dir="ltr">LOCATION=USE_DB_RECOVERY_FILE_DEST</code>' redirects archived logs to the <code dir="ltr">DB_RECOVERY_FILE_DEST</code> location.</p>
+<p>The <code dir="ltr">DB_CREATE_FILE_DEST</code> and <code dir="ltr">DB_RECOVERY_FILE_DEST</code> parameters set the default directory for log file and control file creation. Each redo log and control file is multiplexed across the two directories.</p>
+</li>
+<li>
+<p>Creating a database</p>
+</li>
+<li>
+<p>Managing control files</p>
+</li>
+<li>
+<p>Managing the redo log</p>
+</li>
+<li>
+<p>Managing <a id="sthref1892"></a>tablespaces</p>
+<p>Tasks 2, 3, 4, and 5 are the same as in Scenario 1, except that the control files and redo logs are multiplexed across the <code dir="ltr">DB_CREATE_FILE_DEST</code> and <code dir="ltr">DB_RECOVERY_FILE_DEST</code> locations.</p>
+</li>
+<li>
+<p>Archiving redo log information</p>
+<p>Archiving online logs is no different for Oracle Managed Files than it is for unmanaged files. The archived logs are created in <code dir="ltr">DB_RECOVERY_FILE_DEST</code> and are Oracle Managed Files.</p>
+</li>
+<li>
+<p>Backup, restore, and recover</p>
+<p>An Oracle managed file is compatible with standard operating system files, so you can use operating system utilities to backup or restore Oracle Managed Files. All existing methods for backing up, restoring, and recovering the database work for Oracle Managed Files. When no format option is specified, all disk backups by RMAN are created in the <code dir="ltr">DB_RECOVERY_FILE_DEST</code> location. The backups are Oracle Managed Files.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<div id="ADMIN11522" class="sect2"><a id="sthref1893"></a>
+<h3 class="sect2">Scenario 3: Adding <a id="sthref1894"></a>Oracle Managed Files to an Existing Database</h3>
+<p>Assume in this case that an existing database does not have any Oracle Managed Files, but the DBA would like to create new tablespaces with Oracle Managed Files and locate them in directory <code dir="ltr">/u03/oradata</code>.</p>
+<ol>
+<li>
+<p>Setting the initialization parameters</p>
+<p>To allow automatic data file creation, set the <code dir="ltr">DB_CREATE_FILE_DEST</code> initialization parameter to the file system directory in which to create the data files. This can be done dynamically as follows:</p>
+<pre dir="ltr">
+SQL&gt; ALTER SYSTEM SET DB_CREATE_FILE_DEST = '/u03/oradata';
+</pre></li>
+<li>
+<p>Creating tablespaces</p>
+<p>Once <code dir="ltr">DB_CREATE_FILE_DEST</code> is set, the <code dir="ltr">DATAFILE</code> clause can be omitted from a <code dir="ltr">CREATE TABLESPACE</code> statement. The data file is created in the location specified by <code dir="ltr">DB_CREATE_FILE_DEST</code> by default. For example:</p>
+<pre dir="ltr">
+SQL&gt; CREATE TABLESPACE tbs_2;
+</pre>
+<p>When the <code dir="ltr">tbs_2</code> tablespace is dropped, its data files are automatically deleted.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1326">
+<tr>
+<td class="cellalignment1335">
+<table class="cellalignment1331">
+<tr>
+<td class="cellalignment1330"><a href="undo.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1330"><a href="part4.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2001, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1337">
+<table class="cellalignment1329">
+<tr>
+<td class="cellalignment1330"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1330"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1330"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1330"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1330"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1330"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

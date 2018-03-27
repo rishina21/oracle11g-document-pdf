@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Performing Complete Database Recovery</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1054" />
+<meta name="description" content="A guide to backup and recovery of Oracle databases, including RMAN backup and recovery, RMAN data transfer, Oracle Flashback Technology, and user-managed backup and recovery" />
+<meta name="dcterms.created" content="2015-05-13T14:1:11Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Backup and Recovery User's Guide" />
+<meta name="dcterms.identifier" content="E10642-08" />
+<meta name="dcterms.isVersionOf" content="BRADV" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2003, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="rcmvalid.htm" title="Previous" type="text/html" />
+<link rel="Next" href="rcmflash.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10642.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">29/47</span> <!-- End Header -->
+<div id="BRADV8005" class="chapter"><a id="g1047425"></a> <a id="i1009223"></a>
+<h1 class="chapter"><span class="secnum">17</span> Performing Complete Database Recovery</h1>
+<p>This chapter explains how to use RMAN to return your database to normal operation after the loss of one or more data files. This chapter contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#CHDIAACD">Overview of Complete Database Recovery</a></p>
+</li>
+<li>
+<p><a href="#i1033548">Preparing for Complete Database Recovery</a></p>
+</li>
+<li>
+<p><a href="#CHDJBEHG">Performing Complete Database Recovery</a></p>
+</li>
+</ul>
+<a id="CHDIAACD"></a>
+<div id="BRADV89759" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Overview of Complete Database Recovery</h2>
+<p><a id="sthref1512"></a><a id="sthref1513"></a>This section explains the purpose of complete restore and recovery of the database and specifies the scope of the chapter.</p>
+<div id="BRADV89760" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1514"></a>
+<h3 class="sect2">Purpose of Complete Database Recovery</h3>
+<p>This chapter assumes that some or all of your data files are lost or damaged. Typically, this situation is caused by a media failure or accidental deletion. Your goal is to return the database to normal operation by restoring the damaged files from RMAN backups and recovering all database changes.</p>
+</div>
+<!-- class="sect2" -->
+<div id="BRADV89761" class="sect2"><a id="sthref1515"></a>
+<h3 class="sect2">Scope of This Chapter</h3>
+<p>This chapter explains how to use complete recovery to fix the most common database problems. This chapter makes the following assumptions:</p>
+<ul>
+<li>
+<p>You have lost some or all data files and your goal is to recover all changes, but you have not lost all current control files or an entire online redo log group.</p>
+<p><a href="rcmflash.htm#g1016666">Chapter 18, "Performing Flashback and Database Point-in-Time Recovery"</a> explains how to recover some but not all database changes. <a href="osadvsce.htm#CACJIFBI">Chapter 30, "Performing User-Managed Recovery: Advanced Scenarios"</a> explains how to respond when some but not all current control files or members of an online redo log group are lost. <a href="rcmadvre.htm#i1006245">"Performing Recovery with a Backup Control File"</a> explains how to recover the database when all control files are lost.</p>
+</li>
+<li>
+<p>Your database is using the current server parameter file.</p>
+<p>To restore a backup server parameter file, see <a href="rcmadvre.htm#CHDBEDCH">"Restoring the Server Parameter File"</a>.</p>
+</li>
+<li>
+<p>You have the complete set of archived redo logs and incremental backups needed for recovery of your data file backups. Every data file either has a backup, or a complete set of online and archived redo logs goes back to the creation of a data file with no backup.</p>
+<p>RMAN can handle lost data files without user intervention during restore and recovery. When a data file is lost, the possible cases can be classified as follows:</p>
+<ul>
+<li>
+<p>The control file knows about the data file, that is, you backed up the control file after data file creation, but the data file itself is not backed up. If the data file record is in the control file, then <code dir="ltr">RESTORE</code> creates the data file in the original location or in a user-specified location. The <code dir="ltr">RECOVER</code> command can then apply the necessary logs to the data file.</p>
+</li>
+<li>
+<p>The control file does not have the data file record, that is, you did not back up the control file after data file creation. During recovery, the database detects the missing data file and reports it to RMAN, which creates a new data file and continues recovery by applying the remaining logs. If the data file was created in a parent incarnation, then it is created during the restore or recovery phase as appropriate.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>You are not restoring and recovering an encrypted tablespace.</p>
+<p>If you perform media recovery on an encrypted tablespace, then the Oracle wallet must be open when performing media recovery of this tablespace. See <a class="olink ADMIN12327" href="../../server.112/e25494/tspaces.htm#ADMIN12327"><span class="italic">Oracle Database Administrator's Guide</span></a> to learn about encrypted tablespaces.</p>
+</li>
+<li>
+<p>Your database runs in a single-instance configuration.</p>
+<p>While RMAN can restore and recover databases in Oracle RAC and Data Guard configurations, these scenarios are beyond the scope of this manual.</p>
+</li>
+<li>
+<p>You are using the RMAN client rather than Oracle Enterprise Manager.</p>
+<p>Enterprise Manager provides access to RMAN through a set of wizards. These wizards lead you through a variety of recovery procedures based on an analysis of your database, your available backups, and your data recovery objectives.</p>
+<p>By using Enterprise Manager, you can perform the simpler restore and recovery scenarios outlined in this chapter. You can also use more sophisticated restore and recovery techniques such as point-in-time recovery and database flashback, which allow for efficient repair of media failures and user errors. Typically, using Enterprise Manager is simpler than using the RMAN command-line client directly.</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink RACAD059" href="../../rac.112/e41960/backup.htm#RACAD059"><span class="italic">Oracle Real Application Clusters Administration and Deployment Guide</span></a> for more information about using RMAN with Oracle RAC</p>
+</li>
+<li>
+<p><a class="olink SBYDB04700" href="../../server.112/e41134/rman.htm#SBYDB04700"><span class="italic">Oracle Data Guard Concepts and Administration</span></a> for more information about using RMAN with Data Guard</p>
+</li>
+<li>
+<p><a class="olink ADMQS009" href="../../server.112/e10897/backrest.htm#ADMQS009"><span class="italic">Oracle Database 2 Day DBA</span></a> for more details on the restore and recovery features of Enterprise Manager</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1033548"></a>
+<div id="BRADV89762" class="sect1">
+<h2 class="sect1">Preparing for Complete Database Recovery</h2>
+<p>While RMAN simplifies most database restore and recovery tasks, you must still plan your database restore and recovery strategy based on which database files have been lost and your recovery goal. This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#CHDDAGHH">Identifying the Database Files to Restore or Recover</a></p>
+</li>
+<li>
+<p><a href="#i1038112">Determining the DBID of the Database</a></p>
+</li>
+<li>
+<p><a href="#CFADHADH">Previewing Backups Used in Restore Operations</a></p>
+</li>
+<li>
+<p><a href="#CHDDBICF">Validating Backups Before Restoring Them</a></p>
+</li>
+<li>
+<p><a href="#CHDGECCC">Restoring Archived Redo Logs Needed for Recovery</a></p>
+</li>
+</ul>
+<a id="CHDDAGHH"></a>
+<div id="BRADV89763" class="sect2">
+<h3 class="sect2">Identifying the Database Files to Restore or Recover</h3>
+<p>The techniques for determining which files require restore or recovery depend upon the type of file that is lost.</p>
+<div id="BRADV89764" class="sect3"><a id="sthref1516"></a>
+<h4 class="sect3">Identifying a Lost Control File</h4>
+<p>It is usually obvious when the control file of your database is lost. The database shuts down immediately when any of the <a id="sthref1517"></a><a id="sthref1518"></a>multiplexed control files becomes inaccessible. Also, the database reports an error if you try to start it without a valid control file at each location specified in the <code dir="ltr">CONTROL_FILES</code> initialization parameter.</p>
+<p>Loss of some but not all copies of your control file does not require you to restore a control file from backup. If at least one control file remains intact, then you can either copy an intact copy of the control file over the damaged or missing control file, or update the initialization parameter file so that it does not refer to the damaged or missing control file. After the <code dir="ltr">CONTROL_FILES</code> parameter references only present, intact copies of the control file, you can restart your database.</p>
+<p>If you restore the control file from backup, then you must perform media recovery of the whole database and then open it with the <code dir="ltr">OPEN RESETLOGS</code> option, even if no data files must be restored. This technique is described in <a href="rcmadvre.htm#i1006245">"Performing Recovery with a Backup Control File"</a>.</p>
+</div>
+<!-- class="sect3" -->
+<div id="BRADV89765" class="sect3"><a id="sthref1519"></a>
+<h4 class="sect3">Identifying Datafiles Requiring Media Recovery</h4>
+<p><a id="sthref1520"></a><a id="sthref1521"></a><a id="sthref1522"></a>When <a id="sthref1523"></a>and how to recover depends on the state of the database and the location of its data files.</p>
+<div id="BRADV89766" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref1524"></a>
+<h5 class="sect4">Identifying Datafiles with RMAN</h5>
+<p>An easy technique for determining which data files are missing is to run <a id="sthref1525"></a>a <code dir="ltr">VALIDATE DATABASE</code> command, which attempts to read all specified data files. For example, start the RMAN client and run the following commands to validate the database (sample output included).</p>
+<div id="BRADV350" class="example">
+<p class="titleinexample"><a id="CHDICCBB"></a>Example 17-1 BACKUP VALIDATE DATABASE</p>
+<pre dir="ltr">
+RMAN&gt; VALIDATE DATABASE;
+
+Starting validate at 20-OCT-06
+allocated channel: ORA_DISK_1
+channel ORA_DISK_1: SID=90 device type=DISK
+could not read file header for datafile 7 error reason 4
+RMAN-00571: ===========================================================
+RMAN-00569: =============== ERROR MESSAGE STACK FOLLOWS ===============
+RMAN-00571: ===========================================================
+RMAN-03002: failure of backup command at 10/20/2007 13:05:43
+RMAN-06056: could not access datafile 7
+</pre></div>
+<!-- class="example" -->
+<p>The output in <a href="#CHDICCBB">Example 17-1</a> indicates that data file 7 is inaccessible. You can then run the <code dir="ltr">REPORT SCHEMA</code> command to obtain the tablespace name and file name for data file 7 as follows (sample output included):</p>
+<pre dir="ltr">
+RMAN&gt; REPORT SCHEMA;
+ 
+Report of database schema for database with db_unique_name RDBMS
+ 
+List of Permanent Datafiles
+===========================
+File Size(MB) Tablespace           RB segs Datafile Name
+---- -------- -------------------- ------- ------------------------
+1    450      SYSTEM               ***     +DATAFILE/tbs_01.f
+2    86       SYSAUX               ***     +DATAFILE/tbs_ax1.f
+3    15       UD1                  ***     +DATAFILE/tbs_undo1.f
+4    2        SYSTEM               ***     +DATAFILE/tbs_02.f
+5    2        TBS_1                ***     +DATAFILE/tbs_11.f
+6    2        TBS_1                ***     +DATAFILE/tbs_12.f
+7    2        TBS_2                ***     +DATAFILE/tbs_21.f
+ 
+List of Temporary Files
+=======================
+File Size(MB) Tablespace           Maxsize(MB) Tempfile Name
+---- -------- -------------------- ----------- --------------------
+1    40       TEMP                 32767       +DATAFILE/tbs_tmp1.f
+</pre></div>
+<!-- class="sect4" -->
+<div id="BRADV89767" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref1526"></a>
+<h5 class="sect4">Identifying Datafiles with SQL</h5>
+<p>Although <code dir="ltr">VALIDATE DATABASE</code> is a good technique for determining whether files are inaccessible, you may want to use SQL queries to obtain more detailed information.</p>
+<p class="subhead2"><a id="BRADV351"></a>To determine whether data files require media recovery:</p>
+<ol>
+<li>
+<p>Start SQL*Plus and connect to the target database instance with administrator privileges.</p>
+</li>
+<li>
+<p>Determine the status of the database by executing the following SQL <a id="sthref1527"></a>query:</p>
+<pre dir="ltr">
+SELECT STATUS FROM V$INSTANCE;
+</pre>
+<p>If the status is <code dir="ltr">OPEN</code>, then the database is open. Nevertheless, some data files may require media recovery.</p>
+</li>
+<li>
+<p><a id="sthref1528"></a>Query <code dir="ltr">V$DATAFILE_HEADER</code> to determine the status of your data files. Run the following SQL statements to check the data file headers:</p>
+<pre dir="ltr">
+SELECT FILE#, STATUS, ERROR, RECOVER, TABLESPACE_NAME, NAME 
+FROM   V$DATAFILE_HEADER 
+WHERE  RECOVER = 'YES' 
+OR     (RECOVER IS NULL AND ERROR IS NOT NULL);
+</pre>
+<p>Each row returned represents a data file that either requires media recovery or has an error requiring a restore. Check the <code dir="ltr">RECOVER</code> and <code dir="ltr">ERROR</code> columns. <code dir="ltr">RECOVER</code> indicates whether a file needs media recovery, and <code dir="ltr">ERROR</code> indicates whether there was an error reading and validating the data file header.</p>
+<p>If <code dir="ltr">ERROR</code> is not <code dir="ltr">NULL</code>, then the data file header cannot be read and validated. Check for a temporary hardware or operating system problem causing the error. If there is no such problem, you must restore the file or switch to a copy.</p>
+<p>If the <code dir="ltr">ERROR</code> column is <code dir="ltr">NULL</code> and the <code dir="ltr">RECOVER</code> column is <code dir="ltr">YES</code>, then the file requires media recovery (and may also require a restore from backup).</p>
+<div class="infobox-note">
+<p class="notep1"><span class="bold">Note</span>:</p>
+Because <code dir="ltr">V$DATAFILE_HEADER</code> <a id="sthref1529"></a>only reads the header block of each data file, it does not detect all problems that require the data file to be restored. For example, this view cannot tell whether a data file contains corrupt data blocks.</div>
+</li>
+<li>
+<p><a id="sthref1530"></a>Optionally, query <code dir="ltr">V$RECOVER_FILE</code> to list data files requiring recovery by data file number with their status and error information. For example, execute the following query:</p>
+<pre dir="ltr">
+SELECT FILE#, ERROR, ONLINE_STATUS, CHANGE#, TIME 
+FROM   V$RECOVER_FILE;
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You cannot use <code dir="ltr">V$RECOVER_FILE</code> with a control file restored from backup or a control file that was re-created after the time of the media failure affecting the data files. A restored or re-created control file does not contain the information needed to update <code dir="ltr">V$RECOVER_FILE</code> accurately.</div>
+<p>To find data file and tablespace names, you can also perform useful joins using the data file number and <a id="sthref1531"></a><a id="sthref1532"></a>the <code dir="ltr">V$DATAFILE</code> and <code dir="ltr">V$TABLESPACE</code> views. For example:</p>
+<pre dir="ltr">
+SELECT r.FILE# AS df#, d.NAME AS df_name, t.NAME AS tbsp_name, 
+       d.STATUS, r.ERROR, r.CHANGE#, r.TIME
+FROM V$RECOVER_FILE r, V$DATAFILE d, V$TABLESPACE t
+WHERE t.TS# = d.TS#
+AND d.FILE# = r.FILE#;
+</pre>
+<p>The <code dir="ltr">ERROR</code> column identifies the problem for each file requiring recovery.</p>
+</li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink REFRN" href="../../server.112/e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for information about the <code dir="ltr">V$</code> views</div>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1038112"></a>
+<div id="BRADV80002" class="sect2">
+<h3 class="sect2">Determining the DBID of the Database</h3>
+<p><a id="sthref1533"></a>In situations requiring the recovery of your server parameter file or control file from autobackup, you must know the DBID. You should record the DBID along with other basic information about your database.</p>
+<p>If you do not have a record of the DBID of your database, then you can find it in the following places without opening your database:</p>
+<ul>
+<li>
+<p>The DBID is used in forming the file name for the control file autobackup. Locate this file, and then refer to <a href="rcmconfb.htm#i1015702">"Configuring the Control File Autobackup Format"</a> to determine where the DBID appears in the file name.</p>
+</li>
+<li>
+<p>If you have any text files that preserve the output from an RMAN session, then the DBID is displayed by the RMAN client when it starts up and connects to your database. Typical output follows:</p>
+<pre dir="ltr">
+% rman TARGET /
+
+Recovery Manager: Release 11.1.0.6.0 - Production on Wed Jul 11 17:51:30 2007
+ 
+Copyright (c) 1982, 2007, Oracle.  All rights reserved.
+ 
+connected to target database: PROD (<span class="bold">DBID=36508508</span>)
+</pre></li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="CFADHADH"></a>
+<div id="BRADV8140" class="sect2">
+<h3 class="sect2">Previewing Backups Used in Restore Operations</h3>
+<p><a id="sthref1534"></a><a id="sthref1535"></a><a id="sthref1536"></a><a id="sthref1537"></a>You can apply <code dir="ltr">RESTORE</code> <code dir="ltr">...</code> <code dir="ltr">PREVIEW</code> to any <code dir="ltr">RESTORE</code> operation to create a detailed list of every backup to be used in the requested <code dir="ltr">RESTORE</code> operation, and the necessary target SCN for recovery after the <code dir="ltr">RESTORE</code> operation is complete. This command accesses the RMAN repository to query the backup metadata, but does not actually read the backup files to ensure that they can be restored.</p>
+<p>As an alternative to <code dir="ltr">RESTORE ... PREVIEW</code>, you can use the <code dir="ltr">RESTORE ... VALIDATE HEADER</code> command. In addition to listing the files needed for restore and recovery, the <code dir="ltr">RESTORE ... VALIDATE HEADER</code> command validates the backup file headers to determine whether the files on disk or in the media management catalog correspond to the metadata in the RMAN repository.</p>
+<p>When planning your restore and recovery operation, use <code dir="ltr">RESTORE ...</code> <code dir="ltr">PREVIEW</code> or <code dir="ltr">RESTORE ... VALIDATE HEADER</code> to ensure that all required backups are available or to identify situations in which you may want to direct RMAN to use or avoid specific backups.</p>
+<p class="subhead2"><a id="BRADV352"></a>To preview backups to be used in a restore operation:</p>
+<ol>
+<li>
+<p>Run a <code dir="ltr">RESTORE</code> command with the <code dir="ltr">PREVIEW</code> option.</p>
+<p>For example, run one of the following commands:</p>
+<pre dir="ltr">
+RESTORE DATABASE PREVIEW;
+RESTORE ARCHIVELOG FROM TIME 'SYSDATE-7' PREVIEW;
+</pre>
+<p>If the report produced by <code dir="ltr">RESTORE</code> <code dir="ltr">...</code> <code dir="ltr">PREVIEW</code> provides too much information, then specify the <code dir="ltr">SUMMARY</code> option as shown in the following example:</p>
+<pre dir="ltr">
+RESTORE DATABASE PREVIEW SUMMARY;
+</pre>
+<p>If satisfied with the output, then stop here. If the output indicates that RMAN will request a backup from a tape that you know is temporarily unavailable, then continue with this procedure. If the output indicates that a backup is stored offsite, then skip to <a href="#CHDBBFIA">"Recalling Offsite Backups"</a>.</p>
+</li>
+<li>
+<p>If needed, use the <code dir="ltr">CHANGE</code> command to set the backup status of any temporarily unavailable backups to <code dir="ltr">UNAVAILABLE</code>.</p>
+<p><a href="rcmmaint.htm#i1007729">"Updating a Backup to Status AVAILABLE or UNAVAILABLE"</a> explains how to perform this task.</p>
+</li>
+<li>
+<p>Optionally, run <code dir="ltr">RESTORE</code> <code dir="ltr">...</code> <code dir="ltr">PREVIEW</code> again to confirm that the restore does not attempt to use unavailable backups.</p>
+</li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink RCMRF132" href="../../backup.112/e10643/rcmsynta027.htm#RCMRF132"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for details on interpreting <code dir="ltr">RESTORE</code> <code dir="ltr">...</code> <code dir="ltr">PREVIEW</code> output, which is in the same format as the output of the <code dir="ltr">LIST</code> command</div>
+<a id="CHDBBFIA"></a>
+<div id="BRADV89768" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Recalling Offsite Backups</h4>
+<p>Some media managers provide status information to RMAN about which backups are offsite. An <a id="sthref1538"></a><a id="sthref1539"></a><a href="glossary.htm#CHDEBGHG"><span class="xrefglossterm">offsite backup</span></a> is stored in a remote location, such as a secure storage facility, and cannot be restored unless the media manager retrieves the media.</p>
+<p>Offsite backups are marked as <code dir="ltr">AVAILABLE</code> in the RMAN repository even though the media must be retrieved from storage before the backup can be restored. If RMAN attempts to restore a offsite backup, then the restore job fails.</p>
+<p>You can use <code dir="ltr">RESTORE ... PREVIEW</code> to identify offsite backups. The command output indicates whether backups are stored offsite, as shown by the text at the end of the sample output in <a href="#CHDHEDFB">Example 17-2</a>.</p>
+<div id="BRADV353" class="example">
+<p class="titleinexample"><a id="CHDHEDFB"></a>Example 17-2 RESTORE ... PREVIEW Output</p>
+<pre dir="ltr">
+List of Backup Sets
+===================
+
+
+BS Key  Size       Device Type Elapsed Time Completion Time
+------- ---------- ----------- ------------ ---------------
+9       2.25M      SBT_TAPE    00:00:00     21-MAY-07
+        BP Key: 9   Status: AVAILABLE  Compressed: NO  Tag: TAG20070521T144258
+        Handle: 0aii9k7i_1_1   Media: 0aii9k7i_1_1
+ 
+  List of Archived Logs in backup set 9
+  Thrd Seq     Low SCN    Low Time  Next SCN   Next Time
+  ---- ------- ---------- --------- ---------- ---------
+  1    1       392314     21-MAY-07 392541     21-MAY-07
+  1    2       392541     21-MAY-07 392545     21-MAY-07
+  1    3       392545     21-MAY-07 392548     21-MAY-07
+  1    4       392548     21-MAY-07 395066     21-MAY-07
+  1    5       395066     21-MAY-07 395095     21-MAY-07
+  1    6       395095     21-MAY-07 395355     21-MAY-07
+ 
+List of remote backup files
+============================
+        Handle: aii9k7i_1_1   Media: 0aii9k7i_1_1
+validation succeeded for backup piece
+Finished restore at 21-MAY-07
+released channel: dev1
+</pre></div>
+<!-- class="example" -->
+<p>You can use <code dir="ltr">RESTORE</code> <code dir="ltr">...</code> <code dir="ltr">PREVIEW</code> <code dir="ltr">RECALL</code> to instruct the media manager to make offsite backups available.</p>
+<p class="subhead2"><a id="BRADV354"></a>To recall offsite backups:</p>
+<ol>
+<li>
+<p>If backups are stored offsite, then execute a <code dir="ltr">RESTORE ... PREVIEW</code> command with the <code dir="ltr">RECALL</code> option.</p>
+<p>The following example initiates recall for the offsite archived log backups shown in <a href="#CHDHEDFB">Example 17-2</a> (sample output included):</p>
+<pre dir="ltr">
+RESTORE ARCHIVELOG ALL PREVIEW RECALL;
+</pre>
+<p>The following sample output indicates that RMAN initiated a recall:</p>
+<pre dir="ltr">
+List of Backup Sets
+===================
+ 
+ 
+BS Key  Size       Device Type Elapsed Time Completion Time
+------- ---------- ----------- ------------ ---------------
+9       2.25M      SBT_TAPE    00:00:00     21-MAY-07
+        BP Key: 9   Status: AVAILABLE  Compressed: NO  Tag: TAG20070521T144258
+        Handle: VAULT0aii9k7i_1_1   Media: /tmp,VAULT0aii9k7i_1_1
+ 
+  List of Archived Logs in backup set 9
+  Thrd Seq     Low SCN    Low Time  Next SCN   Next Time
+  ---- ------- ---------- --------- ---------- ---------
+  1    1       392314     21-MAY-07 392541     21-MAY-07
+  1    2       392541     21-MAY-07 392545     21-MAY-07
+  1    3       392545     21-MAY-07 392548     21-MAY-07
+  1    4       392548     21-MAY-07 395066     21-MAY-07
+  1    5       395066     21-MAY-07 395095     21-MAY-07
+  1    6       395095     21-MAY-07 395355     21-MAY-07
+ 
+Initiated recall for the following list of remote backup files
+==========================================================
+        Handle: VAULT0aii9k7i_1_1   Media: /tmp,VAULT0aii9k7i_1_1
+validation succeeded for backup piece
+Finished restore at 21-MAY-07
+released channel: dev1
+</pre></li>
+<li>
+<p>Run the <code dir="ltr">RESTORE</code> <code dir="ltr">..</code><code dir="ltr">.</code> <code dir="ltr">PREVIEW</code> command. If necessary, return to the previous step until no backups needed for the restore are reported as offsite.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CHDDBICF"></a>
+<div id="BRADV90066" class="sect2">
+<h3 class="sect2">Validating Backups Before Restoring Them</h3>
+<p>While the procedures in <a href="#CFADHADH">"Previewing Backups Used in Restore Operations"</a> indicate which backups will be restored, they do not verify that the backups are actually usable. <a id="sthref1540"></a><a id="sthref1541"></a><a id="sthref1542"></a><a id="sthref1543"></a><a id="sthref1544"></a>You can run RMAN commands to test the availability of usable backups for any <code dir="ltr">RESTORE</code> operation, or test the contents of a specific backup for use in <code dir="ltr">RESTORE</code> operations. The contents of the backups are actually read and checked for corruption. You have the following validation options:</p>
+<ul>
+<li>
+<p><code dir="ltr">RESTORE</code> <code dir="ltr">...</code> <code dir="ltr">VALIDATE</code> tests whether RMAN can restore a specific object from a backup. RMAN chooses which backups to use.</p>
+</li>
+<li>
+<p><code dir="ltr">VALIDATE BACKUPSET</code> tests the validity of a backup set that you specify.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="rcmvalid.htm#CHDBFAIF">Chapter 16, "Validating Database Files and Backups"</a></div>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="CHDGECCC"></a>
+<div id="BRADV89778" class="sect2">
+<h3 class="sect2">Restoring Archived Redo Logs Needed for Recovery</h3>
+<p>RMAN restores archived redo log files from backup automatically as needed to perform recovery. You can also restore archived redo logs manually to save the time needed to restore these files later during the <code dir="ltr">RECOVER</code> command, or if you want to store the restored archived redo log files in some new location. RMAN also gives you the flexibility of restoring all archive redo log files, the current ones or archive redo log files from a specified previous incarnation of the database.</p>
+<p><a id="sthref1545"></a><a id="sthref1546"></a>By default, RMAN restores archived redo logs with names constructed using the <code dir="ltr">LOG_ARCHIVE_FORMAT</code> and <a id="sthref1547"></a>the highest <code dir="ltr">LOG_ARCHIVE_DEST_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code> parameters of the target database. These parameters are combined in a platform-specific fashion to form the name of the restored archived log.</p>
+<div id="BRADV89779" class="sect3"><a id="sthref1548"></a>
+<h4 class="sect3">Restoring Archived Redo Logs to a New Location</h4>
+<p>You can override the default location for restored archived redo logs with the <code dir="ltr">SET</code> <code dir="ltr">ARCHIVELOG</code> <code dir="ltr">DESTINATION</code> command. This command manually stages archived logs to different locations while a database restore is occurring. During recovery, RMAN knows where to find the newly restored archived logs; it does not require them to be in the location specified in the initialization parameter file.</p>
+<p><span class="bold">To restore archived redo logs to a new location:</span></p>
+<ol>
+<li>
+<p>Start RMAN and connect to a target database.</p>
+</li>
+<li>
+<p>Ensure that the database is mounted or open.</p>
+</li>
+<li>
+<p>Perform the following operations within a <code dir="ltr">RUN</code> command:</p>
+<ol>
+<li>
+<p>Specify the new location for the restored archived redo logs using <code dir="ltr">SET</code> <code dir="ltr">ARCHIVELOG</code> <code dir="ltr">DESTINATION</code>.</p>
+</li>
+<li>
+<p>Either explicitly restore the archived redo logs or execute commands that automatically restore the logs.</p>
+</li>
+</ol>
+<p>The following sample <code dir="ltr">RUN</code> command explicitly restores all backup archived logs to a new location:</p>
+<pre dir="ltr">
+RUN
+{ 
+  SET ARCHIVELOG DESTINATION TO '/oracle/temp_restore';
+  RESTORE ARCHIVELOG ALL;
+  # restore and recover datafiles as needed
+  .
+  .
+  .
+}
+</pre>
+<p>The following example sets the archived log destination and then uses <code dir="ltr">RECOVER DATABASE</code> to restore archived logs from this destination automatically:</p>
+<pre dir="ltr">
+RUN
+{ 
+  SET ARCHIVELOG DESTINATION TO '/oracle/temp_restore';
+  RESTORE DATABASE;
+  RECOVER DATABASE; # restores and recovers logs automatically
+}
+</pre></li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<div id="BRADV89780" class="sect3"><a id="sthref1549"></a>
+<h4 class="sect3">Restoring Archived Redo Logs to Multiple Locations</h4>
+<p>You can specify restore destinations for archived logs multiple times in one <a href="glossary.htm#CBABHGFH"><span class="xrefglossterm">RUN block</span></a>, to distribute restored logs among several destinations. (You cannot, however specify multiple destinations simultaneously to produce multiple copies of the same log during the restore operation.) You can use this feature to manage disk space used to contain the restored logs.</p>
+<p>This example restores 300 archived redo logs from backup, distributing them across the directories <code dir="ltr">/fs1/tmp</code>, <code dir="ltr">/fs2/tmp</code>, and <code dir="ltr">/fs3/tmp</code>:</p>
+<pre dir="ltr">
+RUN 
+{ 
+  # Set a new location for logs 1 through 100.
+  SET ARCHIVELOG DESTINATION TO '/fs1/tmp';
+  RESTORE ARCHIVELOG FROM SEQUENCE 1 UNTIL SEQUENCE 100;
+  # Set a new location for logs 101 through 200.
+  SET ARCHIVELOG DESTINATION TO '/fs2/tmp';
+  RESTORE ARCHIVELOG FROM SEQUENCE 101 UNTIL SEQUENCE 200;
+  # Set a new location for logs 201 through 300.
+  SET ARCHIVELOG DESTINATION TO '/fs3/tmp';
+  RESTORE ARCHIVELOG FROM SEQUENCE 201 UNTIL SEQUENCE 300;
+  # restore and recover datafiles as needed
+  .
+  .
+  .
+}
+</pre>
+<p>When you issue a <code dir="ltr">RECOVER</code> command, RMAN finds the needed restored archived logs automatically across the destinations to which they were restored, and applies them to the data files.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDJBEHG"></a>
+<div id="BRADV8152" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Performing Complete Database Recovery</h2>
+<p>This section assumes that you have already performed the tasks in <a href="#i1033548">"Preparing for Complete Database Recovery"</a>. This section describes the basic outline of complete database recovery, which is intended to encompass a wide range of different scenarios.</p>
+<div id="BRADV89771" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1550"></a>
+<h3 class="sect2">About Complete Database Recovery</h3>
+<p>You use the <code dir="ltr">RESTORE</code> and <code dir="ltr">RECOVER</code> commands to restore and recover the database. During the recovery, RMAN automatically restores backups of any needed archived redo logs. If backups are stored on a media manager, then channels must be configured in advance or a <code dir="ltr">RUN</code> block with <code dir="ltr">ALLOCATE</code> <code dir="ltr">CHANNEL</code> commands must be used to enable access to backups stored there.</p>
+<p>If RMAN restores archived redo logs to the fast recovery area during a recovery, then it automatically deletes the restored logs after applying them to the data files. Otherwise, you can use the <code dir="ltr">DELETE ARCHIVELOG</code> command to delete restored archived redo logs from disk when they are no longer needed for recovery. For example, you can enter the following command:</p>
+<pre dir="ltr">
+RECOVER DATABASE DELETE ARCHIVELOG;
+</pre>
+<a id="CHDHAAGG"></a>
+<div id="BRADV89776" class="sect3">
+<h4 class="sect3">Restoring Datafiles to a Nondefault Location</h4>
+<p>If you cannot restore data files to their default locations, then you must update the control file to reflect the new locations of the data files. Use the RMAN <code dir="ltr">SET NEWNAME</code> command within a <code dir="ltr">RUN</code> command to specify the new file name. Afterward, use a <code dir="ltr">SWITCH</code> command, which is equivalent to using the SQL statement <code dir="ltr">ALTER DATABASE RENAME FILE</code>, to update the names of the data files in the control file. <code dir="ltr">SWITCH</code> <code dir="ltr">DATAFILE</code> <code dir="ltr">ALL</code> updates the control file to reflect the new names for all data files for which a <code dir="ltr">SET</code> <code dir="ltr">NEWNAME</code> has been issued in a <code dir="ltr">RUN</code> command.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink RCMRF159" href="../../backup.112/e10643/rcmsynta2020.htm#RCMRF159"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for <code dir="ltr">SWITCH</code> syntax</div>
+</div>
+<!-- class="sect3" -->
+<div id="BRADV99977" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1551"></a>
+<h4 class="sect3">Decryption of Backups</h4>
+<p><a id="sthref1552"></a><a id="sthref1553"></a>If RMAN is restoring encrypted backups, then RMAN automatically decrypts backup sets when their contents are restored. Transparently encrypted backups require no intervention to restore, as long as the Oracle wallet is open and available.</p>
+<p>Password-encrypted backups require the correct password to be entered before they can be restored. You must enter the encryption password with the <code dir="ltr">SET</code> <code dir="ltr">DECRYPTION</code> command. If restoring from a group of backups that were created with different passwords, then specify all of the required passwords on the <code dir="ltr">SET</code> <code dir="ltr">DECRYPTION</code> command. RMAN automatically uses the correct password with each backup set.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="rcmconfa.htm#CHDEDDBE">"Configuring Backup Encryption"</a> to learn how to configure transparent backup encryption</p>
+</li>
+<li>
+<p><a href="rcmbckad.htm#CEGEJABH">"Encrypting RMAN Backups"</a> to learn how to create encrypted backups</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CHDGGJDJ"></a>
+<div id="BRADV89772" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Performing Complete Recovery of the Whole Database</h3>
+<p>This scenario assumes that database <code dir="ltr">trgt</code> has lost most or all of its data files. It also assumes that the database uses a fast recovery area.</p>
+<p>After restore and recovery of a whole database, when the database is open, missing temporary tablespaces that were recorded in the control file are re-created with their previous creation size, <code dir="ltr">AUTOEXTEND</code>, and <code dir="ltr">MAXSIZE</code> attributes. Only temporary tablespaces that are missing are re-created. If a temp file exists at the location recorded in the RMAN repository but has an invalid header, then RMAN does not re-create the temp file.</p>
+<p>If the temp files were created as Oracle managed files, then they are re-created in the <a id="sthref1554"></a>current <code dir="ltr">DB_CREATE_FILE_DEST</code> location. Otherwise, they are re-created at their previous locations. If RMAN cannot re-create the file due to an I/O error or some other cause, then the error is reported in the alert log and the database open operation continues.</p>
+<p class="subhead2"><a id="BRADV355"></a>To restore and recover the whole database:</p>
+<ol>
+<li>
+<p>Start RMAN and connect to a target database.</p>
+<p>For example, enter the following command:</p>
+<pre dir="ltr">
+% rman
+RMAN&gt; CONNECT TARGET /
+</pre>
+<p>RMAN displays the database status when it connects: <code dir="ltr">not started</code>, <code dir="ltr">not mounted</code>, <code dir="ltr">not open</code> (when the database is mounted but not open), or none (when the database is open).</p>
+</li>
+<li>
+<p>If the database is not mounted, then mount but do not open the database.</p>
+<p>For example, enter the following command:</p>
+<pre dir="ltr">
+STARTUP MOUNT;
+</pre></li>
+<li>
+<p>Use the <code dir="ltr">SHOW</code> command to see which channels are preconfigured.</p>
+<p>For example, enter the following command (sample output is included):</p>
+<pre dir="ltr">
+SHOW ALL;
+
+ 
+RMAN configuration parameters for database with db_unique_name PROD1 are:
+.
+.
+.
+CONFIGURE DEFAULT DEVICE TYPE TO DISK; # default
+CONFIGURE DEVICE TYPE DISK PARALLELISM 1 BACKUP TYPE TO BACKUPSET; # default
+CONFIGURE DEVICE TYPE SBT_TAPE PARALLELISM 1 BACKUP TYPE TO BACKUPSET; # default
+CONFIGURE CHANNEL DEVICE TYPE 'SBT_TAPE' PARMS "SBT_LIBRARY=/usr/local/oracle/backup/lib/libobk.so";
+</pre>
+<p>If the necessary devices and channels are already configured, then no action is necessary. Otherwise, you can use the <code dir="ltr">CONFIGURE</code> command to configure automatic channels, or include <code dir="ltr">ALLOCATE CHANNEL</code> commands within a <code dir="ltr">RUN</code> block.</p>
+</li>
+<li>
+<p>If restoring password-protected encrypted backups, then specify the password.</p>
+<p>Use the <code dir="ltr">SET DECRYPTION IDENTIFIED BY</code> command to specify a password for password-protected backups, as shown in the following example (where <span class="italic">password</span> represents the actual password that you enter):</p>
+<pre dir="ltr">
+SET DECRYPTION IDENTIFIED BY <span class="italic">password</span>;
+</pre>
+<p>If you created backups with different passwords, then you can run the <code dir="ltr">SET DECRYPTION IDENTIFIED BY</code> <code dir="ltr"><span class="codeinlineitalic">password</span></code> command multiple times, specifying all of the possible passwords that might be required to restore the backups.</p>
+</li>
+<li>
+<p>Restore and recover the database. Do one of the following:</p>
+<ul>
+<li>
+<p>If you are restoring all data files to their original locations, then execute <code dir="ltr">RESTORE DATABASE</code> and <code dir="ltr">RECOVER DATABASE</code> sequentially at the RMAN prompt.</p>
+<p>For example, enter the following commands if automatic channels are configured (sample output included):</p>
+<pre dir="ltr">
+RMAN&gt; <span class="bold">RESTORE DATABASE;</span>
+
+Starting restore at 20-JUN-06
+allocated channel: ORA_DISK_1
+channel ORA_DISK_1: SID=35 device type=DISK
+allocated channel: ORA_SBT_TAPE_1
+channel ORA_SBT_TAPE_1: SID=34 device type=SBT_TAPE
+channel ORA_SBT_TAPE_1: Oracle Secure Backup
+ 
+channel ORA_DISK_1: starting datafile backup set restore
+channel ORA_DISK_1: specifying datafile(s) to restore from backup set
+channel ORA_DISK_1: restoring datafile 00001 to /disk1/oracle/dbs/tbs_01.f
+channel ORA_DISK_1: restoring datafile 00002 to /disk1/oracle/dbs/tbs_ax1.f
+.
+.
+.
+Finished restore at 20-JUN-06
+</pre>
+<pre dir="ltr">
+RMAN&gt; <span class="bold">RECOVER DATABASE;</span>
+
+Starting recover at 20-JUN-06
+using channel ORA_DISK_1
+allocated channel: ORA_SBT_TAPE_1
+channel ORA_SBT_TAPE_1: SID=34 device type=SBT_TAPE
+channel ORA_SBT_TAPE_1: Oracle Secure Backup
+ 
+starting media recovery
+ 
+channel ORA_DISK_1: starting archived log restore to default destination
+channel ORA_DISK_1: restoring archived log
+archived log thread=1 sequence=5
+channel ORA_DISK_1: restoring archived log
+archived log thread=1 sequence=6
+.
+.
+.
+channel ORA_DISK_1: reading from backup piece /disk1/oracle/work/orcva/TKRM/backupset/2007_06_20/o1_mf_annnn_TAG20070620T113128_29jhr197_.bkp
+channel ORA_DISK_1: piece handle=/disk1/oracle/work/orcva/TKRM/backupset/2007_06_20/o1_mf_annnn_TAG20070620T113128_29jhr197_.bkp tag=TAG20070620T113128
+channel ORA_DISK_1: restored backup piece 1
+channel ORA_DISK_1: restore complete, elapsed time: 00:00:02
+archived log file name=/disk1/oracle/work/orcva/TKRM/archivelog/2007_06_20/o1_mf_1_5_29jhv47k_.arc thread=1 sequence=5
+channel default: deleting archived log(s)
+.
+.
+.
+media recovery complete, elapsed time: 00:00:15
+Finished recover at 20-JUN-06
+ 
+</pre>
+<p>If you manually allocate channels, then you must issue the <code dir="ltr">RESTORE</code> and <code dir="ltr">RECOVER</code> commands together within a <code dir="ltr">RUN</code> block as shown in the following example:</p>
+<pre dir="ltr">
+RUN
+{
+  ALLOCATE CHANNEL c1 DEVICE TYPE sbt;
+  RESTORE DATABASE;
+  RECOVER DATABASE;
+}
+</pre></li>
+<li>
+<p>If you are restoring some data files to new locations, then execute <code dir="ltr">RESTORE DATABASE</code> and <code dir="ltr">RECOVER DATABASE</code> sequentially in a <code dir="ltr">RUN</code> command. Use the <code dir="ltr">SET NEWNAME</code> to rename data files, as described in <a href="#CHDHAAGG">"Restoring Datafiles to a Nondefault Location"</a>.</p>
+<p>The following example restores the database, specifying new names for three of the data files, and then recovers the database:</p>
+<pre dir="ltr">
+RUN
+{  
+  SET NEWNAME FOR DATAFILE 2 TO '/disk2/df2.dbf';
+  SET NEWNAME FOR DATAFILE 3 TO '/disk2/df3.dbf';
+  SET NEWNAME FOR DATAFILE 4 TO '/disk2/df4.dbf';
+  RESTORE DATABASE;
+  SWITCH DATAFILE ALL;
+  RECOVER DATABASE;
+}
+</pre></li>
+</ul>
+</li>
+<li>
+<p>Examine the output to see if media recovery was successful. If so, open the database.</p>
+<p>For example, enter the following command:</p>
+<pre dir="ltr">
+ALTER DATABASE OPEN;
+</pre></li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="CHDHICDF"></a>
+<div id="BRADV89773" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Performing Complete Recovery of a Tablespace</h3>
+<p><a id="sthref1555"></a>In the basic scenario, the database is open, and some but not all of the data files are damaged. You want to restore and recover the damaged tablespace while leaving the database open so that the rest of the database remains available. This scenario assumes that database <code dir="ltr">trgt</code> has lost tablespace <code dir="ltr">users</code>.</p>
+<p class="subhead2"><a id="BRADV356"></a>To restore and recover a tablespace:</p>
+<ol>
+<li>
+<p>Start RMAN and connect to a target database.</p>
+</li>
+<li>
+<p>If the database is open, then take the data file requiring recovery offline.</p>
+<p>For example, enter the following command to take <code dir="ltr">users</code> offline:</p>
+<pre dir="ltr">
+SQL "ALTER TABLESPACE users OFFLINE IMMEDIATE";
+</pre></li>
+<li>
+<p>Use the <code dir="ltr">SHOW</code> command to see which channels are preconfigured.</p>
+<p>For example, enter the following command (sample output is included):</p>
+<pre dir="ltr">
+SHOW ALL;
+
+RMAN configuration parameters for database with db_unique_name PROD1 are:
+.
+.
+.
+CONFIGURE DEFAULT DEVICE TYPE TO DISK; # default
+CONFIGURE DEVICE TYPE DISK PARALLELISM 1 BACKUP TYPE TO BACKUPSET; # default
+CONFIGURE DEVICE TYPE SBT_TAPE PARALLELISM 1 BACKUP TYPE TO BACKUPSET; # default
+CONFIGURE CHANNEL DEVICE TYPE 'SBT_TAPE' PARMS  "SBT_LIBRARY=/usr/local/oracle/backup/lib/libobk.so";
+</pre>
+<p>If the necessary devices and channels are already configured, then no action is necessary. Otherwise, you can use the <code dir="ltr">CONFIGURE</code> command to configure automatic channels, or include <code dir="ltr">ALLOCATE CHANNEL</code> commands within a <code dir="ltr">RUN</code> block.</p>
+</li>
+<li>
+<p>If restoring password-protected encrypted backups, then specify the password.</p>
+<p>Use the <code dir="ltr">SET DECRYPTION IDENTIFIED BY</code> command to specify a password for password-protected backups, as shown in the following example (where <span class="italic">password</span> represents the actual password that you enter):</p>
+<pre dir="ltr">
+SET DECRYPTION IDENTIFIED BY <span class="italic">password</span>;
+</pre></li>
+<li>
+<p>Restore and recover the tablespace. Do one of the following:</p>
+<ul>
+<li>
+<p>If you are restoring data files to their original locations, then run the <code dir="ltr">RESTORE TABLESPACE</code> and <code dir="ltr">RECOVER TABLESPACE</code> commands at the RMAN prompt.</p>
+<p>For example, enter the following command if automatic channels are configured (sample output included):</p>
+<pre dir="ltr">
+RMAN&gt; <span class="bold">RESTORE TABLESPACE users;</span>
+ 
+Starting restore at 20-JUN-06
+allocated channel: ORA_DISK_1
+channel ORA_DISK_1: SID=37 device type=DISK
+allocated channel: ORA_SBT_TAPE_1
+channel ORA_SBT_TAPE_1: SID=38 device type=SBT_TAPE
+channel ORA_SBT_TAPE_1: Oracle Secure Backup
+ 
+channel ORA_DISK_1: starting datafile backup set restore
+channel ORA_DISK_1: specifying datafile(s) to restore from backup set
+channel ORA_DISK_1: restoring datafile 00012 to /disk1/oracle/dbs/users01.f
+channel ORA_DISK_1: restoring datafile 00013 to /disk1/oracle/dbs/users02.f
+channel ORA_DISK_1: restoring datafile 00021 to /disk1/oracle/dbs/users03.f
+channel ORA_DISK_1: reading from backup piece /disk1/oracle/work/orcva/TKRM/backupset/2007_06_20/o1_mf_nnndf_TAG20070620T105435_29jflwor_.bkp
+channel ORA_DISK_1: piece handle=/disk1/oracle/work/orcva/TKRM/backupset/2007_06_20/o1_mf_nnndf_TAG20070620T105435_29jflwor_.bkp tag=TAG20070620T105435
+channel ORA_DISK_1: restored backup piece 1
+channel ORA_DISK_1: restore complete, elapsed time: 00:00:01
+Finished restore at 20-JUN-06
+</pre>
+<pre dir="ltr">
+RMAN&gt; <span class="bold">RECOVER TABLESPACE users;</span>
+ 
+Starting recover at 20-JUN-06
+using channel ORA_DISK_1
+using channel ORA_SBT_TAPE_1
+ 
+starting media recovery
+ 
+archived log for thread 1 with sequence 27 is already on disk as file /disk1/oracle/work/orcva/TKRM/archivelog/2007_06_20/o1_mf_1_27_29jjmtc9_.arc
+archived log for thread 1 with sequence 28 is already on disk as file /disk1/oracle/work/orcva/TKRM/archivelog/2007_06_20/o1_mf_1_28_29jjnc5x_.arc
+.
+.
+.
+channel ORA_DISK_1: starting archived log restore to default destination
+channel ORA_DISK_1: restoring archived log
+archived log thread=1 sequence=5
+channel ORA_DISK_1: restoring archived log
+archived log thread=1 sequence=6
+channel ORA_DISK_1: restoring archived log
+archived log thread=1 sequence=7
+.
+.
+.
+channel ORA_DISK_1: reading from backup piece /disk1/oracle/work/orcva/TKRM/backupset/2007_06_20/o1_mf_annnn_TAG20070620T113128_29jhr197_.bkp
+channel ORA_DISK_1: piece handle=/disk1/oracle/work/orcva/TKRM/backupset/2007_06_20/o1_mf_annnn_TAG20070620T113128_29jhr197_.bkp tag=TAG20070620T113128
+channel ORA_DISK_1: restored backup piece 1
+channel ORA_DISK_1: restore complete, elapsed time: 00:00:02
+archived log file name=/disk1/oracle/work/orcva/TKRM/archivelog/2007_06_20/o1_mf_1_5_29jkdvjq_.arc thread=1 sequence=5
+channel default: deleting archived log(s)
+archived log file name=/disk1/oracle/work/orcva/TKRM/archivelog/2007_06_20/o1_mf_1_5_29jkdvjq_.arc RECID=91 STAMP=593611179
+archived log file name=/disk1/oracle/work/orcva/TKRM/archivelog/2007_06_20/o1_mf_1_6_29jkdvbz_.arc thread=1 sequence=6
+channel default: deleting archived log(s)
+.
+.
+.
+media recovery complete, elapsed time: 00:00:01
+Finished recover at 20-JUN-06
+</pre></li>
+<li>
+<p>If you are restoring some data files to new locations, then execute <code dir="ltr">RESTORE TABLESPACE</code> and <code dir="ltr">RECOVER TABLESPACE</code> in a <code dir="ltr">RUN</code> command. Use the <code dir="ltr">SET NEWNAME</code> to rename data files, as described in <a href="#CHDHAAGG">"Restoring Datafiles to a Nondefault Location"</a>.</p>
+<p>The following example restores the data files in tablespaces <code dir="ltr">users</code> to a new location, then performs recovery. Assume that the old data files were stored in the <code dir="ltr">/disk1</code> path and the new ones are stored in the <code dir="ltr">/disk2</code> path.</p>
+<pre dir="ltr">
+<a id="CHDGAFGI"></a>
+RUN
+{
+  # specify the new location for each datafile
+  SET NEWNAME FOR DATAFILE '/disk1/oracle/dbs/users01.f' TO 
+                           '/disk2/users01.f';
+  SET NEWNAME FOR DATAFILE '/disk1/oracle/dbs/users02.f' TO 
+                           '/disk2/users02.f';
+  SET NEWNAME FOR DATAFILE '/disk1/oracle/dbs/users03.f' TO 
+                           '/disk2/users03.f';
+  RESTORE TABLESPACE users;
+  SWITCH DATAFILE ALL;   # update control file with new file names
+  RECOVER TABLESPACE users;
+}
+</pre></li>
+</ul>
+</li>
+<li>
+<p>Examine the output to see if recovery was successful. If so, bring the recovered tablespace back online.</p>
+<p>For example, enter the following command:</p>
+<pre dir="ltr">
+SQL "ALTER TABLESPACE users ONLINE";
+</pre></li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="CHDGEBBG"></a>
+<div id="BRADV89774" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Performing Complete Recovery After Switching to a Copy</h3>
+<p>If you have image copies of the inaccessible data files in the fast recovery area, then you can use the<a id="sthref1556"></a><a id="sthref1557"></a> <code dir="ltr">SWITCH DATAFILE ... TO COPY</code> command to point the control file at the data file copy and then use <code dir="ltr">RECOVER</code> to recover lost changes. You can also use the SWITCH DATABASE TO COPY command to point the control file at a copy of the whole database. Because you do not need to restore backups, this recovery technique takes less time than traditional restore and recovery.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+A <code dir="ltr">SWITCH TABLESPACE ... TO COPY</code> command is also supported for cases when all data files in a tablespace are lost and copies of all data files exist. The same restriction exists for <code dir="ltr">SWITCH DATABASE TO COPY</code>.</div>
+<div id="BRADV996" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1558"></a>
+<h4 class="sect3">Switching to a Data File Copy</h4>
+<p>In the basic scenario, the database is open, and some but not all of the data files are damaged. During the course of the day, a data file goes missing due to storage failure. You must repair this file, but cannot afford the time to do a restore and recovery from a backup. You decide to use a recent image copy backup as the new file, thus eliminating restore time. This scenario assumes that database <code dir="ltr">trgt</code> has lost data file <code dir="ltr">4</code>.</p>
+<p class="subhead2"><a id="BRADV357"></a>To switch to a data file copy and perform recovery:</p>
+<ol>
+<li>
+<p>Start RMAN and connect to a target database.</p>
+</li>
+<li>
+<p>If the database is open, then take the tablespace requiring recovery offline.</p>
+<p>Enter the following command to take data file <code dir="ltr">4</code> offline:</p>
+<pre dir="ltr">
+SQL "ALTER DATABASE DATAFILE 4 OFFLINE";
+</pre></li>
+<li>
+<p>Switch the offline data file to the latest copy.</p>
+<p>Enter the following command to point the control file to the latest image copy of data file <code dir="ltr">4</code>:</p>
+<pre dir="ltr">
+SWITCH DATAFILE 4 TO COPY;
+</pre></li>
+<li>
+<p>Recover the data file with the <code dir="ltr">RECOVER DATAFILE</code> command.</p>
+<p>Enter the following command:</p>
+<pre dir="ltr">
+RECOVER DATAFILE 4;
+ 
+</pre>
+<p>RMAN automatically restores archived redo logs and incremental backups. Because the database uses a fast recovery area, RMAN automatically deletes them after they have been applied.</p>
+</li>
+<li>
+<p>Examine the output to see if recovery was successful. If so, bring the recovered data file back online.</p>
+<p>Enter the following command to bring data file <code dir="ltr">4</code> online:</p>
+<pre dir="ltr">
+SQL "ALTER DATABASE DATAFILE 4 ONLINE";
+</pre></li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<div id="BRADV999" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1559"></a>
+<h4 class="sect3">Switching to a Database Copy</h4>
+<p>In this scenario, the database is shut down, and all of the data files are damaged. You have image copies of all the damaged data files. You decide to use the existing image copies as the new data files, thus eliminating restore time.</p>
+<p class="subhead2"><a id="BRADV358"></a>To switch to a database copy and perform recovery:</p>
+<ol>
+<li>
+<p>Start RMAN and connect to a target database.</p>
+</li>
+<li>
+<p>Mount the database.</p>
+</li>
+<li>
+<p>Switch the database to the latest copy.</p>
+<p>Enter the following command to point the control file to the latest image copy of the database:</p>
+<pre dir="ltr">
+SWITCH DATABASE TO COPY;
+</pre></li>
+<li>
+<p>Recover the database with the <code dir="ltr">RECOVER DATABASE</code> command.</p>
+<p>Enter the following command:</p>
+<pre dir="ltr">
+RECOVER DATABASE;
+ 
+</pre>
+<p>RMAN automatically restores archived redo logs and incremental backups. Because the database uses a fast recovery area, RMAN automatically deletes them after they have been applied.</p>
+</li>
+<li>
+<p>Examine the output to see if recovery was successful. If so, open the database.</p>
+<p>Enter the following command to open the database:</p>
+<pre dir="ltr">
+ALTER DATABASE OPEN;
+</pre></li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1933">
+<tr>
+<td class="cellalignment1942">
+<table class="cellalignment1938">
+<tr>
+<td class="cellalignment1937"><a href="rcmvalid.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1937"><a href="rcmflash.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2003, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1944">
+<table class="cellalignment1936">
+<tr>
+<td class="cellalignment1937"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1937"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1937"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1937"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1937"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1937"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Working with Multimedia Data Types</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1" />
+<meta name="dcterms.created" content="2010-03-08T13:16:26Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Data Cartridge Developer's Guide" />
+<meta name="dcterms.identifier" content="E10765-02" />
+<meta name="dcterms.isVersionOf" content="ADDCI" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1996, 2010,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="c_cpp_java.htm" title="Previous" type="text/html" />
+<link rel="Next" href="ext_idx_frmwork.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10765.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">15/36</span> <!-- End Header --><a id="CIHEHGAI"></a><a id="ADDCI260"></a>
+<h1 class="chapter"><span class="secnum">6</span> Working with Multimedia Data Types</h1>
+<p>This chapter describes how to work with multimedia data types, which are represented in Oracle Database as Large Objects (LOBs). The discussion provides a brief theoretical overview of LOB types, and then focuses on their practical use, through PL/SQ and OCI implementation for Data Cartridges.</p>
+<p>This chapter contains these topics:</p>
+<ul>
+<li>
+<p><a href="#i1004610">Overview of Cartridges and Multimedia Data Types</a></p>
+</li>
+<li>
+<p><a href="#i1004627">DDL for LOBs</a></p>
+</li>
+<li>
+<p><a href="#i1004663">LOB Locators</a></p>
+</li>
+<li>
+<p><a href="#BHAEAEIC">EMPTY_BLOB and EMPTY_CLOB Functions</a></p>
+</li>
+<li>
+<p><a href="#i1004742">Using the OCI to Manipulate LOBs</a></p>
+</li>
+<li>
+<p><a href="#i1005060">Using DBMS_LOB to Manipulate LOBs</a></p>
+</li>
+<li>
+<p><a href="#i1005096">LOBs in External Procedures</a></p>
+</li>
+<li>
+<p><a href="#i1005107">LOBs and Triggers</a></p>
+</li>
+<li>
+<p><a href="#i1005114">Using Open/Close as Bracketing Operations for Efficient Performance</a></p>
+</li>
+</ul>
+<a id="i1004610"></a><a id="ADDCI4362"></a>
+<div class="sect1">
+<h2 class="sect1">Overview of Cartridges and Multimedia Data Types</h2>
+<p>Some data cartridges must handle large amounts of raw binary data, such as graphic images or sound waveforms, or character data, such as text or streams of numbers. Oracle supports large objects, <code>LOB</code>s, to handle these kinds of data.</p>
+<ul>
+<li>
+<p><span class="bold"><a id="sthref254"></a><a id="sthref255"></a>Internal LOBs</span> are stored in the database tablespaces in a way that optimizes space and provides efficient access. Internal <code>LOB</code>s participate in the transactional model of the server.</p>
+<p><a id="sthref256"></a><a id="sthref257"></a><a id="sthref258"></a>Internal <code>LOBs</code> can store binary data (<code>BLOB</code>s), single-byte character data (<code>CLOB</code>s), or fixed-width single-byte or multibyte character data (<code>NCLOB</code>s). An <code>NCLOB</code> consists of character data that corresponds to the national character set defined for the Oracle database. Varying width character data is not supported in Oracle.</p>
+</li>
+<li>
+<p><a id="sthref259"></a><a id="sthref260"></a><span class="bold">External</span> <code>LOBs</code> are stored in operating system files outside the database tablespaces as <code>BFILE</code>s, binary data. They cannot participate in transactions.</p>
+</li>
+</ul>
+<p>Both internal <code>LOB</code>s and in <code>BFILE</code>s provide considerable flexibility in handling large amounts of data.</p>
+<p><a id="sthref261"></a><a id="sthref262"></a><a id="sthref263"></a>Data stored in a <code>LOB</code> is called the <code>LOB</code>'s <span class="bold">value</span>. To the Oracle server, a <code>LOB</code>'s value is unstructured and cannot be queried. You must unpack and interpret a <code>LOB</code>'s value in cartridge-specific ways.</p>
+<p><code>LOB</code>s can be manipulated using the Oracle Call Interface, OCI, or the PL/SQL <code>DBMS_LOB</code> package. You can write functions, including methods on object types that can contain <code>LOB</code>s, to manipulate parts of <code>LOB</code>s.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ADLOB" href="../e18294/toc.htm"><span class="variable">Oracle Database SecureFiles and Large Objects Developer's Guide</span></a>. for details on <code>LOBs</code></div>
+</div>
+<!-- class="sect1" -->
+<a id="i1004627"></a><a id="ADDCI4363"></a>
+<div class="sect1">
+<h2 class="sect1">DDL for LOBs</h2>
+<p><a id="sthref264"></a><a id="sthref265"></a>LOB definition can involve the <code>CREATE</code> <code>TYPE</code> and the <code>CREATE</code> <code>TABLE</code> statements. <a href="#BABBJIJJ">Example 6-1</a> specifies a <code>CLOB</code> within a data type named <code>lob_type</code>.</p>
+<div class="example">
+<p class="titleinexample"><a id="BABBJIJJ"></a><a id="ADDCI4364"></a>Example 6-1 Creating a CLOB Attribute of a Type</p>
+<pre>
+CREATE OR REPLACE TYPE lob_type AS OBJECT ( 
+  id  INTEGER, 
+  data CLOB );
+</pre></div>
+<!-- class="example" -->
+<p><a href="#BABGJJFH">Example 6-2</a> creates an object table, <code>lob_table</code>, in which each row is an instance of <code>lob_type</code> data:</p>
+<div class="example">
+<p class="titleinexample"><a id="BABGJJFH"></a><a id="ADDCI4365"></a>Example 6-2 Creating a LOB Object Table</p>
+<pre>
+CREATE TABLE lob_table OF lob_type;
+</pre></div>
+<!-- class="example" -->
+<p><a href="#BABHBICA">Example 6-3</a> shows how to store <code>LOBs</code> in a regular table, as opposed to an object table as in <a href="#BABGJJFH">Example 6-2</a>.</p>
+<div class="example">
+<p class="titleinexample"><a id="BABHBICA"></a><a id="ADDCI4366"></a>Example 6-3 Creating LOB Columns in a Table</p>
+<pre>
+CREATE TABLE lob_table1  (
+  id  INTEGER,
+  b_lob   BLOB,
+  c_lob   CLOB,
+  nc_lob  NCLOB,
+  b_file  BFILE );
+</pre></div>
+<!-- class="example" -->
+<p>When creating LOBs in tables, you can set the LOB storage, buffering, and caching properties.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SQLRF" href="../../server.112/e41084/toc.htm"><span class="variable">Oracle Database SQL Language Reference</span></a> manual and the <a class="olink ADLOB" href="../e18294/toc.htm"><span class="variable">Oracle Database SecureFiles and Large Objects Developer's Guide</span></a> for information about using LOBs in <code>CREATE TABLE</code>, <code>ALTER TABLE</code>, <code>CREATE TYPE</code> and <code>ALTER TYPE</code> statements</div>
+</div>
+<!-- class="sect1" -->
+<a id="i1004663"></a><a id="ADDCI4367"></a>
+<div class="sect1">
+<h2 class="sect1">LOB Locators</h2>
+<p><code><a id="sthref266"></a><a id="sthref267"></a>LOBs</code> can be stored with other row data or separate from row data. Regardless of the storage location, each <code>LOB</code> has a <span class="bold">locator</span>, which can be viewed as a handle or pointer to the actual location. Selecting a <code>LOB</code> returns the <code>LOB</code> locator instead of the <code>LOB</code> value.</p>
+<p><a href="#BABJHDFE">Example 6-4</a> selects the <code>LOB</code> locator for <code>b_lob</code> and places it a PL/SQL local variable named <code>image1</code>.</p>
+<div class="example">
+<p class="titleinexample"><a id="BABJHDFE"></a><a id="ADDCI4368"></a>Example 6-4 Selecting a LOB Locator and Assigning it to a Local Variable</p>
+<pre>
+DECLARE
+       image1  BLOB;
+       image_no  INTEGER := 101;
+BEGIN
+       SELECT b_lob  INTO image1 FROM lob_table
+                  WHERE key_value = image_no;
+             ...
+END;
+</pre></div>
+<!-- class="example" -->
+<p>When you use an API function to manipulate the <code>LOB</code> value, you refer to the <code>LOB</code> using the locator. The PL/SQL <code>DBMS_LOB</code> package contains useful routines to manipulate <code>LOBs</code>, such as <code>PUT_LINE()</code> and <code>GETLENGTH()</code>, as in <a href="#BABHDCHH">Example 6-5</a>.</p>
+<div class="example">
+<p class="titleinexample"><a id="BABHDCHH"></a><a id="ADDCI4369"></a>Example 6-5 Manipulating LOBs with PUT_LINE() and GETLENGTH()</p>
+<pre>
+BEGIN
+     DBMS_OUTPUT.PUT_LINE('Size of the Image is: ', 
+                       DBMS_LOB.GETLENGTH(image1));
+END;
+</pre></div>
+<!-- class="example" -->
+<p>In the OCI, <code>LOB</code> locators are mapped to <code>LOBLocatorPointers</code>, such as <code>OCILobLocator *</code>.</p>
+<p>The OCI <code>LOB</code> interface and the PL/SQL <code>DBMS_LOB</code> package are described briefly in this chapter.</p>
+<p>For a <code>BFILE</code>, the <code>LOB</code> column has its own distinct locator, which refers to the <code>LOB's</code> value that is stored in an external file in the server's file system. This implies that two rows in a table with a <code>BFILE</code> column may refer to the same file or two distinct files. A <code>BFILE</code> locator variable in a PL/SQL or OCI program behaves like any other automatic variable. With respect to file operations, it behaves like a file descriptor available as part of the standard I/O library of most conventional programming languages.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink LNOCI" href="../e10646/toc.htm"><span class="variable">Oracle Call Interface Programmer's Guide</span></a></p>
+</li>
+<li>
+<p><a class="olink ADLOB" href="../e18294/toc.htm"><span class="variable">Oracle Database SecureFiles and Large Objects Developer's Guide</span></a>. for <code>DBMS_LOB</code> API</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="BHAEAEIC"></a><a id="ADDCI4370"></a>
+<div class="sect1">
+<h2 class="sect1">EMPTY_BLOB and EMPTY_CLOB Functions</h2>
+<p><a id="sthref268"></a><a id="sthref269"></a><a id="sthref270"></a><a id="sthref271"></a>You can use the special functions <code>EMPTY_BLOB</code> and EMPTY_CLOB in <code>INSERT</code> or <code>UPDATE</code> statements of SQL DML to initialize a <code>NULL</code> or non-<code>NULL</code> internal <code>LOB</code> to empty. These are available as special functions in Oracle SQL DML, and are not part of the <code>DBMS_LOB</code> package.</p>
+<p>Before you can start writing data to an internal <code>LOB</code> using OCI or the <code>DBMS_LOB</code> package, the <code>LOB</code> column must be made non-null, that is, it must contain a locator that points to an empty or populated <code>LOB</code> value. You can initialize a <code>BLOB</code> column's value to empty by using the function <code>EMPTY_BLOB</code> in the <code>VALUES</code> clause of an <code>INSERT</code> statement. Similarly, a <code>CLOB</code> or <code>NCLOB</code> column's value can be initialized by using the function <code>EMPTY_CLOB</code>. The syntax of the functions is demonstrated in .</p>
+<div class="example">
+<p class="titleinexample"><a id="ADDCI4371"></a><a id="sthref272"></a>Example 6-6 Syntax of EMPTY_CLOB() and EMPTY_CLOB() Functions</p>
+<pre>
+FUNCTION EMPTY_BLOB() RETURN BLOB;
+FUNCTION EMPTY_CLOB() RETURN CLOB;
+</pre></div>
+<!-- class="example" -->
+<p><code>EMPTY_BLOB</code> returns an empty locator of type <code>BLOB</code> and <code>EMPTY_CLOB</code> returns an empty locator of type <code>CLOB</code>, which can also be used for <code>NCLOBs</code>. The functions don't have an associated pragma.</p>
+<p>An exception is raised if you use these functions anywhere but in the <code>VALUES</code> clause of a SQL <code>INSERT</code> statement or as the source of the <code>SET</code> clause in a SQL <code>UPDATE</code> statement.</p>
+<p><a href="#BABHDFFG">Example 6-7</a> shows <code>EMPTY_BLOB()</code> used with SQL DML.</p>
+<div class="example">
+<p class="titleinexample"><a id="BABHDFFG"></a><a id="ADDCI4372"></a>Example 6-7 Using EMPTY_BLOB() with SQL DML</p>
+<pre>
+INSERT INTO lob_table VALUES (1001, EMPTY_BLOB(), 'abcde', NULL);
+UPDATE lob_table SET c_lob = EMPTY_CLOB() WHERE key_value = 1001;
+INSERT INTO lob_table VALUES (1002, NULL, NULL, NULL);
+</pre></div>
+<!-- class="example" -->
+<p><a href="#BABICAAD">Example 6-8</a> shows how to use <code>EMPTY_CLOB()</code> in PL/SQL programs.</p>
+<div class="example">
+<p class="titleinexample"><a id="BABICAAD"></a><a id="ADDCI4373"></a>Example 6-8 Using EMPTY_CLOB() in PL/SQL Programs</p>
+<pre>
+DECLARE 
+  lobb         CLOB; 
+  read_offset  INTEGER; 
+  read_amount  INTEGER; 
+  rawbuf       RAW(20); 
+  charbuf      VARCHAR2(20);
+BEGIN
+  read_amount := 10; read_offset := 1;
+  UPDATE lob_table SET c_lob = EMPTY_CLOB() 
+  WHERE key_value = 1002 RETURNING c_lob INTO lobb;
+  dbms_lob.read(lobb, read_amount, read_offset, charbuf); 
+  dbms_output.put_line('lobb value: ' || charbuf);
+END
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect1" -->
+<a id="i1004742"></a><a id="ADDCI4374"></a>
+<div class="sect1">
+<h2 class="sect1">Using the OCI to Manipulate LOBs</h2>
+<p><a id="sthref273"></a><a id="sthref274"></a><a id="sthref275"></a>The OCI includes functions that enable access to data stored in <code>BLOB</code>s, <code>CLOB</code>s, <code>NCLOB</code>s, and <code>BFILE</code>s. These functions are introduced in <a href="#BABGGIFB">Table 6-1</a>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink LNOCI" href="../e10646/toc.htm"><span class="variable">Oracle Call Interface Programmer's Guide</span></a>. for detailed documentation, including parameters, parameter types, return values, and example code</div>
+<div class="tblformal">
+<p class="titleintable"><a id="ADDCI4375"></a><a id="sthref276"></a><a id="BABGGIFB"></a>Table 6-1 Summary of OCI Functions for Manipulating LOBs</p>
+<table class="cellalignment1246" title="Summary of OCI Functions for Manipulating LOBs " summary="Lists the OCI functions used to manipulate LOBs and describes the function of each" dir="ltr">
+<thead>
+<tr class="cellalignment1237">
+<th class="cellalignment1247" id="r1c1-t6">Function</th>
+<th class="cellalignment1247" id="r1c2-t6">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r2c1-t6" headers="r1c1-t6">
+<pre>
+OCILobAppend() 
+</pre></td>
+<td class="cellalignment1243" headers="r2c1-t6 r1c2-t6">
+<p>Appends <code>LOB</code> value to another <code>LOB</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r3c1-t6" headers="r1c1-t6">
+<pre>
+OCILobAssign() 
+</pre></td>
+<td class="cellalignment1243" headers="r3c1-t6 r1c2-t6">
+<p>Assigns one <code>LOB</code> locator to another.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r4c1-t6" headers="r1c1-t6">
+<pre>
+OCILobCharSetForm() 
+</pre></td>
+<td class="cellalignment1243" headers="r4c1-t6 r1c2-t6">
+<p>Returns the character set form of a <code>LOB</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r5c1-t6" headers="r1c1-t6">
+<pre>
+OCILobCharSetId() 
+</pre></td>
+<td class="cellalignment1243" headers="r5c1-t6 r1c2-t6">
+<p>Returns the character set ID of a <code>LOB</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r6c1-t6" headers="r1c1-t6">
+<pre>
+OCILobCopy() 
+</pre></td>
+<td class="cellalignment1243" headers="r6c1-t6 r1c2-t6">
+<p>Copies a portion of a <code>LOB</code> into another <code>LOB</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r7c1-t6" headers="r1c1-t6">
+<pre>
+OCILobDisableBuffering() 
+</pre></td>
+<td class="cellalignment1243" headers="r7c1-t6 r1c2-t6">
+<p>Disables the buffering subsystem use.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r8c1-t6" headers="r1c1-t6">
+<pre>
+OCILobEnableBuffering() 
+</pre></td>
+<td class="cellalignment1243" headers="r8c1-t6 r1c2-t6">
+<p>Uses the <code>LOB</code> buffering subsystem for subsequent read and write operations of <code>LOB</code> data.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r9c1-t6" headers="r1c1-t6">
+<pre>
+OCILobErase() 
+</pre></td>
+<td class="cellalignment1243" headers="r9c1-t6 r1c2-t6">
+<p>Erases part of a <code>LOB</code>, starting at a specified offset.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r10c1-t6" headers="r1c1-t6">
+<pre>
+OCILobFileClose() 
+</pre></td>
+<td class="cellalignment1243" headers="r10c1-t6 r1c2-t6">
+<p>Closes an open <code>BFILE</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r11c1-t6" headers="r1c1-t6">
+<pre>
+OCILobFileCloseAll() 
+</pre></td>
+<td class="cellalignment1243" headers="r11c1-t6 r1c2-t6">
+<p>Closes all open <code>BFILEs</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r12c1-t6" headers="r1c1-t6">
+<pre>
+OCILobFileExists() 
+</pre></td>
+<td class="cellalignment1243" headers="r12c1-t6 r1c2-t6">
+<p>Tests to see if a <code>BFILE</code> exists.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r13c1-t6" headers="r1c1-t6">
+<pre>
+OCILobFileGetName() 
+</pre></td>
+<td class="cellalignment1243" headers="r13c1-t6 r1c2-t6">
+<p>Returns the name of a <code>BFILE</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r14c1-t6" headers="r1c1-t6">
+<pre>
+OCILobFileIsOpen() 
+</pre></td>
+<td class="cellalignment1243" headers="r14c1-t6 r1c2-t6">
+<p>Tests to see if a <code>BFILE</code> is open.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r15c1-t6" headers="r1c1-t6">
+<pre>
+OCILobFileOpen() 
+</pre></td>
+<td class="cellalignment1243" headers="r15c1-t6 r1c2-t6">
+<p>Opens a <code>BFILE</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r16c1-t6" headers="r1c1-t6">
+<pre>
+OCILobFileSetName() 
+</pre></td>
+<td class="cellalignment1243" headers="r16c1-t6 r1c2-t6">
+<p>Sets the name of a <code>BFILE</code> in a locator.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r17c1-t6" headers="r1c1-t6">
+<pre>
+OCILobFlushBuffer() 
+</pre></td>
+<td class="cellalignment1243" headers="r17c1-t6 r1c2-t6">
+<p>Flushes changes made to the <code>LOB</code> buffering subsystem to the database (server)</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r18c1-t6" headers="r1c1-t6">
+<pre>
+OCILobGetLength() 
+</pre></td>
+<td class="cellalignment1243" headers="r18c1-t6 r1c2-t6">
+<p>Returns the length of a <code>LOB</code> or a <code>BFILE</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r19c1-t6" headers="r1c1-t6">
+<pre>
+OCILobIsEqual() 
+</pre></td>
+<td class="cellalignment1243" headers="r19c1-t6 r1c2-t6">
+<p>Tests to see if two <code>LOB</code> locators refer to the same <code>LOB</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r20c1-t6" headers="r1c1-t6">
+<pre>
+OCILobLoadFromFile() 
+</pre></td>
+<td class="cellalignment1243" headers="r20c1-t6 r1c2-t6">
+<p>Loads <code>BFILE</code> data into an internal <code>LOB</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r21c1-t6" headers="r1c1-t6">
+<pre>
+OCILobLocatorIsInit() 
+</pre></td>
+<td class="cellalignment1243" headers="r21c1-t6 r1c2-t6">
+<p>Tests to see if a <code>LOB</code> locator is initialized.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r22c1-t6" headers="r1c1-t6">
+<pre>
+OCILobLocatorSize() 
+</pre></td>
+<td class="cellalignment1243" headers="r22c1-t6 r1c2-t6">
+<p>Returns the size of a <code>LOB</code> locator.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r23c1-t6" headers="r1c1-t6">
+<pre>
+OCILobRead() 
+</pre></td>
+<td class="cellalignment1243" headers="r23c1-t6 r1c2-t6">
+<p>Reads a specified portion of a non-null <code>LOB</code> or a <code>BFILE</code> into a buffer.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r24c1-t6" headers="r1c1-t6">
+<pre>
+OCILobTrim() 
+</pre></td>
+<td class="cellalignment1243" headers="r24c1-t6 r1c2-t6">
+<p>Truncates a <code>LOB</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r25c1-t6" headers="r1c1-t6">
+<pre>
+OCILobWrite() 
+</pre></td>
+<td class="cellalignment1243" headers="r25c1-t6 r1c2-t6">
+<p>Writes data from a buffer into a <code>LOB</code>, writing over existing data.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<p><a id="sthref277"></a><a id="sthref278"></a><a href="#BABEEBBC">Table 6-2</a> compares the OCI and PL/SQL (<code>DBMS_LOB</code> package) interfaces in terms of <code>LOB</code> access.</p>
+<div class="tblformal">
+<p class="titleintable"><a id="ADDCI4376"></a><a id="sthref279"></a><a id="BABEEBBC"></a>Table 6-2 OCI and PL/SQL (DBMS_LOB) Interfaces Compared</p>
+<table class="cellalignment1246" title="OCI and PL/SQL (DBMS_LOB) Interfaces Compared " summary="Side-by-side list of comparable OC and PL/SQL (DBMS_LOB) interfaces" dir="ltr">
+<thead>
+<tr class="cellalignment1237">
+<th class="cellalignment1247" id="r1c1-t7">OCI (ociap.h)</th>
+<th class="cellalignment1247" id="r1c2-t7">PL/SQL DBMS_LOB (dbmslob.sql)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r2c1-t7" headers="r1c1-t7">
+<p>N/A</p>
+</td>
+<td class="cellalignment1243" headers="r2c1-t7 r1c2-t7">
+<pre>
+DBMS_LOB.COMPARE() 
+</pre></td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r3c1-t7" headers="r1c1-t7">
+<p>N/A</p>
+</td>
+<td class="cellalignment1243" headers="r3c1-t7 r1c2-t7">
+<pre>
+DBMS_LOB.INSTR() 
+</pre></td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r4c1-t7" headers="r1c1-t7">
+<p>N/A</p>
+</td>
+<td class="cellalignment1243" headers="r4c1-t7 r1c2-t7">
+<pre>
+DBMS_LOB.SUBSTR() 
+</pre></td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r5c1-t7" headers="r1c1-t7">
+<pre>
+OCILobAppend()
+</pre></td>
+<td class="cellalignment1243" headers="r5c1-t7 r1c2-t7">
+<pre>
+DBMS_LOB.APPEND() 
+</pre></td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r6c1-t7" headers="r1c1-t7">
+<pre>
+OCILobAssign()
+</pre></td>
+<td class="cellalignment1243" headers="r6c1-t7 r1c2-t7">
+<p>N/A [use PL/SQL assign operator]</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r7c1-t7" headers="r1c1-t7">
+<pre>
+OCILobCharSetForm()
+</pre></td>
+<td class="cellalignment1243" headers="r7c1-t7 r1c2-t7">
+<p>N/A</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r8c1-t7" headers="r1c1-t7">
+<pre>
+OCILobCharSetId()
+</pre></td>
+<td class="cellalignment1243" headers="r8c1-t7 r1c2-t7">
+<p>N/A</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r9c1-t7" headers="r1c1-t7">
+<pre>
+OCILobCopy()
+</pre></td>
+<td class="cellalignment1243" headers="r9c1-t7 r1c2-t7">
+<pre>
+DBMS_LOB.COPY() 
+</pre></td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r10c1-t7" headers="r1c1-t7">
+<pre>
+OCILobDisableBuffering()
+</pre></td>
+<td class="cellalignment1243" headers="r10c1-t7 r1c2-t7">
+<p>N/A</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r11c1-t7" headers="r1c1-t7">
+<pre>
+OCILobEnableBuffering()
+</pre></td>
+<td class="cellalignment1243" headers="r11c1-t7 r1c2-t7">
+<p>N/A</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r12c1-t7" headers="r1c1-t7">
+<pre>
+OCILobErase()
+</pre></td>
+<td class="cellalignment1243" headers="r12c1-t7 r1c2-t7">
+<pre>
+DBMS_LOB.ERASE()
+</pre></td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r13c1-t7" headers="r1c1-t7">
+<pre>
+OCILobFileClose()
+</pre></td>
+<td class="cellalignment1243" headers="r13c1-t7 r1c2-t7">
+<pre>
+DBMS_LOB.FILECLOSE()
+</pre></td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r14c1-t7" headers="r1c1-t7">
+<pre>
+OCILobFileCloseAll()
+</pre></td>
+<td class="cellalignment1243" headers="r14c1-t7 r1c2-t7">
+<pre>
+DBMS_LOB.FILECLOSEALL()
+</pre></td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r15c1-t7" headers="r1c1-t7">
+<pre>
+OCILobFileExists()
+</pre></td>
+<td class="cellalignment1243" headers="r15c1-t7 r1c2-t7">
+<pre>
+DBMS_LOB.FILEEXISTS()
+</pre></td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r16c1-t7" headers="r1c1-t7">
+<pre>
+OCILobFileGetName()
+</pre></td>
+<td class="cellalignment1243" headers="r16c1-t7 r1c2-t7">
+<pre>
+DBMS_LOB.FILEGETNAME()
+</pre></td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r17c1-t7" headers="r1c1-t7">
+<pre>
+OCILobFileIsOpen()
+</pre></td>
+<td class="cellalignment1243" headers="r17c1-t7 r1c2-t7">
+<pre>
+DBMS_LOB.FILEISOPEN()
+</pre></td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r18c1-t7" headers="r1c1-t7">
+<pre>
+OCILobFileOpen()
+</pre></td>
+<td class="cellalignment1243" headers="r18c1-t7 r1c2-t7">
+<pre>
+DBMS_LOB.FILEOPEN()
+</pre></td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r19c1-t7" headers="r1c1-t7">
+<pre>
+OCILobFileSetName()
+</pre></td>
+<td class="cellalignment1243" headers="r19c1-t7 r1c2-t7">
+<p>N/A (use <code>BFILENAME</code> operator)</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r20c1-t7" headers="r1c1-t7">
+<pre>
+OCILobFlushBuffer()
+</pre></td>
+<td class="cellalignment1243" headers="r20c1-t7 r1c2-t7">
+<p>N/A</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r21c1-t7" headers="r1c1-t7">
+<pre>
+OCILobGetLength()
+</pre></td>
+<td class="cellalignment1243" headers="r21c1-t7 r1c2-t7">
+<pre>
+DBMS_LOB.GETLENGTH()
+</pre></td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r22c1-t7" headers="r1c1-t7">
+<pre>
+OCILobIsEqual()
+</pre></td>
+<td class="cellalignment1243" headers="r22c1-t7 r1c2-t7">
+<p>N/A [use PL/SQL equal operator]</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r23c1-t7" headers="r1c1-t7">
+<pre>
+OCILobLoadFromFile 
+</pre></td>
+<td class="cellalignment1243" headers="r23c1-t7 r1c2-t7">
+<pre>
+DBMS_LOB.LOADFROMFILE() 
+</pre></td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r24c1-t7" headers="r1c1-t7">
+<pre>
+OCILobLocatorIsInit 
+</pre></td>
+<td class="cellalignment1243" headers="r24c1-t7 r1c2-t7">
+<p>N/A [always initialize]</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r25c1-t7" headers="r1c1-t7">
+<pre>
+OCILobRead 
+</pre></td>
+<td class="cellalignment1243" headers="r25c1-t7 r1c2-t7">
+<pre>
+DBMS_LOB.READ() 
+</pre></td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r26c1-t7" headers="r1c1-t7">
+<pre>
+OCILobTrim 
+</pre></td>
+<td class="cellalignment1243" headers="r26c1-t7 r1c2-t7">
+<pre>
+DBMS_LOB.TRIM() 
+</pre></td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r27c1-t7" headers="r1c1-t7">
+<pre>
+OCILobWrite 
+</pre></td>
+<td class="cellalignment1243" headers="r27c1-t7 r1c2-t7">
+<pre>
+DBMS_LOB.WRITE() 
+</pre></td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<p><a href="#BABEAIFE">Example 6-9</a> shows how to select a <code>LOB</code> from the database into a locator. It assumes that the type <code>lob_type</code> has two attributes, <code>id</code> of type <code>INTEGER</code> and <code>data</code> of type <code>CLOB</code>, and that a table, <code>lob_table</code>, of type <code>lob_type</code>, exists.</p>
+<div class="example">
+<p class="titleinexample"><a id="BABEAIFE"></a><a id="ADDCI4377"></a>Example 6-9 Selecting a LOB from the Database into a Locator</p>
+<pre>
+/*-----------------------------------------------------------------------*/ 
+/* Select lob locators from a CLOB column                                */ 
+/* Use the 'FOR UPDATE' clause for writing to the LOBs.                  */ 
+/*-----------------------------------------------------------------------*/ 
+static OCIEnv        *envhp;
+static OCIServer     *srvhp;
+static OCISvcCtx     *svchp;
+static OCIError      *errhp;
+static OCISession    *authp;
+static OCIStmt       *stmthp;
+static OCIDefine     *defnp1;
+static OCIBind       *bndhp;
+ 
+sb4 select_locator(int rowind) 
+{ 
+  sword retval; 
+  boolean flag; 
+  int colc = rowind; 
+  OCILobLocator *clob;
+  text  *sqlstmt = (text *)"SELECT DATA FROM LOB_TABLE WHERE ID = :1 FOR UPDATE"; 
+
+  if (OCIStmtPrepare(stmthp, errhp, sqlstmt, (ub4) strlen((char *)sqlstmt), 
+      (ub4) OCI_NTV_SYNTAX, (ub4) OCI_DEFAULT)) 
+  { 
+    (void) printf("FAILED: OCIStmtPrepare() sqlstmt\n"); 
+    return OCI_ERROR; 
+  } 
+
+  if (OCIStmtBindByPos(stmthp, bndhp, errhp, (ub4) 1, (dvoid *) &amp;colc, 
+      (sb4) sizeof(colc), SQLT_INT, (dvoid *) 0, (ub2 *)0, (ub2 *)0, (ub4) 0, 
+      (ub4 *) 0, (ub4) OCI_DEFAULT)) 
+  {
+    (void) printf("FAILED: OCIStmtBindByPos()\n"); 
+    return OCI_ERROR; 
+  }
+  
+  if (OCIDefineByPos(stmthp, &amp;defnp1, errhp, (ub4) 1, (dvoid *) &amp;clob, (sb4) -1,
+      (ub2) SQLT_CLOB, (dvoid *) 0, (ub2 *) 0, (ub2 *) 0, (ub4) OCI_DEFAULT)) 
+  { 
+    (void) printf("FAILED: OCIDefineByPos()\n"); 
+    return OCI_ERROR; 
+  } 
+
+  /* Execute the select and fetch one row */ 
+  if (OCIStmtExecute(svchp, stmthp, errhp, (ub4) 1, (ub4) 0, 
+      (CONST OCISnapshot*) 0, (OCISnapshot*) 0, (ub4) OCI_DEFAULT)) 
+  { 
+    (void) printf("FAILED: OCIStmtExecute() sqlstmt\n"); 
+    report_error(); 
+    return OCI_ERROR; 
+  } 
+ 
+  /* Now test to see if the LOB locator is initialized */ 
+  retval = OCILobLocatorIsInit(envhp, errhp, clob, &amp;flag); 
+  if ((retval != OCI_SUCCESS) &amp;&amp; (retval != OCI_SUCCESS_WITH_INFO)) 
+  { 
+    (void) printf("Select_Locator --ERROR: OCILobLocatorIsInit(), 
+        retval = %d\n", retval); 
+    report_error(); 
+    checkerr(errhp, retval); 
+    return OCI_ERROR; 
+  } 
+
+  if (!flag) 
+  { 
+    (void) printf("Select_Locator --ERROR: LOB Locator is not initialized.\n"); 
+    return OCI_ERROR;  
+  } 
+
+  return OCI_SUCCESS; 
+}
+</pre></div>
+<!-- class="example" -->
+<p>A sample program, <code>populate.c</code>, uses the OCI to populate a <code>CLOB</code> with the contents of a file is included on the disk.</p>
+</div>
+<!-- class="sect1" -->
+<a id="i1005060"></a><a id="ADDCI4378"></a>
+<div class="sect1">
+<h2 class="sect1">Using DBMS_LOB to Manipulate LOBs</h2>
+<p><a id="sthref280"></a>The <code>DBMS_LOB</code> package can be used to manipulate <code>LOBs</code> from PL/SQL. <a href="#BABHCJHA">Table 6-3</a> introduces its routines.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ARPLS600" href="../../appdev.112/e40758/d_lob.htm#ARPLS600"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> provides full details on using the routines of the <code>DBMS_LOB</code> package.</div>
+<div class="tblformal">
+<p class="titleintable"><a id="ADDCI4379"></a><a id="sthref281"></a><a id="BABHCJHA"></a>Table 6-3 Summary of DBMS_LOB Package Routines</p>
+<table class="cellalignment1246" title="Summary of DBMS_LOB Package Routines" summary="Column 1 names the routine, and column 2 provides its description" dir="ltr">
+<thead>
+<tr class="cellalignment1237">
+<th class="cellalignment1247" id="r1c1-t9">Routine</th>
+<th class="cellalignment1247" id="r1c2-t9">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r2c1-t9" headers="r1c1-t9">
+<pre>
+APPEND()
+</pre></td>
+<td class="cellalignment1243" headers="r2c1-t9 r1c2-t9">
+<p>Appends the contents of the source <code>LOB</code> to the destination <code>LOB</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r3c1-t9" headers="r1c1-t9">
+<pre>
+COPY()
+</pre></td>
+<td class="cellalignment1243" headers="r3c1-t9 r1c2-t9">
+<p>Copies all or part of the source <code>LOB</code> to the destination <code>LOB</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r4c1-t9" headers="r1c1-t9">
+<pre>
+ERASE()
+</pre></td>
+<td class="cellalignment1243" headers="r4c1-t9 r1c2-t9">
+<p>Erases all or part of a <code>LOB</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r5c1-t9" headers="r1c1-t9">
+<pre>
+LOADFROMFILE()
+</pre></td>
+<td class="cellalignment1243" headers="r5c1-t9 r1c2-t9">
+<p>Loads <code>BFILE</code> data into an internal <code>LOB</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r6c1-t9" headers="r1c1-t9">
+<pre>
+TRIM()
+</pre></td>
+<td class="cellalignment1243" headers="r6c1-t9 r1c2-t9">
+<p>Trims the <code>LOB</code> value to the specified shorter length.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r7c1-t9" headers="r1c1-t9">
+<pre>
+WRITE()
+</pre></td>
+<td class="cellalignment1243" headers="r7c1-t9 r1c2-t9">
+<p>Write data to the <code>LOB</code> from a specified offsets</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r8c1-t9" headers="r1c1-t9">
+<pre>
+GETLENGTH
+</pre></td>
+<td class="cellalignment1243" headers="r8c1-t9 r1c2-t9">
+<p>Gets the length of the <code>LOB</code> value.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r9c1-t9" headers="r1c1-t9">
+<pre>
+INSTR()
+</pre></td>
+<td class="cellalignment1243" headers="r9c1-t9 r1c2-t9">
+<p>Return the matching position of the <span class="italic">n</span><sup>th</sup> occurrence of the pattern in the <code>LOB</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r10c1-t9" headers="r1c1-t9">
+<pre>
+READ()
+</pre></td>
+<td class="cellalignment1243" headers="r10c1-t9 r1c2-t9">
+<p>Reads data from the <code>LOB</code> starting at the specified offset</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r11c1-t9" headers="r1c1-t9">
+<pre>
+SUBSTR()
+</pre></td>
+<td class="cellalignment1243" headers="r11c1-t9 r1c2-t9">
+<p>Returns part of the <code>LOB</code> value starting at the specified offset.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r12c1-t9" headers="r1c1-t9">
+<pre>
+FILECLOSE()
+</pre></td>
+<td class="cellalignment1243" headers="r12c1-t9 r1c2-t9">
+<p>Closes the file.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r13c1-t9" headers="r1c1-t9">
+<pre>
+FILECLOSEALL()
+</pre></td>
+<td class="cellalignment1243" headers="r13c1-t9 r1c2-t9">
+<p>Closes all previously opened files.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r14c1-t9" headers="r1c1-t9">
+<pre>
+FILEEXISTS()
+</pre></td>
+<td class="cellalignment1243" headers="r14c1-t9 r1c2-t9">
+<p>Tests if the file exists on the server.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r15c1-t9" headers="r1c1-t9">
+<pre>
+FILEGETNAME()
+</pre></td>
+<td class="cellalignment1243" headers="r15c1-t9 r1c2-t9">
+<p>Gets the directory alias and file name.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r16c1-t9" headers="r1c1-t9">
+<pre>
+FILEISOPEN()
+</pre></td>
+<td class="cellalignment1243" headers="r16c1-t9 r1c2-t9">
+<p>Tests the file was opened using the input <code>BFILE</code> locators.</p>
+</td>
+</tr>
+<tr class="cellalignment1237">
+<td class="cellalignment1243" id="r17c1-t9" headers="r1c1-t9">
+<pre>
+FILEOPEN()
+</pre></td>
+<td class="cellalignment1243" headers="r17c1-t9 r1c2-t9">
+<p>Opens a file.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<p><a href="#BABDDJGI">Example 6-10</a> calls the <code>TRIM</code> procedure to trim a <code>CLOB</code> value to a smaller length. It assumes that the type <code>lob_type</code> has two attributes, <code>id</code> of type <code>INTEGER</code> and <code>data</code> of type <code>CLOB</code>, and that a table, <code>lob_table</code>, of type <code>lob_type</code>, exists. Because this example deals with <code>CLOB</code> data, the second argument to <code>DBMS_LOB</code>.<code>TRIM</code>, the literal <code>834004</code>, specifies the number of characters. If the example dealt with <code>BLOB</code> data, this argument would be interpreted as a number of bytes.</p>
+<div class="example">
+<p class="titleinexample"><a id="BABDDJGI"></a><a id="ADDCI4380"></a>Example 6-10 Trimming a CLOB</p>
+<pre>
+PROCEDURE Trim_Clob IS
+        clob_loc  CLOB;
+BEGIN
+ -- get the LOB Locator
+       SELECT data into clob_loc  FROM lob_table
+       WHERE id  =  179 FOR UPDATE;
+   -- call the TRIM Routine
+       DBMS_LOB.TRIM(clob_loc, 834004);
+       COMMIT;
+END;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect1" -->
+<a id="i1005096"></a><a id="ADDCI4381"></a>
+<div class="sect1">
+<h2 class="sect1">LOBs in External Procedures</h2>
+<p><a id="sthref282"></a><a id="sthref283"></a>LOB locators can be passed as arguments to an external procedure, as defined in <a href="#BABBJIJJ">Example 6-1</a>.</p>
+<div class="example">
+<p class="titleinexample"><a id="BABHEHIC"></a><a id="ADDCI4382"></a>Example 6-11 Defining a PL/SQL External Procedure</p>
+<pre>
+FUNCTION DS_Findmin(data CLOB) RETURN PLS_INTEGER IS EXTERNAL 
+                   NAME "c_findmin" LIBRARY DS_Lib LANGUAGE C;
+</pre></div>
+<!-- class="example" -->
+<p>The corresponding C function gets an argument of type <code>OCILobLocator</code> *. When the function defined in <a href="#BABHEHIC">Table 6-3</a> is called, it invokes a c routine, <code>c_findmin()</code>, with the signature <code>int c_findmin(OCILobLocator*)</code>.</p>
+<pre>
+</pre>
+<p>The routine <code>c_findmin</code> is in a shared library associated with <code>DS_Lib</code>. To use the pointer <code>OCILobLocator*</code> to get data from the <code>LOB</code>, you must reconnect to the database by making a callback.</p>
+</div>
+<!-- class="sect1" -->
+<a id="i1005107"></a><a id="ADDCI4383"></a>
+<div class="sect1">
+<h2 class="sect1">LOBs and Triggers</h2>
+<p><a id="sthref284"></a><a id="sthref285"></a>You cannot write to a <code>LOB</code> (<code>:old</code> or <code>:new</code> value) in any kind of trigger.</p>
+<p>In regular triggers, you can read the <code>:old</code> value, but you cannot read the <code>:new</code> value. In <code>INSTEAD</code> <code>OF</code> triggers, you can read both the <code>:old</code> and the <code>:new</code> values.</p>
+<p>You cannot specify <code>LOB</code> type columns in an <code>OF</code> clause, because <code>BFILE</code> types can be updated without updating the underlying table on which the trigger is defined.</p>
+<p>Using OCI functions or the <code>DBMS_LOB</code> package to update <code>LOB</code> values or <code>LOB</code> attributes of object columns does not fire triggers defined on the tablethat contains the columns or attributes.</p>
+</div>
+<!-- class="sect1" -->
+<a id="i1005114"></a><a id="ADDCI4384"></a>
+<div class="sect1">
+<h2 class="sect1">Using Open/Close as Bracketing Operations for Efficient Performance</h2>
+<p>The <code>Open/Close</code> functions let you indicate the beginning and end of a series of LOB operations, so that large-scale operations, such updating indexes, can be performed when the <code>Close</code> function is called. This means that when the <code>Open</code> call is made, the index would not be updated each time the LOB is modified, and that such updating would not resume until the <code>Close</code> call.</p>
+<p>You do not have to wrap all <code>LOB</code> operations inside the <code>Open/Close</code> operations, but code block can be very valueable for the following reasons:</p>
+<ul>
+<li>
+<p>If you do not wrap <code>LOB</code> operations inside an <code>Open/Close</code> call, then each modification to the <code>LOB</code> implicitly opens and closes the <code>LOB,</code> thereby firing all triggers. If you do wrap the <code>LOB</code> operations inside a pair of <code>Open...Close</code> operations, then the triggers are not fired for each <code>LOB</code> modification. Instead, one trigger is fired when the <code>Close</code> call is made. Likewise, extensible indexes are not updated until the <code>Close</code> call. This means that any extensible indexes on the <code>LOB</code> are not valid between the <code>Open...Close</code> calls.</p>
+</li>
+<li>
+<p>You must apply this technology carefully because state, which reflects the changes to the <code>LOB</code>, is not saved between the <code>Open</code> and the <code>Close</code> operations. When you have called <code>Open</code>, Oracle no longer keeps track of what portions of the <code>LOB</code> value were modified, nor of the old and new values of the <code>LOB</code> that result from any modifications. The <code>LOB</code> value is still updated directly for each <code>OCILob*</code> or <code>DBMS_LOB</code> operation, and the usual read consistency mechanism is still in place. You may also want extensible indexes on the <code>LOB</code> to be updated, as <code>LOB</code> modifications are made because the extensible <code>LOB</code> indexes are always valid and may be used at any time.</p>
+</li>
+<li>
+<p>The API enables you to determine if the <code>LOB</code> is open. In all cases, openness is associated with the <code>LOB</code>, not the locator. The locator does not save any state information.</p>
+</li>
+</ul>
+<a id="ADDCI4385"></a>
+<div class="sect2"><a id="sthref286"></a>
+<h3 class="sect2">Errors and Restrictions Regarding Open/Close Operations</h3>
+<p>It is an error to commit the transaction before closing all previously opened <code>LOB</code>s. At transaction rollback time, all <code>LOB</code>s that are still open are discarded, which means that they are not closed, which fires the triggers.</p>
+<p>It is an error to <code>Open/Close</code> the same <code>LOB</code> twice, either with different locators or with the same locator. It is an error to close a <code>LOB</code> that has not been opened.</p>
+<p><a href="#BABGDIAJ">Example 6-12</a> assumes that <code>loc1</code> is refers to an open <code>LOB</code>, and is assigned to <code>loc2</code>. If <code>loc2</code> is subsequently used to modify the <code>LOB</code> value, the modification is grouped with <code>loc1</code>'s modifications. This means that there is only one entry in the <code>LOB</code> manager's state, not one for each locator. When the <code>LOB</code> is closed, either through <code>loc1</code> or <code>loc2</code>, the triggers are fired, so all updates made to the <code>LOB</code> through either locator are committed. After the close of the <code>LOB</code>, if the user tries to use either locator to modify the <code>LOB</code>, the operation performs an implicit <code>Open()</code> and <code>Close()</code>, as <code>Open() ...</code> <code><span class="codeinlineitalic">operation</span></code> <code>... Close()</code>. Note that consistent read is still maintained for each locator. Remember that it is the <code>LOB</code>, not the locator, that is opened and closed. No matter how many copies of the locator are made, the triggers for the <code>LOB</code> are fired only one time on the first <code>Close()</code> call.</p>
+<div class="example">
+<p class="titleinexample"><a id="BABGDIAJ"></a><a id="ADDCI4386"></a>Example 6-12 Using Open() and Close() Code Block</p>
+<pre>
+open (loc1);
+loc2 := loc1;
+write (loc1);
+write (loc2); 
+open (loc2);  /* error because the LOB is open */
+close (loc1); /* triggers are fired and all LOB updates made before this 
+                 statement by any locator are incorporated in the extensible
+                 index */
+write (loc2); /* implicit open, write, implicit close */
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1236">
+<tr>
+<td class="cellalignment1243">
+<table class="cellalignment1241">
+<tr>
+<td class="cellalignment1240"><a href="c_cpp_java.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1240"><a href="ext_idx_frmwork.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1996, 2010,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1245">
+<table class="cellalignment1239">
+<tr>
+<td class="cellalignment1240"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1240"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1240"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1240"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1240"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1240"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

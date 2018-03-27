@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Analyzing Captured and Replayed Workloads</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 740" />
+<meta name="dcterms.created" content="2014-06-16T16:24:51Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Real Application Testing User's Guide" />
+<meta name="dcterms.identifier" content="E41481-03" />
+<meta name="dcterms.isVersionOf" content="RATUG" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2008, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="dbr_replay.htm" title="Previous" type="text/html" />
+<link rel="Next" href="dbr_consolidated.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e41481.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">17/23</span> <!-- End Header -->
+<div id="RATUG159" class="chapter"><a id="CACBHAEF"></a>
+<h1 class="chapter"><span class="secnum">12</span> Analyzing Captured and Replayed Workloads</h1>
+<p>There are three types of <a id="sthref267"></a>reports for Database Replay: workload capture, workload replay, and compare period.</p>
+<p>This chapter describes how to generate and analyze these reports and contains the following sections:</p>
+<ul>
+<li>
+<p><a href="#CHDICAHF">Using Workload Capture Reports</a></p>
+</li>
+<li>
+<p><a href="#CHDDDIDC">Using Workload Replay Reports</a></p>
+</li>
+<li>
+<p><a href="#CHDIACHF">Using Compare Period Reports</a></p>
+</li>
+</ul>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+After the replay analysis is complete, you can restore the database to its original state at the time of workload capture and repeat workload replay to test other changes to the system once the workload directory object is backed up to another physical location.</div>
+<a id="CHDICAHF"></a>
+<div id="RATUG287" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">12.1</span> Using Workload Capture Reports</h2>
+<p><a id="sthref268"></a>Workload capture reports contain captured workload statistics, information about the top session activities that were captured, and any workload filters used during the capture process.</p>
+<p>The following sections describe how to generate and utilize workload capture reports:</p>
+<ul>
+<li>
+<p><a href="#CACJDHBG">Accessing Workload Capture Reports Using Enterprise Manager</a></p>
+</li>
+<li>
+<p><a href="#CACEGJBC">Generating Workload Capture Reports Using APIs</a></p>
+</li>
+<li>
+<p><a href="#CACDFCBC">Reviewing Workload Capture Reports</a></p>
+</li>
+</ul>
+<a id="CACJDHBG"></a>
+<div id="RATUG160" class="sect2">
+<h3 class="sect2"><span class="secnum">12.1.1</span> Accessing Workload Capture Reports Using Enterprise Manager</h3>
+<p>This section describes how to generate a workload capture report using Oracle Enterprise Manager.</p>
+<p>The primary tool for generating workload capture reports is Oracle Enterprise Manager. If for some reason Oracle Enterprise Manager is unavailable, you can generate workload capture reports using APIs, as described in <a href="#CACEGJBC">"Generating Workload Capture Reports Using APIs"</a>.</p>
+<p class="subhead2"><a id="RATUG271"></a>To access workload capture reports using Enterprise Manager:</p>
+<ol>
+<li>
+<p>From the Enterprise menu of the Enterprise Manager Cloud Control console, select <span class="bold">Quality Management</span>, then <span class="bold">Database Replay</span>.</p>
+<p>If the Database Login page appears, log in as a user with administrator privileges.</p>
+<p>The Database Replay page appears.</p>
+</li>
+<li>
+<p>From the Captured Workloads tab of the Database Replay page for a capture that has a Status other than Completed, click the name of the desired capture from the Capture table.</p>
+<p>The Summary tab of the Database Replay page appears.</p>
+</li>
+<li>
+<p>Click the <span class="bold">Reports</span> tab for access to controls for the Workload Capture report and Workload Capture ASH Analytics report.</p>
+<ul>
+<li>
+<p>The Workload Capture report contains detailed output showing the type of data components that were captured and not captured.</p>
+<p>For information about how to interpret the workload capture report, see <a href="#CACDFCBC">"Reviewing Workload Capture Reports"</a>.</p>
+</li>
+<li>
+<p>The Capture ASH Analytics report shows which sessions are consuming the most database time. This report provides a stacked chart to help you visualize the active session activity for several dimensions, such as Event, Activity Class, Module/Action, Session, Instance ID, and PL/SQL function.</p>
+<p>The "Other Activity" list choice for the report means that the activity has not been captured.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>After you access a report, you can save it by clicking <span class="bold">Save</span>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink TGDBA277" href="http://www.oracle.com/pls/topic/lookup?ctx=db112&amp;id=TGDBA277"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for information about ASH (Active Session History).</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="CACEGJBC"></a>
+<div id="RATUG161" class="sect2">
+<h3 class="sect2"><span class="secnum">12.1.2</span> Generating Workload Capture Reports Using APIs</h3>
+<p>This section describes how to generate a workload capture report using the <code>DBMS_WORKLOAD_CAPTURE</code> package. You can also use Oracle Enterprise Manager to generate a workload capture report, as described in <a href="#CACJDHBG">"Accessing Workload Capture Reports Using Enterprise Manager"</a>.</p>
+<p>To generate a report on the latest workload capture, use the <code>DBMS_WORKLOAD_CAPTURE</code>.<a id="sthref269"></a><code>GET_CAPTURE_INFO</code> procedure and the <code>DBMS_WORKLOAD_CAPTURE.<a id="sthref270"></a>REPORT</code> function:</p>
+<pre>
+DECLARE
+  cap_id         NUMBER;
+  cap_rpt        CLOB;
+BEGIN
+  cap_id  := DBMS_WORKLOAD_CAPTURE.GET_CAPTURE_INFO(dir =&gt; 'dec06');
+  cap_rpt := DBMS_WORKLOAD_CAPTURE.REPORT(capture_id =&gt; cap_id,
+                           format =&gt; DBMS_WORKLOAD_CAPTURE.TYPE_TEXT);
+END;
+/
+</pre>
+<p>In this example, the <code>GET_CAPTURE_INFO</code> procedure retrieves all information regarding the workload capture in the <code>dec06</code> directory and returns the appropriate <code>cap_id</code> for the workload capture. The <code>REPORT</code> function generates a text report using the <code>cap_id</code> that was returned by the <code>GET_CAPTURE_INFO</code> procedure.</p>
+<p>The <code>GET_CAPTURE_INFO</code> procedure uses the <code>dir</code> required parameter, which specifies the name of the workload capture directory object.</p>
+<p>The <code>REPORT</code> function uses the following parameters:</p>
+<ul>
+<li>
+<p>The <code>capture_id</code> required parameter relates to the directory that contains the workload capture for which the report will be generated. The directory should be a valid directory in the host system containing the workload capture. The value of this parameter should match the <code>cap_id</code> returned by the <code>GET_CAPTURE_INFO</code> procedure.</p>
+</li>
+<li>
+<p>The <code>format</code> required parameter specifies the report format. Valid values include <code>DBMS_WORKLOAD_CAPTURE</code>.<code>TYPE_TEXT</code> and <code>DBMS_WORKLOAD_REPLAY</code>.<code>TYPE_HTML</code>.</p>
+</li>
+</ul>
+<p>For information about how to interpret the workload capture report, see <a href="#CACDFCBC">"Reviewing Workload Capture Reports"</a>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ARPLS207" href="../../appdev.112/e40758/d_workload_capture.htm#ARPLS207"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for information about the <code>DBMS_WORKLOAD_CAPTURE</code> package</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="CACDFCBC"></a>
+<div id="RATUG162" class="sect2">
+<h3 class="sect2"><span class="secnum">12.1.3</span> Reviewing Workload Capture Reports</h3>
+<p>The workload capture report contains various types of information that can be used to assess the validity of the workload capture. Using the information provided in this report, you can determine if the captured workload:</p>
+<ul>
+<li>
+<p>Represents the actual workload you want to replay</p>
+</li>
+<li>
+<p>Does not contain any workload you want to exclude</p>
+</li>
+<li>
+<p>Can be replayed</p>
+</li>
+</ul>
+<p>The information contained in the workload capture report are divided into the following categories:</p>
+<ul>
+<li>
+<p>Details about the workload capture (such as the name of the workload capture, defined filters, date, time, and SCN of capture)</p>
+</li>
+<li>
+<p>Overall statistics about the workload capture (such as the total DB time captured, and the number of logins and transactions captured) and the corresponding percentages with respect to total system activity</p>
+</li>
+<li>
+<p>Profile of the captured workload</p>
+</li>
+<li>
+<p>Profile of the uncaptured workload due to version limitations</p>
+</li>
+<li>
+<p>Profile of the uncaptured workload that was excluded using defined filters</p>
+</li>
+<li>
+<p>Profile of the uncaptured workload that consists of background process or scheduled jobs</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDDDIDC"></a>
+<div id="RATUG288" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">12.2</span> Using Workload Replay Reports</h2>
+<p><a id="sthref271"></a>Workload replay reports contain information that can be used to measure performance differences between the capture system and the replay system.</p>
+<p>The following sections describe how to generate and review workload replay reports:</p>
+<ul>
+<li>
+<p><a href="#CACHABCB">Accessing Workload Replay Reports Using Enterprise Manager</a></p>
+</li>
+<li>
+<p><a href="#CACIHJAG">Generating Workload Replay Reports Using APIs</a></p>
+</li>
+<li>
+<p><a href="#CACEICCG">Reviewing Workload Replay Reports</a></p>
+</li>
+</ul>
+<a id="CACHABCB"></a>
+<div id="RATUG163" class="sect2">
+<h3 class="sect2"><span class="secnum">12.2.1</span> Accessing Workload Replay Reports Using Enterprise Manager</h3>
+<p>This section describes how to generate a workload replay report using Oracle Enterprise Manager.</p>
+<p>The primary tool for generating workload replay reports is Oracle Enterprise Manager. If for some reason Oracle Enterprise Manager is unavailable, you can generate workload replay reports using APIs, as described in <a href="#CACIHJAG">"Generating Workload Replay Reports Using APIs"</a></p>
+<p class="subhead2"><a id="RATUG272"></a>To access workload replay reports using Enterprise Manager:</p>
+<ol>
+<li>
+<p>From the Enterprise menu of the Enterprise Manager Cloud Control console, select <span class="bold">Quality Management</span>, then <span class="bold">Database Replay</span>.</p>
+<p>If the Database Login page appears, log in as a user with administrator privileges.</p>
+<p>The Database Replay page appears.</p>
+</li>
+<li>
+<p>Click the <span class="bold">Replay Tasks</span> tab, then select a replay for which you want to access reports.</p>
+</li>
+<li>
+<p>Click the <span class="bold">Reports</span> tab to gain access to individual reports.</p>
+<p>There are several types of reports you can view for a completed workload replay:</p>
+<ul>
+<li>
+<p>Database Replay</p>
+<p>Use this report to view complete replay statistics in a tabular format, including replay divergence and the workload profile.</p>
+<img width="466" height="745" src="img/dbr_replay_replay_rep.gif" alt="Description of dbr_replay_replay_rep.gif follows" /><br />
+<a id="sthref272" href="img_text/dbr_replay_replay_rep.htm">Description of the illustration dbr_replay_replay_rep.gif</a><br />
+<br /></li>
+<li>
+<p>Compare Period ADDM</p>
+<p>Use this report to perform a high-level comparison of one workload replay to its capture or to another replay of the same capture. Only workload replays that contain at least 5 minutes of database time can be compared using this report.</p>
+<img width="993" height="543" src="img/dbr_replay_addm_rep.gif" alt="Description of dbr_replay_addm_rep.gif follows" /><br />
+<a id="sthref273" href="img_text/dbr_replay_addm_rep.htm">Description of the illustration dbr_replay_addm_rep.gif</a><br />
+<br />
+<p>Examine the following sections of the report to understand the performance change between the two periods and the cause of the change:</p>
+<ul>
+<li>
+<p>Overview</p>
+<p>This portion of the report shows SQL commonality, which is the comparability between the base and comparison periods based on the average resource consumption of the SQL statements common to both periods.</p>
+<p>A commonality value of 100% means that the workload "signature" in both time periods is identical. A commonality of 100% is expected for this use case, because the workload being replayed is the same (assuming that you are not using replay filters). A value of 0% means that the two time periods have no items in common for the specific workload dimension.</p>
+<p>Commonality is based on the type of input (that is, which SQL is executing) as well as the load of the executing SQL statements. Consequently, SQL statements running in only one time period, but not consuming significant time, do not affect commonality. Therefore, two workloads could have a commonality of 100% even if some SQL statements are running only in one of the two periods, provided that these SQL statements do not consume significant resources.</p>
+</li>
+<li>
+<p>Configuration</p>
+<p>The information displayed shows base period and comparison period values for various parameters categorized by instance, host, and database.</p>
+</li>
+<li>
+<p>Findings</p>
+<p>The findings can show performance improvements and identify the major performance differences caused by system changes. For negative outcomes, if you understand and remove the cause, the negative outcome can be eliminated.</p>
+<p>The values shown for the Base Period and Comparison Period represent performance with regard to database time.</p>
+<p>The Change Impact value represents a measurement of the scale of a change in performance from one time period to another. It is applicable to issues or items measured by the total database time they consumed in each time period. The absolute values are sorted in descending order.</p>
+<p>If the value is positive, an improvement has occurred, and if the value is negative, a regression has occurred. For instance, a change impact of -200% means that period 2 is three times as slow as period 1.</p>
+<p>You can run performance tuning tools, such as ADDM and the SQL Tuning Advisor, to fix issues in the comparison period to improve general system performance.</p>
+</li>
+<li>
+<p>Resources</p>
+<p>The information shown provides a summary of the division of database time for both time periods, and shows the resource usage for CPU, memory, I/O, and interconnect (Oracle RAC only).</p>
+</li>
+</ul>
+</li>
+<li>
+<p>SQL Performance Analyzer</p>
+<p>Use this report to compare a SQL tuning set from a workload capture to another SQL tuning set from a workload replay, or two SQL tuning sets from two workload replays. Comparing SQL tuning sets with Database Replay provides more information than SQL Performance Analyzer test-execute, because it considers and shows all execution plans for each SQL statement, while SQL Performance Analyzer test-execute generates only one execution plan per SQL statement for each SQL trial.</p>
+</li>
+<li>
+<p>Replay Compare Period</p>
+<p>Use this report to compare the AWR data from one workload replay to its capture or to another replay of the same capture. Before running this report, AWR data for the captured or replayed workload must have been previously exported.</p>
+<img width="710" height="279" src="img/dbr_replay_compare_per_rep.gif" alt="Description of dbr_replay_compare_per_rep.gif follows" /><br />
+<a id="sthref274" href="img_text/dbr_replay_compare_per_rep.htm">Description of the illustration dbr_replay_compare_per_rep.gif</a><br />
+<br />
+<p>For information about using this report, see <a href="#CHDCCCCJ">"Reviewing Replay Compare Period Reports"</a>. For information about how to interpret replay compare period reports, see <a class="olink TDPPT093" href="../../server.112/e10822/tdppt_degrade.htm#TDPPT093"><span class="italic">Oracle Database 2 Day + Performance Tuning Guide</span></a>.</p>
+</li>
+<li>
+<p>Replay ASH Analytics</p>
+<p>The Replay ASH Analytics report contains active session history (ASH) information for a specified duration of a workload that was replayed for the category you selected in the drop-down menu. Before running this report, AWR data must have been previously exported from the captured or replayed workload.</p>
+<img width="983" height="715" src="img/dbr_replay_ash_anal_rep.gif" alt="Description of dbr_replay_ash_anal_rep.gif follows" /><br />
+<a id="sthref275" href="img_text/dbr_replay_ash_anal_rep.htm">Description of the illustration dbr_replay_ash_anal_rep.gif</a><br />
+<br />
+<p>The chart shows workload activity breakdown values for wait classes, and provides detailed statistics for the top activity sessions that are adversely affecting the system.</p>
+<p>You can optionally use the Load Map for a graphical view of system activity. The Load Map is useful for viewing activity in a single- or multi-dimensional layout when you are not interested in seeing how activity has changed over time within the selected period.</p>
+<p>For more information about this report, see the <a class="olink TDPPT067" href="../../server.112/e10822/tdppt_transient.htm#TDPPT067"><span class="italic">Oracle Database 2 Day + Performance Tuning Guide</span></a>.</p>
+</li>
+</ul>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="CACIHJAG"></a>
+<div id="RATUG164" class="sect2">
+<h3 class="sect2"><span class="secnum">12.2.2</span> Generating Workload Replay Reports Using APIs</h3>
+<p>This section describes how to generate a workload replay report using the <code>DBMS_WORKLOAD_REPLAY</code> package. You can also use Oracle Enterprise Manager to generate a workload replay report, as described in <a href="#CACHABCB">"Accessing Workload Replay Reports Using Enterprise Manager"</a>.</p>
+<p>To generate a report on the latest workload replay for a workload capture, use the <code>DBMS_WORKLOAD_REPLAY</code>.<a id="sthref276"></a><code>GET_REPLAY_INFO</code> procedure and the <code>DBMS_WORKLOAD_REPLAY.<a id="sthref277"></a>REPORT</code> function:</p>
+<pre>
+DECLARE
+  cap_id         NUMBER;
+  rep_id         NUMBER;
+  rep_rpt        CLOB;
+BEGIN
+  cap_id := DBMS_WORKLOAD_REPLAY.GET_REPLAY_INFO(dir =&gt; 'dec06');
+  /* Get the latest replay for that capture */
+  SELECT max(id)
+  INTO   rep_id
+  FROM   dba_workload_replays
+  WHERE  capture_id = cap_id;
+ 
+  rep_rpt := DBMS_WORKLOAD_REPLAY.REPORT(replay_id =&gt; rep_id,
+                           format =&gt; DBMS_WORKLOAD_REPLAY.TYPE_TEXT);
+END;
+/
+</pre>
+<p>In this example, the <code>GET_REPLAY_INFO</code> procedure retrieves all information regarding the workload capture in the <code>dec06</code> directory and the history of all the workload replay attempts from this directory. The procedure first imports a row into <code>DBA_WORKLOAD_CAPTURES</code>, which contains information about the workload capture. It then imports a row for every replay attempt retrieved from the replay directory into the <code>DBA_WORKLOAD_REPLAYS</code> view. The <code>SELECT</code> statement returns the appropriate <code>rep_id</code> for the latest replay of the workload. The <code>REPORT</code> function generates a text report using the <code>rep_id</code> that was returned by the <code>SELECT</code> statement.</p>
+<p>The <code>GET_CAPTURE_INFO</code> procedure uses the <code>dir</code> required parameter, which specifies the name of the workload replay directory object.</p>
+<p>The <code>REPORT</code> function uses the following parameters:</p>
+<ul>
+<li>
+<p>The <code>replay_id</code> required parameter relates to the directory that contains the workload replay for which the report will be generated. The directory should be a valid directory in the host system containing the workload replay. The value of this parameter should match the <code>rep_id</code> returned by the <code>GET_CAPTURE_INFO</code> procedure.</p>
+</li>
+<li>
+<p>The <code>format</code> parameter required parameter specifies the report format. Valid values include DBMS_WORKLOAD_REPLAY.TYPE_TEXT, DBMS_WORKLOAD_REPLAY.TYPE_HTML, and DBMS_WORKLOAD_REPLAY.TYPE_XML.</p>
+</li>
+</ul>
+<p>For information about how to interpret the workload replay report, see <a href="#CACEICCG">"Reviewing Workload Replay Reports"</a>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ARPLS208" href="../../appdev.112/e40758/d_workload_replay.htm#ARPLS208"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for information about the <code>DBMS_WORKLOAD_REPLAY</code> package</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="CACEICCG"></a>
+<div id="RATUG165" class="sect2">
+<h3 class="sect2"><span class="secnum">12.2.3</span> Reviewing Workload Replay Reports</h3>
+<p>After the workload is replayed on a test system, there may be some divergence in what is replayed compared to what was captured. There are numerous factors that can cause replay divergence, which can be analyzed using the workload replay report. The information contained in the workload replay report consists of performance and replay divergence.</p>
+<p>Performance divergence may result when new algorithms are introduced in the replay system that affect the overall performance of the database. For example, if the workload is replayed on a newer version of Oracle Database, a new algorithm may cause specific requests to run faster, and the divergence will appear as a faster execution. In this case, this is a desirable divergence.</p>
+<p>Data divergence occurs when the results of DML or SQL queries do not match results that were originally captured in the workload. For example, a SQL statement may return fewer rows during replay than those returned during capture.</p>
+<p>Error divergence occurs when a replayed database call:</p>
+<ul>
+<li>
+<p>Encounters a new error that was not captured</p>
+</li>
+<li>
+<p>Does not encounter an error that was captured</p>
+</li>
+<li>
+<p>Encounters a different error from what was captured</p>
+</li>
+</ul>
+<p>The information contained in the workload replay report is divided into the following categories:</p>
+<ul>
+<li>
+<p>Details about the workload replay and the workload capture, such as job name, status, database information, duration and time of each process, and the directory object and path</p>
+</li>
+<li>
+<p>Replay options selected for the workload replay and the number of replay clients that were started</p>
+</li>
+<li>
+<p>Overall statistics about the workload replay and the workload capture (such as the total DB time captured and replayed, and the number of logins and transactions captured and replayed) and the corresponding percentages with respect to total system activity</p>
+</li>
+<li>
+<p>Profile of the replayed workload</p>
+</li>
+<li>
+<p>Replay divergence</p>
+</li>
+<li>
+<p>Error divergence</p>
+</li>
+<li>
+<p>DML and SQL query data divergence</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDIACHF"></a>
+<div id="RATUG289" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">12.3</span> Using Compare Period Reports</h2>
+<p><a id="sthref278"></a>Compare period reports enable you to compare one workload replay to its capture or to another replay of the same capture.</p>
+<p>The following sections describe how to generate and review the various types of compare period reports:</p>
+<ul>
+<li>
+<p><a href="#CHDJFAHC">Generating Compare Period Reports Using APIs</a></p>
+</li>
+<li>
+<p><a href="#CHDCCCCJ">Reviewing Replay Compare Period Reports</a></p>
+</li>
+</ul>
+<a id="CHDJFAHC"></a>
+<div id="RATUG292" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">12.3.1</span> Generating Compare Period Reports Using APIs</h3>
+<p>This section describes how to generate <a id="sthref279"></a>compare period reports using the <code>DBMS_WORKLOAD_REPLAY</code> package. You can also use Oracle Enterprise Manager to generate compare period reports, as described in <a href="#CACHABCB">"Accessing Workload Replay Reports Using Enterprise Manager"</a>.</p>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#BABEEEJG">Generating Replay Compare Period Reports Using APIs</a></p>
+</li>
+<li>
+<p><a href="#BABDIAGC">Generating SQL Performance Analyzer Reports Using APIs</a></p>
+</li>
+</ul>
+<a id="BABEEEJG"></a>
+<div id="RATUG313" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">12.3.1.1</span> Generating Replay Compare Period Reports Using APIs</h4>
+<p>This section describes how to generate a replay compare period report using the <code>DBMS_WORKLOAD_REPLAY</code> package.</p>
+<p>Use the replay compare period report to perform a high-level comparison of one workload replay to its capture or to another replay of the same capture. Only workload replays that contain at least 5 minutes of database time can be compared using this report.</p>
+<p>To generate a replay compare period report, use the <code>DBMS_WORKLOAD_REPLAY</code>.<a id="sthref280"></a><code>COMPARE_PERIOD_REPORT</code> procedure:</p>
+<pre>
+BEGIN
+  DBMS_WORKLOAD_REPLAY.COMPARE_PERIOD_REPORT (
+                           replay_id1 =&gt; 12,
+                           replay_id2 =&gt; 17,
+                           format =&gt; DBMS_WORKLOAD_CAPTURE.TYPE_HTML,
+                           result =&gt; :report_bind);
+END;
+/
+</pre>
+<p>In this example, the <code>COMPARE_PERIOD_REPORT</code> procedure generates a replay compare period report in HTML format that compares a workload replay with a replay ID of 12 with another replay with an ID of 17.</p>
+<p>The <code>COMPARE_PERIOD_REPORT</code> procedure in this example uses the following parameters:</p>
+<ul>
+<li>
+<p>The <code>replay_id1</code> parameter specifies the numerical identifier of the workload replay after change for which the reported will be generated. This parameter is required.</p>
+</li>
+<li>
+<p>The <code>replay_id2</code> parameter specifies the numerical identifier of the workload replay before change for which the reported will be generated. If unspecified, the comparison will be performed with the workload capture.</p>
+</li>
+<li>
+<p>The <code>format</code> parameter specifies the report format. Valid values include <code>DBMS_WORKLOAD_CAPTURE</code>.<code>TYPE_HTML</code> for HTML and <code>DBMS_WORKLOAD_CAPTURE</code>.<code>TYPE_XML</code> for XML. This parameter is required.</p>
+</li>
+<li>
+<p>The result parameter specifies the output of the report.</p>
+</li>
+</ul>
+<p>For information about how to interpret the replay compare period report, see <a href="#CHDCCCCJ">"Reviewing Replay Compare Period Reports"</a>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ARPLS208" href="../../appdev.112/e40758/d_workload_replay.htm#ARPLS208"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for information about the <code>DBMS_WORKLOAD_REPLAY</code> package</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect3" -->
+<a id="BABDIAGC"></a>
+<div id="RATUG314" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">12.3.1.2</span> Generating SQL Performance Analyzer Reports Using APIs</h4>
+<p>This section describes how to generate a SQL Performance Analyzer report using the <code>DBMS_WORKLOAD_REPLAY</code> package.</p>
+<p>The SQL Performance Analyzer report can be used to compare a SQL tuning set from a workload capture to another SQL tuning set from a workload replay, or two SQL tuning sets from two workload replays. Comparing SQL tuning sets with Database Replay provides more information than SQL Performance Analyzer test-execute because it considers and shows all execution plans for each SQL statement, while SQL Performance Analyzer test-execute generates only one execution plan per SQL statement for each SQL trial.</p>
+<p>To generate a replay compare period report, use the <code>DBMS_WORKLOAD_REPLAY</code>.<a id="sthref281"></a><code>COMPARE_SQLSET_REPORT</code> procedure:</p>
+<pre>
+BEGIN
+  DBMS_WORKLOAD_REPLAY.COMPARE_SQLSET_REPORT (
+                           replay_id1 =&gt; 12,
+                           replay_id2 =&gt; 17,
+                           format =&gt; 'DBMS_WORKLOAD_CAPTURE.TYPE_HTML',
+                           result =&gt; :report_bind);
+END;
+/
+</pre>
+<p>In this example, the <code>COMPARE_SQLSET_REPORT</code> procedure generates a SQL Performance Analyzer report in HTML format that compares a SQL tuning set captured during the workload replay with a replay ID of 12 to a SQL tuning set captured during workload replay with an ID of 17.</p>
+<p>The <code>COMPARE_SQLSET_REPORT</code> procedure in this example uses the following parameters:</p>
+<ul>
+<li>
+<p>The <code>replay_id1</code> parameter specifies the numerical identifier of the workload replay after change for which the reported will be generated. This parameter is required.</p>
+</li>
+<li>
+<p>The <code>replay_id2</code> parameter specifies the numerical identifier of the workload replay after change for which the reported will be generated. If unspecified, the comparison will be performed with the workload capture.</p>
+</li>
+<li>
+<p>The <code>format</code> parameter specifies the report format. Valid values include <code>DBMS_WORKLOAD_CAPTURE</code>.<code>TYPE_HTML</code> for HTML, <code>DBMS_WORKLOAD_CAPTURE</code>.<code>TYPE_XML</code> for XML, and <code>DBMS_WORKLOAD_CAPTURE</code>.<code>TYPE_TEXT</code> for text. This parameter is required.</p>
+</li>
+<li>
+<p>The result parameter specifies the output of the report.</p>
+</li>
+</ul>
+<p>For information about how to interpret the SQL Performance Analyzer report, see <a href="spa_analyze.htm#CACFEBHH">"Reviewing the SQL Performance Analyzer Report Using APIs"</a>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ARPLS208" href="../../appdev.112/e40758/d_workload_replay.htm#ARPLS208"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for information about the <code>DBMS_WORKLOAD_REPLAY</code> package</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CHDCCCCJ"></a>
+<div id="RATUG304" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">12.3.2</span> Reviewing Replay Compare Period Reports</h3>
+<p>Reviewing replay compare period reports enables you to determine if any replay divergence occurred and whether there were any significant performance changes.</p>
+<p>Depending on the type of comparison that is being made, one of three types of replay compare period reports is generated:</p>
+<ul>
+<li>
+<p>Capture vs. Replay</p>
+<p>This report type compares the performance of a workload replay to its workload capture.</p>
+</li>
+<li>
+<p>Replay vs. Replay</p>
+<p>This report type compares the performance of two workload replays of the same workload capture.</p>
+</li>
+<li>
+<p>Consolidated Replay</p>
+<p>This report type compares the performance of multiple workload captures to a consolidated replay. Only the ASH Data Comparison section is available for this report type. For more information about this report type, see <a href="dbr_consolidated.htm#CHDIJJIB">"Reporting and Analysis for Consolidated Database Replay"</a>.</p>
+</li>
+</ul>
+<p>All replay compare period report types contain information about the most important changes between the two runs that are being compared. Use this information to determine the appropriate action to take. For example, if a new concurrency issue is found, review Automatic Database Diagnostic Monitor (ADDM) reports to diagnose the issue. If a new SQL performance problem is found, run SQL Tuning Advisor to fix the problem.</p>
+<p>The information in the replay compare period report is divided into the following sections:</p>
+<ul>
+<li>
+<p><a href="#BABHCHCC">General Information</a></p>
+</li>
+<li>
+<p><a href="#BABEDCIE">Replay Divergence</a></p>
+</li>
+<li>
+<p><a href="#BABJDJHF">Main Performance Statistics</a></p>
+</li>
+<li>
+<p><a href="#BABFCHII">Top SQL/Call</a></p>
+</li>
+<li>
+<p><a href="#BABHIFGA">Hardware Usage Comparison</a></p>
+</li>
+<li>
+<p><a href="#BABCCHDA">ADDM Comparison</a></p>
+</li>
+<li>
+<p><a href="#BABCFGAB">ASH Data Comparison</a></p>
+</li>
+</ul>
+<a id="BABHCHCC"></a>
+<div id="RATUG4214" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">12.3.2.1</span> General Information</h4>
+<p>This section contains metadata about the two runs being compared in the report. Any <code>init.ora</code> parameter changes between the two runs are also shown here. Review this section to verify if the system change being tested was performed.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BABEDCIE"></a>
+<div id="RATUG4215" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">12.3.2.2</span> Replay Divergence</h4>
+<p>This section contains the divergence analysis of the second run relative to the first. If the analysis shows significant divergence, review the full divergence report.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BABJDJHF"></a>
+<div id="RATUG4216" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">12.3.2.3</span> Main Performance Statistics</h4>
+<p>This section contains a high-level performance statistic comparison across the two runs (such as change in database time). If the comparison shows an insignificant change in database time, then the performance between the two runs are generally similar. If there is a significant change in database time, review the statistics to determine the component (CPU or user I/O) that is causing the greatest change.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BABFCHII"></a>
+<div id="RATUG4217" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">12.3.2.4</span> Top SQL/Call</h4>
+<p>This section compares the performance change of individual SQL statements from one run to the next. The SQL statements are ordered by the total change in database time. Top SQL statements that regressed by the most database time are best candidates for SQL tuning.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BABHIFGA"></a>
+<div id="RATUG4218" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">12.3.2.5</span> Hardware Usage Comparison</h4>
+<p>This section compares CPU and I/O usage across the two runs. The number of CPUs is summed for all instances and CPU usage is averaged over instances.</p>
+<p>I/O statistics are shown for data and temp files. A high value for the single block read time (much higher than 10 milliseconds) suggests that the system is I/O bound. If this is the case, then review the total read and write times to determine if the latency is caused by excessive I/O requests or poor I/O throughput.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BABCCHDA"></a>
+<div id="RATUG4219" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">12.3.2.6</span> ADDM Comparison</h4>
+<p>This section contains a comparison of ADDM analyses across the two runs ordered by the absolute difference in impact. Compare the ADDM results for the two runs to identify possible problems that only existed in one run. If the system change being tested is intended to improve database performance, then verify if the expected improvement is reflected in the ADDM findings.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink PFGRF94240" href="../../server.112/e41573/diag.htm#PFGRF94240"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for more information about ADDM analysis</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect3" -->
+<a id="BABCFGAB"></a>
+<div id="RATUG4220" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">12.3.2.7</span> ASH Data Comparison</h4>
+<p>This section compares the Active Session History (ASH) data across the two runs. The begin time and end time of the comparison period are displayed in a table. These times may not match the capture and replay times of the two runs being compared. Instead, these times represent the times when the ASH samples were taken.</p>
+<p>The ASH Data Comparison section contains the following subsections:</p>
+<ul>
+<li>
+<p><a href="#BABCAEEB">Compare Summary</a></p>
+</li>
+<li>
+<p><a href="#BABDCJJE">Top SQL</a></p>
+</li>
+<li>
+<p><a href="#BABHBGAB">Long Running SQL</a></p>
+</li>
+<li>
+<p><a href="#BABIJACE">Common SQL</a></p>
+</li>
+<li>
+<p><a href="#BABEACFE">Top Objects</a></p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink PFGRF94166" href="../../server.112/e41573/autostat.htm#PFGRF94166"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for more information about ASH</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+<a id="BABCAEEB"></a>
+<div id="RATUG4221" class="sect4"><!-- infolevel="all" infotype="General" -->
+<h5 class="sect4"><span class="secnum">12.3.2.7.1</span> Compare Summary</h5>
+<p>This section summarizes the activity during the two runs based on database time and wait time distribution:</p>
+<ul>
+<li>
+<p>DB Time Distribution indicates how the total database time is distributed across CPU usage, wait times, and I/O requests.</p>
+<p><a href="#BABIJJEE">Figure 12-1</a> shows the DB Time Distribution subsection of a sample report.</p>
+<div id="RATUG4222" class="figure">
+<p class="titleinfigure"><a id="BABIJJEE"></a>Figure 12-1 DB Time Distribution</p>
+<img width="360" height="194" src="img/dbr_rep_db_time_dist.gif" alt="Description of Figure 12-1 follows" /><br />
+<a id="sthref282" href="img_text/dbr_rep_db_time_dist.htm">Description of "Figure 12-1 DB Time Distribution"</a><br />
+<br /></div>
+<!-- class="figure" --></li>
+<li>
+<p>Wait Time Distribution indicates how the total wait time is distributed across wait events. The top wait event class, event name, and event count are listed for both runs.</p>
+<p><a href="#BABCGBCI">Figure 12-2</a> shows the Wait Time Distribution subsection of a sample report.</p>
+<div id="RATUG4223" class="figure">
+<p class="titleinfigure"><a id="BABCGBCI"></a>Figure 12-2 Wait Time Distribution</p>
+<img width="504" height="411" src="img/dbr_rep_wait_time_dist.gif" alt="Description of Figure 12-2 follows" /><br />
+<a id="sthref283" href="img_text/dbr_rep_wait_time_dist.htm">Description of "Figure 12-2 Wait Time Distribution"</a><br />
+<br /></div>
+<!-- class="figure" --></li>
+</ul>
+</div>
+<!-- class="sect4" -->
+<a id="BABDCJJE"></a>
+<div id="RATUG4224" class="sect4"><!-- infolevel="all" infotype="General" -->
+<h5 class="sect4"><span class="secnum">12.3.2.7.2</span> Top SQL</h5>
+<p>This section displays the top SQL statements for both runs by total database time, CPU time, and wait time.</p>
+</div>
+<!-- class="sect4" -->
+<a id="BABHBGAB"></a>
+<div id="RATUG4225" class="sect4"><!-- infolevel="all" infotype="General" -->
+<h5 class="sect4"><span class="secnum">12.3.2.7.3</span> Long Running SQL</h5>
+<p>This section displays the top long-running SQL statements for both runs. Each long-running SQL statement contains details about the query, such as the maximum, minimum, and average response times.</p>
+</div>
+<!-- class="sect4" -->
+<a id="BABIJACE"></a>
+<div id="RATUG4226" class="sect4"><!-- infolevel="all" infotype="General" -->
+<h5 class="sect4"><span class="secnum">12.3.2.7.4</span> Common SQL</h5>
+<p>This section extracts the SQL statements that are common in both runs and displays the top common SQL statements by variance in average response time and total database time.</p>
+</div>
+<!-- class="sect4" -->
+<a id="BABEACFE"></a>
+<div id="RATUG4227" class="sect4"><!-- infolevel="all" infotype="General" -->
+<h5 class="sect4"><span class="secnum">12.3.2.7.5</span> Top Objects</h5>
+<p>This section contains details about the top objects for both runs by total wait time.</p>
+<p><a href="#BABHAFFA">Figure 12-3</a> shows the Top Objects section of a sample report.</p>
+<div id="RATUG4228" class="figure">
+<p class="titleinfigure"><a id="BABHAFFA"></a>Figure 12-3 Top Objects</p>
+<img width="360" height="260" src="img/dbr_rep_top_objects.gif" alt="Description of Figure 12-3 follows" /><br />
+<a id="sthref284" href="img_text/dbr_rep_top_objects.htm">Description of "Figure 12-3 Top Objects"</a><br />
+<br /></div>
+<!-- class="figure" --></div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1798">
+<tr>
+<td class="cellalignment1805">
+<table class="cellalignment1803">
+<tr>
+<td class="cellalignment1802"><a href="dbr_replay.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1802"><a href="dbr_consolidated.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2008, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1807">
+<table class="cellalignment1801">
+<tr>
+<td class="cellalignment1802"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1802"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1802"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1802"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1802"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1802"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Configuring the RMAN Environment: Advanced Topics</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1054" />
+<meta name="description" content="A guide to backup and recovery of Oracle databases, including RMAN backup and recovery, RMAN data transfer, Oracle Flashback Technology, and user-managed backup and recovery" />
+<meta name="dcterms.created" content="2015-05-13T14:1:10Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Backup and Recovery User's Guide" />
+<meta name="dcterms.identifier" content="E10642-08" />
+<meta name="dcterms.isVersionOf" content="BRADV" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2003, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="rcmconfb.htm" title="Previous" type="text/html" />
+<link rel="Next" href="flashdb.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10642.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">15/47</span> <!-- End Header -->
+<div id="BRADV006" class="chapter"><a id="CEGCJFEH"></a>
+<h1 class="chapter"><span class="secnum">6</span> Configuring the RMAN Environment: Advanced Topics</h1>
+<p>This chapter describes how to perform setup and configuration tasks. This chapter contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1006906">Configuring Advanced Channel Options</a></p>
+</li>
+<li>
+<p><a href="#CHDFGFAJ">Configuring Advanced Backup Options</a></p>
+</li>
+<li>
+<p><a href="#CHDDFEFJ">Configuring Auxiliary Instance Data File Names</a></p>
+</li>
+<li>
+<p><a href="#i1015609">Configuring the Snapshot Control File Location</a></p>
+</li>
+<li>
+<p><a href="#i1007660">Configuring RMAN for Use with a Shared Server</a></p>
+</li>
+<li>
+<p><a href="#CHDEBCHD">Enabling Lost Write Detection</a></p>
+</li>
+</ul>
+<a id="i1006906"></a>
+<div id="BRADV134" class="sect1">
+<h2 class="sect1">Configuring Advanced Channel Options</h2>
+<p>Whereas <a id="sthref465"></a><a id="sthref466"></a><a href="rcmconfb.htm#i1017890">"Configuring Channels"</a> explains the basics for configuring channels, this section explains more advanced <a href="glossary.htm#i432240"><span class="xrefglossterm">channel</span></a> topics. This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1006489">About Channel Control Options</a></p>
+</li>
+<li>
+<p><a href="#i1007068">Configuring Specific Channel Parameters</a></p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="rcmarchi.htm#i1012864">"RMAN Channels"</a> for a conceptual overview of configured and allocated channels, and <a class="olink RCMRF113" href="../../backup.112/e10643/rcmsynta010.htm#RCMRF113"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for <code dir="ltr">CONFIGURE</code> syntax</div>
+<a id="i1006489"></a>
+<div id="BRADV89456" class="sect2">
+<h3 class="sect2">About Channel Control Options</h3>
+<p>Whether you allocate channels manually or use <a id="sthref467"></a><a href="glossary.htm#i432011"><span class="xrefglossterm">automatic channel allocation</span></a>, you can use channel commands and options to control behavior. <a href="#CHDHFEBJ">Table 6-1</a> summarizes the ways in which you can control channel behavior. Unless noted, all channel parameters are supported in <a id="sthref468"></a><a id="sthref469"></a><a id="sthref470"></a><a id="sthref471"></a>both <code dir="ltr">CONFIGURE CHANNEL</code> and <code dir="ltr">ALLOCATE CHANNEL</code> commands.</p>
+<div id="BRADV578" class="tblruleformal">
+<p class="titleintable"><a id="sthref472"></a><a id="CHDHFEBJ"></a>Table 6-1 Channel Control Options</p>
+<table class="cellalignment1945" title="Channel Control Options" summary="Summarizes channel control options" dir="ltr">
+<thead>
+<tr class="cellalignment1934">
+<th class="cellalignment1941" id="r1c1-t3">Type of Channel Control</th>
+<th class="cellalignment1941" id="r1c2-t3">Commands</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r2c1-t3" headers="r1c1-t3">
+<p>Limit I/O bandwidth consumption</p>
+</td>
+<td class="cellalignment1942" headers="r2c1-t3 r1c2-t3">
+<p>Use the <code dir="ltr">RATE</code> channel parameter to act as a throttling mechanism for backups.</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r3c1-t3" headers="r1c1-t3">
+<p>Limit backup sets and pieces</p>
+</td>
+<td class="cellalignment1942" headers="r3c1-t3 r1c2-t3">
+<p>Use the <code dir="ltr">MAXPIECESIZE</code> channel parameter to set limits on the size of backup pieces. You can also use the <code dir="ltr">MAXSETSIZE</code> parameter on <a id="sthref473"></a><a id="sthref474"></a>the <code dir="ltr">BACKUP</code> and <code dir="ltr">CONFIGURE</code> commands to set a limit for the size of backup sets.</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r4c1-t3" headers="r1c1-t3">
+<p>Vendor-specific instructions</p>
+</td>
+<td class="cellalignment1942" headers="r4c1-t3 r1c2-t3">
+<p>Use the <code dir="ltr">PARMS</code> channel parameter to specify vendor-specific information for a <a href="glossary.htm#i432922"><span class="xrefglossterm">media manager</span></a>. You can also use the <code dir="ltr">SEND</code> command to send vendor-specific commands to a media manager.</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r5c1-t3" headers="r1c1-t3">
+<p>Channel parallel backup and restore operations</p>
+</td>
+<td class="cellalignment1942" headers="r5c1-t3 r1c2-t3">
+<p>Use <code dir="ltr">CONFIGURE DEVICE TYPE ... PARALLELISM</code> for persistent channel parallelism or multiple <code dir="ltr">ALLOCATE CHANNEL</code> commands for job-level parallelism.</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r6c1-t3" headers="r1c1-t3">
+<p>Connection settings for database instances</p>
+</td>
+<td class="cellalignment1942" headers="r6c1-t3 r1c2-t3">
+<p>Specify which instance performs an operation with the <code dir="ltr">CONNECT</code> channel parameter.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformal" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink RCMRF102" href="../../backup.112/e10643/rcmsynta004.htm#RCMRF102"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for <code dir="ltr">ALLOCATE</code> <code dir="ltr">CHANNEL</code> syntax, and <a class="olink RCMRF113" href="../../backup.112/e10643/rcmsynta010.htm#RCMRF113"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for <code dir="ltr">CONFIGURE</code> syntax</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1007068"></a>
+<div id="BRADV89457" class="sect2">
+<h3 class="sect2">Configuring Specific Channel Parameters</h3>
+<p><a id="sthref475"></a><a id="sthref476"></a>In addition to configuring parameters that apply to all channels of a particular type, you can also configure parameters that apply to one specific channel. Run the <code dir="ltr">CONFIGURE CHANNEL</code> <code dir="ltr"><span class="codeinlineitalic">n</span></code> command (where <code dir="ltr"><span class="codeinlineitalic">n</span></code> is a positive integer less than 255) to configure a specific channel.</p>
+<p>When manually numbering channels, you must specify one or more channel options (for example, <code dir="ltr">MAXPIECESIZE</code> or <a class="olink RCMRF195" href="../../backup.112/e10643/rcmsubcl010.htm#RCMRF195"><code dir="ltr">FORMAT</code></a>) for each channel. When you use that specific numbered channel in a backup, the configured settings for that channel are used instead of the configured generic channel settings.</p>
+<p>Configure specific channels by number when it is necessary to control the parameters set for each channel separately. This technique is necessary in the following situations:</p>
+<ul>
+<li>
+<p>When running an <a id="sthref477"></a><a id="sthref478"></a>Oracle Real Application Clusters (Oracle RAC) database in which individual nodes do not have access to the full set of backups. Each channel must be configured with a node-specific connect string so that all backups are accessible by at least one channel.</p>
+</li>
+<li>
+<p>When using a media manager that requires different <code dir="ltr">PARMS</code> settings on each channel.</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink RACAD320" href="../../rac.112/e41960/rman.htm#RACAD320"><span class="italic">Oracle Real Application Clusters Administration and Deployment Guide</span></a> to learn about RMAN backups in an Oracle RAC environment</div>
+<a id="i1007073"></a>
+<div id="BRADV89458" class="sect3">
+<h4 class="sect3">Configuring Specific Channels: Examples</h4>
+<p>In this example, you want to send disk backups to two different disks. Configure disk channels as follows:</p>
+<pre dir="ltr">
+CONFIGURE DEFAULT DEVICE TYPE TO disk;        # backup goes to disk
+CONFIGURE DEVICE TYPE disk PARALLELISM 2;     # two channels used in parallel
+CONFIGURE CHANNEL 1 DEVICE TYPE DISK FORMAT '/disk1/%U' # 1st channel to disk1 
+CONFIGURE CHANNEL 2 DEVICE TYPE DISK FORMAT '/disk2/%U' # 2nd channel to disk2
+BACKUP DATABASE; # backup - first channel goes to disk1 and second to disk2
+</pre>
+<p>Assume a different case in which you have two tape drives and want each drive to use tapes from a different tape media family. Configure your default output device and default tape channels as shown in <a href="#CHDFCEGA">Example 6-1</a> to use parallel database backups.</p>
+<div id="BRADV183" class="example">
+<p class="titleinexample"><a id="CHDFCEGA"></a>Example 6-1 Configuring Channel Parallelism for Tape Devices</p>
+<pre dir="ltr">
+CONFIGURE DEFAULT DEVICE TYPE TO sbt;    # backup goes to sbt
+CONFIGURE DEVICE TYPE sbt PARALLELISM 2; # two sbt channels allocated by default
+# Configure channel 1 to pool named first_pool
+CONFIGURE CHANNEL 1 DEVICE TYPE sbt 
+  PARMS 'ENV=(OB_MEDIA_FAMILY=first_pool)'; 
+# configure channel 2 to pool named second_pool
+CONFIGURE CHANNEL 2 DEVICE TYPE sbt 
+  PARMS 'ENV=(OB_MEDIA_FAMILY=second_pool)'; 
+BACKUP DATABASE; # first stream goes to 'first_pool' and second to 'second_pool'
+</pre></div>
+<!-- class="example" -->
+<p>In <a href="#CHDFCEGA">Example 6-1</a>, the backup data is divided between the two tape devices. Each configured channel backs up approximately half the total data.</p>
+</div>
+<!-- class="sect3" -->
+<div id="BRADV89459" class="sect3"><a id="sthref479"></a>
+<h4 class="sect3">Relationship Between CONFIGURE CHANNEL and Parallelism Setting</h4>
+<p>The <code dir="ltr">PARALLELISM</code> setting is not constrained by the number of specifically configured channels. For example, if you back up to 20 different tape devices, then you can configure 20 different SBT channels, each with a manually assigned number (from 1 to 20) and each with a different set of channel options. In such a situation, you can set <code dir="ltr">PARALLELISM</code> to any value up to the number of devices, in this instance 20.</p>
+<p>RMAN always numbers parallel channels starting with <code dir="ltr">1</code> and ending with the <code dir="ltr">PARALLELISM</code> setting. For example, if the default device is SBT and parallelism is set to 3, then RMAN names the channels as follows:</p>
+<pre dir="ltr">
+ORA_SBT_TAPE_1
+ORA_SBT_TAPE_2
+ORA_SBT_TAPE_3
+</pre>
+<p>RMAN always uses the name <code dir="ltr">ORA_SBT_TAPE_</code><span class="italic">n</span> even if you configure <code dir="ltr">DEVICE</code> <code dir="ltr">TYPE</code> <code dir="ltr">sbt</code> (not the synonymous <code dir="ltr">sbt_tape</code>). RMAN always allocates the number of channels specified in <code dir="ltr">PARALLELISM</code>, using specifically configured channels if you have configured them and generic channels if you have not. If you configure specific channels with numbers higher than the parallelism setting, then this setting prevents RMAN from using them.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="rcmarchi.htm#i1012864">"RMAN Channels"</a> to learn about channels</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDFGFAJ"></a>
+<div id="BRADV89460" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Configuring Advanced Backup Options</h2>
+<p><a href="rcmconfb.htm#i1016757">"Configuring the Environment for RMAN Backups"</a> explains the basics for configuring RMAN to make backups. This section explains more advanced configuration options. This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1015840">Configuring the Maximum Size of Backup Sets</a></p>
+</li>
+<li>
+<p><a href="#CEGGJJBD">Configuring the Maximum Size of Backup Pieces</a></p>
+</li>
+<li>
+<p><a href="#i1007486">Configuring Backup Duplexing</a></p>
+</li>
+<li>
+<p><a href="#i1015029">Configuring Tablespaces for Exclusion from Whole Database Backups</a></p>
+</li>
+<li>
+<p><a href="#CHDEHCEB">Configuring Compression Options</a></p>
+</li>
+<li>
+<p><a href="#CHDEDDBE">Configuring Backup Encryption</a></p>
+</li>
+</ul>
+<a id="i1015840"></a>
+<div id="BRADV137" class="sect2">
+<h3 class="sect2">Configuring the Maximum Size of Backup Sets</h3>
+<p><a id="sthref480"></a><a id="sthref481"></a><a id="sthref482"></a><a id="sthref483"></a><a id="sthref484"></a>In tape backups, it is possible for a <a id="sthref485"></a><a id="sthref486"></a><a href="glossary.htm#CHDECCDH"><span class="xrefglossterm">multiplexed backup set</span></a> to span multiple tapes, which means that blocks from each data file in the backup set are written to multiple tapes. If one tape of a multivolume backup set fails, then you lose the data on all the tapes rather than just one. If a backup is not a <a href="glossary.htm#BGBCJCBC"><span class="xrefglossterm">multisection backup</span></a>, then a backup set always includes a whole data file rather than a partial data file. You can use <code dir="ltr">MAXSETSIZE</code> to specify that each backup set should fit on one tape rather than spanning multiple tapes.</p>
+<p><a id="sthref487"></a><a id="sthref488"></a>The <a class="olink RCMRF113" href="../../backup.112/e10643/rcmsynta010.htm#RCMRF113"><code dir="ltr">CONFIGURE MAXSETSIZE</code></a> command limits the size of backup sets created on a channel. This <code dir="ltr">CONFIGURE</code> setting applies to any channel, whether manually allocated or configured, <a id="sthref489"></a><a id="sthref490"></a>when the <a class="olink RCMRF107" href="../../backup.112/e10643/rcmsynta007.htm#RCMRF107"><code dir="ltr">BACKUP</code></a> command is used to create backup sets. The default value is given in bytes and is rounded down to the lowest kilobyte value.</p>
+<p>The value set by the <code dir="ltr">CONFIGURE MAXSETSIZE</code> command is a default for the given channel. You can override the configured <code dir="ltr">MAXSETSIZE</code> value by specifying a <code dir="ltr">MAXSETSIZE</code> option for an individual <code dir="ltr">BACKUP</code> command.</p>
+<p>Assume that you issue the following commands at the RMAN prompt:</p>
+<pre dir="ltr">
+CONFIGURE DEFAULT DEVICE TYPE TO sbt;
+CONFIGURE CHANNEL DEVICE TYPE sbt PARMS 'ENV=(OB_MEDIA_FAMILY=first_pool)'; 
+CONFIGURE MAXSETSIZE TO 7500K;
+BACKUP TABLESPACE users;
+BACKUP TABLESPACE tools MAXSETSIZE 5G;
+</pre>
+<p>The results are as follows:</p>
+<ul>
+<li>
+<p>The backup of the <code dir="ltr">users</code> tablespace uses the configured <a href="glossary.htm#CHDCCBFI"><span class="xrefglossterm">SBT</span></a> channel and the configured default <code dir="ltr">MAXSETSIZE</code> setting of <code dir="ltr">7500K</code>.</p>
+</li>
+<li>
+<p>The backup of the <code dir="ltr">tools</code> tablespace uses the <code dir="ltr">MAXSETSIZE</code> setting of <code dir="ltr">5G</code> specified in the <code dir="ltr">BACKUP</code> command.</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="rcmbckad.htm#CHDHABHI">"Limiting the Size of Backup Sets with BACKUP ... MAXSETSIZE"</a></p>
+</li>
+<li>
+<p><a class="olink RCMRF107" href="../../backup.112/e10643/rcmsynta007.htm#RCMRF107"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for <code dir="ltr">BACKUP</code> syntax</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="CEGGJJBD"></a>
+<div id="BRADV89461" class="sect2">
+<h3 class="sect2">Configuring the Maximum Size of Backup Pieces</h3>
+<p><a id="sthref491"></a>Backup piece size is an issue when it exceeds the maximum file size permitted by the file system or media management software. <a id="sthref492"></a><a id="sthref493"></a><a id="sthref494"></a><a id="sthref495"></a>You can use the <code dir="ltr">MAXPIECESIZE</code> parameter of the <code dir="ltr">CONFIGURE</code> <code dir="ltr">CHANNEL</code> or <code dir="ltr">ALLOCATE</code> <code dir="ltr">CHANNEL</code> command to limit the size of backup pieces.</p>
+<p>For example, to limit the backup piece size to 2 gigabytes or less, you can configure the automatic <code dir="ltr">DISK</code> channel as follows and then run <code dir="ltr">BACKUP</code> <code dir="ltr">DATABASE</code>:</p>
+<pre dir="ltr">
+CONFIGURE CHANNEL DEVICE TYPE DISK MAXPIECESIZE 2G;
+BACKUP DATABASE;
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+In version 2.0 of the media management <a id="sthref496"></a>API, media management vendors can specify the maximum size of a backup piece that can be written to their media manager. RMAN respects this limit regardless of the settings that you configure for <code dir="ltr">MAXPIECESIZE</code>.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink RCMRF113" href="../../backup.112/e10643/rcmsynta010.htm#RCMRF113"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> to learn about the <code dir="ltr">CONFIGURE CHANNEL ... MAXPIECESIZE</code> command</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1007486"></a>
+<div id="BRADV139" class="sect2">
+<h3 class="sect2">Configuring Backup Duplexing</h3>
+<p><a id="sthref497"></a><a id="sthref498"></a><a id="sthref499"></a><a id="sthref500"></a><a id="sthref501"></a>You can use the <a class="olink RCMRF113" href="../../backup.112/e10643/rcmsynta010.htm#RCMRF113"><code dir="ltr">CONFIGURE ... BACKUP COPIES</code></a> command to specify how many copies of each backup piece should be created on the specified device type for the specified type of file. This type of backup is known as a <a href="glossary.htm#CHDFAIIJ"><span class="xrefglossterm">duplexed backup set</span></a>. The <code dir="ltr">CONFIGURE</code> settings for duplexing only affect backups of data files, control files, and archived logs into backup sets, and do not affect image copies.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+A <a href="glossary.htm#i432379"><span class="xrefglossterm">control file autobackup</span></a> is <span class="italic">never</span> duplexed.</div>
+<p>RMAN can duplex backups to either disk or tape, but cannot duplex backups to tape and disk simultaneously. When backing up to tape, ensure that the number of copies does not exceed the number of available tape devices. The following examples show possible duplexing configurations:</p>
+<pre dir="ltr">
+# Makes 2 disk copies of each data file and control file backup set
+# (autobackups excluded)
+CONFIGURE DATAFILE BACKUP COPIES FOR DEVICE TYPE DISK TO 2;
+# Makes 3 copies of every archived redo log backup to tape
+CONFIGURE ARCHIVELOG BACKUP COPIES FOR DEVICE TYPE sbt TO 3;
+</pre>
+<p>To return a <code dir="ltr">BACKUP</code> <code dir="ltr">COPIES</code> configuration to its default value, run the same <code dir="ltr">CONFIGURE</code> command with the <code dir="ltr">CLEAR</code> option, as in the following example:</p>
+<pre dir="ltr">
+CONFIGURE DATAFILE BACKUP COPIES FOR DEVICE TYPE sbt CLEAR;
+</pre>
+<p>By default, <code dir="ltr">CONFIGURE</code> <code dir="ltr">...</code> <code dir="ltr">BACKUP</code> <code dir="ltr">COPIES</code> is set to <code dir="ltr">1</code> for each device type.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If you do not want to create a persistent copies configuration, then you can specify copies with the <code dir="ltr">BACKUP</code> <code dir="ltr">COPIES</code> and the <a class="olink RCMRF153" href="../../backup.112/e10643/rcmsynta2014.htm#RCMRF153"><code dir="ltr">SET BACKUP COPIES</code></a> commands.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="rcmcncpt.htm#i1025065">"Multiple Copies of RMAN Backups"</a> for an overview of duplexed backups</p>
+</li>
+<li>
+<p><a href="rcmbckad.htm#i1006180">"Duplexing Backup Sets"</a> to learn how to create duplexed backups</p>
+</li>
+<li>
+<p><a class="olink RCMRF107" href="../../backup.112/e10643/rcmsynta007.htm#RCMRF107"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for <code dir="ltr">BACKUP</code> syntax</p>
+</li>
+<li>
+<p><a class="olink RCMRF113" href="../../backup.112/e10643/rcmsynta010.htm#RCMRF113"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for <code dir="ltr">CONFIGURE</code> syntax</p>
+</li>
+<li>
+<p><a class="olink RCMRF153" href="../../backup.112/e10643/rcmsynta2014.htm#RCMRF153"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for <code dir="ltr">SET</code> syntax</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1015029"></a>
+<div id="BRADV140" class="sect2">
+<h3 class="sect2">Configuring Tablespaces for Exclusion from Whole Database Backups</h3>
+<p><a id="sthref502"></a>Sometimes you may want to omit a specified tablespace from part of the regular backup schedule. Here are some possible scenarios to consider:</p>
+<ul>
+<li>
+<p>A tablespace is easy to rebuild, so it is more cost-effective to rebuild it than back it up every day.</p>
+</li>
+<li>
+<p>A tablespace contains temporary or test data that you do not need to back up.</p>
+</li>
+<li>
+<p>A tablespace does not change often and therefore should be backed up on a different schedule from other backups.</p>
+</li>
+</ul>
+<p><a id="sthref503"></a><a id="sthref504"></a><a id="sthref505"></a><a id="sthref506"></a>You can run <a class="olink RCMRF113" href="../../backup.112/e10643/rcmsynta010.htm#RCMRF113"><code dir="ltr">CONFIGURE EXCLUDE FOR TABLESPACE</code></a> to exclude the specified tablespace from <a id="sthref507"></a><a id="sthref508"></a>the <a class="olink RCMRF107" href="../../backup.112/e10643/rcmsynta007.htm#RCMRF107"><code dir="ltr">BACKUP DATABASE</code></a> command. The exclusion condition applies to any data files that you add to this tablespace in the future.</p>
+<p>For example, you can exclude testing tablespaces <code dir="ltr">cwmlite</code> and <code dir="ltr">example</code> from whole database backups as follows:</p>
+<pre dir="ltr">
+CONFIGURE EXCLUDE FOR TABLESPACE cwmlite;
+CONFIGURE EXCLUDE FOR TABLESPACE example;
+</pre>
+<p>If you run the following command, then RMAN backs up all tablespaces in the database except <code dir="ltr">cwmlite</code> and <code dir="ltr">example</code>:</p>
+<pre dir="ltr">
+BACKUP DATABASE;
+</pre>
+<p>You can still back up the configured tablespaces by explicitly specifying them in a <code dir="ltr">BACKUP</code> command or by specifying the <code dir="ltr">NOEXCLUDE</code> option on a <code dir="ltr">BACKUP</code> <code dir="ltr">DATABASE</code> command. For example, you can enter one of the following commands:</p>
+<pre dir="ltr">
+BACKUP DATABASE NOEXCLUDE; #backs up database, including cwmlite and example
+BACKUP TABLESPACE cwmlite, example;  # backs up only cwmlite and example
+</pre>
+<p>You can disable the exclusion feature for <code dir="ltr">cwmlite</code> and <code dir="ltr">example</code> as follows:</p>
+<pre dir="ltr">
+CONFIGURE EXCLUDE FOR TABLESPACE cwmlite CLEAR;
+CONFIGURE EXCLUDE FOR TABLESPACE example CLEAR;
+</pre>
+<p>RMAN includes these tablespaces in future whole database backups.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink RCMRF107" href="../../backup.112/e10643/rcmsynta007.htm#RCMRF107"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for <code dir="ltr">BACKUP</code> and <code dir="ltr">CONFIGURE</code> syntax</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="CHDEHCEB"></a>
+<div id="BRADV89466" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Configuring Compression Options</h3>
+<p><a id="sthref509"></a><a id="sthref510"></a>RMAN supports precompression processing and <a href="glossary.htm#CHDEEEDG"><span class="xrefglossterm">binary compression</span></a> of backup sets.</p>
+<div id="BRADV184" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref511"></a>
+<h4 class="sect3">Precompression Block Processing</h4>
+<p>Better backup compression ratios are achieved by consolidating the free space in each data block, and setting that free space to binary zeroes. This precompression processing stage has the most benefit for data blocks that have been the subject of many deletes and inserts operations. Conversely, it has no effect on data blocks that are still in their initial loaded state.</p>
+<p>The <code dir="ltr">OPTIMIZE FOR LOAD</code> option controls precompression processing. By specifying the default, <code dir="ltr">OPTIMIZE FOR LOAD TRUE</code>, you ensure that RMAN optimizes CPU usage and avoids precompression block processing. By specifying <code dir="ltr">OPTIMIZE FOR LOAD FALSE</code>, RMAN uses additional CPU resources to perform precompression block processing.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><span class="italic">Oracle Database Backup and Recovery Reference</span> for <code dir="ltr">CONFIGURE</code> and <code dir="ltr">SET</code> syntax</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect3" -->
+<div id="BRADV185" class="sect3"><a id="sthref512"></a>
+<h4 class="sect3">Basic Compression Option</h4>
+<p>You can configure the basic compression algorithm, which does not require the Advanced Compression Option, with the following syntax:</p>
+<div id="BRADV186" class="example">
+<p class="titleinexample"><a id="sthref513"></a>Example 6-2 Configuring Basic Compression for Backup</p>
+<pre dir="ltr">
+CONFIGURE COMPRESSION ALGORITHM 'BASIC';
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect3" -->
+<a id="BGBJHFBI"></a>
+<div id="BRADV187" class="sect3">
+<h4 class="sect3"><a id="sthref514"></a>Advanced Compression Option</h4>
+<p>If you have enabled the Oracle Database 11<span class="italic">g</span> Release 2 Advanced Compression Option, you can choose from the following compression levels:</p>
+<div class="inftblinformal">
+<table class="cellalignment1945" title="Compression Levels" summary="List of compression values" dir="ltr">
+<thead>
+<tr class="cellalignment1934">
+<th class="cellalignment1941" id="r1c1-t15">Compression Level</th>
+<th class="cellalignment1941" id="r1c2-t15">Performance Benefits and Trade-Offs</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r2c1-t15" headers="r1c1-t15"><code dir="ltr">HIGH</code></td>
+<td class="cellalignment1942" headers="r2c1-t15 r1c2-t15">Best suited for backups over slower networks where the limiting factor is network speed.</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r3c1-t15" headers="r1c1-t15"><code dir="ltr">MEDIUM</code></td>
+<td class="cellalignment1942" headers="r3c1-t15 r1c2-t15">Recommended for most environments. Good combination of compression ratios and speed.</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r4c1-t15" headers="r1c1-t15"><code dir="ltr">LOW</code></td>
+<td class="cellalignment1942" headers="r4c1-t15 r1c2-t15">Least effect on backup throughput.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformal" -->
+<p>The compression ratio generally increases from low to high, with a trade-off of potentially consuming more CPU resources.</p>
+<p>Because the performance of the various compression levels depends on the nature of the data in the database, network configuration, system resources and the type of computer system and its capabilities, Oracle cannot document universally applicable performance statistics. Which level is best for your environment depends on how balanced your system is regarding bandwidth into the CPU and the actual speed of the CPU. It is highly recommended that you run tests with the different compression levels on the data in your environment. Choosing a compression level based on your environment, network traffic characteristics (workload), and data set is the only way to ensure that the backup set compression level can satisfy your organization's performance requirements and applicable service level agreements.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+<ul>
+<li>
+<p>If you are backing up to tape and your tape device performs its own compression, then you should not use both RMAN backup set compression and the media manager vendor's compression. See the discussion of tuning RMAN tape backup performance in <a href="rcmtunin.htm#CACJCBDB">Chapter 22, "Tuning RMAN Performance"</a>.</p>
+</li>
+<li>
+<p>Restoring a compressed backup is performed inline, and does not require decompression.</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CHDEDDBE"></a>
+<div id="BRADV89467" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Configuring Backup Encryption</h3>
+<p>For improved security, you can configure <a id="sthref515"></a><a href="glossary.htm#CHDJDIEJ"><span class="xrefglossterm">backup encryption</span></a> for RMAN backup sets. Encrypted backups cannot be read if they are obtained by unauthorized users. This feature requires the Enterprise Edition of the database.</p>
+<div id="BRADV89468" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref516"></a>
+<h4 class="sect3">About Backup Encryption</h4>
+<p><a id="sthref517"></a>The <a class="olink REFRN30418" href="../../server.112/e40402/dynviews_2147.htm#REFRN30418"></a><a id="sthref518"></a>V$RMAN_ENCRYPTION_ALGORITHMS view contains a list of encryption algorithms supported by RMAN. If no encryption algorithm is specified, then the default encryption algorithm is 128-bit Advanced Encryption Standard (AES). RMAN encryption requires the<a id="sthref519"></a> <a class="olink REFRN10019" href="../../server.112/e40402/initparams035.htm#REFRN10019"><code dir="ltr">COMPATIBLE</code></a> initialization parameter at a target database to be at least 10.2.0.</p>
+<p>RMAN offers the following encryption modes:</p>
+<ul>
+<li>
+<p><a href="#CHDFFFEH">Transparent Encryption of Backups</a></p>
+<p>This is the default mode and uses the Oracle wallet. A wallet is a password-protected container used to store authentication and signing credentials, including private keys, certificates, and trusted certificates needed by SSL.</p>
+</li>
+<li>
+<p><a href="#CHDFADGB">Password Encryption of Backups</a></p>
+<p>This mode uses only password protection. You must provide a password when creating and restoring encrypted backups.</p>
+</li>
+<li>
+<p><a href="#CHDGFGJD">Dual Mode Encryption of Backups</a></p>
+<p>This mode requires either the wallet or a password.</p>
+</li>
+</ul>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Wallet-based encryption is more secure than password-based encryption because no passwords are involved. You should use password-based encryption only when it is absolutely necessary because your backups must be transportable.</div>
+<p>Encrypted backups are decrypted automatically during restore and recovery, if the required decryption keys are available. Each backup set gets a separate key. The key is stored in encrypted form in the backup piece. The backup is decrypted with keys obtained with a user-supplied password or the Oracle wallet.</p>
+<p>To create encrypted backups on disk with RMAN, the database must use the <a id="sthref520"></a>Advanced Security Option. The <a href="glossary.htm#CHDDFGEB"><span class="xrefglossterm">Oracle Secure Backup</span></a> <a href="glossary.htm#CHDCCBFI"><span class="xrefglossterm">SBT</span></a> is the only supported interface for making encrypted RMAN backups directly to tape. RMAN issues an <code dir="ltr">ORA-19916</code> error if you attempt to create encrypted RMAN backups using an SBT library other than Oracle Secure Backup. The Advanced Security Option is <span class="italic">not</span> required when making encrypted backups using the Oracle Secure Backup SBT.</p>
+<p><a id="sthref521"></a><a id="sthref522"></a><a id="sthref523"></a>When you use the <a class="olink RCMRF107" href="../../backup.112/e10643/rcmsynta007.htm#RCMRF107"><code dir="ltr">BACKUP</code></a> <code dir="ltr">BACKUPSET</code> command with encrypted backup sets, the backup sets are backed up in encrypted form. Because <code dir="ltr">BACKUP</code> <code dir="ltr">BACKUPSET</code> copies an encrypted backup set to disk or tape, no decryption key is needed during <code dir="ltr">BACKUP</code> <code dir="ltr">BACKUPSET</code>. The data is never decrypted during any part of the operation. The <code dir="ltr">BACKUP</code> <code dir="ltr">BACKUPSET</code> command can neither encrypt nor decrypt backup sets.<a id="sthref524"></a></p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ASOAG600" href="../../network.112/e40393/asotrans.htm#ASOAG600"><span class="italic">Oracle Database Advanced Security Administrator's Guide</span></a> for details about configuring the Oracle wallet</div>
+<a id="CHDFFFEH"></a>
+<div id="BRADV89469" class="sect4">
+<h5 class="sect4">Transparent Encryption of Backups</h5>
+<p><a id="sthref525"></a><a id="sthref526"></a><a id="sthref527"></a><a id="sthref528"></a>Transparent <a id="sthref529"></a><a id="sthref530"></a>encryption can create and restore encrypted backups with no DBA intervention, as long as the required Oracle key management infrastructure is available. Transparent encryption is best suited for day-to-day backup operations, where backups are restored to the same database from which they were created. Transparent encryption is the default for RMAN encryption.</p>
+<p>When you use transparent encryption, you must first configure an Oracle wallet for each database, as described in <a class="olink ASOAG600" href="../../network.112/e40393/asotrans.htm#ASOAG600"><span class="italic">Oracle Database Advanced Security Administrator's Guide</span></a>. Transparent backup encryption supports both the encrypted and autologin forms of the Oracle wallet. When you use the Oracle wallet, the wallet must be opened before you can perform backup encryption. When you use the autologin wallet, encrypted backup operations can be done at any time, because the autologin wallet is always open.</p>
+<div class="infobox-note">
+<p class="notep1">Caution:</p>
+If you use an autologin wallet, do not back it up along with your encrypted backup data, because users can read the encrypted backups if they obtain both the backups and the autologin wallet. It is safe to back up the Oracle wallet because that form of the wallet cannot be used without the wallet password.</div>
+<p>After the Oracle wallet is configured, encrypted backups can be created and restored with no further DBA intervention. If some columns in the database are encrypted with transparent data encryption, and if those columns are backed up using backup encryption, then those columns are encrypted a second time during the backup. When the backup sets are decrypted during a restore operation, the encrypted columns are returned to their original encrypted form.</p>
+<p>Because the Oracle key management infrastructure archives all previous master keys in the <a id="sthref531"></a>Oracle wallet, changing or resetting the current database master key does not affect your ability to restore encrypted backups performed with an older master key. You can reset the database master key at any time. RMAN can restore all encrypted backups that were ever created by this database.</p>
+<div class="infoboxnotewarn">
+<p class="notep1">Caution:</p>
+If you lose your Oracle wallet, then you cannot restore any transparently encrypted backups.</div>
+</div>
+<!-- class="sect4" -->
+<a id="CHDFADGB"></a>
+<div id="BRADV89470" class="sect4"><!-- infolevel="all" infotype="General" -->
+<h5 class="sect4">Password Encryption of Backups</h5>
+<p><a id="sthref532"></a><a id="sthref533"></a>Password <a id="sthref534"></a>encryption requires that the DBA provide a password when creating and restoring encrypted backups. Restoring a password-encrypted backup requires the same password that was used to create the backup.</p>
+<p>Password encryption is useful for backups that are restored at remote locations, but which must remain secure in transit. Password encryption cannot be persistently configured. You do not need to configure an Oracle wallet if password encryption is used exclusively.</p>
+<div class="infobox-note">
+<p class="notep1">Caution:</p>
+If you forget or lose the password that you used to encrypt a password-encrypted backup, then you cannot restore the backup.</div>
+<p>To use password encryption, use <a id="sthref535"></a><a id="sthref536"></a>the <a class="olink RCMRF153" href="../../backup.112/e10643/rcmsynta2014.htm#RCMRF153"><code dir="ltr">SET</code></a> <code dir="ltr">ENCRYPTION</code> <code dir="ltr">ON</code> <code dir="ltr">IDENTIFIED</code> <code dir="ltr">BY</code> <code dir="ltr"><span class="codeinlineitalic">password</span></code> <code dir="ltr">ONLY</code> command in your RMAN scripts.</p>
+</div>
+<!-- class="sect4" -->
+<a id="CHDGFGJD"></a>
+<div id="BRADV89471" class="sect4"><!-- infolevel="all" infotype="General" -->
+<h5 class="sect4">Dual Mode Encryption of Backups</h5>
+<p><a id="sthref537"></a><a id="sthref538"></a>Dual-mode <a id="sthref539"></a>encrypted backups can be restored either transparently or by specifying a password. Dual-mode encrypted backups are useful when you create backups that are normally restored on site using the Oracle wallet, but which occasionally must be restored offsite, where the Oracle wallet is not available.</p>
+<p>When restoring a dual-mode encrypted backup, you can use either the Oracle wallet or a password for decryption.</p>
+<div class="infobox-note">
+<p class="notep1">Caution:</p>
+If you forget or lose the password that you used to encrypt a dual-mode encrypted backup and you also lose your Oracle wallet, then you cannot restore the backup.</div>
+<p>To create dual-mode encrypted backup sets, specify the <code dir="ltr">SET</code> <code dir="ltr">ENCRYPTION</code> <code dir="ltr">ON</code> <code dir="ltr">IDENTIFIED</code> <code dir="ltr">BY</code> <code dir="ltr"><span class="codeinlineitalic">password</span></code> command in your RMAN scripts.</p>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<a id="CHDEDGHA"></a>
+<div id="BRADV89472" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Configuring RMAN Backup Encryption Modes</h4>
+<p>You can use the <code dir="ltr">CONFIGURE</code> command to persistently configure transparent encryption of backups. You can use the command to specify the following:</p>
+<ul>
+<li>
+<p>Whether to use transparent encryptions for backups of all database files</p>
+</li>
+<li>
+<p>Whether to use transparent encryptions for backups of specific tablespaces</p>
+</li>
+<li>
+<p>Which algorithm to use for encrypting backups</p>
+</li>
+</ul>
+<p>You can also use the <code dir="ltr">SET</code> <code dir="ltr">ENCRYPTION</code> command to perform the following actions:</p>
+<ul>
+<li>
+<p>Override the encryption settings specified by <a id="sthref540"></a><a id="sthref541"></a>the <a class="olink RCMRF113" href="../../backup.112/e10643/rcmsynta010.htm#RCMRF113"><code dir="ltr">CONFIGURE</code></a> <code dir="ltr">ENCRYPTION</code> command. For example, you can use <code dir="ltr">SET</code> <code dir="ltr">ENCRYPTION</code> <code dir="ltr">OFF</code> to create an unencrypted backup, even though a database is configured for encrypted backups.</p>
+</li>
+<li>
+<p>Set a password for backup encryption, persisting until the RMAN client exits. Because of the sensitive nature of passwords, RMAN does not permit configuration of passwords that persist across RMAN sessions.</p>
+</li>
+</ul>
+<p>Using or not using persistent configuration settings controls whether archived redo log backups are encrypted. Backup sets containing archived redo log files are encrypted if any of the following are true:</p>
+<ul>
+<li>
+<p><code dir="ltr">SET</code> <code dir="ltr">ENCRYPTION</code> <code dir="ltr">ON</code> is in effect when the archive log backup is being created.</p>
+</li>
+<li>
+<p>Encryption is configured for backups of the whole database or at least one tablespace.</p>
+</li>
+</ul>
+<p>This behavior ensures that the redo associated with any encrypted backup of a data file is also encrypted.</p>
+<p class="subhead2"><a id="BRADV579"></a>To configure the environment so that all RMAN backups are encrypted:</p>
+<ol>
+<li>
+<p>Set up the Oracle wallet as explained in <a class="olink ASOAG600" href="../../network.112/e40393/asotrans.htm#ASOAG600"><span class="italic">Oracle Database Advanced Security Administrator's Guide</span></a>.</p>
+</li>
+<li>
+<p>Issue the following RMAN command:</p>
+<pre dir="ltr">
+CONFIGURE ENCRYPTION FOR DATABASE ON;
+</pre>
+<p>At this stage, all RMAN backup sets created by this database use transparent encryption by default.</p>
+</li>
+</ol>
+<p>You can explicitly override the persistent encryption configuration for an <a href="glossary.htm#CHDHHCJB"><span class="xrefglossterm">RMAN session</span></a> with the following command:</p>
+<pre dir="ltr">
+SET ENCRYPTION ON;
+</pre>
+<p>The encryption setting remains in effect until you issue the <code dir="ltr">SET</code> <code dir="ltr">ENCRYPTION</code> <code dir="ltr">OFF</code> command during an RMAN session, or change the persistent setting again with the following command:</p>
+<pre dir="ltr">
+CONFIGURE ENCRYPTION FOR DATABASE OFF;
+</pre></div>
+<!-- class="sect3" -->
+<a id="CHDFAHHJ"></a>
+<div id="BRADV90077" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Configuring the Backup Encryption Algorithm</h4>
+<p>You can use the <code dir="ltr">CONFIGURE</code> command to persistently configure the default algorithm to use for encryption when writing backup sets. Possible values are listed <a id="sthref542"></a>in <code dir="ltr">V$RMAN_ENCRYPTION_ALGORITHMS</code>. The default algorithm is AES 128-bit.</p>
+<p class="subhead2"><a id="BRADV580"></a>To configure the default backup encryption algorithm:</p>
+<ol>
+<li>
+<p>Start RMAN and connect to a target database and a recovery catalog (if used).</p>
+</li>
+<li>
+<p>Ensure that the target database is mounted or open.</p>
+</li>
+<li>
+<p>Execute the <code dir="ltr">CONFIGURE ENCRYPTION ALGORITHM</code> command, specifying a valid value from <code dir="ltr">V$RMAN_ENCRYPTION_ALGORITHMS.ALGORITHM_NAME</code>.</p>
+<p>The following example configures the algorithm to AES 256-bit encryption:</p>
+<pre dir="ltr">
+CONFIGURE ENCRYPTION ALGORITHM TO 'AES256';
+</pre></li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDDFEFJ"></a>
+<div id="BRADV14011" class="sect1">
+<h2 class="sect1">Configuring Auxiliary Instance Data File Names</h2>
+<p>Assume that you are performing <a id="sthref543"></a><a href="glossary.htm#i433562"><span class="xrefglossterm">tablespace point-in-time recovery (TSPITR)</span></a> or performing data transfer with RMAN. In this case, you may want to set the names of data files in the <a href="glossary.htm#CHDDCDAC"><span class="xrefglossterm">auxiliary instance</span></a> before starting the TSPITR or database duplication. The command is as follows, where <code dir="ltr"><span class="codeinlineitalic">datafileSpec</span></code> identifies some data file by its original name or data file number, and <code dir="ltr"><span class="codeinlineitalic">filename</span></code> is the new path for the specified file:</p>
+<pre dir="ltr">
+CONFIGURE AUXNAME FOR <span class="italic">datafileSpec</span> TO '<span class="codeinlineitalic">filename</span>';
+</pre>
+<p>For example, you might configure a new auxiliary name for data file <code dir="ltr">2</code> as follows:</p>
+<pre dir="ltr">
+CONFIGURE AUXNAME FOR DATAFILE 2 TO '/newdisk/datafiles/df2.df';
+</pre>
+<p>As with other settings, the <a class="olink RCMRF113" href="../../backup.112/e10643/rcmsynta010.htm#RCMRF113"><code dir="ltr">CONFIGURE</code></a> command setting persists across RMAN sessions until cleared with <code dir="ltr">CONFIGURE</code> <code dir="ltr">...</code> <code dir="ltr">CLEAR</code>, as shown in the following example:</p>
+<pre dir="ltr">
+CONFIGURE AUXNAME FOR DATAFILE 2 CLEAR;
+</pre>
+<p>If you are performing TSPITR or running the <a class="olink RCMRF126" href="../../backup.112/e10643/rcmsynta020.htm#RCMRF126"><code dir="ltr">DUPLICATE</code></a> command, then by using<a id="sthref544"></a><a id="sthref545"></a> <code dir="ltr">CONFIGURE AUXNAME</code> you can preconfigure the file names for use on the auxiliary database without manually specifying the auxiliary file names during the procedure.</p>
+<p>When renaming files with the <code dir="ltr">DUPLICATE</code> command, <code dir="ltr">CONFIGURE AUXNAME</code> is an alternative to <a class="olink RCMRF153" href="../../backup.112/e10643/rcmsynta2014.htm#RCMRF153"><code dir="ltr">SET NEWNAME</code></a> command. The difference is that after you set the <code dir="ltr">AUXNAME</code> the first time, you do not need to reset the file name when you issue another <code dir="ltr">DUPLICATE</code> command; the <code dir="ltr">AUXNAME</code> setting remains in effect until you issue <code dir="ltr">CONFIGURE AUXNAME</code> <code dir="ltr">...</code> <code dir="ltr">CLEAR</code>. In contrast, you must reissue the <code dir="ltr">SET NEWNAME</code> command every time you rename files.</p>
+<p>See <a href="rcmtspit.htm#CIHGGAFH">Chapter 21, "Performing RMAN Tablespace Point-in-Time Recovery (TSPITR),"</a> for more details on using <code dir="ltr">CONFIGURE</code> <code dir="ltr">AUXNAME</code> with TSPITR, and <a href="rcmdupdb.htm#BGBHBIFE">Chapter 24, "Duplicating a Database,"</a> for more details on using <code dir="ltr">CONFIGURE</code> <code dir="ltr">AUXNAME</code> in performing database duplication.</p>
+</div>
+<!-- class="sect1" -->
+<a id="i1015609"></a>
+<div id="BRADV141" class="sect1">
+<h2 class="sect1">Configuring the Snapshot Control File Location</h2>
+<p><a id="sthref546"></a><a id="sthref547"></a><a id="sthref548"></a><a id="sthref549"></a>When RMAN must resynchronize the recovery catalog with a read-consistent version of the control file, it creates a temporary <a id="sthref550"></a><a href="glossary.htm#i433510"><span class="xrefglossterm">snapshot control file</span></a>. RMAN needs a snapshot control file when resynchronizing with the recovery catalog or when making a backup of the current control file.</p>
+<p>The default location for the snapshot control file is platform-specific and depends on the Oracle home of each target database. For example, the default file name on some Linux platforms is <code dir="ltr">$ORACLE_HOME/dbs/snapcf_@.f</code>. If a <a id="sthref551"></a><a href="glossary.htm#i999320"><span class="xrefglossterm">fast recovery area</span></a> is configured for a target database, then the default location for the snapshot control file is <span class="italic">not</span> the fast recovery area.</p>
+<div id="BRADV89474" class="sect2"><a id="sthref552"></a>
+<h3 class="sect2">Viewing the Configured Location of the Snapshot Control File</h3>
+<p>You can see the current snapshot location by running the <a class="olink RCMRF154" href="../../backup.112/e10643/rcmsynta2015.htm#RCMRF154"><code dir="ltr">SHOW</code></a> command. This example shows a snapshot location that is determined by the default rule:</p>
+<pre dir="ltr">
+RMAN&gt; SHOW SNAPSHOT CONTROLFILE NAME;
+CONFIGURE SNAPSHOT CONTROLFILE NAME TO '/oracle/dbs/snapcf_trgt.f'; # default
+</pre>
+<p>This example shows a snapshot control file that has a nondefault file name:</p>
+<pre dir="ltr">
+RMAN&gt; SHOW SNAPSHOT CONTROLFILE NAME;
+CONFIGURE SNAPSHOT CONTROLFILE NAME TO '/oracle/oradata/trgt/snap_trgt.ctl';
+</pre></div>
+<!-- class="sect2" -->
+<div id="BRADV89475" class="sect2"><a id="sthref553"></a>
+<h3 class="sect2">Setting the Location of the Snapshot Control File</h3>
+<p>Use the <a class="olink RCMRF113" href="../../backup.112/e10643/rcmsynta010.htm#RCMRF113"><code dir="ltr">CONFIGURE</code></a> <code dir="ltr">SNAPSHOT</code> <code dir="ltr">CONTROLFILE</code> <code dir="ltr">NAME</code> <code dir="ltr">TO</code> <code dir="ltr">'</code><code dir="ltr"><span class="codeinlineitalic">filename</span></code><code dir="ltr">'</code> command to change the name of the snapshot control file. Subsequent snapshot control files that RMAN creates use the specified file name.</p>
+<p>For example, start RMAN and then enter:</p>
+<pre dir="ltr">
+CONFIGURE SNAPSHOT CONTROLFILE NAME TO '/oracle/oradata/trgt/snap_trgt.ctl';
+</pre>
+<p>You can also set the snapshot control file name to a <a href="glossary.htm#CHDHBJAG"><span class="xrefglossterm">raw device</span></a>.</p>
+<p>To reset the snapshot control file location to the default, run the <code dir="ltr">CONFIGURE</code> <code dir="ltr">SNAPSHOT</code> <code dir="ltr">CONTROLFILE</code> <code dir="ltr">NAME</code> <code dir="ltr">CLEAR</code> command.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="rcmcatdb.htm#i1006518">"Resynchronizing the Recovery Catalog"</a></p>
+</li>
+<li>
+<p><a class="olink RACAD320" href="../../rac.112/e41960/rman.htm#RACAD320"><span class="italic">Oracle Real Application Clusters Administration and Deployment Guide</span></a> for details about handling snapshot control files in Oracle RAC configurations</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1007660"></a>
+<div id="BRADV142" class="sect1">
+<h2 class="sect1">Configuring RMAN for Use with a Shared Server</h2>
+<p><a id="sthref554"></a><a id="sthref555"></a><a id="sthref556"></a>RMAN cannot connect to a target database through a shared server dispatcher. RMAN requires a dedicated server process. If your target database is configured for a shared server, then you must modify your Oracle Net configuration to provide dedicated server processes for RMAN connections.</p>
+<p>To ensure that RMAN does not connect to a dispatcher when a target database is configured for a shared server, the net service name used by RMAN must include <code dir="ltr">(SERVER=DEDICATED)</code> in the <code dir="ltr">CONNECT_DATA</code> attribute of the connect string.</p>
+<p>Oracle Net configuration varies greatly from system to system. The following procedure illustrates only one method. This scenario assumes that the following service name in <code dir="ltr">tnsnames.ora</code> file connects to a target database using the shared server architecture, where <code dir="ltr">inst1</code> is a value of the <a class="olink REFRN10194" href="../../server.112/e40402/initparams231.htm#REFRN10194"><code dir="ltr">SERVICE_NAMES</code></a> initialization parameter:</p>
+<pre dir="ltr">
+inst1_shs =
+  (DESCRIPTION=
+    (ADDRESS=(PROTOCOL=tcp)(HOST=inst1_host)(port=1521))
+    (CONNECT_DATA=(SERVICE_NAME=inst1)(SERVER=shared))
+  ) 
+</pre>
+<p class="subhead2"><a id="BRADV190"></a>To use RMAN with a shared server:</p>
+<ol>
+<li>
+<p>Create a net service name in the <code dir="ltr">tnsnames.ora</code> file that connects to the nonshared SID. For example, enter:</p>
+<pre dir="ltr">
+inst1_ded =
+  (DESCRIPTION=
+    (ADDRESS=(PROTOCOL=tcp)(HOST=inst1_host)(port=1521))
+    (CONNECT_DATA=(SERVICE_NAME=inst1)(SERVER=dedicated))
+  )
+</pre></li>
+<li>
+<p>Start SQL*Plus and then connect using both the shared server and dedicated server service names to confirm the mode of each session.</p>
+<p>For example, connect with <code dir="ltr">SYSDBA</code> privileges to <code dir="ltr">inst1_ded</code> and then execute the following <code dir="ltr">SELECT</code> statement (sample output included)<a id="sthref557"></a>:</p>
+<pre dir="ltr">
+SQL&gt; SELECT SERVER 
+  2  FROM   V$SESSION 
+  3  WHERE  SID = (SELECT DISTINCT SID FROM V$MYSTAT);
+
+SERVER   
+---------
+DEDICATED
+1 row selected.
+</pre>
+<p>To connect to a shared server session, you connect with <code dir="ltr">SYSDBA</code> privileges to <code dir="ltr">inst1_shs</code> and then execute the following <code dir="ltr">SELECT</code> statement (sample output included):</p>
+<pre dir="ltr">
+SQL&gt; SELECT SERVER 
+  2  FROM   V$SESSION 
+  3  WHERE  SID = (SELECT DISTINCT SID FROM V$MYSTAT);
+
+SERVER   
+---------
+SHARED 
+1 row selected.
+  
+</pre></li>
+<li>
+<p>Start RMAN and connect to the target database using the dedicated service name. Optionally, connect to a recovery catalog. For example, enter:</p>
+<pre dir="ltr">
+% <span class="bold">rman</span>
+RMAN&gt; <span class="bold">CONNECT TARGET SYS@inst1_ded </span>
+
+target database Password: <span class="bolditalic">password</span>
+connected to target database: INST1 (DBID=39525561)
+
+RMAN&gt; <span class="bold">CONNECT CATALOG rman@catdb</span>
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+Your platform-specific Oracle documentation and your <a class="olink NETRF" href="../../network.112/e10835/toc.htm"><span class="italic">Oracle Database Net Services Reference</span></a> for a complete description of Oracle Net connect string syntax</div>
+</li>
+</ol>
+</div>
+<!-- class="sect1" -->
+<a id="CHDEBCHD"></a>
+<div id="BRADV89476" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Enabling Lost Write Detection</h2>
+<p>A data block <a id="sthref558"></a><a href="glossary.htm#CHDDECGI"><span class="xrefglossterm">lost write</span></a> occurs when an I/O subsystem acknowledges the completion of the block write, but the write did not occur in the persistent storage. On a subsequent block read, the I/O subsystem returns the stale version of the data block, which might be used to update other blocks of the database, thereby corrupting it.</p>
+<p><a id="sthref559"></a>You can set the <a class="olink REFRN10268" href="../../server.112/e40402/initparams063.htm#REFRN10268"><code dir="ltr">DB_LOST_WRITE_PROTECT</code></a> initialization parameter to <code dir="ltr">TYPICAL</code> or <code dir="ltr">FULL</code> so that a database records buffer cache block reads in the redo log. The default setting is <code dir="ltr">NONE</code>. When the parameter is set to <code dir="ltr">TYPICAL</code>, the instance logs buffer cache reads for read/write tablespaces in the redo log, but not read-only tablespaces. When set to <code dir="ltr">FULL</code>, the instance also records reads for read-only tablespaces. The performance overhead for <code dir="ltr">TYPICAL</code> mode is approximately 5 to 10% and potentially higher for <code dir="ltr">FULL</code> mode.</p>
+<p>Lost write detection is most effective when used with Data Guard. In this case, you set <code dir="ltr">DB_LOST_WRITE_PROTECT</code> in both primary and standby databases. When a standby database applies redo during managed recovery, it reads the corresponding blocks and compares the SCNs with the SCNs in the redo log. If the block SCN on the primary database is lower than on the standby database, then it detects a lost write on the primary database and throws an external error (<code dir="ltr">ORA-752</code>). If the SCN is higher, it detects a lost write on the standby database and throws an internal error (<code dir="ltr">ORA-600 [3020]</code>). In either case, the standby database writes the reason for the failure in the alert log and trace file.</p>
+<p>To repair a lost write on a primary database, you must initiate failover to the standby database. To repair a lost write on a standby database, you must re-create the entire standby database or restore a backup of only the affected files.</p>
+<p>Enabling lost write detection is also useful when you are not using Data Guard. In this case, you can encounter a lost write in two ways: during normal database operation or during media recovery. In the first case, there is no direct way to detect the error. Indirect symptoms such as inconsistent tables cannot be unambiguously traced to the lost write. If you retained a backup made <span class="italic">before</span> the suspected lost write, however, then you can restore this backup to an alternative location and recover it. To diagnose the problem, recover the database or tablespace to the SCN of the stale block read, which then generates the lost write error (<code dir="ltr">ORA-752</code>).</p>
+<p>If a lost write error is encountered during media recovery, the only response is to open the database with the <code dir="ltr">RESETLOGS</code> option. The database is in a consistent state, but all data after the <code dir="ltr">RESETLOGS</code> SCN is lost. If you recover a backup made after database creation, you have no guarantee that other stale blocks have not corrupted the database. This possibility exists because the restored backup may have been made after an earlier lost write. To guarantee that no lost writes have corrupted the database, you must perform media recovery from database creation, which is not a practical strategy for most database environments.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink SBYDB00930" href="../../server.112/e41134/scenarios.htm#SBYDB00930"><span class="italic">Oracle Data Guard Concepts and Administration</span></a> to learn how to use a standby database for lost write detection and repair</p>
+</li>
+<li>
+<p><a class="olink REFRN" href="../../server.112/e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> to learn about the <code dir="ltr">DB_LOST_WRITE_PROTECT</code> initialization parameter</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1933">
+<tr>
+<td class="cellalignment1942">
+<table class="cellalignment1938">
+<tr>
+<td class="cellalignment1937"><a href="rcmconfb.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1937"><a href="flashdb.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2003, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1944">
+<table class="cellalignment1936">
+<tr>
+<td class="cellalignment1937"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1937"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1937"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1937"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1937"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1937"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>SET</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1054" />
+<meta name="description" content="A guide to backup and recovery of Oracle databases, including RMAN backup and recovery, RMAN data transfer, Oracle Flashback Technology, and user-managed backup and recovery" />
+<meta name="dcterms.created" content="2015-05-13T7:47:46Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Backup and Recovery Reference" />
+<meta name="dcterms.identifier" content="E10643-09" />
+<meta name="dcterms.isVersionOf" content="RCMRF" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2003, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="rcmsynta2013.htm" title="Previous" type="text/html" />
+<link rel="Next" href="rcmsynta2015.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10643.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">57/158</span> <!-- End Header --><a id="i85845"></a>
+<div id="RCMRF153" class="refsect1">
+<h1 class="refsect1">SET<a id="ABC1081020"></a><a id="ABC1081020SRI1"></a></h1>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref1840"></a>Purpose</p>
+<p>Use the <a id="CHDFHGDI"></a><code dir="ltr">SET</code> command to control RMAN behavior within a job or session. Use <code dir="ltr"><a href="rcmsynta010.htm#i80338">CONFIGURE</a></code> to configure options that persist across sessions.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref1841"></a>Prerequisites</p>
+<p>You can use the <code dir="ltr">SET</code> command either at the RMAN prompt or within a <code dir="ltr"><a href="rcmsynta2012.htm#i85731">RUN</a></code> block. When used at the RMAN prompt, changes made by <code dir="ltr">SET</code> persist until you exit the RMAN client (see <a href="#i1003836"><span class="xreftitleitalic"><span class="italic">setRmanOption</span></span></a>). When used inside of a <code dir="ltr">RUN</code> block, changes made by <code dir="ltr">SET</code> persist until the end of the <code dir="ltr">RUN</code> block or the next <code dir="ltr">SET</code> command that changes the value of the same attribute (see <a href="#i1003832"><span class="xreftitleitalic"><span class="italic">setRunOption</span></span></a>).</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref1842"></a>Syntax</p>
+<p class="subhead2"><a id="RCMRF90344"></a><span class="italic"><a id="sthref1843"></a><a id="sthref1844"></a>set</span>::=</p>
+<img width="239" height="74" src="img/set.gif" alt="Description of set.gif follows" /><br />
+<a id="sthref1845" href="img_text/set.htm">Description of the illustration set.gif</a><br />
+<br />
+<p>(<a href="#CHDCIHED"><span class="xreftitleitalic"><span class="italic">setRmanOption</span>::=</span></a>, <a href="#CHDCGCJI"><span class="xreftitleitalic"><span class="italic">setRunOption</span>::=</span></a>)</p>
+<p class="subhead2"><a id="CHDCIHED"></a><a id="RCMRF90345"></a><a id="sthref1846"></a><a id="sthref1847"></a><a href="#i1003836"><span class="xreftitleitalic"><span class="italic">setRmanOption</span></span></a>::=</p>
+<img width="546" height="319" src="img/setrmanoption.gif" alt="Description of setrmanoption.gif follows" /><br />
+<a id="sthref1848" href="img_text/setrmanoption.htm">Description of the illustration setrmanoption.gif</a><br />
+<br />
+<p>(<a href="rcmsubcl006.htm#BABDEJAC"><span class="xreftitleitalic"><span class="italic">deviceSpecifier</span>::=</span></a>, <a href="rcmsubcl010.htm#BABHCHAG"><span class="xreftitleitalic"><span class="italic">formatSpec</span>::=</span></a>)</p>
+<p class="subhead2"><a id="CHDCGCJI"></a><a id="RCMRF90346"></a><a id="sthref1849"></a><a id="sthref1850"></a><a href="#i1003832"><span class="xreftitleitalic"><span class="italic">setRunOption</span></span></a>::=</p>
+<img width="576" height="265" src="img/setrunoption.gif" alt="Description of setrunoption.gif follows" /><br />
+<a id="sthref1851" href="img_text/setrunoption.htm">Description of the illustration setrunoption.gif</a><br />
+<br />
+<p>(<a href="rcmsubcl006.htm#BABDEJAC"><span class="xreftitleitalic"><span class="italic">deviceSpecifier</span>::=</span></a>, <a href="rcmsubcl010.htm#BABHCHAG"><span class="xreftitleitalic"><span class="italic">formatSpec</span>::=</span></a>, <a href="rcmsubcl005.htm#BABCCBBJ"><span class="xreftitleitalic"><span class="italic">datafileSpec</span>::=</span></a>, <a href="rcmsubcl017.htm#BABCIHBB"><span class="xreftitleitalic"><span class="italic">tempfileSpec</span>::=</span></a>, <a href="rcmsubcl019.htm#BABEDABD"><span class="xreftitleitalic"><span class="italic">untilClause</span>::=</span></a>)</p>
+<p class="subhead2"><a id="RCMRF90347"></a><a id="sthref1852"></a><a id="sthref1853"></a><a href="#CHDGGHCB"><span class="xreftitleitalic"><span class="italic">setRmanOrRunOption</span></span></a>::=</p>
+<img width="560" height="164" src="img/setrmanorrunoption.gif" alt="Description of setrmanorrunoption.gif follows" /><br />
+<a id="sthref1854" href="img_text/setrmanorrunoption.htm">Description of the illustration setrmanorrunoption.gif</a><br />
+<br />
+<p>(<a href="rcmsubcl006.htm#BABDEJAC"><span class="xreftitleitalic"><span class="italic">deviceSpecifier</span>::=</span></a>, <a href="rcmsubcl010.htm#BABHCHAG"><span class="xreftitleitalic"><span class="italic">formatSpec</span>::=</span></a>)</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref1855"></a>Semantics</p>
+<p class="subhead2"><a id="i1003836"></a><a id="RCMRF90348"></a><span class="italic"><a id="sthref1856"></a><a id="sthref1857"></a>setRmanOption</span></p>
+<p>This subclause specifies <code dir="ltr">SET</code> options that are usable outside of a <code dir="ltr"><a href="rcmsynta2012.htm#i85731">RUN</a></code> block.</p>
+<div class="inftblinformalwide">
+<table class="cellalignment1929" title="Semantics for setRmanOption Subclause" summary="Describe SET command setRmanOption parameters" dir="ltr">
+<thead>
+<tr class="cellalignment1920">
+<th class="cellalignment1930" id="r1c1-t50">Syntax Element</th>
+<th class="cellalignment1930" id="r1c2-t50">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r2c1-t50" headers="r1c1-t50"><br />
+<code dir="ltr">COMPRESSION ALGORITHM</code><br />
+<code dir="ltr">'</code><code dir="ltr"><span class="codeinlineitalic">algorithm_name</span></code><code dir="ltr">'</code></td>
+<td class="cellalignment1926" headers="r2c1-t50 r1c2-t50">Specifies the compression algorithm for backup sets. This command overrides the current <code dir="ltr"><a href="rcmsynta010.htm#i80338">CONFIGURE</a></code> <code dir="ltr">COMPRESSION ALGORITHM</code> setting for the current RMAN session.
+<p>You can configure the basic compression level, which does not require the Advanced Compression Option, by specifying <code dir="ltr">BASIC</code> for the algorithm_name.</p>
+<p>If you have enabled the Oracle Database 11<span class="italic">g</span> Release 2 Advanced Compression Option, you can choose from the following compression levels:</p>
+<ul>
+<li>
+<p><code dir="ltr">HIGH -</code> Best suited for backups over slower networks where the limiting factor is network speed</p>
+</li>
+<li>
+<p><code dir="ltr">MEDIUM -</code> Recommended for most environments. Good combination of compression ratios and speed</p>
+</li>
+<li>
+<p><code dir="ltr">LOW</code> - Least impact on backup throughput and suited for environments where CPU resources are the limiting factor.</p>
+</li>
+</ul>
+<p><span class="bold">Note:</span> The compression ratio generally increases from <code dir="ltr">LOW</code> to <code dir="ltr">HIGH</code>, with a trade-off of potentially consuming more CPU resources.</p>
+<p>Since the performance of the various compression levels depends on the nature of the data in the database, network configuration, system resources and the type of computer system and its capabilities, Oracle cannot document universally applicable performance statistics. The decision regarding which level is best must factor in on how balanced your system is regarding bandwidth into the CPU and the actual speed of the CPU. It is highly recommended that you run tests with the different compression levels on the data in your environment. Choosing a compression level based on your environment, network traffic characteristics (workload) and data set is the only way to ensure that the backup set compression level can satisfy your organization's performance requirements and any applicable service level agreements.</p>
+<p><span class="bold">Note:</span> <a id="sthref1858"></a><a id="sthref1859"></a><code dir="ltr">V$RMAN_COMPRESSION_ALGORITHM</code> describes supported algorithms.</p>
+<p><span class="bold">See Also:</span> <span class="italic">Oracle Database Reference</span> entry for <code dir="ltr">$RMAN_COMPRESSION_ALGORITHM</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r3c1-t50" headers="r1c1-t50"><br />
+<code dir="ltr">OPTIMIZE FOR LOAD</code><br />
+<code dir="ltr">{TRUE|FALSE}</code></td>
+<td class="cellalignment1926" headers="r3c1-t50 r1c2-t50">Specifies whether Oracle Database performs pre-compression block processing when compressed backups have been requested. <code dir="ltr">TRUE</code> is the default and <code dir="ltr">FALSE</code> enables pre-compression processing. The default behavior is not to perform pre-compression block processing. Such processing can consume extra CPU resources, and is not needed for blocks that contain all originally loaded data, and have never been the subject of single-row inserts and deletes. Specifying <code dir="ltr">FALSE</code> uses additional CPU resources to perform pre-compression block processing which consists of internal block cleanups and defragmentation that can result in improved levels of binary compression.
+<p><span class="bold">See Also:</span> <span class="italic">Oracle Database Backup and Recovery User's Guide</span> to learn more about this option.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r4c1-t50" headers="r1c1-t50"><br />
+<code dir="ltr">AS OF RELEASE</code><br />
+<code dir="ltr"><span class="codeinlineitalic">'version number'</span></code></td>
+<td class="cellalignment1926" headers="r4c1-t50 r1c2-t50">Specifies the release version. The version number uses the release number format and may use as many as 5 numbers to fully qualify the release. For example, 10.2.0.3.0 and 11.2 are acceptable values. This option ensures compression algorithm stability across future releases.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r5c1-t50" headers="r1c1-t50"><br />
+<code dir="ltr"><a id="sthref1860"></a><a id="sthref1861"></a><a id="sthref1862"></a>DECRYPTION</code><br />
+<code dir="ltr">IDENTIFIED&nbsp;BY</code> <code dir="ltr"><span class="codeinlineitalic">password</span></code></td>
+<td class="cellalignment1926" headers="r5c1-t50 r1c2-t50">Specifies one or more decryption passwords to be used when reading dual-mode or password-encrypted backups.
+<p>Password-encrypted backups require the correct password to be entered before they can be restored. When RMAN reads an encrypted backup piece, it tries each password in the list until it finds the correct one to decrypt this backup piece. RMAN signals an error if no specified keys work.</p>
+<p><span class="bold">Note:</span> If restoring from a group of backups created with different passwords, then specify all of the required passwords on the <code dir="ltr">SET DECRYPTION</code> command. RMAN automatically uses the correct password with each backup set.</p>
+<p><span class="bold">See Also:</span> <a href="rcmsynta007.htm#CHDIHIGD">"Encryption of Backup Sets"</a></p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r6c1-t50" headers="r1c1-t50"><code dir="ltr"><a id="sthref1863"></a><a id="sthref1864"></a>ECHO {OFF&nbsp;|&nbsp;ON}</code></td>
+<td class="cellalignment1926" headers="r6c1-t50 r1c2-t50">Controls whether RMAN commands appear in the message log. When reading commands from a command file, RMAN automatically echoes them to the message log. When reading commands from standard input, by default RMAN does not echo these commands to the message log. To force RMAN to echo the commands, run the <code dir="ltr">SET ECHO ON</code> command before running your command file. Run <code dir="ltr">SET ECHO OFF</code> to disable echoing to the command log.
+<p>The command is useful when <code dir="ltr">stdin</code> and <code dir="ltr">stdout</code> have been redirected. For example, in UNIX you can redirect RMAN's input and output in this manner:</p>
+<pre dir="ltr">
+% rman TARGET / &lt; in_file &gt; out_file
+</pre>
+<p>By including <code dir="ltr">SET ECHO ON</code> in the <code dir="ltr">in_file</code>, you enable the commands contained in <code dir="ltr">in_file</code> to be visible in <code dir="ltr">out_file</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r7c1-t50" headers="r1c1-t50"><code dir="ltr"><a id="sthref1865"></a><a id="sthref1866"></a>ENCRYPTION</code></td>
+<td class="cellalignment1926" headers="r7c1-t50 r1c2-t50">Specifies encryption-related options that apply to <code dir="ltr"><a href="rcmsynta007.htm#i78895">BACKUP</a></code> commands that create backup sets for the duration of the RMAN session.
+<p><span class="bold">See Also:</span> <a href="rcmsynta007.htm#CHDIHIGD">"Encryption of Backup Sets"</a></p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r8c1-t50" headers="r1c1-t50"><br />
+<code dir="ltr">&nbsp;&nbsp;&nbsp;<a id="sthref1867"></a><a id="sthref1868"></a>ALGORITHM</code><br />
+<code dir="ltr">&nbsp;&nbsp;&nbsp;'</code><code dir="ltr"><span class="codeinlineitalic">algorithm_name</span></code><code dir="ltr">'</code></td>
+<td class="cellalignment1926" headers="r8c1-t50 r1c2-t50">Specifies the algorithm used during this RMAN session. Overrides the configured default encryption algorithm specified by <code dir="ltr"><a href="rcmsynta010.htm#i80338">CONFIGURE</a></code> <code dir="ltr">ALGORITHM</code>. Possible values are listed in <a id="sthref1869"></a><a id="sthref1870"></a><code dir="ltr"><a id="sthref1871"></a><a id="sthref1872"></a>V$RMAN_ENCRYPTION_ALGORITHMS</code>.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r9c1-t50" headers="r1c1-t50"><br />
+<code dir="ltr">&nbsp;&nbsp;&nbsp;IDENTIFIED BY</code><br />
+<code dir="ltr">&nbsp;&nbsp;&nbsp;</code><code dir="ltr"><span class="codeinlineitalic">password</span></code> <code dir="ltr">[ONLY]</code></td>
+<td class="cellalignment1926" headers="r9c1-t50 r1c2-t50">Specifies whether to employ a user-specified password in backup encryption according to the following rules:
+<ul>
+<li>
+<p>Omit <code dir="ltr">IDENTIFIED BY</code> <code dir="ltr"><span class="codeinlineitalic">password</span></code> clause to specify transparent-mode encrypted backups.</p>
+</li>
+<li>
+<p>Use <code dir="ltr">IDENTIFIED BY</code> <code dir="ltr"><span class="codeinlineitalic">password</span></code> <code dir="ltr">ONLY</code> to specify password-mode encrypted backups.</p>
+</li>
+<li>
+<p>Use <code dir="ltr">IDENTIFIED BY</code> <code dir="ltr"><span class="codeinlineitalic">password</span></code> without <code dir="ltr">ONLY</code> to specify dual-mode encrypted backups.</p>
+</li>
+</ul>
+<p>Create a password that is secure. See <a class="olink DBSEG33223" href="../../network.112/e36292/authentication.htm#DBSEG33223"><span class="italic">Oracle Database Security Guide</span></a> for more information.</p>
+<p>If the password is <span class="italic">not</span> surrounded by quotes, then it is translated internally into upper case. Thus, the following clauses are all synonyms for <code dir="ltr">IDENTIFIED BY</code> <code dir="ltr">"SOMEPWD"</code>:</p>
+<ul>
+<li>
+<p><code dir="ltr">IDENTIFIED BY</code> <code dir="ltr">somepwd</code></p>
+</li>
+<li>
+<p><code dir="ltr">IDENTIFIED BY</code> <code dir="ltr">Somepwd</code></p>
+</li>
+<li>
+<p><code dir="ltr">IDENTIFIED BY</code> <code dir="ltr">sOmEpWd</code></p>
+</li>
+</ul>
+<p><span class="bold">Caution:</span> Wallet-based encryption is more secure than password-based encryption because no passwords are involved. You should use password-based encryption only when absolutely necessary because your backups must be transportable.</p>
+<p><span class="bold">See Also:</span> <a href="rcmsynta007.htm#CHDIHIGD">"Encryption of Backup Sets"</a> for details on the different encryption modes</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r10c1-t50" headers="r1c1-t50"><code dir="ltr">&nbsp;&nbsp;&nbsp;{OFF&nbsp;|&nbsp;ON}</code></td>
+<td class="cellalignment1926" headers="r10c1-t50 r1c2-t50">Specifies whether to encrypt backup sets. If <code dir="ltr">ON</code>, then the default is to encrypt backup sets. If <code dir="ltr">OFF</code>, then the default is not to encrypt backup sets.
+<p>This option overrides settings made with the <code dir="ltr"><a href="rcmsynta010.htm#i80338">CONFIGURE</a></code> <code dir="ltr">ENCRYPTION FOR</code> command. If no data files are configured for encryption, then you must explicitly use <code dir="ltr">ON</code> to encrypt required data files.</p>
+<p>If <code dir="ltr">FOR ALL TABLESPACES</code> is not specified, then this setting controls encryption of backups for tablespaces where <code dir="ltr"><a href="rcmsynta010.htm#i80338">CONFIGURE</a></code> <code dir="ltr">ENCRYPTION FOR TABLESPACE</code> <code dir="ltr"><span class="codeinlineitalic">tablespace_name</span></code> has not been used to control encryption behavior.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r11c1-t50" headers="r1c1-t50"><code dir="ltr">&nbsp;&nbsp;&nbsp;FOR ALL&nbsp;TABLESPACES</code></td>
+<td class="cellalignment1926" headers="r11c1-t50 r1c2-t50">Controls encryption for all tablespaces, overriding any <code dir="ltr">CONFIGURE ENCRYPTION FOR TABLESPACE</code> <code dir="ltr"><span class="codeinlineitalic">tablespace_name</span></code> setting.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformalwide" -->
+<p class="subhead2"><a id="i1003832"></a><a id="RCMRF90349"></a><span class="italic"><a id="sthref1873"></a><a id="sthref1874"></a>setRunOption</span></p>
+<p>This subclause specifies <code dir="ltr">SET</code> options that are usable within a <code dir="ltr"><a href="rcmsynta2012.htm#i85731">RUN</a></code> block.</p>
+<div class="inftblinformalwide">
+<table class="cellalignment1929" title="Semantics for setRunOption Subclause" summary="Describes SET command setRunOption parameters" dir="ltr">
+<thead>
+<tr class="cellalignment1920">
+<th class="cellalignment1930" id="r1c1-t51">Syntax Element</th>
+<th class="cellalignment1930" id="r1c2-t51">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r2c1-t51" headers="r1c1-t51"><br />
+<code dir="ltr"><a id="sthref1875"></a><a id="sthref1876"></a>ARCHIVELOG DESTINATION</code><br />
+<code dir="ltr">TO '</code><code dir="ltr"><span class="codeinlineitalic">log_archive_dest</span></code><code dir="ltr">'</code></td>
+<td class="cellalignment1926" headers="r2c1-t51 r1c2-t51">Overrides the <a id="sthref1877"></a><a id="sthref1878"></a><code dir="ltr">LOG_ARCHIVE_DEST_1</code> initialization parameter in the target database when forming names for restored archived redo log files during subsequent <code dir="ltr"><a href="rcmsynta2008.htm#i85188">RESTORE</a></code> and <code dir="ltr"><a href="rcmsynta2001.htm#i84135">RECOVER</a></code> commands. RMAN restores the logs to the destination specified in <code dir="ltr">'</code><code dir="ltr"><span class="codeinlineitalic">log_archive_dest</span></code><code dir="ltr">'</code>.
+<p>You can use this command to stage archived redo log files to different locations while restoring a database. RMAN knows where to find the newly restored archived redo log files; it does not require them to be in the destination specified by <code dir="ltr">LOG_ARCHIVE_DEST_1</code>. For example, if you specify a different destination from the one in the parameter file and restore archived log backups, subsequent restore and recovery operations detect this new location.</p>
+<p>Use this parameter to restore archived redo log files that are not on disk. RMAN always looks for logs on disk first before restoring them from backups.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r3c1-t51" headers="r1c1-t51"><a id="sthref1879"></a><a id="sthref1880"></a><a id="sthref1881"></a><code dir="ltr">BACKUP&nbsp;COPIES</code>&nbsp;<code dir="ltr"><span class="codeinlineitalic">integer</span></code></td>
+<td class="cellalignment1926" headers="r3c1-t51 r1c2-t51">Specifies the number of copies of each backup piece that the channels should create: <code dir="ltr">1</code>, <code dir="ltr">2</code>, <code dir="ltr">3</code>, or <code dir="ltr">4</code> (see <a href="#CHDEFFDB">Example 3-42</a>).
+<p>RMAN can duplex backups to either disk or tape but cannot duplex backups to tape and disk simultaneously. When backing up to tape, ensure that the number of copies does not exceed the number of available tape devices. Also, if <code dir="ltr">BACKUP COPIES</code> is greater than 1, then the <code dir="ltr">BACKUP_TAPE_IO_SLAVES</code> initialization parameter must be enabled on the target database.</p>
+<p>The <code dir="ltr">SET BACKUP COPIES</code> command affects all <code dir="ltr"><a href="rcmsynta007.htm#i78895">BACKUP</a></code> commands in the <code dir="ltr"><a href="rcmsynta2012.htm#i85731">RUN</a></code> block issued after <code dir="ltr">SET BACKUP COPIES</code> (but not before) and is in effect until explicitly disabled or changed. The <code dir="ltr">SET BACKUP COPIES</code> command affects only <code dir="ltr"><a href="rcmsynta007.htm#i78895">BACKUP</a></code> commands, but does not apply to the <code dir="ltr"><a href="rcmsynta007.htm#i78895">BACKUP</a></code> <code dir="ltr">AS COPY</code> command.</p>
+<p>The <code dir="ltr">SET BACKUP COPIES</code> command affects all channels allocated in the session. The order of precedence is as follows, with settings higher on the list overriding settings lower on the list:</p>
+<ol>
+<li>
+<p><code dir="ltr">BACKUP COPIES</code></p>
+</li>
+<li>
+<p><code dir="ltr"><a href="#i85845">SET</a></code> <code dir="ltr">BACKUP COPIES</code></p>
+</li>
+<li>
+<p><code dir="ltr"><a href="rcmsynta010.htm#i80338">CONFIGURE</a></code> <code dir="ltr">... BACKUP COPIES</code></p>
+</li>
+</ol>
+<p>The names of the backup pieces are dependent on the <code dir="ltr">FORMAT</code> clause in the <code dir="ltr">BACKUP</code> command. You can specify up to four <code dir="ltr">FORMAT</code> strings. RMAN uses the second, third, and fourth values only when <code dir="ltr">BACKUP COPIES</code>, <code dir="ltr">SET BACKUP COPIES</code>, or <code dir="ltr">CONFIGURE ... BACKUP COPIES</code> is in effect. When choosing which format to use for each backup piece, RMAN uses the first format value for copy 1, the second format value for copy 2, and so on. If the number of format values exceeds the number of copies, then the extra formats are not used. If the number of format values is less than the number of copies, RMAN reuses the format values, starting with the first one.</p>
+<p><span class="bold">Note:</span> <code dir="ltr">BACKUP COPIES</code> option is not valid when files are created in fast recovery area. Backups to the fast recovery area cannot be duplexed.</p>
+<p><span class="bold">Note:</span> Control file autobackups on disk are a special case and are never duplexed: RMAN always writes one and only copy.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r4c1-t51" headers="r1c1-t51"><br />
+<a id="CHDCICFD"></a><code dir="ltr"><a id="sthref1882"></a><a id="sthref1883"></a>MAXCORRUPT</code><br />
+<code dir="ltr">FOR DATAFILE</code> <code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl005.htm#i81255">datafileSpec</a></span></code><br />
+<code dir="ltr">TO</code> <code dir="ltr"><span class="codeinlineitalic">integer</span></code></td>
+<td class="cellalignment1926" headers="r4c1-t51 r1c2-t51">Sets a limit on the number of previously undetected block corruptions that the database permits in a specified data file or group of data files. The default limit is zero, meaning that RMAN tolerates no corrupt blocks.
+<p>The <code dir="ltr">SET MAXCORRUPT</code> command specifies the total number of physical and logical corruptions permitted in a data file during a backup job. If the sum of physical and logical corruptions detected for a data file is no more than its <code dir="ltr">MAXCORRUPT</code> setting, then the <code dir="ltr"><a href="rcmsynta007.htm#i78895">BACKUP</a></code> command completes. If more than <code dir="ltr">MAXCORRUPT</code> corrupt blocks exist, then RMAN terminates without creating output files.</p>
+<p>Whether or not the <code dir="ltr">MAXCORRUPT</code> limit is exceeded, RMAN populates the <code dir="ltr"><a id="sthref1884"></a><a id="sthref1885"></a>V$DATABASE_BLOCK_CORRUPTION</code> view with any corrupt block ranges that it finds. However, a backup or restore job is terminated after <code dir="ltr">MAXCORRUPT+1</code> corrupt blocks are found, so in this case RMAN only records <code dir="ltr">MAXCORRUPT+1</code> corruptions. Any block corruptions beyond the point at which the backup job terminated are not recorded.</p>
+<p><span class="bold">Note:</span> If you specify <code dir="ltr">CHECK LOGICAL</code>, then the <code dir="ltr">MAXCORRUPT</code> limit applies to the sum of logical and physical corruptions detected. Otherwise, <code dir="ltr">MAXCORRUPT</code> only applies to the number of physical block corruptions.</p>
+<p><span class="bold">See Also:</span> <code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl005.htm#i81255">datafileSpec</a></span></code></p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r5c1-t51" headers="r1c1-t51"><br />
+<a id="sthref1886"></a><a id="sthref1887"></a><code dir="ltr">NEWNAME FOR</code><br />
+<code dir="ltr">DATABASE</code></td>
+<td class="cellalignment1926" headers="r5c1-t51 r1c2-t51">Sets new default names for all data files and temp files in the specified database that have not been named with the <code dir="ltr">SET NEWNAME FOR TABLESPACE,</code> <code dir="ltr">SET NEWNAME FOR TEMPFILE</code> or <code dir="ltr">SET NEWNAME FOR DATAFILE</code> command.
+<p>This command enables you to change the names for multiple files in the database and provides a quick alternative to naming each file individually (see <a href="rcmsynta020.htm#BGBGEHCG">Example 2-76</a>). This command does not set names for temp files.</p>
+<p>When issuing <code dir="ltr">SET NEWNAME FOR DATABASE</code>, you must specify at least one of the following substitution variables to avoid name collisions: <code dir="ltr">%b</code>, <code dir="ltr">%f</code>, and <code dir="ltr">%U</code>. See the semantic entry for <code dir="ltr">TO '</code><code dir="ltr"><span class="codeinlineitalic">filename</span></code><code dir="ltr">'</code> for descriptions of the possible substitution variables.</p>
+<p>The new names are used for all subsequent <code dir="ltr"><a href="rcmsynta020.htm#i81724">DUPLICATE</a></code>, <code dir="ltr"><a href="rcmsynta2008.htm#i85188">RESTORE</a></code>, <code dir="ltr"><a href="rcmsynta2020.htm#i86534">SWITCH</a></code> commands that affect the files in the database and when using the RMAN TSPITR utility. If you do not issue this command before the restore operation, then RMAN restores the files to their default locations.</p>
+<p>You do not have to issue the <code dir="ltr">SET NEWNAME</code> commands in any particular order. For example, assume that you run the following series of commands:</p>
+<pre dir="ltr">
+SET NEWNAME FOR DATABASE TO '/oradata1/%b';
+SET NEWNAME FOR TABLESPACE users TO '/oradata2/%U';
+SET NEWNAME FOR DATAFILE 1 TO '+data';
+</pre>
+<p>The preceding series of commands is equivalent to the following differently ordered series of commands:</p>
+<pre dir="ltr">
+SET NEWNAME FOR DATAFILE 1 TO '+data;
+SET NEWNAME FOR DATABASE TO '/oradata1/%b';
+SET NEWNAME FOR TABLESPACE users TO '/oradata2/%U';
+</pre>
+<p><span class="bold">Note:</span> The <code dir="ltr">SET NEWNAME</code> command supports ASM disk groups.</p>
+<p><span class="bold">See Also:</span> <code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl010.htm#i82206">formatSpec</a></span></code> to learn about substitution variables that are valid in <code dir="ltr">SET NEWNAME FOR DATABASE</code></p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r6c1-t51" headers="r1c1-t51"><br />
+<a id="sthref1888"></a><a id="sthref1889"></a><code dir="ltr">NEWNAME FOR</code><br />
+<code dir="ltr">DATAFILE</code> <code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl005.htm#i81255">datafileSpec</a></span></code></td>
+<td class="cellalignment1926" headers="r6c1-t51 r1c2-t51">Sets the default name for the specified data file.
+<p>This command enables you to specify the names of each data file individually (see <a href="rcmsynta020.htm#BGBFADEH">Example 2-77</a>). The new names are used for all subsequent <code dir="ltr"><a href="rcmsynta020.htm#i81724">DUPLICATE</a></code>, <code dir="ltr"><a href="rcmsynta2008.htm#i85188">RESTORE</a></code>, <code dir="ltr"><a href="rcmsynta2020.htm#i86534">SWITCH</a></code> commands that affect the files in the database and when using the RMAN TSPITR utility.</p>
+<p>If you run <code dir="ltr">SET NEWNAME FOR DATAFILE</code> and then restore a data file to a new location, then you can run <code dir="ltr"><a href="rcmsynta2020.htm#i86534">SWITCH</a></code> to rename the file in the control file to the <code dir="ltr">NEWNAME</code>. If you do not run <code dir="ltr">SWITCH</code>, then RMAN records the restored file as a data file copy in the RMAN repository.</p>
+<p><span class="bold">Note:</span> The <code dir="ltr">SET NEWNAME</code> command supports ASM disk groups.</p>
+<p><span class="bold">See Also:</span> <code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl005.htm#i81255">datafileSpec</a></span></code></p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r7c1-t51" headers="r1c1-t51"><br />
+<a id="sthref1890"></a><a id="sthref1891"></a><code dir="ltr">NEWNAME FOR TABLESPACE</code><br />
+<code dir="ltr"><span class="codeinlineitalic">tablespace_name</span></code></td>
+<td class="cellalignment1926" headers="r7c1-t51 r1c2-t51">Sets new default names for all the files in the specified tablespace that have not been named with the <code dir="ltr">SET NEWNAME FOR DATAFILE</code> command.
+<p>This command enables you to change the names for multiple files in the duplicate tablespace and provides an alternative to naming each file of the tablespace individually (see <a href="rcmsynta020.htm#BGBFADEH">Example 2-77</a>).</p>
+<p>When issuing <code dir="ltr">SET NEWNAME FOR TABLESPACE</code>, you must specify at least one of the following substitution variables to avoid name collisions: <code dir="ltr">%b</code>, <code dir="ltr">%f</code>, and <code dir="ltr">%U</code>. See the semantic entry for <code dir="ltr">TO '</code><code dir="ltr"><span class="codeinlineitalic">filename</span></code><code dir="ltr">'</code> for descriptions of the possible substitution variables.</p>
+<p>The new names are used for all subsequent <code dir="ltr"><a href="rcmsynta020.htm#i81724">DUPLICATE</a></code>, <code dir="ltr"><a href="rcmsynta2008.htm#i85188">RESTORE</a></code> or <code dir="ltr"><a href="rcmsynta2020.htm#i86534">SWITCH</a></code> commands that affect the files in the tablespace. If you do not issue this command before the restore operation, then RMAN restores the files to their default locations.</p>
+<p><span class="bold">Note:</span> The <code dir="ltr">SET NEWNAME</code> command supports ASM disk groups.</p>
+<p><span class="bold">See Also:</span> <code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl010.htm#i82206">formatSpec</a></span></code> to learn about substitution variables that are valid in <code dir="ltr">SET NEWNAME FOR DATABASE</code></p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r8c1-t51" headers="r1c1-t51"><br />
+<a id="sthref1892"></a><a id="sthref1893"></a><code dir="ltr">NEWNAME FOR</code><br />
+<code dir="ltr">TEMPFILE</code> <code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl017.htm#BGBICJDC">tempfileSpec</a></span></code></td>
+<td class="cellalignment1926" headers="r8c1-t51 r1c2-t51">Sets the new temp file name for a subsequent <code dir="ltr"><a href="rcmsynta2020.htm#i86534">SWITCH</a></code> command that renames the specified temp file to the specified name.
+<p><span class="bold">Note:</span> The <code dir="ltr">SET NEWNAME</code> command supports ASM disk groups.</p>
+<p><span class="bold">See Also:</span> <code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl017.htm#BGBICJDC">tempfileSpec</a></span></code></p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r9c1-t51" headers="r1c1-t51"><code dir="ltr">&nbsp;&nbsp;&nbsp;TO '</code><code dir="ltr"><span class="codeinlineitalic">filename</span></code><code dir="ltr">'</code></td>
+<td class="cellalignment1926" headers="r9c1-t51 r1c2-t51">Specifies a user-defined file name or ASM disk group for the restored data file or temp file.
+<p>When issuing <code dir="ltr">SET NEWNAME FOR DATABASE</code> or <code dir="ltr">SET NEWNAME FOR TABLESPACE</code>, you must specify substitution variables within <code dir="ltr"><span class="codeinlineitalic">filename</span></code> to avoid name collisions. Specify at least one of the following substitution variables to avoid name collisions: <code dir="ltr">%b</code>, <code dir="ltr">%f</code>, and <code dir="ltr">%U</code>. The <code dir="ltr">%I</code> and <code dir="ltr">%N</code> variables are optional.</p>
+<ul>
+<li>
+<p><code dir="ltr">%b</code></p>
+<p>Specifies the file name without the fully qualified directory path. For example, the data file name <code dir="ltr">/oradata/prod/financial.dbf</code> is transformed to <code dir="ltr">financial.dbf</code>. This variable enables you to preserve the names of the data files while you move them to different directory. During backup, it can be used for the creation of image copies. The variable cannot be used for OMF data files or backup sets.</p>
+</li>
+<li>
+<p><code dir="ltr">%f</code></p>
+<p>Specifies the absolute file number of the data file for which the new name is generated. For example, if data file 2 is duplicated, then <code dir="ltr">%f</code> generates the value <code dir="ltr">2</code>.</p>
+</li>
+<li>
+<p><code dir="ltr">%U</code></p>
+<p>Specifies a system-generated unique file name. The name is in the following format: <code dir="ltr">data-D-</code><code dir="ltr"><span class="codeinlineitalic">%d</span></code><code dir="ltr">_id-</code><code dir="ltr"><span class="codeinlineitalic">%I</span></code><code dir="ltr">_TS-</code><code dir="ltr"><span class="codeinlineitalic">%N</span></code><code dir="ltr">_FNO-</code><code dir="ltr"><span class="codeinlineitalic">%f</span></code>. The <code dir="ltr">%d</code> variable specifies the database name. For example, a possible name might be <code dir="ltr">data-D-prod_id-22398754_TS-users_FNO-7</code>.</p>
+</li>
+<li>
+<p><code dir="ltr">%I</code></p>
+<p>Specifies the DBID.</p>
+</li>
+<li>
+<p><code dir="ltr">%N</code></p>
+<p>Specifies the tablespace name.</p>
+</li>
+</ul>
+<p><span class="bold">Note:</span> Use of other substitution variables defined in <a href="rcmsubcl010.htm#i82206">formatSpec</a> is undefined: some yield an error, while others result in zero values and are not supported.</p>
+<p>If you set <code dir="ltr">NEWNAME</code> to an ASM disk group for a data file and run <code dir="ltr">RESTORE</code>, then RMAN restores the file to the disk group. If you specify a file name for a temp file, then it is the new name of the temp file after the database is recovered and opened.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r10c1-t51" headers="r1c1-t51"><code dir="ltr">&nbsp;&nbsp;&nbsp;TO NEW</code></td>
+<td class="cellalignment1926" headers="r10c1-t51 r1c2-t51">Creates an Oracle-managed file in the directory specified by the <code dir="ltr">DB_CREATE_FILE_DEST</code> initialization parameter.
+<p>For example, <code dir="ltr">SET NEWNAME FOR TABLESPACE users TO NEW</code> sets OMF names for the data files of the <code dir="ltr">users</code> tablespace to be created in the <code dir="ltr">DB_CREATE_FILE_DEST</code> location (see <a href="rcmsynta020.htm#BGBCEBDI">Example 2-78</a>).</p>
+<p>If the original file is an Oracle-managed file or is on an ASM disk group, then RMAN attempts to delete the original file. If you specify <code dir="ltr">TO NEW</code> for a temp file, then RMAN creates the temp file in <code dir="ltr">DB_CREATE_FILE_DEST</code> when the database is opened.</p>
+<p><span class="bold">See Also:</span> <a class="olink ADMIN" href="../../server.112/e25494/toc.htm"><span class="italic">Oracle Database Administrator's Guide</span></a> for information about Oracle-managed files</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r11c1-t51" headers="r1c1-t51"><br />
+<a id="sthref1894"></a><a id="sthref1895"></a><a id="sthref1896"></a><code dir="ltr">TO RESTORE POINT</code><br />
+<code dir="ltr"><span class="codeinlineitalic">restore_point_name</span></code></td>
+<td class="cellalignment1926" headers="r11c1-t51 r1c2-t51">Specifies a restore point for a subsequent <code dir="ltr"><a href="rcmsynta2008.htm#i85188">RESTORE</a></code> or <code dir="ltr"><a href="rcmsynta2001.htm#i84135">RECOVER</a></code> command, with the SCN at which the restore point was created as the upper, inclusive limit. Because the limit is inclusive, RMAN selects only files that it can use to restore or recover up to <span class="italic">and including</span> the SCN corresponding to the restore point.
+<p><span class="bold">Note:</span> You can only use <code dir="ltr">SET TO RESTORE POINT</code> when the database is mounted, because the defined restore points are recorded in the control file. For example, you cannot use <code dir="ltr">SET TO RESTORE POINT</code> to specify the target SCN for a <code dir="ltr"><a href="rcmsynta2008.htm#i85188">RESTORE</a></code> <code dir="ltr">CONTROLFILE</code> operation.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r12c1-t51" headers="r1c1-t51"><code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl019.htm#i1000331">untilClause</a></span></code></td>
+<td class="cellalignment1926" headers="r12c1-t51 r1c2-t51"><a id="sthref1897"></a><a id="sthref1898"></a><a id="sthref1899"></a>Specifies an end time, SCN, or log sequence number for a subsequent <code dir="ltr"><a href="rcmsynta2008.htm#i85188">RESTORE</a></code> or <code dir="ltr"><a href="rcmsynta2001.htm#i84135">RECOVER</a></code> command.
+<p><span class="bold">See Also:</span> <code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl019.htm#i1000331">untilClause</a></span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformalwide" -->
+<p class="subhead2"><a id="CHDGGHCB"></a><a id="RCMRF90350"></a><span class="italic"><a id="sthref1900"></a><a id="sthref1901"></a>setRmanOrRunOption</span></p>
+<p>This subclause specifies <code dir="ltr">SET</code> options that are usable inside or outside of a <code dir="ltr"><a href="rcmsynta2012.htm#i85731">RUN</a></code> block.</p>
+<div class="inftblinformalwide">
+<table class="cellalignment1929" title="Semantics for setRmanOption Subclause" summary="Describes SET command setRmanOrRunOption parameters" dir="ltr">
+<thead>
+<tr class="cellalignment1920">
+<th class="cellalignment1930" id="r1c1-t52">Syntax Element</th>
+<th class="cellalignment1930" id="r1c2-t52">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r2c1-t52" headers="r1c1-t52"><br />
+<code dir="ltr"><a id="sthref1902"></a><a id="sthref1903"></a>AUXILIARY INSTANCE PARAMETER</code><br />
+<code dir="ltr">FILE TO</code> <code dir="ltr">'</code><code dir="ltr"><span class="codeinlineitalic">filename</span></code><code dir="ltr">'</code></td>
+<td class="cellalignment1926" headers="r2c1-t52 r1c2-t52">Specifies the path to the parameter file to use in starting the instance. You can use this parameter when customizing TSPITR with an automatic auxiliary instance or when cloning RMAN tablespaces with RMAN.
+<p><span class="bold">Note:</span> The <code dir="ltr"><span class="codeinlineitalic">filename</span></code> is on the host running the RMAN client.</p>
+<p><span class="bold">See Also:</span> <a class="olink REFRN" href="../../server.112/e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for more on TSPITR</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r3c1-t52" headers="r1c1-t52"><a id="sthref1904"></a><a id="sthref1905"></a><a id="sthref1906"></a><a id="sthref1907"></a><code dir="ltr">COMMAND ID TO</code> <code dir="ltr">'</code><code dir="ltr"><span class="codeinlineitalic">string</span></code><code dir="ltr">'</code></td>
+<td class="cellalignment1926" headers="r3c1-t52 r1c2-t52">Enters the specified string into the <code dir="ltr"><a id="sthref1908"></a>V$SESSION.CLIENT_INFO</code> column of all channels. Use this information to determine which database server sessions correspond to which RMAN channels. The <code dir="ltr">SET COMMAND ID</code> command applies only to channels that are allocated.
+<p>The <a id="sthref1909"></a><a id="sthref1910"></a><code dir="ltr">V$SESSION.CLIENT_INFO</code> column contains information for each RMAN server session. The data appears in one of the following formats:</p>
+<ul>
+<li>
+<p><code dir="ltr">id=</code><code dir="ltr"><span class="codeinlineitalic">string</span></code></p>
+</li>
+<li>
+<p><code dir="ltr">id=</code><code dir="ltr"><span class="codeinlineitalic">string</span></code>, <code dir="ltr">ch=</code><code dir="ltr"><span class="codeinlineitalic">channel_id</span></code></p>
+</li>
+</ul>
+<p>The first form appears in the RMAN target database connection. The second form appears in all allocated channels. When the current job is complete, the <code dir="ltr">V$SESSION.CLIENT_INFO</code> column is cleared.</p>
+<p><span class="bold">See Also:</span> <a class="olink REFRN" href="../../server.112/e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for more on <code dir="ltr">V$SESSION.CLIENT_INFO</code></p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r4c1-t52" headers="r1c1-t52"><br />
+<a id="sthref1911"></a><a id="sthref1912"></a><a id="sthref1913"></a><code dir="ltr">CONTROLFILE AUTOBACKUP</code><br />
+<code dir="ltr">FORMAT FOR DEVICE TYPE</code><br />
+<code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl006.htm#i81605">deviceSpecifier</a></span></code><br />
+<code dir="ltr">TO</code> <code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl010.htm#i82206">formatSpec</a></span></code></td>
+<td class="cellalignment1926" headers="r4c1-t52 r1c2-t52">Overrides the default file name format for the control file autobackup on the specified device type. You can use this command either in <code dir="ltr"><a href="rcmsynta2012.htm#i85731">RUN</a></code> or at the RMAN prompt. The order of precedence is as follows:
+<ol>
+<li>
+<p><code dir="ltr">SET CONTROLFILE AUTOBACKUP</code> executed within a <code dir="ltr">RUN</code> block</p>
+</li>
+<li>
+<p><code dir="ltr">SET CONTROLFILE AUTOBACKUP</code> executed at the RMAN prompt</p>
+</li>
+<li>
+<p><code dir="ltr"><a href="rcmsynta010.htm#i80338">CONFIGURE</a></code> <code dir="ltr">CONTROLFILE</code> <code dir="ltr">AUTOBACKUP</code> <code dir="ltr">FORMAT</code></p>
+</li>
+</ol>
+<p>The <a href="rcmsubcl010.htm#BABBCDDA"><code dir="ltr">%F</code></a> substitution variable is required to be in the new <code dir="ltr"><span class="codeinlineitalic">formatSpec</span></code>. No other substitution variable is valid in a control file autobackup <code dir="ltr"><span class="codeinlineitalic">formatSpec</span></code>.</p>
+<p><span class="bold">See Also:</span> <code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl010.htm#i82206">formatSpec</a></span></code> for the semantics of the <code dir="ltr">%F</code> substitution variable</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r5c1-t52" headers="r1c1-t52"><code dir="ltr"><a id="sthref1914"></a>DATABASE</code> <code dir="ltr">'</code><code dir="ltr"><span class="codeinlineitalic">database_name</span></code><code dir="ltr">'</code></td>
+<td class="cellalignment1926" headers="r5c1-t52 r1c2-t52">Specifies the name of the database to copy (source database) when duplicating without a connection to the target database. Alternatively, you can use the <code dir="ltr">DATABASE</code> clause of the <code dir="ltr">DUPLICATE</code> command to specify the source database when you have chosen not to connect to the target database for the duplicate.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r6c1-t52" headers="r1c1-t52"><code dir="ltr"><a id="sthref1915"></a>DBID</code> <code dir="ltr"><span class="codeinlineitalic">integer</span></code></td>
+<td class="cellalignment1926" headers="r6c1-t52 r1c2-t52">Specifies the DBID, which is a unique 32-bit identification number computed when the database is created.
+<p>RMAN displays the DBID upon connection to the target database. You can obtain the DBID by querying the <code dir="ltr"><a id="sthref1916"></a><a id="sthref1917"></a>V$DATABASE</code> view or the <code dir="ltr"><a id="sthref1918"></a><a id="sthref1919"></a>RC_DATABASE</code> and <code dir="ltr"><a id="sthref1920"></a><a id="sthref1921"></a>RC_DATABASE_INCARNATION</code> recovery catalog views.</p>
+<p>You should only run the <code dir="ltr">SET DBID</code> command in the following specialized circumstances:</p>
+<ul>
+<li>
+<p>You are not connected to a recovery catalog and want to restore the control file (see <a href="#CHDEDAGJ">Example 3-43</a>). The same restriction applies when you use the Data Recovery Advisor to restore a control file autobackup. <code dir="ltr"><a href="rcmsynta010.htm#i80338">CONFIGURE</a></code> can locate an autobackup and restore it only if <code dir="ltr">SET DBID</code> is issued before <code dir="ltr">ADVISE FAILURE</code>.</p>
+</li>
+<li>
+<p>You want to restore the server parameter file (see <a href="#CHDGGHGB">Example 3-44</a>).</p>
+</li>
+<li>
+<p>You are connected to the recovery catalog but not the target database and use the <code dir="ltr">FOR DB_UNIQUE_NAME</code> option on the <code dir="ltr"><a href="rcmsynta010.htm#i80338">CONFIGURE</a></code>, <code dir="ltr"><a href="rcmsynta027.htm#i82460">LIST</a></code>, <code dir="ltr"><a href="rcmsynta2006.htm#i84684">REPORT</a></code>, <code dir="ltr"><a href="rcmsynta2015.htm#i86135">SHOW</a></code>, or <code dir="ltr"><a href="rcmsynta2022.htm#BGBFHHFG">UNREGISTER</a></code> commands.</p>
+</li>
+<li>
+<p>You are connected to the recovery catalog and want to restore the controlfile but the target database is not mounted and the database name is not unique in the recovery catalog.</p>
+</li>
+<li>
+<p>You are performing a <code dir="ltr">DUPLICATE</code> without a target connection but are not using the <code dir="ltr">DBID</code> subclause in the <code dir="ltr">DUPLICATE</code> command and the database name specified in <code dir="ltr">SET DATABASE</code> or <code dir="ltr">DATABASE</code> clause is not unique in the recovery catalog.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r7c1-t52" headers="r1c1-t52"><a id="sthref1922"></a><code dir="ltr"><a id="sthref1923"></a>INCARNATION</code> <code dir="ltr"><span class="codeinlineitalic">primaryKey</span></code></td>
+<td class="cellalignment1926" headers="r7c1-t52 r1c2-t52">Enables you to specify an orphan incarnation when duplicating without a target connection under the following conditions:
+<ul>
+<li>
+<p>You have not specified <code dir="ltr">INCARNATION</code> within the <code dir="ltr">DATABASE</code> clause of the <code dir="ltr">DUPLICATE</code> command.</p>
+</li>
+<li>
+<p>You want to duplicate to an incarnation not in the current incarnation path (orphan incarnation).</p>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformalwide" --></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref1924"></a><a id="sthref1925"></a>Examples</p>
+<div id="RCMRF90351" class="example">
+<p class="titleinexample"><a id="CHDDGABG"></a>Example 3-41 Setting the Command ID</p>
+<p>This example sets the command ID to <code dir="ltr">rman</code>, backs up the database, and then archives the online redo logs. You can use the command ID to query <code dir="ltr">V$SESSION</code> with <code dir="ltr">WHERE CLIENT_INFO LIKE '%rman%'</code> for job status information.</p>
+<pre dir="ltr">
+RUN
+{
+  ALLOCATE CHANNEL d1 DEVICE TYPE DISK FORMAT '/disk1/%U';
+  ALLOCATE CHANNEL d2 DEVICE TYPE DISK FORMAT '/disk2/%U';
+  SET COMMAND ID TO 'rman';
+  BACKUP INCREMENTAL LEVEL 0 DATABASE;
+  SQL 'ALTER SYSTEM ARCHIVE LOG CURRENT';
+}
+</pre></div>
+<!-- class="example" -->
+<div id="RCMRF90352" class="example">
+<p class="titleinexample"><a id="CHDEFFDB"></a>Example 3-42 Duplexing a Backup Set</p>
+<p>Assume that the current duplexing configuration is as follows:</p>
+<pre dir="ltr">
+CONFIGURE ARCHIVELOG COPIES FOR DEVICE TYPE sbt TO 3;
+CONFIGURE DATAFILE COPIES FOR DEVICE TYPE sbt TO 3;
+</pre>
+<p>A tape drives goes bad, leaving only two available. The guideline for tape backups is that the number of devices should equal the number of copies multiplied by the number of channels. The following example overrides the persistent duplexing configuration with <code dir="ltr">SET BACKUP COPIES</code> and writes two copies of a database backup to the two functioning tape drives:</p>
+<pre dir="ltr">
+RUN
+{
+  ALLOCATE CHANNEL dev1 DEVICE TYPE sbt
+    PARMS 'ENV=(OB_DEVICE_1=stape1,OB_DEVICE_2=stape2)';
+  SET BACKUP COPIES 2;
+  BACKUP DATABASE PLUS ARCHIVELOG;
+}
+</pre></div>
+<!-- class="example" -->
+<div id="RCMRF90353" class="example">
+<p class="titleinexample"><a id="CHDEDAGJ"></a>Example 3-43 Setting the Control File Autobackup Format During a Restore</p>
+<p>Assume that the disk containing the control file fails. You edit the <code dir="ltr">CONTROL_FILES</code> parameter in the initialization parameter file to point to a new location.</p>
+<p>In this example, you do not have access to a recovery catalog. The example starts the instance, sets the DBID, and then restores a control file autobackup. After the database is mounted, you can recover the database.</p>
+<pre dir="ltr">
+CONNECT TARGET /
+STARTUP FORCE NOMOUNT
+SET DBID 28014364;
+RUN
+{
+  SET CONTROLFILE AUTOBACKUP FORMAT FOR DEVICE TYPE DISK TO '/disk2/cf_%F.bak';
+  RESTORE CONTROLFILE FROM AUTOBACKUP MAXSEQ 100;
+}
+ALTER DATABASE MOUNT;
+RECOVER DATABASE;
+ALTER DATABASE OPEN RESETLOGS;
+</pre></div>
+<!-- class="example" -->
+<div id="RCMRF90354" class="example">
+<p class="titleinexample"><a id="CHDGGHGB"></a>Example 3-44 Restoring the Server Parameter File</p>
+<p>Assume that the database is shut down while maintenance is being performed on the database host. During this time, the server parameter file is accidentally deleted. You start the RMAN client, <code dir="ltr"><a href="rcmsynta011.htm#i80734">CONNECT</a></code> as <code dir="ltr">TARGET</code> to the database, and connect to the recovery catalog. The following example restores a server parameter file from an autobackup on tape and then restarts the instance.</p>
+<pre dir="ltr">
+SET DBID 3257174182;  # set dbid so RMAN can identify the database
+STARTUP FORCE NOMOUNT # RMAN starts database with a dummy server parameter file
+RUN
+{
+  ALLOCATE CHANNEL t1 DEVICE TYPE sbt;
+  RESTORE SPFILE FROM AUTOBACKUP;
+}
+STARTUP FORCE; # RMAN restarts database with restored server parameter file
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="refsubsect" -->
+<div id="RCMRF90355" class="example">
+<p class="titleinexample"><a id="sthref1926"></a>Example 3-45 Setting NEWNAME and Duplicating Without a Connection to Target Database</p>
+<p>Assume that you want to duplicate a database without a connection to the target database and that you want to duplicate to an incarnation that is not in the current incarnation path (<code dir="ltr">451</code>). The following example uses the various <code dir="ltr">SET NEWNAME</code> commands, sets the <code dir="ltr">DBID</code> and duplicates the database to <code dir="ltr">NEWDB</code>:</p>
+<pre dir="ltr">
+SET DATABASE PROD
+SET DBID 22398754
+SET INCARNATION 451
+RUN
+{
+SET NEWNAME FOR TABLESPACE system TO '/test/oradata/system/%d_%f';
+SET NEWNAME FOR TABLESPACE users to '/test/oradata/users/%b';
+SET NEWNAME FOR DATAFILE 35 to '/test/oradata/special/%N_%b_%f';
+SET NEWNAME FOR DATAFILE 50 to '/test/oradata/special/%N_%b_%f';
+SET NEWNAME FOR DATABASE to NEW;
+DUPLICATE DATABASE TO newdb
+SKIP READONLY
+LOGFILE
+GROUP 1 ('/test/onlinelogs/redo01_1.f',
+'?/test/onlinelogs/redo01_2.f') SIZE 4M,
+GROUP 2 ('?/test/onlinelongs/redo02_1.f',
+'?/test/onlinelongs/redo02_2.f') SIZE 4M,
+GROUP 3 ('?/test/onlinelogs/redo03_1.f',
+'?/test/onlinelogs/redo03_2.f') SIZE 4M REUSE;
+}
+</pre></div>
+<!-- class="example" -->
+<div id="RCMRF90515" class="example">
+<p class="titleinexample"><a id="sthref1927"></a>Example 3-46 Setting a Compression Level for a Backup</p>
+<p>This example assumes that you have a license for Advanced Compression Option (ACO) of the database.</p>
+<p>To use the <code dir="ltr">LOW</code> compression algorithm for a backup of tablespace <code dir="ltr">users</code> that has high volatility:</p>
+<pre dir="ltr">
+SET COMPRESSION ALGORITHM 'LOW' OPTIMIZE FOR LOAD FALSE;
+BACKUP AS COMPRESSED BACKUPSET TABLESPACE USERS;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="refsect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1919">
+<tr>
+<td class="cellalignment1926">
+<table class="cellalignment1924">
+<tr>
+<td class="cellalignment1923"><a href="rcmsynta2013.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1923"><a href="rcmsynta2015.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2003, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1928">
+<table class="cellalignment1922">
+<tr>
+<td class="cellalignment1923"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1923"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1923"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1923"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1923"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1923"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Full-Text Search Over XML Data</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 748" />
+<meta name="description" content="This manual describes Oracle XML&nbsp;DB. It includes guidelines and examples for storing, generating, accessing, searching, validating, transforming, evolving, and indexing XML data in Oracle Database." />
+<meta name="dcterms.created" content="2014-02-20T9:56:15Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="XML DB Developer's Guide" />
+<meta name="dcterms.identifier" content="E23094-04" />
+<meta name="dcterms.isVersionOf" content="ADXDB" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2002, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="xdb08tra.htm" title="Previous" type="text/html" />
+<link rel="Next" href="partpg3.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e23094.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">21/54</span> <!-- End Header -->
+<div id="ADXDB1000" class="chapter"><a id="i1006756"></a>
+<h1 class="chapter"><span class="secnum">12</span> Full-Text <a id="sthref978"></a><a id="sthref979"></a>Search Over XML Data</h1>
+<p>This chapter describes full-text search over XML using Oracle. It explains how to use Oracle SQL function <code>contains</code> and Oracle XPath function <code>ora:contains</code>. These are the two functions used by Oracle Database to do full-text search over XML data.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink CCREF" href="../../text.112/e24436/toc.htm"><span class="italic">Oracle Text Reference</span></a> and <a class="olink CCAPP" href="../../text.112/e24435/toc.htm"><span class="italic">Oracle Text Application Developer's Guide</span></a> for more information about Oracle Text</div>
+<p>This chapter contains these topics:</p>
+<ul>
+<li>
+<p><a href="#CBBFIAHD">Overview of Full-Text Search for XML</a></p>
+</li>
+<li>
+<p><a href="#CBBDDFGC">About the Full-Text Search Examples</a></p>
+</li>
+<li>
+<p><a href="#CBBIHGHE">Overview of CONTAINS and ora:contains</a></p>
+</li>
+<li>
+<p><a href="#CBBDAEAJ">CONTAINS SQL Function</a></p>
+</li>
+<li>
+<p><a href="#CBBHCGEC">ora:contains XQuery Function</a></p>
+</li>
+<li>
+<p><a href="#CBBEFACH">Text Path BNF Specification</a></p>
+</li>
+<li>
+<p><a href="#CBBJDJIJ">Support for Full-Text XML Examples</a></p>
+</li>
+</ul>
+<a id="CBBFIAHD"></a>
+<div id="ADXDB4745" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Overview of Full-Text Search for XML</h2>
+<p>Oracle supports full-text search on documents that are managed by the Oracle Database.</p>
+<p>If your documents are XML, then you can use the XML structure of the document to restrict the full-text search. For example, you may want to find all purchase orders that contain the word "electric" using full-text search. If the purchase orders are in XML form, then you can restrict the search by finding all purchase orders that contain the word "electric" in a comment, or by finding all purchase orders that contain the word "electric" in a comment under line items.</p>
+<p>If your XML documents are of type <code>XMLType</code>, then you can project the results of your query using the XML structure of the document. For example, after finding all purchase orders that contain the word "electric" in a comment, you may want to return just the comments, or just the comments that contain the word "electric".</p>
+<div id="ADXDB4746" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref980"></a>
+<h3 class="sect2">Comparison of Full-Text Search and Other Search Types</h3>
+<p>Full-text search differs from structured search or substring search in the following ways:</p>
+<ul>
+<li>
+<p>A full-text search looks for whole <span class="italic">words</span> rather than substrings. A substring search for comments that contain the <span class="italic">string</span> "law" can return a comment that contains "my <span class="italic">law</span>n is going wild". A full-text search for the <span class="italic">word</span> "law" cannot.</p>
+</li>
+<li>
+<p>A full-text search supports some language-based and word-based searches that substring searches do not. You can use a language-based search, for example, to find all the comments that contain a word with the same linguistic stem as "mouse", and Oracle Text finds "mouse" and "mice". You can use a word-based search, for example, to find all the comments that contain the word "lawn" within 5 words of "wild".</p>
+</li>
+<li>
+<p>A full-text search generally involves some notion of relevance. When you do a full-text search for all the comments that contain the word "lawn", for example, some results are more relevant than others. Relevance is often related to the number of times the search word (or similar words) occur in the document.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<div id="ADXDB4747" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref981"></a>
+<h3 class="sect2">Searching XML Data</h3>
+<p>XML search is different from unstructured document search. In unstructured document search you generally search across a set of documents to return the documents that satisfy your text predicate. In XML search you often want to use the structure of the XML document to restrict the search. And you often want to return just the part of the document that satisfies the search.</p>
+</div>
+<!-- class="sect2" -->
+<div id="ADXDB4748" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref982"></a>
+<h3 class="sect2">Searching Documents using Full-Text Search and XML Structure</h3>
+<p>There are two ways to do a search that includes full-text search and XML structure:</p>
+<ul>
+<li>
+<p>Include the structure inside the full-text predicate, using Oracle SQL function <code>contains</code>:</p>
+<pre>
+WHERE contains(doc, 'electric INPATH (/purchaseOrder/items/item/comment)') &gt; 0
+</pre>
+<p>Function <code>contains</code> is an extension to SQL, and can be used in any query. It requires a <code>CONTEXT</code> full-text index.</p>
+</li>
+<li>
+<p>Include the full-text predicate inside the structure, using XPath function <code>ora:contains</code>:</p>
+<pre>
+'/purchaseOrder/items/item/comment[ora:contains(text(), "electric")&gt;0]'
+</pre>
+<p>XPath function <code>ora:contains</code> is an extension to XPath, and can be used in a call to SQL/XML function <code>XMLQuery</code>, <code>XMLTable</code>, or <code>XMLExists</code>.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CBBDDFGC"></a>
+<div id="ADXDB4749" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">About the Full-Text Search Examples</h2>
+<p>This section describes details about the examples included in this chapter.</p>
+<div id="ADXDB4750" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref983"></a>
+<h3 class="sect2">Roles and Privileges</h3>
+<p>To run the examples, you need database roles <code>CTXAPP</code>, <code>CONNECT</code>, and <code>RESOURCE</code>. You must also have <code>EXECUTE</code> privilege on the <code>CTXSYS</code> package <code>CTX_DDL</code>.</p>
+</div>
+<!-- class="sect2" -->
+<div id="ADXDB4751" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref984"></a>
+<h3 class="sect2">Schema and Data for Full-Text Search Examples</h3>
+<p>Examples in this chapter are based on "The Purchase Order Schema", W3C XML Schema Part 0: Primer.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<code><a href="http://www.w3.org/TR/xmlschema-0/#POSchema">http://www.w3.org/TR/xmlschema-0/#POSchema</a></code></div>
+<p>The data in the examples is from the document <a href="#CBBICIEB">"Purchase-Order XML Document, po001.xml"</a>.</p>
+<p>The tables used in the examples of this chapter are defined in section <a href="#CBBIAGJC">"CREATE TABLE Statements"</a><a href="#CBBIAGJC">"CREATE TABLE Statements"</a>. Some of the performance examples are, however, based on a larger table (<code>purchase_orders_xmltype_big</code>), which is included in the downloadable version only. See <code><a href="http://www.w3.org/TR/xmlschema-0/#po.xml">http://www.w3.org/TR/xmlschema-0/#po.xml</a></code>.</p>
+<p>Some of the examples here use data type <code>VARCHAR2</code>. Others use type <code>XMLType</code>. All examples that use <code>VARCHAR2</code> also work with <code>XMLType</code>.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CBBIHGHE"></a>
+<div id="ADXDB4752" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Overview of CONTAINS and ora:contains</h2>
+<p>This section contains these topics:</p>
+<ul>
+<li>
+<p><a href="#CBBBAJJD">Overview of SQL Function CONTAINS</a></p>
+</li>
+<li>
+<p><a href="#CBBBJGIG">Overview of XPath Function ora:contains</a></p>
+</li>
+<li>
+<p><a href="#CBBIIEJE">Comparison of CONTAINS and ora:contains</a></p>
+</li>
+</ul>
+<a id="CBBBAJJD"></a>
+<div id="ADXDB4753" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Overview of SQL Function CONTAINS</h3>
+<p>Oracle SQL function <code>contains</code> returns a positive number for rows where <code>[schema.]column</code> matches <code>text_query</code>. Otherwise, it returns zero. It requires an index of type <code>CONTEXT</code>. If there is no <code>CONTEXT</code> index on the column being searched, then <code>contains</code> raises an error.</p>
+<p class="subhead1"><a id="ADXDB4754"></a>CONTAINS Syntax</p>
+<pre>
+contains([schema.]column, text_query VARCHAR2 [,label NUMBER])
+RETURN NUMBER
+</pre>
+<p><a href="#CBBCHDJH">Example 12-1</a> shows a typical query that uses Oracle SQL function <code>contains</code>. It returns the <code>id</code> for each row in table <code>purchase_orders</code> where the <code>doc</code> column contains the word "lawn" and <code>id</code> is less than 25.</p>
+<div id="ADXDB4756" class="example">
+<p class="titleinexample"><a id="CBBCHDJH"></a>Example 12-1 Simple Query using Oracle SQL Function CONTAINS</p>
+<pre>
+SELECT id FROM purchase_orders WHERE contains(doc, 'lawn') &gt; 0 AND id &lt; 25;
+</pre></div>
+<!-- class="example" -->
+<p>Suppose <code>doc</code> is a column that contains a set of XML documents. You can do full-text search over <code>doc</code>, using its XML structure to restrict the query. The query in <a href="#CBBBEIGC">Example 12-2</a> returns <code>id</code> values for table <code>purchaseorders</code> where column <code>doc</code> contains the word "lawn" in the text() node of XML element <code>comment</code>.</p>
+<div id="ADXDB4757" class="example">
+<p class="titleinexample"><a id="CBBBEIGC"></a>Example 12-2 Restricting a Query using CONTAINS and WITHIN</p>
+<pre>
+SELECT id FROM purchase_orders WHERE contains(doc, 'lawn <span class="bold">WITHIN comment</span>') &gt; 0;
+</pre></div>
+<!-- class="example" -->
+<p>More complex XML structure restrictions can be applied using the <code>INPATH</code> operator and an XPath expression. The query in <a href="#CBBJBBHD">Example 12-3</a> finds purchase orders that contain the word "electric" in the text() node of a <code>comment</code> element that is targeted by XPath expression<code>/purchaseOrder/items/item/comment</code>.</p>
+<div id="ADXDB4758" class="example">
+<p class="titleinexample"><a id="CBBJBBHD"></a>Example 12-3 Restricting a Query using CONTAINS and INPATH</p>
+<pre>
+SELECT id FROM purchase_orders
+  WHERE contains(doc, 'electric <span class="bold">INPATH</span> (/purchaseOrder/items/item/comment)') &gt; 0;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" -->
+<a id="CBBBJGIG"></a>
+<div id="ADXDB4759" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Overview of XPath Function ora:contains</h3>
+<p>XPath function <code>ora:contains</code> can be used in an XPath expression inside an XQuery expression or in a call to SQL/XML function <code>XMLQuery</code>, <code>XMLTable</code>, or <code>XMLExists</code>. It is used to restrict a structural search with a full-text predicate. It extends XPath through a standard mechanism: it is a user-defined function in the Oracle XML&nbsp;DB namespace, <code>ora</code>. It requires no index, but you can use an index with it to improve performance.</p>
+<p class="subhead1"><a id="ADXDB4760"></a>ora:contains Syntax</p>
+<pre>
+ora:contains(<span class="italic">input_text</span> NODE*, <span class="italic">text_query</span> STRING 
+             [,<span class="italic">policy_name</span> STRING]
+             [,<span class="italic">policy_owner</span> STRING])
+</pre>
+<p>Function <code>ora:contains</code> returns a positive integer when the <code><span class="codeinlineitalic">input_text</span></code> matches <code><span class="codeinlineitalic">text_query</span></code> (the higher the number, the more relevant the match), and zero otherwise. When used in an XQuery expression, the XQuery return type is <code>xs:integer()</code>. When used in an XPath expression outside of an XQuery expression, the XPath return type is <code>number</code>.</p>
+<p>Argument <code><span class="codeinlineitalic">input_text</span></code> must evaluate to a single text node or an attribute. The syntax and semantics of <code><span class="codeinlineitalic">text_query</span></code> in <code>ora:contains</code> are the same as <code><span class="codeinlineitalic">text_query</span></code> in <code>contains</code>, with the following restrictions:</p>
+<ul>
+<li>
+<p>Argument <code><span class="codeinlineitalic">text_query</span></code> cannot include any structure operators (<code>WITHIN</code>, <code>INPATH</code>, or <code>HASPATH</code>).</p>
+</li>
+<li>
+<p>If the <code>weight</code> score-weighting operator is used, the weights are <span class="italic">ignored</span>.</p>
+</li>
+</ul>
+<p><a href="#CBBDJJAI">Example 12-4</a> shows a call to <code>ora:contains</code> in the XPath parameter to <code>XMLExists</code>. Notice the namespace declaration that declares prefix <code>ora</code> as representing the Oracle XML&nbsp;DB namespace.</p>
+<div id="ADXDB4761" class="example">
+<p class="titleinexample"><a id="CBBDJJAI"></a>Example 12-4 ora:contains with an Arbitrarily Complex Text Query</p>
+<pre>
+SELECT id
+  FROM purchase_orders_xmltype
+  WHERE
+    XMLExists(
+      'declare namespace ora = "http://xmlns.oracle.com/xdb"; (: :)
+       $d/purchaseOrder/comment
+         [ora:contains(text(), "($lawns AND wild) OR flamingo") &gt; 0]'
+      PASSING doc AS "d");
+</pre></div>
+<!-- class="example" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#CBBHCGEC">"ora:contains XQuery Function"</a> for more on the <code>ora:contains</code> XPath function</div>
+</div>
+<!-- class="sect2" -->
+<a id="CBBIIEJE"></a>
+<div id="ADXDB4762" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Comparison of CONTAINS and ora:contains</h3>
+<p>Both Oracle SQL function <code>contains</code> and Oracle XPath function <code>ora:contains</code> let you combine searching on XML structure with full-text searching. These are the main differences between them:</p>
+<p>Oracle SQL function <code>contains</code>:</p>
+<ul>
+<li>
+<p>Needs a <code>CONTEXT</code> index to run. If there is no index, then an error is raised.</p>
+</li>
+<li>
+<p>Does an indexed search and is generally very fast.</p>
+</li>
+<li>
+<p>Returns a score (through Oracle SQL function <code>score</code>).</p>
+</li>
+<li>
+<p>Restricts a search based on documents (rows in a table) rather than nodes.</p>
+</li>
+<li>
+<p><span class="italic">Cannot</span> be used for XML structure-based projection (extracting parts of an XML document).</p>
+</li>
+</ul>
+<p>Oracle XPath function <code>ora:contains</code>:</p>
+<ul>
+<li>
+<p>Does not need an index to run, but you can use an index to improve performance.</p>
+</li>
+<li>
+<p>Might do an unindexed search, so it might be resource-intensive.</p>
+</li>
+<li>
+<p>Separates application logic from storing and indexing considerations.</p>
+</li>
+<li>
+<p>Does <span class="italic">not</span> return a score.</p>
+</li>
+<li>
+<p>Can be used for XML structure-based projection (extracting parts of an XML document).</p>
+</li>
+</ul>
+<p>Use Oracle SQL function <code>contains</code> when you want a fast, index-based, full-text search over XML documents, possibly with simple XML structure constraints. Use Oracle XPath function <code>ora:contains</code> when you need the flexibility of full-text search combined with XPath navigation (possibly without an index) or when you need to do projection, and you do not need a score.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CBBDAEAJ"></a>
+<div id="ADXDB4763" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">CONTAINS SQL Function</h2>
+<p>This section contains these topics:</p>
+<ul>
+<li>
+<p><a href="#CBBBHJJJ">Full-Text Search using SQL Function CONTAINS</a></p>
+</li>
+<li>
+<p><a href="#CBBEHIII">SCORE SQL Function</a></p>
+</li>
+<li>
+<p><a href="#CBBGJDGC">Restricting the Scope of a CONTAINS Search</a></p>
+</li>
+<li>
+<p><a href="#CBBCFIJA">Projecting the CONTAINS Result</a></p>
+</li>
+<li>
+<p><a href="#CBBEDEJA">Indexing with a CONTEXT Index</a></p>
+</li>
+</ul>
+<a id="CBBBHJJJ"></a>
+<div id="ADXDB4764" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Full-Text Search using SQL Function CONTAINS</h3>
+<p>The second argument to Oracle SQL function <code>contains</code>, <code>text_query</code>, is a string that specifies the full-text search. <code>text_query</code> has its own language, based on the SQL/MM Full-Text standard.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p>ISO/IEC 13249-2:2000, Information technology - Database languages - SQL Multimedia and Application Packages - Part 2: Full-Text, International Organization For Standardization, 2000</p>
+</li>
+<li>
+<p><a class="olink CCREF" href="../../text.112/e24436/toc.htm"><span class="italic">Oracle Text Reference</span></a> for more information about the operators in the <code>text_query</code> language</p>
+</li>
+</ul>
+</div>
+<p>The examples in the rest of this section show some of the power of full-text search. They use only a few of the available operators. The example queries search over a <code>VARCHAR2</code> column (<code>PURCHASE_ORDERS.doc</code>) with a text index (index type <code>CTXSYS.CONTEXT</code>).</p>
+<div id="ADXDB4765" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref985"></a>
+<h4 class="sect3">Full-Text Boolean Operators AND, OR, and NOT</h4>
+<p>The <code>text_query</code> language supports arbitrary combinations of <code>AND</code>, <code>OR</code>, and <code>NOT</code>. Precedence can be controlled using parentheses. The Boolean operators can be written in any of the following ways:</p>
+<ul>
+<li>
+<p><code>AND</code>, <code>OR</code>, <code>NOT</code></p>
+</li>
+<li>
+<p><code>and</code>, <code>or</code>, <code>not</code></p>
+</li>
+<li>
+<p><code>&amp;</code>, <code>|</code>, <code>~</code></p>
+</li>
+</ul>
+<p>Note that <code>NOT</code> is a <span class="italic">binary</span>, not a unary operator here. The expression <code>alpha NOT(beta)</code> is equivalent to <code>alpha AND</code> <span class="italic">unary-not</span><code>(beta)</code>, where unary-not stands for unary negation.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink CCREF" href="../../text.112/e24436/toc.htm"><span class="italic">Oracle Text Reference</span></a> for complete information about the operators you can use in <code>contains</code> and <code>ora:contains</code></div>
+<div id="ADXDB4766" class="example">
+<p class="titleinexample"><a id="sthref986"></a>Example 12-5 CONTAINS Query with a Simple Boolean Operator</p>
+<pre>
+SELECT id FROM purchase_orders WHERE contains(doc, 'lawn AND wild') &gt; 0;
+</pre></div>
+<!-- class="example" -->
+<div id="ADXDB4767" class="example">
+<p class="titleinexample"><a id="sthref987"></a>Example 12-6 CONTAINS Query with Complex Boolean</p>
+<pre>
+SELECT id FROM purchase_orders
+  WHERE contains(doc, '((lawn OR garden) AND (wild OR flooded)) NOT(flamingo)')
+        &gt; 0;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect3" -->
+<div id="ADXDB4768" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref988"></a>
+<h4 class="sect3">Full-Text Stemming: $</h4>
+<p>The <code>text_query</code> language supports stemmed search. <a href="#CBBFHDFG">Example 12-7</a> returns all documents that contain some word with the same linguistic stem as "lawns", so it finds "lawn" or "lawns". The stem operator is written as a dollar sign (<code>$</code>).</p>
+<div id="ADXDB4769" class="example">
+<p class="titleinexample"><a id="CBBFHDFG"></a>Example 12-7 CONTAINS Query with Stemming</p>
+<pre>
+SELECT id FROM purchase_orders WHERE contains(doc, '$(lawns)') &gt; 0;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect3" -->
+<div id="ADXDB4770" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref989"></a>
+<h4 class="sect3">Combining Boolean and Stemming Operators</h4>
+<p>You can combine operators in the <code>text_query</code> language, as shown in <a href="#CBBHCJGA">Example 12-8</a>.</p>
+<div id="ADXDB4771" class="example">
+<p class="titleinexample"><a id="CBBHCJGA"></a>Example 12-8 CONTAINS Query with Complex Query Expression</p>
+<pre>
+SELECT id FROM purchase_orders
+  WHERE contains(doc, '($lawns AND wild) OR flamingo') &gt; 0;
+</pre></div>
+<!-- class="example" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink CCREF" href="../../text.112/e24436/toc.htm"><span class="italic">Oracle Text Reference</span></a> for a full list of <code>text_query</code> operators</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CBBEHIII"></a>
+<div id="ADXDB4772" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">SCORE SQL Function</h3>
+<p>Oracle SQL function <code>score</code> is related to Oracle SQL function <code>contains</code>. Function <code>score</code> can be used anywhere in a query. It is a measure of relevance, and it is especially useful when doing full-text searches across large document sets. Function <code>score</code> is typically returned as part of the query result, used in the <code>ORDER BY</code> clause, or both.</p>
+<p class="subhead1"><a id="ADXDB4773"></a>SCORE Syntax</p>
+<pre>
+score(label NUMBER) RETURN NUMBER
+</pre>
+<p>In <a href="#CBBFBIIC">Example 12-9</a>, <code>score(10)</code> returns the score for each row in the result set. Oracle SQL function <code>score</code> returns the relevance of a row in the result set with respect to a particular call to function <code>contains</code>. A call to <code>score</code> is linked to a call to <code>contains</code> by a <code>LABEL</code> (in this case the number 10).</p>
+<div id="ADXDB4774" class="example">
+<p class="titleinexample"><a id="CBBFBIIC"></a>Example 12-9 Simple CONTAINS Query with SCORE</p>
+<pre>
+SELECT score(10), id FROM purchase_orders
+  WHERE contains(doc, 'lawn', 10) &gt; 0 AND score(10) &gt; 2
+  ORDER BY score(10) DESC;
+</pre></div>
+<!-- class="example" -->
+<p>Function <code>score</code> always returns <code>0</code> if, for the corresponding <code>contains</code> expression, argument <code>text_query</code> does not match <code>input_text</code>, according to the matching rules dictated by the text index. If the <code>contains</code> <code>text_query</code> matches the <code>input_text</code>, then <code>score</code> returns a number greater than <code>0</code> and less than or equal to <code>100</code>. This number indicates the relevance of the <code>text_query</code> to the <code>input_text</code>. A higher number means a better match.</p>
+<p>If the <code>contains</code> <code>text_query</code> consists of only the <code>HASPATH</code> operator and a Text Path, the score is either <code>0</code> or <code>100</code>, because <code>HASPATH</code> tests for an exact match.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink CCREF" href="../../text.112/e24436/toc.htm"><span class="italic">Oracle Text Reference</span></a> for details on how the score is calculated</div>
+</div>
+<!-- class="sect2" -->
+<a id="CBBGJDGC"></a>
+<div id="ADXDB4775" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Restricting the Scope of a CONTAINS Search</h3>
+<p>Oracle SQL function <code>contains</code> does a full-text search across the whole document, by default. In the example heres, a search for "lawn" with no structure restriction finds all purchase orders with the word "lawn" anywhere in them.</p>
+<p>There are three ways to restrict <code>contains</code> queries using XML structure:</p>
+<ul>
+<li>
+<p><code>WITHIN</code></p>
+</li>
+<li>
+<p><code>INPATH</code></p>
+</li>
+<li>
+<p><code>HASPATH</code></p>
+</li>
+</ul>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+For the purposes of this discussion, consider <span class="italic">section</span> to be the same as an <span class="italic">XML node</span>.</div>
+<div id="ADXDB4776" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref990"></a>
+<h4 class="sect3">WITHIN Structure Operator</h4>
+<p>The <code>WITHIN</code> operator restricts a query to some section within an XML document. A search for purchase orders that contain the word "lawn" somewhere inside a comment section might use <code>WITHIN</code>. Section names are case-sensitive.</p>
+<div id="ADXDB4777" class="example">
+<p class="titleinexample"><a id="sthref991"></a>Example 12-10 WITHIN</p>
+<pre>
+SELECT id FROM purchase_orders WHERE contains(DOC, 'lawn WITHIN comment') &gt; 0;
+</pre></div>
+<!-- class="example" -->
+<div id="ADXDB4778" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref992"></a>
+<h5 class="sect4">Nested WITHIN</h5>
+<p>You can restrict the query further by nesting <code>WITHIN</code>. <a href="#CBBJEDFA">Example 12-11</a> finds all documents that contain the word "<code>lawn</code>" within a section "<code>comment</code>", where that occurrence of "<code>lawn</code>" is also within a section "<code>item</code>".</p>
+<div id="ADXDB4779" class="example">
+<p class="titleinexample"><a id="CBBJEDFA"></a>Example 12-11 Nested WITHIN</p>
+<pre>
+SELECT id FROM purchase_orders
+  WHERE contains(doc, '(lawn WITHIN comment) WITHIN item') &gt; 0;
+  
+</pre></div>
+<!-- class="example" -->
+<p><a href="#CBBJEDFA">Example 12-11</a> returns no rows. Our sample purchase order does contain the word "<code>lawn</code>" within a comment. But the only comment within an item is "<code>Confirm this is electric</code>". So the nested <code>WITHIN</code> query returns no rows.</p>
+</div>
+<!-- class="sect4" -->
+<div id="ADXDB4780" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref993"></a>
+<h5 class="sect4">WITHIN Attributes</h5>
+<p>You can also search within attributes. <a href="#CBBGICHI">Example 12-12</a> finds all purchase orders that contain the word <code>10</code> in the <code>orderDate</code> attribute of a <code>purchaseOrder</code> element.</p>
+<div id="ADXDB4781" class="example">
+<p class="titleinexample"><a id="CBBGICHI"></a>Example 12-12 WITHIN an Attribute</p>
+<pre>
+SELECT id FROM purchase_orders
+  WHERE contains(doc, '10 WITHIN purchaseOrder@orderDate') &gt; 0;
+  
+</pre></div>
+<!-- class="example" -->
+<p>By default, the minus sign ("<code>-</code>") is treated as a word separator: "<code>1999-10-20</code>" is treated as the three words "<code>1999</code>", "<code>10</code>" and "<code>20</code>". So this query returns one row.</p>
+<p>Text in an attribute is not a part of the main searchable document. A search for <code>10</code> without qualifying the <code>text_query</code> with <code>WITHIN purchaseOrder@orderDate</code> returns no rows.</p>
+<p>You cannot search attributes in a nested <code>WITHIN</code>.</p>
+</div>
+<!-- class="sect4" -->
+<div id="ADXDB4782" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref994"></a>
+<h5 class="sect4">WITHIN and AND</h5>
+<p>Suppose you want to find purchase orders that contain two words within a comment section: "lawn" and "electric". There can be more than one comment section in a <code>purchaseOrder</code>. So there are two ways to write this query, with two distinct results.</p>
+<p>If you want to find purchase orders that contain both words, where each word occurs in <span class="italic">some comment section</span>, you would write a query like <a href="#CBBJCFBB">Example 12-13</a>.</p>
+<div id="ADXDB4783" class="example">
+<p class="titleinexample"><a id="CBBJCFBB"></a>Example 12-13 WITHIN and AND: Two Words in Some Comment Section</p>
+<pre>
+SELECT id FROM purchase_orders
+  WHERE contains(doc, '(lawn WITHIN comment) AND (electric WITHIN comment)') &gt; 0;
+</pre></div>
+<!-- class="example" -->
+<p>If you run this query against the <code>purchaseOrder</code> data, then it returns 1 row. Note that the parentheses are not needed in this example, but they make the query more readable.</p>
+<p>If you want to find purchase orders that contain both words, where both words occur <span class="italic">in the same comment</span>, you would write a query like <a href="#CBBBGGGF">Example 12-14</a>.</p>
+<div id="ADXDB4784" class="example">
+<p class="titleinexample"><a id="CBBBGGGF"></a>Example 12-14 WITHIN and AND: Two Words in the Same Comment</p>
+<pre>
+SELECT id FROM purchase_orders
+  WHERE contains(doc, '(lawn AND electric) WITHIN comment') &gt; 0;
+</pre></div>
+<!-- class="example" -->
+<p>The query in <a href="#CBBBGGGF">Example 12-14</a> returns no rows. The query in <a href="#CBBFIIBH">Example 12-15</a>, which omits the parentheses around <code>lawn AND electric</code>, returns one row.</p>
+<div id="ADXDB4785" class="example">
+<p class="titleinexample"><a id="CBBFIIBH"></a>Example 12-15 WITHIN and AND: No Parentheses</p>
+<pre>
+SELECT id FROM purchase_orders
+  WHERE contains(doc, 'lawn AND electric WITHIN comment') &gt; 0;
+</pre></div>
+<!-- class="example" -->
+<p>Operator <code>WITHIN</code> has a higher precedence than <code>AND</code>, so <a href="#CBBFIIBH">Example 12-15</a> is parsed as <a href="#CBBICFBE">Example 12-16</a>.</p>
+<div id="ADXDB4786" class="example">
+<p class="titleinexample"><a id="CBBICFBE"></a>Example 12-16 WITHIN and AND: Parentheses Illustrating Operator Precedence</p>
+<pre>
+SELECT id FROM purchase_orders
+  WHERE contains(doc, 'lawn AND (electric WITHIN comment)') &gt; 0;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect4" -->
+<div id="ADXDB4787" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref995"></a>
+<h5 class="sect4">Definition of Section</h5>
+<p>The preceding examples have used the <code>WITHIN</code> operator to search within a section. A <span class="glossaryterm">section</span> can be a:</p>
+<ul>
+<li>
+<p><span class="glossaryterm">path</span> or <span class="glossaryterm">zone</span> section</p>
+<p>This is a concatenation, in document order, of all text nodes that are descendants of a node, with whitespace separating the text nodes. To convert from a node to a zone section, you must serialize the node and replace all tags with whitespace. path sections have the same scope and behavior as zone sections, except that path sections support queries with <code>INPATH</code> and <code>HASPATH</code> structure operators.</p>
+</li>
+<li>
+<p><span class="glossaryterm">field</span> section</p>
+<p>This is the same as a zone section, except that repeating nodes in a document are concatenated into a single section, with whitespace as a separator.</p>
+</li>
+<li>
+<p>attribute section</p>
+</li>
+<li>
+<p>special section (sentence or paragraph)</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink CCREF" href="../../text.112/e24436/toc.htm"><span class="italic">Oracle Text Reference</span></a> for more information about special sections</div>
+</li>
+</ul>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<div id="ADXDB4788" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref996"></a>
+<h4 class="sect3">INPATH Structure Operator</h4>
+<p>Operator <code>WITHIN</code> provides an easy and intuitive way to express simple structure restrictions in the <code>text_query</code>. For queries that use abundant XML structure, you can use operator <code>INPATH</code> plus a text path instead of nested <code>WITHIN</code> operators.</p>
+<p>Operator <code>INPATH</code> takes a <code>text_query</code> on the left and a Text Path, enclosed in parentheses, on the right. <a href="#CBBFGJJB">Example 12-17</a> finds <code>purchaseOrders</code> that contain the word "<code>electric</code>" in the path <code>/purchaseOrder/items/item/comment</code>.</p>
+<div id="ADXDB4789" class="example">
+<p class="titleinexample"><a id="CBBFGJJB"></a>Example 12-17 Structure Inside Full-Text Predicate: INPATH</p>
+<pre>
+SELECT id FROM purchase_orders
+  WHERE contains(doc, 'electric INPATH (/purchaseOrder/items/item/comment)') &gt; 0;
+</pre></div>
+<!-- class="example" -->
+<p>The scope of the search in <a href="#CBBFGJJB">Example 12-17</a> is the section indicated by the Text Path. The query in <a href="#CBBCIHJF">Example 12-18</a> uses a broader path than the query in <a href="#CBBFGJJB">Example 12-17</a>, but it too returns one row.</p>
+<div id="ADXDB4790" class="example">
+<p class="titleinexample"><a id="CBBCIHJF"></a>Example 12-18 Structure Inside Full-Text Predicate: INPATH</p>
+<pre>
+SELECT id FROM purchase_orders
+  WHERE contains(doc, 'electric INPATH (/purchaseOrder/items)') &gt; 0;
+</pre></div>
+<!-- class="example" -->
+<div id="ADXDB4791" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref997"></a>
+<h5 class="sect4">Text Path</h5>
+<p>The syntax and semantics of Text Path are based on the w3c XPath 1.0 recommendation. Simple path expressions are supported (abbreviated syntax only), but functions are not. The following examples are meant to give the general flavor.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><code><a href="http://www.w3.org/TR/xpath">http://www.w3.org/TR/xpath</a></code> for information about the W3C XPath 1.0 recommendation</p>
+</li>
+<li>
+<p><a href="#CBBEFACH">"Text Path BNF Specification"</a> for the Text Path grammar</p>
+</li>
+</ul>
+</div>
+<p><a href="#CBBJFGAB">Example 12-19</a> finds all purchase orders that contain the word "<code>electric</code>" in a <code>comment</code> element that is the child of an <code>item</code> element with a <code>partNum</code> attribute whose value is "<code>872-AA</code>", which in turn is the child of an <code>items</code> element that is any number of levels under the root node.</p>
+<div id="ADXDB4792" class="example">
+<p class="titleinexample"><a id="CBBJFGAB"></a>Example 12-19 INPATH with Complex Path Expression (1)</p>
+<pre>
+SELECT id FROM purchase_orders
+  WHERE contains(doc, 'electric INPATH (//items/item[@partNum="872-AA"]/comment)')  
+        &gt; 0;
+</pre></div>
+<!-- class="example" -->
+<p><a href="#CBBFIEIF">Example 12-20</a> finds all purchase orders that contain the word "<code>lawnmower</code>" in a third-level <code>item</code> element (or any of its descendants) that has a <code>comment</code> element descendant at any level. This query returns one row. The scope of the query is <span class="italic">not</span> a <code>comment</code> element, but the set of <code>items</code> elements that each have a <code>comment</code> element as a descendant.</p>
+<div id="ADXDB4793" class="example">
+<p class="titleinexample"><a id="CBBFIEIF"></a>Example 12-20 INPATH with Complex Path Expression (2)</p>
+<pre>
+SELECT id FROM purchase_orders
+  WHERE contains(doc, 'lawnmower INPATH (/*/*/item[.//comment])') &gt; 0;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect4" -->
+<a id="CBBDDCHJ"></a>
+<div id="ADXDB4794" class="sect4"><!-- infolevel="all" infotype="General" -->
+<h5 class="sect4">Text Path Compared to XPath</h5>
+<p>The Text Path language differs from the XPath language in the following ways:</p>
+<ul>
+<li>
+<p>Not all XPath operators are included in the Text Path language.</p>
+</li>
+<li>
+<p>XPath built-in functions are not included in the Text Path language.</p>
+</li>
+<li>
+<p>Text Path language operators are case-insensitive.</p>
+</li>
+<li>
+<p>If you use <code>=</code> inside a filter (brackets), then matching follows text-matching rules.</p>
+<p>Rules for case-sensitivity, normalization, stopwords and whitespace depend on the text index definition. To emphasize this difference, this kind of equality is referred to here as text-equals.</p>
+</li>
+<li>
+<p>Namespace support is not included in the Text Path language.</p>
+<p>The name of an element, including a namespace prefix if it exists, is treated as a string. So two different namespace prefixes that map to the same namespace URI are not treated as equivalent in the Text Path language.</p>
+</li>
+<li>
+<p>In a Text Path, the context is always the root node of the document.</p>
+<p>So in the purchase-order data, <code>purchaseOrder/items/item</code>, <code>/purchaseOrder/items/item</code>, and <code>./purchaseOrder/items/item</code> are all equivalent.</p>
+</li>
+<li>
+<p>If you want to search within an attribute value, then the direct parent of the attribute must be specified (wildcards cannot be used).</p>
+</li>
+<li>
+<p>A Text Path may not end in a wildcard (<code>*</code>).</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#CBBEFACH">"Text Path BNF Specification"</a> for the Text Path grammar</div>
+</div>
+<!-- class="sect4" -->
+<div id="ADXDB4795" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref998"></a>
+<h5 class="sect4">Nested INPATH</h5>
+<p>You can nest <code>INPATH</code> expressions. The context for the Text Path is always the root node. It is not changed by a nested <code>INPATH</code>.</p>
+<p><a href="#CBBDHDEG">Example 12-21</a> finds purchase orders that contain the word "<code>electric</code>" inside a <code>comment</code> element at any level, where the occurrence of that word is also in an <code>items</code> element that is a child of the top-level <code>purchaseOrder</code> element.</p>
+<div id="ADXDB4796" class="example">
+<p class="titleinexample"><a id="CBBDHDEG"></a>Example 12-21 Nested INPATH</p>
+<pre>
+SELECT id FROM purchase_orders
+  WHERE contains(doc, 
+                 '(electric INPATH (//comment)) INPATH (/purchaseOrder/items)')
+        &gt; 0;
+</pre></div>
+<!-- class="example" -->
+<p>This nested <code>INPATH</code> query could be written more concisely as shown in <a href="#CBBBIIAI">Example 12-22</a>.</p>
+<div id="ADXDB4797" class="example">
+<p class="titleinexample"><a id="CBBBIIAI"></a>Example 12-22 Nested INPATH Rewritten</p>
+<pre>
+SELECT id FROM purchase_orders
+  WHERE contains(doc, 'electric INPATH (/purchaseOrder/items//comment)') &gt; 0;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<div id="ADXDB4798" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref999"></a>
+<h4 class="sect3">HASPATH Structure Operator</h4>
+<p>Operator <code>HASPATH</code> takes only one operand: a Text Path, enclosed in parentheses, on the right. Use <code>HASPATH</code> when you want to find documents that contain a particular section in a particular path, possibly with predicate <code>=</code>. This is a path search rather than a full-text search. You can check for the existence of a section, or you can match the contents of a section, but you cannot do word searches. If your data is of type <code>XMLType</code>, then consider using SQL/XML function <code>XMLExists</code> instead of structure operator <code>HASPATH</code>.</p>
+<p><a href="#CBBEGAEB">Example 12-23</a> finds <code>purchaseOrders</code> that have some item that has a <code>USPrice</code>.</p>
+<div id="ADXDB4799" class="example">
+<p class="titleinexample"><a id="CBBEGAEB"></a>Example 12-23 Simple HASPATH</p>
+<pre>
+SELECT id FROM purchase_orders
+  WHERE contains(DOC, 'HASPATH (/purchaseOrder//item/USPrice)') &gt; 0;
+</pre></div>
+<!-- class="example" -->
+<p><a href="#CBBHFJIH">Example 12-24</a> finds <code>purchaseOrders</code> that have some item that has a <code>USPrice</code> that text-equals "<code>148.95</code>".</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#CBBDDCHJ">"Text Path Compared to XPath"</a> for an explanation of text-equals</div>
+<div id="ADXDB4800" class="example">
+<p class="titleinexample"><a id="CBBHFJIH"></a>Example 12-24 HASPATH Equality</p>
+<pre>
+SELECT id FROM purchase_orders
+  WHERE contains(doc, 'HASPATH (/purchaseOrder//item/USPrice="148.95")') &gt; 0;
+</pre></div>
+<!-- class="example" -->
+<p><code>HASPATH</code> can be combined with other <code>contains</code> operators such as <code>INPATH</code>. <a href="#CBBCCCCE">Example 12-25</a> finds <code>purchaseOrders</code> that contain the word <code>electric</code> anywhere in the document <span class="italic">and</span> have some <code>item</code> that has a <code>USPrice</code> that text-equals <code>148.95</code> <span class="italic">and</span> contain <code>10</code> in the <code>purchaseOrder</code> attribute <code>orderDate</code>.</p>
+<div id="ADXDB4801" class="example">
+<p class="titleinexample"><a id="CBBCCCCE"></a>Example 12-25 HASPATH with Other Operators</p>
+<pre>
+SELECT id FROM purchase_orders
+  WHERE contains(doc,
+                 'electric
+                  AND HASPATH (/purchaseOrder//item/USPrice="148.95")
+                  AND 10 INPATH (/purchaseOrder/@orderDate)')
+        &gt; 0;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CBBCFIJA"></a>
+<div id="ADXDB4802" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Projecting the CONTAINS Result</h3>
+<p>The result of a SQL query with a <code>contains</code> expression in the <code>WHERE</code> clause is always a set of rows (and possibly <code>score</code> information), or a projection over the rows that match the query.</p>
+<p>If you want to return only a part of each XML document that satisfies a <code>contains</code> expression, then use SQL/XML function <code>XMLQuery</code>. The examples in this section use the <code>XMLType</code> table <code>purchase_orders_xmltype</code>.</p>
+<p><a href="#CBBCGDJG">Example 12-26</a> finds <code>purchaseOrder</code>s that contain the word "<code>electric</code>" inside a <code>comment</code> element that is a descendant of the top-level element <code>purchaseOrder</code>. Instead of returning the ID of the row for each result, <code>XMLQuery</code> is used to return only the <code>comment</code> element.</p>
+<div id="ADXDB4803" class="example">
+<p class="titleinexample"><a id="CBBCGDJG"></a>Example 12-26 Scoping the Results of a CONTAINS Query</p>
+<pre>
+SELECT XMLQuery('declare namespace ora = "http://xmlns.oracle.com/xdb"; (: :)
+                 $d/purchaseOrder//comment'
+                PASSING doc AS "d" RETURNING CONTENT) "Item Comment"
+  FROM purchase_orders_xmltype
+  WHERE CONTAINS(doc, 'electric INPATH (/purchaseOrder//comment)') &gt; 0;
+</pre></div>
+<!-- class="example" -->
+<p>The result of <a href="#CBBCGDJG">Example 12-26</a> is <span class="italic">two</span> instances of element <code>comment</code>. Function <code>contains</code> indicates which rows contain the word "<code>electric</code>" inside a <code>comment</code> element (the row with <code>ID</code> = <code>1</code>), and function <code>XMLQuery</code> extracts all of the instances of element <code>comment</code> in the document at that row. There are two instances of element <code>comment</code> inside the <code>purchaseOrder</code> element, and the query returns both of them.</p>
+<p>This might not be what you want. If you want the query to return only the instances of element <code>comment</code> that satisfy the <code>contains</code> expression, then you must repeat that predicate in the XQuery expression passed to <code>XMLQuery</code>. You do that using XPath function <code>ora:contains</code>. <a href="#CBBEHFCC">Example 12-27</a> illustrates this.</p>
+<div id="ADXDB4804" class="example">
+<p class="titleinexample"><a id="CBBEHFCC"></a>Example 12-27 Projecting the Result of a CONTAINS Query using ora:contains</p>
+<pre>
+SELECT XMLQuery('declare namespace ora = "http://xmlns.oracle.com/xdb"; (: :)
+                 $d/purchaseOrder/items/item/comment
+                   [ora:contains(text(), "electric") &gt; 0]'
+                PASSING doc AS "d" RETURNING CONTENT) "Item Comment"
+  FROM purchase_orders_xmltype
+  WHERE CONTAINS(doc, 'electric INPATH (/purchaseOrder/items/item/comment)') &gt; 0;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" -->
+<a id="CBBEDEJA"></a>
+<div id="ADXDB4805" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Indexing with a CONTEXT Index</h3>
+<p>This section contains these topics:</p>
+<ul>
+<li>
+<p><a href="#CBBICJJG">Introduction to CONTEXT Indexes</a></p>
+</li>
+<li>
+<p><a href="#CBBFJJCG">Effect of a CONTEXT Index on CONTAINS</a></p>
+</li>
+<li>
+<p><a href="#CBBGEEJG">CONTEXT Index Preferences</a></p>
+</li>
+<li>
+<p><a href="#CBBFHABE">Introduction to Section Groups</a></p>
+</li>
+</ul>
+<a id="CBBICJJG"></a>
+<div id="ADXDB4806" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Introduction to CONTEXT Indexes</h4>
+<p>The general-purpose full-text index type is <code>CONTEXT</code>, which is owned by database user <code>CTXSYS</code>. To create a default full-text index, use the regular SQL <code>CREATE INDEX</code> command, and add the clause <code>INDEXTYPE IS CTXSYS.CONTEXT</code>, as shown in <a href="#CBBGBBGE">Example 12-28</a>.</p>
+<div id="ADXDB4807" class="example">
+<p class="titleinexample"><a id="CBBGBBGE"></a>Example 12-28 Simple CONTEXT Index on Table PURCHASE_ORDERS</p>
+<pre>
+CREATE INDEX po_index ON purchase_orders(doc)
+  INDEXTYPE IS CTXSYS.CONTEXT;
+</pre></div>
+<!-- class="example" -->
+<p>You have many choices available when building a full-text index. These choices are expressed as indexing <span class="glossaryterm"><a id="sthref1000"></a>preferences</span>. To use an indexing preference, add the <code>PARAMETERS</code> clause to <code>CREATE INDEX</code>, as shown in <a href="#CBBEDEHE">Example 12-29</a>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#CBBGEEJG">"CONTEXT Index Preferences"</a></div>
+<div id="ADXDB4808" class="example">
+<p class="titleinexample"><a id="CBBEDEHE"></a>Example 12-29 Simple CONTEXT Index on XMLType Table with Path Section Group</p>
+<pre>
+CREATE INDEX po_index ON purchase_orders(doc)
+  INDEXTYPE IS CTXSYS.CONTEXT 
+  PARAMETERS ('section group CTXSYS.PATH_SECTION_GROUP');
+</pre></div>
+<!-- class="example" -->
+<p>Oracle Text provides other index types, such as <a id="sthref1001"></a><a id="sthref1002"></a><code>CTXCAT</code> and <code><a id="sthref1003"></a><a id="sthref1004"></a>CTXRULE</code>, which are outside the scope of this chapter.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink CCREF" href="../../text.112/e24436/toc.htm"><span class="italic">Oracle Text Reference</span></a> for more information about <code>CONTEXT</code> indexes</div>
+<div id="ADXDB4809" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref1005"></a>
+<h5 class="sect4">CONTEXT Index on XMLType Table</h5>
+<p>You can build a <code>CONTEXT</code> index on any data that contains text. <a href="#CBBGBBGE">Example 12-28</a> creates a <code>CONTEXT</code> index on a <code>VARCHAR2</code> column. The syntax to create a <code>CONTEXT</code> index on a column of type <code>CHAR</code>, <code>VARCHAR</code>, <code>VARCHAR2</code>, <code>BLOB</code>, <code>CLOB</code>, <code>BFILE</code>, <code>XMLType</code>, or <code>URIType</code> is the same. <a href="#CBBIAGCE">Example 12-30</a> creates a <code>CONTEXT</code> index on a column of type <code>XMLType</code>. The section group defaults to <code>PATH_SECTION_GROUP</code>.</p>
+<div id="ADXDB4810" class="example">
+<p class="titleinexample"><a id="CBBIAGCE"></a>Example 12-30 Simple CONTEXT Index on XMLType Column</p>
+<pre>
+CREATE INDEX po_index_xmltype ON purchase_orders_xmltype(doc)
+  INDEXTYPE IS CTXSYS.CONTEXT;
+</pre></div>
+<!-- class="example" -->
+<p>If you have an <code>XMLType</code> table, then you must use object syntax to create the <code>CONTEXT</code> index, as shown in <a href="#CBBIHFAF">Example 12-31</a>.</p>
+<div id="ADXDB4811" class="example">
+<p class="titleinexample"><a id="CBBIHFAF"></a>Example 12-31 Simple CONTEXT Index on XMLType Table</p>
+<pre>
+CREATE INDEX po_index_xmltype_table 
+  ON purchase_orders_xmltype_table (OBJECT_VALUE)
+  INDEXTYPE IS CTXSYS.CONTEXT;
+</pre></div>
+<!-- class="example" -->
+<p>You can query the table as shown in <a href="#CBBCHDCC">Example 12-32</a>.</p>
+<div id="ADXDB4812" class="example">
+<p class="titleinexample"><a id="CBBCHDCC"></a>Example 12-32 CONTAINS Query on XMLType Table</p>
+<pre>
+SELECT XMLCast(XMLQuery(
+                 'declare namespace ora = "http://xmlns.oracle.com/xdb"; (: :)
+                  $p/purchaseOrder/@orderDate'
+                 PASSING po.OBJECT_VALUE AS "p" RETURNING CONTENT)
+               AS DATE) "Order Date"
+  FROM purchase_orders_xmltype_table po
+  WHERE contains(po.OBJECT_VALUE, 'electric INPATH (/purchaseOrder//comment)')
+        &gt; 0;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect4" -->
+<div id="ADXDB4813" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref1006"></a>
+<h5 class="sect4">Maintaining a CONTEXT Index</h5>
+<p>The <code>CONTEXT</code> index, like most full-text indexes, is asynchronous. When indexed data is changed, the <code>CONTEXT</code> index might not change until you take some action, such as calling a procedure to synchronize the index.</p>
+<p>The <code>CONTEXT</code> index can become fragmented over time. A fragmented index uses more space and leads to slower queries. There are a number of ways to optimize (defragment) the <code>CONTEXT</code> index.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink CCREF" href="../../text.112/e24436/toc.htm"><span class="italic">Oracle Text Reference</span></a> for more information about <code>CONTEXT</code> index maintenance</div>
+</div>
+<!-- class="sect4" -->
+<div id="ADXDB4814" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref1007"></a>
+<h5 class="sect4">Roles and Privileges</h5>
+<p>You do not need any special privileges to create a <code>CONTEXT</code> index. You need the <code>CTXAPP</code> role to create and delete preferences and to use the Oracle Text PL/SQL packages. You must also have <code>EXECUTE</code> privilege on the <code>CTXSYS</code> package <code>CTX_DDL</code>.</p>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<a id="CBBFJJCG"></a>
+<div id="ADXDB4815" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Effect of a CONTEXT Index on CONTAINS</h4>
+<p>To use Oracle SQL function <code>contains</code>, you must create an index of type <code>CONTEXT</code>. If you call <code>contains</code>, and the column given in the first argument does not have an index of type <code>CONTEXT</code>, then an error is raised.</p>
+<p>The syntax and semantics of <code>text_query</code> depend on the choices you make when you build the <code>CONTEXT</code> index. For example:</p>
+<ul>
+<li>
+<p>What counts as a word?</p>
+</li>
+<li>
+<p>Are very common words processed?</p>
+</li>
+<li>
+<p>What is a common word?</p>
+</li>
+<li>
+<p>Is the text search case-sensitive?</p>
+</li>
+<li>
+<p>Can the text search include themes (concepts) in addition to keywords?</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<a id="CBBGEEJG"></a>
+<div id="ADXDB4816" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">CONTEXT Index Preferences</h4>
+<p>A preference can be considered a collection of indexing choices. Preferences include section group, datastore, filter, wordlist, stoplist and storage. This section shows how to set up a lexer preference to make searches case-sensitive.</p>
+<p>You can use procedure <code>CTX_DDL.create_preference</code> (or <code>CTX_DDL.create_stoplist</code>) to create a preference. Override default choices in that preference group by setting attributes of the new preference, using procedure <code>CTX_DDL.set_attribute</code>. Then use the preference in a <code>CONTEXT</code> index by including <code><span class="codeinlineitalic">preference type preference_name</span></code> in the <code>PARAMETERS</code> string of <code>CREATE INDEX</code>.</p>
+<p>Once a preference has been created, you can use it to build any number of indexes.</p>
+<div id="ADXDB4817" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref1008"></a>
+<h5 class="sect4">Making Search Case-Sensitive</h5>
+<p>Full-text searches with <code>contains</code> are <span class="italic">case-insensitive</span> by default. That is, when matching words in <code>text_query</code> against words in the document, case is not considered. Section names and attribute names, however, are always <span class="italic">case-sensitive</span>.</p>
+<p>If you want full-text searches to be case-sensitive, then you need to make that choice when building the <code>CONTEXT</code> index. <a href="#CBBDFAIE">Example 12-33</a> returns 1 row, because "<code>HURRY</code>" in <code>text_query</code> matches "<code>Hurry</code>" in the <code>purchaseOrder</code> with the default case-insensitive index.</p>
+<div id="ADXDB4818" class="example">
+<p class="titleinexample"><a id="CBBDFAIE"></a>Example 12-33 CONTAINS: Default Case Matching</p>
+<pre>
+SELECT id FROM purchase_orders
+  WHERE contains(doc, 'HURRY INPATH (/purchaseOrder/comment)') &gt; 0;
+</pre></div>
+<!-- class="example" -->
+<p><a href="#CBBICFIE">Example 12-34</a> creates a new lexer preference <code>my_lexer</code>, with the attribute <code>mixed_case</code> set to <code>TRUE</code>. It also sets printjoin characters to "<code>-</code>" and "<code>!</code>" and "<code>,</code>". You can use the same preferences for building <code>CONTEXT</code> indexes and for building policies.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink CCREF" href="../../text.112/e24436/toc.htm"><span class="italic">Oracle Text Reference</span></a> for a full list of lexer attributes</div>
+<div id="ADXDB4819" class="example">
+<p class="titleinexample"><a id="CBBICFIE"></a>Example 12-34 Create a Preference for Mixed Case</p>
+<pre>
+BEGIN
+  CTX_DDL.create_preference(PREFERENCE_NAME  =&gt;  'my_lexer',
+                            OBJECT_NAME      =&gt;  'BASIC_LEXER');
+    
+  CTX_DDL.set_attribute(PREFERENCE_NAME  =&gt;  'my_lexer', 
+                        ATTRIBUTE_NAME   =&gt;  'mixed_case', 
+                        ATTRIBUTE_VALUE  =&gt;  'TRUE');
+    
+  CTX_DDL.set_attribute(PREFERENCE_NAME  =&gt;  'my_lexer', 
+                        ATTRIBUTE_NAME   =&gt;  'printjoins', 
+                        ATTRIBUTE_VALUE  =&gt;  '-,!');
+END;
+/
+</pre></div>
+<!-- class="example" -->
+<p><a href="#CBBDBGEB">Example 12-35</a> builds a <code>CONTEXT</code> index using the new <code>my_lexer</code> lexer preference. It uses preference <code>preference-case-mixed</code>.</p>
+<div id="ADXDB4820" class="example">
+<p class="titleinexample"><a id="CBBDBGEB"></a>Example 12-35 CONTEXT Index on PURCHASE_ORDERS Table, Mixed Case</p>
+<pre>
+CREATE INDEX po_index ON purchase_orders(doc)
+  INDEXTYPE IS CTXSYS.CONTEXT
+  PARAMETERS('lexer my_lexer section group CTXSYS.PATH_SECTION_GROUP');
+</pre></div>
+<!-- class="example" -->
+<p><a href="#CBBDFAIE">Example 12-33</a> returns no rows, because "<code>HURRY</code>" in <code>text_query</code> no longer matches "<code>Hurry</code>" in the <code>purchaseOrder</code>. <a href="#CBBCFAHI">Example 12-36</a> returns one row, because the <code>text_query</code> term "<code>Hurry</code>" exactly matches the word "<code>Hurry</code>" in the <code>purchaseOrder</code>.</p>
+<div id="ADXDB4821" class="example">
+<p class="titleinexample"><a id="CBBCFAHI"></a>Example 12-36 CONTAINS: Mixed (Exact) Case Matching</p>
+<pre>
+SELECT id FROM purchase_orders
+  WHERE contains(doc, 'Hurry INPATH (/purchaseOrder/comment)') &gt; 0;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<a id="CBBFHABE"></a>
+<div id="ADXDB4822" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Introduction to Section Groups</h4>
+<p>One of the choices you make when creating a <code>CONTEXT</code> index is section group. A section group instance is based on a section group type. The section group type specifies the kind of structure in your documents, and how to index (and therefore search) that structure. The section group instance may specify which structure elements are indexed. Most users either take the default section group or use a predefined section group.</p>
+<div id="ADXDB4823" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref1009"></a>
+<h5 class="sect4">Choosing a Section Group Type</h5>
+<p>The section group types useful in XML searching are:</p>
+<ul>
+<li>
+<p><code>PATH_SECTION_GROUP</code></p>
+<p>Choose this when you want to use <code>WITHIN</code>, <code>INPATH</code> and <code>HASPATH</code> in queries, and you want to be able to consider all sections to scope the query.</p>
+</li>
+<li>
+<p><code>XML_SECTION_GROUP</code></p>
+<p>Choose this when you want to use <code>WITHIN</code>, but not <code>INPATH</code> and <code>HASPATH</code>, in queries, and you want to be able to consider only explicitly-defined sections to scope the query. <code>XML_SECTION_GROUP</code> section group type supports <code>FIELD</code> sections in addition to <code>ZONE</code> sections. In some cases <code>FIELD</code> sections offer significantly better query performance.</p>
+</li>
+<li>
+<p><code>AUTO_SECTION_GROUP</code></p>
+<p>Choose this when you want to use <code>WITHIN</code>, but not <code>INPATH</code> and <code>HASPATH</code>, in queries, and you want to be able to consider most sections to scope the query. By default all sections are indexed (available for query restriction). You can specify that some sections are <span class="italic">not</span> indexed (by defining <code>STOP</code> sections).</p>
+</li>
+<li>
+<p><code>NULL_SECTION_GROUP</code></p>
+<p>Choose this when defining no XML sections.</p>
+</li>
+</ul>
+<p>Other section group types include:</p>
+<ul>
+<li>
+<p><code>BASIC_SECTION_GROUP</code></p>
+</li>
+<li>
+<p><code>HTML_SECTION_GROUP</code></p>
+</li>
+<li>
+<p><code>NEWS_SECTION_GROUP</code></p>
+</li>
+</ul>
+<p>Oracle recommends that most users with XML full-text search requirements use <code>PATH_SECTION_GROUP</code>. Some users might prefer <code>XML_SECTION_GROUP</code> with <code>FIELD</code> sections. This choice generally gives better query performance and a smaller index, but it is limited to documents with fielded structure (searchable nodes are all leaf nodes that do not repeat).</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink CCREF" href="../../text.112/e24436/toc.htm"><span class="italic">Oracle Text Reference</span></a> for a detailed description of the <code>XML_SECTION_GROUP</code> section group type</div>
+</div>
+<!-- class="sect4" -->
+<div id="ADXDB4824" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref1010"></a>
+<h5 class="sect4">Choosing a Section Group</h5>
+<p>When choosing a section group to use with your index, you can choose a supplied section group, take the default, or create a new section group based on the section group type you have chosen.</p>
+<p>There are supplied section groups for section group types <code>PATH_SECTION_GROUP</code>, <code>AUTO_SECTION_GROUP</code>, and <code>NULL_SECTION_GROUP</code>. The supplied section groups are owned by <code>CTXSYS</code> and have the same name as their section group types. For example, the supplied section group of section group type <code>PATH_SECTION_GROUP</code> is <code>CTXSYS.PATH_SECTION_GROUP</code>.</p>
+<p>There is no supplied section group for section group type <code>XML_SECTION_GROUP</code>, because a default <code>XML_SECTION_GROUP</code> would be empty and therefore meaningless. If you want to use section group type <code>XML_SECTION_GROUP</code>, then you must create a new section group and specify each node that you want to include as a section.</p>
+<p>When you create a <code>CONTEXT</code> index on data of type <code>XMLType</code>, the default section group is the supplied section group <code>CTXSYS.PATH_SECTION_GROUP</code>. If the data is <code>VARCHAR</code> or <code>CLOB</code>, then the default section group is <code>CTXSYS.NULL_SECTION_GROUP</code>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink CCREF" href="../../text.112/e24436/toc.htm"><span class="italic">Oracle Text Reference</span></a> for instructions on creating your own section group</div>
+<p>To associate a section group with an index, add <code>section group &lt;section group name&gt;</code> to the <code>PARAMETERS</code> string, as in <a href="#CBBIHCJJ">Example 12-37</a>.</p>
+<div id="ADXDB4825" class="example">
+<p class="titleinexample"><a id="CBBIHCJJ"></a>Example 12-37 Simple CONTEXT Index on purchase_orders Table with Path Section Group</p>
+<pre>
+CREATE INDEX po_index ON purchase_orders(doc)
+  INDEXTYPE IS CTXSYS.CONTEXT 
+  PARAMETERS ('section group CTXSYS.PATH_SECTION_GROUP');
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CBBHCGEC"></a>
+<div id="ADXDB4826" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><a id="sthref1011"></a><a id="sthref1012"></a><a id="sthref1013"></a><a id="sthref1014"></a>ora:contains XQuery Function</h2>
+<p>Function <code>ora:contains</code> is an Oracle-defined XQuery (XPath) function for use in the XQuery expression argument to SQL/XML functions <code>XMLQuery</code>, <code>XMLTable</code>, and <code>XMLExists</code>.</p>
+<p>When you use <code>ora:contains</code> you must also supply a namespace declaration that maps prefix <code>ora</code> to the Oracle XML&nbsp;DB namespace, <code>xmlns:ora="http://xmlns.oracle.com/xdb"</code>.</p>
+<p>Function <code>ora:contains</code> returns a number. It does <span class="italic">not</span> return a score. It returns a positive number if the <code>text_query</code> matches the <code>input_text</code>. Otherwise it returns zero.</p>
+<a id="CBBIADII"></a>
+<div id="ADXDB4827" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Full-Text Search using XQuery Function ora:contains</h3>
+<p>The <code>ora:contains</code> argument <code><span class="codeinlineitalic">text_query</span></code> is a string that specifies the full-text search. The <code>ora:contains</code> <code><span class="codeinlineitalic">text_query</span></code> is the same as the <code>contains</code> <code><span class="codeinlineitalic">text_query</span></code>, with the following restrictions:</p>
+<ul>
+<li>
+<p><code>ora:contains</code> <code><span class="codeinlineitalic">text_query</span></code> must <span class="italic">not</span> include any of the structure operators <code>WITHIN</code>, <code>INPATH</code>, or <code>HASPATH</code></p>
+</li>
+<li>
+<p><code>ora:contains</code> <code><span class="codeinlineitalic">text_query</span></code> can include the score weighting operator <code>weight(*)</code>, but weights are <span class="italic">ignored</span></p>
+</li>
+</ul>
+<p>If you include any of the following in the <code>ora:contains</code> <code><span class="codeinlineitalic">text_query</span></code>, the query <span class="italic">cannot</span> use a <code>CONTEXT</code> index:</p>
+<ul>
+<li>
+<p>Score-based operator <code>MINUS</code> (<code>-</code>) or <code>threshold</code> (<code>&gt;</code>)</p>
+</li>
+<li>
+<p>Selective, corpus-based expansion operator <code>FUZZY</code> (<code>?</code>) or <code>soundex</code> (<code>!</code>)</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#CBBIGHAB">"XPath Rewrite and CONTEXT Indexes"</a></div>
+<p><a href="#CBBDJJAI">Example 12-4</a> shows a full-text search using an arbitrary combination of Boolean operators and <code>$</code> (stemming).</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#CBBBHJJJ">"Full-Text Search using SQL Function CONTAINS"</a> for a description of full-text operators</p>
+</li>
+<li>
+<p><a class="olink CCREF" href="../../text.112/e24436/toc.htm"><span class="italic">Oracle Text Reference</span></a> for a full list of the operators you can use in <code>contains</code> and <code>ora:contains</code></p>
+</li>
+</ul>
+</div>
+<p>Matching rules are defined by the <span class="italic">policy</span>, <code><span class="codeinlineitalic">policy_owner</span></code><code>.</code><code><span class="codeinlineitalic">policy_name</span></code>. If <code><span class="codeinlineitalic">policy_owner</span></code> is absent, then the policy owner defaults to the current user. If both <code><span class="codeinlineitalic">policy_name</span></code> and <code><span class="codeinlineitalic">policy_owner</span></code> are absent, then the policy defaults to <code>CTXSYS.DEFAULT_POLICY_ORACONTAINS</code>.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CBBEGAIC"></a>
+<div id="ADXDB4829" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Restricting the Scope of an ora:contains Query</h3>
+<p>When you use <code>ora:contains</code> in an XPath expression, the scope is defined by argument <code><span class="codeinlineitalic">input_text</span></code>. This argument is evaluated in the current XPath context. If the result is a single text node or an attribute, then that node is the target of the <code>ora:contains</code> search. If <code><span class="codeinlineitalic">input_text</span></code> does not evaluate to a single text node or an attribute, an error is raised.</p>
+<p>The policy determines the matching rules for <code>ora:contains</code>. The section group associated with the default policy for <code>ora:contains</code> is of type <code>NULL_SECTION_GROUP</code>.</p>
+<p><code>ora:contains</code> can be used anywhere in an XPath expression, and its <code><span class="codeinlineitalic">input_text</span></code> argument can be any XPath expression that evaluates to a single text node or an attribute.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CBBCCGGJ"></a>
+<div id="ADXDB4830" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Projecting the ora:contains Result</h3>
+<p>If you want to return only a part of each XML document, then use function <code>XMLQuery</code> to project a node sequence, possibly applying <code>XMLCast</code> to the result to project the scalar value of a node.</p>
+<p><a href="#CBBHCGCA">Example 12-38</a> returns the <code>orderDate</code> for each purchase order that has a <code>comment</code> that contains the word "<code>lawn</code>".</p>
+<div id="ADXDB4831" class="example">
+<p class="titleinexample"><a id="CBBHCGCA"></a>Example 12-38 Using ora:contains with XMLQuery and XMLExists</p>
+<pre>
+SELECT XMLCast(XMLQuery(
+                 'declare namespace ora = "http://xmlns.oracle.com/xdb"; (: :)
+                  $d/purchaseOrder/@orderDate'
+                 PASSING doc AS "d" RETURNING CONTENT)
+               AS DATE) "Order date"
+  FROM purchase_orders_xmltype
+  WHERE XMLExists(
+          'declare namespace ora = "http://xmlns.oracle.com/xdb"; (: :)
+           $d/purchaseOrder/comment
+             [ora:contains(text(), "($lawns AND wild) OR flamingo") &gt; 0]'
+          PASSING doc AS "d");
+</pre></div>
+<!-- class="example" -->
+<p>Function <code>XMLExists</code> restricts the result to rows (documents) where the <code>purchaseOrder</code> element includes some <code>comment</code> that contains the word "<code>lawn</code>". Function <code>XMLQuery</code> then returns the value of attribute <code>orderDate</code> from those <code>purchaseOrder</code> elements. Function <code>XMLCast</code> casts this result as a SQL <code>DATE</code> value.</p>
+<p>If <code>//comment</code> had been extracted, then both comments from the sample document would have been returned, not just the comment that matches the <code>WHERE</code> clause.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#CBBCGDJG">Example 12-26, "Scoping the Results of a CONTAINS Query"</a></div>
+</div>
+<!-- class="sect2" -->
+<a id="CBBFHBHB"></a>
+<div id="ADXDB4832" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Policies for ora:contains Queries</h3>
+<p>The <code>CONTEXT</code> index on a column determines the semantics of <code>contains</code> queries on that column. Because <code>ora:contains</code> does not rely on a supporting index, some other means must be found to provide many of the same choices when doing <code>ora:contains</code> queries. A <a id="sthref1015"></a><a id="sthref1016"></a><span class="glossaryterm">policy</span> is a collection of preferences that can be associated with an <code>ora:contains</code> query to give the same sort of semantic control as the indexing choices give to the <code>contains</code> user.</p>
+<div id="ADXDB4833" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1017"></a>
+<h4 class="sect3">Introduction to Policies for ora:contains Queries</h4>
+<p>When using Oracle SQL function <code>contains</code>, indexing preferences affect the semantics of the query. You create a preference using procedure <code>CTX_DDL.create_preference</code> (or <code>CTX_DDL.create_stoplist</code>). You override default choices by setting attributes of the new preference, using procedure <code>CTX_DDL.set_attribute</code>. Then you use the preference in a <code>CONTEXT</code> index by including <code><span class="codeinlineitalic">preference_type preference_name</span></code> in the <code>PARAMETERS</code> string of <code>CREATE INDEX</code>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#CBBGEEJG">"CONTEXT Index Preferences"</a></div>
+<p>Because <code>ora:contains</code> does not have a supporting index, a different mechanism is needed to apply preferences to a query. That mechanism is a policy, consisting of a collection of preferences, and it is used as a parameter to <code>ora:contains</code>.</p>
+<a id="CBBHGHFI"></a>
+<div id="ADXDB4834" class="sect4"><!-- infolevel="all" infotype="General" -->
+<h5 class="sect4">Policy Example: Supplied Stoplist</h5>
+<p><a href="#CBBIHDII">Example 12-39</a> creates a policy with an empty stopwords list.</p>
+<div id="ADXDB4835" class="example">
+<p class="titleinexample"><a id="CBBIHDII"></a>Example 12-39 Create a Policy to Use with ora:contains</p>
+<pre>
+BEGIN
+  CTX_DDL.create_policy(POLICY_NAME  =&gt;  '<span class="bold">my_nostopwords_policy</span>',
+                        STOPLIST     =&gt;  'CTXSYS.EMPTY_STOPLIST');
+END;
+/
+</pre></div>
+<!-- class="example" -->
+<p>For simplicity, this policy consists of an empty stoplist, which is owned by user <code>CTXSYS</code>. You could create a new stoplist to include in this policy, or you could reuse a stoplist (or lexer) definition that you created for a <code>CONTEXT</code> index.</p>
+<p>Refer to this policy in an <code>ora:contains</code> expression to search for all words, including the most common ones (stopwords). <a href="#CBBBAJDA">Example 12-40</a> returns zero comments, because "<code>is</code>" is a stopword by default and cannot be queried.</p>
+<div id="ADXDB4836" class="example">
+<p class="titleinexample"><a id="CBBBAJDA"></a>Example 12-40 Finding a Stopword using ora:contains</p>
+<pre>
+SELECT id FROM purchase_orders_xmltype
+  WHERE XMLExists(
+          'declare namespace ora = "http://xmlns.oracle.com/xdb"; (: :)
+           $d/purchaseOrder/comment[ora:contains(text(), "<span class="bold">is</span>") &gt; 0]'
+          PASSING doc AS "d");
+</pre></div>
+<!-- class="example" -->
+<p><a href="#CBBDECHB">Example 12-41</a> uses the policy created in <a href="#CBBIHDII">Example 12-39</a> to specify an empty stopword list. This query finds "<code>is</code>" and returns 1 comment.</p>
+<div id="ADXDB4837" class="example">
+<p class="titleinexample"><a id="CBBDECHB"></a>Example 12-41 Finding a Stopword using ora:contains and Policy my_nostopwords_policy</p>
+<pre>
+SELECT id FROM purchase_orders_xmltype
+  WHERE XMLExists(
+          'declare namespace ora = "http://xmlns.oracle.com/xdb"; (: :)
+           $d/purchaseOrder/comment
+             [ora:contains(text(), "is", "<span class="bold">MY_NOSTOPWORDS_POLICY</span>") &gt; 0]'
+          PASSING doc AS "d");
+</pre></div>
+<!-- class="example" -->
+<p><a href="#CBBDECHB">Example 12-41</a> uses policy <code>my_nostopwords_policy</code>. This policy was implicitly named as all uppercase, in <a href="#CBBIHDII">Example 12-39</a>. Because XPath is case-sensitive, it must be referred to in the XPath predicate using all uppercase: <code>MY_NOSTOPWORDS_POLICY</code>, not <code>my_nostopwords_policy</code>.</p>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<div id="ADXDB4838" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1018"></a>
+<h4 class="sect3">Effect of Policies on ora:contains</h4>
+<p>The <code>ora:contains</code> policy affects the matching semantics of <code>text_query</code>. The <code>ora:contains</code> policy may include a lexer, stoplist, wordlist preference, or any combination of these. Other preferences that can be used to build a <code>CONTEXT</code> index are not applicable to <code>ora:contains</code>. The effects of the preferences are as follows:</p>
+<ul>
+<li>
+<p>The wordlist preference tweaks the semantics of the stem operator.</p>
+</li>
+<li>
+<p>The stoplist preference defines which words are too common to be indexed (searchable).</p>
+</li>
+<li>
+<p>The lexer preference defines how words are tokenized and matched. For example, it defines which characters count as part of a word and whether matching is case-sensitive.</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#CBBHGHFI">"Policy Example: Supplied Stoplist"</a> for an example of building a policy with a predefined stoplist</p>
+</li>
+<li>
+<p><a href="#CBBEAHGB">"Policy Example: User-Defined Lexer"</a> for an example of a case-sensitive policy</p>
+</li>
+</ul>
+</div>
+<a id="CBBEAHGB"></a>
+<div id="ADXDB4839" class="sect4"><!-- infolevel="all" infotype="General" -->
+<h5 class="sect4">Policy Example: User-Defined Lexer</h5>
+<p>When you search for a document that contains a particular word, you usually want the search to be case-insensitive. If you do a search that is case-sensitive, then you often miss some expected results. For example, if you search for <code>purchaseOrders</code> that contain the phrase "baby monitor", then you would not expect to miss our example document just because the phrase is written "Baby Monitor".</p>
+<p>Full-text searches with <code>ora:contains</code> are case-insensitive by default. Section names and attribute names, however, are always case-sensitive.</p>
+<p>If you want full-text searches to be case-sensitive, then you need to make that choice when you create a policy. You can use this procedure:</p>
+<ol>
+<li>
+<p>Create a preference using the procedure <code>CTX_DDL.create_preference</code> (or <code>CTX_DDL.create_stoplist</code>).</p>
+</li>
+<li>
+<p>Override default choices in that preference object by setting attributes of the new preference, using procedure <code>CTX_DDL.set_attribute</code>.</p>
+</li>
+<li>
+<p>Use the preference as a parameter to <code>CTX_DDL.create_policy</code>.</p>
+</li>
+<li>
+<p>Use the policy name as the third argument to <code>ora:contains</code> in a query.</p>
+</li>
+</ol>
+<p>Once you have created a preference, you can reuse it in other policies or in <code>CONTEXT</code> index definitions. You can use any policy with any <code>ora:contains</code> query.</p>
+<p><a href="#CBBEEEJC">Example 12-42</a> returns 1 row, because "<code>HURRY</code>" in <code>text_query</code> matches "<code>Hurry</code>" in the <code>purchaseOrder</code> with the default case-insensitive index.</p>
+<div id="ADXDB4840" class="example">
+<p class="titleinexample"><a id="CBBEEEJC"></a>Example 12-42 ora:contains, Default Case-Sensitivity</p>
+<pre>
+SELECT id FROM purchase_orders_xmltype
+  WHERE XMLExists(
+          'declare namespace ora = "http://xmlns.oracle.com/xdb"; (: :)
+           $d/purchaseOrder/comment[ora:contains(text(), "HURRY") &gt; 0]'
+          PASSING doc AS "d");
+</pre></div>
+<!-- class="example" -->
+<p><a href="#CBBBCIEG">Example 12-43</a> creates a new lexer preference <code>my_lexer</code>, with the attribute <code>mixed_case</code> set to <code>TRUE</code>. It also sets <code>printjoin</code> characters to "<code>-</code>", "<code>!</code>" and "<code>,</code>". You can use the same preferences for building <code>CONTEXT</code> indexes and for building policies.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink CCREF" href="../../text.112/e24436/toc.htm"><span class="italic">Oracle Text Reference</span></a> for a full list of lexer attributes</div>
+<div id="ADXDB4841" class="example">
+<p class="titleinexample"><a id="CBBBCIEG"></a>Example 12-43 Create a Preference for Mixed Case</p>
+<pre>
+BEGIN
+  CTX_DDL.create_preference(PREFERENCE_NAME  =&gt;  'my_lexer',
+                            OBJECT_NAME      =&gt;  'BASIC_LEXER');
+  CTX_DDL.set_attribute(PREFERENCE_NAME  =&gt;  'MY_LEXER', 
+                        ATTRIBUTE_NAME   =&gt;  'MIXED_CASE', 
+                        ATTRIBUTE_VALUE  =&gt;  'TRUE');
+  CTX_DDL.set_attribute(PREFERENCE_NAME  =&gt;  'my_lexer', 
+                        ATTRIBUTE_NAME   =&gt;  'printjoins', 
+                        ATTRIBUTE_VALUE  =&gt;  '-,!');
+END;
+/
+</pre></div>
+<!-- class="example" -->
+<p><a href="#CBBBAJJH">Example 12-44</a> creates a new policy <code>my_policy</code> and specifies only the lexer. All other preferences are defaulted. <a href="#CBBBAJJH">Example 12-44</a> uses <code>preference-case-mixed</code>.</p>
+<div id="ADXDB4842" class="example">
+<p class="titleinexample"><a id="CBBBAJJH"></a>Example 12-44 Create a Policy with Mixed Case (Case-Insensitive)</p>
+<pre>
+BEGIN
+  CTX_DDL.create_policy(POLICY_NAME  =&gt; 'my_policy',
+                        LEXER        =&gt; 'my_lexer');
+END;
+/
+</pre></div>
+<!-- class="example" -->
+<p><a href="#CBBFABFI">Example 12-45</a> uses the new policy in a query. It returns no rows, because "<code>HURRY</code>" in <code>text_query</code> no longer matches "<code>Hurry</code>" in the <code>purchaseOrder</code>.</p>
+<div id="ADXDB4843" class="example">
+<p class="titleinexample"><a id="CBBFABFI"></a>Example 12-45 ora:contains, Case-Sensitive (1)</p>
+<pre>
+SELECT id FROM purchase_orders_xmltype
+  WHERE XMLExists(
+          'declare namespace ora = "http://xmlns.oracle.com/xdb"; (: :)
+           $d/purchaseOrder/comment
+             [ora:contains(text(), "HURRY", "my_policy") &gt; 0]'
+          PASSING doc AS "d");
+</pre></div>
+<!-- class="example" -->
+<p><a href="#CBBJDCJI">Example 12-46</a> returns one row, because the <code>text_query</code> term "<code>Hurry</code>" exactly matches the text "<code>Hurry</code>" in the <code>comment</code> element.</p>
+<div id="ADXDB4844" class="example">
+<p class="titleinexample"><a id="CBBJDCJI"></a>Example 12-46 ora:contains, Case-Sensitive (2)</p>
+<pre>
+SELECT id FROM purchase_orders_xmltype
+  WHERE XMLExists(
+          'declare namespace ora = "http://xmlns.oracle.com/xdb"; (: :)
+           $d/purchaseOrder/comment[ora:contains(text(), "Hurry") &gt; 0]'
+          PASSING doc AS "d");
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<div id="ADXDB4845" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1019"></a>
+<h4 class="sect3">Policy Defaults</h4>
+<p>The policy argument to <code>ora:contains</code> is optional. If it is omitted, then the query uses the default policy <code>CTXSYS.DEFAULT_POLICY_ORACONTAINS</code>.</p>
+<p>When you create a policy for use with <code>ora:contains</code>, you do not need to specify every preference. In <a href="#CBBBAJJH">Example 12-44</a>, for example, only the lexer preference was specified. For the preferences that are not specified, <code>CREATE_POLICY</code> uses the default preferences:</p>
+<ul>
+<li>
+<p><code>CTXSYS.DEFAULT_LEXER</code></p>
+</li>
+<li>
+<p><code>CTXSYS.DEFAULT_STOPLIST</code></p>
+</li>
+<li>
+<p><code>CTXSYS.DEFAULT_ WORDLIST</code></p>
+</li>
+</ul>
+<p>Creating a policy follows copy semantics for preferences and their attributes, just as creating a <code>CONTEXT</code> index follows copy semantics for index metadata.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<div id="ADXDB4846" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1020"></a>
+<h3 class="sect2">Performance of ora:contains</h3>
+<p>The <code>ora:contains</code> XPath function does not depend on a supporting index. <code>ora:contains</code> is very flexible. But if you use it to search across large amounts of data without an index, then it can also be resource-intensive. This section shows how to get the best performance from queries that include XPath expressions with XPath function <code>ora:contains</code>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Function-based indexes can also be very effective in speeding up XML queries, but they are not generally applicable to Text queries.</div>
+<p>The examples in this section use table <code>purchase_orders_xmltype_big</code>. This has the same table structure and XML schema as <code>purchase_orders_xmltype</code>, but it has around 1,000 rows. Each row has a unique ID (in column <code>id</code>), and some different text in <code>/purchaseOrder/items/item/comment</code>. Where an execution plan is shown, it was produced using the SQL*Plus command <code>AUTOTRACE</code>. Execution plans can also be produced using SQL commands <code>TRACE</code> and <code>TKPROF</code>. A description of commands <code>AUTOTRACE</code>, <code>trace</code> and <code>tkprof</code> is outside the scope of this chapter.</p>
+<p>This section contains these topics:</p>
+<ul>
+<li>
+<p><a href="#CBBCFFEH">Use a Primary Filter in the Query</a></p>
+</li>
+<li>
+<p><a href="#CBBIGHAB">XPath Rewrite and CONTEXT Indexes</a></p>
+</li>
+</ul>
+<a id="CBBCFFEH"></a>
+<div id="ADXDB4847" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Use a Primary Filter in the Query</h4>
+<p>Because <code>ora:contains</code> is relatively costly to process, Oracle recommends that you write queries that include a primary filter wherever possible. This minimizes the number of rows processed by <code>ora:contains</code>.</p>
+<p><a href="#CBBJDJFG">Example 12-47</a> examines each row in a table (a full table scan), as shown by the execution plan. In this example, <code>ora:contains</code> is evaluated for each row.</p>
+<div id="ADXDB4848" class="example">
+<p class="titleinexample"><a id="CBBJDJFG"></a>Example 12-47 ora:contains in Large Table</p>
+<pre>
+SELECT id FROM purchase_orders_xmltype_big
+  WHERE XMLExists(
+          'declare namespace ora = "http://xmlns.oracle.com/xdb"; (: :)
+           $d/purchaseOrder/comment[ora:contains(text(), "constitution") &gt; 0]'
+          PASSING doc AS "d");
+</pre>
+<pre>
+Execution Plan
+------------------------------------------------------------------------------------------------
+| Id | Operation                       | Name                      |Rows|Bytes|Cost(%CPU)| Time|
+------------------------------------------------------------------------------------------------
+|   0| SELECT STATEMENT                |                           |  32|64480|686(38)|00:00:09|
+|*  1| FILTER                          |                           |    |     |       |        |
+|   2|TABLE ACCESS FULL                |PURCHASE_ORDERS_XMLTYPE_BIG|1161|2284K| 140(3)|00:00:02| 
+|*  3|COLLECTION ITERATOR PICKLER FETCH| XMLSEQUENCEFROMXMLTYPE    |    |     |       |        |
+------------------------------------------------------------------------------------------------
+ 
+Predicate Information (identified by operation id):
+---------------------------------------------------
+   1 - filter( EXISTS (SELECT 0 FROM TABLE() "KOKBF$" WHERE
+              SYS_XMLCONTAINS(SYS_XQ_UPKXML2SQL(SYS_XQEXVAL(SYS_XQEXTRACT(SYS_XQCON2SEQ(VALUE(KOKBF$)),
+              '/comment/text()'),1,50),50,1,0),'constitution')&gt;0))
+   3 - filter(SYS_XMLCONTAINS(SYS_XQ_UPKXML2SQL(SYS_XQEXVAL(SYS_XQEXTRACT(SYS_XQCON2SEQ(VALUE(KOKBF$)),
+              '/comment/text()'),1,50),50,1,0),'constitution')&gt;0)
+ 
+Note
+-----
+   - dynamic sampling used for this statement
+</pre></div>
+<!-- class="example" -->
+<p>If you create an index on column <code>id</code>, as shown in <a href="#CBBFCIGC">Example 12-48</a>, and you add a selective predicate <code>id</code> to the query, as shown in <a href="#CBBCGBHF">Example 12-49</a>, then index <code>id</code> drives the execution, as shown in the execution plan. Function <code>ora:contains</code> is then executed only for the rows where <code>id</code> is less than 5.</p>
+<div id="ADXDB4850" class="example">
+<p class="titleinexample"><a id="CBBFCIGC"></a>Example 12-48 B-tree Index on ID</p>
+<pre>
+CREATE INDEX id_index ON purchase_orders_xmltype_big(id);
+</pre></div>
+<!-- class="example" -->
+<div id="ADXDB4851" class="example">
+<p class="titleinexample"><a id="CBBCGBHF"></a>Example 12-49 ora:contains in Large Table, with Additional Predicate</p>
+<pre>
+SELECT id FROM purchase_orders_xmltype_big
+  WHERE XMLExists(
+          'declare namespace ora = "http://xmlns.oracle.com/xdb"; (: :)
+           $d/purchaseOrder/comment[ora:contains(text(), "constitution") &gt; 0]'
+          PASSING doc AS "d")
+    <span class="bold">AND id &gt; 5</span>;
+</pre>
+<pre>
+Execution Plan
+-----------------------------------------------------------------------------------------------
+| Id  | Operation                   | Name                      |Rows| Bytes |Cost(%CPU)| Time|
+-----------------------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT            |                           |  1 |  2015 |8  (13)|00:00:01|
+|*  1 |  TABLE ACCESS BY INDEX ROWID|PURCHASE_ORDERS_XMLTYPE_BIG|  1 |  2015 |8  (13)|00:00:01|
+|*  2 |   INDEX RANGE SCAN          |ID_INDEX                   | 10 |       |2   (0)|00:00:01|
+-----------------------------------------------------------------------------------------------
+ 
+Predicate Information (identified by operation id):
+---------------------------------------------------
+ 
+   1 - filter(EXISTSNODE(SYS_MAKEXML("PURCHASE_ORDERS_XMLTYPE_BIG"."SYS_NC00003$
+       "),'/purchaseOrder/items/item/comment[ora:contains(text(), "constitution") &gt;
+              0]','xmlns:ora="http://xmlns.oracle.com/xdb"')=1)
+   2 - access("ID"&gt;5)
+ 
+Note
+-----
+   - dynamic sampling used for this statement
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect3" -->
+<a id="CBBIGHAB"></a>
+<div id="ADXDB4853" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">XPath Rewrite and CONTEXT Indexes</h4>
+<p>Oracle Database can sometimes optimize a query that makes use of an XPath expression. This XPath rewriting is done automatically as part of query optimization.</p>
+<p>Although Oracle XQuery function <code>ora:contains</code> does not rely on a supporting index, when XPath rewrite occurs <code>ora:contains</code> can often make use of an existing <code>CONTEXT</code> index for better performance.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="xdb01int.htm#BABGCECF">"Automatic Rewriting of XQuery and XPath Expressions"</a> for more on the benefits of XPath rewrite</p>
+</li>
+<li>
+<p><a href="xdb_rewrite.htm#BABHJECG">Chapter 8, "XPath Rewrite for Structured Storage"</a> for a full discussion of XPath rewrite for object-relational storage</p>
+</li>
+</ul>
+</div>
+<div id="ADXDB4856" class="example">
+<p class="titleinexample"><a id="CBBEDDIF"></a>Example 12-50 ora:contains Search for "electric"</p>
+<pre>
+SELECT id FROM purchase_orders_xmltype
+  WHERE XMLExists(
+          'declare namespace ora = "http://xmlns.oracle.com/xdb"; (: :)
+           $d/purchaseOrder/items/item/comment
+             [ora:contains(text(), "electric") &gt; 0]'
+          PASSING doc AS "d");
+</pre></div>
+<!-- class="example" -->
+<p>A naive evaluation of the XPath expression in <a href="#CBBEDDIF">Example 12-50</a> would test each cell in column <code>doc</code> to see if it matches that expression.</p>
+<p>But if <code>doc</code> is XML schema-based, and the <code>purchaseOrder</code> documents are physically stored in object-relational tables, then it makes sense to go straight to column <code>comment</code> (if such a column exists) and test each cell there to see if it matches "<code>electric</code>".</p>
+<p>If the first argument to <code>ora:contains</code> maps to a single relational column, then <code>ora:contains</code> can be applied to that column, instead of applying the complete XPath expression to the entire XML document. Even if there are no indexes involved, this can significantly improve query performance.</p>
+<p>If you are using <code>ora:contains</code> with a text node or an attribute that maps to a column that has a <code>CONTEXT</code> index then that index can sometimes be applied to the data in the underlying column. The following conditions must both be true, in order for a <code>CONTEXT</code> index to be used with object-relational <code>XMLType</code> data.</p>
+<ul>
+<li>
+<p>The <code>ora:contains</code> target (<code>input_text</code>) must be either a single text node whose parent node maps to a column or an attribute that maps to a column. The column must be a single relational column (possibly in an ordered collection table).</p>
+</li>
+<li>
+<p>As noted in <a href="#CBBFHBHB">"Policies for ora:contains Queries"</a>, the indexing choices (for <code>contains</code>) and policy choices (for <code>ora:contains</code>) affect the semantics of queries. A simple mismatch might be that the index-based <code>contains</code> would do a <span class="italic">case-sensitive</span> search, while <code>ora:contains</code> specifies a <span class="italic">case-insensitive</span> search. To ensure that the <code>ora:contains</code> and the rewritten <code>contains</code> have the same semantics, the <code>ora:contains</code> policy must exactly match the index choices of the <code>CONTEXT</code> index.</p>
+</li>
+</ul>
+<p>Both the <code>ora:contains</code> policy and the <code>CONTEXT</code> index must also use the <code>NULL_SECTION_GROUP</code> section group type. The default section group for an <code>ora:contains</code> policy is <code>ctxsys.NULL_SECTION_GROUP</code>.</p>
+<p>Finally, the <code>CONTEXT</code> index is generally asynchronous. If you add a new document that contains the word "<code>dog</code>", but do not synchronize the <code>CONTEXT</code> index, then a <code>contains</code> query for "<code>dog</code>" does not return that document. But an <code>ora:contains</code> query against the same data does. To ensure that the <code>ora:contains</code> and the rewritten <code>contains</code> always return the same results, build the <code>CONTEXT</code> index with the <code>TRANSACTIONAL</code> keyword in the <code>PARAMETERS</code> string.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink CCREF" href="../../text.112/e24436/toc.htm"><span class="italic">Oracle Text Reference</span></a> for information about creating a <code>CONTEXT</code> index that is transactional using <code>ALTER INDEX</code> with parameter <code>TRANSACTIONAL</code></div>
+<p>A query with <code>XMLQuery</code>, <code>XMLTable</code> or <code>XMLExists</code>, where the XPath includes <code>ora:contains</code>, can be considered for XPath rewrite if the <code>ora:contains</code> policy exactly matches the index choices of the <code>CONTEXT</code> index and if either of these conditions is true:</p>
+<ul>
+<li>
+<p>The XML data is stored <span class="italic">object-relationally</span>; the first <code>ora:contains</code> argument (<code>input_text</code>) is either a single text node whose parent node maps to a single relational column or an attribute that maps to a single relational column; there is a transactional <code>CONTEXT</code> index on that column.</p>
+</li>
+<li>
+<p>The XML data is <span class="italic">binary XML</span> that is indexed by an <code>XMLIndex</code> index, and there is a <code>CONTEXT</code> index on either the path-table <code>VALUE</code> column of an unstructured <code>XMLIndex</code> component or a scalar-value column of a structured <code>XMLIndex</code> component.</p>
+<p>If the <code>CONTEXT</code> index is non-transactional then you must also use XQuery extension-expression pragma <a id="sthref1021"></a><a id="sthref1022"></a><code>ora:use_text_index</code>, to force the use of the <code>CONTEXT</code> index. <a href="#BGBEJACJ">Example 12-51</a> illustrates this.</p>
+</li>
+</ul>
+<div class="example">
+<p class="titleinexample"><a id="BGBEJACJ"></a>Example 12-51 Using XQuery Pragma ora:use_text_index with ora:contains</p>
+<pre>
+CREATE INDEX po_otext_ix ON <span class="bold">my_path_table</span> (<span class="bold">VALUE</span>) INDEXTYPE IS CTXSYS.CONTEXT;
+ 
+EXPLAIN PLAN FOR
+  SELECT DISTINCT XMLCast(XMLQuery('$p/PurchaseOrder/ShippingInstructions/address'
+                                   PASSING po.OBJECT_VALUE AS "p" RETURNING CONTENT)
+                          AS VARCHAR2(256)) "Address"
+    FROM po_binxml po
+    WHERE XMLExists(
+            '$p/PurchaseOrder/ShippingInstructions/address
+               [<span class="bold">(# ora:use_text_index #)</span> {<span class="bold">ora:contains</span>(., "$(Fortieth)")} &gt; 0]'
+            PASSING po.OBJECT_VALUE AS "p");
+
+----------------------------------------------------------------------------------------------------------------
+| Id  | Operation                            | Name                         | Rows | Bytes|Cost (%CPU)| Time   |
+----------------------------------------------------------------------------------------------------------------
+|   0 | SELECT STATEMENT                     |                              |    1 | 3046 |   12  (17)|00:00:01|
+|   1 |  SORT GROUP BY                       |                              |    1 | 3524 |           |        |
+|*  2 |   TABLE ACCESS BY INDEX ROWID BATCHED| <span class="bold">MY_PATH_TABLE</span>                |    2 | 7048 |    3   (0)|00:00:01|
+|*  3 |    INDEX RANGE SCAN                  | <span class="bold">SYS89559_PO_XMLINDE_PIKEY_IX</span> |    1 |      |    2   (0)|00:00:01|
+|   4 |  HASH UNIQUE                         |                              |    1 | 3046 |   12  (17)|00:00:01|
+|   5 |   NESTED LOOPS                       |                              |    1 | 3046 |    8  (13)|00:00:01|
+|   6 |    SORT UNIQUE                       |                              |    1 | 3034 |    6   (0)|00:00:01|
+|*  7 |     TABLE ACCESS BY INDEX ROWID      | <span class="bold">MY_PATH_TABLE</span>                |    1 | 3034 |    6   (0)|00:00:01|
+|*  8 |      DOMAIN INDEX                    | <span class="bold">PO_OTEXT_IX</span>                  |      |      |    4   (0)|00:00:01|
+|   9 |    TABLE ACCESS BY USER ROWID        | PO_BINXML                    |    1 |   12 |    1   (0)|00:00:01|
+----------------------------------------------------------------------------------------------------------------
+ 
+Predicate Information (identified by operation id):
+---------------------------------------------------
+ 
+   2 - filter(SYS_XMLI_LOC_ISNODE("SYS_P3"."LOCATOR")=1)
+   3 - access("SYS_P3"."RID"=:B1 AND "SYS_P3"."PATHID"=HEXTORAW('6F7F'))
+   7 - filter("SYS_P1"."PATHID"=HEXTORAW('6F7F') AND SYS_XMLI_LOC_ISNODE("SYS_P1"."LOCATOR")=1)
+   8 - access("<span class="bold">CTXSYS</span>"."<span class="bold">CONTAINS</span>"("SYS_P1"."VALUE",'$(Fortieth)')&gt;0)
+ 
+Note
+-----
+   - dynamic sampling used for this statement (level=2)
+ 
+28 rows selected.
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CBBEFACH"></a>
+<div id="ADXDB4859" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Text Path BNF Specification</h2>
+<pre>
+HasPathArg           ::=    LocationPath
+                         |  EqualityExpr  
+InPathArg            ::=    LocationPath 
+LocationPath         ::=    RelativeLocationPath
+                         |  AbsoluteLocationPath 
+AbsoluteLocationPath ::=    ("/" RelativeLocationPath)
+                         |  ("//" RelativeLocationPath) 
+RelativeLocationPath ::=    Step
+                         |  (RelativeLocationPath "/" Step)
+                         |  (RelativeLocationPath "//" Step) 
+Step                 ::=    ("@" NCName)
+                         |  NCName
+                         |  (NCName Predicate)
+                         |  Dot
+                         |  "*" 
+Predicate            ::=    ("[" OrExp "]")
+                         |  ("[" Digit+ "]") 
+OrExpr               ::=    AndExpr
+                         |  (OrExpr "or" AndExpr) 
+AndExpr              ::=    BooleanExpr
+                         |  (AndExpr "and" BooleanExpr) 
+BooleanExpr          ::=    RelativeLocationPath
+                         |  EqualityExpr
+                         |  ("(" OrExpr ")")
+                         |  ("not" "(" OrExpr ")") 
+EqualityExpr         ::=    (RelativeLocationPath "=" Literal)
+                         |  (Literal "=" RelativeLocationPath)
+                         |  (RelativeLocationPath "=" Literal)
+                         |  (Literal "!=" RelativeLocationPath)
+                         |  (RelativeLocationPath "=" Literal)
+                         |  (Literal "!=" RelativeLocationPath) 
+Literal              ::=    (DoubleQuote [~"]* DoubleQuote)
+                         |  (SingleQuote [~']* SingleQuote) 
+NCName               ::=    (Letter |  Underscore) NCNameChar* 
+NCNameChar           ::=    Letter
+                         |  Digit
+                         |  Dot
+                         |  Dash
+                         |  Underscore 
+Letter               ::=    ([a-z] | [A-Z]) 
+Digit                ::=    [0-9] 
+Dot                  ::=    "." 
+Dash                 ::=    "-" 
+Underscore           ::=    "_" 
+</pre></div>
+<!-- class="sect1" -->
+<a id="CBBJDJIJ"></a>
+<div id="ADXDB4860" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Support for Full-Text XML Examples</h2>
+<p>This section contains these topics:</p>
+<ul>
+<li>
+<p><a href="#CBBICIEB">Purchase-Order XML Document, po001.xml</a></p>
+</li>
+<li>
+<p><a href="#CBBIAGJC">CREATE TABLE Statements</a></p>
+</li>
+<li>
+<p><a href="#CBBHAHHD">Purchase-Order XML Schema for Full-Text Search Examples</a></p>
+</li>
+</ul>
+<a id="CBBICIEB"></a>
+<div id="ADXDB4861" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><a id="sthref1023"></a>Purchase-Order XML Document, po001.xml</h3>
+<div id="ADXDB4862" class="example">
+<p class="titleinexample"><a id="sthref1024"></a>Example 12-52 Purchase Order XML Document, po001.xml</p>
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;purchaseOrder xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+               xsi:noNamespaceSchemaLocation="xmlschema/po.xsd" 
+               orderDate="1999-10-20"&gt;
+  &lt;shipTo country="US"&gt;
+    &lt;name&gt;Alice Smith&lt;/name&gt;
+    &lt;street&gt;123 Maple Street&lt;/street&gt;
+    &lt;city&gt;Mill Valley&lt;/city&gt;
+    &lt;state&gt;CA&lt;/state&gt;
+    &lt;zip&gt;90952&lt;/zip&gt;
+  &lt;/shipTo&gt;
+  &lt;billTo country="US"&gt;
+    &lt;name&gt;Robert Smith&lt;/name&gt;
+    &lt;street&gt;8 Oak Avenue&lt;/street&gt;
+    &lt;city&gt;Old Town&lt;/city&gt;
+    &lt;state&gt;PA&lt;/state&gt;
+    &lt;zip&gt;95819&lt;/zip&gt;
+  &lt;/billTo&gt;
+  &lt;comment&gt;Hurry, my lawn is going wild!&lt;/comment&gt;
+  &lt;items&gt;
+    &lt;item partNum="872-AA"&gt;
+      &lt;productName&gt;Lawnmower&lt;/productName&gt;
+      &lt;quantity&gt;1&lt;/quantity&gt;
+      &lt;USPrice&gt;148.95&lt;/USPrice&gt;
+      &lt;comment&gt;Confirm this is electric&lt;/comment&gt;
+    &lt;/item&gt;
+    &lt;item partNum="926-AA"&gt;
+      &lt;productName&gt;Baby Monitor&lt;/productName&gt;
+      &lt;quantity&gt;1&lt;/quantity&gt;
+      &lt;USPrice&gt;39.98&lt;/USPrice&gt;
+      &lt;shipDate&gt;1999-05-21&lt;/shipDate&gt;
+    &lt;/item&gt;
+  &lt;/items&gt;
+&lt;/purchaseOrder&gt;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" -->
+<a id="CBBIAGJC"></a>
+<div id="ADXDB4863" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">CREATE TABLE Statements</h3>
+<div id="ADXDB4864" class="example">
+<p class="titleinexample"><a id="sthref1025"></a>Example 12-53 Create Table PURCHASE_ORDERS</p>
+<pre>
+CREATE TABLE purchase_orders (id NUMBER, doc VARCHAR2(4000));
+
+INSERT INTO purchase_orders (id, doc)
+  VALUES (1,
+          '&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+           &lt;purchaseOrder xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                          xsi:noNamespaceSchemaLocation="xmlschema/po.xsd"
+                          orderDate="1999-10-20"&gt;
+             &lt;shipTo country="US"&gt;
+               &lt;name&gt;Alice Smith&lt;/name&gt;
+               &lt;street&gt;123 Maple Street&lt;/street&gt;
+               &lt;city&gt;Mill Valley&lt;/city&gt;
+               &lt;state&gt;CA&lt;/state&gt;
+               &lt;zip&gt;90952&lt;/zip&gt;
+             &lt;/shipTo&gt;
+             &lt;billTo country="US"&gt;
+               &lt;name&gt;Robert Smith&lt;/name&gt;
+               &lt;street&gt;8 Oak Avenue&lt;/street&gt;
+               &lt;city&gt;Old Town&lt;/city&gt;
+               &lt;state&gt;PA&lt;/state&gt;
+               &lt;zip&gt;95819&lt;/zip&gt;
+             &lt;/billTo&gt;
+             &lt;comment&gt;Hurry, my lawn is going wild!&lt;/comment&gt;
+             &lt;items&gt;
+               &lt;item partNum="872-AA"&gt;
+                 &lt;productName&gt;Lawnmower&lt;/productName&gt;
+                 &lt;quantity&gt;1&lt;/quantity&gt;
+                 &lt;USPrice&gt;148.95&lt;/USPrice&gt;
+                 &lt;comment&gt;Confirm this is electric&lt;/comment&gt;
+               &lt;/item&gt;
+               &lt;item partNum="926-AA"&gt;
+                 &lt;productName&gt;Baby Monitor&lt;/productName&gt;
+                 &lt;quantity&gt;1&lt;/quantity&gt;
+                 &lt;USPrice&gt;39.98&lt;/USPrice&gt;
+                 &lt;shipDate&gt;1999-05-21&lt;/shipDate&gt;
+               &lt;/item&gt;
+             &lt;/items&gt;
+           &lt;/purchaseOrder&gt;');
+COMMIT;
+</pre></div>
+<!-- class="example" -->
+<div id="ADXDB4865" class="example">
+<p class="titleinexample"><a id="sthref1026"></a>Example 12-54 Create Table PURCHASE_ORDERS_XMLTYPE</p>
+<pre>
+CREATE TABLE purchase_orders_xmltype (id  NUMBER, doc XMLType);
+
+INSERT INTO purchase_orders_xmltype (id, doc)
+  VALUES (1,
+          XMLTYPE ('&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+                     &lt;purchaseOrder
+                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                       xsi:noNamespaceSchemaLocation="po.xsd"
+                       orderDate="1999-10-20"&gt;
+                       &lt;shipTo country="US"&gt;
+                         &lt;name&gt;Alice Smith&lt;/name&gt;
+                         &lt;street&gt;123 Maple Street&lt;/street&gt;
+                         &lt;city&gt;Mill Valley&lt;/city&gt;
+                         &lt;state&gt;CA&lt;/state&gt;
+                         &lt;zip&gt;90952&lt;/zip&gt;
+                       &lt;/shipTo&gt;
+                       &lt;billTo country="US"&gt;
+                         &lt;name&gt;Robert Smith&lt;/name&gt;
+                         &lt;street&gt;8 Oak Avenue&lt;/street&gt;
+                         &lt;city&gt;Old Town&lt;/city&gt;
+                         &lt;state&gt;PA&lt;/state&gt;
+                         &lt;zip&gt;95819&lt;/zip&gt;
+                       &lt;/billTo&gt;
+                       &lt;comment&gt;Hurry, my lawn is going wild!&lt;/comment&gt;
+                       &lt;items&gt;
+                         &lt;item partNum="872-AA"&gt;
+                           &lt;productName&gt;Lawnmower&lt;/productName&gt;
+                           &lt;quantity&gt;1&lt;/quantity&gt;
+                           &lt;USPrice&gt;148.95&lt;/USPrice&gt;
+                           &lt;comment&gt;Confirm this is electric&lt;/comment&gt;
+                         &lt;/item&gt;
+                         &lt;item partNum="926-AA"&gt;
+                           &lt;productName&gt;Baby Monitor&lt;/productName&gt;
+                           &lt;quantity&gt;1&lt;/quantity&gt;
+                           &lt;USPrice&gt;39.98&lt;/USPrice&gt;
+                           &lt;shipDate&gt;1999-05-21&lt;/shipDate&gt;
+                         &lt;/item&gt;
+                       &lt;/items&gt;
+                   &lt;/purchaseOrder&gt;'));
+COMMIT;
+</pre></div>
+<!-- class="example" -->
+<div id="ADXDB4866" class="example">
+<p class="titleinexample"><a id="sthref1027"></a>Example 12-55 Create Table PURCHASE_ORDERS_XMLTYPE_TABLE</p>
+<pre>
+CREATE TABLE purchase_orders_xmltype_table OF XMLType;
+
+INSERT INTO purchase_orders_xmltype_table
+  VALUES (
+    XMLType ('&lt;?xml version="1.0" encoding="UTF-8"?&gt;              &lt;purchaseOrder 
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:noNamespaceSchemaLocation="xmlschema/po.xsd"
+                orderDate="1999-10-20"&gt;
+                &lt;shipTo country="US"&gt;
+                  &lt;name&gt;Alice Smith&lt;/name&gt;
+                  &lt;street&gt;123 Maple Street&lt;/street&gt;
+                  &lt;city&gt;Mill Valley&lt;/city&gt;
+                  &lt;state&gt;CA&lt;/state&gt;
+                  &lt;zip&gt;90952&lt;/zip&gt;
+                &lt;/shipTo&gt;
+                &lt;billTo country="US"&gt;
+                  &lt;name&gt;Robert Smith&lt;/name&gt;
+                  &lt;street&gt;8 Oak Avenue&lt;/street&gt;
+                  &lt;city&gt;Old Town&lt;/city&gt;
+                  &lt;state&gt;PA&lt;/state&gt;
+                  &lt;zip&gt;95819&lt;/zip&gt;
+                &lt;/billTo&gt;
+                &lt;comment&gt;Hurry, my lawn is going wild!&lt;/comment&gt;
+                &lt;items&gt;
+                  &lt;item partNum="872-AA"&gt;
+                    &lt;productName&gt;Lawnmower&lt;/productName&gt;
+                    &lt;quantity&gt;1&lt;/quantity&gt;
+                    &lt;USPrice&gt;148.95&lt;/USPrice&gt;
+                    &lt;comment&gt;Confirm this is electric&lt;/comment&gt;
+                  &lt;/item&gt;
+                  &lt;item partNum="926-AA"&gt;
+                    &lt;productName&gt;Baby Monitor&lt;/productName&gt;
+                    &lt;quantity&gt;1&lt;/quantity&gt;
+                    &lt;USPrice&gt;39.98&lt;/USPrice&gt;
+                    &lt;shipDate&gt;1999-05-21&lt;/shipDate&gt;
+                  &lt;/item&gt;
+                &lt;/items&gt;
+              &lt;/purchaseOrder&gt;'));
+COMMIT;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" -->
+<a id="CBBHAHHD"></a>
+<div id="ADXDB4867" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Purchase-Order XML Schema for Full-Text Search Examples</h3>
+<div id="ADXDB4868" class="example">
+<p class="titleinexample"><a id="sthref1028"></a>Example 12-56 Purchase-Order XML Schema for Full-Text Search Examples</p>
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;xsd:annotation&gt;
+    &lt;xsd:documentation&gt;
+      Purchase order schema for Example.com.
+      Copyright 2000 Example.com. All rights reserved.
+    &lt;/xsd:documentation&gt;
+  &lt;/xsd:annotation&gt;
+  &lt;xsd:element name="purchaseOrder" type="PurchaseOrderType"/&gt;
+  &lt;xsd:element name="comment" type="xsd:string"/&gt;
+  &lt;xsd:complexType name="PurchaseOrderType"&gt;
+    &lt;xsd:sequence&gt;
+      &lt;xsd:element name="shipTo" type="USAddress"/&gt;
+      &lt;xsd:element name="billTo" type="USAddress"/&gt;
+      &lt;xsd:element ref="comment" minOccurs="0"/&gt;
+      &lt;xsd:element name="items" type="Items"/&gt;
+    &lt;/xsd:sequence&gt;
+    &lt;xsd:attribute name="orderDate" type="xsd:date"/&gt;
+  &lt;/xsd:complexType&gt;
+  &lt;xsd:complexType name="USAddress"&gt;
+    &lt;xsd:sequence&gt;
+      &lt;xsd:element name="name" type="xsd:string"/&gt;
+      &lt;xsd:element name="street" type="xsd:string"/&gt;
+      &lt;xsd:element name="city" type="xsd:string"/&gt;
+      &lt;xsd:element name="state" type="xsd:string"/&gt;
+      &lt;xsd:element name="zip" type="xsd:decimal"/&gt;
+    &lt;/xsd:sequence&gt;
+    &lt;xsd:attribute name="country" type="xsd:NMTOKEN" fixed="US"/&gt;
+  &lt;/xsd:complexType&gt;
+  &lt;xsd:complexType name="Items"&gt;
+    &lt;xsd:sequence&gt;
+      &lt;xsd:element name="item" minOccurs="0" maxOccurs="unbounded"&gt;
+        &lt;xsd:complexType&gt;
+          &lt;xsd:sequence&gt;
+            &lt;xsd:element name="productName" type="xsd:string"/&gt;
+            &lt;xsd:element name="quantity"&gt;
+              &lt;xsd:simpleType&gt;
+                &lt;xsd:restriction base="xsd:positiveInteger"&gt;
+                  &lt;xsd:maxExclusive value="100"/&gt;
+                &lt;/xsd:restriction&gt;
+              &lt;/xsd:simpleType&gt;
+            &lt;/xsd:element&gt;
+            &lt;xsd:element name="USPrice" type="xsd:decimal"/&gt;
+            &lt;xsd:element ref="comment" minOccurs="0"/&gt;
+            &lt;xsd:element name="shipDate" type="xsd:date" minOccurs="0"/&gt;
+          &lt;/xsd:sequence&gt;
+          &lt;xsd:attribute name="partNum" type="SKU" use="required"/&gt;
+        &lt;/xsd:complexType&gt;
+      &lt;/xsd:element&gt;
+    &lt;/xsd:sequence&gt;
+  &lt;/xsd:complexType&gt;
+  &lt;!-- Stock Keeping Unit, a code for identifying products --&gt;
+  &lt;xsd:simpleType name="SKU"&gt;
+    &lt;xsd:restriction base="xsd:string"&gt;
+      &lt;xsd:pattern value="\d{3}-[A-Z]{2}"/&gt;
+    &lt;/xsd:restriction&gt;
+  &lt;/xsd:simpleType&gt;
+&lt;/xsd:schema&gt;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1019">
+<tr>
+<td class="cellalignment1028">
+<table class="cellalignment1024">
+<tr>
+<td class="cellalignment1023"><a href="xdb08tra.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1023"><a href="partpg3.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2002, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1030">
+<table class="cellalignment1022">
+<tr>
+<td class="cellalignment1023"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1023"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1023"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1023"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1023"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1023"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

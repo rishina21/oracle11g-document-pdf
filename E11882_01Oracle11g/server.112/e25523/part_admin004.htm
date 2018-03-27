@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Partitioned Tables and Indexes Example</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 037" />
+<meta name="dcterms.created" content="2011-09-27T4:11:52Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database VLDB and Partitioning Guide" />
+<meta name="dcterms.identifier" content="E25523-01" />
+<meta name="dcterms.isVersionOf" content="VLDBG" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2008, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="part_admin003.htm" title="Previous" type="text/html" />
+<link rel="Next" href="part_admin005.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e25523.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">12/27</span> <!-- End Header --><a id="i1008287"></a><a id="VLDBG00307"></a>
+<div class="sect1">
+<h1 class="sect1">Partitioned Tables and Indexes Example</h1>
+<p><a id="sthref654"></a><a id="sthref655"></a>This section presents an example of moving the time window in a historical table.</p>
+<p><a id="i1008290"></a>A <span class="bold">historical</span> table describes the business transactions of an enterprise over intervals of time. Historical tables can be <span class="bold">base</span> tables, which contain base information; for example, sales, checks, and orders. Historical tables can also be <span class="bold">rollup</span> tables, which contain summary information derived from the base information using operations such as <code>GROUP BY</code>, <code>AVERAGE</code>, or <code>COUNT</code>.</p>
+<p>The time interval in a historical table is often a rolling window. DBAs periodically delete sets of rows that describe the oldest transactions, and in turn allocate space for sets of rows that describe the most recent transactions. For example, at the close of business on April 30, 1995, the DBA deletes the rows (and supporting index entries) that describe transactions from April 1994, and allocates space for the April 1995 transactions.</p>
+<p>Now consider a specific example. You have a table, <code>order</code>, which contains 13 months of transactions: a year of historical data in addition to orders for the current month. There is one partition for each month. These monthly partitions are named <code>order_</code><code><span class="codeinlineitalic">yymm</span></code>, as are the tablespaces in which they reside.</p>
+<p>The <code>order</code> table contains two local indexes, <code>order_ix_onum</code>, which is a local, prefixed, unique index on the order number, and <code>order_ix_supp</code>, which is a local, non-prefixed index on the supplier number. The local index partitions are named with suffixes that match the underlying table. There is also a global unique index, <code>order_ix_cust</code>, for the customer name. <code>order_ix_cust</code> contains three partitions, one for each third of the alphabet. So on October 31, 1994, change the time window on <code>order</code> as follows:</p>
+<ol>
+<li>
+<p>Back up the data for the oldest time interval.</p>
+<pre>
+ALTER TABLESPACE order_9310 BEGIN BACKUP;
+...
+ALTER TABLESPACE order_9310 END BACKUP;
+</pre></li>
+<li>
+<p><a id="i1008302"></a>Drop the partition for the oldest time interval.</p>
+<pre>
+ALTER TABLE order DROP PARTITION order_9310;
+</pre></li>
+<li>
+<p>Add the partition to the most recent time interval.</p>
+<pre>
+ALTER TABLE order ADD PARTITION order_9411;
+</pre></li>
+<li>
+<p>Re-create the global index partitions.</p>
+<pre>
+ALTER INDEX order_ix_cust REBUILD PARTITION order_ix_cust_AH;
+ALTER INDEX order_ix_cust REBUILD PARTITION order_ix_cust_IP;
+ALTER INDEX order_ix_cust REBUILD PARTITION order_ix_cust_QZ;
+</pre></li>
+</ol>
+<p>Ordinarily, the database acquires sufficient locks to ensure that no operation (DML, DDL, or utility) interferes with an individual DDL statement, such as <code>ALTER</code> <code>TABLE</code> ... <code>DROP</code> <code>PARTITION</code>. However, if the partition maintenance operation requires several steps, it is the database administrator's responsibility to ensure that applications (or other maintenance operations) do not interfere with the multistep operation in progress. Some methods for doing this are:</p>
+<ul>
+<li>
+<p>Bring down all user-level applications during a well-defined batch window.</p>
+</li>
+<li>
+<p>Ensure that no one can access table <code>order</code> by revoking access privileges from a role that is used in all applications.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1828">
+<tr>
+<td class="cellalignment1837">
+<table class="cellalignment1833">
+<tr>
+<td class="cellalignment1832"><a href="part_admin003.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1832"><a href="part_admin005.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2008, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1840">
+<table class="cellalignment1831">
+<tr>
+<td class="cellalignment1832"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1832"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1832"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1832"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1832"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1832"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

@@ -1,0 +1,2033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>The ORACLE_LOADER Access Driver</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 748" />
+<meta name="dcterms.created" content="2014-04-17T12:23:15Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Utilities" />
+<meta name="dcterms.identifier" content="E22490-07" />
+<meta name="dcterms.isVersionOf" content="SUTIL" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1996, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="et_concepts.htm" title="Previous" type="text/html" />
+<link rel="Next" href="et_dp_driver.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e22490.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">24/36</span> <!-- End Header -->
+<div id="SUTIL012" class="chapter"><a id="g1031955"></a> <a id="i1012274"></a>
+<h1 class="chapter"><span class="secnum">14</span> The ORACLE_LOADER Access Driver</h1>
+<p>This chapter describes the <code>ORACLE_LOADER</code> access driver which provides a set of access parameters unique to external tables of the type <code>ORACLE_LOADER</code>. You can use the access parameters to modify the default behavior of the access driver. The information you provide through the access driver ensures that data from the data source is processed so that it matches the definition of the external table.</p>
+<p>The following topics are discussed in this chapter:</p>
+<ul>
+<li>
+<p><a href="#i1012589">access_parameters Clause</a></p>
+</li>
+<li>
+<p><a href="#i1009499">record_format_info Clause</a></p>
+</li>
+<li>
+<p><a href="#i1009506">field_definitions Clause</a></p>
+</li>
+<li>
+<p><a href="#i1012621">column_transforms Clause</a></p>
+</li>
+<li>
+<p><a href="#CIHCHGCE">Example: Creating and Loading an External Table Using ORACLE_LOADER</a></p>
+</li>
+<li>
+<p><a href="#CIHBDIAB">Parallel Loading Considerations for the ORACLE_LOADER Access Driver</a></p>
+</li>
+<li>
+<p><a href="#CIHBFAAB">Performance Hints When Using the ORACLE_LOADER Access Driver</a></p>
+</li>
+<li>
+<p><a href="#CIHDEGDD">Restrictions When Using the ORACLE_LOADER Access Driver</a></p>
+</li>
+<li>
+<p><a href="#i1012572">Reserved Words for the ORACLE_LOADER Access Driver</a></p>
+</li>
+</ul>
+<p>To use the information in this chapter, you must have some knowledge of the file format and record format (including character sets and field datatypes) of the data files on your platform. You must also know enough about SQL to be able to create an external table and perform queries against it.</p>
+<p>You may find it helpful to use the <code>EXTERNAL_TABLE=</code><code>GENERATE_ONLY</code> parameter in SQL*Loader to get the proper access parameters for a given SQL*Loader control file. When you specify <code>GENERATE_ONLY</code>, all the SQL statements needed to do the load using external tables, as described in the control file, are placed in the SQL*Loader log file. These SQL statements can be edited and customized. The actual load can be done later without the use of SQL*Loader by executing these statements in SQL*Plus.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="ldr_params.htm#i1006569">"EXTERNAL_TABLE"</a></div>
+<div class="infobox-note">
+<p class="notep1">Notes:</p>
+<ul>
+<li>
+<p>It is sometimes difficult to describe syntax without using other syntax that is not documented until later in the chapter. If it is not clear what some syntax is supposed to do, then you might want to skip ahead and read about that particular element.</p>
+</li>
+<li>
+<p>Many examples in this chapter show a <code>CREATE TABLE...ORGANIZATION EXTERNAL</code> statement followed by a sample of contents of the data file for the external table. These contents are not part of the <code>CREATE TABLE</code> statement, but are shown to help complete the example.</p>
+</li>
+<li>
+<p>When<a id="sthref1272"></a><a id="sthref1273"></a> identifiers (for example, column or table names) are specified in the external table access parameters, certain values are considered to be reserved words by the access parameter parser. If a reserved word is used as an identifier, then it must be enclosed in double quotation marks. See <a href="#i1012572">"Reserved Words for the ORACLE_LOADER Access Driver"</a>.</p>
+</li>
+</ul>
+</div>
+<a id="i1012589"></a>
+<div id="SUTIL1379" class="sect1">
+<h2 class="sect1">access_parameters Clause</h2>
+<p>The access parameters clause contains comments, record formatting, and field formatting information.</p>
+<p>The description of the data in the data source is separate from the definition of the external table. This means that:</p>
+<ul>
+<li>
+<p>The source file can contain more or fewer fields than there are columns in the external table</p>
+</li>
+<li>
+<p>The datatypes for fields in the data source can be different from the columns in the external table</p>
+</li>
+</ul>
+<p>The access driver ensures that data from the data source is processed so that it matches the definition of the external table.</p>
+<p>The syntax for the <code>access_parameters</code> clause is as follows:</p>
+<img width="633" height="37" src="img/et_access_param.gif" alt="Description of et_access_param.gif follows" /><br />
+<a id="sthref1274" href="img_text/et_access_param.htm">Description of the illustration et_access_param.gif</a><br />
+<br />
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+These access parameters are collectively referred<a id="sthref1275"></a><a id="sthref1276"></a><a id="sthref1277"></a> to as the <code>opaque_format_spec</code> in the SQL <code>CREATE TABLE...ORGANIZATION EXTERNAL</code> statement.</div>
+<div class="infoboxnotealso">
+<p class="notep1"><span class="bold">See Also</span>:</p>
+<ul>
+<li>
+<p><a class="olink SQLRF01402" href="../../server.112/e41084/statements_7002.htm#SQLRF01402"><span class="italic">Oracle Database SQL Language Reference</span></a> for information about specifying <code>opaque_format_spec</code> when using the SQL <code>CREATE TABLE...ORGANIZATION EXTERNAL</code> statement</p>
+</li>
+</ul>
+</div>
+<p class="subhead1"><a id="SUTIL3408"></a>comments</p>
+<p>Comments<a id="sthref1278"></a><a id="sthref1279"></a> are lines that begin with two hyphens followed by text. Comments must be placed <span class="italic">before</span> any access parameters, for example:</p>
+<pre>
+--This is a comment.
+--This is another comment.
+RECORDS DELIMITED BY NEWLINE
+</pre>
+<p>All text to the right of the double hyphen is ignored, until the end of the line.</p>
+<p class="subhead1"><a id="SUTIL3409"></a>record_format_info</p>
+<p>The <code>record_format_info</code> clause<a id="sthref1280"></a> is an optional clause that contains information about the record, such as its format, the character set of the data, and what rules are used to exclude records from being loaded. For a full description of the syntax, see <a href="#i1009499">"record_format_info Clause"</a>.</p>
+<p class="subhead1"><a id="SUTIL3410"></a>field_definitions</p>
+<p>The <code>field_definitions</code> clause<a id="sthref1281"></a> is used to describe the fields in the data file. If a data file field has the same name as a column in the external table, then the data from the field is used for that column. For a full description of the syntax, see <a href="#i1009506">"field_definitions Clause"</a>.</p>
+<p class="subhead1"><a id="SUTIL3411"></a>column_transforms</p>
+<p>The <code>column_transforms</code> clause<a id="sthref1282"></a> is an optional clause used to describe how to load columns in the external table that do not map directly to columns in the data file. This is done using the following transforms: <code>NULL</code>, <code>CONSTANT</code>, <code>CONCAT</code>, and <code>LOBFILE</code>. For a full description of the syntax, see <a href="#i1012621">"column_transforms Clause"</a>.</p>
+</div>
+<!-- class="sect1" -->
+<a id="i1009499"></a>
+<div id="SUTIL1380" class="sect1">
+<h2 class="sect1">record_format_info Clause</h2>
+<p>The <code>record_format_info</code> clause<a id="sthref1283"></a> contains information about the record, such as its format, the character set of the data, and what rules are used to exclude records from being loaded. Additionally, the <code>PREPROCESSOR</code> subclause allows you to optionally specify the name of a user-supplied program that will run and modify the contents of a data file so that the <code>ORACLE_LOADER</code> access driver can parse it.</p>
+<p>The <code>record_format_info</code> clause is optional. If the clause is not specified, then the default value is <code>RECORDS</code> <code>DELIMITED</code> <code>BY</code> <code>NEWLINE</code>. The syntax for the <code>record_format_info</code> clause is as follows:</p>
+<img width="564" height="123" src="img/et_record_spec.gif" alt="Description of et_record_spec.gif follows" /><br />
+<a id="sthref1284" href="img_text/et_record_spec.htm">Description of the illustration et_record_spec.gif</a><br />
+<br />
+<p>The <code>et_record_spec_options</code> clause allows you to optionally specify additional formatting information. You can specify as many of the formatting options as you wish, in any order. The syntax of the options is as follows:</p>
+<img width="494" height="826" src="img/et_record_spec_options.gif" alt="Description of et_record_spec_options.gif follows" /><br />
+<a id="sthref1285" href="img_text/et_record_spec_options.htm">Description of the illustration et_record_spec_options.gif</a><br />
+<br />
+<div id="SUTIL1381" class="sect2"><a id="sthref1286"></a>
+<h3 class="sect2">FIXED length</h3>
+<p>The <code>FIXED</code> clause is used to identify the records<a id="sthref1287"></a><a id="sthref1288"></a> as all having a fixed size of length bytes. The size specified for <code>FIXED</code> records must include any record termination characters, such as newlines. Compared to other record types, fixed-length fields in fixed-length records are the easiest field and record formats for the access driver to process.</p>
+<p>The following is an example of using <code>FIXED</code> records. It assumes there is a 1-byte newline character at the end of each record in the data file. It is followed by a sample of the data file that can be used to load it.</p>
+<pre>
+CREATE TABLE emp_load (first_name CHAR(15), last_name CHAR(20), year_of_birth CHAR(4))
+  ORGANIZATION EXTERNAL (TYPE ORACLE_LOADER DEFAULT DIRECTORY ext_tab_dir
+                         ACCESS PARAMETERS (RECORDS FIXED 20 FIELDS (first_name CHAR(7),
+                                                                    last_name CHAR(8),
+                                                                    year_of_birth CHAR(4)))
+                         LOCATION ('info.dat'));
+
+Alvin  Tolliver1976
+KennethBaer    1963
+Mary   Dube    1973
+</pre></div>
+<!-- class="sect2" -->
+<div id="SUTIL1382" class="sect2"><a id="sthref1289"></a>
+<h3 class="sect2">VARIABLE size</h3>
+<p>The <code>VARIABLE</code> clause is used to indicate that the records have a variable length<a id="sthref1290"></a><a id="sthref1291"></a> and that each record is preceded by a character string containing a number with the count of bytes for the record. The length of the character string containing the count field is the size argument that follows the <code>VARIABLE</code> parameter. Note that size indicates a count of bytes, not characters. The count at the beginning of the record must include any record termination characters, but it does not include the size of the count field itself. The number of bytes in the record termination characters can vary depending on how the file is created and on what platform it is created.</p>
+<p>The following is an example of using <code>VARIABLE</code> records. It assumes there is a 1-byte newline character at the end of each record in the data file. It is followed by a sample of the data file that can be used to load it.</p>
+<pre>
+CREATE TABLE emp_load (first_name CHAR(15), last_name CHAR(20), year_of_birth CHAR(4))
+  ORGANIZATION EXTERNAL (TYPE ORACLE_LOADER DEFAULT DIRECTORY ext_tab_dir
+                         ACCESS PARAMETERS (RECORDS VARIABLE 2 FIELDS TERMINATED BY ','
+                                             (first_name CHAR(7),
+                                              last_name CHAR(8),
+                                              year_of_birth CHAR(4)))
+                         LOCATION ('info.dat'));
+
+21Alvin,Tolliver,1976,
+19Kenneth,Baer,1963,
+16Mary,Dube,1973,
+</pre></div>
+<!-- class="sect2" -->
+<div id="SUTIL1383" class="sect2"><a id="sthref1292"></a>
+<h3 class="sect2">DELIMITED BY</h3>
+<p>The <code>DELIMITED BY</code> clause<a id="sthref1293"></a><a id="sthref1294"></a> is used to indicate the characters that identify the end of a record.</p>
+<p>If <code>DELIMITED BY NEWLINE</code> is specified, then the actual value used is platform-specific. On UNIX platforms, <code>NEWLINE</code> is assumed to be "<code>\n</code>". On Windows NT, <code>NEWLINE</code> is assumed to be "<code>\r\n</code>".</p>
+<p>If <code>DELIMITED</code> <code>BY</code> <code><span class="codeinlineitalic">string</span></code> is specified, then <code><span class="codeinlineitalic">string</span></code> can be either text or a series of hexadecimal digits enclosed within quotation marks and prefixed by OX or X. If it is text, then the text is converted to the character set of the data file and the result is used for identifying record boundaries. See <a href="#i1009765">"string"</a>.</p>
+<p>If the following conditions are true, then you must use hexadecimal digits to identify the delimiter:</p>
+<ul>
+<li>
+<p>The character set of the access parameters is different from the character set of the data file.</p>
+</li>
+<li>
+<p>Some characters in the delimiter string cannot be translated into the character set of the data file.</p>
+</li>
+</ul>
+<p>The hexadecimal digits are converted into bytes, and there is no character set translation performed on the hexadecimal string.</p>
+<p>If the end of the file is found before the record terminator, then the access driver proceeds as if a terminator was found, and all unprocessed data up to the end of the file is considered part of the record.</p>
+<div class="infobox-note">
+<p class="notep1">Caution:</p>
+Do not include any binary data, including binary counts for <code>VARCHAR</code> and <code>VARRAW</code>, in a record that has delimiters. Doing so could cause errors or corruption, because the binary data will be interpreted as characters during the search for the delimiter.</div>
+<p>The following is an example of using <code>DELIMITED BY</code> records.</p>
+<pre>
+CREATE TABLE emp_load (first_name CHAR(15), last_name CHAR(20), year_of_birth CHAR(4))
+  ORGANIZATION EXTERNAL (TYPE ORACLE_LOADER DEFAULT DIRECTORY ext_tab_dir
+                         ACCESS PARAMETERS (RECORDS DELIMITED BY '|' FIELDS TERMINATED BY ','
+                                              (first_name CHAR(7),
+                                               last_name CHAR(8),
+                                               year_of_birth CHAR(4)))
+                         LOCATION ('info.dat'));
+
+Alvin,Tolliver,1976|Kenneth,Baer,1963|Mary,Dube,1973
+</pre></div>
+<!-- class="sect2" -->
+<div id="SUTIL1384" class="sect2"><a id="sthref1295"></a>
+<h3 class="sect2">CHARACTERSET</h3>
+<p>The <code>CHARACTERSET</code> <code><span class="codeinlineitalic">string</span></code> clause identifies<a id="sthref1296"></a> the character<a id="sthref1297"></a> set of the data file. If a character set is not specified, then the data is assumed to be in the default character set for the database. See <a href="#i1009765">"string"</a>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The settings of NLS environment variables on the client have no effect on the character set used for the database.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink NLSPG" href="../e10729/toc.htm"><span class="italic">Oracle Database Globalization Support Guide</span></a> for a listing of Oracle-supported character sets</div>
+</div>
+<!-- class="sect2" -->
+<a id="CIHHBEIC"></a>
+<div id="SUTIL1385" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">PREPROCESSOR<a id="sthref1298"></a><a id="sthref1299"></a></h3>
+<div class="infobox-note">
+<p class="notep1">Caution:</p>
+There are security implications to consider when using the <code>PREPROCESSOR</code> clause. See <a class="olink DBSEG10007" href="../../network.112/e36292/guidelines.htm#DBSEG10007"><span class="italic">Oracle Database Security Guide</span></a> for more information.</div>
+<p>If the file you want to load contains data records that are not in a format supported by the <code>ORACLE_LOADER</code> access driver, then use the <code>PREPROCESSOR</code> clause to specify a user-supplied preprocessor program that will execute for every data file. Note that the program specification must be enclosed in a shell script if it uses arguments (see the description of <a href="#CIHDACJC">"file_spec"</a>).</p>
+<p>The preprocessor program converts the data to a record format supported by the access driver and then writes the converted record data to standard output (stdout), which the access driver reads as input. The syntax of the <code>PREPROCESSOR</code> clause is as follows:</p>
+<img width="388" height="46" src="img/et_preprocessor_spec.gif" alt="Description of et_preprocessor_spec.gif follows" /><br />
+<a id="sthref1300" href="img_text/et_preprocessor_spec.htm">Description of the illustration et_preprocessor_spec.gif</a><br />
+<br />
+<p class="subhead1"><a id="SUTIL3412"></a>directory_spec</p>
+<p>Specifies the directory object containing the name of the preprocessor program to execute for every data file. The user accessing the external table must have the <code>EXECUTE</code> privilege for the directory object that is used. If <code>directory_spec</code> is omitted, then the default directory specified for the external table is used.</p>
+<div class="infobox-note">
+<p class="notep1">Caution:</p>
+For security reasons, Oracle strongly recommends that a separate directory, not the default directory, be used to store preprocessor programs. Do not store any other files in the directory in which preprocessor programs are stored.</div>
+<p>The preprocessor program must reside in a directory object, so that access to it can be controlled for security reasons. The OS system manager must create a directory corresponding to the directory object and must verify that OS-user ORACLE has access to that directory. DBAs must ensure that only approved users are allowed access to the directory object associated with the directory path. Although multiple database users can have access to a directory object, only those with the <code>EXECUTE</code> privilege can run a preprocessor in that directory. No existing database user with read-write privileges to a directory object will be able to use the preprocessing feature. DBAs can prevent preprocessors from ever being used by never granting the <code>EXECUTE</code> privilege to anyone for a directory object.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SQLRF" href="../e41084/toc.htm"><span class="italic">Oracle Database SQL Language Reference</span></a> for information about granting the <code>EXECUTE</code> privilege</div>
+<p class="subhead1"><a id="CIHDACJC"></a><a id="SUTIL3413"></a>file_spec</p>
+<p>The name of the preprocessor program. It is appended to the path name associated with the directory object that is being used (either the <code>directory_spec</code> or the default directory for the external table). The <code>file_spec</code> cannot contain an absolute or relative directory path.</p>
+<p>If the preprocessor program requires any arguments (for example, <code>gunzip -c</code>), then you must specify the program name and its arguments in an executable shell script (or on Windows systems, in a batch (.bat) file). The shell script must reside in <code>directory_spec</code>. Keep the following in mind when you create a shell script for use with the <code>PREPROCESSOR</code> clause:</p>
+<ul>
+<li>
+<p>The full path name must be specified for system commands such as <code>gunzip</code>.</p>
+</li>
+<li>
+<p>The preprocessor shell script must have EXECUTE permissions</p>
+</li>
+<li>
+<p>The data file listed in the external table <code>LOCATION</code> clause should be referred to by $1. (On Windows systems, the <code>LOCATION</code> clause should be referred to by %1.)</p>
+</li>
+<li>
+<p>On Windows systems, the first line in the .bat file must be the following:</p>
+<pre>
+@echo off
+</pre>
+<p>Otherwise, by default, Windows will echo the contents of the batch file (which will be treated as input by the external table access driver).</p>
+</li>
+</ul>
+<p>See <a href="#CIHIBJAG">Example 14-2</a> for an example of using a shell script.</p>
+<p>It is important to verify that the correct version of the preprocessor program is in the operating system directory.</p>
+<p><a href="#CIHBDEFA">Example 14-1</a> shows a sample use of the <code>PREPROCESSOR</code> clause when creating an external table. Note that the preprocessor file is in a separate directory from the data files and log files.</p>
+<div id="SUTIL3760" class="example">
+<p class="titleinexample"><a id="CIHBDEFA"></a>Example 14-1 Specifying the PREPROCESSOR Clause</p>
+<pre>
+SQL&gt; CREATE TABLE xtab (recno varchar2(2000))
+     2    ORGANIZATION EXTERNAL (
+     3    TYPE ORACLE_LOADER
+     4    DEFAULT DIRECTORY data_dir
+     5    ACCESS PARAMETERS (
+     6    RECORDS DELIMITED BY NEWLINE
+     7    PREPROCESSOR execdir:'zcat'
+     8    FIELDS (recno char(2000)))
+     9    LOCATION ('foo.dat.gz'))
+   10    REJECT LIMIT UNLIMITED;
+Table created.
+</pre></div>
+<!-- class="example" -->
+<p><a href="#CIHIBJAG">Example 14-2</a> shows how to specify a shell script on the <code>PREPROCESSOR</code> clause when creating an external table.</p>
+<div id="SUTIL3761" class="example">
+<p class="titleinexample"><a id="CIHIBJAG"></a>Example 14-2 Using the PREPROCESSOR Clause with a Shell Script</p>
+<pre>
+SQL&gt; CREATE TABLE xtab (recno varchar2(2000))
+     2    ORGANIZATION EXTERNAL (
+     3    TYPE ORACLE_LOADER
+     4    DEFAULT DIRECTORY data_dir
+     5    ACCESS PARAMETERS (
+     6    RECORDS DELIMITED BY NEWLINE
+     7    PREPROCESSOR execdir:'uncompress.sh'
+     8    FIELDS (recno char(2000)))
+     9    LOCATION ('foo.dat.gz'))
+   10    REJECT LIMIT UNLIMITED;
+Table created.
+</pre></div>
+<!-- class="example" -->
+<div id="SUTIL3770" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1301"></a>
+<h4 class="sect3">Using Parallel Processing with the PREPROCESSOR Clause<a id="sthref1302"></a><a id="sthref1303"></a></h4>
+<p>External tables treats each data file specified on the <code>LOCATION</code> clause as a single granule. To make the best use of parallel processing with the <code>PREPROCESSOR</code> clause, the data to be loaded should be split into multiple files (granules). This is because external tables <span class="italic">limits</span> the degree of parallelism <span class="italic">to</span> the number of data files present. For example, if you specify a degree of parallelism of 16, but have only 10 data files, then in effect the degree of parallelism is 10 because 10 slave processes will be busy and 6 will be idle. It is best to not have any idle slave processes. So if you do specify a degree of parallelism, then ideally it should be <span class="italic">no larger</span> than the number of data files so that all slave processes are kept busy.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink VLDBG0105" href="../../server.112/e25523/parallel002.htm#VLDBG0105"><span class="italic">Oracle Database VLDB and Partitioning Guide</span></a> for more information about granules of parallelism</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect3" -->
+<div id="SUTIL1387" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1304"></a>
+<h4 class="sect3">Restriction When Using the PREPROCESSOR Clause</h4>
+<ul>
+<li>
+<p>The <code>PREPROCESSOR</code> clause is not available on databases that use the Database Vault feature.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<div id="SUTIL1388" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1305"></a>
+<h3 class="sect2">LANGUAGE</h3>
+<p>The <code>LANGUAGE</code> clause allows you to specify a language name (for example, FRENCH), from which locale-sensitive information about the data can be derived. The following are some examples of the type of information that can be derived from the language name:</p>
+<ul>
+<li>
+<p>Day and month names and their abbreviations</p>
+</li>
+<li>
+<p>Symbols for equivalent expressions for A.M., P.M., A.D., and B.C.</p>
+</li>
+<li>
+<p>Default sorting sequence for character data when the <code>ORDER BY</code> SQL clause is specified</p>
+</li>
+<li>
+<p>Writing direction (right to left or left to right)</p>
+</li>
+<li>
+<p>Affirmative and negative response strings (for example, <code>YES</code> and <code>NO</code>)</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink NLSPG" href="../e10729/toc.htm"><span class="italic">Oracle Database Globalization Support Guide</span></a> for a listing of Oracle-supported languages</div>
+</div>
+<!-- class="sect2" -->
+<div id="SUTIL1389" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1306"></a>
+<h3 class="sect2">TERRITORY</h3>
+<p>The <code>TERRITORY</code> clause allows you to specify a territory name to further determine input data characteristics. For example, in some countries a decimal point is used in numbers rather than a comma (for example, 531.298 instead of 531,298).</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink NLSPG" href="../e10729/toc.htm"><span class="italic">Oracle Database Globalization Support Guide</span></a> for a listing of Oracle-supported territories</div>
+</div>
+<!-- class="sect2" -->
+<div id="SUTIL1390" class="sect2"><a id="sthref1307"></a>
+<h3 class="sect2">DATA IS...ENDIAN<a id="sthref1308"></a></h3>
+<p>The <code>DATA IS...ENDIAN</code> clause<a id="sthref1309"></a><a id="sthref1310"></a><a id="sthref1311"></a><a id="sthref1312"></a> indicates the endianness of data whose byte order may vary depending on the platform that generated the data file. Fields of the following types are affected by this clause:</p>
+<ul>
+<li>
+<p><code>INTEGER</code></p>
+</li>
+<li>
+<p><code>UNSIGNED INTEGER</code></p>
+</li>
+<li>
+<p><code>FLOAT</code></p>
+</li>
+<li>
+<p><code>BINARY_FLOAT</code></p>
+</li>
+<li>
+<p><code>DOUBLE</code></p>
+</li>
+<li>
+<p><code>BINARY_DOUBLE</code></p>
+</li>
+<li>
+<p><code>VARCHAR</code> (numeric count only)</p>
+</li>
+<li>
+<p><code>VARRAW</code> (numeric count only)</p>
+</li>
+<li>
+<p>Any character datatype in the UTF16 character set</p>
+</li>
+<li>
+<p>Any string specified by <code>RECORDS</code> <code>DELIMITED</code> <code>BY</code> <code><span class="codeinlineitalic">string</span></code> and in the UTF16 character set</p>
+</li>
+</ul>
+<p>A common platform that generates little-endian data is Windows NT. Big-endian platforms include Sun Solaris and IBM MVS. If the <code>DATA IS...ENDIAN</code> clause is not specified, then the data is assumed to have the same endianness as the platform where the access driver is running. UTF-16 data files may have a mark at the beginning of the file indicating the endianness of the data. This mark will override the <code>DATA IS...ENDIAN</code> clause.</p>
+</div>
+<!-- class="sect2" -->
+<div id="SUTIL1391" class="sect2"><a id="sthref1313"></a>
+<h3 class="sect2">BYTEORDERMARK (CHECK | NOCHECK)</h3>
+<p>The <code>BYTE</code><code>ORDER</code><code>MARK</code> clause is used to specify whether the data file should be checked for the presence of a byte-order mark (BOM). This clause is meaningful only when the character set is Unicode.</p>
+<p><code>BYTE</code><code>ORDER</code><code>MARK</code> <code>NOCHECK</code> indicates that the data file should not be checked for a BOM and that all the data in the data file should be read as data.</p>
+<p><code>BYTE</code><code>ORDER</code><code>MARK</code> <code>CHECK</code> indicates that the data file should be checked for a BOM. This is the default behavior for a data file in a Unicode character set.</p>
+<p>The following are examples of some possible scenarios:</p>
+<ul>
+<li>
+<p>If the data is specified as being little or big-endian and <code>CHECK</code> is specified and it is determined that the specified endianness does not match the data file, then an error is returned. For example, suppose you specify the following:</p>
+<pre>
+DATA IS LITTLE ENDIAN 
+BYTEORDERMARK CHECK 
+</pre>
+<p>If the BOM is checked in the Unicode data file and the data is actually big-endian, then an error is returned because you specified little-endian.</p>
+</li>
+<li>
+<p>If a BOM is not found and no endianness is specified with the <code>DATA</code> <code>IS...ENDIAN</code> parameter, then the endianness of the platform is used.</p>
+</li>
+<li>
+<p>If <code>BYTE</code><code>ORDER</code><code>MARK</code> <code>NOCHECK</code> is specified and the <code>DATA</code> <code>IS...ENDIAN</code> parameter specified an endianness, then that value is used. Otherwise, the endianness of the platform is used.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="ldr_field_list.htm#i1011032">"Byte Ordering"</a></div>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="i1007367"></a>
+<div id="SUTIL1392" class="sect2">
+<h3 class="sect2">STRING SIZES ARE IN</h3>
+<p>The <code>STRING</code> <code>SIZES</code> <code>ARE</code> <code>IN</code> clause is used to indicate whether the lengths specified for character strings<a id="sthref1314"></a> are in bytes or characters. If this clause is not specified, then the access driver uses the mode that the database uses. Character types with embedded lengths (such as <code>VARCHAR</code>) are also affected by this clause. If this clause is specified, then the embedded lengths are a character count, not a byte count. Specifying <code>STRING</code> <code>SIZES</code> <code>ARE</code> <code>IN CHARACTERS</code> is needed only when loading multibyte character sets, such as UTF16.</p>
+</div>
+<!-- class="sect2" -->
+<div id="SUTIL1393" class="sect2"><a id="sthref1315"></a>
+<h3 class="sect2">LOAD WHEN</h3>
+<p>The <code>LOAD</code> <code>WHEN</code> <code><span class="codeinlineitalic">condition_spec</span></code> clause<a id="sthref1316"></a> is used to identify the records that should be passed to the database. The evaluation method varies:</p>
+<ul>
+<li>
+<p>If the <code><span class="codeinlineitalic">condition_spec</span></code> references a field in the record, then the clause is evaluated only after all fields have been parsed from the record, but <span class="italic">before</span> any <code>NULLIF</code> or <code>DEFAULTIF</code> clauses have been evaluated.</p>
+</li>
+<li>
+<p>If the condition specification references only ranges (and no field names), then the clause is evaluated before the fields are parsed. This is useful for cases where the records in the file that are not to be loaded cannot be parsed into the current record definition without errors.</p>
+</li>
+</ul>
+<p>See <a href="#i1009783">"condition_spec"</a>.</p>
+<p>The following are some examples of using <code>LOAD</code> <code>WHEN</code>:</p>
+<pre>
+LOAD WHEN (empid != BLANKS)
+LOAD WHEN ((dept_id = "SPORTING GOODS" OR dept_id = "SHOES") AND total_sales != 0)
+</pre></div>
+<!-- class="sect2" -->
+<div id="SUTIL1394" class="sect2"><a id="sthref1317"></a>
+<h3 class="sect2">BADFILE | NOBADFILE</h3>
+<p>The <code>BADFILE</code> clause names the file to which records are written when they cannot be loaded because of errors. For example, a record was written to the bad file because a field in the data file could not be converted to the datatype of a column in the external table. Records that fail the <code>LOAD</code> <code>WHEN</code> clause are not written to the bad file but are written to the discard file instead. Also, any errors in using a record from an external table (such as a constraint violation when using <code>INSERT INTO...AS SELECT...</code> from an external table) will not cause the record to be written to the bad file.</p>
+<p>The purpose of the bad file is to have one file where all rejected data can be examined and fixed so that it can be loaded. If you do not intend to fix the data, then you can use the <code>NOBADFILE</code> option to prevent creation of a bad file, even if there are bad records.</p>
+<p>If you specify <code>BADFILE</code>, then you must specify a file name or you will receive an error.</p>
+<p>If neither <code>BADFILE</code> nor <code>NOBADFILE</code> is specified, then the default is to create a bad file if at least one record is rejected. The name of the file will be the table name followed by <code>_%p</code>, and it will have an extension of <code>.bad</code>.</p>
+<p>See <a href="#i1009791">"[directory object name:] filename"</a>.</p>
+</div>
+<!-- class="sect2" -->
+<div id="SUTIL1395" class="sect2"><a id="sthref1318"></a>
+<h3 class="sect2">DISCARDFILE | NODISCARDFILE</h3>
+<p>The <code>DISCARDFILE</code> clause names the file to which records are written that fail the condition in the <code>LOAD</code> <code>WHEN</code> clause. The discard file is created when the first record to be discarded is encountered. If the same external table is accessed multiple times, then the discard file is rewritten each time. If there is no need to save the discarded records in a separate file, then use <code>NODISCARDFILE</code>.</p>
+<p>If you specify <code>DISCARDFILE</code>, then you must specify a file name or you will receive an error.</p>
+<p>If neither <code>DISCARDFILE</code> nor <code>NODISCARDFILE</code> is specified, then the default is to create a discard file if at least one record fails the <code>LOAD</code> <code>WHEN</code> clause. The name of the file will be the table name followed by <code>_%p</code> and it will have an extension of <code>.dsc</code>.</p>
+<p>See <a href="#i1009791">"[directory object name:] filename"</a>.</p>
+</div>
+<!-- class="sect2" -->
+<div id="SUTIL1396" class="sect2"><a id="sthref1319"></a>
+<h3 class="sect2">LOG FILE | NOLOGFILE</h3>
+<p>The <code>LOGFILE</code> clause names the file that contains messages generated by the external tables utility while it was accessing data in the data file. If a log file already exists by the same name, then the access driver reopens that log file and appends new log information to the end. This is different from bad files and discard files, which overwrite any existing file. <code>NOLOGFILE</code> is used to prevent creation of a log file.</p>
+<p>If you specify <code>LOGFILE</code>, then you must specify a file name or you will receive an error.</p>
+<p>If neither <code>LOGFILE</code> nor <code>NOLOGFILE</code> is specified, then the default is to create a log file. The name of the file will be the table name followed by <code>_%p</code> and it will have an extension of <code>.log</code>.</p>
+<p>See <a href="#i1009791">"[directory object name:] filename"</a>.</p>
+</div>
+<!-- class="sect2" -->
+<div id="SUTIL1397" class="sect2"><a id="sthref1320"></a>
+<h3 class="sect2">SKIP</h3>
+<p>Skips the specified number of records in the <a id="sthref1321"></a><a id="sthref1322"></a>data file before loading. <code>SKIP</code> can be specified only when nonparallel access is being made to the data.</p>
+</div>
+<!-- class="sect2" -->
+<div id="SUTIL1398" class="sect2"><a id="sthref1323"></a>
+<h3 class="sect2">READSIZE</h3>
+<p>The <code>READSIZE</code> parameter specifies the size of the read buffer used to process records. The size of the read buffer must be at least as big as the largest input record the access driver will encounter. The size is specified with an integer indicating the number of bytes. The default value is 512 KB (524288 bytes). You must specify a larger value if any of the records in the data file are larger than 512 KB. There is no limit on how large <code>READSIZE</code> can be, but practically, it is limited by the largest amount of memory that can be allocated by the access driver.</p>
+<p>The amount of memory available for allocation is another limit because additional buffers might be allocated. The additional buffer is used to correctly complete the processing of any records that may have been split (either in the data; at the delimiter; or if multi character/byte delimiters are used, in the delimiter itself).</p>
+</div>
+<!-- class="sect2" -->
+<div id="SUTIL1399" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1324"></a>
+<h3 class="sect2">DISABLE_DIRECTORY_LINK_CHECK</h3>
+<p>By default, the <code>ORACLE_LOADER</code> access driver checks before opening data and log files to ensure that the directory being used is not a symbolic link. The <code>DISABLE_DIRECTORY_LINK_CHECK</code> parameter (which takes no arguments) directs the access driver to bypass this check, allowing you to use files for which the parent directory may be a symbolic link.</p>
+<div class="infobox-note">
+<p class="notep1">Caution:</p>
+Use of this parameter involves security risks because symbolic links can potentially be used to redirect the input/output of the external table load operation.</div>
+</div>
+<!-- class="sect2" -->
+<a id="CJADBHHH"></a>
+<div id="SUTIL1400" class="sect2">
+<h3 class="sect2">DATE_CACHE</h3>
+<p>By default, the date cache feature is enabled (for 1000 elements). To completely disable the date cache feature, set it to <code>0</code>.</p>
+<p><code>DATE_CACHE</code> specifies the date cache size (in entries). For example, <code>DATE_CACHE=5000</code> specifies that each date cache created can contain a maximum of 5000 unique date entries. Every table has its own date cache, if one is needed. A date cache is created only if at least one date or timestamp value is loaded that requires datatype conversion in order to be stored in the table.</p>
+<p>The date cache feature is enabled by default. The default date cache size is 1000 elements. If the default size is used and the number of unique input values loaded exceeds 1000, then the date cache feature is automatically disabled for that table. However, if you override the default and specify a nonzero date cache size and that size is exceeded, then the cache is not disabled.</p>
+<p>You can use the date cache statistics (entries, hits, and misses) contained in the log file to tune the size of the cache for future similar loads.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="ldr_modes.htm#i1010480">"Specifying a Value for the Date Cache"</a></div>
+</div>
+<!-- class="sect2" -->
+<a id="i1009765"></a>
+<div id="SUTIL1401" class="sect2">
+<h3 class="sect2">string</h3>
+<p>A string is a quoted series of characters or hexadecimal digits. If it is a series of characters, then those characters will be converted into the character set of the data file. If it is a series of hexadecimal digits, then there must be an even number of hexadecimal digits. The hexadecimal digits are converted into their binary translation, and the translation is treated as a character string in the character set of the data file. This means that once the hexadecimal digits have been converted into their binary translation, there is no other character set translation that occurs. The syntax for a <code>string</code> is as follows:</p>
+<img width="379" height="138" src="img/et_string.gif" alt="Description of et_string.gif follows" /><br />
+<a id="sthref1325" href="img_text/et_string.htm">Description of the illustration et_string.gif</a><br />
+<br /></div>
+<!-- class="sect2" -->
+<a id="i1009783"></a>
+<div id="SUTIL1402" class="sect2">
+<h3 class="sect2">condition_spec</h3>
+<p>The <code>condition_spec</code> is an expression<a id="sthref1326"></a> that evaluates to either true or false. It specifies one or more conditions that are joined by Boolean operators. The conditions and Boolean operators are evaluated from left to right. (Boolean operators are applied after the conditions are evaluated.) Parentheses can be used to override the default order of evaluation of Boolean operators. The evaluation of <code>condition_spec</code> clauses slows record processing, so these clauses should be used sparingly. The syntax for <code>condition_spec</code> is as follows:</p>
+<img width="426" height="187" src="img/et_cond_spec.gif" alt="Description of et_cond_spec.gif follows" /><br />
+<a id="sthref1327" href="img_text/et_cond_spec.htm">Description of the illustration et_cond_spec.gif</a><br />
+<br />
+<p>Note that if the condition specification contains any conditions that reference field names, then the condition specifications are evaluated only after all fields have been found in the record and after blank trimming has been done. It is not useful to compare a field to <code>BLANKS</code> if blanks have been trimmed from the field.</p>
+<p>The following are some examples of using <code>condition_spec</code>:</p>
+<pre>
+empid = BLANKS OR last_name = BLANKS
+(dept_id = SPORTING GOODS OR dept_id = SHOES) AND total_sales != 0
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#i1009513">"condition"</a></div>
+</div>
+<!-- class="sect2" -->
+<a id="i1009791"></a>
+<div id="SUTIL1403" class="sect2">
+<h3 class="sect2">[directory object name:] filename</h3>
+<p>This clause is used to specify the name of an output file (<code>BADFILE</code>, <code>DISCARDFILE,</code> or <code>LOGFILE</code>). The directory object name is the name of a directory object where the user accessing the external table has privileges to write. If the directory object name is omitted, then the value specified for the <code>DEFAULT</code> <code>DIRECTORY</code> clause in the <code>CREATE</code> <code>TABLE...</code><code>ORGANIZATION</code> <code>EXTERNAL</code> statement is used.</p>
+<p>The <code>filename</code> parameter is the name of the file to create in the directory object. The access driver does some symbol substitution to help make file names unique in parallel loads. The symbol substitutions supported for UNIX and Windows NT are as follows (other platforms may have different symbols):</p>
+<ul>
+<li>
+<p><code>%p</code> is replaced by the process ID of the current process. For example, if the process ID of the access driver is <code>12345</code>, then <code>exttab_%p.log</code> becomes <code>exttab_12345.log.</code></p>
+</li>
+<li>
+<p><code>%a</code> is replaced by the agent number of the current process. The agent number is the unique number assigned to each parallel process accessing the external table. This number is padded to the left with zeros to fill three characters. For example, if the third parallel agent is creating a file and <code>bad_data_%a.bad</code> was specified as the file name, then the agent would create a file named <code>bad_data_003.bad.</code></p>
+</li>
+<li>
+<p><code>%%</code> is replaced by <code>%</code>. If there is a need to have a percent sign in the file name, then this symbol substitution is used.</p>
+</li>
+</ul>
+<p>If the <code>%</code> character is encountered followed by anything other than one of the preceding characters, then an error is returned.</p>
+<p>If <code>%p</code> or <code>%a</code> is not used to create unique file names for output files and an external table is being accessed in parallel, then output files may be corrupted or agents may be unable to write to the files.</p>
+<p>If you specify <code>BADFILE</code> (or <code>DISCARDFILE</code> or <code>LOGFILE</code>), then you must specify a file name for it or you will receive an error. However, if you do not specify <code>BADFILE</code> (or <code>DISCARDFILE</code> or <code>LOGFILE</code>), then the access driver uses the name of the table followed by <code>_%p</code> as the name of the file. If no extension is supplied for the file, then a default extension will be used. For bad files, the default extension is <code>.bad;</code> for discard files, the default is <code>.dsc;</code> and for log files, the default is <code>.log</code>.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1009513"></a>
+<div id="SUTIL1404" class="sect2">
+<h3 class="sect2">condition</h3>
+<p>A <code>condition</code> compares a range of bytes or a field from the record against a constant string. The source of the comparison can be either a field in the record or a byte range in the record. The comparison is done on a byte-by-byte basis. If a string is specified as the target of the comparison, then it will be translated into the character set of the data file. If the field has a noncharacter datatype, then no datatype conversion is performed on either the field value or the string. The syntax for a <code>condition</code> is as follows:</p>
+<img width="657" height="123" src="img/et_condition.gif" alt="Description of et_condition.gif follows" /><br />
+<a id="sthref1328" href="img_text/et_condition.htm">Description of the illustration et_condition.gif</a><br />
+<br />
+<div id="SUTIL1405" class="sect3"><a id="sthref1329"></a>
+<h4 class="sect3">range start : range end</h4>
+<p>This clause describes a range of bytes or characters in the record to use for a condition. The value used for the <code>STRING SIZES ARE</code> clause determines whether <code>range</code> refers to bytes or characters. The <code>range</code> <code>start</code> and <code>range</code> <code>end</code> are byte or character offsets into the record. The <code>range</code> <code>start</code> must be less than or equal to the <code>range</code> <code>end</code>. Finding ranges of characters is faster for data in fixed-width character sets than it is for data in varying-width character sets. If the range refers to parts of the record that do not exist, then the record is rejected when an attempt is made to reference the range. The <code>range start:range end</code> must be enclosed in parentheses. For example, (10:13).</p>
+<div class="infobox-note">
+<p class="notep1"><span class="bold">Note</span>:</p>
+The data file should not mix binary data (including datatypes with binary counts, such as <code>VARCHAR</code>) and character data that is in a varying-width character set or more than one byte wide. In these cases, the access driver may not find the correct start for the field, because it treats the binary data as character data when trying to find the start.</div>
+<p>The following are some examples of using <code>condition</code>:</p>
+<pre>
+LOAD WHEN empid != BLANKS
+LOAD WHEN (10:13) = 0x'00000830'
+LOAD WHEN PRODUCT_COUNT = "MISSING"
+</pre></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<div id="SUTIL3762" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1330"></a>
+<h3 class="sect2">IO_OPTIONS clause<a id="sthref1331"></a><a id="sthref1332"></a></h3>
+<p>The <code>IO_OPTIONS</code> clause allows you to specify I/O options used by the operating system for reading the data files. The only options available for specification are <code>DIRECTIO</code> and <code>NODIRECTIO</code> (the default).</p>
+<p>If the <code>DIRECTIO</code> option is specified, then an attempt is made to open the data file and read it using direct I/O. If successful, then the operating system and NFS server (if the file is on an NFS server) do not cache the data read from the file. This can improve the read performance for the data file, especially if the file is large. If the <code>DIRECTIO</code> option is not supported for the data file being read, then the file is opened and read but the <code>DIRECTIO</code> option is ignored.</p>
+<p>If the <code>NODIRECTIO</code> option is specified or if the <code>IO_OPTIONS</code> clause is not specified at all, then direct I/O is not used to read the data files.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1009506"></a>
+<div id="SUTIL1406" class="sect1">
+<h2 class="sect1">field_definitions Clause<a id="sthref1333"></a></h2>
+<p>In the <code>field_definitions</code> clause you use the <code>FIELDS</code> parameter to name the fields in the data file and specify how to find them in records.</p>
+<p>If the <code>field_definitions</code> clause is omitted, then the following is assumed:</p>
+<ul>
+<li>
+<p>The fields are delimited by ','</p>
+</li>
+<li>
+<p>The fields are of datatype <code>CHAR</code></p>
+</li>
+<li>
+<p>The maximum length of the field is 255</p>
+</li>
+<li>
+<p>The order of the fields in the data file is the order in which the fields were defined in the external table</p>
+</li>
+<li>
+<p>No blanks are trimmed from the field</p>
+</li>
+</ul>
+<p>The following is an example of an external table created without any access parameters. It is followed by a sample data file, <code>info.dat</code>, that can be used to load it.</p>
+<pre>
+CREATE TABLE emp_load (first_name CHAR(15), last_name CHAR(20), year_of_birth CHAR(4))
+ ORGANIZATION EXTERNAL (TYPE ORACLE_LOADER DEFAULT DIRECTORY ext_tab_dir LOCATION ('info.dat'));
+
+Alvin,Tolliver,1976
+Kenneth,Baer,1963
+</pre>
+<p>The syntax for the <code>field_definitions</code> clause is as follows:</p>
+<img width="576" height="178" src="img/et_fields_clause.gif" alt="Description of et_fields_clause.gif follows" /><br />
+<a id="sthref1334" href="img_text/et_fields_clause.htm">Description of the illustration et_fields_clause.gif</a><br />
+<br />
+<p class="subhead1"><a id="SUTIL3763"></a>IGNORE_CHARS_AFTER_EOR</p>
+<p>This optional parameter specifies that if extraneous characters are found after the end-of-record that do not satisfy the record definition, then they will be ignored.</p>
+<p>Error messages are written to the external tables log file if all four of the following conditions apply:</p>
+<ul>
+<li>
+<p>The <code>IGNORE_CHARS_AFTER_EOR</code> parameter is set <span class="italic">or</span> the field allows free formatting (that is, the field is specified by a delimiter or enclosure character(s) and/or the field is variable length)</p>
+</li>
+<li>
+<p>Characters remain after the end-of-record</p>
+</li>
+<li>
+<p>The access parameter <code>MISSING FIELD VALUES ARE NULL</code> is <span class="italic">not</span> set</p>
+</li>
+<li>
+<p>The field does not have absolute positioning</p>
+</li>
+</ul>
+<p>The error messages that get written to the external tables log file are as follows:</p>
+<pre>
+KUP-04021: field formatting error for field Col1
+KUP-04023: field start is after end of record
+KUP-04101: record 2 rejected in file /home/oracle/datafiles/example.dat
+</pre>
+<p class="subhead1"><a id="SUTIL3415"></a><span class="bold">delim_spec Clause</span></p>
+<p>The <code>delim_spec</code> clause is used to identify how all fields are terminated in the record. The <code>delim_spec</code> specified for all fields can be overridden for a particular field as part of the <code>field_list</code> clause. For a full description of the syntax, see <a href="#i1009565">"delim_spec"</a>.</p>
+<p class="subhead1"><a id="SUTIL3416"></a><span class="bold">trim_spec Clause</span></p>
+<p>The <code>trim_spec</code> clause specifies the type of whitespace trimming to be performed by default on all character fields. The <code>trim_spec</code> clause specified for all fields can be overridden for individual fields by specifying a <code>trim_spec</code> clause for those fields. For a full description of the syntax, see <a href="#i1009527">"trim_spec"</a>.</p>
+<p class="subhead1"><a id="SUTIL3417"></a><span class="bold">MISSING</span> <span class="bold">FIELD</span> <span class="bold">VALUES</span> <span class="bold">ARE</span> <span class="bold">NULL</span></p>
+<p><code>MISSING FIELD VALUES ARE NULL</code> indicates that if there is not enough data in a record for all fields, then those fields with missing data values are set to <code>NULL</code>. For a full description of the syntax, see <a href="#i1009725">"MISSING FIELD VALUES ARE NULL"</a>.</p>
+<p class="subhead1"><a id="SUTIL3418"></a>REJECT ROWS WITH ALL NULL FIELDS</p>
+<p><code>REJECT ROWS WITH ALL NULL FIELDS</code> indicates that a row will not be loaded into the external table if all referenced fields in the row are null. If this parameter is not specified, then the default value is to accept rows with all null fields. The setting of this parameter is written to the log file either as "reject rows with all null fields" or as "rows with all null fields are accepted."</p>
+<p class="subhead1"><a id="SUTIL3419"></a><span class="bold">field_list Clause</span></p>
+<p>The <code>field_list</code> clause identifies the fields in the data file and their datatypes. For a full description of the syntax, see <a href="#i1009613">"field_list"</a>.</p>
+<a id="i1009565"></a>
+<div id="SUTIL1407" class="sect2">
+<h3 class="sect2">delim_spec</h3>
+<p>The <code>delim_spec</code> clause<a id="sthref1335"></a><a id="sthref1336"></a> is used to find the end (and if <code>ENCLOSED</code> <code>BY</code> is specified, the start) of a field. Its syntax is as follows:</p>
+<img width="850" height="135" src="img/et_delim_spec.gif" alt="Description of et_delim_spec.gif follows" /><br />
+<a id="sthref1337" href="img_text/et_delim_spec.htm">Description of the illustration et_delim_spec.gif</a><br />
+<br />
+<p>If <code>ENCLOSED</code> <code>BY</code> is specified, then the access driver starts at the current position in the record and skips over all whitespace looking for the first delimiter. All whitespace between the current position and the first delimiter is ignored. Next, the access driver looks for the second enclosure delimiter (or looks for the first one again if a second one is not specified). Everything between those two delimiters is considered part of the field.</p>
+<p>If <code>TERMINATED</code> <code>BY</code> <code><span class="codeinlineitalic">string</span></code> is specified with the <code>ENCLOSED</code> <code>BY</code> clause, then the terminator string must immediately follow the second enclosure delimiter. Any whitespace between the second enclosure delimiter and the terminating delimiter is skipped. If anything other than whitespace is found between the two delimiters, then the row is rejected for being incorrectly formatted.</p>
+<p>If <code>TERMINATED</code> <code>BY</code> is specified without the <code>ENCLOSED</code> <code>BY</code> clause, then everything between the current position in the record and the next occurrence of the termination string is considered part of the field.</p>
+<p>If <code>OPTIONALLY</code> is specified, then <code>TERMINATED</code> <code>BY</code> must also be specified. The <code>OPTIONALLY</code> parameter means the <code>ENCLOSED</code> <code>BY</code> delimiters can either both be present or both be absent. The terminating delimiter must be present regardless of whether the <code>ENCLOSED</code> <code>BY</code> delimiters are present. If <code>OPTIONALLY</code> is specified, then the access driver skips over all whitespace, looking for the first nonblank character. Once the first nonblank character is found, the access driver checks to see if the current position contains the first enclosure delimiter. If it does, then the access driver finds the second enclosure string and everything between the first and second enclosure delimiters is considered part of the field. The terminating delimiter must immediately follow the second enclosure delimiter (with optional whitespace allowed between the second enclosure delimiter and the terminating delimiter). If the first enclosure string is not found at the first nonblank character, then the access driver looks for the terminating delimiter. In this case, leading blanks are trimmed.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="ldr_field_list.htm#g1026705">Table 10-5</a> for a description of the access driver's default trimming behavior. You can override this behavior with <code>LTRIM</code> and <code>RTRIM</code>.</div>
+<p>After the delimiters have been found, the current position in the record is set to the spot after the last delimiter for the field. If <code>TERMINATED</code> <code>BY</code> <code>WHITESPACE</code> was specified, then the current position in the record is set to after all whitespace following the field.</p>
+<p>A missing terminator for the last field in the record is not an error. The access driver proceeds as if the terminator was found. It is an error if the second enclosure delimiter is missing.</p>
+<p>The string used for the second enclosure can be included in the data field by including the second enclosure twice. For example, if a field is enclosed by single quotation marks, then it could contain a single quotation mark by specifying two single quotation marks in a row, as shown in the word don't in the following example:</p>
+<pre>
+'I don''t like green eggs and ham'
+</pre>
+<p>There is no way to quote a terminator string in the field data without using enclosing delimiters. Because the field parser does not look for the terminating delimiter until after it has found the enclosing delimiters, the field can contain the terminating delimiter.</p>
+<p>In general, specifying single characters for the strings is faster than multiple characters. Also, searching data in fixed-width character sets is usually faster than searching data in varying-width character sets.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The use of the backslash character (\) within strings is not supported in external tables.</div>
+<div id="SUTIL1408" class="sect3"><a id="sthref1338"></a>
+<h4 class="sect3">Example: External Table with Terminating Delimiters</h4>
+<p>The following is an example of an external table that uses terminating delimiters. It is followed by a sample of the data file that can be used to load it.</p>
+<pre>
+CREATE TABLE emp_load (first_name CHAR(15), last_name CHAR(20), year_of_birth CHAR(4))
+  ORGANIZATION EXTERNAL (TYPE ORACLE_LOADER DEFAULT DIRECTORY ext_tab_dir
+                         ACCESS PARAMETERS (FIELDS TERMINATED BY WHITESPACE)
+                         LOCATION ('info.dat'));
+
+Alvin Tolliver 1976
+Kenneth Baer 1963
+Mary Dube 1973
+</pre></div>
+<!-- class="sect3" -->
+<div id="SUTIL1409" class="sect3"><a id="sthref1339"></a>
+<h4 class="sect3">Example: External Table with Enclosure and Terminator Delimiters</h4>
+<p>The following is an example of an external table that uses both enclosure and terminator delimiters. Remember that all whitespace between a terminating string and the first enclosure string is ignored, as is all whitespace between a second enclosing delimiter and the terminator. The example is followed by a sample of the data file that can be used to load it.</p>
+<pre>
+CREATE TABLE emp_load (first_name CHAR(15), last_name CHAR(20), year_of_birth CHAR(4)) 
+  ORGANIZATION EXTERNAL (TYPE ORACLE_LOADER DEFAULT DIRECTORY ext_tab_dir
+                        ACCESS PARAMETERS (FIELDS TERMINATED BY "," ENCLOSED BY "("  AND ")")
+                        LOCATION ('info.dat'));
+
+(Alvin) ,   (Tolliver),(1976)
+(Kenneth),  (Baer) ,(1963)
+(Mary),(Dube) ,   (1973)
+</pre></div>
+<!-- class="sect3" -->
+<div id="SUTIL1410" class="sect3"><a id="sthref1340"></a>
+<h4 class="sect3">Example: External Table with Optional Enclosure Delimiters</h4>
+<p>The following is an example of an external table that uses optional enclosure delimiters. Note that <code>LRTRIM</code> is used to trim leading and trailing blanks from fields. The example is followed by a sample of the data file that can be used to load it.</p>
+<pre>
+CREATE TABLE emp_load (first_name CHAR(15), last_name CHAR(20), year_of_birth CHAR(4))
+  ORGANIZATION EXTERNAL (TYPE ORACLE_LOADER DEFAULT DIRECTORY ext_tab_dir
+                         ACCESS PARAMETERS (FIELDS TERMINATED BY ','
+                                            OPTIONALLY ENCLOSED BY '(' and ')'
+                                            LRTRIM)
+                         LOCATION ('info.dat'));
+
+Alvin ,   Tolliver , 1976
+(Kenneth),  (Baer), (1963)
+( Mary ), Dube ,    (1973)
+</pre></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1009527"></a>
+<div id="SUTIL1411" class="sect2">
+<h3 class="sect2">trim_spec</h3>
+<p>The <code>trim_spec</code> clause<a id="sthref1341"></a><a id="sthref1342"></a> is used to specify that spaces should be trimmed from the beginning of a text field, the end of a text field, or both. Spaces include blanks and other nonprinting characters such as tabs, line feeds, and carriage returns. The syntax for the <code>trim_spec</code> clause is as follows:</p>
+<img width="126" height="156" src="img/et_trim_spec.gif" alt="Description of et_trim_spec.gif follows" /><br />
+<a id="sthref1343" href="img_text/et_trim_spec.htm">Description of the illustration et_trim_spec.gif</a><br />
+<br />
+<p><code>NOTRIM</code> indicates that no characters will be trimmed from the field.</p>
+<p><code>LRTRIM</code>, <code>LTRIM</code>, and <code>RTRIM</code> are used to indicate that characters should be trimmed from the field. <code>LRTRIM</code> means that both leading and trailing spaces are trimmed. <code>LTRIM</code> means that leading spaces will be trimmed. <code>RTRIM</code> means trailing spaces are trimmed.</p>
+<p><code>LDRTRIM</code> is used to provide compatibility with SQL*Loader trim features. It is the same as <code>NOTRIM</code> except in the following cases:</p>
+<ul>
+<li>
+<p>If the field is not a delimited field, then spaces will be trimmed from the right.</p>
+</li>
+<li>
+<p>If the field is a delimited field with <code>OPTIONALLY</code> <code>ENCLOSED</code> <code>BY</code> specified, and the optional enclosures are missing for a particular instance, then spaces will be trimmed from the left.</p>
+</li>
+</ul>
+<p>The default is <code>LDRTRIM</code>. Specifying <code>NOTRIM</code> yields the fastest performance.</p>
+<p>The <code>trim_spec</code> clause can be specified before the field list to set the default trimming for all fields. If <code>trim_spec</code> is omitted before the field list, then <code>LDRTRIM</code> is the default trim setting. The default trimming can be overridden for an individual field as part of the <code>datatype_spec</code>.</p>
+<p>If trimming is specified for a field that is all spaces, then the field will be set to <code>NULL</code>.</p>
+<p>In the following example, all data is fixed-length; however, the character data will not be loaded with leading spaces. The example is followed by a sample of the data file that can be used to load it.</p>
+<pre>
+CREATE TABLE emp_load (first_name CHAR(15), last_name CHAR(20),
+year_of_birth CHAR(4))
+  ORGANIZATION EXTERNAL (TYPE ORACLE_LOADER DEFAULT DIRECTORY ext_tab_dir
+                         ACCESS PARAMETERS (FIELDS LTRIM)
+                         LOCATION ('info.dat'));
+
+Alvin,           Tolliver,1976
+Kenneth,         Baer,    1963
+Mary,            Dube,    1973
+</pre></div>
+<!-- class="sect2" -->
+<a id="i1009725"></a>
+<div id="SUTIL1412" class="sect2">
+<h3 class="sect2">MISSING FIELD VALUES ARE NULL</h3>
+<p><code>MISSING FIELD VALUES ARE NULL</code> indicates that if there is not enough data in a record for all fields, then those fields with missing data values are set to <code>NULL</code>. If <code>MISSING FIELD VALUES ARE NULL</code> is not specified, and there is not enough data in the record for all fields, then the row is rejected.</p>
+<p>In the following example, the second record is stored with a <code>NULL</code> set for the <code>year_of_birth</code> column, even though the data for the year of birth is missing from the data file. If the <code>MISSING FIELD VALUES ARE NULL</code> clause was omitted from the access parameters, then the second row would be rejected because it did not have a value for the <code>year_of_birth</code> column. The example is followed by a sample of the data file that can be used to load it.</p>
+<pre>
+CREATE TABLE emp_load (first_name CHAR(15), last_name CHAR(20), year_of_birth INT)
+  ORGANIZATION EXTERNAL (TYPE ORACLE_LOADER DEFAULT DIRECTORY ext_tab_dir
+                         ACCESS PARAMETERS (FIELDS TERMINATED BY ","
+                                            MISSING FIELD VALUES ARE NULL)
+                         LOCATION ('info.dat'));
+ 
+Alvin,Tolliver,1976
+Baer,Kenneth
+Mary,Dube,1973
+</pre></div>
+<!-- class="sect2" -->
+<a id="i1009613"></a>
+<div id="SUTIL1413" class="sect2">
+<h3 class="sect2">field_list</h3>
+<p>The <code>field_list</code> clause<a id="sthref1344"></a> identifies the fields in the data file and their datatypes<a id="sthref1345"></a>. Evaluation criteria for the <code>field_list</code> clause are as follows:</p>
+<ul>
+<li>
+<p>If no datatype is specified for a field, then it is assumed to be <code>CHAR(1)</code> for a nondelimited field, and <code>CHAR(255)</code>for a delimited field.</p>
+</li>
+<li>
+<p>If no field list is specified, then the fields in the data file are assumed to be in the same order as the fields in the external table. The datatype for all fields is <code>CHAR(255)</code> unless the column in the database is <code>CHAR</code> or <code>VARCHAR</code>. If the column in the database is <code>CHAR</code> or <code>VARCHAR</code>, then the datatype for the field is still <code>CHAR</code> but the length is either 255 or the length of the column, whichever is greater.</p>
+</li>
+<li>
+<p>If no field list is specified and no <code>delim_spec</code> clause is specified, then the fields in the data file are assumed to be in the same order as fields in the external table. All fields are assumed to be <code>CHAR(255)</code> and terminated by a comma.</p>
+</li>
+</ul>
+<p>This example shows the definition for an external table with no <code>field_list</code> and a <code>delim_spec</code>. It is followed by a sample of the data file that can be used to load it.</p>
+<pre>
+CREATE TABLE emp_load (first_name CHAR(15), last_name CHAR(20), year_of_birth INT)
+  ORGANIZATION EXTERNAL (TYPE ORACLE_LOADER DEFAULT DIRECTORY ext_tab_dir
+                         ACCESS PARAMETERS (FIELDS TERMINATED BY "|")
+                         LOCATION ('info.dat'));
+
+Alvin|Tolliver|1976
+Kenneth|Baer|1963
+Mary|Dube|1973
+</pre>
+<p>The syntax for the <code>field_list</code> clause is as follows:</p>
+<img width="577" height="79" src="img/et_field_list.gif" alt="Description of et_field_list.gif follows" /><br />
+<a id="sthref1346" href="img_text/et_field_list.htm">Description of the illustration et_field_list.gif</a><br />
+<br />
+<p class="subhead1"><a id="SUTIL3420"></a>field_name</p>
+<p>The <code>field_name</code> is a string identifying the name of a field in the data file. If the string is not within quotation marks, then the name is uppercased when matching field names with column names in the external table.</p>
+<p>If <code>field_name</code> matches the name of a column in the external table that is referenced in the query, then the field value is used for the value of that external table column. If the name does not match any referenced name in the external table, then the field is not loaded but can be used for clause evaluation (for example <code>WHEN</code> or <code>NULLIF</code>).</p>
+<p class="subhead1"><a id="SUTIL3421"></a>pos_spec</p>
+<p>The <code>pos_spec</code> clause indicates the position of the column within the record. For a full description of the syntax, see <a href="#i1009541">"pos_spec Clause"</a>.</p>
+<p class="subhead1"><a id="SUTIL3422"></a>datatype_spec</p>
+<p>The <code>datatype_spec</code> clause indicates the datatype of the field. If <code>datatype_spec</code> is omitted, then the access driver assumes the datatype is <code>CHAR(255)</code>. For a full description of the syntax, see <a href="#i1009548">"datatype_spec Clause"</a>.</p>
+<p class="subhead1"><a id="SUTIL3423"></a>init_spec</p>
+<p>The <code>init_spec</code> clause indicates when a field is <code>NULL</code> or has a default value. For a full description of the syntax, see <a href="#i1012017">"init_spec Clause"</a>.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1009541"></a>
+<div id="SUTIL1414" class="sect2">
+<h3 class="sect2">pos_spec Clause</h3>
+<p>The <code>pos_spec</code> clause indicates the position of the column within the record. The setting of the <code>STRING</code> <code>SIZES</code> <code>ARE</code> <code>IN</code> clause determines whether <code>pos_spec</code> refers to byte positions or character positions. Using character positions with varying-width character sets takes significantly longer than using character positions with fixed-width character sets. Binary and multibyte character data should not be present in the same data file when <code>pos_spec</code> is used for character positions. If they are, then the results are unpredictable. The syntax for the <code>pos_spec</code> clause is as follows:</p>
+<img width="557" height="123" src="img/et_position_spec.gif" alt="Description of et_position_spec.gif follows" /><br />
+<a id="sthref1347" href="img_text/et_position_spec.htm">Description of the illustration et_position_spec.gif</a><br />
+<br />
+<div id="SUTIL1415" class="sect3"><a id="sthref1348"></a>
+<h4 class="sect3">start</h4>
+<p>The <code>start</code> parameter is the number of bytes or characters from the beginning of the record to where the field begins. It positions the start of the field at an absolute spot in the record rather than relative to the position of the previous field.</p>
+</div>
+<!-- class="sect3" -->
+<div id="SUTIL1416" class="sect3"><a id="sthref1349"></a>
+<h4 class="sect3">*</h4>
+<p>The <code>*</code> parameter indicates that the field begins at the first byte or character after the end of the previous field. This is useful if you have a varying-length field followed by a fixed-length field. This option cannot be used for the first field in the record.</p>
+</div>
+<!-- class="sect3" -->
+<div id="SUTIL1417" class="sect3"><a id="sthref1350"></a>
+<h4 class="sect3">increment</h4>
+<p>The <code>increment</code> parameter positions the start of the field at a fixed number of bytes or characters from the end of the previous field. Use <code>*-</code><code><span class="codeinlineitalic">increment</span></code> to indicate that the start of the field starts before the current position in the record (this is a costly operation for multibyte character sets). Use <code>*+</code><code><span class="codeinlineitalic">increment</span></code> to move the start after the current position.</p>
+</div>
+<!-- class="sect3" -->
+<div id="SUTIL1418" class="sect3"><a id="sthref1351"></a>
+<h4 class="sect3">end</h4>
+<p>The <code>end</code> parameter indicates the absolute byte or character offset into the record for the last byte of the field. If <code>start</code> is specified along with <code>end</code>, then <code>end</code> cannot be less than <code>start</code>. If <code>*</code> or <code>increment</code> is specified along with <code>end</code>, and the <code>start</code> evaluates to an offset larger than the <code>end</code> for a particular record, then that record will be rejected.</p>
+</div>
+<!-- class="sect3" -->
+<div id="SUTIL1419" class="sect3"><a id="sthref1352"></a>
+<h4 class="sect3">length</h4>
+<p>The <code>length</code> parameter indicates that the end of the field is a fixed number of bytes or characters from the start. It is useful for fixed-length fields when the start is specified with <code>*</code>.</p>
+<p>The following example shows various ways of using <code>pos_spec</code>. It is followed by a sample of the data file that can be used to load it.</p>
+<pre>
+CREATE TABLE emp_load (first_name CHAR(15),
+                      last_name CHAR(20),
+                      year_of_birth INT,
+                      phone CHAR(12),
+                      area_code CHAR(3),
+                      exchange CHAR(3),
+                      extension CHAR(4))
+  ORGANIZATION EXTERNAL
+  (TYPE ORACLE_LOADER
+   DEFAULT DIRECTORY ext_tab_dir
+   ACCESS PARAMETERS
+     (FIELDS RTRIM
+            (first_name (1:15) CHAR(15),
+             last_name (*:+20),
+             year_of_birth (36:39),
+             phone (40:52),
+             area_code (*-12: +3),
+             exchange (*+1: +3),
+             extension (*+1: +4)))
+   LOCATION ('info.dat'));
+
+Alvin          Tolliver            1976415-922-1982
+Kenneth        Baer                1963212-341-7912
+Mary           Dube                1973309-672-2341
+</pre></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1009548"></a>
+<div id="SUTIL1420" class="sect2">
+<h3 class="sect2">datatype_spec Clause</h3>
+<p>The <code>datatype_spec</code> clause<a id="sthref1353"></a><a id="sthref1354"></a><a id="sthref1355"></a> is used to describe the datatype of a field in the data file if the datatype is different than the default. The datatype of the field can be different than the datatype of a corresponding column in the external table. The access driver handles the necessary conversions. The syntax for the <code>datatype_spec</code> clause is as follows:</p>
+<img width="673" height="643" src="img/et_datatype_spec.gif" alt="Description of et_datatype_spec.gif follows" /><br />
+<a id="sthref1356" href="img_text/et_datatype_spec.htm">Description of the illustration et_datatype_spec.gif</a><br />
+<br />
+<p>If the number of bytes or characters in any field is 0, then the field is assumed to be <code>NULL</code>. The optional <code>DEFAULTIF</code> clause specifies when the field is set to its default value. Also, the optional <code>NULLIF</code> clause specifies other conditions for when the column associated with the field is set to <code>NULL</code>. If the <code>DEFAULTIF</code> or <code>NULLIF</code> clause is <code>true</code>, then the actions of those clauses override whatever values are read from the data file.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#i1012017">"init_spec Clause"</a> for more information about <code>NULLIF</code> and <code>DEFAULTIF</code></p>
+</li>
+<li>
+<p><a class="olink SQLRF" href="../e41084/toc.htm"><span class="italic">Oracle Database SQL Language Reference</span></a> for more information about datatypes</p>
+</li>
+</ul>
+</div>
+<div id="SUTIL1421" class="sect3"><a id="sthref1357"></a>
+<h4 class="sect3">[UNSIGNED] INTEGER [EXTERNAL] [(len)]</h4>
+<p>This clause defines a field as an integer. If <code>EXTERNAL</code> is specified, then the number is a character string. If <code>EXTERNAL</code> is not specified, then the number is a binary field. The valid values for <code><span class="codeinlineitalic">len</span></code> in binary integer fields are 1, 2, 4, and 8. If <code><span class="codeinlineitalic">len</span></code> is omitted for binary integers, then the default value is whatever the value of <code><span class="codeinlineitalic">sizeof(int)</span></code> is on the platform where the access driver is running. Use of the <code>DATA</code> <code>IS</code> <code>{BIG</code> <code>|</code> <code>LITTLE}</code> <code>ENDIAN</code> clause may cause the data to be byte-swapped before it is stored.</p>
+<p>If <code>EXTERNAL</code> is specified, then the value of <code><span class="codeinlineitalic">len</span></code> is the number of bytes or characters in the number (depending on the setting of the <code>STRING</code> <code>SIZES</code> <code>ARE</code> <code>IN</code> <code>BYTES</code> or <code>CHARACTERS</code> clause). If no length is specified, then the default value is 255.</p>
+<p>The default value of the <code>[UNSIGNED] INTEGER [EXTERNAL] [(len)]</code> datatype is determined as follows:</p>
+<ul>
+<li>
+<p>If no length specified, then the default length is 1.</p>
+</li>
+<li>
+<p>If no length is specified and the field is delimited with a <code>DELIMITED BY NEWLINE</code> clause, then the default length is 1.</p>
+</li>
+<li>
+<p>If no length is specified and the field is delimited with a <code>DELIMITED BY</code> clause, then the default length is 255 (unless the delimiter is <code>NEWLINE</code>, as stated above).</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<div id="SUTIL1422" class="sect3"><a id="sthref1358"></a>
+<h4 class="sect3">DECIMAL [EXTERNAL] and ZONED [EXTERNAL]</h4>
+<p>The <code>DECIMAL</code> clause is used to indicate that the field is a packed decimal number. The <code>ZONED</code> clause is used to indicate that the field is a zoned decimal number. The <code><span class="codeinlineitalic">precision</span></code> field indicates the number of digits in the number. The <code><span class="codeinlineitalic">scale</span></code> field is used to specify the location of the decimal point in the number. It is the number of digits to the right of the decimal point. If <code><span class="codeinlineitalic">scale</span></code> is omitted, then a value of 0 is assumed.</p>
+<p>Note that there are different encoding formats of zoned decimal numbers depending on whether the character set being used is EBCDIC-based or ASCII-based. If the language of the source data is EBCDIC, then the zoned decimal numbers in that file must match the EBCDIC encoding. If the language is ASCII-based, then the numbers must match the ASCII encoding.</p>
+<p>If the <code>EXTERNAL</code> parameter is specified, then the data field is a character string whose length matches the precision of the field.</p>
+</div>
+<!-- class="sect3" -->
+<div id="SUTIL1423" class="sect3"><a id="sthref1359"></a>
+<h4 class="sect3">ORACLE_DATE</h4>
+<p><code>ORACLE_DATE</code> is a field containing a date in the Oracle binary date format. This is the format used by the <code>DTYDAT</code> datatype in Oracle Call Interface (OCI) programs. The field is a fixed length of 7.</p>
+</div>
+<!-- class="sect3" -->
+<div id="SUTIL1424" class="sect3"><a id="sthref1360"></a>
+<h4 class="sect3">ORACLE_NUMBER</h4>
+<p><code>ORACLE_NUMBER</code> is a field containing a number in the Oracle number format. The field is a fixed length (the maximum size of an Oracle number field) unless <code>COUNTED</code> is specified, in which case the first byte of the field contains the number of bytes in the rest of the field.</p>
+<p><code>ORACLE_NUMBER</code> is a fixed-length 22-byte field. The length of an <code>ORACLE_NUMBER</code> <code>COUNTED</code> field is one for the count byte, plus the number of bytes specified in the count byte.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CJABFBFE"></a>
+<div id="SUTIL1425" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Floating-Point Numbers</h4>
+<p>The following four datatypes, <code>DOUBLE</code>, <code>FLOAT</code>, <code>BINARY_DOUBLE</code>, and <code>BINARY_FLOAT</code> are floating-point numbers.</p>
+<p><code>DOUBLE</code> and <code>FLOAT</code> are the floating-point formats used natively on the platform in use. They are the same datatypes used by default for the <code>DOUBLE</code> and <code>FLOAT</code> datatypes in a C program on that platform. <code>BINARY_FLOAT</code> and <code>BINARY_DOUBLE</code> are floating-point numbers that conform substantially with the Institute for Electrical and Electronics Engineers (IEEE) Standard for Binary Floating-Point Arithmetic, IEEE Standard 754-1985. Because most platforms use the IEEE standard as their native floating-point format, <code>FLOAT</code> and <code>BINARY_FLOAT</code> are the same on those platforms and <code>DOUBLE</code> and <code>BINARY_DOUBLE</code> are also the same.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+See <a class="olink SQLRF" href="../e41084/toc.htm"><span class="italic">Oracle Database SQL Language Reference</span></a> for more information about floating-point numbers</div>
+</div>
+<!-- class="sect3" -->
+<div id="SUTIL1426" class="sect3"><a id="sthref1361"></a>
+<h4 class="sect3">DOUBLE</h4>
+<p>The <code>DOUBLE</code> clause indicates that the field is the same format as the C language <code>DOUBLE</code> datatype on the platform where the access driver is executing. Use of the <code>DATA</code> <code>IS</code> <code>{BIG</code> <code>|</code> <code>LITTLE}</code> <code>ENDIAN</code> clause may cause the data to be byte-swapped before it is stored. This datatype may not be portable between certain platforms.</p>
+</div>
+<!-- class="sect3" -->
+<div id="SUTIL1427" class="sect3"><a id="sthref1362"></a>
+<h4 class="sect3">FLOAT [EXTERNAL]</h4>
+<p>The <code>FLOAT</code> clause indicates that the field is the same format as the C language <code>FLOAT</code> datatype on the platform where the access driver is executing. Use of the <code>DATA</code> <code>IS</code> <code>{BIG</code> <code>|</code> <code>LITTLE}</code> <code>ENDIAN</code> clause may cause the data to be byte-swapped before it is stored. This datatype may not be portable between certain platforms.</p>
+<p>If the <code>EXTERNAL</code> parameter is specified, then the field is a character string whose maximum length is 255. See</p>
+</div>
+<!-- class="sect3" -->
+<div id="SUTIL1428" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1363"></a>
+<h4 class="sect3">BINARY_DOUBLE</h4>
+<p><code>BINARY_DOUBLE</code> is a 64-bit, double-precision, floating-point number datatype. Each <code>BINARY_DOUBLE</code> value requires 9 bytes, including a length byte. See the information in the note provided for the <code>FLOAT</code> datatype for more details about floating-point numbers.</p>
+</div>
+<!-- class="sect3" -->
+<div id="SUTIL1429" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1364"></a>
+<h4 class="sect3">BINARY_FLOAT</h4>
+<p><code>BINARY_FLOAT</code> is a 32-bit, single-precision, floating-point number datatype. Each <code>BINARY_FLOAT</code> value requires 5 bytes, including a length byte. See the information in the note provided for the <code>FLOAT</code> datatype for more details about floating-point numbers.</p>
+</div>
+<!-- class="sect3" -->
+<div id="SUTIL1430" class="sect3"><a id="sthref1365"></a>
+<h4 class="sect3">RAW</h4>
+<p>The <code>RAW</code> clause is used to indicate that the source data is binary data. The <code><span class="codeinlineitalic">len</span></code> for <code>RAW</code> fields is always in number of bytes. When a <code>RAW</code> field is loaded in a character column, the data that is written into the column is the hexadecimal representation of the bytes in the <code>RAW</code> field.</p>
+</div>
+<!-- class="sect3" -->
+<div id="SUTIL1431" class="sect3"><a id="sthref1366"></a>
+<h4 class="sect3">CHAR</h4>
+<p>The <code>CHAR</code> clause is used to indicate that a field is a character datatype. The length (<code><span class="codeinlineitalic">len)</span></code> for <code>CHAR</code> fields specifies the largest number of bytes or characters in the field. The <code><span class="codeinlineitalic">len</span></code> is in bytes or characters, depending on the setting of the <code>STRING</code> <code>SIZES</code> <code>ARE</code> <code>IN</code> clause.</p>
+<p>If no length is specified for a field of datatype <code>CHAR</code>, then the size of the field is assumed to be 1, unless the field is delimited:</p>
+<ul>
+<li>
+<p>For a delimited <code>CHAR</code> field, if a length is specified, then that length is used as a maximum.</p>
+</li>
+<li>
+<p>For a delimited <code>CHAR</code> field for which no length is specified, the default is 255 bytes.</p>
+</li>
+<li>
+<p>For a delimited <code>CHAR</code> field that is greater than 255 bytes, you must specify a maximum length. Otherwise you will receive an error stating that the field in the data file exceeds maximum length.</p>
+</li>
+</ul>
+<p>The <code>date_format_spec</code> clause is used to indicate that the field contains a date or time in the specified format.</p>
+<p>The following example shows the use of the <code>CHAR</code> clause.</p>
+<pre>
+SQL&gt; CREATE TABLE emp_load
+  2    (employee_number      CHAR(5),
+  3     employee_dob         CHAR(20),
+  4     employee_last_name   CHAR(20),
+  5     employee_first_name  CHAR(15),
+  6     employee_middle_name CHAR(15),
+  7     employee_hire_date   DATE)
+  8  ORGANIZATION EXTERNAL
+  9    (TYPE ORACLE_LOADER
+ 10     DEFAULT DIRECTORY def_dir1
+ 11     ACCESS PARAMETERS
+ 12       (RECORDS DELIMITED BY NEWLINE
+ 13        FIELDS (employee_number      CHAR(2),
+ 14                employee_dob         CHAR(20),
+ 15                employee_last_name   CHAR(18),
+ 16                employee_first_name  CHAR(11),
+ 17                employee_middle_name CHAR(11),
+ 18                employee_hire_date   CHAR(10) date_format DATE mask "mm/dd/yyyy"
+ 19               )
+ 20       )
+ 21     LOCATION ('info.dat')
+ 22    );
+ 
+Table created.
+</pre></div>
+<!-- class="sect3" -->
+<a id="CIHJAIFC"></a>
+<div id="SUTIL1432" class="sect3">
+<h4 class="sect3">date_format_spec</h4>
+<p>The <code>date_format_spec</code> clause is used to indicate that a character string field contains date data, time data, or both, in a specific format. This information is used only when a character field is converted to a date or time datatype and only when a character string field is mapped into a date column.</p>
+<p>For detailed information about the correct way to specify date and time formats, see <a class="olink SQLRF" href="../e41084/toc.htm"><span class="italic">Oracle Database SQL Language Reference</span></a>.</p>
+<p>The syntax for the <code>date_format_spec</code> clause is as follows:</p>
+<img width="876" height="162" src="img/et_dateformat.gif" alt="Description of et_dateformat.gif follows" /><br />
+<a id="sthref1367" href="img_text/et_dateformat.htm">Description of the illustration et_dateformat.gif</a><br />
+<br />
+<div id="SUTIL1433" class="sect4"><a id="sthref1368"></a>
+<h5 class="sect4">DATE</h5>
+<p>The <code>DATE</code> clause indicates that the string contains a date.</p>
+</div>
+<!-- class="sect4" -->
+<div id="SUTIL1434" class="sect4"><a id="sthref1369"></a>
+<h5 class="sect4">MASK</h5>
+<p>The MASK clause is used to override the default globalization format mask for the datatype. If a date mask is not specified, then the settings of NLS parameters for the database (not the session settings) for the appropriate globalization parameter for the datatype are used. The <code>NLS_DATABASE_PARAMETERS</code> view shows these settings.</p>
+<ul>
+<li>
+<p><code>NLS_DATE_FORMAT</code> for <code>DATE</code> datatypes</p>
+</li>
+<li>
+<p><code>NLS_TIMESTAMP_FORMAT</code> for <code>TIMESTAMP</code> datatypes</p>
+</li>
+<li>
+<p><code>NLS_TIMESTAMP_TZ_FORMAT</code> for <code>TIMESTAMP</code> <code>WITH</code> <code>TIME</code> <code>ZONE</code> datatypes</p>
+</li>
+</ul>
+<p>Please note the following:</p>
+<ul>
+<li>
+<p>The database setting for the <code>NLS_NUMERIC_CHARACTERS</code> initialization parameter (that is, from the <code>NLS_DATABASE_PARAMETERS</code> view) governs the decimal separator for implicit conversion from character to numeric datatypes.</p>
+</li>
+<li>
+<p>A group separator is not allowed in the default format.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect4" -->
+<div id="SUTIL1435" class="sect4"><a id="sthref1370"></a>
+<h5 class="sect4">TIMESTAMP</h5>
+<p>The <code>TIMESTAMP</code> clause indicates that a field contains a formatted timestamp.</p>
+</div>
+<!-- class="sect4" -->
+<div id="SUTIL1436" class="sect4"><a id="sthref1371"></a>
+<h5 class="sect4">INTERVAL</h5>
+<p>The <code>INTERVAL</code> clause indicates that a field contains a formatted interval. The type of interval can be either <code>YEAR</code> <code>TO</code> <code>MONTH</code> or <code>DAY</code> <code>TO</code> <code>SECOND</code>.</p>
+<p>The following example shows a sample use of a complex <code>DATE</code> character string and a <code>TIMESTAMP</code> character string. It is followed by a sample of the data file that can be used to load it.</p>
+<pre>
+SQL&gt; CREATE TABLE emp_load
+  2    (employee_number      CHAR(5),
+  3     employee_dob         CHAR(20),
+  4     employee_last_name   CHAR(20),
+  5     employee_first_name  CHAR(15),
+  6     employee_middle_name CHAR(15),
+  7     employee_hire_date   DATE,
+  8     rec_creation_date    TIMESTAMP WITH TIME ZONE)
+  9  ORGANIZATION EXTERNAL
+ 10    (TYPE ORACLE_LOADER
+ 11     DEFAULT DIRECTORY def_dir1
+ 12     ACCESS PARAMETERS
+ 13       (RECORDS DELIMITED BY NEWLINE
+ 14        FIELDS (employee_number      CHAR(2),
+ 15                employee_dob         CHAR(20),
+ 16                employee_last_name   CHAR(18),
+ 17                employee_first_name  CHAR(11),
+ 18                employee_middle_name CHAR(11),
+ 19                employee_hire_date   CHAR(22) date_format DATE mask "mm/dd/yyyy hh:mi:ss AM",
+ 20                rec_creation_date    CHAR(35) date_format TIMESTAMP WITH TIME ZONE mask "DD-MON-RR HH.MI.SSXFF AM TZH:TZM"
+ 21               )
+ 22       )
+ 23     LOCATION ('infoc.dat')
+ 24    );
+ 
+Table created.
+</pre>
+<pre>
+SQL&gt; SELECT * FROM emp_load;
+ 
+EMPLO EMPLOYEE_DOB         EMPLOYEE_LAST_NAME   EMPLOYEE_FIRST_ EMPLOYEE_MIDDLE
+----- -------------------- -------------------- --------------- ---------------
+EMPLOYEE_
+---------
+REC_CREATION_DATE
+---------------------------------------------------------------------------
+56    november, 15, 1980   baker                mary            alice
+01-SEP-04
+01-DEC-04 11.22.03.034567 AM -08:00
+ 
+87    december, 20, 1970   roper                lisa            marie
+01-JAN-02
+01-DEC-02 02.03.00.678573 AM -08:00
+ 
+ 
+2 rows selected.
+</pre>
+<p>The <code>info.dat</code> file looks like the following. Note that this is 2 long records. There is one space between the data fields (<code>09/01/2004</code>, <code>01/01/2002</code>) and the time field that follows.</p>
+<pre>
+56november, 15, 1980  baker             mary       alice      09/01/2004 08:23:01 AM01-DEC-04 11.22.03.034567 AM -08:00
+87december, 20, 1970  roper             lisa       marie      01/01/2002 02:44:55 PM01-DEC-02 02.03.00.678573 AM -08:00
+</pre></div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<div id="SUTIL1437" class="sect3"><a id="sthref1372"></a>
+<h4 class="sect3">VARCHAR and VARRAW</h4>
+<p>The <code>VARCHAR</code> datatype has a binary count field followed by character data. The value in the binary count field is either the number of bytes in the field or the number of characters. See <a href="#i1007367">"STRING SIZES ARE IN"</a> for information about how to specify whether the count is interpreted as a count of characters or count of bytes.</p>
+<p>The <code>VARRAW</code> datatype has a binary count field followed by binary data. The value in the binary count field is the number of bytes of binary data. The data in the <code>VARRAW</code> field is not affected by the <code>DATA</code> <code>IS</code>&hellip;<code>ENDIAN</code> clause.</p>
+<p>The <code>VARIABLE 2</code> clause in the <code>ACCESS PARAMETERS</code> clause specifies the size of the binary field that contains the length.</p>
+<p>The optional <code><span class="codeinlineitalic">length_of_length</span></code> field in the specification is the number of bytes in the count field. Valid values for <code><span class="codeinlineitalic">length_of_length</span></code> for <code>VARCHAR</code> are 1, 2, 4, and 8. If <code><span class="codeinlineitalic">length_of_length</span></code> is not specified, then a value of 2 is used. The count field has the same endianness as specified by the <code>DATA</code> <code>IS</code>&hellip;<code>ENDIAN</code> clause.</p>
+<p>The <code><span class="codeinlineitalic">max_len</span></code> field is used to indicate the largest size of any instance of the field in the data file. For <code>VARRAW</code> fields, <code><span class="codeinlineitalic">max_len</span></code> is number of bytes. For <code>VARCHAR</code> fields, <code><span class="codeinlineitalic">max_len</span></code> is either number of characters or number of bytes depending on the <code>STRING</code> <code>SIZES</code> <code>ARE</code> <code>IN</code> clause.</p>
+<p>The following example shows various uses of <code>VARCHAR</code> and <code>VARRAW.</code> The content of the data file, <code>info.dat</code>, is shown following the example.</p>
+<pre>
+CREATE TABLE emp_load
+             (first_name CHAR(15),
+              last_name CHAR(20),
+              resume CHAR(2000),
+              picture RAW(2000))
+  ORGANIZATION EXTERNAL
+  (TYPE ORACLE_LOADER
+   DEFAULT DIRECTORY ext_tab_dir
+   ACCESS PARAMETERS
+     (RECORDS
+        VARIABLE 2
+        DATA IS BIG ENDIAN
+        CHARACTERSET US7ASCII
+      FIELDS (first_name VARCHAR(2,12),
+              last_name VARCHAR(2,20),
+              resume VARCHAR(4,10000),
+              picture VARRAW(4,100000)))
+    LOCATION ('info.dat'));
+</pre>
+<p class="subhead2"><a id="SUTIL3424"></a>Contents of info.dat Data File</p>
+<p>The contents of the data file used in the example are as follows:.</p>
+<pre>
+<span class="italic">0005</span>Alvin<span class="italic">0008</span>Tolliver<span class="italic">0000001D</span>Alvin Tolliver's Resume etc. <span class="italic">0000001013f4690a30bc29d7e40023ab4599ffff</span>
+</pre>
+<p>It is important to understand that, for the purposes of readable documentation, the binary values for the count bytes and the values for the raw data are shown in the data file in italics, with 2 characters per binary byte. The values in an actual data file would be in binary format, not ASCII. Therefore, if you attempt to use this example by cutting and pasting, then you will receive an error.</p>
+</div>
+<!-- class="sect3" -->
+<div id="SUTIL1438" class="sect3"><a id="sthref1373"></a>
+<h4 class="sect3">VARCHARC and VARRAWC</h4>
+<p>The <code>VARCHARC</code> datatype has a character count field followed by character data. The value in the count field is either the number of bytes in the field or the number of characters. See <a href="#i1007367">"STRING SIZES ARE IN"</a> for information about how to specify whether the count is interpreted as a count of characters or count of bytes. The optional <code><span class="codeinlineitalic">length_of_length</span></code> is either the number of bytes or the number of characters in the count field for <code>VARCHARC</code>, depending on whether lengths are being interpreted as characters or bytes.</p>
+<p>The maximum value for <code><span class="codeinlineitalic">length_of_lengths</span></code> for <code>VARCHARC</code> is 10 if string sizes are in characters, and 20 if string sizes are in bytes. The default value for <code><span class="codeinlineitalic">length_of_length</span></code> is 5.</p>
+<p>The <code>VARRAWC</code> datatype has a character count field followed by binary data. The value in the count field is the number of bytes of binary data. The <code><span class="codeinlineitalic">length_of_length</span></code> is the number of bytes in the count field.</p>
+<p>The <code><span class="codeinlineitalic">max_len</span></code> field is used to indicate the largest size of any instance of the field in the data file. For <code>VARRAWC</code> fields, <code><span class="codeinlineitalic">max_len</span></code> is number of bytes. For <code>VARCHARC</code> fields, <code><span class="codeinlineitalic">max_len</span></code> is either number of characters or number of bytes depending on the <code>STRING</code> <code>SIZES</code> <code>ARE</code> <code>IN</code> clause.</p>
+<p>The following example shows various uses of <code>VARCHARC</code> and <code>VARRAWC</code>. The length of the <code>picture</code> field is 0, which means the field is set to <code>NULL</code>.</p>
+<pre>
+CREATE TABLE emp_load
+             (first_name CHAR(15),
+              last_name CHAR(20),
+              resume CHAR(2000),
+              picture RAW (2000))
+  ORGANIZATION EXTERNAL
+  (TYPE ORACLE_LOADER
+    DEFAULT DIRECTORY ext_tab_dir
+    ACCESS PARAMETERS
+      (FIELDS (first_name VARCHARC(5,12),
+               last_name VARCHARC(2,20),
+               resume VARCHARC(4,10000),
+               picture VARRAWC(4,100000)))
+  LOCATION ('info.dat'));
+
+00007William05Ricca0035Resume for William Ricca is missing0000
+</pre></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1012017"></a>
+<div id="SUTIL1439" class="sect2">
+<h3 class="sect2">init_spec Clause</h3>
+<p>The <code>init_spec</code> clause is used to specify when a field should be set<a id="sthref1374"></a> to <code>NULL</code> or when it should be set<a id="sthref1375"></a> to a default value. The syntax for the <code>init_spec</code> clause is as follows:</p>
+<img width="286" height="70" src="img/et_init_spec.gif" alt="Description of et_init_spec.gif follows" /><br />
+<a id="sthref1376" href="img_text/et_init_spec.htm">Description of the illustration et_init_spec.gif</a><br />
+<br />
+<p>Only one <code>NULLIF</code> clause and only one <code>DEFAULTIF</code> clause can be specified for any field. These clauses behave as follows:</p>
+<ul>
+<li>
+<p>If <code>NULLIF</code> <code><span class="codeinlineitalic">condition_spec</span></code> is specified and it evaluates to <code>true</code>, then the field is set to <code>NULL</code>.</p>
+</li>
+<li>
+<p>If <code>DEFAULTIF</code> <code><span class="codeinlineitalic">condition_spec</span></code> is specified and it evaluates to <code>true</code>, then the value of the field is set to a default value. The default value depends on the datatype of the field, as follows:</p>
+<ul>
+<li>
+<p>For a character datatype, the default value is an empty string.</p>
+</li>
+<li>
+<p>For a numeric datatype, the default value is a 0.</p>
+</li>
+<li>
+<p>For a date datatype, the default value is <code>NULL</code>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>If a <code>NULLIF</code> clause and a <code>DEFAULTIF</code> clause are both specified for a field, then the <code>NULLIF</code> clause is evaluated first and the <code>DEFAULTIF</code> clause is evaluated only if the <code>NULLIF</code> clause evaluates to <code>false</code>.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1012621"></a>
+<div id="SUTIL1440" class="sect1">
+<h2 class="sect1">column_transforms Clause</h2>
+<p>The optional <code>column_transforms</code> clause provides transforms that you can use to describe how to load columns in the external table that do not map directly to columns in the data file. The syntax for the <code>column_transforms</code> clause is as follows:</p>
+<img width="364" height="58" src="img/et_column_trans.gif" alt="Description of et_column_trans.gif follows" /><br />
+<a id="sthref1377" href="img_text/et_column_trans.htm">Description of the illustration et_column_trans.gif</a><br />
+<br />
+<div id="SUTIL1441" class="sect2"><a id="sthref1378"></a>
+<h3 class="sect2">transform</h3>
+<p>Each transform specified in the <code>transform</code> clause identifies a column in the external table and then a specifies how to calculate the value of the column. The syntax is as follows:</p>
+<img width="720" height="251" src="img/et_transform.gif" alt="Description of et_transform.gif follows" /><br />
+<a id="sthref1379" href="img_text/et_transform.htm">Description of the illustration et_transform.gif</a><br />
+<br />
+<p>The <code>NULL</code> transform is used to set the external table column to <code>NULL</code> in every row. The <code>CONSTANT</code> transform is used to set the external table column to the same value in every row. The <code>CONCAT</code> transform is used to set the external table column to the concatenation of constant strings and/or fields in the current record from the data file. The <code>LOBFILE</code> transform is used to load data into a field for a record from another data file. Each of these transforms is explained further in the following sections.</p>
+<div id="SUTIL1442" class="sect3"><a id="sthref1380"></a>
+<h4 class="sect3">column_name</h4>
+<p>The <code>column_name</code> uniquely identifies a column in the external table to be loaded. Note that if the name of a column is mentioned in the <code>transform</code> clause, then that name cannot be specified in the <code>FIELDS</code> clause as a field in the data file.</p>
+</div>
+<!-- class="sect3" -->
+<div id="SUTIL1443" class="sect3"><a id="sthref1381"></a>
+<h4 class="sect3">NULL</h4>
+<p>When the <code>NULL</code> transform is specified, every value of the field is set to <code>NULL</code> for every record.</p>
+</div>
+<!-- class="sect3" -->
+<div id="SUTIL1444" class="sect3"><a id="sthref1382"></a>
+<h4 class="sect3">CONSTANT</h4>
+<p>The <code>CONSTANT</code> transform uses the value of the string specified as the value of the column in the record. If the column in the external table is not a character string type, then the constant string will be converted to the datatype of the column. This conversion will be done for every row.</p>
+<p>The character set of the string used for datatype conversions is the character set of the database.</p>
+</div>
+<!-- class="sect3" -->
+<div id="SUTIL1445" class="sect3"><a id="sthref1383"></a>
+<h4 class="sect3">CONCAT</h4>
+<p>The <code>CONCAT</code> transform concatenates constant strings and fields in the data file together to form one string. Only fields that are character datatypes and that are listed in the <code>fields</code> clause can be used as part of the concatenation. Other column transforms cannot be specified as part of the concatenation.</p>
+</div>
+<!-- class="sect3" -->
+<div id="SUTIL1446" class="sect3"><a id="sthref1384"></a>
+<h4 class="sect3">LOBFILE</h4>
+<p>The <code>LOBFILE</code> transform is used to identify a file whose contents are to be used as the value for a column in the external table. All LOBFILEs are identified by an optional directory object and a file name in the form <code><span class="codeinlineitalic">directory object:filename</span></code>. The following rules apply to use of the <code>LOBFILE</code> transform:</p>
+<ul>
+<li>
+<p>Both the directory object and the file name can be either a constant string or the name of a field in the field clause.</p>
+</li>
+<li>
+<p>If a constant string is specified, then that string is used to find the LOBFILE for every row in the table.</p>
+</li>
+<li>
+<p>If a field name is specified, then the value of that field in the data file is used to find the LOBFILE.</p>
+</li>
+<li>
+<p>If a field name is specified for either the directory object or the file name and if the value of that field is <code>NULL</code>, then the column being loaded by the LOBFILE is also set to <code>NULL</code>.</p>
+</li>
+<li>
+<p>If the directory object is not specified, then the default directory specified for the external table is used.</p>
+</li>
+<li>
+<p>If a field name is specified for the directory object, then the <code>FROM</code> clause also needs to be specified.</p>
+</li>
+</ul>
+<p>Note that the entire file is used as the value of the LOB column. If the same file is referenced in multiple rows, then that file is reopened and reread in order to populate each column.</p>
+</div>
+<!-- class="sect3" -->
+<div id="SUTIL1447" class="sect3"><a id="sthref1385"></a>
+<h4 class="sect3">lobfile_attr_list</h4>
+<p>The <code>lobfile_attr_list</code> lists additional attributes of the LOBFILE. The syntax is as follows:</p>
+<img width="334" height="156" src="img/et_lobfile_attr.gif" alt="Description of et_lobfile_attr.gif follows" /><br />
+<a id="sthref1386" href="img_text/et_lobfile_attr.htm">Description of the illustration et_lobfile_attr.gif</a><br />
+<br />
+<p>The <code>FROM</code> clause lists the names of all directory objects that will be used for LOBFILEs. It is used only when a field name is specified for the directory object of the name of the LOBFILE. The purpose of the <code>FROM</code> clause is to determine the type of access allowed to the named directory objects during initialization. If directory object in the value of field is not a directory object in this list, then the row will be rejected.</p>
+<p>The <code>CLOB</code> attribute indicates that the data in the LOBFILE is character data (as opposed to <code>RAW</code> data). Character data may need to be translated into the character set used to store the LOB in the database.</p>
+<p>The <code>CHARACTERSET</code> attribute contains the name of the character set for the data in the LOBFILEs.</p>
+<p>The <code>BLOB</code> attribute indicates that the data in the LOBFILE is raw data.</p>
+<p>If neither <code>CLOB</code> nor <code>BLOB</code> is specified, then <code>CLOB</code> is assumed. If no character set is specified for character LOBFILEs, then the character set of the data file is assumed.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CIHCHGCE"></a>
+<div id="SUTIL3425" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Example: Creating and Loading an External Table Using ORACLE_LOADER</h2>
+<p>The steps in this section show an example of using the <code>ORACLE_LOADER</code> access driver to create and load an external table. A traditional table named <code>emp</code> is defined along with an external table named <code>emp_load</code>. The external data is then loaded into an internal table.</p>
+<ol>
+<li>
+<p>Assume your <code>.dat</code> file looks as follows:</p>
+<pre>
+56november, 15, 1980  baker             mary       alice     09/01/2004
+87december, 20, 1970  roper             lisa       marie     01/01/2002
+</pre></li>
+<li>
+<p>Execute the following SQL statements to set up a default directory (which contains the data source) and to grant access to it:</p>
+<pre>
+CREATE DIRECTORY def_dir1 AS '/usr/apps/datafiles';
+GRANT READ ON DIRECTORY ext_tab_dir TO SCOTT;
+</pre></li>
+<li>
+<p>Create a traditional table named <code>emp</code>:</p>
+<pre>
+CREATE TABLE emp (emp_no CHAR(6), last_name CHAR(25), first_name CHAR(20), middle_initial CHAR(1), hire_date DATE, dob DATE);
+</pre></li>
+<li>
+<p>Create an external table named <code>emp_load</code>:</p>
+<pre>
+SQL&gt; CREATE TABLE emp_load
+  2    (employee_number      CHAR(5),
+  3     employee_dob         CHAR(20),
+  4     employee_last_name   CHAR(20),
+  5     employee_first_name  CHAR(15),
+  6     employee_middle_name CHAR(15),
+  7     employee_hire_date   DATE)
+  8  ORGANIZATION EXTERNAL
+  9    (TYPE ORACLE_LOADER
+ 10     DEFAULT DIRECTORY def_dir1
+ 11     ACCESS PARAMETERS
+ 12       (RECORDS DELIMITED BY NEWLINE
+ 13        FIELDS (employee_number      CHAR(2),
+ 14                employee_dob         CHAR(20),
+ 15                employee_last_name   CHAR(18),
+ 16                employee_first_name  CHAR(11),
+ 17                employee_middle_name CHAR(11),
+ 18                employee_hire_date   CHAR(10) date_format DATE mask "mm/dd/yyyy"
+ 19               )
+ 20       )
+ 21     LOCATION ('info.dat')
+ 22    );
+ 
+Table created.
+</pre></li>
+<li>
+<p>Load the data from the external table <code>emp_load</code> into the table <code>emp</code>:</p>
+<pre>
+SQL&gt; INSERT INTO emp (emp_no,
+  2                   first_name,
+  3                   middle_initial,
+  4                   last_name,
+  5                   hire_date,
+  6                   dob)
+  7  (SELECT employee_number,
+  8          employee_first_name,
+  9          substr(employee_middle_name, 1, 1),
+ 10          employee_last_name,
+ 11          employee_hire_date,
+ 12          to_date(employee_dob,'month, dd, yyyy')
+ 13  FROM emp_load);
+ 
+2 rows created.
+</pre></li>
+<li>
+<p>Perform the following select operation to verify that the information in the <code>.dat</code> file was loaded into the <code>emp</code> table:</p>
+<pre>
+SQL&gt; SELECT * FROM emp;
+ 
+EMP_NO LAST_NAME                 FIRST_NAME           M HIRE_DATE DOB
+------ ------------------------- -------------------- - --------- ---------
+56     baker                     mary                 a 01-SEP-04 15-NOV-80
+87     roper                     lisa                 m 01-JAN-02 20-DEC-70
+ 
+2 rows selected.
+</pre></li>
+</ol>
+<p>Notes about this example:</p>
+<ul>
+<li>
+<p>The <code>employee_number</code> field in the data file is converted to a character string for the <code>employee_number</code> field in the external table.</p>
+</li>
+<li>
+<p>The data file contains an <code>employee_dob</code> field that is not loaded into any field in the table.</p>
+</li>
+<li>
+<p>The <code>substr</code> function is used on the <code>employee_middle_name</code> column in the external table to generate the value for <code>middle_initial</code> in table <code>emp</code>.</p>
+</li>
+<li>
+<p>The character string for <code>employee_hire_date</code> in <code>info.dat</code> is automatically converted into a <code>DATE</code> datatype at external table access time, using the format mask specified in the external table definiition.</p>
+</li>
+<li>
+<p>Unlike <code>employee_hire_date</code>, the <code>DATE</code> datatype conversion for <code>employee_dob</code> is done at <code>SELECT</code> time and is not part of the external table definition.</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SQLRF" href="../e41084/toc.htm"><span class="italic">Oracle Database SQL Language Reference</span></a> for detailed information about the correct way to specify date and time formats</div>
+</div>
+<!-- class="sect1" -->
+<a id="CIHBDIAB"></a>
+<div id="SUTIL3426" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Parallel Loading Considerations for the ORACLE_LOADER Access Driver</h2>
+<p>The <code>ORACLE_LOADER</code> access driver attempts to divide large data files into chunks that can be processed separately.</p>
+<p>The following file, record, and data characteristics make it impossible for a file to be processed in parallel:</p>
+<ul>
+<li>
+<p>Sequential data sources (such as a tape drive or pipe)</p>
+</li>
+<li>
+<p>Data in any multibyte character set whose character boundaries cannot be determined starting at an arbitrary byte in the middle of a string</p>
+<p>This restriction does not apply to any data file with a fixed number of bytes per record.</p>
+</li>
+<li>
+<p>Records with the <code>VAR</code> format</p>
+</li>
+</ul>
+<p>Specifying a <code>PARALLEL</code> clause is of value only when large amounts of data are involved.</p>
+</div>
+<!-- class="sect1" -->
+<a id="CIHBFAAB"></a>
+<div id="SUTIL3427" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Performance Hints When Using the ORACLE_LOADER Access Driver</h2>
+<p>When you monitor performance, the most important measurement is the elapsed time for a load. Other important measurements are CPU usage, memory usage, and I/O rates.</p>
+<p>You can alter performance by increasing or decreasing the degree of parallelism. The degree of parallelism indicates the number of access drivers that can be started to process the data files. The degree of parallelism enables you to choose on a scale between slower load with little resource usage and faster load with all resources utilized. The access driver cannot automatically tune itself, because it cannot determine how many resources you want to dedicate to the access driver.</p>
+<p>An additional consideration is that the access drivers use large I/O buffers for better performance (you can use the <code>READSIZE</code> clause in the access parameters to specify the size of the buffers). On databases with shared servers, all memory used by the access drivers comes out of the system global area (SGA). For this reason, you should be careful when using external tables on shared servers.</p>
+<p>Performance can also sometimes be increased with use of date cache<a id="sthref1387"></a><a id="sthref1388"></a><a id="sthref1389"></a> functionality. By using the date cache to specify the number of unique dates anticipated during the load, you can reduce the number of date conversions done when many duplicate date or timestamp values are present in the input data. The date cache functionality provided by external tables is identical to the date cache functionality provided by SQL*Loader. See <a href="#CJADBHHH">"DATE_CACHE"</a> for a detailed description.</p>
+<p>In addition to changing the degree of parallelism and using the date cache to improve performance, consider the following information:</p>
+<ul>
+<li>
+<p>Fixed-length records are processed faster than records terminated by a string.</p>
+</li>
+<li>
+<p>Fixed-length fields are processed faster than delimited fields.</p>
+</li>
+<li>
+<p>Single-byte character sets are the fastest to process.</p>
+</li>
+<li>
+<p>Fixed-width character sets are faster to process than varying-width character sets.</p>
+</li>
+<li>
+<p>Byte-length semantics for varying-width character sets are faster to process than character-length semantics.</p>
+</li>
+<li>
+<p>Single-character delimiters for record terminators and field delimiters are faster to process than multicharacter delimiters.</p>
+</li>
+<li>
+<p>Having the character set in the data file match the character set of the database is faster than a character set conversion.</p>
+</li>
+<li>
+<p>Having datatypes in the data file match the datatypes in the database is faster than datatype conversion.</p>
+</li>
+<li>
+<p>Not writing rejected rows to a reject file is faster because of the reduced overhead.</p>
+</li>
+<li>
+<p>Condition clauses (including <code>WHEN</code>, <code>NULLIF</code>, and <code>DEFAULTIF</code>) slow down processing.</p>
+</li>
+<li>
+<p>The access driver takes advantage of multithreading to streamline the work as much as possible.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect1" -->
+<a id="CIHDEGDD"></a>
+<div id="SUTIL3428" class="sect1">
+<h2 class="sect1">Restrictions<a id="sthref1390"></a> When Using the ORACLE_LOADER Access Driver</h2>
+<p>This section lists restrictions to be aware of then you use the <code>ORACLE_LOADER</code> access driver.</p>
+<ul>
+<li>
+<p>SQL string<a id="sthref1391"></a>s cannot be specified in access parameters for the <code>ORACLE_LOADER</code> access driver. As a workaround, you can use the <code>DECODE</code> clause in the <code>SELECT</code> clause of the statement that is reading the external table. Alternatively, you can create a view of the external table that uses the <code>DECODE</code> clause and select from that view rather than the external table.</p>
+</li>
+<li>
+<p>The use of the backslash character (\) within strings is not supported in external tables. See <a href="ldr_concepts.htm#CHDCADAF">"Use of the Backslash Escape Character"</a>.</p>
+</li>
+<li>
+<p>When<a id="sthref1392"></a><a id="sthref1393"></a> identifiers (for example, column or table names) are specified in the external table access parameters, certain values are considered to be reserved words by the access parameter parser. If a reserved word is used as an identifier, then it must be enclosed in double quotation marks.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect1" -->
+<a id="i1012572"></a>
+<div id="SUTIL1448" class="sect1">
+<h2 class="sect1">Reserved Words for the ORACLE_LOADER Access Driver</h2>
+<p>When<a id="sthref1394"></a><a id="sthref1395"></a> identifiers (for example, column or table names) are specified in the external table access parameters, certain values are considered to be reserved words by the access parameter parser. If a reserved word is used as an identifier, then it must be enclosed in double quotation marks. The following are the reserved words for the <code>ORACLE_LOADER</code> access driver:</p>
+<ul>
+<li>
+<p>ALL</p>
+</li>
+<li>
+<p>AND</p>
+</li>
+<li>
+<p>ARE</p>
+</li>
+<li>
+<p>ASTERISK</p>
+</li>
+<li>
+<p>AT</p>
+</li>
+<li>
+<p>ATSIGN</p>
+</li>
+<li>
+<p>BADFILE</p>
+</li>
+<li>
+<p>BADFILENAME</p>
+</li>
+<li>
+<p>BACKSLASH</p>
+</li>
+<li>
+<p>BENDIAN</p>
+</li>
+<li>
+<p>BIG</p>
+</li>
+<li>
+<p>BLANKS</p>
+</li>
+<li>
+<p>BY</p>
+</li>
+<li>
+<p>BYTES</p>
+</li>
+<li>
+<p>BYTESTR</p>
+</li>
+<li>
+<p>CHAR</p>
+</li>
+<li>
+<p>CHARACTERS</p>
+</li>
+<li>
+<p>CHARACTERSET</p>
+</li>
+<li>
+<p>CHARSET</p>
+</li>
+<li>
+<p>CHARSTR</p>
+</li>
+<li>
+<p>CHECK</p>
+</li>
+<li>
+<p>CLOB</p>
+</li>
+<li>
+<p>COLLENGTH</p>
+</li>
+<li>
+<p>COLON</p>
+</li>
+<li>
+<p>COLUMN</p>
+</li>
+<li>
+<p>COMMA</p>
+</li>
+<li>
+<p>CONCAT</p>
+</li>
+<li>
+<p>CONSTANT</p>
+</li>
+<li>
+<p>COUNTED</p>
+</li>
+<li>
+<p>DATA</p>
+</li>
+<li>
+<p>DATE</p>
+</li>
+<li>
+<p>DATE_CACHE</p>
+</li>
+<li>
+<p>DATE_FORMAT</p>
+</li>
+<li>
+<p>DATEMASK</p>
+</li>
+<li>
+<p>DAY</p>
+</li>
+<li>
+<p>DEBUG</p>
+</li>
+<li>
+<p>DECIMAL</p>
+</li>
+<li>
+<p>DEFAULTIF</p>
+</li>
+<li>
+<p>DELIMITBY</p>
+</li>
+<li>
+<p>DELIMITED</p>
+</li>
+<li>
+<p>DISCARDFILE</p>
+</li>
+<li>
+<p>DOT</p>
+</li>
+<li>
+<p>DOUBLE</p>
+</li>
+<li>
+<p>DOUBLETYPE</p>
+</li>
+<li>
+<p>DQSTRING</p>
+</li>
+<li>
+<p>DQUOTE</p>
+</li>
+<li>
+<p>DSCFILENAME</p>
+</li>
+<li>
+<p>ENCLOSED</p>
+</li>
+<li>
+<p>ENDIAN</p>
+</li>
+<li>
+<p>ENDPOS</p>
+</li>
+<li>
+<p>EOF</p>
+</li>
+<li>
+<p>EQUAL</p>
+</li>
+<li>
+<p>EXIT</p>
+</li>
+<li>
+<p>EXTENDED_IO_PARAMETERS</p>
+</li>
+<li>
+<p>EXTERNAL</p>
+</li>
+<li>
+<p>EXTERNALKW</p>
+</li>
+<li>
+<p>EXTPARM</p>
+</li>
+<li>
+<p>FIELD</p>
+</li>
+<li>
+<p>FIELDS</p>
+</li>
+<li>
+<p>FILE</p>
+</li>
+<li>
+<p>FILEDIR</p>
+</li>
+<li>
+<p>FILENAME</p>
+</li>
+<li>
+<p>FIXED</p>
+</li>
+<li>
+<p>FLOAT</p>
+</li>
+<li>
+<p>FLOATTYPE</p>
+</li>
+<li>
+<p>FOR</p>
+</li>
+<li>
+<p>FROM</p>
+</li>
+<li>
+<p>HASH</p>
+</li>
+<li>
+<p>HEXPREFIX</p>
+</li>
+<li>
+<p>IN</p>
+</li>
+<li>
+<p>INTEGER</p>
+</li>
+<li>
+<p>INTERVAL</p>
+</li>
+<li>
+<p>LANGUAGE</p>
+</li>
+<li>
+<p>IS</p>
+</li>
+<li>
+<p>LEFTCB</p>
+</li>
+<li>
+<p>LEFTTXTDELIM</p>
+</li>
+<li>
+<p>LEFTP</p>
+</li>
+<li>
+<p>LENDIAN</p>
+</li>
+<li>
+<p>LDRTRIM</p>
+</li>
+<li>
+<p>LITTLE</p>
+</li>
+<li>
+<p>LOAD</p>
+</li>
+<li>
+<p>LOBFILE</p>
+</li>
+<li>
+<p>LOBPC</p>
+</li>
+<li>
+<p>LOBPCCONST</p>
+</li>
+<li>
+<p>LOCAL</p>
+</li>
+<li>
+<p>LOCALTZONE</p>
+</li>
+<li>
+<p>LOGFILE</p>
+</li>
+<li>
+<p>LOGFILENAME</p>
+</li>
+<li>
+<p>LRTRIM</p>
+</li>
+<li>
+<p>LTRIM</p>
+</li>
+<li>
+<p>MAKE_REF</p>
+</li>
+<li>
+<p>MASK</p>
+</li>
+<li>
+<p>MINUSSIGN</p>
+</li>
+<li>
+<p>MISSING</p>
+</li>
+<li>
+<p>MISSINGFLD</p>
+</li>
+<li>
+<p>MONTH</p>
+</li>
+<li>
+<p>NEWLINE</p>
+</li>
+<li>
+<p>NO</p>
+</li>
+<li>
+<p>NOCHECK</p>
+</li>
+<li>
+<p>NOT</p>
+</li>
+<li>
+<p>NOBADFILE</p>
+</li>
+<li>
+<p>NODISCARDFILE</p>
+</li>
+<li>
+<p>NOLOGFILE</p>
+</li>
+<li>
+<p>NOTEQUAL</p>
+</li>
+<li>
+<p>NOTERMBY</p>
+</li>
+<li>
+<p>NOTRIM</p>
+</li>
+<li>
+<p>NULL</p>
+</li>
+<li>
+<p>NULLIF</p>
+</li>
+<li>
+<p>OID</p>
+</li>
+<li>
+<p>OPTENCLOSE</p>
+</li>
+<li>
+<p>OPTIONALLY</p>
+</li>
+<li>
+<p>OPTIONS</p>
+</li>
+<li>
+<p>OR</p>
+</li>
+<li>
+<p>ORACLE_DATE</p>
+</li>
+<li>
+<p>ORACLE_NUMBER</p>
+</li>
+<li>
+<p>PLUSSIGN</p>
+</li>
+<li>
+<p>POSITION</p>
+</li>
+<li>
+<p>PROCESSING</p>
+</li>
+<li>
+<p>QUOTE</p>
+</li>
+<li>
+<p>RAW</p>
+</li>
+<li>
+<p>READSIZE</p>
+</li>
+<li>
+<p>RECNUM</p>
+</li>
+<li>
+<p>RECORDS</p>
+</li>
+<li>
+<p>REJECT</p>
+</li>
+<li>
+<p>RIGHTCB</p>
+</li>
+<li>
+<p>RIGHTTXTDELIM</p>
+</li>
+<li>
+<p>RIGHTP</p>
+</li>
+<li>
+<p>ROW</p>
+</li>
+<li>
+<p>ROWS</p>
+</li>
+<li>
+<p>RTRIM</p>
+</li>
+<li>
+<p>SCALE</p>
+</li>
+<li>
+<p>SECOND</p>
+</li>
+<li>
+<p>SEMI</p>
+</li>
+<li>
+<p>SETID</p>
+</li>
+<li>
+<p>SIGN</p>
+</li>
+<li>
+<p>SIZES</p>
+</li>
+<li>
+<p>SKIP</p>
+</li>
+<li>
+<p>STRING</p>
+</li>
+<li>
+<p>TERMBY</p>
+</li>
+<li>
+<p>TERMEOF</p>
+</li>
+<li>
+<p>TERMINATED</p>
+</li>
+<li>
+<p>TERMWS</p>
+</li>
+<li>
+<p>TERRITORY</p>
+</li>
+<li>
+<p>TIME</p>
+</li>
+<li>
+<p>TIMESTAMP</p>
+</li>
+<li>
+<p>TIMEZONE</p>
+</li>
+<li>
+<p>TO</p>
+</li>
+<li>
+<p>TRANSFORMS</p>
+</li>
+<li>
+<p>UNDERSCORE</p>
+</li>
+<li>
+<p>UINTEGER</p>
+</li>
+<li>
+<p>UNSIGNED</p>
+</li>
+<li>
+<p>VALUES</p>
+</li>
+<li>
+<p>VARCHAR</p>
+</li>
+<li>
+<p>VARCHARC</p>
+</li>
+<li>
+<p>VARIABLE</p>
+</li>
+<li>
+<p>VARRAW</p>
+</li>
+<li>
+<p>VARRAWC</p>
+</li>
+<li>
+<p>VLENELN</p>
+</li>
+<li>
+<p>VMAXLEN</p>
+</li>
+<li>
+<p>WHEN</p>
+</li>
+<li>
+<p>WHITESPACE</p>
+</li>
+<li>
+<p>WITH</p>
+</li>
+<li>
+<p>YEAR</p>
+</li>
+<li>
+<p>ZONED</p>
+</li>
+</ul>
+</div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1387">
+<tr>
+<td class="cellalignment1396">
+<table class="cellalignment1392">
+<tr>
+<td class="cellalignment1391"><a href="et_concepts.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1391"><a href="et_dp_driver.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1996, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1398">
+<table class="cellalignment1390">
+<tr>
+<td class="cellalignment1391"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1391"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1391"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1391"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1391"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1391"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

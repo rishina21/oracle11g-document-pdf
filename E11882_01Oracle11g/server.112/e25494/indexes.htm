@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Managing Indexes</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1055" />
+<meta name="dcterms.created" content="2015-05-05T8:27:36Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Administrator's Guide" />
+<meta name="dcterms.identifier" content="E25494-07" />
+<meta name="dcterms.isVersionOf" content="ADMIN" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2001, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="tables.htm" title="Previous" type="text/html" />
+<link rel="Next" href="clustrs.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e25494.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">30/49</span> <!-- End Header -->
+<div id="ADMIN016" class="chapter"><a id="g1012649"></a> <a id="i1007132"></a>
+<h1 class="chapter"><span class="secnum">21</span> Managing Indexes</h1>
+<p>In this chapter:</p>
+<ul>
+<li>
+<p><a href="#i1007292">About Indexes</a></p>
+</li>
+<li>
+<p><a href="#i1007193">Guidelines for Managing Indexes</a></p>
+</li>
+<li>
+<p><a href="#i1106482">Creating Indexes</a></p>
+</li>
+<li>
+<p><a href="#i1006816">Altering Indexes</a></p>
+</li>
+<li>
+<p><a href="#i1006918">Monitoring Space Use of Indexes</a></p>
+</li>
+<li>
+<p><a href="#i1006942">Dropping Indexes</a></p>
+</li>
+<li>
+<p><a href="#i1106984">Indexes Data Dictionary Views</a></p>
+</li>
+</ul>
+<a id="i1007292"></a>
+<div id="ADMIN11709" class="sect1">
+<h2 class="sect1">About Indexes</h2>
+<p><a id="sthref2384"></a>Indexes are optional structures associated with tables and clusters that allow SQL queries to execute more quickly against a table. Just as the index in this manual helps you locate information faster than if there were no index, an Oracle Database index provides a faster access path to table data. You can use indexes without rewriting any queries. Your results are the same, but you see them more quickly.</p>
+<p>Oracle Database provides several indexing schemes that provide complementary performance functionality. These are:</p>
+<ul>
+<li>
+<p>B-tree indexes: the default and the most common</p>
+</li>
+<li>
+<p>B-tree cluster indexes: defined specifically for cluster</p>
+</li>
+<li>
+<p>Hash cluster indexes: defined specifically for a hash cluster</p>
+</li>
+<li>
+<p>Global and local indexes: relate to partitioned tables and indexes</p>
+</li>
+<li>
+<p>Reverse key indexes: most useful for Oracle Real Application Clusters applications</p>
+</li>
+<li>
+<p>Bitmap indexes: compact; work best for columns with a small set of values</p>
+</li>
+<li>
+<p>Function-based indexes: contain the precomputed value of a function/expression</p>
+</li>
+<li>
+<p>Domain indexes: specific to an application or cartridge.</p>
+</li>
+</ul>
+<p>Indexes are logically and physically independent of the data in the associated table. Being independent structures, they require storage space. You can create or drop an index without affecting the base tables, database applications, or other indexes. The database automatically maintains indexes when you insert, update, and delete rows of the associated table. If you drop an index, all applications continue to work. However, access to previously indexed data might be slower.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink CNCPT811" href="../../server.112/e40540/indexiot.htm#CNCPT811"><span class="italic">Oracle Database Concepts</span></a> for an overview of indexes</p>
+</li>
+<li>
+<p><a href="schema.htm#g1019613">Chapter 19, "Managing Space for Schema Objects"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="i1007193"></a>
+<div id="ADMIN11710" class="sect1">
+<h2 class="sect1">Guidelines for Managing Indexes</h2>
+<p>This section discusses guidelines for managing indexes and contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1006258">Create Indexes After Inserting Table Data</a></p>
+</li>
+<li>
+<p><a href="#i1006278">Index the Correct Tables and Columns</a></p>
+</li>
+<li>
+<p><a href="#i1106306">Order Index Columns for Performance</a></p>
+</li>
+<li>
+<p><a href="#i1006312">Limit the Number of Indexes for Each Table</a></p>
+</li>
+<li>
+<p><a href="#i1106318">Drop Indexes That Are No Longer Required</a></p>
+</li>
+<li>
+<p><a href="#CHDCFGBA">Indexes and Deferred Segment Creation</a></p>
+</li>
+<li>
+<p><a href="#i1006354">Estimate Index Size and Set Storage Parameters</a></p>
+</li>
+<li>
+<p><a href="#i1006372">Specify the Tablespace for Each Index</a></p>
+</li>
+<li>
+<p><a href="#i1206377">Consider Parallelizing Index Creation</a></p>
+</li>
+<li>
+<p><a href="#i1206400">Consider Creating Indexes with NOLOGGING</a></p>
+</li>
+<li>
+<p><a href="#CIHJIDJG">Understand When to Use Unusable or Invisible Indexes</a></p>
+</li>
+<li>
+<p><a href="#i1006415">Consider Costs and Benefits of Coalescing or Rebuilding Indexes</a></p>
+</li>
+<li>
+<p><a href="#i1006464">Consider Cost Before Disabling or Dropping Constraints</a></p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink CNCPT811" href="../../server.112/e40540/indexiot.htm#CNCPT811"><span class="italic">Oracle Database Concepts</span></a> for conceptual information about indexes and indexing, including descriptions of the various indexing schemes offered by Oracle</p>
+</li>
+<li>
+<p><a class="olink PFGRF94788" href="../../server.112/e41573/data_acc.htm#PFGRF94788"><span class="italic">Oracle Database Performance Tuning Guide</span></a> and <a class="olink DWHSG006" href="../../server.112/e25554/indexes.htm#DWHSG006"><span class="italic">Oracle Database Data Warehousing Guide</span></a> for information about bitmap indexes</p>
+</li>
+<li>
+<p><a class="olink ADDCI290" href="../../appdev.112/e10765/dom_idx.htm#ADDCI290"><span class="italic">Oracle Database Data Cartridge Developer's Guide</span></a> for information about defining domain-specific operators and indexing schemes and integrating them into the Oracle Database server</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+<a id="i1006258"></a>
+<div id="ADMIN11711" class="sect2">
+<h3 class="sect2">Create Indexes After Inserting Table Data</h3>
+<p><a id="sthref2385"></a>Data is often inserted or loaded into a table using either the SQL*Loader or an import utility. It is more efficient to create an index for a table after inserting or loading the data. If you create one or more indexes before loading data, the database then must update every index as each row is inserted.</p>
+<p><a id="sthref2386"></a><a id="sthref2387"></a><a id="sthref2388"></a><a id="sthref2389"></a>Creating an index on a table that already has data requires sort space. Some sort space comes from memory allocated for the index creator. The amount for each user is determined by the initialization parameter <code dir="ltr">SORT_AREA_SIZE</code>. The database also swaps sort information to and from temporary segments that are only allocated during the index creation in the user's temporary tablespace.</p>
+<p>Under certain conditions, data can be loaded into a table with SQL*Loader direct-path load and an index can be created as data is loaded.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SUTIL009" href="../../server.112/e22490/ldr_modes.htm#SUTIL009"><span class="italic">Oracle Database Utilities</span></a> for information about using SQL*Loader for direct-path load</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1006278"></a>
+<div id="ADMIN11712" class="sect2">
+<h3 class="sect2">Index the Correct Tables and Columns</h3>
+<p><a id="sthref2390"></a>Use the following guidelines for determining when to create an index:</p>
+<ul>
+<li>
+<p>Create an index if you frequently want to retrieve less than 15% of the rows in a large table. The percentage varies greatly according to the relative speed of a table scan and how the row data is distributed in relation to the index key. The faster the table scan, the lower the percentage; the more clustered the row data, the higher the percentage.</p>
+</li>
+<li>
+<p>To improve performance on joins of multiple tables, index columns used for joins.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Primary and unique keys automatically have indexes, but you might want to create an index on a foreign key.</div>
+</li>
+<li>
+<p>Small tables do not require indexes. If a query is taking too long, then the table might have grown from small to large.</p>
+</li>
+</ul>
+<p class="subhead2"><a id="ADMIN12644"></a>Columns That Are Suitable for Indexing</p>
+<p><a id="sthref2391"></a>Some columns are strong candidates for indexing. Columns with one or more of the following characteristics are candidates for indexing:</p>
+<ul>
+<li>
+<p>Values are relatively unique in the column.</p>
+</li>
+<li>
+<p>There is a wide range of values (good for regular indexes).</p>
+</li>
+<li>
+<p>There is a small range of values (good for bitmap indexes).</p>
+</li>
+<li>
+<p>The column contains many nulls, but queries often select all rows having a value. In this case, use the following phrase:</p>
+<pre dir="ltr">
+WHERE COL_X &gt; -9.99 * power(10,125)
+</pre>
+<p>Using the preceding phrase is preferable to:</p>
+<pre dir="ltr">
+WHERE COL_X IS NOT NULL
+</pre>
+<p>This is because the first uses an index on <code dir="ltr">COL_X</code> (assuming that <code dir="ltr">COL_X</code> is a numeric column).</p>
+</li>
+</ul>
+<p class="subhead2"><a id="ADMIN12645"></a>Columns That Are Not Suitable for Indexing</p>
+<p>Columns with the following characteristics are less suitable for indexing:</p>
+<ul>
+<li>
+<p>There are many nulls in the column and you do not search on the not null values.</p>
+</li>
+</ul>
+<p><code dir="ltr">LONG</code> and <code dir="ltr">LONG</code> <code dir="ltr">RAW</code> columns cannot be indexed.</p>
+<p class="subhead2"><a id="ADMIN12646"></a>Virtual Columns</p>
+<p>You can create unique or non-unique indexes on <a id="sthref2392"></a><a id="sthref2393"></a>virtual columns. A table index defined on a virtual column is equivalent to a function-based index on the table.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#i1006674">"Creating a Function-Based Index"</a></div>
+</div>
+<!-- class="sect2" -->
+<a id="i1106306"></a>
+<div id="ADMIN11713" class="sect2">
+<h3 class="sect2">Order Index Columns for Performance<a id="sthref2394"></a><a id="sthref2395"></a></h3>
+<p>The order of columns in the <code dir="ltr">CREATE</code> <code dir="ltr">INDEX</code> statement can affect query performance. In general, specify the most frequently used columns first.</p>
+<p>If you create a single index across columns to speed up queries that access, for example, <code dir="ltr">col1</code>, <code dir="ltr">col2</code>, and <code dir="ltr">col3</code>; then queries that access just <code dir="ltr">col1</code>, or that access just <code dir="ltr">col1</code> and <code dir="ltr">col2</code>, are also speeded up. But a query that accessed just <code dir="ltr">col2</code>, just <code dir="ltr">col3</code>, or just <code dir="ltr">col2</code> and <code dir="ltr">col3</code> does not use the index.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+In some cases, such as when the leading column has very low cardinality, the database may use a skip scan of this type of index. See <a class="olink CNCPT88842" href="../../server.112/e40540/indexiot.htm#CNCPT88842"><span class="italic">Oracle Database Concepts</span></a> for more information about index skip scan.</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1006312"></a>
+<div id="ADMIN11714" class="sect2">
+<h3 class="sect2">Limit the Number of Indexes for Each Table</h3>
+<p><a id="sthref2396"></a><a id="sthref2397"></a>A table can have any number of indexes. However, the more indexes there are, the more overhead is incurred as the table is modified. Specifically, when rows are inserted or deleted, all indexes on the table must be updated as well. Also, when a column is updated, all indexes that contain the column must be updated.</p>
+<p>Thus, there is a trade-off between the speed of retrieving data from a table and the speed of updating the table. For example, if a table is primarily read-only, having more indexes can be useful; but if a table is heavily updated, having fewer indexes could be preferable.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1106318"></a>
+<div id="ADMIN11715" class="sect2">
+<h3 class="sect2">Drop Indexes That Are No Longer Required <a id="sthref2398"></a></h3>
+<p>Consider dropping an index if:</p>
+<ul>
+<li>
+<p>It does not speed up queries. The table could be very small, or there could be many rows in the table but very few index entries.</p>
+</li>
+<li>
+<p>The queries in your applications do not use the index.</p>
+</li>
+<li>
+<p>The index must be dropped before being rebuilt.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#i1006905">"Monitoring Index Usage"</a></div>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="CHDCFGBA"></a>
+<div id="ADMIN13462" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Indexes and Deferred Segment Creation<a id="sthref2399"></a><a id="sthref2400"></a></h3>
+<p>Index segment creation is deferred when the associated table defers segment creation. This is because index segment creation reflects the behavior of the table it is associated with.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="tables.htm#CHDGJAGB">"Understand Deferred Segment Creation"</a> for further information</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1006354"></a>
+<div id="ADMIN11716" class="sect2">
+<h3 class="sect2">Estimate Index Size and Set Storage Parameters</h3>
+<p><a id="sthref2401"></a><a id="sthref2402"></a>Estimating the size of an index before creating one can facilitate better disk space planning and management. You can use the combined estimated size of indexes, along with estimates for tables, the undo tablespace, and redo log files, to determine the amount of disk space that is required to hold an intended database. From these estimates, you can make correct hardware purchases and other decisions.</p>
+<p>Use the estimated size of an individual index to better manage the disk space that the index uses. When an index is created, you can set appropriate storage parameters and improve I/O performance of applications that use the index. For example, assume that you estimate the maximum size of an index before creating it. If you then set the storage parameters when you create the index, fewer extents are allocated for the table data segment, and all of the index data is stored in a relatively contiguous section of disk space. This decreases the time necessary for disk I/O operations involving this index.</p>
+<p>The maximum size of a single index entry is approximately one-half the data block size.</p>
+<p>Storage parameters of an index segment created for the index used to enforce a primary key or unique key constraint can be set in either of the following ways:</p>
+<ul>
+<li>
+<p>In the <code dir="ltr">ENABLE</code> ... <code dir="ltr">USING</code> <code dir="ltr">INDEX</code> clause of the <code dir="ltr">CREATE</code> <code dir="ltr">TABLE</code> or <code dir="ltr">ALTER</code> <code dir="ltr">TABLE</code> statement</p>
+</li>
+<li>
+<p>In the <code dir="ltr">STORAGE</code> clause of the <code dir="ltr">ALTER</code> <code dir="ltr">INDEX</code> statement</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="i1006372"></a>
+<div id="ADMIN11717" class="sect2">
+<h3 class="sect2">Specify the Tablespace for Each Index</h3>
+<p><a id="sthref2403"></a>Indexes can be created in any tablespace. An index can be created in the same or different tablespace as the table it indexes. If you use the same tablespace for a table and its index, it can be more convenient to perform database maintenance (such as tablespace or file backup) or to ensure application availability. All the related data is always online together.</p>
+<p>Using different tablespaces (on different disks) for a table and its index produces better performance than storing the table and index in the same tablespace. Disk contention is reduced. But, if you use different tablespaces for a table and its index and one tablespace is offline (containing either data or index), then the statements referencing that table are not guaranteed to work.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1206377"></a>
+<div id="ADMIN11718" class="sect2">
+<h3 class="sect2">Consider Parallelizing Index Creation</h3>
+<p><a id="sthref2404"></a><a id="sthref2405"></a>You can parallelize index creation, much the same as you can parallelize table creation. Because multiple processes work together to create the index, the database can create the index more quickly than if a single server process created the index sequentially.</p>
+<p>When creating an index in parallel, storage parameters are used separately by each query server process. Therefore, an index created with an <code dir="ltr">INITIAL</code> value of 5M and a parallel degree of 12 consumes at least 60M of storage during index creation.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink VLDBG010" href="../../server.112/e25523/parallel.htm#VLDBG010"><span class="italic">Oracle Database VLDB and Partitioning Guide</span></a> for information about using parallel execution</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1206400"></a>
+<div id="ADMIN11719" class="sect2">
+<h3 class="sect2">Consider Creating Indexes with NOLOGGING</h3>
+<p><a id="sthref2406"></a><a id="sthref2407"></a>You can create an index and generate minimal redo log records by specifying <code dir="ltr">NOLOGGING</code> in the <code dir="ltr">CREATE INDEX</code> statement.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Because indexes created using <code dir="ltr">NOLOGGING</code> are not archived, perform a backup after you create the index.</div>
+<p>Creating an index with <code dir="ltr">NOLOGGING</code> has the following benefits:</p>
+<ul>
+<li>
+<p>Space is saved in the redo log files.</p>
+</li>
+<li>
+<p>The time it takes to create the index is decreased.</p>
+</li>
+<li>
+<p>Performance improves for parallel creation of large indexes.</p>
+</li>
+</ul>
+<p>In general, the relative performance improvement is greater for larger indexes created without <code dir="ltr">LOGGING</code> than for smaller ones. Creating small indexes without <code dir="ltr">LOGGING</code> has little effect on the time it takes to create an index. However, for larger indexes the performance improvement can be significant, especially when you are also parallelizing the index creation.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CIHJIDJG"></a>
+<div id="ADMIN13279" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Understand When to Use Unusable or Invisible Indexes</h3>
+<p><a id="sthref2408"></a><a id="sthref2409"></a><a id="sthref2410"></a><a id="sthref2411"></a>Use unusable or invisible indexes when you want to improve the performance of bulk loads, test the effects of removing an index before dropping it, or otherwise suspend the use of an index by the optimizer.</p>
+<p class="subhead2"><a id="ADMIN13280"></a>Unusable indexes</p>
+<p>An <span class="bold">unusable index</span> is ignored by the optimizer and is not maintained by DML. One reason to make an index unusable is to improve bulk load performance. (Bulk loads go more quickly if the database does not need to maintain indexes when inserting rows.) Instead of dropping the index and later re-creating it, which requires you to recall the exact parameters of the <code dir="ltr">CREATE</code> <code dir="ltr">INDEX</code> statement, you can make the index unusable, and then rebuild it.</p>
+<p>You can create an index in the unusable state, or you can mark an existing index or index partition unusable. In some cases the database may mark an index unusable, such as when a failure occurs while building the index. When one partition of a partitioned index is marked unusable, the other partitions of the index remain valid.</p>
+<p>An unusable index or index partition must be rebuilt, or dropped and re-created, before it can be used. Truncating a table makes an unusable index valid.</p>
+<p>Beginning with Oracle Database 11<span class="italic">g</span> Release 2, when you make an existing index unusable, its index segment is dropped.</p>
+<p>The functionality of unusable indexes depends on the setting of the <code dir="ltr">SKIP_UNUSABLE_INDEXES</code> initialization parameter. When <code dir="ltr">SKIP_UNUSABLE_INDEXES</code> is <code dir="ltr">TRUE</code> (the default), then:</p>
+<ul>
+<li>
+<p>DML statements against the table proceed, but unusable indexes are not maintained.</p>
+</li>
+<li>
+<p>DML statements terminate with an error if there are any unusable indexes that are used to enforce the <code dir="ltr">UNIQUE</code> constraint.</p>
+</li>
+<li>
+<p>For nonpartitioned indexes, the optimizer does not consider any unusable indexes when creating an access plan for <code dir="ltr">SELECT</code> statements. The only exception is when an index is explicitly specified with the <code dir="ltr">INDEX()</code> hint.</p>
+</li>
+<li>
+<p>For a partitioned index where one or more of the partitions are unusable, the optimizer does not consider the index if it cannot determine at query compilation time if any of the index partitions can be pruned. This is true for both partitioned and nonpartitioned tables. The only exception is when an index is explicitly specified with the <code dir="ltr">INDEX()</code> hint.</p>
+</li>
+</ul>
+<p>When <code dir="ltr">SKIP_UNUSABLE_INDEXES</code> is <code dir="ltr">FALSE</code>, then:</p>
+<ul>
+<li>
+<p>If any unusable indexes or index partitions are present, any DML statements that would cause those indexes or index partitions to be updated are terminated with an error.</p>
+</li>
+<li>
+<p>For <code dir="ltr">SELECT</code> statements, if an unusable index or unusable index partition is present but the optimizer does not choose to use it for the access plan, the statement proceeds. However, if the optimizer does choose to use the unusable index or unusable index partition, the statement terminates with an error.</p>
+</li>
+</ul>
+<p class="subhead2"><a id="ADMIN13281"></a>Invisible Indexes</p>
+<p><a id="sthref2412"></a><a id="sthref2413"></a>Beginning with Oracle Database 11<span class="italic">g</span> Release 1, you can create invisible indexes or make an existing index invisible. An <span class="bold">invisible index</span> is ignored by the optimizer unless you explicitly set the <code dir="ltr">OPTIMIZER_USE_INVISIBLE_INDEXES</code> initialization parameter to <code dir="ltr">TRUE</code> at the session or system level. Unlike unusable indexes, an invisible index is maintained during DML statements. Although you can make a partitioned index invisible, you cannot make an individual index partition invisible while leaving the other partitions visible.Using invisible indexes, you can do the following:</p>
+<ul>
+<li>
+<p>Test the removal of an index before dropping it.</p>
+</li>
+<li>
+<p>Use temporary index structures for certain operations or modules of an application without affecting the overall application.</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#CIHFIGDG">"Creating an Unusable Index"</a></p>
+</li>
+<li>
+<p><a href="#BABDHCJD">"Creating an Invisible Index"</a></p>
+</li>
+<li>
+<p><a href="#CIHJCEAJ">"Making an Index Unusable"</a></p>
+</li>
+<li>
+<p><a href="#BABJJFEE">"Making an Index Invisible"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1006415"></a>
+<div id="ADMIN11720" class="sect2">
+<h3 class="sect2">Consider Costs and Benefits of Coalescing or Rebuilding Indexes</h3>
+<p><a id="sthref2414"></a><a id="sthref2415"></a><a id="sthref2416"></a><a id="sthref2417"></a>Improper sizing or increased growth can produce index fragmentation. To eliminate or reduce fragmentation, you can rebuild or coalesce the index. But before you perform either task weigh the costs and benefits of each option and choose the one that works best for your situation. <a href="#g1007548">Table 21-1</a> is a comparison of the costs and benefits associated with rebuilding and coalescing indexes.</p>
+<div id="ADMIN13067" class="tblruleformal">
+<p class="titleintable"><a id="sthref2418"></a><a id="g1007548"></a>Table 21-1 Costs and Benefits of Coalescing or Rebuilding Indexes</p>
+<table class="cellalignment1333" title="Costs and Benefits of Coalescing or Rebuilding Indexes" summary="Column 1 lists the benefits of rebuilding an index, column 2 lists the comparable benefits of coalexcing an index." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t13">Rebuild Index</th>
+<th class="cellalignment1334" id="r1c2-t13">Coalesce Index</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t13" headers="r1c1-t13">
+<p>Quickly moves index to another tablespace</p>
+</td>
+<td class="cellalignment1335" headers="r2c1-t13 r1c2-t13">
+<p>Cannot move index to another tablespace</p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t13" headers="r1c1-t13">
+<p>Higher costs: requires more disk space</p>
+</td>
+<td class="cellalignment1335" headers="r3c1-t13 r1c2-t13">
+<p>Lower costs: does not require more disk space</p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t13" headers="r1c1-t13">
+<p>Creates new tree, shrinks height if applicable</p>
+</td>
+<td class="cellalignment1335" headers="r4c1-t13 r1c2-t13">
+<p>Coalesces leaf blocks within same branch of tree</p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r5c1-t13" headers="r1c1-t13">
+<p>Enables you to quickly change storage and tablespace parameters without having to drop the original index.</p>
+</td>
+<td class="cellalignment1335" headers="r5c1-t13 r1c2-t13">
+<p>Quickly frees up index leaf blocks for use.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformal" -->
+<p>In situations where you have B-tree index leaf blocks that can be freed up for reuse, you can merge those leaf blocks using the following statement:</p>
+<pre dir="ltr">
+ALTER INDEX vmoore COALESCE;
+</pre>
+<p><a id="sthref2419"></a><a href="#i1006458">Figure 21-1</a> illustrates the effect of an <code dir="ltr">ALTER INDEX COALESCE</code> on the index <code dir="ltr">vmoore</code>. Before performing the operation, the first two leaf blocks are 50% full. Therefore, you have an opportunity to reduce fragmentation and completely fill the first block, while freeing up the second.</p>
+<div id="ADMIN13068" class="figure">
+<p class="titleinfigure"><a id="i1006458"></a>Figure 21-1 Coalescing Indexes</p>
+<img width="519" height="238" src="img/admin026.gif" alt="Description of Figure 21-1 follows" /><br />
+<a id="sthref2420" href="img_text/admin026.htm">Description of "Figure 21-1 Coalescing Indexes"</a><br />
+<br /></div>
+<!-- class="figure" --></div>
+<!-- class="sect2" -->
+<a id="i1006464"></a>
+<div id="ADMIN11721" class="sect2">
+<h3 class="sect2">Consider Cost Before Disabling or Dropping Constraints</h3>
+<p><a id="sthref2421"></a><a id="sthref2422"></a><a id="sthref2423"></a>Because unique and primary keys have associated indexes, you should factor in the cost of dropping and creating indexes when considering whether to disable or drop a <code dir="ltr">UNIQUE</code> or <code dir="ltr">PRIMARY KEY</code> constraint. If the associated index for a <code dir="ltr">UNIQUE</code> key or <code dir="ltr">PRIMARY KEY</code> constraint is extremely large, you can save time by leaving the constraint enabled rather than dropping and re-creating the large index. You also have the option of explicitly specifying that you want to keep or drop the index when dropping or disabling a <code dir="ltr">UNIQUE</code> or <code dir="ltr">PRIMARY KEY</code> constraint.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="general.htm#i1006599">"Managing Integrity Constraints"</a></div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1106482"></a>
+<div id="ADMIN11722" class="sect1">
+<h2 class="sect1">Creating Indexes</h2>
+<p><a id="sthref2424"></a><a id="sthref2425"></a>This section describes how to create indexes.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+These operations also collect index statistics.</div>
+<p>To create an index in your own schema, <span class="italic">at least one</span> of the following conditions must be true:</p>
+<ul>
+<li>
+<p>The table or cluster to be indexed is in your own schema.</p>
+</li>
+<li>
+<p>You have <code dir="ltr">INDEX</code> privilege on the table to be indexed.</p>
+</li>
+<li>
+<p>You have <code dir="ltr">CREATE ANY INDEX</code> system privilege.</p>
+</li>
+</ul>
+<p>To create an index in another schema, <span class="italic">all</span> of the following conditions must be true:</p>
+<ul>
+<li>
+<p>You have <code dir="ltr">CREATE ANY INDEX</code> system privilege.</p>
+</li>
+<li>
+<p>The owner of the other schema has a quota for the tablespaces to contain the index or index partitions, or <code dir="ltr">UNLIMITED TABLESPACE</code> system privilege.</p>
+</li>
+</ul>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1006525">Creating an Index Explicitly</a></p>
+</li>
+<li>
+<p><a href="#i1106547">Creating a Unique Index Explicitly</a></p>
+</li>
+<li>
+<p><a href="#i1006566">Creating an Index Associated with a Constraint</a></p>
+</li>
+<li>
+<p><a href="#i1006643">Creating a Large Index</a></p>
+</li>
+<li>
+<p><a href="#i1006652">Creating an Index Online</a></p>
+</li>
+<li>
+<p><a href="#i1006674">Creating a Function-Based Index</a></p>
+</li>
+<li>
+<p><a href="#i1106790">Creating a Key-Compressed Index</a></p>
+</li>
+<li>
+<p><a href="#CIHFIGDG">Creating an Unusable Index</a></p>
+</li>
+<li>
+<p><a href="#BABDHCJD">Creating an Invisible Index</a></p>
+</li>
+</ul>
+<a id="i1006525"></a>
+<div id="ADMIN11723" class="sect2">
+<h3 class="sect2">Creating an Index Explicitly</h3>
+<p>You can create indexes explicitly (outside of integrity constraints) using the SQL statement <code dir="ltr"><a id="sthref2426"></a><a id="sthref2427"></a>CREATE INDEX</code>. The following statement creates an index named <code dir="ltr">emp_ename</code> for the <code dir="ltr">ename</code> column of the <code dir="ltr">emp</code> table:</p>
+<pre dir="ltr">
+CREATE INDEX emp_ename ON emp(ename)
+      TABLESPACE users
+      STORAGE (INITIAL 20K
+      NEXT 20k);
+</pre>
+<p>Notice that several storage settings and a tablespace are explicitly specified for the index. If you do not specify storage options (such as <code dir="ltr">INITIAL</code> and <code dir="ltr">NEXT</code>) for an index, the default storage options of the default or specified tablespace are automatically used.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SQLRF01209" href="../../server.112/e41084/statements_5012.htm#SQLRF01209"><span class="italic">Oracle Database SQL Language Reference</span></a> for syntax and restrictions on the use of the <code dir="ltr">CREATE INDEX</code> statement</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1106547"></a>
+<div id="ADMIN11724" class="sect2">
+<h3 class="sect2">Creating a Unique Index Explicitly</h3>
+<p>Indexes can be unique or non-unique. Unique indexes guarantee that no two rows of a table have duplicate values in the key column (or columns). Non-unique indexes do not impose this restriction on the column values.</p>
+<p>Use the <code dir="ltr"><a id="sthref2428"></a><a id="sthref2429"></a>CREATE UNIQUE INDEX</code> statement to create a unique index. The following example creates a unique index:</p>
+<pre dir="ltr">
+CREATE UNIQUE INDEX dept_unique_index ON dept (dname)
+      TABLESPACE indx;
+</pre>
+<p>Alternatively, you can define <code dir="ltr">UNIQUE</code> integrity constraints on the desired columns. The database enforces <code dir="ltr">UNIQUE</code> integrity constraints by automatically defining a unique index on the unique key. This is discussed in the following section. However, it is advisable that any index that exists for query performance, including unique indexes, be created explicitly.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink PFGRF004" href="../../server.112/e41573/data_acc.htm#PFGRF004"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for more information about creating an index for performance</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1006566"></a>
+<div id="ADMIN11725" class="sect2">
+<h3 class="sect2">Creating an Index Associated with a Constraint<a id="sthref2430"></a><a id="sthref2431"></a></h3>
+<p><a id="sthref2432"></a><a id="sthref2433"></a><a id="sthref2434"></a><a id="sthref2435"></a>Oracle Database enforces a <code dir="ltr">UNIQUE</code> key or <code dir="ltr">PRIMARY KEY</code> integrity constraint on a table by creating a unique index on the unique key or primary key. This index is automatically created by the database when the constraint is enabled. No action is required by you when you issue the <code dir="ltr">CREATE TABLE</code> or <code dir="ltr">ALTER TABLE</code> statement to create the index, but you can optionally specify a <code dir="ltr">USING INDEX</code> clause to exercise control over its creation. This includes both when a constraint is defined and enabled, and when a defined but disabled constraint is enabled.</p>
+<p>To enable a <code dir="ltr">UNIQUE</code> or <code dir="ltr">PRIMARY KEY</code> constraint, thus creating an associated index, the owner of the table must have a quota for the tablespace intended to contain the index, or the <code dir="ltr">UNLIMITED TABLESPACE</code> system privilege. The index associated with a constraint always takes the name of the constraint, unless you optionally specify otherwise.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+An efficient procedure for enabling a constraint that can make use of parallelism is described in <a href="general.htm#CHDFEJII">"Efficient Use of Integrity Constraints: A Procedure"</a>.</div>
+<div id="ADMIN11726" class="sect3"><a id="sthref2436"></a>
+<h4 class="sect3">Specifying Storage Options for an Index Associated with a Constraint<a id="sthref2437"></a></h4>
+<p><a id="sthref2438"></a><a id="sthref2439"></a><a id="sthref2440"></a>You can set the storage options for the indexes associated with <code dir="ltr">UNIQUE</code> and <code dir="ltr">PRIMARY KEY</code> constraints using the <code dir="ltr">USING INDEX</code> clause. The following <code dir="ltr">CREATE TABLE</code> statement enables a <code dir="ltr">PRIMARY KEY</code> constraint and specifies the storage options of the associated index:</p>
+<pre dir="ltr">
+CREATE TABLE emp (
+     empno NUMBER(5) PRIMARY KEY, age INTEGER)
+     ENABLE PRIMARY KEY USING INDEX
+     TABLESPACE users;
+</pre></div>
+<!-- class="sect3" -->
+<div id="ADMIN11727" class="sect3"><a id="sthref2441"></a>
+<h4 class="sect3">Specifying the Index Associated with a Constraint</h4>
+<p>If you require more explicit control over the indexes associated with <code dir="ltr">UNIQUE</code> and <code dir="ltr">PRIMARY KEY</code> constraints, the database lets you:</p>
+<ul>
+<li>
+<p>Specify an existing index that the database is to use to enforce the constraint</p>
+</li>
+<li>
+<p>Specify a <code dir="ltr">CREATE</code> <code dir="ltr">INDEX</code> statement that the database is to use to create the index and enforce the constraint</p>
+</li>
+</ul>
+<p>These options are specified using the <code dir="ltr">USING</code> <code dir="ltr">INDEX</code> clause. The following statements present some examples.</p>
+<p><span class="bold">Example 1:</span></p>
+<pre dir="ltr">
+CREATE TABLE a (
+     a1 INT PRIMARY KEY USING INDEX (create index ai on a (a1)));
+</pre>
+<p><span class="bold">Example 2:</span></p>
+<pre dir="ltr">
+CREATE TABLE b(
+     b1 INT, 
+     b2 INT, 
+     CONSTRAINT bu1 UNIQUE (b1, b2) 
+                    USING INDEX (create unique index bi on b(b1, b2)),
+     CONSTRAINT bu2 UNIQUE (b2, b1) USING INDEX bi);
+</pre>
+<p><span class="bold">Example 3:</span></p>
+<pre dir="ltr">
+CREATE TABLE c(c1 INT, c2 INT);
+CREATE INDEX ci ON c (c1, c2);
+ALTER TABLE c ADD CONSTRAINT cpk PRIMARY KEY (c1) USING INDEX ci;
+</pre>
+<p>If a single statement creates an index with one constraint and also uses that index for another constraint, the system will attempt to rearrange the clauses to create the index before reusing it.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="general.htm#i1006599">"Managing Integrity Constraints"</a></div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1006643"></a>
+<div id="ADMIN11729" class="sect2">
+<h3 class="sect2">Creating a Large Index</h3>
+<p>When creating an extremely large index, consider allocating a larger temporary tablespace for the index creation using the following procedure:<a id="sthref2442"></a></p>
+<ol>
+<li>
+<p>Create a new temporary tablespace using the <code dir="ltr">CREATE TABLESPACE</code> or <code dir="ltr">CREATE TEMPORARY TABLESPACE</code> statement.</p>
+</li>
+<li>
+<p>Use the <code dir="ltr">TEMPORARY TABLESPACE</code> option of the <code dir="ltr">ALTER USER</code> statement to make this your new temporary tablespace.</p>
+</li>
+<li>
+<p>Create the index using the <code dir="ltr">CREATE INDEX</code> statement.</p>
+</li>
+<li>
+<p>Drop this tablespace using the <code dir="ltr">DROP TABLESPACE</code> statement. Then use the <code dir="ltr">ALTER USER</code> statement to reset your temporary tablespace to your original temporary tablespace.</p>
+</li>
+</ol>
+<p>Using this procedure can avoid the problem of expanding your usual, and usually shared, temporary tablespace to an unreasonably large size that might affect future performance.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1006652"></a>
+<div id="ADMIN11006" class="sect2">
+<h3 class="sect2">Creating an <a id="sthref2443"></a>Index Online</h3>
+<p>You can create and rebuild indexes online. Therefore, you can update base tables at the same time you are building or rebuilding indexes on that table. You can perform DML operations while the index build is taking place, but DDL operations are not allowed. Parallel execution is not supported when creating or rebuilding an index online.</p>
+<p>The following statements illustrate online index build operations:</p>
+<pre dir="ltr">
+CREATE INDEX emp_name ON emp (mgr, emp1, emp2, emp3) ONLINE;
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Keep in mind that the time that it takes on online index build to complete is proportional to the size of the table and the number of concurrently executing DML statements. Therefore, it is best to start online index builds when DML activity is low.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#i1006864">"Rebuilding an Existing Index"</a></div>
+</div>
+<!-- class="sect2" -->
+<a id="i1006674"></a>
+<div id="ADMIN11730" class="sect2">
+<h3 class="sect2">Creating a Function-Based Index</h3>
+<p><span class="bold"><a id="sthref2444"></a><a id="sthref2445"></a>Function-based indexes</span> facilitate queries that qualify a value returned by a function or expression. The value of the function or expression is precomputed and stored in the index.</p>
+<p>In addition to the prerequisites for creating a conventional index, if the index is based on user-defined functions, then those functions must be marked <code dir="ltr">DETERMINISTIC</code>. Also, you just have the <code dir="ltr">EXECUTE</code> object privilege on any user-defined function(s) used in the function-based index if those functions are owned by another user.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+<code dir="ltr">CREATE INDEX</code> stores the timestamp of the most recent function used in the function-based index. This timestamp is updated when the index is validated. When performing tablespace point-in-time recovery of a function-based index, if the timestamp on the most recent function used in the index is newer than the timestamp stored in the index, then the index is marked invalid. You must use the <code dir="ltr">ANALYZE INDEX...VALIDATE STRUCTURE</code> statement to validate this index.</div>
+<p>To illustrate a function-based index, consider the following statement that defines a function-based index (<code dir="ltr">area_index</code>) defined on the function <code dir="ltr">area(geo)</code>:</p>
+<pre dir="ltr">
+CREATE INDEX area_index ON rivers (area(geo));
+</pre>
+<p>In the following SQL statement, when <code dir="ltr">area(geo)</code> is referenced in the <code dir="ltr">WHERE</code> clause, the optimizer considers using the index <code dir="ltr">area_index</code>.</p>
+<pre dir="ltr">
+SELECT id, geo, area(geo), desc
+     FROM rivers     
+     WHERE Area(geo) &gt;5000;
+</pre>
+<p>Table owners should have <code dir="ltr">EXECUTE</code> privileges on the functions used in function-based indexes.</p>
+<p>Because a function-based index depends upon any function it is using, it can be invalidated when a function changes. If the function is valid, you can use an <code dir="ltr">ALTER INDEX...ENABLE</code> statement to enable a function-based index that has been disabled. The <code dir="ltr">ALTER INDEX...DISABLE</code> statement lets you disable the use of a function-based index. Consider doing this if you are working on the body of the function.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+An alternative to creating a function-based index is to add a virtual column to the target table and index the virtual column. See <a href="tables.htm#i1008437">"About Tables"</a> for more information.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink CNCPT1161" href="../../server.112/e40540/indexiot.htm#CNCPT1161"><span class="italic">Oracle Database Concepts</span></a> for more information about function-based indexes</p>
+</li>
+<li>
+<p><a class="olink ADFNS00505" href="../../appdev.112/e41502/adfns_indexes.htm#ADFNS00505"><span class="italic">Oracle Database Advanced Application Developer's Guide</span></a> for information about using function-based indexes in applications and examples of their use</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1106790"></a>
+<div id="ADMIN11731" class="sect2">
+<h3 class="sect2">Creating a Key-Compressed Index</h3>
+<p><a id="sthref2446"></a><a id="sthref2447"></a>Creating an index using key compression enables you to eliminate repeated occurrences of key column prefix values.</p>
+<p>Key compression breaks an index key into a prefix and a suffix entry. Compression is achieved by sharing the prefix entries among all the suffix entries in an index block. This sharing can lead to huge savings in space, allowing you to store more keys for each index block while improving performance.</p>
+<p>Key compression can be useful in the following situations:</p>
+<ul>
+<li>
+<p>You have a non-unique index where <code dir="ltr">ROWID</code> is appended to make the key unique. If you use key compression here, the duplicate key is stored as a prefix entry on the index block without the <code dir="ltr">ROWID</code>. The remaining rows become suffix entries consisting of only the <code dir="ltr">ROWID</code>.</p>
+</li>
+<li>
+<p>You have a unique multicolumn index.</p>
+</li>
+</ul>
+<p>You enable key compression using the <code dir="ltr">COMPRESS</code> clause. The prefix length (as the number of key columns) can also be specified to identify how the key columns are broken into a prefix and suffix entry. For example, the following statement compresses duplicate occurrences of a key in the index leaf block:</p>
+<pre dir="ltr">
+CREATE INDEX  emp_ename ON emp(ename)
+   TABLESPACE users
+   COMPRESS 1;
+</pre>
+<p>The <code dir="ltr">COMPRESS</code> clause can also be specified during rebuild. For example, during rebuild you can disable compression as follows:</p>
+<pre dir="ltr">
+ALTER INDEX emp_ename REBUILD NOCOMPRESS;
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink CNCPT1177" href="../../server.112/e40540/indexiot.htm#CNCPT1177"><span class="italic">Oracle Database Concepts</span></a> for a more detailed discussion of key compression</div>
+</div>
+<!-- class="sect2" -->
+<a id="CIHFIGDG"></a>
+<div id="ADMIN13282" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Creating an Unusable Index</h3>
+<p><a id="sthref2448"></a>When you create an index in the <code dir="ltr">UNUSABLE</code> state, it is ignored by the optimizer and is not maintained by DML. An unusable index must be rebuilt, or dropped and re-created, before it can be used.</p>
+<p>If the index is partitioned, then all index partitions are marked <code dir="ltr">UNUSABLE</code>.</p>
+<p>Beginning with Oracle Database 11<span class="italic">g</span> Release 2, the database does not create an index segment when creating an unusable index.</p>
+<p>The following procedure illustrates how to create unusable indexes and query the database for details about the index.</p>
+<p class="orderedlisttitle">To create an unusable index:&nbsp;</p>
+<ol>
+<li>
+<p>If necessary, create the table to be indexed.</p>
+<p>For example, create a hash-partitioned table called <code dir="ltr">hr.employees_part</code> as follows:</p>
+<pre dir="ltr">
+sh@PROD&gt; CONNECT hr
+Enter password: **
+Connected.
+
+hr@PROD&gt; CREATE TABLE employees_part
+  2    PARTITION BY HASH (employee_id) PARTITIONS 2
+  3    AS SELECT * FROM employees;
+ 
+Table created.
+
+hr@PROD&gt; SELECT COUNT(*) FROM employees_part;
+ 
+  COUNT(*)
+----------
+       107
+</pre></li>
+<li>
+<p>Create an index with the keyword <code dir="ltr">UNUSABLE</code>.</p>
+<p>The following example creates a locally partitioned index on <code dir="ltr">employees_part</code>, naming the index partitions <code dir="ltr">p1_i_emp_ename</code> and <code dir="ltr">p2_i_emp_ename</code>, and making <code dir="ltr">p1_i_emp_ename</code> unusable:</p>
+<pre dir="ltr">
+hr@PROD&gt; CREATE INDEX i_emp_ename ON employees_part (employee_id)
+  2    LOCAL (PARTITION p1_i_emp_ename UNUSABLE, PARTITION p2_i_emp_ename);
+ 
+Index created.
+</pre></li>
+<li>
+<p>Optionally, verify that the index is unusable by querying the data dictionary.</p>
+<p>The following example queries the status of index <code dir="ltr">i_emp_ename</code> and its two partitions, showing that only partition <code dir="ltr">p2_i_emp_ename</code> is unusable:</p>
+<pre dir="ltr">
+hr@PROD&gt; SELECT INDEX_NAME AS "INDEX OR PARTITION NAME", STATUS
+  2  FROM   USER_INDEXES
+  3  WHERE  INDEX_NAME = 'I_EMP_ENAME'
+  4  UNION ALL
+  5  SELECT PARTITION_NAME AS "INDEX OR PARTITION NAME", STATUS
+  6  FROM   USER_IND_PARTITIONS
+  7  WHERE  PARTITION_NAME LIKE '%I_EMP_ENAME%';
+ 
+INDEX OR PARTITION NAME        STATUS
+------------------------------ --------
+I_EMP_ENAME                    N/A
+P1_I_EMP_ENAME                 UNUSABLE
+P2_I_EMP_ENAME                 USABLE
+</pre></li>
+<li>
+<p>Optionally, query the data dictionary to determine whether storage exists for the partitions.</p>
+<p>For example, the following query shows that only index partition <code dir="ltr">p2_i_emp_ename</code> occupies a segment. Because you created <code dir="ltr">p1_i_emp_ename</code> as unusable, the database did not allocate a segment for it.</p>
+<pre dir="ltr">
+hr@PROD&gt; COL PARTITION_NAME FORMAT a14
+hr@PROD&gt; COL SEG_CREATED FORMAT a11
+hr@PROD&gt; SELECT p.PARTITION_NAME, p.STATUS AS "PART_STATUS",
+  2         p.SEGMENT_CREATED AS "SEG_CREATED",   
+  3  FROM   USER_IND_PARTITIONS p, USER_SEGMENTS s
+  4  WHERE  s.SEGMENT_NAME = 'I_EMP_ENAME';
+ 
+PARTITION_NAME PART_STA SEG_CREATED 
+-------------- -------- ----------- 
+P2_I_EMP_ENAME USABLE   YES       
+P1_I_EMP_ENAME UNUSABLE NO
+</pre></li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#CIHJIDJG">"Understand When to Use Unusable or Invisible Indexes"</a></p>
+</li>
+<li>
+<p><a href="#CIHJCEAJ">"Making an Index Unusable"</a></p>
+</li>
+<li>
+<p><a class="olink SQLRF54038" href="../../server.112/e41084/statements_5012.htm#SQLRF54038"><span class="italic">Oracle Database SQL Language Reference</span></a> for more information on creating unusable indexes, including restrictions.</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="BABDHCJD"></a>
+<div id="ADMIN12317" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Creating an Invisible Index</h3>
+<p>An invisible index is an index that is ignored by the optimizer unless you explicitly set the <code dir="ltr">OPTIMIZER_USE_INVISIBLE_INDEXES</code> initialization parameter to <code dir="ltr">TRUE</code> at the session or system level.</p>
+<p class="itemizedlisttitle">To create an invisible index:&nbsp;</p>
+<ul>
+<li>
+<p>Use the <code dir="ltr">CREATE INDEX</code> statement with the <code dir="ltr">INVISIBLE</code> keyword.</p>
+<p>The following statement creates an invisible index named <code dir="ltr">emp_ename</code> for the <code dir="ltr">ename</code> column of the <code dir="ltr">emp</code> table:</p>
+<pre dir="ltr">
+CREATE INDEX emp_ename ON emp(ename)
+      TABLESPACE users
+      STORAGE (INITIAL 20K
+      NEXT 20k)
+      <span class="bold">INVISIBLE</span>;
+</pre></li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#CIHJIDJG">"Understand When to Use Unusable or Invisible Indexes"</a></p>
+</li>
+<li>
+<p><a href="#BABJJFEE">"Making an Index Invisible"</a></p>
+</li>
+<li>
+<p><a class="olink SQLRF01209" href="../../server.112/e41084/statements_5012.htm#SQLRF01209"><span class="italic">Oracle Database SQL Language Reference</span></a> for more information on creating invisible indexes</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006816"></a>
+<div id="ADMIN11732" class="sect1">
+<h2 class="sect1">Altering Indexes<a id="sthref2451"></a><a id="sthref2452"></a></h2>
+<p><a id="sthref2453"></a>To alter an index, your schema must contain the index or you must have the <code dir="ltr">ALTER ANY INDEX</code> system privilege. With the <code dir="ltr">ALTER INDEX</code> statement, you can:</p>
+<ul>
+<li>
+<p>Rebuild or coalesce an existing index</p>
+</li>
+<li>
+<p>Deallocate unused space or allocate a new extent</p>
+</li>
+<li>
+<p>Specify parallel execution (or not) and alter the degree of parallelism</p>
+</li>
+<li>
+<p>Alter storage parameters or physical attributes</p>
+</li>
+<li>
+<p>Specify <code dir="ltr">LOGGING</code> or <code dir="ltr">NOLOGGING</code></p>
+</li>
+<li>
+<p>Enable or disable key compression</p>
+</li>
+<li>
+<p>Mark the index unusable</p>
+</li>
+<li>
+<p>Make the index invisible</p>
+</li>
+<li>
+<p>Rename the index</p>
+</li>
+<li>
+<p>Start or stop the monitoring of index usage</p>
+</li>
+</ul>
+<p>You cannot alter index column structure.</p>
+<p>More detailed discussions of some of these operations are contained in the following sections:</p>
+<ul>
+<li>
+<p><a href="#i1006843">Altering Storage Characteristics of an Index</a></p>
+</li>
+<li>
+<p><a href="#i1006864">Rebuilding an Existing Index</a></p>
+</li>
+<li>
+<p><a href="#CIHJCEAJ">Making an Index Unusable</a></p>
+</li>
+<li>
+<p><a href="#BABJJFEE">Making an Index Invisible</a></p>
+</li>
+<li>
+<p><a href="#i1006905">Monitoring Index Usage</a></p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink SQLRF00805" href="../../server.112/e41084/statements_1010.htm#SQLRF00805"><span class="italic">Oracle Database SQL Language Reference</span></a> for details on the <code dir="ltr">ALTER</code> <code dir="ltr">INDEX</code> statement</p>
+</li>
+</ul>
+</div>
+<a id="i1006843"></a>
+<div id="ADMIN11733" class="sect2">
+<h3 class="sect2">Altering Storage Characteristics of an Index</h3>
+<p>Alter the storage parameters of any index, including those created by the database to enforce primary and unique key integrity constraints, using the <code dir="ltr">ALTER INDEX</code> statement. For example, the following statement alters the <code dir="ltr">emp_ename</code> index:</p>
+<pre dir="ltr">
+ALTER INDEX emp_ename
+     STORAGE (NEXT 40);
+</pre>
+<p>The parameters <code dir="ltr">INITIAL</code> and <code dir="ltr">MINEXTENTS</code> cannot be altered. All new settings for the other storage parameters affect only extents subsequently allocated for the index.</p>
+<p>For indexes that implement integrity constraints, you can adjust storage parameters by issuing an <code dir="ltr">ALTER TABLE</code> statement that includes the <code dir="ltr">USING INDEX</code> subclause of the <code dir="ltr">ENABLE</code> clause. For example, the following statement changes the storage options of the index created on table <code dir="ltr">emp</code> to enforce the primary key constraint:</p>
+<pre dir="ltr">
+ALTER TABLE emp
+     ENABLE PRIMARY KEY USING INDEX;
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SQLRF00805" href="../../server.112/e41084/statements_1010.htm#SQLRF00805"><span class="italic">Oracle Database SQL Language Reference</span></a> for syntax and restrictions on the use of the <code dir="ltr">ALTER INDEX</code> statement</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1006864"></a>
+<div id="ADMIN11734" class="sect2">
+<h3 class="sect2">Rebuilding an Existing Index</h3>
+<p><a id="sthref2454"></a><a id="sthref2455"></a>Before rebuilding an existing index, compare the costs and benefits associated with rebuilding to those associated with coalescing indexes as described in <a href="#g1007548">Table 21-1</a>.</p>
+<p>When you rebuild an index, you use an existing index as the data source. Creating an index in this manner enables you to change storage characteristics or move to a new tablespace. Rebuilding an index based on an existing data source removes intra-block fragmentation. Compared to dropping the index and using the <code dir="ltr">CREATE INDEX</code> statement, rebuilding an existing index offers better performance.</p>
+<p>The following statement rebuilds the existing index <code dir="ltr">emp_name</code>:</p>
+<pre dir="ltr">
+ALTER INDEX emp_name REBUILD;
+</pre>
+<p>The <code dir="ltr">REBUILD</code> clause must immediately follow the index name, and precede any other options. It cannot be used with the <code dir="ltr">DEALLOCATE UNUSED</code> clause.</p>
+<p><a id="sthref2456"></a><a id="sthref2457"></a>You have the option of rebuilding the index online. Rebuilding online enables you to update base tables at the same time that you are rebuilding. The following statement rebuilds the <code dir="ltr">emp_name</code> index online:</p>
+<pre dir="ltr">
+ALTER INDEX emp_name REBUILD ONLINE;
+</pre>
+<p>To rebuild an index in a different user's schema online, the following additional system privileges are required:</p>
+<ul>
+<li>
+<p><code dir="ltr">CREATE ANY TABLE</code></p>
+</li>
+<li>
+<p><code dir="ltr">CREATE ANY INDEX</code></p>
+</li>
+</ul>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Online index rebuilding has stricter limitations on the maximum key length that can be handled, compared to other methods of rebuilding an index. If an ORA-1450 (maximum key length exceeded) error occurs when rebuilding online, try rebuilding offline, coalescing, or dropping and re-creating the index.</div>
+<p><a id="sthref2458"></a>If you do not have the space required to rebuild an index, you can choose instead to coalesce the index. Coalescing an index is an online operation.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#i1006652">"Creating an Index Online"</a></p>
+</li>
+<li>
+<p><a href="#i1006918">"Monitoring Space Use of Indexes"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="CIHJCEAJ"></a>
+<div id="ADMIN13283" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Making an Index Unusable</h3>
+<p><a id="sthref2459"></a>When you make an index unusable, it is ignored by the optimizer and is not maintained by DML. When you make one partition of a partitioned index unusable, the other partitions of the index remain valid.</p>
+<p>You must rebuild or drop and re-create an unusable index or index partition before using it.</p>
+<p>The following procedure illustrates how to make an index and index partition unusable, and how to query the object status.</p>
+<p class="orderedlisttitle">To make an index unusable:&nbsp;</p>
+<ol>
+<li>
+<p><a id="sthref2461"></a>Query the data dictionary to determine whether an existing index or index partition is usable or unusable.</p>
+<p>For example, issue the following query (output truncated to save space):</p>
+<pre dir="ltr">
+hr@PROD&gt; SELECT INDEX_NAME AS "INDEX OR PART NAME", STATUS, SEGMENT_CREATED
+  2  FROM   USER_INDEXES
+  3  UNION ALL
+  4  SELECT PARTITION_NAME AS "INDEX OR PART NAME", STATUS, SEGMENT_CREATED
+  5  FROM   USER_IND_PARTITIONS;
+ 
+INDEX OR PART NAME             STATUS   SEG
+------------------------------ -------- ---
+I_EMP_ENAME                    N/A      N/A
+JHIST_EMP_ID_ST_DATE_PK        VALID    YES
+JHIST_JOB_IX                   VALID    YES
+JHIST_EMPLOYEE_IX              VALID    YES
+JHIST_DEPARTMENT_IX            VALID    YES
+EMP_EMAIL_UK                   VALID    NO
+.
+.
+.
+COUNTRY_C_ID_PK                VALID    YES
+REG_ID_PK                      VALID    YES
+P2_I_EMP_ENAME                 USABLE   YES
+P1_I_EMP_ENAME                 UNUSABLE NO
+ 
+22 rows selected.
+</pre>
+<p>The preceding output shows that only index partition <code dir="ltr">p1_i_emp_ename</code> is unusable.</p>
+</li>
+<li>
+<p>Make an index or index partition unusable by specifying the <code dir="ltr">UNUSABLE</code> keyword.</p>
+<p>The following example makes index <code dir="ltr">emp_email_uk</code> unusable:</p>
+<pre dir="ltr">
+hr@PROD&gt; ALTER INDEX emp_email_uk UNUSABLE;
+ 
+Index altered.
+</pre>
+<p>The following example makes index partition <code dir="ltr">p2_i_emp_ename</code> unusable:</p>
+<pre dir="ltr">
+hr@PROD&gt; ALTER INDEX i_emp_ename MODIFY PARTITION p2_i_emp_ename UNUSABLE;
+ 
+Index altered.
+</pre></li>
+<li>
+<p><a id="sthref2462"></a>Optionally, query the data dictionary to verify the status change.</p>
+<p>For example, issue the following query (output truncated to save space):</p>
+<pre dir="ltr">
+hr@PROD&gt; SELECT INDEX_NAME AS "INDEX OR PARTITION NAME", STATUS, 
+  2  SEGMENT_CREATED
+  3  FROM   USER_INDEXES
+  4  UNION ALL
+  5  SELECT PARTITION_NAME AS "INDEX OR PARTITION NAME", STATUS, 
+  6  SEGMENT_CREATED
+  7  FROM   USER_IND_PARTITIONS;
+ 
+INDEX OR PARTITION NAME        STATUS   SEG
+------------------------------ -------- ---
+I_EMP_ENAME                    N/A      N/A
+JHIST_EMP_ID_ST_DATE_PK        VALID    YES
+JHIST_JOB_IX                   VALID    YES
+JHIST_EMPLOYEE_IX              VALID    YES
+JHIST_DEPARTMENT_IX            VALID    YES
+EMP_EMAIL_UK                   <span class="bold">UNUSABLE</span> NO
+.
+.
+.
+COUNTRY_C_ID_PK                VALID    YES
+REG_ID_PK                      VALID    YES
+P2_I_EMP_ENAME                 <span class="bold">UNUSABLE</span> NO
+P1_I_EMP_ENAME                 UNUSABLE NO
+ 
+22 rows selected.
+</pre>
+<p>A query of space consumed by the <code dir="ltr">i_emp_ename</code> and <code dir="ltr">emp_email_uk</code> segments shows that the segments no longer exist:</p>
+<pre dir="ltr">
+hr@PROD&gt; SELECT SEGMENT_NAME, BYTES
+  2  FROM   USER_SEGMENTS
+  3  WHERE  SEGMENT_NAME IN ('I_EMP_ENAME', 'EMP_EMAIL_UK');
+ 
+no rows selected
+</pre></li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#CIHJIDJG">"Understand When to Use Unusable or Invisible Indexes"</a></p>
+</li>
+<li>
+<p><a href="#CIHFIGDG">"Creating an Unusable Index"</a></p>
+</li>
+<li>
+<p><a class="olink SQLRF54038" href="../../server.112/e41084/statements_5012.htm#SQLRF54038"><span class="italic">Oracle Database SQL Language Reference</span></a> for more information about the <code dir="ltr">UNUSABLE</code> keyword, including restrictions</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="BABJJFEE"></a>
+<div id="ADMIN12318" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Making an Index Invisible</h3>
+<p>An invisible index is ignored by the optimizer unless you explicitly set the <code dir="ltr">OPTIMIZER_USE_INVISIBLE_INDEXES</code> initialization parameter to <code dir="ltr">TRUE</code> at the session or system level. Making an index invisible is an alternative to making it unusable or dropping it. You cannot make an individual index partition invisible. Attempting to do so produces an error.</p>
+<p class="itemizedlisttitle">To make an index invisible:&nbsp;</p>
+<ul>
+<li>
+<p>Submit the following SQL statement:</p>
+<pre dir="ltr">
+ALTER INDEX <span class="italic">index</span> INVISIBLE;
+</pre></li>
+</ul>
+<p class="itemizedlisttitle">To make an invisible index visible again:&nbsp;</p>
+<ul>
+<li>
+<p>Submit the following SQL statement:</p>
+<pre dir="ltr">
+ALTER INDEX <span class="italic">index</span> VISIBLE;
+</pre></li>
+</ul>
+<p class="itemizedlisttitle">To determine whether an index is visible or invisible:&nbsp;</p>
+<ul>
+<li>
+<p>Query the dictionary views <code dir="ltr">USER_INDEXES</code>, <code dir="ltr">ALL_INDEXES</code>, or <code dir="ltr">DBA_INDEXES</code>.</p>
+<p>For example, to determine if the index <code dir="ltr">ind1</code> is invisible, issue the following query:</p>
+<pre dir="ltr">
+SELECT INDEX_NAME, VISIBILITY FROM USER_INDEXES
+   WHERE INDEX_NAME = 'IND1';
+
+INDEX_NAME   VISIBILITY
+----------   ----------
+IND1         VISIBLE
+</pre></li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#CIHJIDJG">"Understand When to Use Unusable or Invisible Indexes"</a></p>
+</li>
+<li>
+<p><a href="#BABDHCJD">"Creating an Invisible Index"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<div id="ADMIN12647" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref2466"></a>
+<h3 class="sect2">Re<a id="sthref2467"></a><a id="sthref2468"></a>naming an Index</h3>
+<p>To rename an index, issue this statement:</p>
+<pre dir="ltr">
+ALTER INDEX <span class="italic">index_name</span> RENAME TO <span class="italic">new_name</span>;
+</pre></div>
+<!-- class="sect2" -->
+<a id="i1006905"></a>
+<div id="ADMIN11735" class="sect2">
+<h3 class="sect2">Monitoring Index Usage<a id="sthref2469"></a><a id="sthref2470"></a><a id="sthref2471"></a></h3>
+<p>Oracle Database provides a means of monitoring indexes to determine whether they are being used. If an index is not being used, then it can be dropped, eliminating unnecessary statement overhead.</p>
+<p>To start monitoring the usage of an index, issue this statement:</p>
+<pre dir="ltr">
+ALTER INDEX <span class="italic">index</span> MONITORING USAGE;
+</pre>
+<p>Later, issue the following statement to stop the monitoring:</p>
+<pre dir="ltr">
+ALTER INDEX <span class="italic">index</span> NOMONITORING USAGE;
+</pre>
+<p>The view <code dir="ltr"><a id="sthref2472"></a><a id="sthref2473"></a>V$OBJECT_USAGE</code> can be queried for the index being monitored to see if the index has been used. The view contains a <code dir="ltr">USED</code> column whose value is <code dir="ltr">YES</code> or <code dir="ltr">NO</code>, depending upon if the index has been used within the time period being monitored. The view also contains the start and stop times of the monitoring period, and a <code dir="ltr">MONITORING</code> column (<code dir="ltr">YES</code>/<code dir="ltr">NO</code>) to indicate if usage monitoring is currently active.</p>
+<p>Each time that you specify <code dir="ltr">MONITORING USAGE</code>, the <code dir="ltr">V$OBJECT_USAGE</code> view is reset for the specified index. The previous usage information is cleared or reset, and a new start time is recorded. When you specify <code dir="ltr">NOMONITORING USAGE</code>, no further monitoring is performed, and the end time is recorded for the monitoring period. Until the next <code dir="ltr">ALTER INDEX...MONITORING USAGE</code> statement is issued, the view information is left unchanged.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006918"></a>
+<div id="ADMIN11736" class="sect1">
+<h2 class="sect1">Monitoring Space Use of Indexes</h2>
+<p><a id="sthref2474"></a><a id="sthref2475"></a>If key values in an index are inserted, updated, and deleted frequently, the index can lose its acquired space efficiency over time. Monitor index efficiency of space usage at regular intervals by first analyzing the index structure, using the <code dir="ltr">ANALYZE INDEX...VALIDATE STRUCTURE</code> statement, and then querying the <code dir="ltr">INDEX_STATS</code> view:</p>
+<pre dir="ltr">
+SELECT PCT_USED FROM INDEX_STATS WHERE NAME = '<span class="italic">index</span>';
+</pre>
+<p>The percentage of index space usage varies according to how often index keys are inserted, updated, or deleted. Develop a history of average efficiency of space usage for an index by performing the following sequence of operations several times:</p>
+<ul>
+<li>
+<p>Analyzing statistics</p>
+</li>
+<li>
+<p>Validating the index</p>
+</li>
+<li>
+<p>Checking <code dir="ltr">PCT_USED</code></p>
+</li>
+<li>
+<p>Dropping and rebuilding (or coalescing) the index</p>
+</li>
+</ul>
+<p>When you find that index space usage drops below its average, you can condense the index space by dropping the index and rebuilding it, or coalescing it.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="general.htm#i1006229">"Analyzing Tables, Indexes, and Clusters"</a></div>
+</div>
+<!-- class="sect1" -->
+<a id="i1006942"></a>
+<div id="ADMIN11737" class="sect1">
+<h2 class="sect1">Dropping Indexes</h2>
+<p><a id="sthref2476"></a>To drop an index, the index must be contained in your schema, or you must have the <code dir="ltr">DROP ANY INDEX</code> system privilege.</p>
+<p><a id="sthref2477"></a><a id="sthref2478"></a>Some reasons for dropping an index include:</p>
+<ul>
+<li>
+<p>The index is no longer required.</p>
+</li>
+<li>
+<p>The index is not providing anticipated performance improvements for queries issued against the associated table. For example, the table might be very small, or there might be many rows in the table but very few index entries.</p>
+</li>
+<li>
+<p>Applications do not use the index to query the data.</p>
+</li>
+<li>
+<p>The index has become invalid and must be dropped before being rebuilt.</p>
+</li>
+<li>
+<p>The index has become too fragmented and must be dropped before being rebuilt.</p>
+</li>
+</ul>
+<p>When you drop an index, all extents of the index segment are returned to the containing tablespace and become available for other objects in the tablespace.</p>
+<p>How you drop an index depends on whether you created the index explicitly with a <code dir="ltr">CREATE INDEX</code> statement, or implicitly by defining a key constraint on a table. If you created the index explicitly with the <code dir="ltr">CREATE INDEX</code> statement, then you can drop the index with the <code dir="ltr">DROP INDEX</code> statement. The following statement drops the <code dir="ltr">emp_ename</code> index:</p>
+<pre dir="ltr">
+DROP INDEX emp_ename;
+</pre>
+<p><a id="sthref2479"></a><a id="sthref2480"></a>You cannot drop only the index associated with an enabled <code dir="ltr">UNIQUE</code> key or <code dir="ltr">PRIMARY KEY</code> constraint. To drop a constraints associated index, you must disable or drop the constraint itself.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If a table is dropped, all associated indexes are dropped automatically.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink SQLRF01510" href="../../server.112/e41084/statements_8017.htm#SQLRF01510"><span class="italic">Oracle Database SQL Language Reference</span></a> for syntax and restrictions on the use of the <code dir="ltr">DROP INDEX</code> statement</p>
+</li>
+<li>
+<p><a href="general.htm#i1006599">"Managing Integrity Constraints"</a></p>
+</li>
+<li>
+<p><a href="#BABJJFEE">"Making an Index Invisible"</a> for an alternative to dropping indexes</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="i1106984"></a>
+<div id="ADMIN11738" class="sect1">
+<h2 class="sect1">Indexes Data Dictionary Views<a id="sthref2481"></a><a id="sthref2482"></a></h2>
+<p>The following views display information about indexes:</p>
+<div class="inftblruleinformalwide">
+<table class="cellalignment1333" title="Viewing Information About Indexes" summary="Column 1 lists the names of views that display information about indexes, column 2 describes each view." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t37">View</th>
+<th class="cellalignment1334" id="r1c2-t37">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t37" headers="r1c1-t37"><code dir="ltr">DBA_INDEXES</code>
+<p><code dir="ltr">ALL_INDEXES</code></p>
+<p><code dir="ltr">USER_INDEXES</code></p>
+</td>
+<td class="cellalignment1335" headers="r2c1-t37 r1c2-t37"><code dir="ltr">DBA</code> view describes indexes on all tables in the database. <code dir="ltr">ALL</code> view describes indexes on all tables accessible to the user. <code dir="ltr">USER</code> view is restricted to indexes owned by the user. Some columns in these views contain statistics that are generated by the <code dir="ltr">DBMS_STATS</code> package or <code dir="ltr">ANALYZE</code> statement.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t37" headers="r1c1-t37"><code dir="ltr">DBA_IND_COLUMNS</code>
+<p><code dir="ltr">ALL_IND_COLUMNS</code></p>
+<p><code dir="ltr">USER_IND_COLUMNS</code></p>
+</td>
+<td class="cellalignment1335" headers="r3c1-t37 r1c2-t37">These views describe the columns of indexes on tables. Some columns in these views contain statistics that are generated by the <code dir="ltr">DBMS_STATS</code> package or <code dir="ltr">ANALYZE</code> statement.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t37" headers="r1c1-t37"><code dir="ltr">DBA_IND_EXPRESSIONS</code>
+<p><code dir="ltr">ALL_IND_EXPRESSIONS</code></p>
+<p><code dir="ltr">USER_IND_EXPRESSIONS</code></p>
+</td>
+<td class="cellalignment1335" headers="r4c1-t37 r1c2-t37">These views describe the expressions of function-based indexes on tables.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r5c1-t37" headers="r1c1-t37"><code dir="ltr">DBA_IND_PARTITIONS</code>
+<p><code dir="ltr">ALL_IND_PARTITIONS</code></p>
+<p><code dir="ltr">USER_IND_PARTITIONS</code></p>
+</td>
+<td class="cellalignment1335" headers="r5c1-t37 r1c2-t37">These views display, for each index partition, the partition-level partitioning information, the storage parameters for the partition, and various partition statistics that are generated by the <code dir="ltr">DBMS_STATS</code> package.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r6c1-t37" headers="r1c1-t37"><code dir="ltr">DBA_IND_STATISTICS</code>
+<p><code dir="ltr">ALL_IND_STATISTICS</code></p>
+<p><code dir="ltr">USER_IND_STATISTICS</code></p>
+</td>
+<td class="cellalignment1335" headers="r6c1-t37 r1c2-t37">These views contain optimizer statistics for indexes.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r7c1-t37" headers="r1c1-t37"><code dir="ltr">INDEX_STATS</code></td>
+<td class="cellalignment1335" headers="r7c1-t37 r1c2-t37">Stores information from the last <code dir="ltr">ANALYZE INDEX...VALIDATE STRUCTURE</code> statement.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r8c1-t37" headers="r1c1-t37"><code dir="ltr">INDEX_HISTOGRAM</code></td>
+<td class="cellalignment1335" headers="r8c1-t37 r1c2-t37">Stores information from the last <code dir="ltr">ANALYZE INDEX...VALIDATE STRUCTURE</code> statement.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r9c1-t37" headers="r1c1-t37"><code dir="ltr">V$OBJECT_USAGE</code></td>
+<td class="cellalignment1335" headers="r9c1-t37 r1c2-t37">Contains index usage information produced by the <code dir="ltr">ALTER INDEX...MONITORING USAGE</code> functionality.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformalwide" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink REFRN" href="../e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for a complete description of these views</div>
+</div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1326">
+<tr>
+<td class="cellalignment1335">
+<table class="cellalignment1331">
+<tr>
+<td class="cellalignment1330"><a href="tables.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1330"><a href="clustrs.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2001, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1337">
+<table class="cellalignment1329">
+<tr>
+<td class="cellalignment1330"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1330"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1330"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1330"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1330"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1330"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

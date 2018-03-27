@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Naive Bayes</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 735" />
+<meta name="dcterms.created" content="2013-06-29T13:13:16Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Data Mining Concepts" />
+<meta name="dcterms.identifier" content="E16808-07" />
+<meta name="dcterms.isVersionOf" content="DMCON" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2005, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="algo_mdl.htm" title="Previous" type="text/html" />
+<link rel="Next" href="algo_nmf.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e16808.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">25/34</span> <!-- End Header -->
+<div id="DMCON018" class="chapter"><a id="BABBHDHC"></a>
+<h1 class="chapter"><span class="secnum">15</span> Naive Bayes</h1>
+<p><a id="ABC4412296"></a>This chapter describes <a id="sthref487"></a>Naive Bayes, one of the <a id="sthref488"></a>classification algorithms supported by Oracle Data Mining.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="classify.htm#BABEJGDC">Chapter 5, "Classification"</a></div>
+<p>This chapter contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1005770">About Naive Bayes</a></p>
+</li>
+<li>
+<p><a href="#BABIAEJB">Tuning a Naive Bayes Model</a></p>
+</li>
+<li>
+<p><a href="#BABIBFIJ">Data Preparation for Naive Bayes</a></p>
+</li>
+</ul>
+<a id="i1005770"></a>
+<div id="DMCON343" class="sect1">
+<h2 class="sect1">About Naive Bayes</h2>
+<p>The Naive Bayes algorithm is based on conditional probabilities. It uses Bayes' Theorem,<a id="sthref489"></a> a formula that calculates a probability by counting the frequency of values and combinations of values in the historical data.</p>
+<p>Bayes' Theorem finds the probability of an event occurring given the probability of another event that has already occurred. If <code>B</code> represents the dependent event and <code>A</code> represents the prior event, Bayes' theorem can be stated as follows.</p>
+<div class="infobox-note">
+<p class="notep1">Bayes' Theorem:</p>
+Prob(B given A) = Prob(A and B)/Prob(A)</div>
+<p>To calculate the probability of <code>B</code> given <code>A</code>, the algorithm counts the number of cases where <code>A</code> and <code>B</code> occur together and divides it by the number of cases where <code>A</code> occurs alone.</p>
+<div id="DMCON344" class="example">
+<p class="titleinexample"><a id="BGBEEFIA"></a>Example 15-1 Use Bayes' Theorem to Predict an Increase in Spending</p>
+<p>Suppose you want to determine the likelihood that a customer under 21 will increase spending. In this case, the prior condition (<code>A</code>) would be "under 21," and the dependent condition (<code>B</code>) would be "increase spending."</p>
+<p>If there are 100 customers in the training data and 25 of them are customers under 21 who have increased spending, then:</p>
+<p>Prob(A and B) = 25%</p>
+<p>If 75 of the 100 customers are under 21, then:</p>
+<p>Prob(A) = 75%</p>
+<p>Bayes' Theorem would predict that 33% of customers under 21 are likely to increase spending (25/75).</p>
+</div>
+<!-- class="example" -->
+<p>The cases where both conditions occur together are referred to as <span class="bold">pairwise</span>. In <a href="#BGBEEFIA">Example 15-1</a>, 25% of all cases are pairwise.</p>
+<p>The cases where only the prior event occurs are referred to as <span class="bold">singleton</span>. In <a href="#BGBEEFIA">Example 15-1</a>, 75% of all cases are singleton.</p>
+<p>A visual representation of the conditional relationships used in Bayes' Theorem is shown in <a href="#BGBCJGDA">Figure 15-1</a>.</p>
+<div id="DMCON345" class="figure">
+<p class="titleinfigure"><a id="BGBCJGDA"></a>Figure 15-1 Conditional Probabilities in Bayes' Theorem</p>
+<img width="463" height="459" src="img/bayes.gif" alt="Description of Figure 15-1 follows" /><br />
+<a id="sthref490" href="img_text/bayes.htm">Description of "Figure 15-1 Conditional Probabilities in Bayes' Theorem"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>For purposes of illustration, <a href="#BGBEEFIA">Example 15-1</a> and <a href="#BGBCJGDA">Figure 15-1</a> show a dependent event based on a single independent event. In reality, the Naive Bayes algorithm must usually take many independent events into account. In <a href="#BGBEEFIA">Example 15-1</a>, factors such as income, education, gender, and store location might be considered in addition to age.</p>
+<p>Naive Bayes makes the assumption that each predictor is conditionally independent of the others. For a given target value, the distribution of each predictor is independent of the other predictors. In practice, this assumption of independence, even when violated, does not degrade the model's predictive accuracy significantly, and makes the difference between a fast, computationally feasible algorithm and an intractable one.</p>
+<p>Sometimes the distribution of a given predictor is clearly not representative of the larger population. For example, there might be only a few customers under 21 in the training data, but in fact there are many customers in this age group in the wider customer base. To compensate for this, you can specify <span class="bold"><a id="sthref491"></a>prior probabilities</span> when training the model. See <a href="classify.htm#i1005760">"Priors"</a>.</p>
+<a id="BABIIDDE"></a>
+<div id="DMCON346" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Advantages of Naive Bayes</h3>
+<p>The Naive Bayes algorithm affords fast, highly scalable model building and scoring. It scales linearly with the number of predictors and rows. The build process for Naive Bayes is parallelized. (Scoring can be parallelized irrespective of the algorithm.)</p>
+<p>Naive Bayes can be used for both binary and multiclass classification problems.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BABIAEJB"></a>
+<div id="DMCON347" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Tuning a Naive Bayes Model</h2>
+<p>Naive Bayes calculates a probability by dividing the percentage of pairwise occurrences by the percentage of singleton occurrences. If these percentages are very small for a given predictor, they probably will not contribute to the effectiveness of the model. Occurrences below a certain threshold can usually be ignored.</p>
+<p>Two build settings are available for adjusting the probability thresholds. You can specify:</p>
+<ul>
+<li>
+<p>the minimum percentage of pairwise occurrences required for including a predictor in the model</p>
+</li>
+<li>
+<p>the minimum percentage of singleton occurrences required for including a predictor in the model</p>
+</li>
+</ul>
+<p>The default thresholds work well for most models, so you will not generally need to adjust these settings.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ARPLS611" href="../../appdev.112/e40758/d_datmin.htm#ARPLS611"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for details about algorithm settings for Naive Bayes</div>
+</div>
+<!-- class="sect1" -->
+<a id="BABIBFIJ"></a>
+<div id="DMCON348" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Data Preparation for Naive Bayes</h2>
+<p><a id="sthref492"></a>Automatic Data Preparation performs supervised <a id="sthref493"></a>binning for Naive Bayes. Supervised binning uses decision trees to create the optimal bin boundaries. Both categorical and numerical attributes are binned.</p>
+<p>Naive Bayes handles missing values naturally as missing at random. The algorithm replaces sparse numerical data with zeros and sparse categorical data with zero vectors. Missing values in nested columns are interpreted as sparse. Missing values in columns with simple data types are interpreted as missing at random.</p>
+<p>If you choose to manage your own data preparation, keep in mind that Naive Bayes usually requires binning. Naive Bayes relies on counting techniques to calculate probabilities. Columns should be binned to reduce the cardinality as appropriate. Numerical data can be binned into ranges of values (for example, low, medium, and high), and categorical data can be binned into meta-classes (for example, regions instead of cities). Equi-width binning is not recommended, since outliers will cause most of the data to concentrate in a few bins, sometimes a single bin. As a result, the discriminating power of the algorithms will be significantly reduced</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also<a id="sthref494"></a>:</p>
+<p><a href="xform_data.htm#BABGADFF">Chapter 19, "Automatic and Embedded Data Preparation"</a></p>
+<p><a class="olink DMPRG005" href="../../datamine.112/e12218/xform_casetbl.htm#DMPRG005"><span class="italic">Oracle Data Mining Application Developer's Guide</span></a> for information about nested columns and missing data</p>
+</div>
+</div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1311">
+<tr>
+<td class="cellalignment1318">
+<table class="cellalignment1316">
+<tr>
+<td class="cellalignment1315"><a href="algo_mdl.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1315"><a href="algo_nmf.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2005, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1320">
+<table class="cellalignment1314">
+<tr>
+<td class="cellalignment1315"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1315"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1315"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1315"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1315"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1315"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

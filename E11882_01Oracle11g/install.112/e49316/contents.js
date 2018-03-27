@@ -1,0 +1,18 @@
+var chapters = [
+  { topic: "chapter", section: "1", title: "Overview of Oracle Database Installation", anchor: "HPDBI1042", file: "install_overview.htm" },
+  { topic: "chapter", section: "2", title: "	Oracle Database Preinstallation Tasks", anchor: "HPDBI1085", file: "pre_install.htm" },
+  { topic: "chapter", section: "3", title: "Oracle Grid Infrastructure for a Standalone Server", anchor: "HPDBI999", file: "oraclerestart.htm" },
+  { topic: "chapter", section: "4", title: "Installing Oracle Database", anchor: "HPDBI1242", file: "inst_task.htm" },
+  { topic: "chapter", section: "5", title: "Oracle Database Postinstallation Tasks", anchor: "HPDBI1260", file: "post_inst_task.htm" },
+  { topic: "chapter", section: "6", title: "Getting Started with Oracle Database", anchor: "HPDBI1308", file: "rev_precon_db.htm" },
+  { topic: "chapter", section: "7", title: "Removing Oracle Database Software", anchor: "HPDBI1332", file: "remove_oracle_sw.htm" },
+  { topic: "appendix", section: "A", title: "Installing and Configuring Oracle Database Using Response Files", anchor: "HPDBI1341", file: "app_nonint.htm" },
+  { topic: "appendix", section: "B", title: "Cloning an Oracle Home", anchor: "HPDBI1362", file: "app_cloning.htm" },
+  { topic: "appendix", section: "C", title: "Using NAS Devices", anchor: "HPDBI1365", file: "app_nas.htm" },
+  { topic: "appendix", section: "D", title: "Optimal Flexible Architecture", anchor: "HPDBI1374", file: "appendix_ofa.htm" },
+  { topic: "appendix", section: "E", title: "Managing Oracle Database Port Numbers", anchor: "HPDBI1400", file: "app_port.htm" },
+  { topic: "appendix", section: "F", title: "Configuring Oracle Database Globalization Support", anchor: "HPDBI1417", file: "app_glblsupp.htm" },
+  { topic: "appendix", section: "G", title: "Troubleshooting", anchor: "HPDBI1424", file: "app_ts.htm" },
+  { topic: "appendix", section: "H", title: "Frequently Asked Questions About Installation", anchor: "HPDBI1443", file: "app_faq.htm" },
+  { topic: "glossary", section: "", title: "Glossary", anchor: "HPDBI1472", file: "glossary.htm" },
+  { } ];

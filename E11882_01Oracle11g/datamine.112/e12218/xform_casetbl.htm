@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Creating the Case Table</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 025" />
+<meta name="dcterms.created" content="2011-06-30T14:1:10Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Data Mining Application Developer's Guide" />
+<meta name="dcterms.identifier" content="E12218-07" />
+<meta name="dcterms.isVersionOf" content="DMPRG" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2005, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="api_tour.htm" title="Previous" type="text/html" />
+<link rel="Next" href="xform_text.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e12218.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">10/15</span> <!-- End Header --><a id="BGBIHJGD"></a><a id="DMPRG005"></a>
+<h1 class="chapter"><span class="secnum">3</span> Creating the Case Table</h1>
+<p>This chapter explains how <a id="sthref102"></a>data is interpreted by Oracle Data Mining. It describes the requirements for a data mining <a id="sthref103"></a>case table, and it explains the notion of data <a id="sthref104"></a>attributes and model attributes. Data <a id="sthref105"></a>transformations are discussed in <a class="olink DMCON003" href="../../datamine.112/e16808/xform_data.htm#DMCON003"><span class="italic">Oracle Data Mining Concepts</span></a>.</p>
+<p>This chapter contains the following sections:</p>
+<ul>
+<li>
+<p><a href="#CHDGBFGI">Requirements</a></p>
+</li>
+<li>
+<p><a href="#BABJBJCB">About Attributes</a></p>
+</li>
+<li>
+<p><a href="#BJEFFCFC">Nested Data</a></p>
+</li>
+<li>
+<p><a href="#BABJDDCH">Missing Data</a></p>
+</li>
+</ul>
+<a id="CHDGBFGI"></a><a id="DMPRG147"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Requirements</h2>
+<p>The data that you wish to mine must be defined within a single table or view. The information for each record must be stored in a separate row. The data records are commonly called <span class="bold">cases</span>. Each case can be identified by a unique <a id="sthref106"></a><span class="bold">case ID</span>. The table or view itself is referred to as a <span class="bold">case table</span>.</p>
+<p>The <code>CUSTOMERS</code> table in the <code>SH</code> schema is an example of a table that could be used for mining. All the information for each customer is contained in a single row. The <a id="sthref107"></a>case ID is the <code>CUST_ID</code> column. The rows listed in <a href="#CHDCEGDA">Example 3-1</a> are selected from <code>SH.CUSTOMERS</code>.</p>
+<div class="example">
+<p class="titleinexample"><a id="CHDCEGDA"></a><a id="DMPRG148"></a>Example 3-1 Sample Case Table</p>
+<pre>
+SQL&gt; select cust_id, cust_gender, cust_year_of_birth, 
+           cust_main_phone_number from sh.customers where cust_id &lt; 11;
+
+CUST_ID CUST_GENDER CUST_YEAR_OF_BIRTH CUST_MAIN_PHONE_NUMBER
+------- ----------- ---- ------------- -------------------------
+1        M               1946          127-379-8954
+2        F               1957          680-327-1419
+3        M               1939          115-509-3391
+4        M               1934          577-104-2792
+5        M               1969          563-667-7731
+6        F               1925          682-732-7260
+7        F               1986          648-272-6181
+8        F               1964          234-693-8728
+9        F               1936          697-702-2618
+10       F               1947          601-207-4099
+</pre></div>
+<!-- class="example" -->
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Oracle Data Mining requires single-record case data for all types of models <span class="italic">except</span> association models, which can be built on native <a id="sthref108"></a>transactional data. See <a href="#BABJJIHE">"Market Basket Data"</a>.</div>
+<a id="DMPRG149"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref109"></a>
+<h3 class="sect2">Column Data Types</h3>
+<p>The columns of the case table hold the attributes that describe each case. In <a href="#CHDCEGDA">Example 3-1</a>, the attributes are: <code>CUST_GENDER</code>, <code>CUST_YEAR_OF_BIRTH</code>, and <code>CUST_MAIN_PHONE_NUMBER</code>. The attributes are the predictors in a supervised model and the descriptors in an unsupervised model. The <a id="sthref110"></a>case ID, <code>CUST_ID</code>, can be viewed as a special attribute; it is not a predictor or a descriptor.</p>
+<p>Oracle Data Mining accepts the following column <a id="sthref111"></a>data types:</p>
+<br />
+<code>VARCHAR2</code>, <code>CHAR</code><br />
+<code>NUMBER</code>, <code>FLOAT</code><br />
+<code>DM_NESTED_CATEGORICALS</code><br />
+<code>DM_NESTED_NUMERICALS</code><br />
+<p>See <a class="olink DMCON056" href="../../datamine.112/e16808/xform_data.htm#DMCON056"><span class="italic">Oracle Data Mining Concepts</span></a> for information about converting the data type if necessary.</p>
+<p>The nested types are described in <a href="#BJEFFCFC">"Nested Data"</a>. The case ID column cannot have a nested type.</p>
+</div>
+<!-- class="sect2" -->
+<a id="DMPRG150"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref112"></a>
+<h3 class="sect2">Data Sets for Data Mining</h3>
+<p>You need two case tables to build a classification or regression model. One set of rows is used for building (training) the model, another set of rows is used for testing the model. It is often convenient to derive the <a id="sthref113"></a><a id="sthref114"></a><a id="sthref115"></a><span class="bold">build data</span> and <span class="bold">test data</span> from the same data set. For example, you might select 60% of the rows for building the model and 40% for testing the model.</p>
+<p>Models that implement other mining functions, such as attribute importance, clustering, association, or feature extraction, do not use separate test data.</p>
+<p>Most data mining models can be applied to separate data. The data to which you apply the model is called the <span class="bold">apply data</span> or <span class="bold">scoring data</span>. Oracle Data Mining supports the scoring operation for classification, regression, anomaly detection, clustering, and feature extraction.</p>
+<p>The scoring process matches column names in the scoring data with the names of the columns that were used to build the model. The scoring process does not require all the columns to be present in the scoring data. If the data types do not match, Oracle Data Mining attempts to perform type coercion. For example, if a column called <code>PRODUCT_RATING</code> is <code>VARCHAR2</code> in the build data but <code>NUMBER</code> in the scoring data, Oracle Data Mining will effectively apply a <code>TO_CHAR()</code> function to convert it.</p>
+<p>The column in the test or scoring data must undergo the same transformations as the corresponding column in the build data. For example, if the <code>AGE</code> column in the build data was transformed from numbers to the values <code>CHILD</code>, <code>ADULT</code>, and <code>SENIOR</code>, then the <code>AGE</code> column in the scoring data must undergo the same transformation so that the model can properly evaluate it.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Oracle Data Mining can embed user-specified transform<a id="sthref116"></a>ation instructions in the model and reapply them whenever the model is applied. When the transformation instructions are embedded in the model, you do not need to specify them for the test or scoring data sets.
+<p>Oracle Data Mining also supports <span class="bold">Automatic Data Preparation</span> (ADP). When ADP is enabled, the transformations required by the algorithm are performed automatically and embedded in the model along with any user-specified transformations. Min<a id="sthref117"></a>ing models that contain embedded transformations are known as <span class="bold"><a id="sthref118"></a>supermodels</span>.</p>
+<p>Automatic and embedded data transformations are discussed in <a class="olink DMCON003" href="../../datamine.112/e16808/xform_data.htm#DMCON003"><span class="italic">Oracle Data Mining Concepts</span></a>.</p>
+</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BABJBJCB"></a><a id="DMPRG010"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">About Attributes</h2>
+<p>Attributes are the items of data used in data mining. In predictive models, <a id="sthref119"></a>attributes are the predictors that affect a given outcome. In descriptive models, attributes are the items of information being analyzed for natural groupings or associations. A table of employee data might contain attributes such as job title, date of hire, salary, age, gender, and so on.</p>
+<a id="DMPRG151"></a>
+<div class="sect2"><a id="sthref120"></a>
+<h3 class="sect2">Data Attributes and Model Attributes</h3>
+<p><span class="bold">Data attributes</span> are columns in the data sets used to build, test, or score a model. <span class="bold">Model attributes</span> are the data representations used internally by the model.</p>
+<p>Data attributes and model attributes can be the same. For example a column called <code>SIZE</code>, with values <code>S</code>, <code>M</code>, and <code>L</code>, might be an attribute used by an algorithm to build a model. Internally, the model attribute <code>SIZE</code> would most likely be the same as the data attribute from which it was derived.</p>
+<p>On the other hand, a nested column <code>SALES_PROD</code>, containing the sales figures for a group of products, would not correspond to a model attribute. The data attribute would be <code>SALES_PROD</code>, but each product with its corresponding sales figure (each row in the nested column) would be a model attribute.</p>
+<p>Transformations also cause a discrepancy between data attributes and model attributes. For example, a transformation could apply a calculation to two data attributes and store the result in a new attribute. The new attribute would be a model attribute that has no corresponding data attribute. Other transformations such as binning, normalization, and outlier treatment, cause the model's representation of an attribute to be different from the data attribute in the case table.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#BJEFFCFC">"Nested Data"</a></p>
+</li>
+<li>
+<p><a class="olink DMCON003" href="../../datamine.112/e16808/xform_data.htm#DMCON003"><span class="italic">Oracle Data Mining Concepts</span></a> for information on transformations</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="DMPRG152"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref121"></a>
+<h3 class="sect2">Target Attribute</h3>
+<p>The <span class="bold">target</span> of a supervised model is a special kind of attribute. The <a id="sthref122"></a>target column in the build data contains the historical values used to build (train) the model. The target column in the test data contains the historical values to which the predictions are compared. The target column in the scoring data holds the results when the model is applied.</p>
+<p>Clustering, feature extraction, association, and anomaly detection models do not use a target.</p>
+<p>You can query the *<code>_MINING_MODEL_ATTRIBUTES</code> view to find the target for a given model, as shown in <a href="#BGBCGIDF">Example 3-2</a>.</p>
+</div>
+<!-- class="sect2" -->
+<a id="DMPRG153"></a>
+<div class="sect2"><a id="sthref123"></a>
+<h3 class="sect2">Numericals and Categoricals</h3>
+<p>Model attributes are either <span class="bold"><a id="sthref124"></a>numerical</span> or <span class="bold"><a id="sthref125"></a>categorical</span>. Data attributes, which are columns in a case table, have Oracle data types.</p>
+<p>Oracle Data Mining interprets <code>NUMBER</code>, <code>FLOAT</code>, and <code><a id="sthref126"></a>DM_NESTED_NUMERICALS</code> as numerical, and <code>CHAR</code>, <code>VARCHAR2</code>, and <code><a id="sthref127"></a>DM_NESTED_CATEGORICALS</code> as categorical. There is one exception: If the target of a classification model is <code>NUMBER</code> or <code>FLOAT</code>, it will be interpreted as categorical.</p>
+<p>Numerical attributes can theoretically have an infinite number of values. The values have an implicit order, and the differences between them are also ordered.</p>
+<p>Categorical attributes have values that belong to a finite number of discrete categories or <span class="bold"><a id="sthref128"></a>classes</span>. There is no implicit order associated with the values. Some categoricals are <span class="bold">binary</span>: They have only two possible values, such as <code>yes</code> or <code>no</code>, or <code>male</code> or <code>female</code>. The term <span class="bold">multi-class</span> is used to describe models when the categorical target has more than two values. For example, a target of clothing sizes could have the values <code>small</code>, <code>medium</code>, or <code>large</code>.</p>
+<p>The target of a classification model is categorical. The target of a regression model is numerical. The target of an attribute importance model is either categorical or numerical.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BABCAFAG"></a><a id="DMPRG154"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Model Signature</h3>
+<p>The <a id="sthref129"></a><span class="bold">model signature</span> is the set of data attributes used to build a model. Some or all of the attributes in the signature should be present for scoring. If some columns are not present, they are disregarded. If columns with the same names but different data types are present, the model attempts to convert the data type.</p>
+<p>The model signature does not necessarily include all the columns in the build data. Algorithm-specific criteria may cause the model to ignore certain columns. Other columns may be eliminated by transformations. Only the data attributes actually used to build the model are included in the signature.</p>
+<p>The <a id="sthref130"></a>target and <a id="sthref131"></a>case ID columns are not included in the signature.</p>
+<a id="DMPRG018"></a>
+<div class="sect3"><a id="sthref132"></a>
+<h4 class="sect3">ALL_MINING_MODEL_ATTRIBUTES</h4>
+<p>The columns in the model signature, plus the target (if the model is supervised), are listed in the data dictionary view, <code>ALL/USER/<a id="sthref133"></a>DBA_MINING_MODEL_ATTRIBUTES</code>. When used with the <code>ALL</code> prefix, this view returns the signature and target for all mining models accessible to the current user. When used with the <code>USER</code> prefix, it returns the model signature and target for all the mining models in the user's schema. The <code>DBA</code> prefix is only available to DBAs.</p>
+<p>The columns in the <code>ALL_MINING_MODEL_ATTRIBUTES</code> view are described as follows. Details are in <a href="#BABBJFFB">Table 3-1</a>.</p>
+<pre>
+SQL&gt; describe all_mining_model_attributes
+ Name                          Null?    Type
+ ----------------------------------------------------------
+ OWNER                         NOT NULL VARCHAR2(30)
+ MODEL_NAME                    NOT NULL VARCHAR2(30)
+ ATTRIBUTE_NAME                NOT NULL VARCHAR2(30)
+ ATTRIBUTE_TYPE                         VARCHAR2(11)
+ DATA_TYPE                              VARCHAR2(12)
+ DATA_LENGTH                            NUMBER
+ DATA_PRECISION                         NUMBER
+ DATA_SCALE                             NUMBER
+ USAGE_TYPE                             VARCHAR2(8)
+ TARGET                                 VARCHAR2(3)
+</pre>
+<div class="tblformal">
+<p class="titleintable"><a id="DMPRG155"></a><a id="sthref134"></a><a id="BABBJFFB"></a>Table 3-1 ALL_MINING_MODEL_ATTRIBUTES</p>
+<table class="cellalignment1303" title="ALL_MINING_MODEL_ATTRIBUTES" summary="Explanation of the columnsin the data dictionary view all_mining_model_attributes" dir="ltr">
+<thead>
+<tr class="cellalignment1297">
+<th class="cellalignment1304" id="r1c1-t5">Column</th>
+<th class="cellalignment1304" id="r1c2-t5">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1297">
+<td class="cellalignment1305" id="r2c1-t5" headers="r1c1-t5">
+<p><code>OWNER</code></p>
+</td>
+<td class="cellalignment1305" headers="r2c1-t5 r1c2-t5">
+<p>Owner of the mining model.</p>
+</td>
+</tr>
+<tr class="cellalignment1297">
+<td class="cellalignment1305" id="r3c1-t5" headers="r1c1-t5">
+<p><code>MODEL_NAME</code></p>
+</td>
+<td class="cellalignment1305" headers="r3c1-t5 r1c2-t5">
+<p>Name of the mining model.</p>
+</td>
+</tr>
+<tr class="cellalignment1297">
+<td class="cellalignment1305" id="r4c1-t5" headers="r1c1-t5">
+<p><code>ATTRIBUTE_NAME</code></p>
+</td>
+<td class="cellalignment1305" headers="r4c1-t5 r1c2-t5">
+<p>Name of the data attribute (column).</p>
+</td>
+</tr>
+<tr class="cellalignment1297">
+<td class="cellalignment1305" id="r5c1-t5" headers="r1c1-t5">
+<p><code>ATTRIBUTE_TYPE</code></p>
+</td>
+<td class="cellalignment1305" headers="r5c1-t5 r1c2-t5">
+<p>Type of the model attribute derived by the model from the data attribute. The attribute type can be either numerical or categorical.</p>
+<p>This information is only meaningful if there is a one-to-one mapping between the data attribute and the model attribute. If the data attribute has undergone transformations that change the way it is used by the model, then the <code>ATTRIBUTE_TYPE</code> may not be relevant.</p>
+</td>
+</tr>
+<tr class="cellalignment1297">
+<td class="cellalignment1305" id="r6c1-t5" headers="r1c1-t5">
+<p><code>DATA_TYPE</code></p>
+</td>
+<td class="cellalignment1305" headers="r6c1-t5 r1c2-t5">
+<p>The Oracle data type of the data attribute (column):</p>
+<br />
+<code>NUMBER</code><br />
+<code>FLOAT</code><br />
+<code>CHAR</code><br />
+<code>VARCHAR2</code><br />
+<code>NESTED TABLE</code><br />
+<p>If the value is <code>NESTED TABLE</code>, the data type is either:</p>
+<br />
+<code>DM_NESTED_NUMERICALS</code><br />
+or<br />
+<code>DM_NESTED_CATEGORICALS</code><br />
+<p>If the data type is <code>NESTED TABLE</code>, you can determine whether it is <code>DM_NESTED_NUMERICALS</code> or <code>DM_NESTED_CATEGORICALS</code> from the <code>ATTRIBUTE_TYPE</code> column.</p>
+<p>See <a href="#BJEFFCFC">"Nested Data"</a> for details.</p>
+</td>
+</tr>
+<tr class="cellalignment1297">
+<td class="cellalignment1305" id="r7c1-t5" headers="r1c1-t5">
+<p><code>DATA_LENGTH</code></p>
+</td>
+<td class="cellalignment1305" headers="r7c1-t5 r1c2-t5">
+<p>Length of the data type</p>
+</td>
+</tr>
+<tr class="cellalignment1297">
+<td class="cellalignment1305" id="r8c1-t5" headers="r1c1-t5">
+<p><code>DATA_PRECISION</code></p>
+</td>
+<td class="cellalignment1305" headers="r8c1-t5 r1c2-t5">
+<p>Precision of a fixed point number, which is the total number of significant decimal digits, is represented as p in the data type <code>NUMBER</code> (p,s).</p>
+</td>
+</tr>
+<tr class="cellalignment1297">
+<td class="cellalignment1305" id="r9c1-t5" headers="r1c1-t5">
+<p><code>DATA_SCALE</code></p>
+</td>
+<td class="cellalignment1305" headers="r9c1-t5 r1c2-t5">
+<p>Scale of a fixed point number. Scale, which is the number of digits from the decimal to the least significant digit, is represented as <span class="italic">s</span> in the data type <code>NUMBER</code> (p,<span class="italic">s</span>).</p>
+</td>
+</tr>
+<tr class="cellalignment1297">
+<td class="cellalignment1305" id="r10c1-t5" headers="r1c1-t5">
+<p><code>USAGE_TYPE</code></p>
+</td>
+<td class="cellalignment1305" headers="r10c1-t5 r1c2-t5">
+<p>Indicates that the attribute was used to construct the model. Some attributes may be eliminated by transformations or algorithmic processing. The *<code>_MINING_MODEL_ATTRIBUTES</code> view only lists the data attributes used by the model (model signature), therefore the value of <code>USAGE_TYPE</code> is always <code>ACTIVE</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1297">
+<td class="cellalignment1305" id="r11c1-t5" headers="r1c1-t5">
+<p><code>TARGET</code></p>
+</td>
+<td class="cellalignment1305" headers="r11c1-t5 r1c2-t5">
+<p>Whether or not the attribute is a target. The value can be either <code>YES</code> (the attribute is a target) or <code>NO</code> (the attribute is not a target).</p>
+<p>If the attribute is a <a id="sthref135"></a>target, and it has undergone transformations for manipulation by the algorithm, the description in <code>ALL_MINING_MODEL_ATTRIBUTES</code> reflects the target attribute's characteristics after <a id="sthref136"></a>reverse <a id="sthref137"></a>transformations have been applied.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<p>The query in <a href="#BGBCGIDF">Example 3-2</a> returns information about the data attributes of the model <code>T_SVM_CLAS_SAMPLE</code>, an SVM model generated by one of the Data Mining sample programs. The query returns the name and data type of each of the data attributes in the model signature, whether the attribute is used as a numerical or as a categorical, and whether or not the attribute is a target.</p>
+<div class="example">
+<p class="titleinexample"><a id="BGBCGIDF"></a><a id="DMPRG156"></a>Example 3-2 ALL_MINING_MODEL_ATTRIBUTES</p>
+<pre>
+SQL&gt; select model_name, attribute_name, attribute_type, data_type, target
+             from user_mining_model_attributes 
+             where model_name = 'T_SVM_CLAS_SAMPLE';
+ 
+MODEL_NAME          ATTRIBUTE_NAME          ATTRIBUTE_TYPE  DATA_TYPE     TARGET
+------------------- ---------------------   --------------- -----------   ------
+T_SVM_CLAS_SAMPLE   COMMENTS                NUMERICAL       NESTED TABLE  NO
+T_SVM_CLAS_SAMPLE   AGE                     NUMERICAL       NUMBER        NO
+T_SVM_CLAS_SAMPLE   CUST_MARITAL_STATUS     CATEGORICAL     VARCHAR2      NO
+T_SVM_CLAS_SAMPLE   COUNTRY_NAME            CATEGORICAL     VARCHAR2      NO
+T_SVM_CLAS_SAMPLE   CUST_INCOME_LEVEL       CATEGORICAL     VARCHAR2      NO
+T_SVM_CLAS_SAMPLE   EDUCATION               CATEGORICAL     VARCHAR2      NO
+T_SVM_CLAS_SAMPLE   OCCUPATION              CATEGORICAL     VARCHAR2      NO
+T_SVM_CLAS_SAMPLE   HOUSEHOLD_SIZE          CATEGORICAL     VARCHAR2      NO
+T_SVM_CLAS_SAMPLE   YRS_RESIDENCE           NUMERICAL       NUMBER        NO
+T_SVM_CLAS_SAMPLE   BULK_PACK_DISKETTES     NUMERICAL       NUMBER        NO
+T_SVM_CLAS_SAMPLE   FLAT_PANEL_MONITOR      NUMERICAL       NUMBER        NO
+T_SVM_CLAS_SAMPLE   HOME_THEATER_PACKAGE    NUMERICAL       NUMBER        NO
+T_SVM_CLAS_SAMPLE   BOOKKEEPING_APPLICATION NUMERICAL       NUMBER        NO
+T_SVM_CLAS_SAMPLE   PRINTER_SUPPLIES        NUMERICAL       NUMBER        NO
+T_SVM_CLAS_SAMPLE   Y_BOX_GAMES             NUMERICAL       NUMBER        NO
+T_SVM_CLAS_SAMPLE   OS_DOC_SET_KANJI        NUMERICAL       NUMBER        NO
+T_SVM_CLAS_SAMPLE   CUST_GENDER             CATEGORICAL     CHAR          NO
+T_SVM_CLAS_SAMPLE   AFFINITY_CARD           NUMERICAL       NUMBER        YES
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BJEBDEEA"></a><a id="DMPRG157"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Scoping of Model Attribute Name</h3>
+<p>The model <a id="sthref138"></a><a id="sthref139"></a><a id="sthref140"></a>attribute name consists of two parts: a column name, and a subcolumn name.</p>
+<pre>
+column_name[.subcolumn_name]
+</pre>
+<p>The <code>column_name</code> component is the name of the data attribute. It is present in all model attribute names. Nested attributes also have a <code>subcolumn_name</code> component as shown in <a href="#BJEIGHIH">Example 3-3</a>.</p>
+<div class="example">
+<p class="titleinexample"><a id="BJEIGHIH"></a><a id="DMPRG158"></a>Example 3-3 Model Attributes Derived from a Nested Column</p>
+<p>The nested column <code>SALESPROD</code> has three rows.</p>
+<pre>
+SALESPROD(ATTRIBUTE_NAME, VALUE)
+--------------------------------
+((PROD1, 300),
+ (PROD2, 245),
+ (PROD3, 679))
+</pre>
+<p>The name of the data attribute is <code>SALESPROD</code>. Its associated model attributes are:</p>
+<pre>
+SALESPROD.PROD1
+SALESPROD.PROD2
+SALESPROD.PROD3
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" -->
+<a id="BGBDCCCH"></a><a id="DMPRG159"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Model Details</h3>
+<p><a id="sthref141"></a>Model details reveal information about model attributes and their treatment by the algorithm. There is a separate <code>GET_MODEL_DETAILS</code> routine for each algorithm.</p>
+<p><a id="sthref142"></a><a id="sthref143"></a>Transformation and <a id="sthref144"></a>reverse <a id="sthref145"></a>transformation expressions are associated with model attributes. The transformations are applied to the model for algorithmic processing. The reverse transformations are applied for model details. The information returned to the user by <code>GET_MODEL_DETAILS</code> is expressed in the form of the original data attributes, or as close to it as possible.</p>
+<p>Reverse transformations are also applied to the target when a supervised model is scored. Reverse transformations support <span class="bold">model <a id="sthref146"></a>transparency</span>. Transparency is discussed in <a class="olink DMCON017" href="../../datamine.112/e16808/xform_data.htm#DMCON017"><span class="italic">Oracle Data Mining Concepts</span></a>.</p>
+<p><a href="#BJECAGCG">Example 3-4</a> shows the definition of the <code>GET_MODEL_DETAILS</code> function for an Attribute Importance model. The <code><a id="sthref147"></a>PIPELINED</code> keyword instructs Oracle Database to return the rows as single values instead of returning all the rows as a single value.</p>
+<div class="example">
+<p class="titleinexample"><a id="BJECAGCG"></a><a id="DMPRG160"></a>Example 3-4 Model Details for an Attribute Importance Model</p>
+<p>The syntax of the <code>GET_MODEL_DETAILS</code> function for <a id="sthref148"></a>Attribute Importance models is shown as follows.</p>
+<pre>
+DBMS_DATA_MINING.GET_MODEL_DETAILS_AI (
+             model_name             VARCHAR2)
+RETURN DM_RANKED_ATTRIBUTES PIPELINED;
+</pre>
+<p>The function returns <code>DM_RANKED_ATTRIBUTES</code>, a virtual table. The columns are the model details. There is one row for each model attribute in the specified model. The columns are described as follows.</p>
+<pre>
+(attribute_name          VARCHAR2(4000),
+ attribute_subname       VARCHAR2(4000),
+ importance_value        NUMBER,
+ rank                    NUMBER(38))
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BJEFFCFC"></a><a id="DMPRG006"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Nested Data</h2>
+<p><a id="ABC4427257"></a>Oracle Data Mining requires a <a id="sthref149"></a>case table in single-record case format, with each record in a separate row. What if some or all of your data is in multi-record case format, with each record in several rows? What if you want one attribute to represent a series or collection of values, such as a student's test scores or the products purchased by a customer?</p>
+<p>This kind of one-to-many relationship is usually implemented as a join between tables. For example, you might join your customer table to a sales table and thus associate a list of products purchased with each customer.</p>
+<p>Oracle Data Mining supports dimensioned data through nested columns. To include dimensioned data in your case table, create a view and cast the joined data to one of the Data Mining nested table types. Each row in the nested column consists of an attribute name/value pair. Oracle Data Mining internally processes each nested row as a separate attribute.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+Sample code for converting to a nested table in <a href="#BJEIHDDJ">"Example: Creating a Nested Column for Mining"</a>.</div>
+<p>The algorithms that support nested data are listed in <a href="#BJEBGFAA">Table 3-2</a></p>
+<div class="tblformal">
+<p class="titleintable"><a id="DMPRG161"></a><a id="sthref150"></a><a id="BJEBGFAA"></a>Table 3-2 Oracle Data Mining Algorithms that Support Nested Data</p>
+<table class="cellalignment1303" title="Oracle Data Mining Algorithms that Support Nested Data" summary="Oracle Data Mining algorithms that support nested data are: apriori, GLM, k-Means, MDL, Naive Bayes, NMF, and SVM" dir="ltr">
+<thead>
+<tr class="cellalignment1297">
+<th class="cellalignment1304" id="r1c1-t7">Algorithm</th>
+<th class="cellalignment1304" id="r1c2-t7">Mining Function</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1297">
+<td class="cellalignment1305" id="r2c1-t7" headers="r1c1-t7">
+<p>Apriori</p>
+</td>
+<td class="cellalignment1305" headers="r2c1-t7 r1c2-t7">
+<p>association rules</p>
+</td>
+</tr>
+<tr class="cellalignment1297">
+<td class="cellalignment1305" id="r3c1-t7" headers="r1c1-t7">
+<p>GLM</p>
+</td>
+<td class="cellalignment1305" headers="r3c1-t7 r1c2-t7">
+<p>classification and regression</p>
+</td>
+</tr>
+<tr class="cellalignment1297">
+<td class="cellalignment1305" id="r4c1-t7" headers="r1c1-t7">
+<p><span class="italic">k</span>-Means</p>
+</td>
+<td class="cellalignment1305" headers="r4c1-t7 r1c2-t7">
+<p>clustering</p>
+</td>
+</tr>
+<tr class="cellalignment1297">
+<td class="cellalignment1305" id="r5c1-t7" headers="r1c1-t7">
+<p>MDL</p>
+</td>
+<td class="cellalignment1305" headers="r5c1-t7 r1c2-t7">
+<p>attribute importance</p>
+</td>
+</tr>
+<tr class="cellalignment1297">
+<td class="cellalignment1305" id="r6c1-t7" headers="r1c1-t7">
+<p>Naive Bayes</p>
+</td>
+<td class="cellalignment1305" headers="r6c1-t7 r1c2-t7">
+<p>classification</p>
+</td>
+</tr>
+<tr class="cellalignment1297">
+<td class="cellalignment1305" id="r7c1-t7" headers="r1c1-t7">
+<p>NMF</p>
+</td>
+<td class="cellalignment1305" headers="r7c1-t7 r1c2-t7">
+<p>feature extraction</p>
+</td>
+</tr>
+<tr class="cellalignment1297">
+<td class="cellalignment1305" id="r8c1-t7" headers="r1c1-t7">
+<p>SVM</p>
+</td>
+<td class="cellalignment1305" headers="r8c1-t7 r1c2-t7">
+<p>classification, regression, and anomaly detection</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<a id="DMPRG162"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref151"></a>
+<h3 class="sect2">Nested Object Types</h3>
+<p>Oracle Database supports user-defined data types that make it possible to model real-world entities as objects in the database. <span class="bold"><a id="sthref152"></a>Collection types</span> are object data types for modeling multi-valued attributes. Nested tables are collection types. Nested tables can be used anywhere that other data types can be used. You can learn more about collection types in <a class="olink ADOBJ00204" href="../../appdev.112/e11822/adobjcol.htm#ADOBJ00204"><span class="italic">Oracle Database Object-Relational Developer's Guide</span></a>.</p>
+<p>Oracle Data Mining supports two nested object types: one for numerical attributes, the other for categorical attributes.</p>
+<a id="DMPRG163"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref153"></a>
+<h4 class="sect3">DM_NESTED_NUMERICALS</h4>
+<p>The <code><a id="sthref154"></a>DM_NESTED_NUMERICALS</code> object type is a nested table of numerical attributes. Each row is a single <code>DM_NESTED_NUMERICAL</code>.</p>
+<p>The nested numerical attributes (rows) are described as follows.</p>
+<pre>
+SQL&gt; describe <span class="codeinlinebold">dm_nested_numerical</span>
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ATTRIBUTE_NAME                                     VARCHAR2(4000)
+ VALUE                                              NUMBER
+ 
+</pre>
+<p>The collection of numerical attributes (table) is described as follows.</p>
+<pre>
+SQL&gt; describe <span class="codeinlinebold">dm_nested_numericals</span>
+ DM_NESTED_NUMERICALS TABLE OF SYS.DM_NESTED_NUMERICAL
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ATTRIBUTE_NAME                                     VARCHAR2(4000)
+ VALUE                                              NUMBER
+</pre></div>
+<!-- class="sect3" -->
+<a id="DMPRG164"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref155"></a>
+<h4 class="sect3">DM_NESTED_CATEGORICALS</h4>
+<p>The <code><a id="sthref156"></a>DM_NESTED_CATEGORICALS</code> object type is a nested table of categorical attributes. Each row is a single <code>DM_NESTED_CATEGORICAL</code>.</p>
+<p>The nested categorical attributes (rows) are described as follows.</p>
+<pre>
+SQL&gt; describe <span class="codeinlinebold">dm_nested_categorical</span>
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ATTRIBUTE_NAME                                     VARCHAR2(4000)
+ VALUE                                              VARCHAR2(4000)
+ 
+</pre>
+<p>The collection of categorical attributes (table) is described as follows.</p>
+<pre>
+SQL&gt; describe <span class="codeinlinebold">dm_nested_categoricals</span>
+ DM_NESTED_CATEGORICALS TABLE OF SYS.DM_NESTED_CATEGORICAL
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ATTRIBUTE_NAME                                     VARCHAR2(4000)
+ VALUE                                              VARCHAR2(4000)
+</pre></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1028762"></a><a id="DMPRG165"></a>
+<div class="sect2">
+<h3 class="sect2">Example: Transforming Transactional Data for Mining</h3>
+<p><a href="#BGBHBDBD">Example 3-5</a> shows data from a view of a sales table. <a id="sthref157"></a>It <a id="sthref158"></a>includes <a id="sthref159"></a><a id="sthref160"></a>sales for three of the many products sold in four regions. This data is not suitable for mining at the product level because sales for each case (product), is stored in <a id="sthref161"></a>several rows.</p>
+<div class="example">
+<p class="titleinexample"><a id="BGBHBDBD"></a><a id="DMPRG166"></a>Example 3-5 Product Sales per Region in <a id="sthref162"></a>Multi-Record Case Format</p>
+<pre>
+PRODUCT   REGION         SALES
+-------   --------   ----------
+Prod1       NE           556432
+Prod2       NE           670155
+Prod3       NE             3111
+.
+.
+Prod1       NW            90887
+Prod2       NW           100999
+Prod3       NW           750437
+.
+.
+Prod1       SE            82153
+Prod2       SE            57322
+Prod3       SE            28938
+.
+.
+Prod1       SW          3297551
+Prod2       SW          4972019
+Prod3       SW           884923
+.
+.
+</pre></div>
+<!-- class="example" -->
+<p><a href="#BGBDHCDI">Example 3-6</a> shows how this data could be transformed for mining. The case ID column would be <code>PRODUCT</code>. <code>SALES_PER_REGION</code>, a nested column of type <code>DM_NESTED_NUMERICALS</code>, would be a data attribute. This table is suitable for mining, because the information for each case is stored in a single row.</p>
+<div class="example">
+<p class="titleinexample"><a id="BGBDHCDI"></a><a id="DMPRG167"></a>Example 3-6 Product Sales per Region in Single-Record Case Format</p>
+<pre>
+PRODUCT      SALES_PER_REGION
+          (ATTRIBUTE_NAME, VALUE)
+------    --------------------------
+Prod1      ('NE' ,     556432)
+           ('NW' ,      90887)
+           ('SE' ,      82153)
+           ('SW' ,    3297551)
+Prod2      ('NE' ,     670155)
+           ('NW' ,     100999)
+           ('SE' ,      57322)
+           ('SW' ,    4972019)
+Prod3      ('NE' ,       3111)
+           ('NW' ,     750437)
+           ('SE' ,      28938)
+           ('SW' ,     884923)
+.
+.
+</pre></div>
+<!-- class="example" -->
+<p>Oracle Data Mining treats each nested row as a separate model attribute, as shown in <a href="#BABHHCFF">Example 3-7</a>. (Note that the presentation in this example is conceptual only. The data is not actually pivoted before being processed.)</p>
+<div class="example">
+<p class="titleinexample"><a id="BABHHCFF"></a><a id="DMPRG168"></a>Example 3-7 Model Attributes Derived From SALES_PER_REGION</p>
+<pre>
+PRODUCT    SALES_PER_REGION.NE    SALES_PER_REGION.NW    SALES_PER_REGION.SE    SALES_PER_REGION.SW   
+-------    ------------------    -------------------    ------------------    -------------------
+Prod1                 556432                 90887                  82153                3297551
+Prod2                 670155                100999                  57322                4972019
+Prod3                   3111                 750437                 28938                 884923
+.
+.
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" -->
+<a id="BJEIHDDJ"></a><a id="DMPRG169"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Example: Creating a Nested Column for Mining</h3>
+<p><a href="#BJECGFEB">Example 3-8</a> shows how to define a nested column for data mining. This example uses transactional market basket data.</p>
+<div class="example">
+<p class="titleinexample"><a id="BJECGFEB"></a><a id="DMPRG170"></a>Example 3-8 Convert to a Nested Column</p>
+<p>The view <code>SALES_TRANS_CUST</code> provides a list of transaction IDs to identify each market basket and a list of the products in each basket.</p>
+<pre>
+SQL&gt; describe sales_trans_cust
+ Name                                                  Null?    Type
+ ----------------------------------------------------- -------- ----------------
+ TRANS_ID                                              NOT NULL NUMBER
+ PROD_NAME                                             NOT NULL VARCHAR2(50)
+ QUANTITY                                                       NUMBER
+</pre></div>
+<!-- class="example" -->
+<p>The following SQL statement transforms this data to a column of type <code>DM_NESTED_NUMERICALS</code> in a view called <code>SALES_TRANS_CUST_NESTED</code>. This view can be used as a case table for mining.</p>
+<pre>
+SQL&gt; CREATE VIEW sales_trans_cust_nested AS
+             SELECT trans_id,
+                     CAST(COLLECT(<span class="codeinlinebold">DM_NESTED_NUMERICAL</span>(
+                     prod_name, quantity))
+                     AS <span class="codeinlinebold"><a id="sthref163"></a>DM_NESTED_NUMERICALS</span>) custprods
+                  FROM sales_trans_cust
+             GROUP BY trans_id;
+</pre>
+<p>This query returns two rows from the transformed data.</p>
+<pre>
+SQL&gt; select * from sales_trans_cust_nested 
+               where trans_id &lt; 101000
+               and trans_id &gt; 100997;
+ 
+TRANS_ID  CUSTPRODS(ATTRIBUTE_NAME, VALUE)
+-------  ------------------------------------------------
+100998   DM_NESTED_NUMERICALS
+          (DM_NESTED_NUMERICAL('O/S Documentation Set - English', 1)
+100999   DM_NESTED_NUMERICALS
+          (DM_NESTED_NUMERICAL('CD-RW, High Speed Pack of 5', 2),
+           DM_NESTED_NUMERICAL('External 8X CD-ROM', 1), 
+           DM_NESTED_NUMERICAL('SIMM- 16MB PCMCIAII card', 1))<a id="sthref164"></a>
+</pre></div>
+<!-- class="sect2" -->
+<a id="BABJJIHE"></a><a id="DMPRG171"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Market Basket Data</h3>
+<p>Market <a id="sthref165"></a>basket data identifies the items sold in a set of baskets or transactions. Oracle Data Mining provides the association mining function for market basket analysis.</p>
+<p>Association models use the Apriori algorithm to generate association rule<a id="sthref166"></a>s that describe how items tend to be purchased in groups. For example, an association rule might assert with 65% confidence that 80% of the people who buy peanut butter also buy jelly.</p>
+<p>Market basket data is usually <span class="bold"><a id="sthref167"></a>transactional</span>. In <a id="sthref168"></a>transactional <a id="sthref169"></a>data, a case is a transaction and the data for a transaction is stored in multiple rows. Oracle Data Mining association models can be built on transactional data or on single-record case data. The <code>ODMS_ITEM_ID_COLUMN_NAME</code> and <code>ODMS_ITEM_VALUE_COLUMN_NAME</code> settings specify whether or not the data for association rules is in transactional format.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Association models are the only type of model that can be built on native transactional data. For all other types of models, Oracle Data Mining requires that the data be presented in single-record case format</div>
+<p>The Apriori algorithm assumes that the data is transactional and that it has many missing values. Apriori interprets all missing values as sparse data, and it has its own native mechanisms for handling sparse data.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p>See <a class="olink ARPLS617" href="../../appdev.112/e40758/d_datmin.htm#ARPLS617"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for information on the <code><a id="sthref170"></a>ODMS_ITEM_ID_COLUMN_NAME</code> and <code><a id="sthref171"></a>ODMS_ITEM_VALUE_COLUMN_NAME</code> settings</p>
+</li>
+<li>
+<p><a href="#BABJDDCH">"Missing Data"</a>.</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BABJDDCH"></a><a id="DMPRG015"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Missing Data</h2>
+<p>Oracle Data Mining distinguishes between <a id="sthref172"></a><span class="bold">sparse data</span> and <a id="sthref173"></a>data that contains <a id="sthref174"></a><span class="bold">random missing values</span>. The latter means that some attribute values are unknown. <a id="sthref175"></a>Sparse <a id="sthref176"></a>data, on the other hand, contains values that are assumed to be known, although they are not represented in the data.</p>
+<p>A typical example of sparse data is market basket data. Out of hundreds or thousands of available items, only a few are present in an individual case (the basket or transaction). All the item values are known, but they are not all included in the basket. Present values may have a quantity, while the items that are not represented are sparse (with a known quantity of zero).</p>
+<a id="DMPRG172"></a>
+<div class="sect2"><a id="sthref177"></a>
+<h3 class="sect2">How Oracle Data Mining Interprets Missing Data</h3>
+<p>Oracle Data Mining interprets missing data as follows:</p>
+<ul>
+<li>
+<p><span class="bold">Missing</span> &mdash; Missing values in columns with a simple data type (not nested) are assumed to be missing at random.</p>
+</li>
+<li>
+<p><span class="bold">Sparse</span> &mdash; Missing values in nested columns indicate sparsity.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="DMPRG173"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref178"></a>
+<h3 class="sect2">Examples: Missing Values or Sparse Data?</h3>
+<p>The examples in this section illustrate how Oracle Data Mining identifies data as either sparse or missing at random.</p>
+<a id="DMPRG174"></a>
+<div class="sect3"><a id="sthref179"></a>
+<h4 class="sect3">Sparsity in a Sales Table</h4>
+<p>A sales table contains point-of-sale data for a group of products, sold in several stores to different customers over a period of time. A particular customer will only have bought some of the products. Those products that a customer did not buy will not appear as rows in the sales table.</p>
+<p>If you were to figure out the amount of money a customer has spent for each product, the unpurchased products would have an inferred amount of zero. The value is not random or unknown; it is zero, even though no row appears in the table.</p>
+<p>Note that the sales data is dimensioned (by product, stores, customers, and time) and would be represented as nested data for mining.</p>
+<p>Since missing values in a nested column will always indicate sparsity, you should make sure that this interpretation is appropriate for the data that you wish to mine. For example, when trying to mine a multi-record case data set containing users' movie ratings of a large movie database, the missing ratings would be unknown (missing at random), but Oracle Data Mining would treat the data as sparse and infer a rating of zero for the missing value.</p>
+</div>
+<!-- class="sect3" -->
+<a id="DMPRG175"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref180"></a>
+<h4 class="sect3">Missing Values in a Table of Customer Data</h4>
+<p>A table of customer data contains demographic data about customers. The case ID column is the customer ID. The attributes are age, education, profession, gender, house-hold size, and so on. Not all the data may be available for each customer. Any missing values are considered to be missing at random. For example, if the age of customer 1 and the profession of customer 2 are not present in the data, that information is simply unknown. It does not indicate sparsity.</p>
+<p>Note that the customer data is not dimensioned. There is a one-to-one mapping between the case and each of its attributes. None of the attributes are nested.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="DMPRG176"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref181"></a>
+<h3 class="sect2">How Oracle Data Mining Treats Missing Data</h3>
+<p>Missing value treatment depends on the algorithm and on the nature of the data (categorical or numerical, sparse or missing at random). Missing value treatment is summarized in <a href="#BABIGEII">Table 3-3</a>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Oracle Data Mining performs the same missing value treatment whether or not Automatic Data Preparation is being used.</div>
+<div class="tblformal">
+<p class="titleintable"><a id="DMPRG177"></a><a id="sthref182"></a><a id="BABIGEII"></a>Table 3-3 Missing Value Treatment by Algorithm</p>
+<table class="cellalignment1303" title="Missing Value Treatment by Algorithm" summary="ODM treatment of sparse data and missing values." dir="ltr">
+<thead>
+<tr class="cellalignment1297">
+<th class="cellalignment1304" id="r1c1-t11">Missing Data</th>
+<th class="cellalignment1304" id="r1c2-t11">SVM, NMF, <span class="italic">k</span>-Means, GLM</th>
+<th class="cellalignment1304" id="r1c3-t11">NB, MDL, DT, OC</th>
+<th class="cellalignment1304" id="r1c4-t11">Apriori</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1297">
+<td class="cellalignment1305" id="r2c1-t11" headers="r1c1-t11">
+<p>NUMERICAL missing at random</p>
+</td>
+<td class="cellalignment1305" headers="r2c1-t11 r1c2-t11">
+<p>Oracle Data Mining replaces missing numerical values with the mean.</p>
+</td>
+<td class="cellalignment1305" headers="r2c1-t11 r1c3-t11">
+<p>The algorith<a id="sthref183"></a>m handles missing values naturally as missing at random.</p>
+</td>
+<td class="cellalignment1305" headers="r2c1-t11 r1c4-t11">
+<p>The algorithm interprets all missing data as sparse.</p>
+</td>
+</tr>
+<tr class="cellalignment1297">
+<td class="cellalignment1305" id="r3c1-t11" headers="r1c1-t11">
+<p>CATEGORICAL missing at random</p>
+</td>
+<td class="cellalignment1305" headers="r3c1-t11 r1c2-t11">
+<p>Oracle Data Mining replaces missing categorical values with the mode.</p>
+</td>
+<td class="cellalignment1305" headers="r3c1-t11 r1c3-t11">
+<p>The algorithm handles missing values naturally as missing random.</p>
+</td>
+<td class="cellalignment1305" headers="r3c1-t11 r1c4-t11">
+<p>The algorithm interprets all missing data as sparse.</p>
+</td>
+</tr>
+<tr class="cellalignment1297">
+<td class="cellalignment1305" id="r4c1-t11" headers="r1c1-t11">
+<p>NUMERICAL sparse</p>
+</td>
+<td class="cellalignment1305" headers="r4c1-t11 r1c2-t11">
+<p>Oracle Data Mining replaces sparse numerical data with zeros.</p>
+</td>
+<td class="cellalignment1305" headers="r4c1-t11 r1c3-t11">
+<p>DT and O-Cluster do not support nested data, and therefore do not support sparse data. NB and MDL replace sparse numerical data with zeros.</p>
+</td>
+<td class="cellalignment1305" headers="r4c1-t11 r1c4-t11">
+<p>The algorithm handles sparse data.</p>
+</td>
+</tr>
+<tr class="cellalignment1297">
+<td class="cellalignment1305" id="r5c1-t11" headers="r1c1-t11">
+<p>CATEGORICAL sparse</p>
+</td>
+<td class="cellalignment1305" headers="r5c1-t11 r1c2-t11">
+<p>Oracle Data Mining replaces sparse categorical data with zero vectors.</p>
+</td>
+<td class="cellalignment1305" headers="r5c1-t11 r1c3-t11">
+<p>DT and O-Cluster do not support nested data, and therefore do not support sparse data. NB and MDL replace sparse categorical data with the special value <code>DM$SPARSE</code>.</p>
+</td>
+<td class="cellalignment1305" headers="r5c1-t11 r1c4-t11">
+<p>The algorithm handles sparse data.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" --></div>
+<!-- class="sect2" -->
+<a id="DMPRG178"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref184"></a>
+<h3 class="sect2">Attribute Transformation and Missing Data Treatment</h3>
+<p>If you want Oracle Data Mining to treat missing data as sparse instead of missing at random or missing at random instead of sparse, transform it before building the model.</p>
+<p>If you want missing values to be treated as sparse, but Oracle Data Mining would interpret them as missing at random, you can use a SQL function like NVL to replace the nulls with a value such as "NA". Oracle Data Mining will not perform missing value treatment if there is a specified value. See <a class="olink SQLRF00684" href="../../server.112/e41084/functions119.htm#SQLRF00684"><span class="italic">Oracle Database SQL Language Reference</span></a></p>
+<p>If you want missing nested attributes to be treated as missing at random, you can transform the nested rows into physical attributes in separate columns &mdash; as long as the case table stays within the 1000 column limitation imposed by the Database. Fill in all of the possible attribute names, and specify them as null.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1296">
+<tr>
+<td class="cellalignment1305">
+<table class="cellalignment1301">
+<tr>
+<td class="cellalignment1300"><a href="api_tour.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1300"><a href="xform_text.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2005, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1307">
+<table class="cellalignment1299">
+<tr>
+<td class="cellalignment1300"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1300"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1300"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1300"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1300"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1300"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

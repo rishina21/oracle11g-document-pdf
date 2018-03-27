@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Distributed Transactions Concepts</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1055" />
+<meta name="dcterms.created" content="2015-05-05T8:27:39Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Administrator's Guide" />
+<meta name="dcterms.identifier" content="E25494-07" />
+<meta name="dcterms.isVersionOf" content="ADMIN" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2001, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="ds_appdev.htm" title="Previous" type="text/html" />
+<link rel="Next" href="ds_txnman.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e25494.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">45/49</span> <!-- End Header -->
+<div id="ADMIN031" class="chapter"><a id="g1013136"></a> <a id="i1307516"></a>
+<h1 class="chapter"><span class="secnum">34</span> Distributed Transactions Concepts</h1>
+<p>In this chapter:</p>
+<ul>
+<li>
+<p><a href="#i1007555">What Are Distributed Transactions?</a></p>
+</li>
+<li>
+<p><a href="#i1107629">Session Trees for Distributed Transactions</a></p>
+</li>
+<li>
+<p><a href="#i1007795">Two-Phase Commit Mechanism</a></p>
+</li>
+<li>
+<p><a href="#i1008016">In-Doubt Transactions</a></p>
+</li>
+<li>
+<p><a href="#i1008128">Distributed Transaction Processing: Case Study</a></p>
+</li>
+</ul>
+<a id="i1007555"></a>
+<div id="ADMIN12211" class="sect1">
+<h2 class="sect1">What Are Distributed Transactions?</h2>
+<p><a id="sthref3649"></a>A <span class="bold">distributed transaction</span> includes one or more statements that, individually or as a group, update data on two or more distinct nodes of a distributed database. For example, assume the database configuration depicted in <a href="#i1107562">Figure 34-1</a>:</p>
+<div id="ADMIN13143" class="figure">
+<p class="titleinfigure"><a id="i1107562"></a>Figure 34-1 Distributed System</p>
+<img width="510" height="319" src="img/admin051.gif" alt="Description of Figure 34-1 follows" /><br />
+<a id="sthref3650" href="img_text/admin051.htm">Description of "Figure 34-1 Distributed System"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>The following distributed transaction executed by <code dir="ltr">scott</code> updates the local <code dir="ltr">sales</code> database, the remote <code dir="ltr">hq</code> database, and the remote <code dir="ltr">maint</code> database:</p>
+<pre dir="ltr">
+UPDATE scott.dept@hq.us.example.com
+  SET loc = 'REDWOOD SHORES'
+  WHERE deptno = 10;
+UPDATE scott.emp
+  SET deptno = 11
+  WHERE deptno = 10;
+UPDATE scott.bldg@maint.us.example.com
+  SET room = 1225
+  WHERE room = 1163;
+COMMIT;
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If all statements of a transaction reference only a single remote node, then the transaction is remote, not distributed.</div>
+<p>There are two types of permissible operations in distributed transactions:</p>
+<ul>
+<li>
+<p><a href="#i1107593">DML and DDL Transactions</a></p>
+</li>
+<li>
+<p><a href="#i1007611">Transaction Control Statements</a></p>
+</li>
+</ul>
+<a id="i1107593"></a>
+<div id="ADMIN12212" class="sect2">
+<h3 class="sect2">DML and DDL Transactions</h3>
+<p><a id="sthref3651"></a>The following are the DML and DDL operations supported in a distributed transaction:</p>
+<ul>
+<li>
+<p><code dir="ltr">CREATE</code> <code dir="ltr">TABLE</code> <code dir="ltr">AS</code> <code dir="ltr">SELECT</code></p>
+</li>
+<li>
+<p><code dir="ltr">DELETE</code></p>
+</li>
+<li>
+<p><code dir="ltr">INSERT</code> (default and direct load)</p>
+</li>
+<li>
+<p><code dir="ltr">UPDATE</code></p>
+</li>
+<li>
+<p><code dir="ltr">LOCK</code> <code dir="ltr">TABLE</code></p>
+</li>
+<li>
+<p><code dir="ltr">SELECT</code></p>
+</li>
+<li>
+<p><code dir="ltr">SELECT</code> <code dir="ltr">FOR</code> <code dir="ltr">UPDATE</code></p>
+</li>
+</ul>
+<p>You can execute DML and DDL statements in parallel, and <code dir="ltr">INSERT</code> direct load statements serially, but note the following restrictions:</p>
+<ul>
+<li>
+<p>All remote operations must be <code dir="ltr">SELECT</code> statements.</p>
+</li>
+<li>
+<p>These statements must not be clauses in another distributed transaction.</p>
+</li>
+<li>
+<p>If the table referenced in the <span class="italic">table_expression_clause</span> of an <code dir="ltr">INSERT</code>, <code dir="ltr">UPDATE</code>, or <code dir="ltr">DELETE</code> statement is remote, then execution is serial rather than parallel.</p>
+</li>
+<li>
+<p>You cannot perform remote operations after issuing parallel DML/DDL or direct load <code dir="ltr">INSERT</code>.</p>
+</li>
+<li>
+<p>If the transaction begins using XA or OCI, it executes serially.</p>
+</li>
+<li>
+<p>No loopback operations can be performed on the transaction originating the parallel operation. For example, you cannot reference a remote object that is actually a synonym for a local object.</p>
+</li>
+<li>
+<p>If you perform a distributed operation other than a <code dir="ltr">SELECT</code> in the transaction, no DML is parallelized.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="i1007611"></a>
+<div id="ADMIN12213" class="sect2">
+<h3 class="sect2">Transaction Control Statements</h3>
+<p><a id="sthref3652"></a><a id="sthref3653"></a>The following are the supported transaction control statements:</p>
+<ul>
+<li>
+<p><code dir="ltr">COMMIT</code></p>
+</li>
+<li>
+<p><code dir="ltr">ROLLBACK</code></p>
+</li>
+<li>
+<p><code dir="ltr">SAVEPOINT</code></p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SQLRF" href="../e41084/toc.htm"><span class="italic">Oracle Database SQL Language Reference</span></a> for more information about these SQL statements</div>
+</li>
+</ul>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1107629"></a>
+<div id="ADMIN12214" class="sect1">
+<h2 class="sect1">Session Trees for Distributed Transactions</h2>
+<p><a id="sthref3654"></a><a id="sthref3655"></a>As the statements in a distributed transaction are issued, the database defines a <span class="bold">session tree</span> of all nodes participating in the transaction. A session tree is a hierarchical model that describes the relationships among sessions and their roles. <a href="#CHDCFICE">Figure 34-2</a> illustrates a session tree:</p>
+<div id="ADMIN13144" class="figure">
+<p class="titleinfigure"><a id="CHDCFICE"></a>Figure 34-2 Example of a Session Tree</p>
+<img width="672" height="351" src="img/admin031.png" alt="Description of Figure 34-2 follows" /><br />
+<a id="sthref3656" href="img_text/admin031.htm">Description of "Figure 34-2 Example of a Session Tree"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>All nodes participating in the session tree of a distributed transaction assume one or more of the following roles:</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="Distributed Transaction Nodes" summary="Column 1 contains the name of the role and column 2 describes node behavior." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t4">Role</th>
+<th class="cellalignment1334" id="r1c2-t4">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t4" headers="r1c1-t4">Client</td>
+<td class="cellalignment1335" headers="r2c1-t4 r1c2-t4">A node that references information in a database belonging to a different node.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t4" headers="r1c1-t4">Database server</td>
+<td class="cellalignment1335" headers="r3c1-t4 r1c2-t4">A node that receives a request for information from another node.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t4" headers="r1c1-t4">Global coordinator</td>
+<td class="cellalignment1335" headers="r4c1-t4 r1c2-t4">The node that originates the distributed transaction.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r5c1-t4" headers="r1c1-t4">Local coordinator</td>
+<td class="cellalignment1335" headers="r5c1-t4 r1c2-t4">A node that is forced to reference data on other nodes to complete its part of the transaction.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r6c1-t4" headers="r1c1-t4">Commit point site</td>
+<td class="cellalignment1335" headers="r6c1-t4 r1c2-t4">The node that commits or rolls back the transaction as instructed by the global coordinator.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" -->
+<p>The role a node plays in a distributed transaction is determined by:</p>
+<ul>
+<li>
+<p>Whether the transaction is local or remote</p>
+</li>
+<li>
+<p>The <span class="bold">commit point strength</span> of the node (<a href="#i1007721">"Commit Point Site"</a>)</p>
+</li>
+<li>
+<p>Whether all requested data is available at a node, or whether other nodes need to be referenced to complete the transaction</p>
+</li>
+<li>
+<p>Whether the node is read-only</p>
+</li>
+</ul>
+<div id="ADMIN12215" class="sect2"><a id="sthref3657"></a>
+<h3 class="sect2">Clients</h3>
+<p><a id="sthref3658"></a>A node acts as a client when it references information from a database on another node. The referenced node is a database server. In <a href="#CHDCFICE">Figure 34-2</a>, the node <code dir="ltr">sales</code> is a client of the nodes that host the <code dir="ltr">warehouse</code> and <code dir="ltr">finance</code> databases.</p>
+</div>
+<!-- class="sect2" -->
+<div id="ADMIN12216" class="sect2"><a id="sthref3659"></a>
+<h3 class="sect2">Database Servers</h3>
+<p><a id="sthref3660"></a><a id="sthref3661"></a>A database server<a id="sthref3662"></a> is a node that <a id="sthref3663"></a>hosts a database from which a client requests data.</p>
+<p>In <a href="#CHDCFICE">Figure 34-2</a>, an application at the <code dir="ltr">sales</code> node initiates a distributed transaction that accesses data from the <code dir="ltr">warehouse</code> and <code dir="ltr">finance</code> nodes. Therefore, <code dir="ltr">sales.example.com</code> has the role of client node, and <code dir="ltr">warehouse</code> and <code dir="ltr">finance</code> are both database servers. In this example, <code dir="ltr">sales</code> is a database server <span class="italic">and</span> a client because the application also modifies data in the <code dir="ltr">sales</code> database.</p>
+</div>
+<!-- class="sect2" -->
+<div id="ADMIN12217" class="sect2"><a id="sthref3664"></a>
+<h3 class="sect2">Local Coordinators</h3>
+<p><a id="sthref3665"></a><a id="sthref3666"></a><a id="sthref3667"></a>A node that must reference data on other nodes to complete its part in the distributed transaction is called a local coordinator. In <a href="#CHDCFICE">Figure 34-2</a>, <code dir="ltr">sales</code> is a local coordinator because it coordinates the nodes it directly references: <code dir="ltr">warehouse</code> and <code dir="ltr">finance.</code> The node <code dir="ltr"><a id="sthref3668"></a><a id="sthref3669"></a>sales</code> also happens to be the global coordinator because it coordinates all the nodes involved in the transaction.</p>
+<p>A local coordinator is responsible for coordinating the transaction among the nodes it communicates directly with by:</p>
+<ul>
+<li>
+<p>Receiving and relaying transaction status information to and from those nodes</p>
+</li>
+<li>
+<p>Passing queries to those nodes</p>
+</li>
+<li>
+<p>Receiving queries from those nodes and passing them on to other nodes</p>
+</li>
+<li>
+<p>Returning the results of queries to the nodes that initiated them</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<div id="ADMIN12218" class="sect2"><a id="sthref3670"></a>
+<h3 class="sect2">Global Coordinator</h3>
+<p><a id="sthref3671"></a><a id="sthref3672"></a><a id="sthref3673"></a>The node where the distributed transaction originates is called the global coordinator. The database application issuing the distributed transaction is directly connected to the node acting as the global coordinator. For example, in <a href="#CHDCFICE">Figure 34-2</a>, the transaction issued at the node <code dir="ltr">sales</code> references information from the database servers <code dir="ltr">warehouse</code> and <code dir="ltr">finance</code>. Therefore, <code dir="ltr">sales.example.com</code> is the global coordinator of this distributed transaction.</p>
+<p>The global coordinator becomes the parent or root of the session tree. The global coordinator performs the following operations during a distributed transaction: <a id="sthref3674"></a><a id="sthref3675"></a></p>
+<ul>
+<li>
+<p>Sends all of the distributed transaction SQL statements, remote procedure calls, and so forth to the directly referenced nodes, thus forming the session tree</p>
+</li>
+<li>
+<p>Instructs all directly referenced nodes other than the commit point site to prepare the transaction</p>
+</li>
+<li>
+<p>Instructs the commit point site to initiate the global commit of the transaction if all nodes prepare successfully</p>
+</li>
+<li>
+<p>Instructs all nodes to initiate a global rollback of the transaction if there is an abort response</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="i1007721"></a>
+<div id="ADMIN12219" class="sect2">
+<h3 class="sect2">Commit Point Site</h3>
+<p><a id="sthref3676"></a><a id="sthref3677"></a><a id="sthref3678"></a>The job of the commit point site is to initiate a commit or roll back operation as instructed by the global coordinator. The system administrator always designates one node to be the commit point site in the session tree by assigning all nodes a commit point strength. The node selected as commit point site should be the node that stores the most critical data.<a id="sthref3679"></a><a id="sthref3680"></a><a id="sthref3681"></a></p>
+<p><a href="#i1007732">Figure 34-3</a> illustrates an example of distributed system, with <code dir="ltr">sales</code> serving as the commit point site:</p>
+<div id="ADMIN13145" class="figure">
+<p class="titleinfigure"><a id="i1007732"></a>Figure 34-3 Commit Point Site</p>
+<img width="471" height="297" src="img/admin050.gif" alt="Description of Figure 34-3 follows" /><br />
+<a id="sthref3682" href="img_text/admin050.htm">Description of "Figure 34-3 Commit Point Site"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>The commit point site is distinct from all other nodes involved in a distributed transaction in these ways:</p>
+<ul>
+<li>
+<p>The commit point site never enters the prepared state. Consequently, if the commit point site stores the most critical data, this data never remains in-doubt, even if a failure occurs. In failure situations, failed nodes remain in a prepared state, holding necessary locks on data until in-doubt transactions are resolved.</p>
+</li>
+<li>
+<p>The commit point site commits before the other nodes involved in the transaction. In effect, the outcome of a distributed transaction at the commit point site determines whether the transaction at all nodes is committed or rolled back: the other nodes follow the lead of the commit point site. The global coordinator ensures that all nodes complete the transaction in the same manner as the commit point site.</p>
+</li>
+</ul>
+<div id="ADMIN12220" class="sect3"><a id="sthref3683"></a>
+<h4 class="sect3">How a Distributed Transaction Commits</h4>
+<p>A distributed transaction is considered committed after all non-commit-point sites are prepared, and the transaction has been actually committed at the commit point site. The redo log at the commit point site is updated as soon as the distributed transaction is committed at this node.</p>
+<p>Because the commit point log contains a record of the commit, the transaction is considered committed even though some participating nodes may still be only in the prepared state and the transaction not yet actually committed at these nodes. In the same way, a distributed transaction is considered <span class="italic">not</span> committed if the commit has not been logged at the commit point site.<a id="sthref3684"></a></p>
+</div>
+<!-- class="sect3" -->
+<a id="i1007745"></a>
+<div id="ADMIN12221" class="sect3">
+<h4 class="sect3">Commit Point Strength</h4>
+<p><a id="sthref3685"></a><a id="sthref3686"></a><a id="sthref3687"></a><a id="sthref3688"></a><a id="sthref3689"></a>Every database server must be assigned a commit point strength. If a database server is referenced in a distributed transaction, the value of its commit point strength determines which role it plays in the two-phase commit. Specifically, the commit point strength determines whether a given node is the commit point site in the distributed transaction and thus commits before all of the other nodes.<a id="sthref3690"></a><a id="sthref3691"></a><a id="sthref3692"></a> This value is specified using the initialization parameter <code dir="ltr">COMMIT_POINT_STRENGTH</code>. This section explains how the database determines the commit point site.</p>
+<p><a id="sthref3693"></a>The commit point site, which is determined at the beginning of the prepare phase, is selected only from the nodes participating in the transaction. The following sequence of events occurs:</p>
+<ol>
+<li>
+<p>Of the nodes directly referenced by the global coordinator, the database selects the node with the highest commit point strength as the commit point site.</p>
+</li>
+<li>
+<p>The initially-selected node determines if any of the nodes from which it has to obtain information for this transaction has a higher commit point strength.</p>
+</li>
+<li>
+<p>Either the node with the highest commit point strength directly referenced in the transaction or one of its servers with a higher commit point strength becomes the commit point site.</p>
+</li>
+<li>
+<p>After the final commit point site has been determined, the global coordinator sends prepare responses to all nodes participating in the transaction.</p>
+</li>
+</ol>
+<p><a href="#i1007762">Figure 34-4</a> shows in a sample session tree the commit point strengths of each node (in parentheses) and shows the node chosen as the commit point site:</p>
+<div id="ADMIN13146" class="figure">
+<p class="titleinfigure"><a id="i1007762"></a>Figure 34-4 Commit Point Strengths and Determination of the Commit Point Site</p>
+<img width="651" height="387" src="img/admin032.png" alt="Description of Figure 34-4 follows" /><br />
+<a id="sthref3694" href="img_text/admin032.htm">Description of "Figure 34-4 Commit Point Strengths and Determination of the Commit Point Site"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>The following conditions apply when determining the commit point site: <a id="sthref3695"></a></p>
+<ul>
+<li>
+<p>A read-only node cannot be the commit point site.</p>
+</li>
+<li>
+<p>If multiple nodes directly referenced by the global coordinator have the same commit point strength, then the database designates one of these as the commit point site.</p>
+</li>
+<li>
+<p>If a distributed transaction ends with a rollback, then the prepare and commit phases are not needed. Consequently, the database never determines a commit point site. Instead, the global coordinator sends a <code dir="ltr">ROLLBACK</code> statement to all nodes and ends the processing of the distributed transaction.</p>
+</li>
+</ul>
+<p>As <a href="#i1007762">Figure 34-4</a> illustrates, the commit point site and the global coordinator can be different nodes of the session tree. The commit point strength of each node is communicated to the coordinators when the initial connections are made. The coordinators retain the commit point strengths of each node they are in direct communication with so that commit point sites can be efficiently selected during two-phase commits. Therefore, it is not necessary for the commit point strength to be exchanged between a coordinator and a node each time a commit occurs.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="ds_txnman.htm#i1007570">"Specifying the Commit Point Strength of a Node"</a> to learn how to set the commit point strength of a node</p>
+</li>
+<li>
+<p><a class="olink REFRN10018" href="../../server.112/e40402/initparams032.htm#REFRN10018"><span class="italic">Oracle Database Reference</span></a> for more information about the initialization parameter <code dir="ltr">COMMIT_POINT_STRENGTH</code></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1007795"></a>
+<div id="ADMIN12222" class="sect1">
+<h2 class="sect1">Two-Phase Commit Mechanism <a id="sthref3696"></a></h2>
+<p>Unlike a transaction on a local database, a distributed transaction involves altering data on multiple databases. Consequently, distributed transaction processing is more complicated, because the database must coordinate the committing or rolling back of the changes in a transaction as a self-contained unit. In other words, the entire transaction commits, or the entire transaction rolls back.</p>
+<p>The database ensures the integrity of data in a distributed transaction using the <span class="bold">two-phase commit mechanism</span>. In the <span class="bold">prepare phase</span>, the initiating node in the transaction asks the other participating nodes to promise to commit or roll back the transaction. During the <span class="bold">commit phase</span>, the initiating node asks all participating nodes to commit the transaction. If this outcome is not possible, then all nodes are asked to roll back.</p>
+<p><a id="sthref3697"></a>All participating nodes in a distributed transaction should perform the same action: they should either all commit or all perform a rollback of the transaction. The database automatically controls and monitors the commit or rollback of a distributed transaction and maintains the integrity of the <span class="bold">global database</span> (the collection of databases participating in the transaction) using the two-phase commit mechanism. This mechanism is completely transparent, requiring no programming on the part of the user or application developer.</p>
+<p><a id="i1107802"></a>The <a id="sthref3698"></a>commit mechanism has the following distinct phases, which the database performs automatically whenever a user commits a distributed transaction:</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="Phases of the Commit Mechanism" summary="Column 1 lists the phases of commit and column 2 describes each phase." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t6">Phase</th>
+<th class="cellalignment1334" id="r1c2-t6">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t6" headers="r1c1-t6">Prepare phase</td>
+<td class="cellalignment1335" headers="r2c1-t6 r1c2-t6">The initiating node, called the <span class="bold">global coordinator</span>, asks participating nodes other than the commit point site to promise to commit or roll back the transaction, even if there is a failure. If any node cannot prepare, the transaction is rolled back.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t6" headers="r1c1-t6">Commit phase</td>
+<td class="cellalignment1335" headers="r3c1-t6 r1c2-t6">If all participants respond to the coordinator that they are prepared, then the coordinator asks the commit point site to commit. After it commits, the coordinator asks all other nodes to commit the transaction.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t6" headers="r1c1-t6">Forget phase</td>
+<td class="cellalignment1335" headers="r4c1-t6 r1c2-t6">The global coordinator forgets about the transaction.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" -->
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1007836">Prepare Phase</a></p>
+</li>
+<li>
+<p><a href="#i1007972">Commit Phase</a></p>
+</li>
+<li>
+<p><a href="#i1108009">Forget Phase</a></p>
+</li>
+</ul>
+<a id="i1007836"></a>
+<div id="ADMIN12223" class="sect2">
+<h3 class="sect2">Prepare Phase</h3>
+<p><a id="sthref3699"></a><a id="sthref3700"></a>The first phase in committing a distributed transaction is the prepare phase. In this phase, the database does not actually commit or roll back the transaction. Instead, all nodes referenced in a distributed transaction (except the commit point site, described in the <a href="#i1007721">"Commit Point Site"</a>) are told to prepare to commit. By preparing, a node:</p>
+<ul>
+<li>
+<p>Records information in the redo logs so that it can subsequently either commit or roll back the transaction, regardless of intervening failures</p>
+</li>
+<li>
+<p>Places a distributed lock on modified tables, which prevents reads</p>
+</li>
+</ul>
+<p>When a node responds to the global coordinator that it is prepared to commit, the prepared node <span class="italic">promises</span> to either commit or roll back the transaction later, but does not make a unilateral decision on whether to commit or roll back the transaction. The promise means that if an instance failure occurs at this point, the node can use the redo records in the online log to recover the database back to the prepare phase.<a id="sthref3701"></a></p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Queries that start after a node has prepared cannot access the associated locked data until all phases complete. The time is insignificant unless a failure occurs (see <a href="ds_txnman.htm#i1007799">"Deciding How to Handle In-Doubt Transactions"</a>).</div>
+<div id="ADMIN12224" class="sect3"><a id="sthref3702"></a>
+<h4 class="sect3">Types of Responses in the Prepare Phase</h4>
+<p>When a node is told to prepare, it can respond in the following ways:</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="Responses During the Prepare Phase" summary="Column 1 lists possible responses when a node is told to prepare; column 2 explains the meaning of the response." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t8">Response</th>
+<th class="cellalignment1334" id="r1c2-t8">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t8" headers="r1c1-t8">Prepared</td>
+<td class="cellalignment1335" headers="r2c1-t8 r1c2-t8">Data on the node has been modified by a statement in the distributed transaction, and the node has successfully prepared.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t8" headers="r1c1-t8">Read-only</td>
+<td class="cellalignment1335" headers="r3c1-t8 r1c2-t8">No data on the node has been, or can be, modified (only queried), so no preparation is necessary.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t8" headers="r1c1-t8">Abort</td>
+<td class="cellalignment1335" headers="r4c1-t8 r1c2-t8">The node cannot successfully prepare.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" -->
+<a id="i1007881"></a>
+<div id="ADMIN12225" class="sect4">
+<h5 class="sect4">Prepared Response</h5>
+<p><a id="sthref3703"></a><a id="sthref3704"></a>When a node has successfully prepared, it issues a <span class="bold">prepared message</span>. The message indicates that the node has records of the changes in the online log, so it is prepared either to commit or perform a rollback. The message also guarantees that locks held for the transaction can survive a failure.</p>
+</div>
+<!-- class="sect4" -->
+<a id="i1007885"></a>
+<div id="ADMIN12226" class="sect4">
+<h5 class="sect4">Read-Only Response</h5>
+<p><a id="sthref3705"></a><a id="sthref3706"></a>When a node is asked to prepare, and the SQL statements affecting the database do not change any data on the node, the node responds with a <span class="bold">read-only message</span>. The message indicates that the node will not participate in the commit phase.</p>
+<p>There are three cases in which all or part of a distributed transaction is read-only:</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="Read-Only Distributed Transactions" summary="Column 1 lists the cases where a distributed transaction might be read-only; column 2 lists the associated conditions; column 3 explains the consequences." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t9">Case</th>
+<th class="cellalignment1334" id="r1c2-t9">Conditions</th>
+<th class="cellalignment1334" id="r1c3-t9">Consequence</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t9" headers="r1c1-t9">Partially read-only</td>
+<td class="cellalignment1335" headers="r2c1-t9 r1c2-t9">Any of the following occurs: <a id="sthref3707"></a><a id="sthref3708"></a>
+<ul>
+<li>
+<p>Only queries are issued at one or more nodes.</p>
+</li>
+<li>
+<p>No data is changed.</p>
+</li>
+<li>
+<p>Changes rolled back due to triggers firing or constraint violations.</p>
+</li>
+</ul>
+</td>
+<td class="cellalignment1335" headers="r2c1-t9 r1c3-t9">The read-only nodes recognize their status when asked to prepare. They give their local coordinators a read-only response. Thus, the commit phase completes faster because the database eliminates read-only nodes from subsequent processing.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t9" headers="r1c1-t9">Completely read-only with prepare phase</td>
+<td class="cellalignment1335" headers="r3c1-t9 r1c2-t9">All of following occur:
+<ul>
+<li>
+<p>No data changes.</p>
+</li>
+<li>
+<p>Transaction is <span class="italic">not</span> started with <code dir="ltr">SET TRANSACTION READ ONLY</code> statement.</p>
+</li>
+</ul>
+</td>
+<td class="cellalignment1335" headers="r3c1-t9 r1c3-t9">All nodes recognize that they are read-only during prepare phase, so no commit phase is required. The global coordinator, not knowing whether all nodes are read-only, must still perform the prepare phase.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t9" headers="r1c1-t9">Completely read-only without two-phase commit</td>
+<td class="cellalignment1335" headers="r4c1-t9 r1c2-t9">All of following occur:
+<ul>
+<li>
+<p>No data changes.</p>
+</li>
+<li>
+<p>Transaction <span class="italic">is</span> started with <code dir="ltr">SET TRANSACTION READ ONLY</code> statement.</p>
+</li>
+</ul>
+</td>
+<td class="cellalignment1335" headers="r4c1-t9 r1c3-t9">Only queries are allowed in the transaction, so global coordinator does not have to perform two-phase commit. Changes by other transactions do not degrade global transaction-level read consistency because of global SCN coordination among nodes. The transaction does not use undo segments.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" -->
+<p>Note that if a distributed transaction is set to read-only, then it does not use undo segments. If many users connect to the database and their transactions are <span class="italic">not</span> set to <code dir="ltr">READ ONLY</code>, then they allocate undo space even if they are only performing queries.</p>
+</div>
+<!-- class="sect4" -->
+<a id="i1007926"></a>
+<div id="ADMIN12227" class="sect4">
+<h5 class="sect4">Abort Response</h5>
+<p><a id="sthref3709"></a><a id="sthref3710"></a>When a node cannot successfully prepare, it performs the following actions:</p>
+<ol>
+<li>
+<p>Releases resources currently held by the transaction and rolls back the local portion of the transaction.</p>
+</li>
+<li>
+<p>Responds to the node that referenced it in the distributed transaction with an <a id="sthref3711"></a>abort message.</p>
+</li>
+</ol>
+<p>These actions then propagate to the other nodes involved in the distributed transaction so that they can roll back the transaction and guarantee the integrity of the data in the global database. This response enforces the primary rule of a distributed transaction: <span class="italic">all nodes involved in the transaction either all commit or all roll back the transaction at the same logical time</span>.</p>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<div id="ADMIN12228" class="sect3"><a id="sthref3712"></a>
+<h4 class="sect3">Steps in the Prepare Phase</h4>
+<p><a id="sthref3713"></a>To complete the prepare phase, each node excluding the commit point site performs the following steps:</p>
+<ol>
+<li>
+<p>The node requests that its <span class="bold">descendants</span>, that is, the nodes subsequently referenced, prepare to commit.</p>
+</li>
+<li>
+<p>The node checks to see whether the transaction changes data on itself or its descendants. If there is no change to the data, then the node skips the remaining steps and returns a read-only response (see <a href="#i1007885">"Read-Only Response"</a>).</p>
+</li>
+<li>
+<p>The node allocates the resources it must commit the transaction if data is changed.</p>
+</li>
+<li>
+<p>The node saves redo records corresponding to changes made by the transaction to its redo log.</p>
+</li>
+<li>
+<p>The node guarantees that locks held for the transaction are able to survive a failure.</p>
+</li>
+<li>
+<p>The node responds to the initiating node with a prepared response (see <a href="#i1007881">"Prepared Response"</a>) or, if its attempt or the attempt of one of its descendents to prepare was unsuccessful, with an abort response (see <a href="#i1007926">"Abort Response"</a>).</p>
+</li>
+</ol>
+<p>These actions guarantee that the node can subsequently commit or roll back the transaction on the node. The prepared nodes then wait until a <code dir="ltr">COMMIT</code> or <code dir="ltr">ROLLBACK</code> request is received from the global coordinator.</p>
+<p>After the nodes are prepared, the distributed transaction is said to be <span class="bold">in-doubt</span> (see <a href="#i1008016">"In-Doubt Transactions"</a>).<a id="sthref3714"></a>It retains in-doubt status until all changes are either committed or rolled back.<a id="sthref3715"></a><a id="sthref3716"></a></p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1007972"></a>
+<div id="ADMIN12229" class="sect2">
+<h3 class="sect2">Commit Phase</h3>
+<p><a id="sthref3717"></a><a id="sthref3718"></a>The second phase in committing a distributed transaction is the commit phase. Before this phase occurs, <span class="italic">all</span> nodes other than the commit point site referenced in the distributed transaction have guaranteed that they are prepared, that is, they have the necessary resources to commit the transaction.</p>
+<div id="ADMIN12230" class="sect3"><a id="sthref3719"></a>
+<h4 class="sect3">Steps in the Commit Phase</h4>
+<p><a id="sthref3720"></a>The commit phase consists of the following steps:</p>
+<ol>
+<li>
+<p>The global coordinator instructs the commit point site to commit.</p>
+</li>
+<li>
+<p>The commit point site commits.</p>
+</li>
+<li>
+<p>The commit point site informs the global coordinator that it has committed.</p>
+</li>
+<li>
+<p>The global and local coordinators send a message to all nodes instructing them to commit the transaction.</p>
+</li>
+<li>
+<p>At each node, the database commits the local portion of the distributed transaction and releases locks.</p>
+</li>
+<li>
+<p>At each node, the database records an additional redo entry in the local redo log, indicating that the transaction has committed.</p>
+</li>
+<li>
+<p>The participating nodes notify the global coordinator that they have committed.</p>
+</li>
+</ol>
+<p>When the commit phase is complete, the data on all nodes of the distributed system is consistent.</p>
+</div>
+<!-- class="sect3" -->
+<div id="ADMIN12231" class="sect3"><a id="sthref3721"></a>
+<h4 class="sect3">Guaranteeing Global Database Consistency</h4>
+<p><a id="sthref3722"></a>Each committed transaction has an associated system change number (SCN) to uniquely identify the changes made by the SQL statements within that transaction. The SCN functions as an internal timestamp that uniquely identifies a committed version of the database.</p>
+<p>In a distributed system, the SCNs of communicating nodes are coordinated when all of the following actions occur: <a id="sthref3723"></a></p>
+<ul>
+<li>
+<p>A connection occurs using the path described by one or more database links</p>
+</li>
+<li>
+<p>A distributed SQL statement executes</p>
+</li>
+<li>
+<p>A distributed transaction commits</p>
+</li>
+</ul>
+<p>Among other benefits, the coordination of SCNs among the nodes of a distributed system ensures global read-consistency at both the statement and transaction level. If necessary, global time-based recovery can also be completed.</p>
+<p>During the prepare phase, the database determines the highest SCN at all nodes involved in the transaction. The transaction then commits with the high SCN at the commit point site. The commit SCN is then sent to all prepared nodes with the commit decision.<a id="sthref3724"></a></p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="ds_txnman.htm#i1008473">"Managing Read Consistency"</a> for information about managing time lag issues in read consistency</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1108009"></a>
+<div id="ADMIN12232" class="sect2">
+<h3 class="sect2">Forget Phase</h3>
+<p><a id="sthref3725"></a><a id="sthref3726"></a>After the participating nodes notify the commit point site that they have committed, the commit point site can forget about the transaction. The following steps occur:</p>
+<ol>
+<li>
+<p>After receiving notice from the global coordinator that all nodes have committed, the commit point site erases status information about this transaction.</p>
+</li>
+<li>
+<p>The commit point site informs the global coordinator that it has erased the status information.</p>
+</li>
+<li>
+<p>The global coordinator erases its own information about the transaction.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1008016"></a>
+<div id="ADMIN12233" class="sect1">
+<h2 class="sect1">In-Doubt Transactions<a id="sthref3727"></a><a id="sthref3728"></a><a id="sthref3729"></a></h2>
+<p><a id="sthref3730"></a>The two-phase commit mechanism ensures that all nodes either commit or perform a rollback together. What happens if any of the three phases fails because of a system or network error? The transaction becomes in-doubt.</p>
+<p>Distributed transactions can become in-doubt in the following ways:</p>
+<ul>
+<li>
+<p>A server system running Oracle Database software crashes</p>
+</li>
+<li>
+<p>A network connection between two or more Oracle Databases involved in distributed processing is disconnected</p>
+</li>
+<li>
+<p>An unhandled software error occurs</p>
+</li>
+</ul>
+<p>The RECO process automatically resolves in-doubt transactions when the system, network, or software problem is resolved. Until RECO can resolve the transaction, the data is locked for both reads and writes. The database blocks reads because it cannot determine which version of the data to display for a query.</p>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1008039">Automatic Resolution of In-Doubt Transactions</a></p>
+</li>
+<li>
+<p><a href="#i1008089">Manual Resolution of In-Doubt Transactions</a></p>
+</li>
+<li>
+<p><a href="#i1008118">Relevance of System Change Numbers for In-Doubt Transactions</a></p>
+</li>
+</ul>
+<a id="i1008039"></a>
+<div id="ADMIN12234" class="sect2">
+<h3 class="sect2">Automatic Resolution of In-Doubt Transactions</h3>
+<p><a id="sthref3731"></a>In the majority of cases, the database resolves the in-doubt transaction automatically. Assume that there are two nodes, <code dir="ltr">local</code> and <code dir="ltr">remote</code>, in the following scenarios. The local node is the commit point site. User <code dir="ltr">scott</code> connects to <code dir="ltr">local</code> and executes and commits a distributed transaction that updates <code dir="ltr">local</code> and <code dir="ltr">remote</code>.</p>
+<div id="ADMIN12235" class="sect3"><a id="sthref3732"></a>
+<h4 class="sect3">Failure During the Prepare Phase</h4>
+<p><a id="sthref3733"></a><a href="#i1008049">Figure 34-5</a> illustrates the sequence of events when there is a failure during the prepare phase of a distributed transaction:</p>
+<div id="ADMIN13147" class="figure">
+<p class="titleinfigure"><a id="i1008049"></a>Figure 34-5 Failure During Prepare Phase</p>
+<img width="521" height="305" src="img/admin049.gif" alt="Description of Figure 34-5 follows" /><br />
+<a id="sthref3734" href="img_text/admin049.htm">Description of "Figure 34-5 Failure During Prepare Phase"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>The following steps occur:</p>
+<ol>
+<li>
+<p>User <code dir="ltr">SCOTT</code> connects to <code dir="ltr">Local</code> and executes a distributed transaction.</p>
+</li>
+<li>
+<p>The global coordinator, which in this example is also the commit point site, requests all databases other than the commit point site to promise to commit or roll back when told to do so.</p>
+</li>
+<li>
+<p>The <code dir="ltr">remote</code> database crashes before issuing the prepare response back to <code dir="ltr">local</code>.</p>
+</li>
+<li>
+<p>The transaction is ultimately rolled back on each database by the RECO process when the remote site is restored.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<div id="ADMIN12236" class="sect3"><a id="sthref3735"></a>
+<h4 class="sect3">Failure During the Commit Phase</h4>
+<p><a href="#CHDGGDDE">Figure 34-6</a> illustrates the sequence of events when there is a failure during the commit phase of a distributed transaction:</p>
+<div id="ADMIN13148" class="figure">
+<p class="titleinfigure"><a id="CHDGGDDE"></a>Figure 34-6 Failure During Commit Phase</p>
+<img width="575" height="309" src="img/admin048.gif" alt="Description of Figure 34-6 follows" /><br />
+<a id="sthref3736" href="img_text/admin048.htm">Description of "Figure 34-6 Failure During Commit Phase"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>The following steps occur:</p>
+<ol>
+<li>
+<p>User <code dir="ltr">Scott</code> connects to <code dir="ltr">local</code> and executes a distributed transaction.</p>
+</li>
+<li>
+<p>The global coordinator, which in this case is also the commit point site, requests all databases other than the commit point site to promise to commit or roll back when told to do so.</p>
+</li>
+<li>
+<p>The commit point site receives a prepared message from <code dir="ltr">remote</code> saying that it will commit.</p>
+</li>
+<li>
+<p>The commit point site commits the transaction locally, then sends a commit message to <code dir="ltr">remote</code> asking it to commit.</p>
+</li>
+<li>
+<p>The <code dir="ltr">remote</code> database receives the commit message, but cannot respond because of a network failure.</p>
+</li>
+<li>
+<p>The transaction is ultimately committed on the remote database by the RECO process after the network is restored.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="ds_txnman.htm#i1007799">"Deciding How to Handle In-Doubt Transactions"</a> for a description of failure situations and how the database resolves intervening failures during two-phase commit</div>
+</li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1008089"></a>
+<div id="ADMIN12237" class="sect2">
+<h3 class="sect2">Manual Resolution of In-Doubt Transactions</h3>
+<p><a id="sthref3737"></a>You should only need to resolve an in-doubt transaction in the following cases:</p>
+<ul>
+<li>
+<p>The in-doubt transaction has locks on critical data or undo segments.</p>
+</li>
+<li>
+<p>The cause of the system, network, or software failure cannot be repaired quickly.</p>
+</li>
+</ul>
+<p>Resolution of in-doubt transactions can be complicated. The procedure requires that you do the following:</p>
+<ul>
+<li>
+<p>Identify the transaction identification number for the in-doubt transaction.</p>
+</li>
+<li>
+<p>Query the <code dir="ltr">DBA_2PC_PENDING</code> and <code dir="ltr">DBA_2PC_NEIGHBORS</code> views to determine whether the databases involved in the transaction have committed.</p>
+</li>
+<li>
+<p>If necessary, force a commit using the <code dir="ltr">COMMIT FORCE</code> statement or a rollback using the <code dir="ltr">ROLLBACK FORCE</code> statement.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+The following sections explain how to resolve in-doubt transactions:
+<ul>
+<li>
+<p><a href="ds_txnman.htm#i1007799">"Deciding How to Handle In-Doubt Transactions"</a></p>
+</li>
+<li>
+<p><a href="ds_txnman.htm#i1007905">"Manually Overriding In-Doubt Transactions"</a></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="i1008118"></a>
+<div id="ADMIN12238" class="sect2">
+<h3 class="sect2">Relevance of System Change Numbers for In-Doubt Transactions</h3>
+<p><a id="sthref3738"></a>A <span class="bold">system change number</span> (SCN) is an internal timestamp for a committed version of the database. The Oracle Database server uses the SCN clock value to guarantee transaction consistency. For example, when a user commits a transaction, the database records an SCN for this commit in the redo log.</p>
+<p>The database uses SCNs to coordinate distributed transactions among different databases. For example, the database uses SCNs in the following way:</p>
+<ol>
+<li>
+<p>An application establishes a connection using a database link.</p>
+</li>
+<li>
+<p>The distributed transaction commits with the highest global SCN among all the databases involved.</p>
+</li>
+<li>
+<p>The commit global SCN is sent to all databases involved in the transaction.</p>
+</li>
+</ol>
+<p>SCNs are important for distributed transactions because they function as a synchronized commit timestamp of a transaction, even if the transaction fails. If a transaction becomes in-doubt, an administrator can use this SCN to coordinate changes made to the global database. The global SCN for the transaction commit can also be used to identify the transaction later, for example, in distributed recovery.<a id="sthref3739"></a><a id="sthref3740"></a></p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1008128"></a>
+<div id="ADMIN12239" class="sect1">
+<h2 class="sect1">Distributed Transaction Processing: Case Study</h2>
+<p><a id="sthref3741"></a>In this scenario, a company has separate Oracle Database servers, <code dir="ltr">sales.example.com</code> and <code dir="ltr">warehouse.example.com</code>. As users insert sales records into the <code dir="ltr">sales</code> database, associated records are being updated at the <code dir="ltr">warehouse</code> database.</p>
+<p><a id="sthref3742"></a><a id="sthref3743"></a><a id="sthref3744"></a>This case study of distributed processing illustrates:</p>
+<ul>
+<li>
+<p>The definition of a session tree</p>
+</li>
+<li>
+<p>How a commit point site is determined</p>
+</li>
+<li>
+<p>When prepare messages are sent</p>
+</li>
+<li>
+<p>When a transaction actually commits</p>
+</li>
+<li>
+<p>What information is stored locally about the transaction</p>
+</li>
+</ul>
+<div id="ADMIN12240" class="sect2"><a id="sthref3745"></a>
+<h3 class="sect2">Stage 1: Client Application Issues DML Statements</h3>
+<p>At the Sales department, a salesperson uses SQL*Plus to enter a sales order and then commit it. The application issues several SQL statements to enter the order into the <code dir="ltr">sales</code> database and update the inventory in the <code dir="ltr">warehouse</code> database:</p>
+<pre dir="ltr">
+CONNECT scott@sales.example.com ...;
+INSERT INTO orders ...;
+UPDATE inventory@warehouse.example.com ...;
+INSERT INTO orders ...;
+UPDATE inventory@warehouse.example.com ...;
+COMMIT;
+</pre>
+<p>These SQL statements are part of a single distributed transaction, guaranteeing that all issued SQL statements succeed or fail as a unit. Treating the statements as a unit prevents the possibility of an order being placed and then inventory not being updated to reflect the order. In effect, the transaction guarantees the consistency of data in the global database.</p>
+<p>As each of the SQL statements in the transaction executes, the session tree is defined, as shown in <a href="#CHDJICHD">Figure 34-7</a>.</p>
+<div id="ADMIN13149" class="figure">
+<p class="titleinfigure"><a id="CHDJICHD"></a>Figure 34-7 Defining the Session Tree</p>
+<img width="660" height="350" src="img/admin033.png" alt="Description of Figure 34-7 follows" /><br />
+<a id="sthref3746" href="img_text/admin033.htm">Description of "Figure 34-7 Defining the Session Tree"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>Note the following aspects of the transaction:</p>
+<ul>
+<li>
+<p>An order entry application running on the <code dir="ltr">sales</code> database initiates the transaction. Therefore, <code dir="ltr">sales.example.com</code> is the global coordinator for the distributed transaction.</p>
+</li>
+<li>
+<p>The order entry application inserts a new sales record into the <code dir="ltr">sales</code> database and updates the inventory at the warehouse. Therefore, the nodes <code dir="ltr">sales.example.com</code> and <code dir="ltr">warehouse.example.com</code> are both database servers.</p>
+</li>
+<li>
+<p>Because <code dir="ltr">sales.example.com</code> updates the inventory, it is a client of <code dir="ltr">warehouse.example.com</code>.</p>
+</li>
+</ul>
+<p>This stage completes the definition of the session tree for this distributed transaction. Each node in the tree has acquired the necessary data locks to execute the SQL statements that reference local data. These locks remain even after the SQL statements have been executed until the two-phase commit is completed.</p>
+</div>
+<!-- class="sect2" -->
+<div id="ADMIN12241" class="sect2"><a id="sthref3747"></a>
+<h3 class="sect2">Stage 2: Oracle Database Determines Commit Point Site</h3>
+<p>The database determines the commit point site immediately following the <code dir="ltr">COMMIT</code> statement. <code dir="ltr">sales.example.com</code>, the global coordinator, is determined to be the commit point site, as shown in <a href="#i1008181">Figure 34-8</a>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#i1007745">"Commit Point Strength"</a> for more information about how the commit point site is determined</div>
+<div id="ADMIN13150" class="figure">
+<p class="titleinfigure"><a id="i1008181"></a>Figure 34-8 Determining the Commit Point Site</p>
+<img width="497" height="222" src="img/admin034.png" alt="Description of Figure 34-8 follows" /><br />
+<a id="sthref3748" href="img_text/admin034.htm">Description of "Figure 34-8 Determining the Commit Point Site"</a><br />
+<br /></div>
+<!-- class="figure" --></div>
+<!-- class="sect2" -->
+<div id="ADMIN12242" class="sect2"><a id="sthref3749"></a>
+<h3 class="sect2">Stage 3: Global Coordinator Sends Prepare Response</h3>
+<p>The prepare stage involves the following steps:</p>
+<ol>
+<li>
+<p>After the database determines the commit point site, the global coordinator sends the prepare message to all directly referenced nodes of the session tree, <span class="italic">excluding</span> the commit point site. In this example, <code dir="ltr">warehouse.example.com</code> is the only node asked to prepare.</p>
+</li>
+<li>
+<p>Node <code dir="ltr">warehouse.example.com</code> tries to prepare. If a node can guarantee that it can commit the locally dependent part of the transaction and can record the commit information in its local redo log, then the node can successfully prepare. In this example, only <code dir="ltr">warehouse.example.com</code> receives a prepare message because <code dir="ltr">sales.example.com</code> is the commit point site.</p>
+</li>
+<li>
+<p>Node <code dir="ltr">warehouse.example.com</code> responds to <code dir="ltr">sales.example.com</code> with a prepared message.</p>
+</li>
+</ol>
+<p>As each node prepares, it sends a message back to the node that asked it to prepare. Depending on the responses, one of the following can happen:</p>
+<ul>
+<li>
+<p>If <span class="italic">any</span> of the nodes asked to prepare responds with an abort message to the global coordinator, then the global coordinator tells all nodes to roll back the transaction, and the operation is completed.</p>
+</li>
+<li>
+<p>If <span class="italic">all</span> nodes asked to prepare respond with a prepared or a read-only message to the global coordinator, that is, they have successfully prepared, then the global coordinator asks the commit point site to commit the transaction.</p>
+</li>
+</ul>
+<div id="ADMIN13151" class="figure">
+<p class="titleinfigure"><a id="i1008195"></a>Figure 34-9 Sending and Acknowledging the Prepare Message</p>
+<img width="497" height="275" src="img/admin035.png" alt="Description of Figure 34-9 follows" /><br />
+<a id="sthref3750" href="img_text/admin035.htm">Description of "Figure 34-9 Sending and Acknowledging the Prepare Message"</a><br />
+<br /></div>
+<!-- class="figure" --></div>
+<!-- class="sect2" -->
+<div id="ADMIN12243" class="sect2"><a id="sthref3751"></a>
+<h3 class="sect2">Stage 4: Commit Point Site Commits</h3>
+<p>The committing of the transaction by the commit point site involves the following steps:</p>
+<ol>
+<li>
+<p>Node <code dir="ltr">sales.example.com</code>, receiving acknowledgment that <code dir="ltr">warehouse.example.com</code> is prepared, instructs the commit point site to commit the transaction.</p>
+</li>
+<li>
+<p>The commit point site now commits the transaction locally and records this fact in its local redo log.</p>
+</li>
+</ol>
+<p>Even if <code dir="ltr">warehouse.example.com</code> has not yet committed, the outcome of this transaction is predetermined. In other words, the transaction <span class="italic">will</span> be committed at all nodes even if the ability of a given node to commit is delayed.<a id="sthref3752"></a><a id="sthref3753"></a></p>
+</div>
+<!-- class="sect2" -->
+<div id="ADMIN12244" class="sect2"><a id="sthref3754"></a>
+<h3 class="sect2">Stage 5: Commit Point Site Informs Global Coordinator of Commit</h3>
+<p>This stage involves the following steps:</p>
+<ol>
+<li>
+<p>The commit point site tells the global coordinator that the transaction has committed. Because the commit point site and global coordinator are the same node in this example, no operation is required. The commit point site knows that the transaction is committed because it recorded this fact in its online log.</p>
+</li>
+<li>
+<p>The global coordinator confirms that the transaction has been committed on all other nodes involved in the distributed transaction.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<div id="ADMIN12245" class="sect2"><a id="sthref3755"></a>
+<h3 class="sect2">Stage 6: Global and Local Coordinators Tell All Nodes to Commit</h3>
+<p>The committing of the transaction by all the nodes in the transaction involves the following steps:</p>
+<ol>
+<li>
+<p>After the global coordinator has been informed of the commit at the commit point site, it tells all other directly referenced nodes to commit.</p>
+</li>
+<li>
+<p>In turn, any local coordinators instruct their servers to commit, and so on.</p>
+</li>
+<li>
+<p>Each node, including the global coordinator, commits the transaction and records appropriate redo log entries locally. As each node commits, the resource locks that were being held locally for that transaction are released.</p>
+</li>
+</ol>
+<p>In <a href="#i1008221">Figure 34-10</a>, <code dir="ltr">sales.example.com</code>, which is both the commit point site and the global coordinator, has already committed the transaction locally. <code dir="ltr">sales</code> now instructs <code dir="ltr">warehouse.example.com</code> to commit the transaction.</p>
+<div id="ADMIN13152" class="figure">
+<p class="titleinfigure"><a id="i1008221"></a>Figure 34-10 Instructing Nodes to Commit</p>
+<img width="495" height="278" src="img/admin036.png" alt="Description of Figure 34-10 follows" /><br />
+<a id="sthref3756" href="img_text/admin036.htm">Description of "Figure 34-10 Instructing Nodes to Commit"</a><br />
+<br /></div>
+<!-- class="figure" --></div>
+<!-- class="sect2" -->
+<div id="ADMIN12246" class="sect2"><a id="sthref3757"></a>
+<h3 class="sect2">Stage 7: Global Coordinator and Commit Point Site Complete the Commit</h3>
+<p>The completion of the commit of the transaction occurs in the following steps:</p>
+<ol>
+<li>
+<p>After all referenced nodes and the global coordinator have committed the transaction, the global coordinator informs the commit point site of this fact.</p>
+</li>
+<li>
+<p>The commit point site, which has been waiting for this message, erases the status information about this distributed transaction.</p>
+</li>
+<li>
+<p>The commit point site informs the global coordinator that it is finished. In other words, the commit point site forgets about committing the distributed transaction. This action is permissible because all nodes involved in the two-phase commit have committed the transaction successfully, so they will never have to determine its status in the future.</p>
+</li>
+<li>
+<p>The global coordinator finalizes the transaction by forgetting about the transaction itself.</p>
+</li>
+</ol>
+<p>After the completion of the <code dir="ltr">COMMIT</code> phase, the distributed transaction is itself complete. The steps described are accomplished automatically and in a fraction of a second.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1326">
+<tr>
+<td class="cellalignment1335">
+<table class="cellalignment1331">
+<tr>
+<td class="cellalignment1330"><a href="ds_appdev.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1330"><a href="ds_txnman.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2001, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1337">
+<table class="cellalignment1329">
+<tr>
+<td class="cellalignment1330"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1330"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1330"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1330"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1330"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1330"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

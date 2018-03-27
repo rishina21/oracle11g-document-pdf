@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Rules Applications That Span Multiple Tiers</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 033" />
+<meta name="dcterms.created" content="2011-08-16T11:52:3Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Rules Manager and Expression Filter Developer's Guide" />
+<meta name="dcterms.identifier" content="E14919-04" />
+<meta name="dcterms.isVersionOf" content="EXPRN" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2003, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="exprn_brm_rule_cond.htm" title="Previous" type="text/html" />
+<link rel="Next" href="exprn_brm_objtypes.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e14919.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">14/36</span> <!-- End Header --><a id="CCHFICFC"></a><a id="EXPRN513"></a>
+<h1 class="chapter"><span class="secnum">6</span> Rules Applications That Span Multiple Tiers</h1>
+<p>Rules applications can be run in multitier mode. For rules applications that span multiple tiers <a id="sthref119"></a>where rule management is handled in the database, but the action execution for the rules is handled in the application server, the actions for the rules matching an event <a id="sthref120"></a><a id="sthref121"></a>cannot be invoked from an action callback procedure. Instead, a results view is populated with the information about the events and matching rules; both of which are available for external action execution. You can query the results view to determine the rules that match an event and their corresponding actions can then be executed.</p>
+<a id="CCHDFBFC"></a><a id="EXPRN514"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">6.1</span> Creating Rules Applications That Span Multiple Tiers</h2>
+<p>To handle rules applications with certain rules having their action execution occurring on the application server, you must configure the rule class for external execution (in addition to configuring the action callback procedure). The steps to do this are similar to those described in <a href="exprn_brm_intro.htm#CEGFIBFB">Section 2.3</a>, but are modified as follows:</p>
+<ol>
+<li>
+<p>Create the event structure as an object type in the database (same as Step <a href="exprn_brm_intro.htm#BHCEIHFF">1</a> in <a href="exprn_brm_intro.htm#CEGFIBFB">Section 2.3</a>).</p>
+</li>
+<li>
+<p><a id="CCHCAAFJ"></a>Create the <code>TravelPromotion</code> rule class. Also define the results view, even though you may not use it initially. The results view can be used, for example, to create the <code>TravelPromotion</code> rule class, such that for each rule session<a id="sthref122"></a> (that processes some events for a rule class), the action execution can switch at runtime between either the action callback procedure (calling <code>dbms_rlmgr.process_rules( )</code> as shown in Step <a href="exprn_brm_intro.htm#BHCEAHHE">5</a> in <a href="exprn_brm_intro.htm#CEGFIBFB">Section 2.3</a>) or external action execution (calling <code>dbms_rlmgr.add_event( )</code>, as shown in Step <a href="#CCHIAGIA">5</a> in this section). For this purpose, the rule class is configured with an action callback procedure and a results view, as shown in the following example:</p>
+<pre>
+BEGIN
+   dbms_rlmgr.create_rule_class (
+               rule_class   =&gt; 'TravelPromotion',
+               event_struct =&gt; 'AddFlight',
+               action_cbk   =&gt; 'PromoAction',
+               <span class="codeinlinebold">rslt_viewnm  =&gt; 'MatchingPromos',</span>
+               actprf_spec  =&gt; 'PromoType VARCHAR2(20),
+                                OfferedBy VARCHAR2(20)');
+END;
+</pre>
+<p>Note that this command creates the following <code>MatchingPromos</code> results view to hold the results from the rule evaluation. This view uses a fixed set of columns to list the system generated event identifier (<code>rlm$eventid</code>), the event instance (<code>rlm$event</code> for a (simple) primitive event), the rule identifier for the matching rules (<code>rlm$ruleid</code>), the rule condition (<code>rlm$rulecond</code>), the rule description (<code>rlm$ruledesc</code>), and a variable set of columns to represent the action preferences associated with the rules (<code>PromoType</code> and <code>OfferedBy</code> columns in this example). For an event matching a set of rules in the rule class, the information about the event and the matched rules can be obtained by querying this view.</p>
+<pre>
+VIEW MatchingPromos (
+                 rlm$eventid    ROWID,
+                 rlm$event      AddFlight,
+                 rlm$ruleid     VARCHAR2(100),
+                 PromoType      VARCHAR2(20),
+                 OfferedBy      VARCHAR2(20)),
+                 rlm$rulecond   VARCHAR2(4000),
+                 rlm$ruledesc   VARCHAR2(1000,
+                 rlm$enabled    CHAR(1) DEFAULT 'Y');
+);
+</pre>
+<p>The results view in the case of a rule class configured for a composite event is structured to hold the results from evaluating the rules using one or more primitive events. For this purpose, this view is created with separate columns for each primitive event within the composite event. For example, the following results view is created for the rule class defined in <a href="exprn_brm_intro.htm#CEGHGEAE">Section 2.4.1</a>:</p>
+<pre>
+VIEW  CompMatchingPromos (
+              rlm$eventid    ROWID,
+              Flt            AddFlight,
+              Car            AddRentalCar,
+              rlm$ruleid     VARCHAR2(100),
+              PromoType      VARCHAR2(20),
+              OfferedBy      VARCHAR2(20),
+              rlm$rulecond   VARCHAR2(4000),
+              rlm$ruledesc          VARCHAR2(1000)
+              rlm$enabled    CHAR(1) DEFAULT 'Y');
+</pre></li>
+<li>
+<p>Implement the action callback procedure (same as Step <a href="exprn_brm_intro.htm#BHCFEGAJ">3</a> in <a href="exprn_brm_intro.htm#CEGFIBFB">Section 2.3</a>).</p>
+</li>
+<li>
+<p>Add rules to the rule class (same as Step <a href="exprn_brm_intro.htm#BHCCDGGB">4</a> in <a href="exprn_brm_intro.htm#CEGFIBFB">Section 2.3</a>).</p>
+</li>
+<li>
+<p><a id="CCHIAGIA"></a>Identify the matching rules for an event. This step replaces the use of the process rules procedure (<code>dbms_rlmgr.process_rules( )</code>) that identifies the matching rules and executes the corresponding actions with an add event procedure (<code>dbms_rlmgr.add_event( )</code>) that adds the event to the rule class one at a time and identifies the matching rules for a given event that are later accessed using the <code>MatchingPromos</code> results view.</p>
+<pre>
+BEGIN
+dbms_rlmgr.add_event (
+   rule_class  =&gt; 'TravelPromotion',
+   event_inst  =&gt; <span class="codeinlinebold">AddFlight.getVarchar(987, 'Abcair', 'Boston', 'Orlando', '01-APR-2003', '08-APR-2003')</span>);
+END;
+</pre></li>
+<li>
+<p><a id="CCHEBFHH"></a>Find the matching rules by querying the results view. For example, the following query returns a list of all the events added in the current session and their corresponding matching rules (and their action preferences):</p>
+<pre>
+SELECT rlm$eventid, rlm$ruleid, PromoType, OfferedBy FROM MatchingPromos;
+</pre>
+<p>Use the results from this query to execute the appropriate action in the application server. In the case of a rule class defined for a single event structure, this view implicitly has a <code>rlm$eventid</code> column that returns a system generated event identifier and <code>rlm$event</code> column to return the actual event as the (primitive event structure's) object instance.</p>
+<p>When you need to identify one candidate rule from the result set (conflict resolution), you can use <code>ORDER BY</code>, <code>GROUP BY</code>, and <code>HAVING</code> clauses. Note that the callback mechanism for action execution can only use <code>ORDER BY</code> semantics for conflict resolution. See <a href="exprn_brm_eventpolicies.htm#BABHCGEA">Section 3.2</a> for more information. For example, if the Travel Services application offers only one promotion of each type, the following analytical query can be used to identify the appropriate rules to be fired:</p>
+<pre>
+SELECT rlm$eventid, rlm$ruleid, PromoType, OfferedBy 
+FROM (SELECT rlm$eventid, rlm$ruleid, PromoType, OfferedBy,
+             ROW_NUMBER( ) over (PARTITION BY PromoType
+                                 ORDER BY rlm$ruleid) rnum
+      FROM MatchingPromos)
+WHERE rnum=1;
+</pre>
+<p>In this example, the rule identified as the one to be fired is the first one (<code>rnum=1</code>) returned from the query of the result set for the set of rules that evaluated to be true, partitioned by the type of promotion and ordered in ascending order by the <code>rlm$ruleid</code> column value.</p>
+<p>The results from a rule evaluation are available until the end of the rule session. By default, the database session (from connect to disconnect) is considered the rule session. Alternatively, you can use the reset session procedure (<code>dbms_rlmgr.reset_session( )</code>) to end a rule session and start a new session within a database session. Note that at the beginning of a rule session, the results view is empty<a id="sthref123"></a>.</p>
+</li>
+<li>
+<p><a id="CCHFEHCH"></a>Consume the event that is used in a rule execution. You can mark an event for exclusive or shared execution of rules by specifying the consumption policy for the events. Previously, in <a href="exprn_brm_intro.htm#CEGFIBFB">Section 2.3</a>, if the <code>TravelPromotion</code> rule class was configured for exclusive consumption of events, then an event used for the execution of a rule was immediately deleted from the system and it could not be used for any other (matching) rules. Because the action callback procedure is used, Rules Manager automatically handles the consumption of the exclusive events. However, when you use external action execution, the application should explicitly consume the event chosen for an action execution by using the consume event procedure (<code>dbms_rlmgr.consume_event( )</code>). This procedure ensures that when multiple concurrent sessions try to consume the same event, only one of them succeeds. So, you should execute the action for a particular rule if the event is successfully consumed, as follows:</p>
+<pre>
+DECLARE 
+  consumed  number;
+BEGIN 
+  consumed := dbms_rlmgr.consume_event (
+                      rule_class =&gt; 'TravelPromotion',
+                      event_ident =&gt; :eventIdBind);
+  IF (consumed = 1) THEN 
+    OfferPromotion(&hellip;);  -- offer the promotion only if the event 
+                        -- consumption is successful
+  END IF;
+END;
+</pre>
+<p>Obtain the event identifier from the value listed in the <code>rlm$eventid</code> column of the <code>MatchingPromos</code> results view. If the consumption policy (see <a href="exprn_brm_eventpolicies.htm#BABHCGEA">Section 3.2</a>) for all events is shared, then the <code>CONSUME_EVENT</code> call always returns <code>1</code> and the event is still available. Note that only the events you configure for exclusive consumption are consumed and the corresponding rows from the results view are deleted.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect1" -->
+<a id="CHDBEFFD"></a><a id="EXPRN515"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">6.2</span> Modes of Operation</h2>
+<p>Designing a rule-based application using Rules Manager involves a varying number of steps, depending on its mode of operation. Almost all the steps in both cases, single tier and multitier, are one-time implementations. Once these implementations are in place, you no longer need to deal with the Rules Manager APIs. You add new rules using the SQL <code>INSERT</code> statement against the rule class table and the run-time calls that are embedded in larger applications automatically process these new rules.</p>
+<p>A rule class stored in the database can operate in either of the following two modes:</p>
+<ul>
+<li>
+<p><span class="bold">Single tier mode</span> -- the rule evaluation<a id="sthref124"></a><a id="sthref125"></a>, identification of the candidate rules or action for execution, execution of action, and optional consumption of events all happen in the database with a single <code>PROCESS_RULES</code> call (which passes in the event instance). Note that this is the most common case even for applications running outside the database.</p>
+</li>
+<li>
+<p><span class="bold">Multitier mode</span> -- the rule evaluation<a id="sthref126"></a><a id="sthref127"></a> happens in the database and the remaining steps described in single-tier mode can be done in any tier with appropriate database calls (with a maximum of four steps, which are described in <a href="#CHDGJCBF">Section 6.2.2</a>).</p>
+</li>
+</ul>
+<a id="EXPRN516"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref128"></a>
+<h3 class="sect2"><span class="secnum">6.2.1</span> Single Tier Mode</h3>
+<p>See either <a href="exprn_brm_intro.htm#CEGFIBFB">Section 2.3</a> or <a href="exprn_brm_intro.htm#CEGDEAAI">Section 2.4</a> for an example of a rule class stored in the database that uses a single tier mode of operation.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDGJCBF"></a><a id="EXPRN517"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">6.2.2</span> Multitier Mode</h3>
+<p>The main reasons for a rules application to operate in the multitier mode are:</p>
+<ul>
+<li>
+<p>The action suggested by the rules cannot be implemented as a database function or package (PL/SQL or Java) in the database.</p>
+</li>
+<li>
+<p>The conflict resolution criterion for the rule class is complex and it cannot be specified using a SQL <code>ORDER BY</code> clause. In situations when a single event processing a set of rules matches two or more rules, conflict resolution criterion is used to identify a subset of rules or determine an exact order of rules that should be fired, or both. Using a simple SQL <code>ORDER BY</code> clause is usually sufficient for most applications. However, multitier mode can make use of any SQL operator (including analytical operators) for the conflict resolution criterion.</p>
+</li>
+</ul>
+<p>The four steps to use Rules Manager in the multitier mode are:</p>
+<ol>
+<li>
+<p>Tell the database about the event by calling the <code>dbms_rlmgr.add_event</code> procedure.</p>
+</li>
+<li>
+<p>Ask the database which rules apply (query a view, possibly with a complex query with a SQL <code>ORDER BY</code> clause, and so forth).</p>
+</li>
+<li>
+<p><a id="CCHIGJDH"></a>Based on the applications conflict-resolution criteria, identify a subset of the matched rules that should be fired and prepare for executing the action by consuming the event with a <code>dbms_rlmgr.consume_event</code> function call.</p>
+</li>
+<li>
+<p>Upon success in Step <a href="#CCHIGJDH">3</a>, make calls to the (local, middle tier resident) routines that the programmer maps to the actions that are defined.</p>
+</li>
+</ol>
+<p>If the only reason for using the multitier mode is to execute the actions in the application server, then you can use single tier mode with a few modifications (thereby reducing the number of steps involved to two). You can implement the action callback procedure in the single-tier mode to enqueue the actions and continue with the rest of the operations (consumption). The application server can subscribe to this action queue and execute the actions. This configuration requires a minimum of two database calls (<code>PROCESS_RULES</code> call and <code>DEQUEUE</code> call).</p>
+<p>Rules Manager, as a database feature, works in multiuser and concurrent session environments. It allows two concurrent sessions to process the same set of rules and call for deletion of a common event that matched the rules and ensures that only one of the sessions succeeds. When the rules application is operating in the single-tier mode, this happens by specifying an <code>EXCLUSIVE</code> consumption policy for the event type. The <code>PROCESS_RULE</code> procedure controls the event consumption logic and avoids deadlocks between various sessions. When the rule application is operating in multitier mode, the middle tier application must signal its intent to execute the action of a rule by calling the <code>CONSUME_EVENT</code> function (because the user application is controlling the conflict resolution criterion). This call returns <code>0</code> if any one of the events required by the action has already been consumed by another concurrent session. So, the application should execute the action only if this call returns <code>1</code>. Note that this step can be skipped if all the events are configured for <code>SHARED</code> consumption (implying that the events are shared for multiple rule executions).</p>
+<p>Because one of the main reasons for using the multitier mode is to implement complex conflict resolution criteria, the results from matching an event with the rules is exposed (to the application) as a relation that can be queried using complex SQL. You can also use this view to specify different resolution criteria based on some external factors (for example, use one conflict-resolution criterion between the times 9AM-5PM and other criterion for the rest of the day).</p>
+<a id="EXPRN518"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref129"></a>
+<h4 class="sect3"><span class="secnum">6.2.2.1</span> Actions in the Mid-Tier</h4>
+<p>Rules Manager rule classes can store any form of data (scalar, XML, Raw, BLOB, and so forth) along with the rule definition. This data is returned back to the action-callback procedure or the application when the corresponding rule matches an event.</p>
+<p>For example, a rule application may choose to store Simple Object Access Protocol (SOAP) messages in their full form (in an <code>XMLType</code> column) as actions for each rule. So, when a rule matches an event, it returns this SOAP message to the application. The application in the middle tier could interpret the data accordingly and perform the required action (post the SOAP message). See <a href="exprn_app_g.htm#BEJHAIJB">Appendix G</a> for additional information on action execution.</p>
+<p>In another application, the exact call for the action may be fixed, for example, using the <code>OfferDiscount2Customer</code> function. In this case, the rule definitions may just store the percentage of discount that should be offered. When this discount value is returned to the application, it can be bound as an argument to the <code>OfferDiscount2Customer</code> function call.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment988">
+<tr>
+<td class="cellalignment995">
+<table class="cellalignment993">
+<tr>
+<td class="cellalignment992"><a href="exprn_brm_rule_cond.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment992"><a href="exprn_brm_objtypes.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2003, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment997">
+<table class="cellalignment991">
+<tr>
+<td class="cellalignment992"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment992"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment992"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment992"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment992"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment992"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

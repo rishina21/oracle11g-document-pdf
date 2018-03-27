@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Managing Memory</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1055" />
+<meta name="dcterms.created" content="2015-05-05T8:27:33Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Administrator's Guide" />
+<meta name="dcterms.identifier" content="E25494-07" />
+<meta name="dcterms.isVersionOf" content="ADMIN" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2001, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="manproc.htm" title="Previous" type="text/html" />
+<link rel="Next" href="secure.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e25494.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">13/49</span> <!-- End Header -->
+<div id="ADMIN00207" class="chapter"><a id="BGBCBHEJ"></a>
+<h1 class="chapter"><span class="secnum">6</span> Managing Memory</h1>
+<p><a id="sthref948"></a><a id="sthref949"></a>In this chapter:</p>
+<ul>
+<li>
+<p><a href="#BGBJHJBD">About Memory Management</a></p>
+</li>
+<li>
+<p><a href="#BGBFCJAH">Memory Architecture Overview</a></p>
+</li>
+<li>
+<p><a href="#BGBJAHEJ">Using Automatic Memory Management</a></p>
+</li>
+<li>
+<p><a href="#BGBFDFJB">Configuring Memory Manually</a></p>
+</li>
+<li>
+<p><a href="#BABHEDBH">Configuring Database Smart Flash Cache</a></p>
+</li>
+<li>
+<p><a href="#BGBDCFBE">Memory Management Reference</a></p>
+</li>
+</ul>
+<a id="BGBJHJBD"></a>
+<div id="ADMIN11197" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">About Memory Management</h2>
+<p><a id="sthref950"></a>Memory management involves maintaining optimal sizes for the Oracle Database instance memory structures as demands on the database change. The memory structures that must be managed are the system global area (SGA) and the instance program global area (instance PGA).</p>
+<p>Oracle Database supports various memory management methods, which are chosen by initialization parameter settings. Oracle recommends that you enable the method known as <span class="italic">automatic memory management</span>.</p>
+<p class="subhead2"><a id="ADMIN12562"></a>Automatic Memory Management</p>
+<p><a id="sthref951"></a><a id="sthref952"></a>Beginning with Release 11<span class="italic">g</span>, Oracle Database can manage the SGA memory and instance PGA memory completely automatically. You designate only the total memory size to be used by the instance, and Oracle Database dynamically exchanges memory between the SGA and the instance PGA as needed to meet processing demands. This capability is referred to as <span class="italic">automatic memory management</span>. With this memory management method, the database also dynamically tunes the sizes of the individual SGA components and the sizes of the individual PGAs.</p>
+<p class="subhead2"><a id="ADMIN12563"></a>Manual Memory Management</p>
+<p>If you prefer to exercise more direct control over the sizes of individual memory components, you can disable automatic memory management and configure the database for manual memory management. There are a few different methods available for manual memory management. Some of these methods retain some degree of automation. The methods therefore vary in the amount of effort and knowledge required by the DBA. These methods are:</p>
+<ul>
+<li>
+<p>Automatic shared memory management - for the SGA</p>
+</li>
+<li>
+<p>Manual shared memory management - for the SGA</p>
+</li>
+<li>
+<p>Automatic PGA memory management - for the instance PGA</p>
+</li>
+<li>
+<p>Manual PGA memory management - for the instance PGA</p>
+</li>
+</ul>
+<p>These memory management methods are described later in this chapter.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The easiest way to manage memory is to use the graphical user interface of Oracle Enterprise Manager.
+<p>To manage memory with Enterprise Manager:</p>
+<ol>
+<li>
+<p>Do one of the following:</p>
+<p>- If you are using Oracle Enterprise Manager Database Control, access the Database Home page. See <a class="olink ADMQS033" href="../../server.112/e10897/em_manage.htm#ADMQS033"><span class="italic">Oracle Database 2 Day DBA</span></a> for instructions.</p>
+<p>- If you are using Oracle Enterprise Manager Grid Control, go to the desired database target. The Database Home page is displayed.</p>
+</li>
+<li>
+<p>At the top of the page, click <span class="bold">Server</span> to display the Server page.</p>
+</li>
+<li>
+<p>In the Database Configuration section, click <span class="bold">Memory Advisors</span>.</p>
+</li>
+</ol>
+</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink CNCPT1244" href="../../server.112/e40540/cncptdba.htm#CNCPT1244"><span class="italic">Oracle Database Concepts</span></a> for an introduction to the various automatic and manual methods of managing memory.</div>
+</div>
+<!-- class="sect1" -->
+<a id="BGBFCJAH"></a>
+<div id="ADMIN11198" class="sect1">
+<h2 class="sect1">Memory Architecture <a id="sthref953"></a><a id="sthref954"></a><a id="sthref955"></a>Overview</h2>
+<p>The basic memory structures associated with Oracle Database include:</p>
+<ul>
+<li>
+<p>System Global Area (SGA)</p>
+<p>The SGA is a group of shared memory structures, known as <span class="italic">SGA components</span>, that contain data and control information for one Oracle Database instance. The SGA is shared by all server and background processes. Examples of data stored in the SGA include cached data blocks and shared SQL areas.</p>
+</li>
+<li>
+<p>Program Global Area (PGA)</p>
+<p><a id="sthref956"></a>A PGA is a memory region that contains data and control information for a server process. It is nonshared memory created by Oracle Database when a server process is started. Access to the PGA is exclusive to the server process. There is one PGA for each server process. Background processes also allocate their own PGAs. The total PGA memory allocated for all background and server processes attached to an Oracle Database instance is referred to as the <span class="bold">total instance PGA memory</span>, and the collection of all individual PGAs is referred to as the <span class="bold">total instance PGA</span>, or just <span class="bold">instance PGA</span>.</p>
+</li>
+</ul>
+<p><a href="#CHDHAHIJ">Figure 6-1</a> illustrates the relationships among these memory structures.</p>
+<div id="ADMIN13019" class="figure">
+<p class="titleinfigure"><a id="CHDHAHIJ"></a>Figure 6-1 Oracle Database Memory Structures</p>
+<img width="497" height="447" src="img/admin083.gif" alt="Description of Figure 6-1 follows" /><br />
+<a id="sthref957" href="img_text/admin083.htm">Description of "Figure 6-1 Oracle Database Memory Structures"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p><a id="sthref958"></a>If your database is running on Solaris or Oracle Linux, you can optionally add another memory component: Database Smart Flash Cache (the flash cache). The flash cache is an extension of the SGA-resident buffer cache, providing a level 2 cache for database blocks. It can improve response time and overall throughput, especially for read-intensive online transaction processing (OLTP) workloads. The flash cache resides on one or more flash disk devices, which are solid state storage devices that use flash memory.</p>
+<p>The flash cache is typically more economical than additional main memory, and is an order of magnitude faster than disk drives.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink CNCPT007" href="../../server.112/e40540/memory.htm#CNCPT007"><span class="italic">Oracle Database Concepts</span></a> for more information on memory architecture in an Oracle Database instance</p>
+</li>
+<li>
+<p><a href="#BABHEDBH">"Configuring Database Smart Flash Cache"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="BGBJAHEJ"></a>
+<div id="ADMIN11011" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Using Automatic Memory Management</h2>
+<p>This section provides background information on the automatic memory management feature of Oracle Database, and includes instructions for enabling this feature. The following topics are covered:</p>
+<ul>
+<li>
+<p><a href="#BGBIAGCI">About Automatic Memory Management</a></p>
+</li>
+<li>
+<p><a href="#BGBCIBHF">Enabling Automatic Memory Management</a></p>
+</li>
+<li>
+<p><a href="#BGBHGGBF">Monitoring and Tuning Automatic Memory Management</a></p>
+</li>
+</ul>
+<a id="BGBIAGCI"></a>
+<div id="ADMIN11199" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">About Automatic Memory Management</h3>
+<p><a id="sthref959"></a><a id="sthref960"></a><a id="sthref961"></a>The simplest way to manage instance memory is to allow the Oracle Database instance to automatically manage and tune it for you. To do so (on most platforms), you set only a <span class="italic">target</span> memory size initialization parameter (<code dir="ltr">MEMORY_TARGET</code>) and optionally a <span class="italic">maximum</span> memory size initialization parameter (<code dir="ltr">MEMORY_MAX_TARGET</code>). The total memory that the instance uses remains relatively constant, based on the value of <code dir="ltr">MEMORY_TARGET</code>, and the instance automatically distributes memory between the system global area (SGA) and the instance program global area (instance PGA). As memory requirements change, the instance dynamically redistributes memory between the SGA and instance PGA.</p>
+<p>When automatic memory management is not enabled, you must size both the SGA and instance PGA manually.</p>
+<p>Because the <code dir="ltr">MEMORY_TARGET</code> initialization parameter is dynamic, you can change <code dir="ltr">MEMORY_TARGET</code> at any time without restarting the database. <code dir="ltr">MEMORY_MAX_TARGET</code>, which is not dynamic, serves as an upper limit so that you cannot accidentally set <code dir="ltr">MEMORY_TARGET</code> too high, and so that enough memory is set aside for the database instance in case you do want to increase total instance memory in the future. Because certain SGA components either cannot easily shrink or must remain at a minimum size, the instance also prevents you from setting <code dir="ltr">MEMORY_TARGET</code> too low.</p>
+<p>If you create your database with Database Configuration Assistant (DBCA) and choose the basic installation option, automatic memory management is enabled. If you choose advanced installation, Database Configuration Assistant (DBCA) enables you to select automatic memory management.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You cannot enable automatic memory management if the <code dir="ltr">LOCK_SGA</code> initialization parameter is <code dir="ltr">TRUE</code>. See <a class="olink REFRN" href="../e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for information about this parameter.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#BGBCHEIC">"Platforms That Support Automatic Memory Management"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="BGBCIBHF"></a>
+<div id="ADMIN11200" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Enabling Automatic Memory Management</h3>
+<p><a id="sthref962"></a><a id="sthref963"></a>If you did not enable automatic memory management upon database creation (either by selecting the proper options in DBCA or by setting the appropriate initialization parameters for the <code dir="ltr">CREATE DATABASE</code> SQL statement), you can enable it at a later time. Enabling automatic memory management involves a shutdown and restart of the database.</p>
+<p class="subhead2"><a id="ADMIN12564"></a>To enable automatic memory management</p>
+<ol>
+<li>
+<p>Start SQL*Plus and connect to the database as <code dir="ltr">SYSDBA</code>.</p>
+<p>See <a href="dba.htm#BABGCGFB">"Connecting to the Database with SQL*Plus"</a> and <a href="dba.htm#i1006534">"Database Administrator Authentication"</a> for instructions.</p>
+</li>
+<li>
+<p>Calculate the minimum value for <code dir="ltr">MEMORY_TARGET</code> as follows:</p>
+<ol>
+<li>
+<p>Determine the current sizes of <code dir="ltr">SGA_TARGET</code> and <code dir="ltr">PGA_AGGREGATE_TARGET</code> by entering the following SQL*Plus command:</p>
+<pre dir="ltr">
+SHOW PARAMETER TARGET
+</pre>
+<p>SQL*Plus displays the values of all initialization parameters with the string <code dir="ltr">TARGET</code> in the parameter name.</p>
+<pre dir="ltr">
+NAME                                 TYPE        VALUE
+------------------------------------ ----------- ----------------
+archive_lag_target                   integer     0
+db_flashback_retention_target        integer     1440
+fast_start_io_target                 integer     0
+fast_start_mttr_target               integer     0
+memory_max_target                    big integer 0
+memory_target                        big integer 0
+parallel_servers_target              integer     16
+pga_aggregate_target                 big integer 90M
+sga_target                           big integer 272M
+</pre></li>
+<li id="BGBDDHGG">
+<p>Run the following query to determine the maximum instance PGA allocated since the database was started:</p>
+<pre dir="ltr">
+select value from v$pgastat where name='maximum PGA allocated';
+</pre></li>
+<li>
+<p>Compute the maximum value between the query result from step 2b and <code dir="ltr">PGA_AGGREGATE_TARGET</code>. Add <code dir="ltr">SGA_TARGET</code> to this value.</p>
+<pre dir="ltr">
+memory_target = sga_target + max(pga_aggregate_target, maximum PGA allocated)
+</pre></li>
+</ol>
+<p>For example, if <code dir="ltr">SGA_TARGET</code> is 272M and <code dir="ltr">PGA_AGGREGATE_TARGET</code> is 90M as shown above, and if the maximum PGA allocated is determined to be 120M, then <code dir="ltr">MEMORY_TARGET</code> should be at least 392M (272M + 120M).</p>
+</li>
+<li id="BGBBCCJH">
+<p>Choose the value for <code dir="ltr">MEMORY_TARGET</code> that you want to use.</p>
+<p>This can be the minimum value that you computed in step 2, or you can choose to use a larger value if you have enough physical memory available.</p>
+</li>
+<li id="BGBGJFHE">
+<p>For the <code dir="ltr">MEMORY_MAX_TARGET</code> initialization parameter, decide on a maximum amount of memory that you would want to allocate to the database for the foreseeable future. That is, determine the maximum value for the sum of the SGA and instance PGA sizes. This number can be larger than or the same as the <code dir="ltr">MEMORY_TARGET</code> value that you chose in the previous step.</p>
+</li>
+<li>
+<p>Do one of the following:</p>
+<ul>
+<li>
+<p>If you started your Oracle Database instance with a server parameter file, which is the default if you created the database with the Database Configuration Assistant (DBCA), enter the following command:</p>
+<pre dir="ltr">
+ALTER SYSTEM SET MEMORY_MAX_TARGET = <span class="italic">n</span>M SCOPE = SPFILE;
+</pre>
+<p>where <span class="italic">n</span> is the value that you computed in Step <a href="#BGBGJFHE">4</a>.</p>
+<p>The <code dir="ltr">SCOPE</code> <code dir="ltr">=</code> <code dir="ltr">SPFILE</code> clause sets the value only in the server parameter file, and not for the running instance. You must include this <code dir="ltr">SCOPE</code> clause because <code dir="ltr">MEMORY_MAX_TARGET</code> is not a dynamic initialization parameter.</p>
+</li>
+<li>
+<p>If you started your instance with a text initialization parameter file, manually edit the file so that it contains the following statements:</p>
+<pre dir="ltr">
+memory_max_target = <span class="italic">n</span>M
+memory_target = <span class="italic">m</span>M
+</pre>
+<p>where <span class="italic">n</span> is the value that you determined in Step <a href="#BGBGJFHE">4</a>, and <span class="italic">m</span> is the value that you determined in step <a href="#BGBBCCJH">3</a>.</p>
+</li>
+</ul>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+In a text initialization parameter file, if you omit the line for <code dir="ltr">MEMORY_MAX_TARGET</code> and include a value for <code dir="ltr">MEMORY_TARGET</code>, the database automatically sets <code dir="ltr">MEMORY_MAX_TARGET</code> to the value of <code dir="ltr">MEMORY_TARGET</code>. If you omit the line for <code dir="ltr">MEMORY_TARGET</code> and include a value for <code dir="ltr">MEMORY_MAX_TARGET</code>, the <code dir="ltr">MEMORY_TARGET</code> parameter defaults to zero. After startup, you can then dynamically change <code dir="ltr">MEMORY_TARGET</code> to a nonzero value, provided that it does not exceed the value of <code dir="ltr">MEMORY_MAX_TARGET</code>.</div>
+</li>
+<li>
+<p>Shut down and restart the database.</p>
+<p>See <a href="start.htm#g1011160">Chapter 3, "Starting Up and Shutting Down"</a> for instructions.</p>
+</li>
+<li>
+<p>If you started your Oracle Database instance with a server parameter file, enter the following commands:</p>
+<pre dir="ltr">
+ALTER SYSTEM SET MEMORY_TARGET = <span class="italic">n</span>M;
+ALTER SYSTEM SET SGA_TARGET = 0;
+ALTER SYSTEM SET PGA_AGGREGATE_TARGET = 0;
+</pre>
+<p>where <span class="italic">n</span> is the value that you determined in step <a href="#BGBBCCJH">3</a>.</p>
+</li>
+</ol>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The preceding steps instruct you to set <code dir="ltr">SGA_TARGET</code> and <code dir="ltr">PGA_AGGREGATE_TARGET</code> to zero so that the sizes of the SGA and instance PGA are tuned up and down as required, without restrictions. You can omit the statements that set these parameter values to zero and leave either or both of the values as positive numbers. In this case, the values act as minimum values for the sizes of the SGA or instance PGA.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#BGBIAGCI">"About Automatic Memory Management"</a></p>
+</li>
+<li>
+<p><a href="#BGBFCJAH">"Memory Architecture Overview"</a></p>
+</li>
+<li>
+<p><a class="olink SQLRF00902" href="../../server.112/e41084/statements_2014.htm#SQLRF00902"><span class="italic">Oracle Database SQL Language Reference</span></a> for information on the <code dir="ltr">ALTER</code> <code dir="ltr">SYSTEM</code> SQL statement</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="BGBHGGBF"></a>
+<div id="ADMIN11201" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Monitoring and Tuning Automatic Memory Management</h3>
+<p>The dynamic performance view <code dir="ltr">V$MEMORY_DYNAMIC_COMPONENTS</code> shows the current sizes of all dynamically tuned memory components, including the total sizes of the SGA and instance PGA.</p>
+<p>The view <code dir="ltr">V$MEMORY_TARGET_ADVICE</code> provides tuning advice for the <code dir="ltr">MEMORY_TARGET</code> initialization parameter.</p>
+<pre dir="ltr">
+SQL&gt;  select * from v$memory_target_advice order by memory_size;
+ 
+MEMORY_SIZE MEMORY_SIZE_FACTOR ESTD_DB_TIME ESTD_DB_TIME_FACTOR    VERSION
+----------- ------------------ ------------ ------------------- ----------
+        180                 .5          458               1.344          0
+        270                .75          367              1.0761          0
+        360                  1          341                   1          0
+        450               1.25          335               .9817          0
+        540                1.5          335               .9817          0
+        630               1.75          335               .9817          0
+        720                  2          335               .9817          0
+</pre>
+<p>The row with the <code dir="ltr">MEMORY_SIZE_FACTOR</code> of 1 shows the current size of memory, as set by the <code dir="ltr">MEMORY_TARGET</code> initialization parameter, and the amount of DB time required to complete the current workload. In previous and subsequent rows, the results show several alternative <code dir="ltr">MEMORY_TARGET</code> sizes. For each alternative size, the database shows the size factor (the multiple of the current size), and the estimated DB time to complete the current workload if the <code dir="ltr">MEMORY_TARGET</code> parameter were changed to the alternative size. Notice that for a total memory size smaller than the current <code dir="ltr">MEMORY_TARGET</code> size, estimated DB time increases. Notice also that in this example, there is nothing to be gained by increasing total memory size beyond 450MB. However, this situation might change if a complete workload has not yet been run.</p>
+<p>Enterprise Manager provides an easy-to-use graphical memory advisor to help you select an optimal size for <code dir="ltr">MEMORY_TARGET</code>. See <a class="olink ADMQS12101" href="../../server.112/e10897/instance.htm#ADMQS12101"><span class="italic">Oracle Database 2 Day DBA</span></a> for details.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink REFRN" href="../e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for more information about these dynamic performance views</p>
+</li>
+<li>
+<p><a class="olink PFGRF94165" href="../../server.112/e41573/autostat.htm#PFGRF94165"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for a definition of DB time.</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BGBFDFJB"></a>
+<div id="ADMIN11202" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Configuring Memory Manually</h2>
+<p>If you prefer to exercise more direct control over the sizes of individual memory components, you can disable automatic memory management and configure the database for manual memory management. There are two different manual memory management methods for the SGA, and two for the instance PGA.</p>
+<p>The two manual memory management methods for the SGA vary in the amount of effort and knowledge required by the DBA. With <span class="italic">automatic shared memory management</span>, you set target and maximum sizes for the SGA. The database then sets the total size of the SGA to your designated target, and dynamically tunes the sizes of many SGA components. With <span class="italic">manual shared memory management</span>, you set the sizes of several individual SGA components, thereby determining the overall SGA size. You then manually tune these individual SGA components on an ongoing basis.</p>
+<p>For the instance PGA, there is <span class="italic">automatic PGA memory management</span>, in which you set a target size for the instance PGA. The database then sets the size of the instance PGA to your target, and dynamically tunes the sizes of individual PGAs. There is also <span class="italic">manual PGA memory management</span>, in which you set maximum work area size for each type of SQL operator (such as sort or hash-join). This memory management method, although supported, is not recommended.</p>
+<p>The following sections provide details on all of these manual memory management methods:</p>
+<ul>
+<li>
+<p><a href="#i1014121">Using Automatic Shared Memory Management</a></p>
+</li>
+<li>
+<p><a href="#BABDBIGB">Using Manual Shared Memory Management</a></p>
+</li>
+<li>
+<p><a href="#BGBICAGE">Using Automatic PGA Memory Management</a></p>
+</li>
+<li>
+<p><a href="#BGBBHGDD">Using Manual PGA Memory Management</a></p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink CNCPT1244" href="../../server.112/e40540/cncptdba.htm#CNCPT1244"><span class="italic">Oracle Database Concepts</span></a> for an overview of Oracle Database memory management methods.</div>
+<a id="i1014121"></a>
+<div id="ADMIN11203" class="sect2">
+<h3 class="sect2">Using Automatic Shared Memory Management</h3>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#BGBEGECC">About Automatic Shared Memory Management</a></p>
+</li>
+<li>
+<p><a href="#BABHJAGE">Components and Granules in the SGA</a></p>
+</li>
+<li>
+<p><a href="#i1014181">Setting Maximum SGA Size</a></p>
+</li>
+<li>
+<p><a href="#BABGCBHI">Setting SGA Target Size</a></p>
+</li>
+<li>
+<p><a href="#BGBJAIFA">Enabling Automatic Shared Memory Management</a></p>
+</li>
+<li>
+<p><a href="#BGBGJDGC">Automatic Shared Memory Management Advanced Topics</a></p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink PFGRF014" href="../../server.112/e41573/memory.htm#PFGRF014"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for information about tuning the components of the SGA</p>
+</li>
+</ul>
+</div>
+<a id="BGBEGECC"></a>
+<div id="ADMIN11204" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">About Automatic Shared Memory Management</h4>
+<p>Automatic Shared Memory Management simplifies SGA memory management. You specify the total amount of SGA memory available to an instance using the <code dir="ltr">SGA_TARGET</code> initialization parameter and Oracle Database automatically distributes this memory among the various SGA components to ensure the most effective memory utilization.</p>
+<p>When automatic shared memory management is enabled, the sizes of the different SGA components are flexible and can adapt to the needs of a workload without requiring any additional configuration. The database automatically distributes the available memory among the various components as required, allowing the system to maximize the use of all available SGA memory.</p>
+<p>If you are using a server parameter file (<code dir="ltr">SPFILE</code>), the database remembers the sizes of the automatically tuned SGA components across instance shutdowns. As a result, the database instance does not need to learn the characteristics of the workload again each time the instance is started. The instance can begin with information from the previous instance and continue evaluating workload where it left off at the last shutdown.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BABHJAGE"></a>
+<div id="ADMIN11205" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Components and Granules in the SGA</h4>
+<p>The SGA comprises several memory <span class="bold">components</span>, which are pools of memory used to satisfy a particular class of memory allocation requests. Examples of memory components include the shared pool (used to allocate memory for SQL and PL/SQL execution), the java pool (used for java objects and other java execution memory), and the buffer cache (used for caching disk blocks). All SGA components allocate and deallocate space in units of <span class="bold">granules</span>. Oracle Database tracks SGA memory use in internal numbers of granules for each SGA component.</p>
+<p>The memory for dynamic components in the SGA is allocated in the unit of granules. The granule size is determined by the amount of SGA memory requested when the instance starts. Specifically, the granule size is based on the value of the <code dir="ltr">SGA_MAX_SIZE</code> initialization parameter. <a href="#BABGEGEH">Table 6-1</a> shows the granule size for different amounts of SGA memory.</p>
+<div id="ADMIN14028" class="tblformal">
+<p class="titleintable"><a id="sthref964"></a><a id="BABGEGEH"></a>Table 6-1 Granule Size</p>
+<table class="cellalignment1338" title="Granule Size" summary="This table shows the granule size for different amounts of SGA memory." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t13">SGA Memory Amount</th>
+<th class="cellalignment1334" id="r1c2-t13">Granule Size</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t13" headers="r1c1-t13">
+<p>Less than or equal to 1 GB</p>
+</td>
+<td class="cellalignment1335" headers="r2c1-t13 r1c2-t13">
+<p>4 MB</p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t13" headers="r1c1-t13">
+<p>Greater than 1 GB and less than or equal to 8 GB</p>
+</td>
+<td class="cellalignment1335" headers="r3c1-t13 r1c2-t13">
+<p>16 MB</p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t13" headers="r1c1-t13">
+<p>Greater than 8 GB and less than or equal to 16 GB</p>
+</td>
+<td class="cellalignment1335" headers="r4c1-t13 r1c2-t13">
+<p>32 MB</p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r5c1-t13" headers="r1c1-t13">
+<p>Greater than 16 GB and less than or equal to 32 GB</p>
+</td>
+<td class="cellalignment1335" headers="r5c1-t13 r1c2-t13">
+<p>64 MB</p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r6c1-t13" headers="r1c1-t13">
+<p>Greater than 32 GB and less than or equal to 64 GB</p>
+</td>
+<td class="cellalignment1335" headers="r6c1-t13 r1c2-t13">
+<p>128 MB</p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r7c1-t13" headers="r1c1-t13">
+<p>Greater than 64 GB and less than or equal to 128 GB</p>
+</td>
+<td class="cellalignment1335" headers="r7c1-t13 r1c2-t13">
+<p>256 MB</p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r8c1-t13" headers="r1c1-t13">
+<p>Greater than 128 GB</p>
+</td>
+<td class="cellalignment1335" headers="r8c1-t13 r1c2-t13">
+<p>512 MB</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<p>Some platform dependencies may arise. Consult your operating system specific documentation for more details.</p>
+<p>You can query the <code dir="ltr">V$SGAINFO</code> view to see the granule size that is being used by an instance. The same granule size is used for all components in the SGA.</p>
+<p>If you specify a size for a component that is not a multiple of granule size, Oracle Database rounds the specified size up to the nearest multiple. For example, if the granule size is 4 MB and you specify <code dir="ltr">DB_CACHE_SIZE</code> as 10 MB, the database actually allocates 12 MB.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink REFRN10198" href="../../server.112/e40402/initparams235.htm#REFRN10198"><span class="italic">Oracle Database Reference</span></a> for more information about the <code dir="ltr">SGA_MAX_SIZE</code> initialization parameter</div>
+</div>
+<!-- class="sect3" -->
+<a id="i1014181"></a>
+<div id="ADMIN11206" class="sect3">
+<h4 class="sect3">Setting Maximum SGA Size</h4>
+<p>The <a id="sthref965"></a><code dir="ltr">SGA_MAX_SIZE</code> initialization parameter specifies the maximum size of the System Global Area for the lifetime of the instance. You can dynamically alter the initialization parameters affecting the size of the buffer caches, shared pool, large pool, Java pool, and streams pool but only to the extent that the sum of these sizes and the sizes of the other components of the SGA (fixed SGA, variable SGA, and redo log buffers) does not exceed the value specified by <code dir="ltr">SGA_MAX_SIZE</code>.</p>
+<p>If you do not specify <code dir="ltr">SGA_MAX_SIZE</code>, then Oracle Database selects a default value that is the sum of all components specified or defaulted at initialization time. If you do specify <code dir="ltr">SGA_MAX_SIZE</code>, and at the time the database is initialized the value is less than the sum of the memory allocated for all components, either explicitly in the parameter file or by default, then the database ignores the setting for <code dir="ltr">SGA_MAX_SIZE</code> and chooses a correct value for this parameter.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BABGCBHI"></a>
+<div id="ADMIN11207" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Setting SGA Target Size</h4>
+<p><a id="sthref966"></a>You enable the automatic shared memory management feature by setting the <code dir="ltr">SGA_TARGET</code> parameter to a nonzero value. This parameter sets the total size of the SGA. It replaces the parameters that control the memory allocated for a specific set of individual components, which are now automatically and dynamically resized (tuned) as needed.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The <code dir="ltr">STATISTICS_LEVEL</code> initialization parameter must be set to <code dir="ltr">TYPICAL</code> (the default) or <code dir="ltr">ALL</code> for automatic shared memory management to function.</div>
+<p><a href="#BABDCHDE">Table 6-2</a> lists the SGA components that are automatically sized when <code dir="ltr">SGA_TARGET</code> is set. For each SGA component, its corresponding initialization parameter is listed.</p>
+<div id="ADMIN13020" class="tblhruleformal">
+<p class="titleintable"><a id="sthref967"></a><a id="BABDCHDE"></a>Table 6-2 Automatically Sized SGA Components and Corresponding Parameters</p>
+<table class="cellalignment1333" title="Automatically Sized SGA Components and Corresponding Parameters" summary="Column 1 lists the automatically sized SGA components. Column 2 lists corresponding initialization parameters." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t16">SGA Component</th>
+<th class="cellalignment1334" id="r1c2-t16">Initialization Parameter</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t16" headers="r1c1-t16">
+<p>Fixed SGA and other internal allocations needed by the Oracle Database instance</p>
+</td>
+<td class="cellalignment1335" headers="r2c1-t16 r1c2-t16">
+<p>N/A</p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t16" headers="r1c1-t16">
+<p>The shared pool</p>
+</td>
+<td class="cellalignment1335" headers="r3c1-t16 r1c2-t16">
+<p><code dir="ltr">SHARED_POOL_SIZE</code></p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t16" headers="r1c1-t16">
+<p>The large pool</p>
+</td>
+<td class="cellalignment1335" headers="r4c1-t16 r1c2-t16">
+<p><code dir="ltr">LARGE_POOL_SIZE</code></p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r5c1-t16" headers="r1c1-t16">
+<p>The Java pool</p>
+</td>
+<td class="cellalignment1335" headers="r5c1-t16 r1c2-t16">
+<p><code dir="ltr">JAVA_POOL_SIZE</code></p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r6c1-t16" headers="r1c1-t16">
+<p>The buffer cache</p>
+</td>
+<td class="cellalignment1335" headers="r6c1-t16 r1c2-t16">
+<p><code dir="ltr">DB_CACHE_SIZE</code></p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r7c1-t16" headers="r1c1-t16">
+<p>The Streams pool</p>
+</td>
+<td class="cellalignment1335" headers="r7c1-t16 r1c2-t16">
+<p><code dir="ltr">STREAMS_POOL_SIZE</code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblhruleformal" -->
+<p>The manually sized parameters listed in <a href="#BABBDEFJ">Table 6-3</a>, if they are set, take their memory from <code dir="ltr">SGA_TARGET</code>, leaving what is available for the components listed in <a href="#BABDCHDE">Table 6-2</a>.</p>
+<div id="ADMIN13021" class="tblhruleformal">
+<p class="titleintable"><a id="sthref968"></a><a id="BABBDEFJ"></a>Table 6-3 Manually Sized SGA Components that Use SGA_TARGET Space</p>
+<table class="cellalignment1333" title="Manually Sized SGA Components that Use SGA_TARGET Space" summary="Column 1 lists the automatically sized SGA components. Column 2 lists corresponding initialization parameters." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t17">SGA Component</th>
+<th class="cellalignment1334" id="r1c2-t17">Initialization Parameter</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t17" headers="r1c1-t17">
+<p>The log buffer</p>
+</td>
+<td class="cellalignment1335" headers="r2c1-t17 r1c2-t17">
+<p><code dir="ltr">LOG_BUFFER</code></p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t17" headers="r1c1-t17">
+<p>The keep and recycle buffer caches</p>
+</td>
+<td class="cellalignment1335" headers="r3c1-t17 r1c2-t17">
+<p><code dir="ltr">DB_KEEP_CACHE_SIZE</code></p>
+<p><code dir="ltr">DB_RECYCLE_CACHE_SIZE</code></p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t17" headers="r1c1-t17">
+<p>Nonstandard block size buffer caches</p>
+</td>
+<td class="cellalignment1335" headers="r4c1-t17 r1c2-t17">
+<p><code dir="ltr">DB_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code><code dir="ltr">K_CACHE_SIZE</code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblhruleformal" -->
+<p>In addition to setting <code dir="ltr">SGA_TARGET</code> to a nonzero value, you must set to zero all initialization parameters listed in <a href="#BABDCHDE">Table 6-2</a> to enable full automatic tuning of the automatically sized SGA components.</p>
+<p>Alternatively, you can set one or more of the automatically sized SGA components to a nonzero value, which is then used as the minimum setting for that component during SGA tuning. This is discussed in detail later in this section.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+An easier way to enable automatic shared memory management is to use Oracle Enterprise Manager. When you enable automatic shared memory management and set the Total SGA Size, Enterprise Manager automatically generates the <code dir="ltr">ALTER SYSTEM</code> statements to set <code dir="ltr">SGA_TARGET</code> to the specified size and to set all automatically sized SGA components to zero.
+<p>If you use SQL*Plus to set <code dir="ltr">SGA_TARGET</code>, you must then set the automatically sized SGA components to zero or to a minimum value.</p>
+</div>
+<div id="ADMIN11208" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref969"></a>
+<h5 class="sect4">SGA and Virtual Memory</h5>
+<p>For optimal performance in most systems, the entire SGA should fit in real memory. If it does not, and if virtual memory is used to store parts of it, then overall database system performance can decrease dramatically. The reason for this is that portions of the SGA are paged (written to and read from disk) by the operating system.</p>
+<p>See your operating system documentation for instructions for monitoring paging activity. You can also view paging activity from the Performance property page of the Host page of Enterprise Manager.</p>
+</div>
+<!-- class="sect4" -->
+<div id="ADMIN11209" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref970"></a>
+<h5 class="sect4">Monitoring and Tuning SGA Target Size</h5>
+<p>The <code dir="ltr">V$SGAINFO</code> view provides information on the current tuned sizes of various SGA components.</p>
+<p>The <code dir="ltr">V$SGA_TARGET_ADVICE</code> view provides information that helps you decide on a value for <code dir="ltr">SGA_TARGET</code>.</p>
+<pre dir="ltr">
+SQL&gt; select * from v$sga_target_advice order by sga_size;
+ 
+  SGA_SIZE SGA_SIZE_FACTOR ESTD_DB_TIME ESTD_DB_TIME_FACTOR ESTD_PHYSICAL_READS
+---------- --------------- ------------ ------------------- -------------------
+       290              .5       448176              1.6578             1636103
+       435             .75       339336              1.2552             1636103
+       580               1       270344                   1             1201780
+       725            1.25       239038               .8842              907584
+       870             1.5       211517               .7824              513881
+      1015            1.75       201866               .7467              513881
+      1160               2       200703               .7424              513881
+</pre>
+<p>The information in this view is similar to that provided in the <code dir="ltr">V$MEMORY_TARGET_ADVICE</code> view for automatic memory management. See <a href="#BGBHGGBF">"Monitoring and Tuning Automatic Memory Management"</a> for an explanation of that view.</p>
+<p>Enterprise Manager provides an easy-to-use graphical memory advisor to help you select an optimal size for <code dir="ltr">SGA_TARGET</code>. See <a class="olink ADMQS0541" href="../../server.112/e10897/instance.htm#ADMQS0541"><span class="italic">Oracle Database 2 Day DBA</span></a> for details.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink REFRN" href="../e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for more information about these dynamic performance views</div>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<a id="BGBJAIFA"></a>
+<div id="ADMIN11210" class="sect3">
+<h4 class="sect3">Enabling Automatic Shared Memory Management</h4>
+<p>The procedure for enabling automatic shared memory management (ASMM) differs depending on whether you are changing to ASMM from manual shared memory management or from automatic memory management.</p>
+<p><span class="bold">To change to ASMM from manual shared memory management:</span></p>
+<ol>
+<li id="BGBBFBCE">
+<p>Run the following query to obtain a value for <code dir="ltr">SGA_TARGET</code>:</p>
+<pre dir="ltr">
+SELECT (
+   (SELECT SUM(value) FROM V$SGA) -
+   (SELECT CURRENT_SIZE FROM V$SGA_DYNAMIC_FREE_MEMORY)
+   ) "SGA_TARGET"
+FROM DUAL;
+</pre></li>
+<li id="CIAGCEGE">
+<p>Set the value of <code dir="ltr">SGA_TARGET</code>, either by editing the text initialization parameter file and restarting the database, or by issuing the following statement:</p>
+<pre dir="ltr">
+ALTER SYSTEM SET SGA_TARGET=<span class="italic">value</span> [SCOPE={SPFILE|MEMORY|BOTH}]
+</pre>
+<p>where <span class="italic">value</span> is the value computed in step <a href="#BGBBFBCE">1</a> or is some value between the sum of all SGA component sizes and <code dir="ltr">SGA_MAX_SIZE</code>. For more information on the <code dir="ltr">ALTER</code> <code dir="ltr">SYSTEM</code> statement and its <code dir="ltr">SCOPE</code> clause, see <a class="olink SQLRF00902" href="../../server.112/e41084/statements_2014.htm#SQLRF00902"><span class="italic">Oracle Database SQL Language Reference</span></a>.</p>
+</li>
+<li>
+<p>Do one of the following:</p>
+<ul>
+<li>
+<p>For more complete automatic tuning, set the values of the automatically sized SGA components listed in <a href="#BABDCHDE">Table 6-2</a> to zero. Do this by editing the text initialization parameter file or by issuing <code dir="ltr">ALTER</code> <code dir="ltr">SYSTEM</code> statements.</p>
+</li>
+<li>
+<p>To control the minimum size of one or more automatically sized SGA components, set those component sizes to the desired value. (See the next section for details.) Set the values of the other automatically sized SGA components to zero. Do this by editing the text initialization parameter file or by issuing <code dir="ltr">ALTER</code> <code dir="ltr">SYSTEM</code> statements.</p>
+</li>
+</ul>
+</li>
+</ol>
+<p><span class="bold">To change to ASMM from automatic memory management:</span></p>
+<ol>
+<li>
+<p>Set the <code dir="ltr">MEMORY_TARGET</code> initialization parameter to 0.</p>
+<pre dir="ltr">
+ALTER SYSTEM SET MEMORY_TARGET = 0;
+</pre>
+<p>The database sets <code dir="ltr">SGA_TARGET</code> based on current SGA memory allocation.</p>
+</li>
+<li>
+<p>Do one of the following:</p>
+<ul>
+<li>
+<p>For more complete automatic tuning, set the sizes of the automatically sized SGA components listed in <a href="#BABDCHDE">Table 6-2</a> to zero. Do this by editing the text initialization parameter file or by issuing <code dir="ltr">ALTER</code> <code dir="ltr">SYSTEM</code> statements.</p>
+</li>
+<li>
+<p>To control the minimum size of one or more automatically sized SGA components, set those component sizes to the desired value. (See the next section for details.) Set the sizes of the other automatically sized SGA components to zero. Do this by editing the text initialization parameter file or by issuing <code dir="ltr">ALTER</code> <code dir="ltr">SYSTEM</code> statements.</p>
+</li>
+</ul>
+</li>
+</ol>
+<div id="ADMIN11211" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref971"></a>
+<h5 class="sect4">Example</h5>
+<p>For example, suppose you currently have the following configuration of parameters for an instance configured for manual shared memory management and with <code dir="ltr">SGA_MAX_SIZE</code> set to 1200M:</p>
+<ul>
+<li>
+<p><code dir="ltr">SHARED_POOL_SIZE</code> = 200M</p>
+</li>
+<li>
+<p><code dir="ltr">DB_CACHE_SIZE</code> = 500M</p>
+</li>
+<li>
+<p><code dir="ltr">LARGE_POOL_SIZE</code>=200M</p>
+</li>
+</ul>
+<p>Also assume the following query results:</p>
+<div class="inftblinformal">
+<table class="cellalignment1333" title="Queries and results for an example of setting SGA target" summary="This table has two rows and two columns. The columns are Query and Results. The left column shows a complete SQL query." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t20">Query</th>
+<th class="cellalignment1334" id="r1c2-t20">Result</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t20" headers="r1c1-t20"><code dir="ltr">SELECT SUM(value) FROM V$SGA</code></td>
+<td class="cellalignment1335" headers="r2c1-t20 r1c2-t20">1200M</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t20" headers="r1c1-t20"><code dir="ltr">SELECT CURRENT_SIZE FROM V$SGA_DYNAMIC_FREE_MEMORY</code></td>
+<td class="cellalignment1335" headers="r3c1-t20 r1c2-t20">208M</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformal" -->
+<p>You can take advantage of automatic shared memory management by setting Total SGA Size to 992M in Oracle Enterprise Manager, or by issuing the following statements:</p>
+<pre dir="ltr">
+ALTER SYSTEM SET SGA_TARGET = 992M;
+ALTER SYSTEM SET SHARED_POOL_SIZE = 0;
+ALTER SYSTEM SET LARGE_POOL_SIZE = 0;
+ALTER SYSTEM SET JAVA_POOL_SIZE = 0;
+ALTER SYSTEM SET DB_CACHE_SIZE = 0;
+ALTER SYSTEM SET STREAMS_POOL_SIZE = 0;
+</pre>
+<p>where 992M = 1200M minus 208M.</p>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<a id="BGBGJDGC"></a>
+<div id="ADMIN11212" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Automatic Shared Memory Management Advanced Topics</h4>
+<p>This section provides a closer look at automatic shared memory management. It includes the following topics:</p>
+<ul>
+<li>
+<p><a href="#BGBJAIAG">Setting Minimums for Automatically Sized SGA Components</a></p>
+</li>
+<li>
+<p><a href="#BGBEEBCD">Dynamic Modification of SGA_TARGET</a></p>
+</li>
+<li>
+<p><a href="#BGBGFHBF">Modifying Parameters for Automatically Sized Components</a></p>
+</li>
+<li>
+<p><a href="#BGBHEBCB">Modifying Parameters for Manually Sized Components</a></p>
+</li>
+</ul>
+<a id="BGBJAIAG"></a>
+<div id="ADMIN11213" class="sect4">
+<h5 class="sect4">Setting Minimums for Automatically Sized SGA Components</h5>
+<p>You can exercise some control over the size of the automatically sized SGA components by specifying minimum values for the parameters corresponding to these components. Doing so can be useful if you know that an application cannot function properly without a minimum amount of memory in specific components. You specify the minimum amount of SGA space for a component by setting a value for its corresponding initialization parameter.</p>
+<p>Manually limiting the minimum size of one or more automatically sized components reduces the total amount of memory available for dynamic adjustment. This reduction in turn limits the ability of the system to adapt to workload changes. Therefore, this practice is not recommended except in exceptional cases. The default automatic management behavior maximizes both system performance and the use of available resources.</p>
+</div>
+<!-- class="sect4" -->
+<a id="BGBEEBCD"></a>
+<div id="ADMIN11215" class="sect4"><!-- infolevel="all" infotype="General" -->
+<h5 class="sect4">Dynamic Modification of SGA_TARGET</h5>
+<p>The <code dir="ltr">SGA_TARGET</code> parameter can be dynamically increased up to the value specified for the <code dir="ltr">SGA_MAX_SIZE</code> parameter, and it can also be reduced. If you reduce the value of <code dir="ltr">SGA_TARGET</code>, the system identifies one or more automatically tuned components for which to release memory. You can reduce <code dir="ltr">SGA_TARGET</code> until one or more automatically tuned components reach their minimum size. Oracle Database determines the minimum allowable value for <code dir="ltr">SGA_TARGET</code> taking into account several factors, including values set for the automatically sized components, manually sized components that use <code dir="ltr">SGA_TARGET</code> space, and number of CPUs.</p>
+<p>The change in the amount of physical memory consumed when <code dir="ltr">SGA_TARGET</code> is modified depends on the operating system. On some UNIX platforms that do not support dynamic shared memory, the physical memory in use by the SGA is equal to the value of the <code dir="ltr">SGA_MAX_SIZE</code> parameter. On such platforms, there is no real benefit in setting <code dir="ltr">SGA_TARGET</code> to a value smaller than <code dir="ltr">SGA_MAX_SIZE</code>. Therefore, setting <code dir="ltr">SGA_MAX_SIZE</code> on those platforms is not recommended.</p>
+<p>On other platforms, such as Solaris and Windows, the physical memory consumed by the SGA is equal to the value of <code dir="ltr">SGA_TARGET</code>.</p>
+<p>For example, suppose you have an environment with the following configuration:</p>
+<ul>
+<li>
+<p><code dir="ltr">SGA_MAX_SIZE</code> = 1024M</p>
+</li>
+<li>
+<p><code dir="ltr">SGA_TARGET</code> = 512M</p>
+</li>
+<li>
+<p><code dir="ltr">DB_8K_CACHE_SIZE</code> = 128M</p>
+</li>
+</ul>
+<p>In this example, the value of <code dir="ltr">SGA_TARGET</code> can be resized up to 1024M and can also be reduced until one or more of the automatically sized components reaches its minimum size. The exact value depends on environmental factors such as the number of CPUs on the system. However, the value of <code dir="ltr">DB_8K_CACHE_SIZE</code> remains fixed at all times at 128M</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+When enabling automatic shared memory management, it is best to set <code dir="ltr">SGA_TARGET</code> to the desired nonzero value before starting the database. Dynamically modifying <code dir="ltr">SGA_TARGET</code> from zero to a nonzero value may not achieve the desired results because the shared pool may not be able to shrink. After startup, you can dynamically tune <code dir="ltr">SGA_TARGET</code> up or down as required.</div>
+</div>
+<!-- class="sect4" -->
+<a id="BGBGFHBF"></a>
+<div id="ADMIN11216" class="sect4"><!-- infolevel="all" infotype="General" -->
+<h5 class="sect4">Modifying Parameters for Automatically Sized Components</h5>
+<p>When <code dir="ltr">SGA_TARGET</code> is not set, the automatic shared memory management feature is not enabled. Therefore the rules governing resize for all component parameters are the same as in earlier releases. However, when automatic shared memory management is enabled, the manually specified sizes of automatically sized components serve as a lower bound for the size of the components. You can modify this limit dynamically by changing the values of the corresponding parameters.</p>
+<p>If the specified lower limit for the size of a given SGA component is less than its current size, there is no immediate change in the size of that component. The new setting only limits the automatic tuning algorithm to that reduced minimum size in the future. For example, consider the following configuration:</p>
+<ul>
+<li>
+<p><code dir="ltr">SGA_TARGET</code> = 512M</p>
+</li>
+<li>
+<p><code dir="ltr">LARGE_POOL_SIZE</code> = 256M</p>
+</li>
+<li>
+<p>Current actual large pool size = 284M</p>
+</li>
+</ul>
+<p>In this example, if you increase the value of <code dir="ltr">LARGE_POOL_SIZE</code> to a value greater than the actual current size of the component, the system expands the component to accommodate the increased minimum size. For example, if you increase the value of <code dir="ltr">LARGE_POOL_SIZE</code> to 300M, then the system increases the large pool incrementally until it reaches 300M. This resizing occurs at the expense of one or more automatically tuned components.If you decrease the value of <code dir="ltr">LARGE_POOL_SIZE</code> to 200, there is no immediate change in the size of that component. The new setting only limits the reduction of the large pool size to 200 M in the future.</p>
+</div>
+<!-- class="sect4" -->
+<a id="BGBHEBCB"></a>
+<div id="ADMIN11217" class="sect4"><!-- infolevel="all" infotype="General" -->
+<h5 class="sect4">Modifying Parameters for Manually Sized Components</h5>
+<p>Parameters for manually sized components can be dynamically altered as well. However, rather than setting a minimum size, the value of the parameter specifies the precise size of the corresponding component. When you increase the size of a manually sized component, extra memory is taken away from one or more automatically sized components. When you decrease the size of a manually sized component, the memory that is released is given to the automatically sized components.</p>
+<p>For example, consider this configuration:</p>
+<ul>
+<li>
+<p><code dir="ltr">SGA_TARGET</code> = 512M</p>
+</li>
+<li>
+<p><code dir="ltr">DB_8K_CACHE_SIZE</code> = 128M</p>
+</li>
+</ul>
+<p>In this example, increasing <code dir="ltr">DB_8K_CACHE_SIZE</code> by 16M to 144M means that the 16M is taken away from the automatically sized components. Likewise, reducing <code dir="ltr">DB_8K_CACHE_SIZE</code> by 16M to 112M means that the 16M is given to the automatically sized components.</p>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BABDBIGB"></a>
+<div id="ADMIN11218" class="sect2">
+<h3 class="sect2">Using Manual Shared Memory Management</h3>
+<p>If you decide not to use automatic memory management or automatic shared memory management, you must manually configure several SGA component sizes, and then monitor and tune these sizes on an ongoing basis as the database workload changes. This section provides guidelines on setting the parameters that control the sizes of these SGA components.</p>
+<p>If you create your database with DBCA and choose manual shared memory management, DBCA provides fields where you must enter sizes for the buffer cache, shared pool, large pool, and Java pool. It then sets the corresponding initialization parameters in the server parameter file (<code dir="ltr">SPFILE</code>) that it creates. If you instead create the database with the <code dir="ltr">CREATE DATABASE</code> SQL statement and a text initialization parameter file, you can do one of the following:</p>
+<ul>
+<li>
+<p>Provide values for the initialization parameters that set SGA component sizes.</p>
+</li>
+<li>
+<p>Omit SGA component size parameters from the text initialization file. Oracle Database chooses reasonable defaults for any component whose size you do not set.</p>
+</li>
+</ul>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#BGBFBHCH">Enabling Manual Shared Memory Management</a></p>
+</li>
+<li>
+<p><a href="#i1014186">Setting the Buffer Cache Initialization Parameters</a></p>
+</li>
+<li>
+<p><a href="#i1014218">Specifying the Shared Pool Size</a></p>
+</li>
+<li>
+<p><a href="#i1014226">Specifying the Large Pool Size</a></p>
+</li>
+<li>
+<p><a href="#i1014234">Specifying the Java Pool Size</a></p>
+</li>
+<li>
+<p><a href="#i1014242">Specifying the Streams Pool Size</a></p>
+</li>
+<li>
+<p><a href="#BGBEFDCJ">Specifying the Result Cache Maximum Size</a></p>
+</li>
+<li>
+<p><a href="#BGBEACFA">Specifying Miscellaneous SGA Initialization Parameters</a></p>
+</li>
+</ul>
+<a id="BGBFBHCH"></a>
+<div id="ADMIN11219" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Enabling Manual Shared Memory Management</h4>
+<p>There is no initialization parameter that in itself enables manual shared memory management. You effectively enable manual shared memory management by disabling both automatic memory management and automatic shared memory management.</p>
+<p>To enable manual shared memory management:</p>
+<ol>
+<li>
+<p>Set the <code dir="ltr">MEMORY_TARGET</code> initialization parameter to 0.</p>
+</li>
+<li>
+<p>Set the <code dir="ltr">SGA_TARGET</code> initialization parameter to 0.</p>
+</li>
+</ol>
+<p>You must then set values for the various SGA components, as described in the following sections.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i1014186"></a>
+<div id="ADMIN11220" class="sect3">
+<h4 class="sect3">Setting the Buffer Cache Initialization Parameters<a id="sthref972"></a><a id="sthref973"></a><a id="sthref974"></a></h4>
+<p>The buffer cache initialization parameters determine the size of the buffer cache component of the SGA. You use them to specify the sizes of caches for the various block sizes used by the database. These initialization parameters are all dynamic.</p>
+<p>The size of a buffer cache affects performance. Larger cache sizes generally reduce the number of disk reads and writes. However, a large cache may take up too much memory and induce memory paging or swapping.</p>
+<p>Oracle Database supports multiple block sizes in a database. If you create tablespaces with nonstandard block sizes, you must configure nonstandard block size buffers to accommodate these tablespaces. The standard block size is used for the <code dir="ltr">SYSTEM</code> tablespace. You specify the standard block size by setting the initialization parameter <code dir="ltr">DB_BL<a id="sthref975"></a>OCK_SIZE</code>. Legitimate values are from 2K to 32K.</p>
+<p>If you intend to use multiple block sizes in your database, you must have the <code dir="ltr">DB_CACHE_SIZE</code> and at least one <code dir="ltr">DB_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code><code dir="ltr">K_CACHE_SIZE</code> parameter set. Oracle Database assigns an appropriate default value to the <code dir="ltr">DB_CACHE_SIZE</code> parameter, but the <code dir="ltr">DB_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code><code dir="ltr">K_CACHE_SIZE</code> parameters default to 0, and no additional block size caches are configured.</p>
+<p>The sizes and numbers of nonstandard block size buffers are specified by the following parameters:</p>
+<pre dir="ltr">
+DB_2K_CACHE_SIZE
+DB_4K_CACHE_SIZE
+DB_8K_CACHE_SIZE
+DB_16K_CACHE_SIZE
+DB_32K_CACHE_SIZE
+</pre>
+<pre dir="ltr">
+</pre>
+<p>Each parameter specifies the size of the cache for the corresponding block size.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+<ul>
+<li>
+<p>Platform-specific restrictions regarding the maximum block size apply, so some of these sizes might not be allowed on some platforms.</p>
+</li>
+<li>
+<p>A 32K block size is valid only on 64-bit platforms.</p>
+</li>
+</ul>
+</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="tspaces.htm#i1006699">"Specifying Nonstandard Block Sizes for Tablespaces"</a></div>
+<div id="ADMIN11221" class="sect4"><a id="sthref976"></a>
+<h5 class="sect4">Example of Setting Block and Cache Sizes</h5>
+<pre dir="ltr">
+DB_BLOCK_SIZE=4096
+DB_CACHE_SIZE=1024M
+DB_2K_CACHE_SIZE=256M
+DB_8K_CACHE_SIZE=512M
+</pre>
+<pre dir="ltr">
+</pre>
+<p>In the preceding example, the parameter <code dir="ltr">DB_BLOCK_SIZE</code> sets the standard block size of the database to 4K. The size of the cache of standard block size buffers is 1024MB. Additionally, 2K and 8K caches are also configured, with sizes of 256MB and 512MB, respectively.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The <code dir="ltr">DB_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code><code dir="ltr">K_<a id="sthref977"></a>CACHE_SIZE</code> parameters cannot be used to size the cache for the standard block size. If the value of <code dir="ltr">DB_BLOCK_SIZE</code> is <span class="italic">n</span>K, it is invalid to set <code dir="ltr">DB_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code><code dir="ltr">K_CACHE_SIZE</code>. The size of the cache for the standard block size is always determined from the value of <code dir="ltr">DB_CA<a id="sthref978"></a>CHE_SIZE</code>.</div>
+<p>The cache has a limited size, so not all the data on disk can fit in the cache. When the cache is full, subsequent cache misses cause Oracle Database to write dirty data already in the cache to disk to make room for the new data. (If a buffer is not dirty, it does not need to be written to disk before a new block can be read into the buffer.) Subsequent access to any data that was written to disk and then overwritten results in additional cache misses.</p>
+<p>The size of the cache affects the likelihood that a request for data results in a cache hit. If the cache is large, it is more likely to contain the data that is requested. Increasing the size of a cache increases the percentage of data requests that result in cache hits.</p>
+<p>You can change the size of the buffer cache while the instance is running, without having to shut down the database. Do this with the <code dir="ltr">ALTER</code> <code dir="ltr">SYSTEM</code> statement.</p>
+<p>Use the fixed view <code dir="ltr">V$BUFFER<a id="sthref979"></a>_POOL</code> to track the sizes of the different cache components and any pending resize operations.</p>
+</div>
+<!-- class="sect4" -->
+<div id="ADMIN11222" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref980"></a>
+<h5 class="sect4">Multiple Buffer Pools</h5>
+<p><a id="sthref981"></a><a id="sthref982"></a><a id="sthref983"></a><a id="sthref984"></a>You can configure the database buffer cache with separate buffer pools that either keep data in the buffer cache or make the buffers available for new data immediately after using the data blocks. Particular schema objects (tables, clusters, indexes, and partitions) can then be assigned to the appropriate buffer pool to control the way their data blocks age out of the cache.</p>
+<ul>
+<li>
+<p>The <code dir="ltr">KEEP</code> buffer pool retains the schema object's data blocks in memory.</p>
+</li>
+<li>
+<p>The <code dir="ltr">RECYCLE</code> buffer pool eliminates data blocks from memory as soon as they are no longer needed.</p>
+</li>
+<li>
+<p>The <code dir="ltr">DEFAULT</code> buffer pool contains data blocks from schema objects that are not assigned to any buffer pool, as well as schema objects that are explicitly assigned to the <code dir="ltr">DEFAULT</code> pool.</p>
+</li>
+</ul>
+<p><a id="sthref985"></a><a id="sthref986"></a><a id="sthref987"></a><a id="sthref988"></a>The initialization parameters that configure the <code dir="ltr">KEEP</code> and <code dir="ltr">RECYCLE</code> buffer pools are <code dir="ltr">DB_KEEP_C<a id="sthref989"></a>ACHE_SIZE</code> and <code dir="ltr"><a id="sthref990"></a>DB_RECYCLE_CACHE_SIZE</code>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Multiple buffer pools are only available for the standard block size. Nonstandard block size caches have a single <code dir="ltr">DEFAULT</code> pool.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink PFGRF94265" href="../../server.112/e41573/memory.htm#PFGRF94265"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for information about tuning the buffer cache and for more information about multiple buffer pools</div>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<a id="i1014218"></a>
+<div id="ADMIN11223" class="sect3">
+<h4 class="sect3">Specifying the Shared Pool Size</h4>
+<p>The <code dir="ltr">SHARED_POOL_SIZE</code> initialization parameter is a dynamic parameter that lets you specify or adjust the size of the shared pool component of the SGA. Oracle Database selects an appropriate default value.</p>
+<p>In releases before Oracle Database 10<span class="italic">g</span> Release 1, the amount of shared pool memory that was allocated was equal to the value of the <code dir="ltr">SHARED_POOL_SIZE</code> initialization parameter plus the amount of internal SGA overhead computed during instance startup. The internal SGA overhead refers to memory that is allocated by Oracle Database during startup, based on the values of several other initialization parameters. This memory is used to maintain state for different server components in the SGA. For example, if the <code dir="ltr">SHARED_POOL_SIZE</code> parameter is set to 64MB and the internal SGA overhead is computed to be 12MB, the real size of the shared pool is 64+12=76MB, although the value of the <code dir="ltr">SHARED_POOL_SIZE</code> parameter is still displayed as 64MB.</p>
+<p>Starting with Oracle Database 10<span class="italic">g</span> Release 1, the size of the internal SGA overhead is included in the user-specified value of <code dir="ltr">SHARED_POOL_SIZE</code>. If you are not using automatic memory management or automatic shared memory management, the amount of shared pool memory that is allocated at startup is equal to the value of the <code dir="ltr">SHARED_POOL_SIZE</code> initialization parameter, rounded up to a multiple of the granule size. You must therefore set this parameter so that it includes the internal SGA overhead in addition to the desired value for shared pool size. In the previous example, if the <code dir="ltr">SHARED_POOL_SIZE</code> parameter is set to 64MB at startup, then the available shared pool after startup is 64-12=52MB, assuming the value of internal SGA overhead remains unchanged. In order to maintain an effective value of 64MB for shared pool memory after startup, you must set the <code dir="ltr">SHARED_POOL_SIZE</code> parameter to 64+12=76MB.</p>
+<p>When migrating from a release that is earlier than Oracle Database 10<span class="italic">g</span> Release 1, the Oracle Database 11<span class="italic">g</span> migration utilities recommend a new value for this parameter based on the value of internal SGA overhead in the pre-upgrade environment and based on the old value of this parameter. Beginning with Oracle Database 10<span class="italic">g</span>, the exact value of internal SGA overhead, also known as startup overhead in the shared pool, can be queried from the <code dir="ltr">V$SGAINFO</code> view. Also, in manual shared memory management mode, if the user-specified value of <code dir="ltr">SHARED_POOL_SIZE</code> is too small to accommodate even the requirements of internal SGA overhead, then Oracle Database generates an <code dir="ltr">ORA-00371</code> error during startup, with a suggested value to use for the <code dir="ltr">SHARED_POOL_SIZE</code> parameter.When you use automatic shared memory management in Oracle Database 11<span class="italic">g</span>, the shared pool is automatically tuned, and an <code dir="ltr">ORA-00371</code> error would not be generated.</p>
+<div id="ADMIN11224" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref991"></a>
+<h5 class="sect4">The Result Cache and Shared Pool Size</h5>
+<p>The <a id="sthref992"></a>result cache takes its memory from the shared pool. Therefore, if you expect to increase the maximum size of the result cache, take this into consideration when sizing the shared pool.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#BGBEFDCJ">"Specifying the Result Cache Maximum Size"</a></div>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<a id="i1014226"></a>
+<div id="ADMIN11225" class="sect3">
+<h4 class="sect3">Specifying the Large Pool Size</h4>
+<p>The <code dir="ltr">LARGE_POOL_SIZE</code> initialization parameter is a dynamic parameter that lets you specify or adjust the size of the large pool component of the SGA. The large pool is an optional component of the SGA. You must specifically set the <code dir="ltr">LARGE_POOL_SIZE</code> parameter to create a large pool. Configuring the large pool is discussed in <a class="olink PFGRF014" href="../../server.112/e41573/memory.htm#PFGRF014"><span class="italic">Oracle Database Performance Tuning Guide</span></a>.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i1014234"></a>
+<div id="ADMIN11226" class="sect3">
+<h4 class="sect3">Specifying the Java Pool Size</h4>
+<p>The <code dir="ltr">JAVA_POOL_SIZE</code> initialization parameter is a dynamic parameter that lets you specify or adjust the size of the java pool component of the SGA. Oracle Database selects an appropriate default value. Configuration of the java pool is discussed in <a class="olink JJDEV09200" href="../../java.112/e10588/chnine.htm#JJDEV09200"><span class="italic">Oracle Database Java Developer's Guide</span></a>.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i1014242"></a>
+<div id="ADMIN11227" class="sect3">
+<h4 class="sect3">Specifying the Streams Pool Size</h4>
+<p>The <code dir="ltr">STREAMS_POOL_SIZE</code> initialization parameter is a dynamic parameter that lets you specify or adjust the size of the Streams Pool component of the SGA. If <code dir="ltr">STREAMS_POOL_SIZE</code> is set to 0, then the Oracle Streams product transfers memory from the buffer cache to the Streams Pool when it is needed. For details, see the discussion of the Streams Pool in <a class="olink STREP202" href="../../server.112/e10705/prep_rep.htm#STREP202"><span class="italic">Oracle Streams Replication Administrator's Guide</span></a>.</p>
+</div>
+<!-- class="sect3" -->
+<a id="BGBEFDCJ"></a>
+<div id="ADMIN11228" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Specifying the Result Cache Maximum Size</h4>
+<p><a id="sthref993"></a><a id="sthref994"></a>The <code dir="ltr">RESULT_CACHE_MAX_SIZE</code> initialization parameter is a dynamic parameter that enables you to specify the maximum size of the result cache component of the SGA. Typically, there is no need to specify this parameter, because the default maximum size is chosen by the database based on total memory available to the SGA and on the memory management method currently in use. You can view the current default maximum size by displaying the value of the <code dir="ltr">RESULT_CACHE_MAX_SIZE</code> parameter. To change this maximum size, you can set <code dir="ltr">RESULT_CACHE_MAX_SIZE</code> with an <code dir="ltr">ALTER</code> <code dir="ltr">SYSTEM</code> statement, or you can specify this parameter in the text initialization parameter file. In each case, the value is rounded up to the nearest multiple of 32K.</p>
+<p>If <code dir="ltr">RESULT_CACHE_MAX_SIZE</code> is 0 upon instance startup, the result cache is disabled. To reenable it you must set <code dir="ltr">RESULT_CACHE_MAX_SIZE</code> to a nonzero value (or remove this parameter from the text initialization parameter file to get the default maximum size) and then restart the database.</p>
+<p>Note that after starting the database with the result cache disabled, if you use an <code dir="ltr">ALTER</code> <code dir="ltr">SYSTEM</code> statement to set <code dir="ltr">RESULT_CACHE_MAX_SIZE</code> to a nonzero value but do not restart the database, querying the value of the <code dir="ltr">RESULT_CACHE_MAX_SIZE</code> parameter returns a nonzero value even though the result cache is still disabled. The value of <code dir="ltr">RESULT_CACHE_MAX_SIZE</code> is therefore not the most reliable way to determine if the result cache is enabled. You can use the following query instead:</p>
+<pre dir="ltr">
+SELECT dbms_result_cache.status() FROM dual;
+
+DBMS_RESULT_CACHE.STATUS()
+---------------------------------------------
+ENABLED
+</pre>
+<p>The result cache takes its memory from the shared pool, so if you increase the maximum result cache size, consider also increasing the shared pool size.</p>
+<p>The view <a id="sthref995"></a><code dir="ltr">V$RESULT_CACHE_STATISTICS</code> and the PL/SQL package procedure <code dir="ltr">DBMS_RESULT_CACHE.MEMORY_REPORT</code> display information to help you determine the amount of memory currently allocated to the result cache.</p>
+<p>The PL/SQL package function <code dir="ltr">DBMS_RESULT_CACHE.FLUSH</code> clears the result cache and releases all the memory back to the shared pool.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink PFGRF986" href="../../server.112/e41573/memory.htm#PFGRF986"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for more information about the result cache</p>
+</li>
+<li>
+<p><a class="olink ARPLS202" href="../../appdev.112/e40758/d_result_cache.htm#ARPLS202"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for more information about the <code dir="ltr">DBMS_RESULT_CACHE</code> package procedures and functions.</p>
+</li>
+<li>
+<p><a class="olink REFRN30439" href="../../server.112/e40402/dynviews_2141.htm#REFRN30439"><span class="italic">Oracle Database Reference</span></a> for more information about the <a id="sthref996"></a><code dir="ltr">V$RESULT_CACHE_STATISTICS</code> view.</p>
+</li>
+<li>
+<p><a class="olink RACAD017" href="../../rac.112/e41960/admin.htm#RACAD017"><span class="italic">Oracle Real Application Clusters Administration and Deployment Guide</span></a> for information on setting <code dir="ltr">RESULT_CACHE_MAX_SIZE</code> for a cluster database.</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect3" -->
+<a id="BGBEACFA"></a>
+<div id="ADMIN11229" class="sect3">
+<h4 class="sect3">Specifying Miscellaneous SGA Initialization Parameters</h4>
+<p><a id="sthref997"></a>You can set a few additional initialization parameters to control how the SGA uses memory.</p>
+<div id="ADMIN11230" class="sect4"><a id="sthref998"></a>
+<h5 class="sect4">Physical Memory</h5>
+<p><a id="sthref999"></a><a id="sthref1000"></a><a id="sthref1001"></a>The <code dir="ltr">LOCK_SGA</code> parameter, when set to <code dir="ltr">TRUE</code>, locks the entire SGA into physical memory. This parameter cannot be used with automatic memory management.</p>
+</div>
+<!-- class="sect4" -->
+<div id="ADMIN11231" class="sect4"><a id="sthref1002"></a>
+<h5 class="sect4">SGA Starting Address</h5>
+<p><a id="sthref1003"></a><a id="sthref1004"></a><a id="sthref1005"></a><a id="sthref1006"></a><a id="sthref1007"></a><a id="sthref1008"></a>The <code dir="ltr">SHARED_MEMORY_ADDRESS</code> and <code dir="ltr">HI_SHARED_MEMORY_ADDRESS</code> parameters specify the SGA's starting address at run time. These parameters are rarely used. For 64-bit platforms, <code dir="ltr">HI_SHARED_MEMORY_ADDRESS</code> specifies the high order 32 bits of the 64-bit address.</p>
+</div>
+<!-- class="sect4" -->
+<div id="ADMIN11232" class="sect4"><a id="sthref1009"></a>
+<h5 class="sect4">Extended Buffer Cache Mechanism</h5>
+<p><a id="sthref1010"></a><a id="sthref1011"></a><a id="sthref1012"></a><a id="sthref1013"></a>The <code dir="ltr">USE_INDIRECT_DATA_BUFFERS</code> parameter enables the use of the extended buffer cache mechanism for 32-bit platforms that can support more than 4 GB of physical memory. On platforms that do not support this much physical memory, this parameter is ignored. This parameter cannot be used with automatic memory management or automatic shared memory management.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink REFRN" href="../e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for more information on these initialization parameters</p>
+</li>
+<li>
+<p><a href="#BGBJAHEJ">"Using Automatic Memory Management"</a></p>
+</li>
+<li>
+<p><a href="#i1014121">"Using Automatic Shared Memory Management"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BGBICAGE"></a>
+<div id="ADMIN11233" class="sect2">
+<h3 class="sect2">Using Automatic PGA Memory Management</h3>
+<p>By default, Oracle Database automatically and globally manages the total amount of memory dedicated to the instance PGA. You can control this amount by setting the initialization parameter <code dir="ltr">PGA_AGGREGATE_TAR<a id="sthref1014"></a>GET</code>. Oracle Database then tries to ensure that the total amount of PGA memory allocated across all database server processes and background processes never exceeds this target.</p>
+<p>If you create your database with DBCA, you can specify a value for the total instance PGA. DBCA then sets the <code dir="ltr">PGA_AGGREGATE_TARGET</code> initialization parameters in the server parameter file (<code dir="ltr">SPFILE</code>) that it creates. If you do not specify the total instance PGA, DBCA chooses a reasonable default.</p>
+<p>If you create the database with the <code dir="ltr">CREATE DATABASE</code> SQL statement and a text initialization parameter file, you can provide a value for <code dir="ltr">PGA_AGGREGATE_TARGET</code>. If you omit this parameter, the database chooses a default value.</p>
+<p>With automatic PGA memory management, sizing of SQL work areas for all dedicated server sessions is automatic and all <code dir="ltr">*_AREA_SIZE</code> initialization parameters are ignored for these sessions. At any given time, the total amount of PGA memory available to active work areas on the instance is automatically derived from the parameter <code dir="ltr">PGA_AGGREGATE_TARGET</code>. This amount is set to the value of <code dir="ltr">PGA_AGGREGATE_TARGET</code> minus the PGA memory allocated for other purposes (for example, session memory). The resulting PGA memory is then allotted to individual active work areas based on their specific memory requirements.</p>
+<p>There are dynamic performance views that provide PGA memory use statistics. Most of these statistics are enabled when <code dir="ltr">PGA_AGGREGATE_TARGET</code> is set.</p>
+<ul>
+<li>
+<p>Statistics on allocation and use of work area memory can be viewed in the following dynamic performance views:</p>
+</li>
+</ul>
+<dl>
+<dd><code dir="ltr">V$SYSSTAT</code></dd>
+<dd><code dir="ltr">V$SESSTAT</code></dd>
+<dd><code dir="ltr">V$PGASTAT</code></dd>
+<dd><code dir="ltr">V$SQL_WORKAREA</code></dd>
+<dd><code dir="ltr">V$SQL_WORKAREA_ACTIVE</code></dd>
+</dl>
+<pre dir="ltr">
+</pre>
+<ul>
+<li>
+<p>The following three columns in the <code dir="ltr">V$PROCESS</code> view report the PGA memory allocated and used by an Oracle Database process:</p>
+</li>
+</ul>
+<dl>
+<dd><code dir="ltr">PGA_USED_MEM</code></dd>
+<dd><code dir="ltr">PGA_ALLOC_MEM</code></dd>
+<dd><code dir="ltr">PGA_MAX_MEM</code></dd>
+</dl>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The automatic PGA memory management method applies to work areas allocated by both dedicated and shared server process. See <a class="olink CNCPT1243" href="../../server.112/e40540/memory.htm#CNCPT1243"><span class="italic">Oracle Database Concepts</span></a> for information about PGA memory allocation in dedicated and shared server modes.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink REFRN003" href="../../server.112/e40402/dynviews_part.htm#REFRN003"><span class="italic">Oracle Database Reference</span></a> for information about views mentioned in this section</p>
+</li>
+<li>
+<p><a class="olink PFGRF94351" href="../../server.112/e41573/memory.htm#PFGRF94351"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for information about using these views</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="BGBBHGDD"></a>
+<div id="ADMIN11234" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Using Manual PGA Memory Management</h3>
+<p>Oracle Database supports manual PGA memory management, in which you manually tune SQL work areas.</p>
+<p>In releases earlier than Oracle Database 10<span class="italic">g</span>, the database administrator controlled the maximum size of SQL work areas by setting the following parameters: <code dir="ltr">SORT_AREA_SIZE</code>, <code dir="ltr">HASH_AREA_SIZE</code>, <code dir="ltr">BITMAP_MERGE_AREA_SIZE</code> and <code dir="ltr">CREATE_BITMAP_AREA_SIZE</code>. Setting these parameters is difficult, because the maximum work area size is ideally selected from the data input size and the total number of work areas active in the system. These two factors vary greatly from one work area to another and from one time to another. Thus, the various <code dir="ltr">*_AREA_SIZE</code> parameters are difficult to tune under the best of circumstances.</p>
+<p>For this reason, Oracle strongly recommends that you leave automatic PGA memory management enabled.</p>
+<p>If you decide to tune SQL work areas manually, you must set the <code dir="ltr">WORKAREA_SIZE_POLICY</code> initialization parameter to <code dir="ltr">MANUAL</code>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The initialization parameter <code dir="ltr">WORKAREA_SIZE_POLICY</code> is a session- and system-level parameter that can take only two values: <code dir="ltr">MANUAL</code> or <code dir="ltr">AUTO</code>. The default is <code dir="ltr">AUTO</code>. You can set <code dir="ltr">PGA_AGGREGATE_TARGET</code>, and then switch back and forth from auto to manual memory management mode. When <code dir="ltr">WORKAREA_SIZE_POLICY</code> is set to <code dir="ltr">AUTO</code>, your settings for <code dir="ltr">*_AREA_SIZE</code> parameters are ignored.</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BABHEDBH"></a>
+<div id="ADMIN13391" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Configuring Database Smart Flash Cache</h2>
+<p><a id="sthref1015"></a>This section contains the following topics on configuring Database Smart Flash Cache (the flash cache):</p>
+<ul>
+<li>
+<p><a href="#BABCBAFG">When to Configure the Flash Cache</a></p>
+</li>
+<li>
+<p><a href="#BABJBFHC">Sizing the Flash Cache</a></p>
+</li>
+<li>
+<p><a href="#BABIDBAI">Tuning Memory for the Flash Cache</a></p>
+</li>
+<li>
+<p><a href="#BABFEIGJ">Flash Cache Initialization Parameters</a></p>
+</li>
+<li>
+<p><a href="#BABJCGJG">Flash Cache in an Oracle Real Applications Clusters Environment</a></p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#BGBFCJAH">"Memory Architecture Overview"</a> for a description of the flash cache</div>
+<a id="BABCBAFG"></a>
+<div id="ADMIN13392" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">When to Configure the Flash Cache</h3>
+<p>Consider adding the flash cache when all of the following are true:</p>
+<ul>
+<li>
+<p>Your database is running on the Solaris or Oracle Linux operating systems. The flash cache is supported on these operating systems only.</p>
+</li>
+<li>
+<p>The Buffer Pool Advisory section of your Automatic Workload Repository (AWR) report or STATSPACK report indicates that doubling the size of the buffer cache would be beneficial.</p>
+</li>
+<li>
+<p><code dir="ltr">db</code> <code dir="ltr">file</code> <code dir="ltr">sequential</code> <code dir="ltr">read</code> is a top wait event.</p>
+</li>
+<li>
+<p>You have spare CPU.</p>
+</li>
+</ul>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You cannot share the flash cache among multiple instances.</div>
+</div>
+<!-- class="sect2" -->
+<a id="BABJBFHC"></a>
+<div id="ADMIN13393" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Sizing the Flash Cache</h3>
+<p>As a general rule, size the flash cache to be between 2 times and 10 times the size of the buffer cache. Any multiplier less than two would not provide any benefit. If you are using automatic shared memory management, make the flash cache between 2 times and 10 times the size of <code dir="ltr">SGA_TARGET</code>. Using 80% of the size of <code dir="ltr">SGA_TARGET</code> instead of the full size would also suffice for this calculation.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BABIDBAI"></a>
+<div id="ADMIN13394" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Tuning Memory for the Flash Cache</h3>
+<p>For each database block moved from the buffer cache to the flash cache, a small amount of metadata about the block is kept in the buffer cache. For a single instance database, the metadata consumes approximately 100 bytes. For an Oracle Real Application Clusters (Oracle RAC) database, it is closer to 200 bytes. You must therefore take this extra memory requirement into account when adding the flash cache.</p>
+<ul>
+<li>
+<p>If you are managing memory manually, increase the size of the buffer cache by an amount approximately equal to the number of database blocks that fit into the flash cache multiplied by 100 (or 200 for Oracle RAC).</p>
+</li>
+<li>
+<p>If you are using automatic memory management, increase the size of <code dir="ltr">MEMORY_TARGET</code> using the algorithm described above. You may first have to increase the size of <code dir="ltr">MEMORY_MAX_TARGET</code>.</p>
+</li>
+<li>
+<p>If you are using automatic shared memory management, increase the size of <code dir="ltr">SGA_TARGET</code>.</p>
+</li>
+</ul>
+<p>Also, for an Oracle RAC database that uses the flash cache, additional memory must be allocated to the shared pool for Global Cache Service (GCS) resources. Each GCS resource requires approximately 208 bytes in the shared pool.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You can choose to not increase the buffer cache size to account for the flash cache. In this case, the effective size of the buffer cache is reduced. However, you can offset this loss by using a larger flash cache.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#BGBJHJBD">"About Memory Management"</a></p>
+</li>
+<li>
+<p><a class="olink RACAD7274" href="../../rac.112/e41960/admcon.htm#RACAD7274"><span class="italic">Oracle Real Application Clusters Administration and Deployment Guide</span></a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="BABFEIGJ"></a>
+<div id="ADMIN13395" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Flash Cache Initialization Parameters</h3>
+<p><a href="#BABDCJAF">Table 6-4</a> describes the initialization parameters that you use to configure the flash cache.</p>
+<div id="ADMIN13396" class="tblformal">
+<p class="titleintable"><a id="sthref1016"></a><a id="BABDCJAF"></a>Table 6-4 Flash Cache Initialization Parameters</p>
+<table class="cellalignment1338" title="Flash Cache Initialization Parameters" summary="This table contains two columns: Parameter and Description. It describes the two initialization parameters required to configure flash cache" dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t37">Parameter</th>
+<th class="cellalignment1334" id="r1c2-t37">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t37" headers="r1c1-t37">
+<p><code dir="ltr">db_flash_cache_file</code></p>
+</td>
+<td class="cellalignment1335" headers="r2c1-t37 r1c2-t37">
+<p>Specifies the path and file name for the file to contain the flash cache, in either the operating system file system or an Oracle Automatic Storage Management disk group. If the file does not exist, the database creates it during startup. The file must reside on a flash disk device. If you configure the flash cache on a disk drive (spindle), performance may suffer.</p>
+<p>The following is an example of a valid value for <code dir="ltr">db_flash_cache_file</code>:</p>
+<pre dir="ltr">
+/dev/fioa1
+</pre></td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t37" headers="r1c1-t37">
+<p><code dir="ltr">db_flash_cache_size</code></p>
+</td>
+<td class="cellalignment1335" headers="r3c1-t37 r1c2-t37">
+<p>Specifies the size of the flash cache. Must be less than or equal to the physical memory size of the flash disk device. Expressed as <span class="italic">n</span>G, indicating the number of gigabytes (GB). For example, to specify a 16 GB flash cache, set <code dir="ltr">db_flash_cache_size</code> to 16G.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<p>You can use <code dir="ltr">ALTER</code> <code dir="ltr">SYSTEM</code> to set <code dir="ltr">db_flash_cache_size</code> to zero to disable the flash cache. You can also use <code dir="ltr">ALTER</code> <code dir="ltr">SYSTEM</code> to set the flash cache back to its original size to reenable it. However, dynamically changing the size of the flash cache is not supported.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BABJCGJG"></a>
+<div id="ADMIN13397" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Flash Cache in an Oracle Real Applications Clusters Environment</h3>
+<p>You must configure a flash cache on either all or none of the instances in an Oracle Real Application Clusters environment.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BGBDCFBE"></a>
+<div id="ADMIN11235" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Memory Management Reference</h2>
+<p>This section contains the following reference topics for memory management:</p>
+<ul>
+<li>
+<p><a href="#BGBCHEIC">Platforms That Support Automatic Memory Management</a></p>
+</li>
+<li>
+<p><a href="#BGBFABGA">Memory Management Data Dictionary Views</a></p>
+</li>
+</ul>
+<a id="BGBCHEIC"></a>
+<div id="ADMIN11236" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Platforms That Support Automatic Memory Management<a id="sthref1017"></a></h3>
+<p>The following platforms support automatic memory management&mdash;the Oracle Database ability to automatically tune the sizes of the SGA and PGA, redistributing memory from one to the other on demand to optimize performance:</p>
+<ul>
+<li>
+<p>Linux</p>
+</li>
+<li>
+<p>Solaris</p>
+</li>
+<li>
+<p>Windows</p>
+</li>
+<li>
+<p>HP-UX</p>
+</li>
+<li>
+<p>AIX</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="BGBFABGA"></a>
+<div id="ADMIN11237" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Memory Management Data Dictionary Views<a id="sthref1018"></a><a id="sthref1019"></a></h3>
+<p>The following dynamic performance views provide information on memory management:</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="SGA Component Views" summary="Column 1 lists the views the provide information about the SGA. Column 2 describes each view." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t38">View</th>
+<th class="cellalignment1334" id="r1c2-t38">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t38" headers="r1c1-t38"><code dir="ltr">V$SGA</code></td>
+<td class="cellalignment1335" headers="r2c1-t38 r1c2-t38">Displays summary information about the system global area (SGA).</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t38" headers="r1c1-t38"><code dir="ltr">V$SGAINFO</code></td>
+<td class="cellalignment1335" headers="r3c1-t38 r1c2-t38">Displays size information about the SGA, including the sizes of different SGA components, the granule size, and free memory.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t38" headers="r1c1-t38"><code dir="ltr">V$SGASTAT</code></td>
+<td class="cellalignment1335" headers="r4c1-t38 r1c2-t38">Displays detailed information about how memory is allocated within the shared pool, large pool, Java pool, and Streams pool.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r5c1-t38" headers="r1c1-t38"><code dir="ltr">V$PGASTAT</code></td>
+<td class="cellalignment1335" headers="r5c1-t38 r1c2-t38">Displays PGA memory usage statistics as well as statistics about the automatic PGA memory manager when it is enabled (that is, when <code dir="ltr">PGA_AGGREGATE_TARGET</code> is set). Cumulative values in <code dir="ltr">V$PGASTAT</code> are accumulated since instance startup.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r6c1-t38" headers="r1c1-t38"><code dir="ltr">V$MEMORY_DYNAMIC_COMPONENTS</code></td>
+<td class="cellalignment1335" headers="r6c1-t38 r1c2-t38">Displays information on the current size of all automatically tuned and static memory components, with the last operation (for example, grow or shrink) that occurred on each.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r7c1-t38" headers="r1c1-t38"><code dir="ltr">V$SGA_DYNAMIC_COMPONENTS</code></td>
+<td class="cellalignment1335" headers="r7c1-t38 r1c2-t38">Displays the current sizes of all SGA components, and the last operation for each component.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r8c1-t38" headers="r1c1-t38"><code dir="ltr">V$SGA_DYNAMIC_FREE_MEMORY</code></td>
+<td class="cellalignment1335" headers="r8c1-t38 r1c2-t38">Displays information about the amount of SGA memory available for future dynamic SGA resize operations.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r9c1-t38" headers="r1c1-t38"><code dir="ltr">V$MEMORY_CURRENT_RESIZE_OPS</code></td>
+<td class="cellalignment1335" headers="r9c1-t38 r1c2-t38">Displays information about resize operations that are currently in progress. A resize operation is an enlargement or reduction of the SGA, the instance PGA, or a dynamic SGA component.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r10c1-t38" headers="r1c1-t38"><code dir="ltr">V$SGA_CURRENT_RESIZE_OPS</code></td>
+<td class="cellalignment1335" headers="r10c1-t38 r1c2-t38">Displays information about dynamic SGA component resize operations that are currently in progress.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r11c1-t38" headers="r1c1-t38"><code dir="ltr">V$MEMORY_RESIZE_OPS</code></td>
+<td class="cellalignment1335" headers="r11c1-t38 r1c2-t38">Displays information about the last 800 completed memory component resize operations, including automatic grow and shrink operations for <code dir="ltr">SGA_TARGET</code> and <code dir="ltr">PGA_AGGREGATE_TARGET</code>.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r12c1-t38" headers="r1c1-t38"><code dir="ltr">V$SGA_RESIZE_OPS</code></td>
+<td class="cellalignment1335" headers="r12c1-t38 r1c2-t38">Displays information about the last 800 completed SGA component resize operations.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r13c1-t38" headers="r1c1-t38"><code dir="ltr">V$MEMORY_TARGET_ADVICE</code></td>
+<td class="cellalignment1335" headers="r13c1-t38 r1c2-t38">Displays information that helps you tune <code dir="ltr">MEMORY_TARGET</code> if you enabled automatic memory management.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r14c1-t38" headers="r1c1-t38"><code dir="ltr">V$SGA_TARGET_ADVICE</code></td>
+<td class="cellalignment1335" headers="r14c1-t38 r1c2-t38">Displays information that helps you tune <code dir="ltr">SGA_TARGET</code>.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r15c1-t38" headers="r1c1-t38"><code dir="ltr">V$PGA_TARGET_ADVICE</code></td>
+<td class="cellalignment1335" headers="r15c1-t38 r1c2-t38">Displays information that helps you tune <code dir="ltr">PGA_AGGREGATE_TARGET</code>.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink REFRN" href="../e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for detailed information on memory management views.</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1326">
+<tr>
+<td class="cellalignment1335">
+<table class="cellalignment1331">
+<tr>
+<td class="cellalignment1330"><a href="manproc.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1330"><a href="secure.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2001, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1337">
+<table class="cellalignment1329">
+<tr>
+<td class="cellalignment1330"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1330"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1330"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1330"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1330"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1330"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

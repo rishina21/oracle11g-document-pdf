@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Tuning Oracle Text</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 748" />
+<meta name="dcterms.created" content="2014-02-11T12:39:53Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Text Application Developer's Guide" />
+<meta name="dcterms.identifier" content="E24435-03" />
+<meta name="dcterms.isVersionOf" content="CCAPP" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2004, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="txtgloss.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="classify.htm" title="Previous" type="text/html" />
+<link rel="Next" href="csection.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e24435.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">11/21</span> <!-- End Header -->
+<div id="CCAPP0500" class="chapter"><a id="g1012278"></a><a id="i1007227"></a>
+<h1 class="chapter"><span class="secnum">7</span> Tuning Oracle Text</h1>
+<p>This chapter discusses how to improve your query and indexing performance. The following topics are covered:</p>
+<ul>
+<li>
+<p><a href="#i1006318">Optimizing Queries for Response Time</a></p>
+</li>
+<li>
+<p><a href="#i1006470">Optimizing Queries for Throughput</a></p>
+</li>
+<li>
+<p><a href="#CHDHJEBA">Composite Domain Index (CDI) in Oracle Text</a></p>
+</li>
+<li>
+<p><a href="#BABBJJDE">Solving Index and Query Bottlenecks Using Tracing</a></p>
+</li>
+<li>
+<p><a href="#i1006494">Using Parallel Queries</a></p>
+</li>
+<li>
+<p><a href="#i1006513">Tuning Queries with Blocking Operations</a></p>
+</li>
+<li>
+<p><a href="#CHDJCFBH">Frequently Asked Questions About Query Performance</a></p>
+</li>
+<li>
+<p><a href="#i1006756">Frequently Asked Questions About Indexing Performance</a></p>
+</li>
+<li>
+<p><a href="#i1006852">Frequently Asked Questions About Updating the Index</a></p>
+</li>
+</ul>
+<a id="i1006318"></a>
+<div id="CCAPP9234" class="sect1">
+<h2 class="sect1"><span class="secnum">7.1</span> Optimizing Queries for Response Time<a id="sthref604"></a><a id="sthref605"></a><a id="sthref606"></a><a id="sthref607"></a></h2>
+<p>By default, Oracle Text optimizes queries for throughput. This results in queries returning all rows in shortest time possible.</p>
+<p>However, in many cases, especially in a Web application scenario, queries must be optimized for response time, when you are only interested in obtaining the first few hits of a potentially large hitlist in the shortest time possible.</p>
+<p>The following sections describe some ways to optimize <code>CONTAINS</code> queries for response time:</p>
+<ul>
+<li>
+<p><a href="#i1006353">Improved Response Time with FIRST_ROWS(n) Hint for ORDER BY Queries</a></p>
+</li>
+<li>
+<p><a href="#i1006396">Improved Response Time using Local Partitioned CONTEXT Index</a></p>
+</li>
+<li>
+<p><a href="#i1006429">Improved Response Time with Local Partitioned Index for Order by Score</a></p>
+</li>
+</ul>
+<div id="CCAPP9235" class="sect2"><a id="sthref608"></a>
+<h3 class="sect2"><span class="secnum">7.1.1</span> Other Factors that Influence Query Response Time</h3>
+<p>There are other factors that can influence query response time such as:</p>
+<ul>
+<li>
+<p>Collection of table statistics</p>
+</li>
+<li>
+<p>Memory allocation</p>
+</li>
+<li>
+<p>Sorting</p>
+</li>
+<li>
+<p>Presence of LOB columns in your base table</p>
+</li>
+<li>
+<p>Partitioning</p>
+</li>
+<li>
+<p>Parallelism</p>
+</li>
+<li>
+<p>The number term expansions in your query</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#CHDJCFBH">"Frequently Asked Questions About Query Performance"</a></div>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="i1006353"></a>
+<div id="CCAPP9236" class="sect2">
+<h3 class="sect2"><span class="secnum">7.1.2</span> Improved Response Time with <a id="sthref609"></a>FIRST_ROWS(n) Hint for ORDER BY Queries</h3>
+<p>When you need the first rows of an <code>ORDER BY</code> query, Oracle recommends that you use the cost-based <code>FIRST_ROWS(n)</code> hint.</p>
+<p>You use the <code>FIRST_ROWS(n)</code> hint in cases where you want the first number (<span class="italic">n</span>) of rows in the shortest possible time. For example, consider the following PL/SQL block that uses a cursor to retrieve the first 10 hits of a query and uses the <code>FIRST_ROWS(n)</code> hint to optimize the response time:</p>
+<pre>
+declare
+cursor c is 
+
+select /*+ FIRST_ROWS(10) */ article_id from articles_tab
+   where contains(article, 'Omophagia')&gt;0 order "by pub_date desc;
+
+begin
+</pre>
+<pre>
+for i in c
+loop
+insert into t_s values(i.pk, i.col);
+exit when c%rowcount &gt; 11;
+end loop;
+</pre>
+<pre>
+end;
+/
+</pre>
+<p>The cursor <code>c</code> is a <code>SELECT</code> statement that returns the rowids that contain the word <span class="italic">omophagia</span> in sorted order. The code loops through the cursor to extract the first 10 rows. These rows are stored in the temporary table <code>t_s</code>.</p>
+<p>With the <code>FIRST_ROWS(n)</code> hint, the optimizer instructs the Text index to return rowids in score-sorted order when the cost of returning the top n hits is lower.</p>
+<p>Without the hint, Oracle Database sorts the rowids after the Text index has returned <span class="italic">all</span> the rows in unsorted order that satisfy the <code>CONTAINS</code> predicate. Retrieving the entire result set this way takes time.</p>
+<p>Because only the first 10 hits are needed in this query, using the hint results in better performance.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Use the <code>FIRST_ROWS(n)</code> hint when you need only the first few hits of a query. When you need the entire result set, do not use this hint as it might result in poor performance.</div>
+<div id="CCAPP9237" class="sect3"><a id="sthref610"></a>
+<h4 class="sect3"><span class="secnum">7.1.2.1</span> About the DOMAIN_INDEX_SORT<a id="sthref611"></a> Hint</h4>
+<p>You can also optimize for response time using the related <code>DOMAIN_INDEX_SORT</code> hint. Like <code>FIRST_ROWS(n)</code>, when queries are optimized for response time, Oracle Text returns the first rows in the shortest time possible.</p>
+<p>For example, you can use this hint as follows</p>
+<pre>
+select /*+ DOMAIN_INDEX_SORT */ pk, score(1), col from ctx_tab 
+            where contains(txt_col, 'test', 1) &gt; 0 order by score(1) desc;
+</pre>
+<p>However, this hint is only rule-based. This means that Oracle Text always chooses the index which satisfies the <code>ORDER BY</code> clause. This might result in sub-optimal performance for queries in which the <code>CONTAINS</code> clause is very selective. In these cases, Oracle recommends that you use the <code>FIRST_ROWS(n)</code> hint, which is fully cost-based.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1006396"></a>
+<div id="CCAPP9238" class="sect2">
+<h3 class="sect2"><span class="secnum">7.1.3</span> Improved Response Time using Local Partitioned CONTEXT Index<a id="sthref612"></a><a id="sthref613"></a></h3>
+<p>Partitioning your data and creating local partitioned indexes can improve your query performance. On a partitioned table, each partition has its own set of index tables. Effectively, there are multiple indexes, but the results from each are combined as necessary to produce the final result set.</p>
+<p>You create the <code>CONTEXT</code> index using the <code>LOCAL</code> keyword as follows:</p>
+<pre>
+CREATE INDEX index_name ON table_name (column_name) 
+INDEXTYPE IS ctxsys.context
+PARAMETERS ('...')
+LOCAL
+</pre>
+<p>With partitioned tables and indexes, you can improve performance of the following types of queries:</p>
+<ul>
+<li>
+<p><a href="#i1006415">Range Search on Partition Key Column</a></p>
+</li>
+<li>
+<p><a href="#i1006421">ORDER BY Partition Key Column</a></p>
+</li>
+</ul>
+<a id="i1006415"></a>
+<div id="CCAPP9239" class="sect3">
+<h4 class="sect3"><span class="secnum">7.1.3.1</span> Range Search on Partition Key Column</h4>
+<p>This is a query that restricts the search to a particular range of values on a column that is also the partition key. For example, consider a query on a date range:</p>
+<pre>
+SELECT storyid FROM storytab WHERE CONTAINS(story, 'oliver')&gt;0 and pub_date BETWEEN '1-OCT-93' AND '1-NOV-93';
+</pre>
+<p>If the date range is quite restrictive, it is very likely that the query can be satisfied by only looking in a single partition.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i1006421"></a>
+<div id="CCAPP9240" class="sect3">
+<h4 class="sect3"><span class="secnum">7.1.3.2</span> ORDER BY Partition Key Column</h4>
+<p>This is a query that requires only the first <code>n</code> hits, and that the <code>ORDER BY</code> clause names the partition key. Consider an <code>ORDER BY</code> query on a <code>price</code> column to fetch the first 20 hits such as:</p>
+<pre>
+SELECT * FROM (
+</pre>
+<pre>
+SELECT itemid FROM item_tab WHERE CONTAINS(item_desc, 'cd player')
+  &gt;0 ORDER BY price)
+  WHERE ROWNUM &lt; 20;
+</pre>
+<pre>
+</pre>
+<p>In this example, with the table partitioned by price, the query might only need to get hits from the first partition to satisfy the query.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1006429"></a>
+<div id="CCAPP9241" class="sect2">
+<h3 class="sect2"><span class="secnum">7.1.4</span> Improved Response Time with Local Partitioned Index for Order by Score</h3>
+<p>Using the <code>DOMAIN_INDEX_SORT</code> hint on a local partitioned index might result in poor performance, especially when you order by score. This is because all hits to the query across all partitions must be obtained before the results can be sorted.</p>
+<p>You can work around this by using an inline view when you use the <code>DOMAIN_INDEX_SORT</code> hint. Specifically, you can use the <code>DOMAIN_INDEX_SORT</code> hint to improve query performance on a local partitioned index under the following conditions:</p>
+<ul>
+<li>
+<p>The text query itself including the order by <code>SCORE</code>() clause is expressed as an in-line view.</p>
+</li>
+<li>
+<p>The text query inside the in-line view contains the <code>DOMAIN_INDEX_SORT</code> hint.</p>
+</li>
+<li>
+<p>The query on the in-line view has <code>ROWNUM</code> predicate limiting number of rows to fetch from the view.</p>
+</li>
+</ul>
+<p>For example, if you have the following text query and local text index created on a partitioned table <code>doc_tab</code>:</p>
+<pre>
+     select doc_id, score(1) from doc_tab 
+        where contains(doc, 'oracle', 1)&gt;0 
+        order by score(1) desc;
+</pre>
+<p>and you are only interested in fetching top 20 rows, you can rewrite the query to</p>
+<pre>
+     select * from 
+          (select /*+ DOMAIN_INDEX_SORT */ doc_id, score(1) from doc_tab 
+              where contains(doc, 'oracle', 1)&gt;0 order by score(1) desc) 
+      where rownum &lt; 21;
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink PFGRF005" href="../../server.112/e41573/hintsref.htm#PFGRF005"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for more information about the query optimizer and using hints such as <code>DOMAIN_INDEX_SORT</code></p>
+</li>
+<li>
+<p><a class="olink PFGRF009" href="../../server.112/e41573/ex_plan.htm#PFGRF009"><span class="italic">Oracle Database Performance Tuning Guide</span></a> and <a class="olink SQLRF" href="../../server.112/e41084/toc.htm"><span class="italic">Oracle Database SQL Language Reference</span></a> for more information about the <code>EXPLAIN PLAN</code> statement</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006470"></a>
+<div id="CCAPP9242" class="sect1">
+<h2 class="sect1"><span class="secnum">7.2</span> Optimizing Queries for Throughput</h2>
+<p>Optimizing a query for throughput returns all hits in the shortest time possible. This is the default behavior.</p>
+<p>The following sections describe how you can explicitly optimize for throughput.<a id="sthref614"></a><a id="sthref615"></a><a id="sthref616"></a><a id="sthref617"></a></p>
+<div id="CCAPP9243" class="sect2"><a id="sthref618"></a>
+<h3 class="sect2"><span class="secnum">7.2.1</span> CHOOSE and ALL ROWS Modes</h3>
+<p>By default, queries are optimized for throughput under the <code>CHOOSE</code> and <code>ALL_ROWS</code> modes. When queries are optimized for throughput, Oracle Text returns <span class="italic">all</span> rows in the shortest time possible.</p>
+</div>
+<!-- class="sect2" -->
+<div id="CCAPP9244" class="sect2"><a id="sthref619"></a>
+<h3 class="sect2"><span class="secnum">7.2.2</span> FIRST_ROWS(n) Mode<a id="sthref620"></a><a id="sthref621"></a></h3>
+<p>In <code>FIRST_ROWS(n)</code> mode, the optimizer in Oracle Database optimizes for fast response time by having the Text domain index return score-sorted rows, if possible. This is the default behavior when you use the <code>FIRST_ROWS(n)</code> hint.</p>
+<p>If you want to optimize for better throughput under <code>FIRST_ROWS(n)</code>, you can use the <code>DOMAIN_INDEX_NO_SORT</code> hint. Better throughput means you are interested in getting all the rows to a query in the shortest time.</p>
+<p>The following example achieves better throughput by not using the Text domain index to return score-sorted rows. Instead, Oracle Text sorts the rows after all the rows that satisfy the <code>CONTAINS</code> predicate are retrieved from the index:</p>
+<pre>
+select /*+ FIRST_ROWS(10) DOMAIN_INDEX_NO_SORT */ pk, score(1), col from ctx_tab 
+            where contains(txt_col, 'test', 1) &gt; 0 order by score(1) desc;
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink PFGRF005" href="../../server.112/e41573/hintsref.htm#PFGRF005"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for more information about the query optimizer and using hints such as <code>FIRST_ROWS(n)</code> and <code>CHOOSE</code></div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDHJEBA"></a>
+<div id="CCAPP9245" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">7.3</span> Composite Domain Index (CDI) in Oracle Text</h2>
+<p>The Composite Domain Index feature of the Extensibility Framework in Oracle Database 11<span class="italic">g</span>, enables structured columns to be indexed by Oracle Text. Therefore, both text and one or more structured criteria can be satisfied by one single Oracle Text index row source. Performance for the following types of query are improved:</p>
+<ul>
+<li>
+<p>Text query with structured criteria in the SQL <code>WHERE</code> clause.</p>
+</li>
+<li>
+<p>Text query with structured <code>ORDER</code> <code>BY</code> criteria.</p>
+</li>
+<li>
+<p>Combination of both of the previous two query types.</p>
+</li>
+</ul>
+<p>As with concatenated btree indexes or bitmap indexes, applications will experience slow-down in DML performance as the number of <code>FILTER</code> <code>BY</code> and <code>ORDER</code> <code>BY</code> columns increases. Where <code>SCORE</code>-sort push-down is optimized for response time, the structured sort or combination of <code>SCORE</code> and structured sort push-down are also optimized for response time, and not for throughput. However, using <code>DOMAIN_INDEX_SORT</code> or <code>FIRST_ROWS</code><code>(n)</code> hints to force the sort to be pushed into CDI while fetching the entire hitlist may result in poor query response time.</p>
+<div id="CCAPP9246" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref622"></a>
+<h3 class="sect2"><span class="secnum">7.3.1</span> Performance Tuning with CDI</h3>
+<p>Support for mapping a <code>FILTER</code> <code>BY</code> column to <code>MDATA</code> enables query performance to be optimized for equality searches by restricting supported functionality of <code>RANGE</code> and <code>LIKE</code>. However, mapping a <code>FILTER</code> <code>BY</code> column to <code>MDATA</code> is not recommended if the <code>FILTER</code> <code>BY</code> column contains sequential values, or has very high cardinality. Doing so can result in a very long and narrow <code>$I</code> table and reduced <code>$X</code> performance. One example of such a sequential column might be one that uses <code>DATE</code> stamp. For such sequential columns, mapping to <code>SDATA</code> is recommended.</p>
+<p>The following hints can be used to push or not push the <code>SORT</code> and <code>FILTER</code> <code>BY</code> predicates into the CDI:</p>
+<ul>
+<li>
+<p><code>DOMAIN_INDEX_SORT</code>. The query optimizer will try to push the applicable sorting criteria into the specified composite domain index.</p>
+</li>
+<li>
+<p><code>DOMAIN_INDEX_NO_SORT</code>. The query optimizer will try NOT to push sorting criteria into the specified composite domain index.</p>
+</li>
+<li>
+<p><code>DOMAIN_INDEX_FILTER</code>(<span class="italic">table name</span> <span class="italic">index name</span>). The query optimizer will try to push the applicable <code>FILTER</code> <code>BY</code> predicate(s) into the specified composite domain index.</p>
+</li>
+<li>
+<p><code>DOMAIN_INDEX_NO_FILTER</code>(<span class="italic">table name</span> <span class="italic">index name</span>). The query optimizer will not try to push the applicable <code>FILTER</code> <code>BY</code> predicate(s) into the specified composite domain index.</p>
+</li>
+</ul>
+<div id="CCAPP9513" class="example">
+<p class="titleinexample"><a id="sthref623"></a>Example 7-1 Performance Tuning a Text Query with CDI Hints</p>
+<p>The following example performs an optimized query on the table <code>books</code>.</p>
+<pre>
+SELECT bookid, pub_date, source FROM
+  (SELECT /*+ domain_index_sort domain_index_filter(books books_ctxcdi) */ bookid, pub_date, source
+      FROM books
+      WHERE CONTAINS(text, 'aaa',1)&gt;0 AND bookid &gt;= 80
+      ORDER BY PUB_DATE desc nulls last, SOURCE asc  nulls last, score(1) desc)
+ WHERE rownum &lt; 20;
+</pre></div>
+<!-- class="example" -->
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The <code>domain_index_filter</code> hint does not force the query optimizer to use CDI. Instead, if the cost-based optimizer chooses to use the CDI, then it should also push the filter predicate into the index. To force the query optimizer to choose CDI index, you additionally need to use the <code>INDEX</code> hint.</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BABBJJDE"></a>
+<div id="CCAPP9247" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">7.4</span> <a id="sthref624"></a>Solving Index and Query Bottlenecks Using Tracing</h2>
+<p>Oracle Text includes a <span class="italic">tracing</span> facility that enables you to identify bottlenecks in indexing and querying.</p>
+<p>Oracle Text provides a set of predefined <span class="italic">traces</span>. Each trace is identified by a unique number. There is also a symbol in <code>CTX_OUTPUT</code> for this number.</p>
+<p>Each trace measures a specific numeric quantity&mdash;for instance, the number of <code>$I</code> rows selected during text queries.</p>
+<p>Traces are cumulative counters, so usage is as follows:</p>
+<ol>
+<li>
+<p>The user enables a trace.</p>
+</li>
+<li>
+<p>The user performs one or more operations. Oracle Text measures activities and accumulates the results in the trace.</p>
+</li>
+<li>
+<p>The user retrieves the trace value, which is the total value across all operations done in step 2.</p>
+</li>
+<li>
+<p>The user resets the trace to 0.</p>
+</li>
+<li>
+<p>The user starts over at Step 2.</p>
+</li>
+</ol>
+<p>So, for instance, if in step 2 the user runs two queries, and query 1 selects 15 rows from <code>$I</code>, and query 2 selects 17 rows from <code>$I</code>, then in step 3 the value of the trace would be 32 (15 + 17).</p>
+<p>Traces are associated with a session&mdash;they can measure operations that take place within a single session, and, conversely, cannot make measurements across sessions.</p>
+<p>During parallel sync or optimize, the trace profile will be copied to the slave sessions if and only if tracing is currently enabled. Each slave will accumulate its own traces and implicitly write all trace values to the slave logfile before termination.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink CCREF0800" href="../../text.112/e24436/coutpkg.htm#CCREF0800"><span class="italic">Oracle Text Reference</span></a></div>
+</div>
+<!-- class="sect1" -->
+<a id="i1006494"></a>
+<div id="CCAPP9248" class="sect1">
+<h2 class="sect1"><span class="secnum">7.5</span> Using Parallel Queries<a id="sthref625"></a><a id="sthref626"></a></h2>
+<p>In general, parallel queries are optimal for DSS, OLAP, or analytical systems with large data collection, multiple CPUs with a low number of concurrent users, or <a id="sthref627"></a><a id="sthref628"></a>parallelized across Oracle Real Application Clusters (Oracle RAC) nodes.</p>
+<p>Oracle Text supports parallel queries as follows:</p>
+<ul>
+<li>
+<p><a href="#CHDBDJFD">Parallel Queries on a Local Context Index</a></p>
+</li>
+<li>
+<p><a href="#CHDGCHFJ">Parallelizing Queries Across Oracle RAC Nodes</a></p>
+</li>
+</ul>
+<a id="CHDBDJFD"></a>
+<div id="CCAPP9249" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">7.5.1</span> Parallel Queries on a Local Context Index</h3>
+<p><span class="italic">Parallel query</span> refers to the parallelized processing of a local <code>CONTEXT</code> index. Based on the parallel degree of the index and various system attributes, Oracle determines the number of parallel query slaves to be spawned to process the index. Each parallel query slave processes one or more index partitions. This is the default query behavior for local indexes created in parallel.</p>
+<p>However, for heavily loaded systems with high numbers of concurrent users, query throughput will generally be worse with parallel query because top N hits can usually be satisfied by the first few partitions, if the query is run serially. For example, typical top N text queries with an <code>ORDER</code> <code>BY</code> partition key column, such as:</p>
+<pre>
+select * from (
+        select story_id from stories_tab where contains(...)&gt;0 order by 
+publication_date desc)
+    where rownum &lt;= 10;
+</pre>
+<p>will generally perform <span class="italic">worse</span> with a parallel query.</p>
+<p>You can disable parallel querying after a parallel index operation with an <code>ALTER INDEX</code> statement as follows:</p>
+<pre>
+Alter index &lt;text index name&gt; NOPARALLEL;
+Alter index &lt;text index name&gt; PARALLEL 1;
+</pre>
+<p>You can also enable or increase the parallel degree by specifying:</p>
+<pre>
+Alter index &lt;text index name&gt; parallel &lt; parallel degree &gt;;
+</pre></div>
+<!-- class="sect2" -->
+<a id="CHDGCHFJ"></a>
+<div id="CCAPP9471" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">7.5.2</span> <a id="sthref629"></a>Parallelizing Queries Across Oracle RAC Nodes</h3>
+<p>When considering whether to use Oracle Real Application Clusters (Oracle RAC) to improve Oracle Text performance, it is essential to understand which performance issues that you are trying to solve. Oracle RAC is a great solution for improving query throughput. If you can get good performance from Oracle Text with a light query load, then you can expect to get excellent scalability from Oracle RAC as the query load increases.</p>
+<p>Further improvements in Oracle Text performance in an Oracle RAC environment may be achieved by physically partitioning the text data and text indexes (using local partitioned indexes), and ensuring that partitions are handled by separate Oracle RAC nodes. This way, you avoid duplication of the cache contents across multiple nodes and, therefore, maximize the benefit of Oracle RAC cache fusion.</p>
+<p>In Oracle 10g Release 1, each Oracle Text index partition must be forced into a separate database file when the index is created. This enables the use of the "re-mastering" feature in Oracle RAC to force database file affinity, in which each node concentrates on a particular database file and, therefore, a particular Oracle Text index partition.</p>
+<p>In Oracle 10<span class="italic">g</span> Release 2 and forward, Oracle supports database object-level affinity, which makes it much easier to allocate index objects (<code>$I</code> and <code>$R</code> tables) to particular nodes.</p>
+<p>While Oracle RAC offers solutions for improving query throughput and performance, is not a "magic bullet," and it will not necessarily enable you to continue to get the same performance improvements as you scale up the data volumes. You are more likely to see improvements by increasing the amounts of memory available to the SGA cache, or by partitioning your data in such a way that queries will normally not need to hit all of the partitions of a table in order to provide the required set of query results.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006513"></a>
+<div id="CCAPP9251" class="sect1">
+<h2 class="sect1"><span class="secnum">7.6</span> Tuning Queries with Blocking Operations<a id="sthref630"></a><a id="sthref631"></a><a id="sthref632"></a><a id="sthref633"></a><a id="sthref634"></a><a id="sthref635"></a></h2>
+<p>Issuing a query with more than one predicate can cause a blocking operation in the execution plan. For example, consider the following mixed query:</p>
+<pre>
+select docid from mytab where contains(text, 'oracle', 1) &gt; 0 
+  AND colA &gt; 5 
+  AND colB &gt; 1 
+  AND colC &gt; 3; 
+</pre>
+<p>Assume that all predicates are unselective and colA, colB, and colC have bitmap indexes. The cost-based optimizer in Oracle Database chooses the following execution plan:</p>
+<pre>
+TABLE ACCESS BY ROWIDS
+  BITMAP CONVERSION TO ROWIDS
+    BITMAP AND
+      BITMAP INDEX COLA_BMX
+      BITMAP INDEX COLB_BMX
+      BITMAP INDEX COLC_BMX
+      BITMAP CONVERSION FROM ROWIDS
+        SORT ORDER BY
+          DOMAIN INDEX MYINDEX
+</pre>
+<p>Because the <code>BITMAP</code> <code>AND</code> is a blocking operation, Oracle Text must temporarily save the rowid and score pairs returned from the Oracle Text domain index before running the <code>BITMAP</code> <code>AND</code> operation.</p>
+<p>Oracle Text attempts to save these rowid and score pairs in memory. However, when the size of the result set containing these rowid and score pairs exceeds the <code>SORT_AREA_SIZE</code> initialization parameter, Oracle Text spills these results to temporary segments on disk.</p>
+<p>Because saving results to disk causes extra overhead, you can improve performance by increasing the <code>SORT_AREA_SIZE</code> parameter using <code>ALTER</code> <code>SESSION</code> as follows:</p>
+<pre>
+alter session set SORT_AREA_SIZE = &lt;new memory size in bytes&gt;;
+</pre>
+<p>For example, to set the buffer to approximately 8 megabytes, enter:</p>
+<pre>
+alter session set SORT_AREA_SIZE = 8300000;
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink PFGRF014" href="../../server.112/e41573/memory.htm#PFGRF014"><span class="italic">Oracle Database Performance Tuning Guide</span></a> and <a class="olink REFRN" href="../../server.112/e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for more information on <code>SORT_AREA_SIZE</code></div>
+</div>
+<!-- class="sect1" -->
+<a id="CHDJCFBH"></a>
+<div id="CCAPP9252" class="sect1">
+<h2 class="sect1"><span class="secnum">7.7</span> Frequently Asked Questions About Query Performance<a id="sthref636"></a><a id="sthref637"></a><a id="sthref638"></a><a id="sthref639"></a></h2>
+<p>This section answers some of the frequently asked questions about query performance.</p>
+<div id="CCAPP9253" class="sect2"><a id="sthref640"></a>
+<h3 class="sect2"><span class="secnum">7.7.1</span> What is <span class="italic">Query Performance</span>?</h3>
+<p><span class="bold">Answer:</span> There are generally two measures of query performance:</p>
+<ul>
+<li>
+<p>Response time, the time to get an answer to an individual query, and</p>
+</li>
+<li>
+<p>Throughput, the number of queries that can be run in any time period; for example, queries each second).</p>
+</li>
+</ul>
+<p>These two are related, but are not the same. In a heavily loaded system, you normally want maximum throughput, whereas in a relatively lightly loaded system, you probably want minimum response time. Also, some applications require a query to deliver all its hits to the user, whereas others might only require the first 20 hits from an ordered set. It is important to distinguish between these two scenarios.</p>
+</div>
+<!-- class="sect2" -->
+<div id="CCAPP9254" class="sect2"><a id="sthref641"></a>
+<h3 class="sect2"><span class="secnum">7.7.2</span> What is the fastest type of text query?</h3>
+<p><span class="bold">Answer:</span> The fastest type of query will meet the following conditions:</p>
+<ul>
+<li>
+<p>Single <code>CONTAINS</code> clause</p>
+</li>
+<li>
+<p>No other conditions in the <code>WHERE</code> clause</p>
+</li>
+<li>
+<p>No <code>ORDER</code> <code>BY</code> clause at all</p>
+</li>
+<li>
+<p>Only the first page of results is returned (for example, the first 10 or 20 hits).</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<div id="CCAPP9255" class="sect2"><a id="sthref642"></a>
+<h3 class="sect2"><span class="secnum">7.7.3</span> Should I collect statistics on my tables?</h3>
+<p><span class="bold">Answer:</span> Yes. Collecting statistics on your tables enables Oracle Text to do cost-based analysis. This helps Oracle Text choose the most efficient execution plan for your queries.</p>
+<p>If your queries are always pure text queries (no structured predicate and no joins), you should delete statistics on your Oracle Text index.</p>
+</div>
+<!-- class="sect2" -->
+<div id="CCAPP9256" class="sect2"><a id="sthref643"></a>
+<h3 class="sect2"><span class="secnum">7.7.4</span> How does the size of my data affect queries?</h3>
+<p><span class="bold">Answer:</span> The speed at which the text index can deliver ROWIDs is not affected by the actual size of the data. Text query speed will be related to the number of rows that must be fetched from the index table, number of hits requested, number of hits produced by the query, and the presence or absence of sorting.</p>
+</div>
+<!-- class="sect2" -->
+<div id="CCAPP9257" class="sect2"><a id="sthref644"></a>
+<h3 class="sect2"><span class="secnum">7.7.5</span> How does the format of my data affect queries?<a id="sthref645"></a></h3>
+<p><span class="bold">Answer:</span> The format of the documents (plain ASCII text, HTML or Microsoft Word) should make no difference to query speed. The documents are filtered to plain text at indexing time, not query time.</p>
+<p>The cleanliness of the data will make a difference. Spell-checked and sub-edited text for publication tends to have a much smaller total vocabulary (and therefore size of the index table) than informal text such as e-mails, which will contain many spelling errors and abbreviations. For a given index memory setting, the extra text takes up more memory, which can lead to more fragmented rows than in the cleaner text, which can adversely affect query response time.</p>
+</div>
+<!-- class="sect2" -->
+<div id="CCAPP9258" class="sect2"><a id="sthref646"></a>
+<h3 class="sect2"><span class="secnum">7.7.6</span> What is a <span class="italic">functional</span> versus an <span class="italic">indexed</span> lookup?<a id="sthref647"></a><a id="sthref648"></a></h3>
+<p><span class="bold">Answer:</span> There are two ways the kernel can query the text index. In the first and most common case, the kernel asks the text index for all the rowids that satisfy a particular text search. These rowids are returned in batches. In the second, the kernel passes individual rowids to the text index, and asks whether that particular rowid satisfies a certain text criterion.</p>
+<p>The second is known as a functional lookup, and is most commonly done where there is a very selective structured clause, so that only a few rowids must be checked against the text index. An example of a search where a functional lookup may be used:</p>
+<pre>
+SELECT ID, SCORE(1), TEXT FROM MYTABLE
+</pre>
+<pre>
+WHERE START_DATE = '21 Oct 1992'         &lt;- highly selective
+AND CONTAINS (TEXT, 'commonword') &gt; 0    &lt;- unselective
+</pre>
+<p>Functional invocation is also used for text query ordered by structured column (for example date, price) and text query is unselective.</p>
+</div>
+<!-- class="sect2" -->
+<div id="CCAPP9259" class="sect2"><a id="sthref649"></a>
+<h3 class="sect2"><span class="secnum">7.7.7</span> What tables are involved in queries?</h3>
+<p><span class="bold">Answer:</span> All queries look at the index token table. Its name has the form <code>DR$indexname$I</code>. This contains the list of tokens (column <code>TOKEN_TEXT</code>) and the information about the row and word positions where the token occurs (column <code>TOKEN_INFO</code>).</p>
+<p>The row information is stored as internal DOCID values. These must be translated into external ROWID values. The table used for this depends on the type of lookup: For functional lookups, the <code>$K</code> table, <code>DR$indexname$K</code>, is used. This is a simple Index Organized Table (IOT) which contains a row for each DOCID/ROWID pair.</p>
+<p>For indexed lookups, the <code>$R</code> table, <code>DR$indexname$R</code>, is used. This holds the complete list of ROWIDs in a BLOB column.</p>
+<p>Hence we can easily find out whether a functional or indexed lookup is being used by examining a SQL trace, and looking for the $K or $R tables.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+These internal index tables are subject to change from release to release. Oracle recommends that you do not directly access these tables in your application.</div>
+</div>
+<!-- class="sect2" -->
+<div id="CCAPP9260" class="sect2"><a id="sthref650"></a>
+<h3 class="sect2"><span class="secnum">7.7.8</span> Does sorting the results slow a text-only query?</h3>
+<p><span class="bold">Answer:</span> Yes, it certainly does.</p>
+<p>If there is no sorting, then Oracle Text can return results as it finds them, which is quicker in the common case where the application needs to display only a page of results at a time.</p>
+</div>
+<!-- class="sect2" -->
+<div id="CCAPP9261" class="sect2"><a id="sthref651"></a>
+<h3 class="sect2"><span class="secnum">7.7.9</span> How do I make an ORDER BY score query faster?</h3>
+<p><span class="bold">Answer:</span> Sorting by relevance (<code>SCORE(n)</code>) can be extremely quick if the <code>FIRST_ROWS(n)</code> hint is used. In this case, Oracle Text performs a high speed internal sort when fetching from the text index tables.</p>
+<p>An example of such a query:</p>
+<pre>
+              SELECT /*+ FIRST_ROWS(10) */ ID, SCORE(1), TEXT FROM mytable
+                WHERE CONTAINS (TEXT, 'searchterm', 1) &gt; 0
+                ORDER BY SCORE(1) DESC;
+</pre>
+<p>Note that for this to work efficiently, there must be no other criteria in the <code>WHERE</code> clause other than a single <code>CONTAINS</code>.</p>
+</div>
+<!-- class="sect2" -->
+<div id="CCAPP9262" class="sect2"><a id="sthref652"></a>
+<h3 class="sect2"><span class="secnum">7.7.10</span> Which Memory Settings Affect Querying?<a id="sthref653"></a><a id="sthref654"></a></h3>
+<p><span class="bold">Answer:</span> For querying, you want to strive for a large system global area (SGA). You can set these parameters related to SGA in your Oracle Database initialization file. You can also set these parameters dynamically.</p>
+<p>The <code>SORT_AREA_SIZE</code> parameter controls the memory available for sorting for <code>ORDER BY</code> queries. You should increase the size of this parameter if you frequently order by structured columns.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ADMIN" href="../../server.112/e25494/toc.htm"><span class="italic">Oracle Database Administrator's Guide</span></a> for more information on setting SGA related parameters</p>
+</li>
+<li>
+<p><a class="olink PFGRF014" href="../../server.112/e41573/memory.htm#PFGRF014"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for more information on memory allocation and setting the <code>SORT_AREA_SIZE</code> parameter</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1006643"></a>
+<div id="CCAPP9263" class="sect2">
+<h3 class="sect2"><span class="secnum">7.7.11</span> Does out of line LOB storage of wide base table columns improve performance?<a id="sthref655"></a><a id="sthref656"></a></h3>
+<p><span class="bold">Answer:</span> Yes. Typically, a <code>SELECT</code> statement selects more than one column from your base table. Because Oracle Text fetches columns to memory, it is more efficient to store wide base table columns such as LOBs out of line, especially when these columns are rarely updated but frequently selected.</p>
+<p>When LOBs are stored out of line, only the LOB locators need to be fetched to memory during querying. Out of line storage reduces the effective size of the base table making it easier for Oracle Text to cache the entire table to memory. This reduces the cost of selecting columns from the base table, and hence speeds up text queries.</p>
+<p>In addition, having smaller base tables cached in memory enables more index table data to be cached during querying, which improves performance.</p>
+</div>
+<!-- class="sect2" -->
+<div id="CCAPP9264" class="sect2"><a id="sthref657"></a>
+<h3 class="sect2"><span class="secnum">7.7.12</span> How can I make a CONTAINS query on more than one column faster?<a id="sthref658"></a></h3>
+<p><span class="bold">Answer:</span> The fastest type of query is one where there is only a single <code>CONTAINS</code> clause, and no other conditions in the <code>WHERE</code> clause.</p>
+<p>Consider the following multiple <code>CONTAINS</code> query:</p>
+<pre>
+              SELECT title, isbn FROM booklist
+                WHERE CONTAINS (title, 'horse') &gt; 0
+                  AND CONTAINS (abstract, 'racing') &gt; 0
+</pre>
+<p>We can obtain the same result with section searching and the <code>WITHIN</code> operator as follows:</p>
+<pre>
+              SELECT title, isbn FROM booklist
+                WHERE CONTAINS (alltext, 
+                  'horse WITHIN title AND racing WITHIN abstract')&gt;0
+</pre>
+<p>This query completes more quickly. To use a query like this, we must copy all the data into a single text column for indexing, with section tags around each column's data. This can be done with PL/SQL procedures before indexing, or by making use of the <code>USER_DATASTORE</code> datastore during indexing to synthesize structured columns with the text column into one document.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1006663"></a>
+<div id="CCAPP9265" class="sect2">
+<h3 class="sect2"><span class="secnum">7.7.13</span> Is it OK to have many expansions in a query?<a id="sthref659"></a><a id="sthref660"></a></h3>
+<p><span class="bold">Answer:</span> Each distinct word used in a query requires at least one row to be fetched from the index table. It is therefore best to keep the number of expansions down as much as possible.</p>
+<p>You should not use expansions such as wild cards, thesaurus, stemming and fuzzy matching unless they are necessary to the task. In general, a few expansions (for example, 10 to 20) does not cause difficulty, but avoid having large numbers of explansions (80 or 100) in a query. The query feedback mechanism can be used to determine the number of expansions for any particular query expression.</p>
+<p>In addition for wildcard and stem queries, you can remove the cost of term expansion from query time to index time by creating prefix, substring or stem indexes. Query performance increases at the cost of longer indexing time and added disk space.</p>
+<p>Prefix and substring indexes can improve wildcard performance. You enable prefix and substring indexing with the <code>BASIC_WORDLIST</code> preference. The following example sets the wordlist preference for prefix and substring indexing. For prefix indexing, it specifies that Oracle Text create token prefixes between 3 and 4 characters long:</p>
+<pre>
+begin 
+</pre>
+<pre>
+ctx_ddl.create_preference('mywordlist', 'BASIC_WORDLIST'); 
+ctx_ddl.set_attribute('mywordlist','PREFIX_INDEX','TRUE');
+ctx_ddl.set_attribute('mywordlist','PREFIX_MIN_LENGTH', '3');
+ctx_ddl.set_attribute('mywordlist','PREFIX_MAX_LENGTH', '4');
+ctx_ddl.set_attribute('mywordlist','SUBSTRING_INDEX', 'YES');
+</pre>
+<pre>
+end
+</pre>
+<p>You enable stem indexing with the <code>BASIC_LEXER</code> preference:</p>
+<pre>
+begin
+</pre>
+<pre>
+ctx_ddl.create_preference('mylex', 'BASIC_LEXER');
+ctx_ddl.set_attribute ( 'mylex', 'index_stems', 'ENGLISH');
+</pre>
+<pre>
+end;
+</pre></div>
+<!-- class="sect2" -->
+<div id="CCAPP9266" class="sect2"><a id="sthref661"></a>
+<h3 class="sect2"><span class="secnum">7.7.14</span> How can local partition indexes help?<a id="sthref662"></a><a id="sthref663"></a></h3>
+<p><span class="bold">Answer:</span> You can create local partitioned <code>CONTEXT</code> indexes on partitioned tables. This means that on a partitioned table, each partition has its own set of index tables. Effectively, there are multiple indexes, but the results from each are combined as necessary to produce the final result set.</p>
+<p>The index is created using the <code>LOCAL</code> keyword:</p>
+<pre>
+CREATE INDEX index_name ON table_name (column_name) 
+INDEXTYPE IS ctxsys.context
+PARAMETERS ('...')
+LOCAL
+</pre>
+<p>With partitioned tables and local indexes, you can improve performance of the following types of <code>CONTAINS</code> queries:</p>
+<ul>
+<li>
+<p><a href="#i1006415">Range Search on Partition Key Column</a></p>
+<p>This is a query that restricts the search to a particular range of values on a column that is also the partition key.</p>
+</li>
+<li>
+<p><a href="#i1006421">ORDER BY Partition Key Column</a></p>
+<p>This is a query that requires only the first n hits and the <code>ORDER BY</code> clause names the partition key</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#i1006396">"Improved Response Time using Local Partitioned CONTEXT Index"</a></div>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<div id="CCAPP9267" class="sect2"><a id="sthref664"></a>
+<h3 class="sect2"><span class="secnum">7.7.15</span> Should I query in parallel?<a id="sthref665"></a></h3>
+<p><span class="bold">Answer:</span> It depends on system load and server capacity. Even though parallel querying is the default behavior for indexes created in parallel, it usually results in degrading overall query throughput on heavily loaded systems.</p>
+<p>In general, parallel queries are particularly appropriate for DSS or analytical systems with large data collections, multiple CPUs, and low number of concurrent users.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#i1006494">"Using Parallel Queries"</a></div>
+</div>
+<!-- class="sect2" -->
+<div id="CCAPP9268" class="sect2"><a id="sthref666"></a>
+<h3 class="sect2"><span class="secnum">7.7.16</span> Should I index themes?</h3>
+<p><span class="bold">Answer:</span> Indexing theme information with a <code>CONTEXT</code> index takes longer and also increases the size of your index. However, theme indexes enable <code>ABOUT</code> queries to be more precise by using the knowledge base, if available. If your application uses <code>ABOUT</code> queries heavily, it might be worthwhile to create a theme component to the index, despite the extra indexing time and extra storage space required.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="query.htm#i1006398">"ABOUT Queries and Themes"</a></div>
+</div>
+<!-- class="sect2" -->
+<div id="CCAPP9269" class="sect2"><a id="sthref667"></a>
+<h3 class="sect2"><span class="secnum">7.7.17</span> When should I use a CTXCAT index?<a id="sthref668"></a></h3>
+<p><span class="bold">Answer:</span> <code>CTXCAT</code> indexes work best when text is in small chunks, maybe a few lines maximum, and searches need to restrict or sort the result set according to certain structured criteria, usually numbers or dates.</p>
+<p>For example, consider an on-line auction site. Each item for sale has a short description, a current bid price, and dates for the start and end of the auction. A user might want to see all the records with <span class="italic">antique cabinet</span> in the description, with a current bid price less than $500. Because he is particularly interested in newly posted items, he wants the results sorted by auction start time.</p>
+<p>Such a search is not always efficient with a <code>CONTAINS</code> structured query on a <code>CONTEXT</code> index, where the response time can vary significantly depending on the structured and <code>CONTAINS</code> clauses. This is because the intersection of structured and <code>CONTAINS</code> clauses or the ordering of text query is computed during query time.</p>
+<p>By including structured information such as price and date within the <code>CTXCAT</code> index, query response time is always in an optimal range regardless of search criteria. This is because the interaction between text and structured query is pre-computed during indexing. Consequently query response time is optimum.</p>
+</div>
+<!-- class="sect2" -->
+<div id="CCAPP9270" class="sect2"><a id="sthref669"></a>
+<h3 class="sect2"><span class="secnum">7.7.18</span> When is a CTXCAT index NOT suitable?</h3>
+<p><span class="bold">Answer:</span> There are differences in the time and space needed to create the index. <code>CTXCAT</code> indexes take a bit longer to create and use considerably more disk space than <code>CONTEXT</code> indexes. If you are tight on disk space, you should consider carefully whether <code>CTXCAT</code> indexes are appropriate for you.</p>
+<p>With respect to query operators, you can now use the richer <code>CONTEXT</code> grammar in <code>CATSEARCH</code> queries with query templates. The older restriction of a single <code>CATSEARCH</code> query grammar no longer holds.</p>
+</div>
+<!-- class="sect2" -->
+<div id="CCAPP9271" class="sect2"><a id="sthref670"></a>
+<h3 class="sect2"><span class="secnum">7.7.19</span> What optimizer hints are available, and what do they do?</h3>
+<p><span class="bold">Answer:</span> The optimizer hint <code>INDEX(table column)</code> can be used in the usual way to drive the query with a text or b-tree index.</p>
+<p>You can also use the <code>NO_INDEX(table column)</code> hint to disable a specific index.</p>
+<p>Additionally, the <code>FIRST_ROWS(n)</code> hint has a special meaning for text queries and should be used when you need the first n hits to a query. Use of the <code>DOMAIN_INDEX_SORT</code> hint in conjunction with <code>ORDER BY SCORE(n) DESC</code> tells the Oracle optimizer to accept a sorted set from the text index, and not to do a further sort.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#i1006318">"Optimizing Queries for Response Time"</a></div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006756"></a>
+<div id="CCAPP9272" class="sect1">
+<h2 class="sect1"><span class="secnum">7.8</span> Frequently Asked Questions About Indexing Performance<a id="sthref671"></a><a id="sthref672"></a></h2>
+<p>This section answers some of the frequently asked questions about indexing performance.</p>
+<div id="CCAPP9273" class="sect2"><a id="sthref673"></a>
+<h3 class="sect2"><span class="secnum">7.8.1</span> How long should indexing take?<a id="sthref674"></a></h3>
+<p><span class="bold">Answer:</span> Indexing text is a resource-intensive process. The speed of indexing will depend on the power of the hardware involved. Indexing speed depends on CPU and I/O capacity. Given sufficient I/O capacity to read in the original data and write out index entries, then CPU will be the limiting factor.</p>
+<p>Tests with Intel x86 (Core 2 architecture, 2.5GHz) CPUs have shown that Oracle Text can index around 100GB of text per CPU core, per day. This would be expected to increase as CPU clock speeds increase and/or CPU architectures become more efficient.</p>
+<p>Other factors such as your document format, location of your data, and the calls to user-defined datastores, filters, and lexers can have an impact on your indexing speed.</p>
+</div>
+<!-- class="sect2" -->
+<div id="CCAPP9274" class="sect2"><a id="sthref675"></a>
+<h3 class="sect2"><span class="secnum">7.8.2</span> Which index memory settings should I use?<a id="sthref676"></a><a id="sthref677"></a><a id="sthref678"></a><a id="sthref679"></a><a id="sthref680"></a><a id="sthref681"></a></h3>
+<p><span class="bold">Answer:</span> You can set your index memory with the system parameters <code>DEFAULT_INDEX_MEMORY</code> and <code>MAX_INDEX_MEMORY</code>. You can also set your index memory at run time with the <code>CREATE INDEX</code> <code>memory</code> parameter in the parameter string.</p>
+<p>You should aim to set the <code>DEFAULT_INDEX_MEMORY</code> value as high as possible, without causing paging.</p>
+<p>You can also improve Indexing performance by increasing the <code>SORT_AREA_SIZE</code> system parameter.</p>
+<p>Oracle recommends that you use a large index memory setting. Large settings, even up to hundreds of megabytes, can improve the speed of indexing, and reduce the fragmentation of the final indexes. However, if you set the index memory setting too high, then memory paging can occur that will reduce indexing speed.</p>
+<p>With parallel indexing, each stream requires its own index memory. When dealing with very large tables, you can tune your database system global area (SGA) differently for indexing and retrieval. For querying, you want to get as much information cached in the system global area's (SGA) block buffer cache as possible. So you should allocate a large amount of memory to the block buffer cache. But this will not make any difference to indexing, so you would be better off reducing the size of the SGA to make more room for a large index memory settings during indexing.</p>
+<p>You set the size of SGA in your Oracle Database initialization file.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink CCREF0245" href="../../text.112/e24436/cdatadic.htm#CCREF0245"><span class="italic">Oracle Text Reference</span></a> to learn more about Oracle Text system parameters</p>
+</li>
+<li>
+<p><a class="olink ADMIN" href="../../server.112/e25494/toc.htm"><span class="italic">Oracle Database Administrator's Guide</span></a> for more information on setting SGA related parameters</p>
+</li>
+<li>
+<p><a class="olink PFGRF014" href="../../server.112/e41573/memory.htm#PFGRF014"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for more information on memory allocation and setting the <code>SORT_AREA_SIZE</code> parameter</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<div id="CCAPP9275" class="sect2"><a id="sthref682"></a>
+<h3 class="sect2"><span class="secnum">7.8.3</span> How much disk overhead will indexing require?</h3>
+<p><span class="bold">Answer:</span> The overhead, the amount of space needed for the index tables, varies between about 50% of the original text volume and 200%. Generally, the larger the total amount of text, the smaller the overhead, but many small records will use more overhead than fewer large records. Also, clean data (such as published text) will require less overhead than dirty data such as e-mails or discussion notes, because the dirty data is likely to include many unique words from mis-spellings and abbreviations.</p>
+<p>A text-only index is smaller than a combined text and theme index. A prefix and substring index makes the index significantly larger.</p>
+</div>
+<!-- class="sect2" -->
+<div id="CCAPP9276" class="sect2"><a id="sthref683"></a>
+<h3 class="sect2"><span class="secnum">7.8.4</span> How does the format of my data affect indexing?<a id="sthref684"></a><a id="sthref685"></a></h3>
+<p><span class="bold">Answer:</span> You can expect much lower storage overhead for formatted documents such as Microsoft Word files because such documents tend to be very large compared to the actual text held in them. So 1GB of Word documents might only require 50MB of index space, whereas 1GB of plain text might require 500MB, because there is ten times as much plain text in the latter set.</p>
+<p>Indexing time is less clear-cut. Although the reduction in the amount of text to be indexed will have an obvious effect, you must balance this out against the cost of filtering the documents with the <code>AUTO_FILTER</code> filter or other user-defined filters.</p>
+</div>
+<!-- class="sect2" -->
+<div id="CCAPP9277" class="sect2"><a id="sthref686"></a>
+<h3 class="sect2"><span class="secnum">7.8.5</span> Can parallel indexing improve performance?<a id="sthref687"></a><a id="sthref688"></a></h3>
+<p><span class="bold">Answer:</span> Parallel indexing can improve index performance when you have a large amount of data, and have multiple CPUs.</p>
+<p>You use the <code>PARALLEL</code> keyword when creating the index:</p>
+<pre>
+CREATE INDEX index_name ON table_name (column_name) 
+INDEXTYPE IS ctxsys.context PARAMETERS ('...') PARALLEL 3;
+</pre>
+<p>This will create the index with up to three separate indexing processes depending on your resources.</p>
+<p>Parallel indexing can also be used to create local partitioned indexes on partitioned tables. However, indexing performance only improves when you have multiple CPUs.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Using <code>PARALLEL</code> to create a local partitioned index enables parallel queries. (Creating a non-partitioned index in parallel does not turn on parallel query processing.)
+<p>Parallel querying degrades query throughput especially on heavily loaded systems. Because of this, Oracle recommends that you disable parallel querying after parallel indexing. To do so, use <code>ALTER INDEX NOPARALLEL</code>.</p>
+</div>
+</div>
+<!-- class="sect2" -->
+<div id="CCAPP9278" class="sect2"><a id="sthref689"></a>
+<h3 class="sect2"><span class="secnum">7.8.6</span> How can I improve index performance for creating local partitioned index?<a id="sthref690"></a><a id="sthref691"></a></h3>
+<p><span class="bold">Answer:</span> When you have multiple CPUs, you can improve indexing performance by creating a local index in parallel. There are two ways to index in parallel:</p>
+<p>You can create a local partitioned index in parallel in two ways:</p>
+<ul>
+<li>
+<p>Use the <code>PARALLEL</code> clause with the <code>LOCAL</code> clause in <code>CREATE INDEX.</code>In this case, the maximum parallel degree is limited to the number of partitions you have.</p>
+</li>
+<li>
+<p>Create an unusable index first, then run the <code>DBMS_PCLXUTIL.BUILD_PART_INDEX</code> utility. This method can result in a higher degree of parallelism, especially if you have more CPUs than partitions.</p>
+</li>
+</ul>
+<p>The following is an example for the second method. In this example, the base table has three partitions. We create a local partitioned unusable index first, the run the <code>DBMS_PCLUTIL.BUILD_PART_INDEX</code>, which builds the 3 partitions in parallel (inter-partition parallelism). Also inside each partition, index creation is done in parallel (intra-partition parallelism) with a parallel degree of 2.</p>
+<pre>
+create index tdrbip02bx on tdrbip02b(text) 
+indextype is ctxsys.context local (partition tdrbip02bx1, 
+                                   partition tdrbip02bx2, 
+                                   partition tdrbip02bx3) 
+unusable; 
+
+exec dbms_pclxutil.build_part_index(3,2,'TDRBIP02B','TDRBIP02BX',TRUE); 
+</pre></div>
+<!-- class="sect2" -->
+<div id="CCAPP9279" class="sect2"><a id="sthref692"></a>
+<h3 class="sect2"><span class="secnum">7.8.7</span> How can I tell how much indexing has completed?</h3>
+<p><span class="bold">Answer:</span> You can use the <code>CTX_OUTPUT.START_LOG</code> procedure to log output from the indexing process. Filename will normally be written to <code>$ORACLE_HOME/ctx/log</code>, but you can change the directory using the <code>LOG_DIRECTORY</code> parameter in <code>CTX_ADM.SET_PARAMETER</code>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink CCREF0800" href="../../text.112/e24436/coutpkg.htm#CCREF0800"><span class="italic">Oracle Text Reference</span></a> to learn more about using this procedure</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006852"></a>
+<div id="CCAPP9280" class="sect1">
+<h2 class="sect1"><span class="secnum">7.9</span> Frequently Asked Questions About Updating the Index<a id="sthref693"></a><a id="sthref694"></a><a id="sthref695"></a></h2>
+<p>This section answers some of the frequently asked questions about updating your index and related performance issues.</p>
+<div id="CCAPP9281" class="sect2"><a id="sthref696"></a>
+<h3 class="sect2"><span class="secnum">7.9.1</span> How often should I index new or updated records?</h3>
+<p><span class="bold">Answer:</span> The less often you run reindexing with <code>CTX_DLL.SYNC_INDEX</code>, the less fragmented your indexes will be, and the less you will need to optimize them.</p>
+<p>However, this means that your data will become progressively more out of date, which may be unacceptable for your users.</p>
+<p>Overnight indexing is acceptable for many systems. In this case, data that is less than a day old is not searchable. Other systems use hourly, ten minute, or five minute updates.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink CCREF0652" href="../../text.112/e24436/cddlpkg.htm#CCREF0652"><span class="italic">Oracle Text Reference</span></a> to learn more about using <code>CTX_DDL.SYNC_INDEX</code></p>
+</li>
+<li>
+<p><a href="ind.htm#i1007544">"Managing DML Operations for a CONTEXT Index"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<div id="CCAPP9282" class="sect2"><a id="sthref697"></a>
+<h3 class="sect2"><span class="secnum">7.9.2</span> How can I tell when my indexes are getting fragmented?<a id="sthref698"></a><a id="sthref699"></a></h3>
+<p><span class="bold">Answer:</span> The best way is to time some queries, run index optimization, then time the same queries (restarting the database to clear the SGA each time, of course). If the queries speed up significantly, then optimization was worthwhile. If they don't, you can wait longer next time.</p>
+<p>You can also use <code>CTX_REPORT.INDEX_STATS</code> to analyze index fragmentation.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink CCREF1100" href="../../text.112/e24436/crptpkg.htm#CCREF1100"><span class="italic">Oracle Text Reference</span></a> to learn more about using the <code>CTX_REPORT</code> package</p>
+</li>
+<li>
+<p><a href="ind.htm#i1007604">"Optimizing the Index"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<div id="CCAPP9283" class="sect2"><a id="sthref700"></a>
+<h3 class="sect2"><span class="secnum">7.9.3</span> Does memory allocation affect index synchronization?<a id="sthref701"></a></h3>
+<p><span class="bold">Answer:</span> Yes, the same way as for normal indexing. There are often far fewer records to be indexed during a synchronize operation, so it is not usually necessary to provide hundreds of megabytes of indexing memory.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment105">
+<tr>
+<td class="cellalignment112">
+<table class="cellalignment110">
+<tr>
+<td class="cellalignment109"><a href="classify.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment109"><a href="csection.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2004, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment114">
+<table class="cellalignment108">
+<tr>
+<td class="cellalignment109"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment109"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment109"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment109"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment109"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment109"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

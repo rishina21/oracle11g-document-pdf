@@ -1,0 +1,18 @@
+var chapters = [
+  { topic: "chapter", section: "1", title: "Oracle Database Semantic Technologies Overview", anchor: "RDFRM100", file: "sdo_rdf_concepts.htm" },
+  { topic: "chapter", section: "2", title: "OWL Concepts", anchor: "RDFRM200", file: "owl_concepts.htm" },
+  { topic: "chapter", section: "3", title: "Simple Knowledge Organization System (SKOS) Support", anchor: "RDFRM99911", file: "skos.htm" },
+  { topic: "chapter", section: "4", title: "Semantic Indexing for Documents", anchor: "RDFRM99921", file: "indexing_for_docs.htm" },
+  { topic: "chapter", section: "5", title: "Fine-Grained Access Control for RDF Data", anchor: "RDFRM99941", file: "fine_grained_acc.htm" },
+  { topic: "chapter", section: "6", title: "Workspace Manager Support for RDF Data", anchor: "RDFRM99965", file: "workspace_mgr.htm" },
+  { topic: "chapter", section: "7", title: "Jena Adapter for Oracle Database", anchor: "RDFRM234", file: "sem_jena.htm" },
+  { topic: "chapter", section: "8", title: "Sesame Adapter for Oracle Database", anchor: "RDFRM305", file: "sem_sesame.htm" },
+  { topic: "chapter", section: "9", title: "SEM_APIS Package Subprograms", anchor: "RDFRM500", file: "sem_apis_ref.htm" },
+  { topic: "chapter", section: "10", title: "SEM_OLS Package Subprograms", anchor: "RDFRM395", file: "sem_ols_ref.htm" },
+  { topic: "chapter", section: "11", title: "SEM_PERF Package Subprograms", anchor: "RDFRM550", file: "sem_perf_ref.htm" },
+  { topic: "chapter", section: "12", title: "SEM_RDFCTX Package Subprograms", anchor: "RDFRM800", file: "sem_rdfctx_ref.htm" },
+  { topic: "chapter", section: "13", title: "SEM_RDFSA Package Subprograms", anchor: "RDFRM99999", file: "sem_rdfsa_ref.htm" },
+  { topic: "appendix", section: "A", title: "Enabling, Downgrading, or Removing Semantic Technologies Support", anchor: "RDFRM118", file: "sem_enable.htm" },
+  { topic: "appendix", section: "B", title: "SEM_MATCH Support for Spatial Queries", anchor: "RDFRM400", file: "sem_spatial_orageo.htm" },
+  { topic: "glossary", section: "", title: "Glossary", anchor: "RDFRM415", file: "sem_glossary.htm" },
+  { } ];

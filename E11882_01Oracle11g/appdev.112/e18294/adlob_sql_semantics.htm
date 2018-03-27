@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>SQL Semantics and LOBs</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 737" />
+<meta name="dcterms.created" content="2013-07-18T13:32:41Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database SecureFiles and Large Objects Developer's Guide" />
+<meta name="dcterms.identifier" content="E18294-04" />
+<meta name="dcterms.isVersionOf" content="ADLOB" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1996, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="adlob_ddl.htm" title="Previous" type="text/html" />
+<link rel="Next" href="adlob_plsql_semantics.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e18294.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">27/37</span> <!-- End Header -->
+<div id="ADLOB010" class="chapter"><a id="BABBFDDF"></a><a id="i1013728"></a>
+<h1 class="chapter"><span class="secnum">16</span> SQL Semantics and LOBs</h1>
+<p>This chapter describes SQL semantics that are supported for LOBs. These techniques allow you to use LOBs directly in SQL code and provide an alternative to using LOB-specific APIs for some operations.</p>
+<p>This chapter contains these topics:</p>
+<ul>
+<li>
+<p><a href="#i1012315">Using LOBs in SQL</a></p>
+</li>
+<li>
+<p><a href="#i1011241">SQL Functions and Operators Supported for Use with LOBs</a></p>
+</li>
+<li>
+<p><a href="#i1012806">Implicit Conversion of LOB Data Types in SQL</a></p>
+</li>
+<li>
+<p><a href="#i1010111">Unsupported Use of LOBs in SQL</a></p>
+</li>
+<li>
+<p><a href="#i1006781">VARCHAR2 and RAW Semantics for LOBs</a></p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="adlob_performance.htm#i1007301">"Performance Considerations for SQL Semantics and LOBs"</a>.</div>
+</li>
+<li>
+<p><a href="#BABBFDGI">Built-in Functions for Remote LOBs and BFILEs</a></p>
+</li>
+</ul>
+<a id="i1012315"></a>
+<div id="ADLOB45582" class="sect1">
+<h2 class="sect1"><a id="sthref850"></a><a id="sthref851"></a>Using LOBs in SQL</h2>
+<p>You can access <code>CLOB</code> and <code>NCLOB</code> data types using SQL <code>VARCHAR2</code> semantics, such as SQL string operators and functions. (<code>LENGTH</code> functions can be used with <code>BLOB</code> data types and <code>CLOB</code> and <code>NCLOB</code>s.) These techniques are beneficial in the following situations:</p>
+<ul>
+<li>
+<p>When performing operations on LOBs that are relatively small in size (up to about 100K bytes).</p>
+</li>
+<li>
+<p>After migrating your database from <code>LONG</code> columns to LOB data types, any SQL string functions, contained in your existing PL/SQL application, continue to work after the migration.</p>
+</li>
+</ul>
+<p>SQL semantics are not recommended in the following situations:</p>
+<ul>
+<li>
+<p>When you use advanced features such as random access and piece-wise fetch, you must use LOB APIs.</p>
+</li>
+<li>
+<p>When performing operations on LOBs that are relatively large in size (greater than 1MB) using SQL semantics can impact performance. Using the LOB APIs is recommended in this situation.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+SQL semantics are used with persistent and temporary LOBs. (SQL semantics do not apply to <code>BFILE</code> columns because <code>BFILE</code> is a read-only data type.)</div>
+</li>
+</ul>
+</div>
+<!-- class="sect1" -->
+<a id="i1011241"></a>
+<div id="ADLOB45583" class="sect1">
+<h2 class="sect1">SQL Functions and Operators Supported for <a id="sthref852"></a><a id="sthref853"></a>Use with LOBs</h2>
+<p>Many SQL operators and functions that take <code>VARCHAR2</code> columns as arguments also accept LOB columns. The following list summarizes which categories of SQL functions and operators are supported for use with LOBs. Details on individual functions and operators are given in <a href="#g1016221">Table 16-1</a>.</p>
+<p>The following categories of SQL functions and operators are supported for use with LOBs:</p>
+<ul>
+<li>
+<p>Concatenation</p>
+</li>
+<li>
+<p>Comparison</p>
+<p>(Some comparison functions are not supported for use with LOBs.)</p>
+</li>
+<li>
+<p>Character functions</p>
+</li>
+<li>
+<p>Conversion</p>
+<p>(Some conversion functions are not supported for use with LOBs.)</p>
+</li>
+</ul>
+<p>The following categories of functions are not supported for use with LOBs:</p>
+<ul>
+<li>
+<p>Aggregate functions</p>
+<p>Note that although pre-defined aggregate functions are not supported for use with LOBs, you can create user-defined aggregate functions to use with LOBs. See the <a class="olink ADDCI" href="../e10765/toc.htm"><span class="italic">Oracle Database Data Cartridge Developer's Guide</span></a> for more information on user-defined aggregate functions.</p>
+</li>
+<li>
+<p>Unicode functions</p>
+</li>
+</ul>
+<p>Details on individual functions and operators are in <a href="#g1016221">Table 16-1</a>, which lists SQL operators and functions that take <code>VARCHAR2</code> types as operands or arguments, or return a <code>VARCHAR2</code> value. The "SQL" column identifies the functions and operators that are supported for <code>CLOB</code> and <code>NCLOB</code> data types. (The <code>LENGTH</code> function is also supported for the <code>BLOB</code> data type.)</p>
+<p>The <code>DBMS_LOB</code> PL/SQL package supplied with Oracle Database supports using LOBs with most of the functions listed in <a href="#g1016221">Table 16-1</a> as indicated in the "PL/SQL" column.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Operators and functions with "No" indicated in the SQL column of <a href="#g1016221">Table 16-1</a> do not work in SQL queries used in PL/SQL blocks - even though some of these operators and functions are supported for use directly in PL/SQL code.</div>
+<p class="subhead1"><a id="ADLOB45584"></a>Implicit Conversion<a id="sthref854"></a><a id="sthref855"></a> of CLOB to CHAR Types</p>
+<p>Functions designated as "CNV" in the SQL or PL/SQL column of <a href="#g1016221">Table 16-1</a> are performed by converting the <code>CLOB</code> to a character data type, such as <code>VARCHAR2</code>. In the SQL environment, only the first 4K bytes of the <code>CLOB</code> are converted and used in the operation; in the PL/SQL environment, only the first 32K bytes of the <code>CLOB</code> are converted and used in the operation.</p>
+<div id="ADLOB45585" class="tblhruleformalwide">
+<p class="titleintable"><a id="sthref856"></a><a id="g1016221"></a>Table 16-1 SQL VARCHAR2 Functions and Operators on LOBs</p>
+<table class="cellalignment910" title="SQL VARCHAR2 Functions and Operators on LOBs" summary="This table is described in the preceding text" dir="ltr">
+<thead>
+<tr class="cellalignment899">
+<th class="cellalignment906" id="r1c1-t5">Category</th>
+<th class="cellalignment906" id="r1c2-t5">Operator / Function</th>
+<th class="cellalignment906" id="r1c3-t5">SQL Example / Comments</th>
+<th class="cellalignment906" id="r1c4-t5">SQL</th>
+<th class="cellalignment906" id="r1c5-t5">PL/SQL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r2c1-t5" headers="r1c1-t5">
+<p><span class="bold">Concatenation</span></p>
+</td>
+<td class="cellalignment907" headers="r2c1-t5 r1c2-t5">
+<p>||, CONCAT()</p>
+</td>
+<td class="cellalignment907" headers="r2c1-t5 r1c3-t5">
+<p class="synopsis">Select clobCol || clobCol2 from tab;</p>
+</td>
+<td class="cellalignment907" headers="r2c1-t5 r1c4-t5">
+<p>Yes</p>
+</td>
+<td class="cellalignment907" headers="r2c1-t5 r1c5-t5">
+<p>Yes</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r3c1-t5" headers="r1c1-t5">
+<p><span class="bold">Comparison</span></p>
+</td>
+<td class="cellalignment907" headers="r3c1-t5 r1c2-t5">
+<p>= , !=, &gt;, &gt;=, &lt;, &lt;=, &lt;&gt;, ^=</p>
+</td>
+<td class="cellalignment907" headers="r3c1-t5 r1c3-t5">
+<p class="synopsis">if clobCol=clobCol2 then...</p>
+</td>
+<td class="cellalignment907" headers="r3c1-t5 r1c4-t5">
+<p>No</p>
+</td>
+<td class="cellalignment907" headers="r3c1-t5 r1c5-t5">
+<p>Yes</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r4c1-t5" headers="r1c1-t5">
+<p><span class="bold">Comparison</span></p>
+</td>
+<td class="cellalignment907" headers="r4c1-t5 r1c2-t5">
+<p>IN, NOT IN</p>
+</td>
+<td class="cellalignment907" headers="r4c1-t5 r1c3-t5">
+<p class="synopsis">if clobCol NOT IN (clob1, clob2, clob3) then...</p>
+</td>
+<td class="cellalignment907" headers="r4c1-t5 r1c4-t5">
+<p>No</p>
+</td>
+<td class="cellalignment907" headers="r4c1-t5 r1c5-t5">
+<p>Yes</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r5c1-t5" headers="r1c1-t5">
+<p><span class="bold">Comparison</span></p>
+</td>
+<td class="cellalignment907" headers="r5c1-t5 r1c2-t5">
+<p>SOME, ANY, ALL</p>
+</td>
+<td class="cellalignment907" headers="r5c1-t5 r1c3-t5">
+<p class="synopsis">if clobCol &lt; SOME (select clobCol2 from...) then...</p>
+</td>
+<td class="cellalignment907" headers="r5c1-t5 r1c4-t5">
+<p>No</p>
+</td>
+<td class="cellalignment907" headers="r5c1-t5 r1c5-t5">
+<p>N/A</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r6c1-t5" headers="r1c1-t5">
+<p><span class="bold">Comparison</span></p>
+</td>
+<td class="cellalignment907" headers="r6c1-t5 r1c2-t5">
+<p>BETWEEN</p>
+</td>
+<td class="cellalignment907" headers="r6c1-t5 r1c3-t5">
+<p class="synopsis">if clobCol BETWEEN clobCol2 and clobCol3 then...</p>
+</td>
+<td class="cellalignment907" headers="r6c1-t5 r1c4-t5">
+<p>No</p>
+</td>
+<td class="cellalignment907" headers="r6c1-t5 r1c5-t5">
+<p>Yes</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r7c1-t5" headers="r1c1-t5">
+<p><span class="bold">Comparison</span></p>
+</td>
+<td class="cellalignment907" headers="r7c1-t5 r1c2-t5">
+<p>LIKE [ESCAPE]</p>
+</td>
+<td class="cellalignment907" headers="r7c1-t5 r1c3-t5">
+<p class="synopsis">if clobCol LIKE '%pattern%' then...</p>
+</td>
+<td class="cellalignment907" headers="r7c1-t5 r1c4-t5">
+<p>Yes</p>
+</td>
+<td class="cellalignment907" headers="r7c1-t5 r1c5-t5">
+<p>Yes</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r8c1-t5" headers="r1c1-t5">
+<p><span class="bold">Comparison</span></p>
+</td>
+<td class="cellalignment907" headers="r8c1-t5 r1c2-t5">
+<p>IS [NOT] NULL</p>
+</td>
+<td class="cellalignment907" headers="r8c1-t5 r1c3-t5">
+<p class="synopsis">where clobCol IS NOT NULL</p>
+</td>
+<td class="cellalignment907" headers="r8c1-t5 r1c4-t5">
+<p>Yes</p>
+</td>
+<td class="cellalignment907" headers="r8c1-t5 r1c5-t5">
+<p>Yes</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r9c1-t5" headers="r1c1-t5">
+<p><span class="bold">Character Functions</span></p>
+</td>
+<td class="cellalignment907" headers="r9c1-t5 r1c2-t5">
+<p>INITCAP, NLS_INITCAP</p>
+</td>
+<td class="cellalignment907" headers="r9c1-t5 r1c3-t5">
+<p class="synopsis">select INITCAP(clobCol) from...</p>
+</td>
+<td class="cellalignment907" headers="r9c1-t5 r1c4-t5">
+<p>CNV</p>
+</td>
+<td class="cellalignment907" headers="r9c1-t5 r1c5-t5">
+<p>CNV</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r10c1-t5" headers="r1c1-t5">
+<p><span class="bold">Character Functions</span></p>
+</td>
+<td class="cellalignment907" headers="r10c1-t5 r1c2-t5">
+<p>LOWER, NLS_LOWER, UPPER, NLS_UPPER</p>
+</td>
+<td class="cellalignment907" headers="r10c1-t5 r1c3-t5">
+<p class="synopsis">...where LOWER(clobCol1) = LOWER(clobCol2)</p>
+</td>
+<td class="cellalignment907" headers="r10c1-t5 r1c4-t5">
+<p>Yes</p>
+</td>
+<td class="cellalignment907" headers="r10c1-t5 r1c5-t5">
+<p>Yes</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r11c1-t5" headers="r1c1-t5">
+<p><span class="bold">Character Functions</span></p>
+</td>
+<td class="cellalignment907" headers="r11c1-t5 r1c2-t5">
+<p>LPAD, RPAD</p>
+</td>
+<td class="cellalignment907" headers="r11c1-t5 r1c3-t5">
+<p class="synopsis">select RPAD(clobCol, 20, ' La') from...</p>
+</td>
+<td class="cellalignment907" headers="r11c1-t5 r1c4-t5">
+<p>Yes</p>
+</td>
+<td class="cellalignment907" headers="r11c1-t5 r1c5-t5">
+<p>Yes</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r12c1-t5" headers="r1c1-t5">
+<p><span class="bold">Character Functions</span></p>
+</td>
+<td class="cellalignment907" headers="r12c1-t5 r1c2-t5">
+<p>TRIM, LTRIM, RTRIM</p>
+</td>
+<td class="cellalignment907" headers="r12c1-t5 r1c3-t5">
+<p class="synopsis">...where RTRIM(LTRIM(clobCol,'ab'), 'xy') = 'cd'</p>
+</td>
+<td class="cellalignment907" headers="r12c1-t5 r1c4-t5">
+<p>Yes</p>
+</td>
+<td class="cellalignment907" headers="r12c1-t5 r1c5-t5">
+<p>Yes</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r13c1-t5" headers="r1c1-t5">
+<p><span class="bold">Character Functions</span></p>
+</td>
+<td class="cellalignment907" headers="r13c1-t5 r1c2-t5">
+<p>REPLACE</p>
+</td>
+<td class="cellalignment907" headers="r13c1-t5 r1c3-t5">
+<p class="synopsis">select REPLACE(clobCol, 'orig','new') from...</p>
+</td>
+<td class="cellalignment907" headers="r13c1-t5 r1c4-t5">
+<p>Yes</p>
+</td>
+<td class="cellalignment907" headers="r13c1-t5 r1c5-t5">
+<p>Yes</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r14c1-t5" headers="r1c1-t5">
+<p><span class="bold">Character Functions</span></p>
+</td>
+<td class="cellalignment907" headers="r14c1-t5 r1c2-t5">
+<p>SOUNDEX</p>
+</td>
+<td class="cellalignment907" headers="r14c1-t5 r1c3-t5">
+<p class="synopsis">...where SOUNDEX(clobCOl) = SOUNDEX('SMYTHE')</p>
+</td>
+<td class="cellalignment907" headers="r14c1-t5 r1c4-t5">
+<p>CNV</p>
+</td>
+<td class="cellalignment907" headers="r14c1-t5 r1c5-t5">
+<p>CNV</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r15c1-t5" headers="r1c1-t5">
+<p><span class="bold">Character Functions</span></p>
+</td>
+<td class="cellalignment907" headers="r15c1-t5 r1c2-t5">
+<p>SUBSTR</p>
+</td>
+<td class="cellalignment907" headers="r15c1-t5 r1c3-t5">
+<p class="synopsis">...where substr(clobCol, 1,4) = 'THIS'</p>
+</td>
+<td class="cellalignment907" headers="r15c1-t5 r1c4-t5">
+<p>Yes</p>
+</td>
+<td class="cellalignment907" headers="r15c1-t5 r1c5-t5">
+<p>Yes</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r16c1-t5" headers="r1c1-t5">
+<p><span class="bold">Character Functions</span></p>
+</td>
+<td class="cellalignment907" headers="r16c1-t5 r1c2-t5">
+<p>TRANSLATE</p>
+</td>
+<td class="cellalignment907" headers="r16c1-t5 r1c3-t5">
+<p class="synopsis">select TRANSLATE(clobCol, '123abc','NC') from...</p>
+</td>
+<td class="cellalignment907" headers="r16c1-t5 r1c4-t5">
+<p>CNV</p>
+</td>
+<td class="cellalignment907" headers="r16c1-t5 r1c5-t5">
+<p>CNV</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r17c1-t5" headers="r1c1-t5">
+<p><span class="bold">Character Functions</span></p>
+</td>
+<td class="cellalignment907" headers="r17c1-t5 r1c2-t5">
+<p>ASCII</p>
+</td>
+<td class="cellalignment907" headers="r17c1-t5 r1c3-t5">
+<p class="synopsis">select ASCII(clobCol) from...</p>
+</td>
+<td class="cellalignment907" headers="r17c1-t5 r1c4-t5">
+<p>CNV</p>
+</td>
+<td class="cellalignment907" headers="r17c1-t5 r1c5-t5">
+<p>CNV</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r18c1-t5" headers="r1c1-t5">
+<p><span class="bold">Character Functions</span></p>
+</td>
+<td class="cellalignment907" headers="r18c1-t5 r1c2-t5">
+<p>INSTR</p>
+</td>
+<td class="cellalignment907" headers="r18c1-t5 r1c3-t5">
+<p class="synopsis">...where instr(clobCol, 'book') = 11</p>
+</td>
+<td class="cellalignment907" headers="r18c1-t5 r1c4-t5">
+<p>Yes</p>
+</td>
+<td class="cellalignment907" headers="r18c1-t5 r1c5-t5">
+<p>Yes</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r19c1-t5" headers="r1c1-t5">
+<p><span class="bold">Character Functions</span></p>
+</td>
+<td class="cellalignment907" headers="r19c1-t5 r1c2-t5">
+<p>LENGTH</p>
+</td>
+<td class="cellalignment907" headers="r19c1-t5 r1c3-t5">
+<p class="synopsis">...where length(clobCol) != 7;</p>
+</td>
+<td class="cellalignment907" headers="r19c1-t5 r1c4-t5">
+<p>Yes</p>
+</td>
+<td class="cellalignment907" headers="r19c1-t5 r1c5-t5">
+<p>Yes</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r20c1-t5" headers="r1c1-t5">
+<p><span class="bold">Character Functions</span></p>
+</td>
+<td class="cellalignment907" headers="r20c1-t5 r1c2-t5">
+<p>NLSSORT</p>
+</td>
+<td class="cellalignment907" headers="r20c1-t5 r1c3-t5">
+<p class="synopsis">...where NLSSORT (clobCol,'NLS_SORT = German') &gt; NLSSORT ('S','NLS_SORT = German')</p>
+</td>
+<td class="cellalignment907" headers="r20c1-t5 r1c4-t5">
+<p>CNV</p>
+</td>
+<td class="cellalignment907" headers="r20c1-t5 r1c5-t5">
+<p>CNV</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r21c1-t5" headers="r1c1-t5">
+<p><span class="bold">Character Functions</span></p>
+</td>
+<td class="cellalignment907" headers="r21c1-t5 r1c2-t5">
+<p>INSTRB, SUBSTRB, LENGTHB</p>
+</td>
+<td class="cellalignment907" headers="r21c1-t5 r1c3-t5">
+<p>These functions are supported only for <code>CLOB</code>s that use single-byte character sets. (<code>LENGTHB</code> is supported for <code>BLOB</code>s and <code>CLOB</code>s.)</p>
+</td>
+<td class="cellalignment907" headers="r21c1-t5 r1c4-t5">
+<p>Yes</p>
+</td>
+<td class="cellalignment907" headers="r21c1-t5 r1c5-t5">
+<p>Yes</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r22c1-t5" headers="r1c1-t5">
+<p><span class="bold">Character Functions - Regular Expressions</span></p>
+</td>
+<td class="cellalignment907" headers="r22c1-t5 r1c2-t5">
+<p>REGEXP_LIKE</p>
+</td>
+<td class="cellalignment907" headers="r22c1-t5 r1c3-t5">
+<p>This function searches a character column for a pattern. Use this function in the <code>WHERE</code> clause of a query to return rows matching the regular expression you specify.</p>
+<p>See the <a class="olink SQLRF00501" href="../../server.112/e41084/conditions007.htm#SQLRF00501"><span class="italic">Oracle Database SQL Language Reference</span></a> for syntax details on SQL functions for regular expressions. See the <a class="olink ADFNS1003" href="../../appdev.112/e41502/adfns_regexp.htm#ADFNS1003"><span class="italic">Oracle Database Advanced Application Developer's Guide</span></a> for information on using regular expressions with the database.</p>
+</td>
+<td class="cellalignment907" headers="r22c1-t5 r1c4-t5">
+<p>Yes</p>
+</td>
+<td class="cellalignment907" headers="r22c1-t5 r1c5-t5">
+<p>Yes</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r23c1-t5" headers="r1c1-t5">
+<p><span class="bold">Character Functions - Regular Expressions</span></p>
+</td>
+<td class="cellalignment907" headers="r23c1-t5 r1c2-t5">
+<p>REGEXP_REPLACE</p>
+</td>
+<td class="cellalignment907" headers="r23c1-t5 r1c3-t5">
+<p>This function searches for a pattern in a character column and replaces each occurrence of that pattern with the pattern you specify.</p>
+</td>
+<td class="cellalignment907" headers="r23c1-t5 r1c4-t5">
+<p>Yes</p>
+</td>
+<td class="cellalignment907" headers="r23c1-t5 r1c5-t5">
+<p>Yes</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r24c1-t5" headers="r1c1-t5">
+<p><span class="bold">Character Functions - Regular Expressions</span></p>
+</td>
+<td class="cellalignment907" headers="r24c1-t5 r1c2-t5">
+<p>REGEXP_INSTR</p>
+</td>
+<td class="cellalignment907" headers="r24c1-t5 r1c3-t5">
+<p>This function searches a string for a given occurrence of a regular expression pattern. You specify which occurrence you want to find and the start position to search from. This function returns an integer indicating the position in the string where the match is found.</p>
+</td>
+<td class="cellalignment907" headers="r24c1-t5 r1c4-t5">
+<p>Yes</p>
+</td>
+<td class="cellalignment907" headers="r24c1-t5 r1c5-t5">
+<p>Yes</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r25c1-t5" headers="r1c1-t5">
+<p><span class="bold">Character Functions - Regular Expressions</span></p>
+</td>
+<td class="cellalignment907" headers="r25c1-t5 r1c2-t5">
+<p>REGEXP_SUBSTR</p>
+</td>
+<td class="cellalignment907" headers="r25c1-t5 r1c3-t5">
+<p>This function returns the actual substring matching the regular expression pattern you specify.</p>
+</td>
+<td class="cellalignment907" headers="r25c1-t5 r1c4-t5">
+<p>Yes</p>
+</td>
+<td class="cellalignment907" headers="r25c1-t5 r1c5-t5">
+<p>Yes</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r26c1-t5" headers="r1c1-t5">
+<p><span class="bold">Conversion</span></p>
+</td>
+<td class="cellalignment907" headers="r26c1-t5 r1c2-t5">
+<p>CHARTOROWID</p>
+</td>
+<td class="cellalignment907" headers="r26c1-t5 r1c3-t5">
+<p class="synopsis">CHARTOROWID(clobCol)</p>
+</td>
+<td class="cellalignment907" headers="r26c1-t5 r1c4-t5">
+<p>CNV</p>
+</td>
+<td class="cellalignment907" headers="r26c1-t5 r1c5-t5">
+<p>CNV</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r27c1-t5" headers="r1c1-t5">
+<p><span class="bold">Conversion</span></p>
+</td>
+<td class="cellalignment907" headers="r27c1-t5 r1c2-t5">
+<p>COMPOSE</p>
+</td>
+<td class="cellalignment907" headers="r27c1-t5 r1c3-t5">
+<p class="synopsis">COMPOSE('string')</p>
+<p>Returns a Unicode string given a string in the data type CHAR, VARCHAR2,CLOB, NCHAR, NVARCHAR2, NCLOB. An o code point qualified by an umlaut code point is returned as the o-umlaut code point.</p>
+</td>
+<td class="cellalignment907" headers="r27c1-t5 r1c4-t5">
+<p>CNV</p>
+</td>
+<td class="cellalignment907" headers="r27c1-t5 r1c5-t5">
+<p>CNV</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r28c1-t5" headers="r1c1-t5">
+<p><span class="bold">Conversion</span></p>
+</td>
+<td class="cellalignment907" headers="r28c1-t5 r1c2-t5">
+<p>DECOMPOSE</p>
+</td>
+<td class="cellalignment907" headers="r28c1-t5 r1c3-t5">
+<p class="synopsis">DECOMPOSE('str' [CANONICAL | COMPATIBILITY] )</p>
+<p>Valid for Unicode character arguments. Returns a Unicode string after decomposition in the same character set as the input. o-umlaut code point is returned as the o code point followed by the umlaut code point.</p>
+</td>
+<td class="cellalignment907" headers="r28c1-t5 r1c4-t5">
+<p>CNV</p>
+</td>
+<td class="cellalignment907" headers="r28c1-t5 r1c5-t5">
+<p>CNV</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r29c1-t5" headers="r1c1-t5">
+<p><span class="bold">Conversion</span></p>
+</td>
+<td class="cellalignment907" headers="r29c1-t5 r1c2-t5">
+<p>HEXTORAW</p>
+</td>
+<td class="cellalignment907" headers="r29c1-t5 r1c3-t5">
+<p class="synopsis">HEXTORAW(CLOB)</p>
+</td>
+<td class="cellalignment907" headers="r29c1-t5 r1c4-t5">
+<p>No</p>
+</td>
+<td class="cellalignment907" headers="r29c1-t5 r1c5-t5">
+<p>CNV</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r30c1-t5" headers="r1c1-t5">
+<p><span class="bold">Conversion</span></p>
+</td>
+<td class="cellalignment907" headers="r30c1-t5 r1c2-t5">
+<p>CONVERT</p>
+</td>
+<td class="cellalignment907" headers="r30c1-t5 r1c3-t5">
+<p class="synopsis">select CONVERT(clobCol,'WE8DEC','WE8HP') from...</p>
+</td>
+<td class="cellalignment907" headers="r30c1-t5 r1c4-t5">
+<p>Yes</p>
+</td>
+<td class="cellalignment907" headers="r30c1-t5 r1c5-t5">
+<p>CNV</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r31c1-t5" headers="r1c1-t5">
+<p><span class="bold">Conversion</span></p>
+</td>
+<td class="cellalignment907" headers="r31c1-t5 r1c2-t5">
+<p>TO_DATE</p>
+</td>
+<td class="cellalignment907" headers="r31c1-t5 r1c3-t5">
+<p class="synopsis">TO_DATE(clobCol)</p>
+</td>
+<td class="cellalignment907" headers="r31c1-t5 r1c4-t5">
+<p>CNV</p>
+</td>
+<td class="cellalignment907" headers="r31c1-t5 r1c5-t5">
+<p>CNV</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r32c1-t5" headers="r1c1-t5">
+<p><span class="bold">Conversion</span></p>
+</td>
+<td class="cellalignment907" headers="r32c1-t5 r1c2-t5">
+<p>TO_NUMBER</p>
+</td>
+<td class="cellalignment907" headers="r32c1-t5 r1c3-t5">
+<p class="synopsis">TO_NUMBER(clobCol)</p>
+</td>
+<td class="cellalignment907" headers="r32c1-t5 r1c4-t5">
+<p>CNV</p>
+</td>
+<td class="cellalignment907" headers="r32c1-t5 r1c5-t5">
+<p>CNV</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r33c1-t5" headers="r1c1-t5">
+<p><span class="bold">Conversion</span></p>
+</td>
+<td class="cellalignment907" headers="r33c1-t5 r1c2-t5">
+<p>TO_TIMESTAMP</p>
+</td>
+<td class="cellalignment907" headers="r33c1-t5 r1c3-t5">
+<p class="synopsis">TO_TIMESTAMP(clobCol)</p>
+</td>
+<td class="cellalignment907" headers="r33c1-t5 r1c4-t5">
+<p>No</p>
+</td>
+<td class="cellalignment907" headers="r33c1-t5 r1c5-t5">
+<p>CNV</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r34c1-t5" headers="r1c1-t5">
+<p><span class="bold">Conversion</span></p>
+</td>
+<td class="cellalignment907" headers="r34c1-t5 r1c2-t5">
+<p>TO_MULTI_BYTE</p>
+<p>TO_SINGLE_BYTE</p>
+</td>
+<td class="cellalignment907" headers="r34c1-t5 r1c3-t5">
+<p class="synopsis">TO_MULTI_BYTE(clobCol)</p>
+<p class="synopsis">TO_SINGLE_BYTE(clobCol)</p>
+</td>
+<td class="cellalignment907" headers="r34c1-t5 r1c4-t5">
+<p>CNV</p>
+</td>
+<td class="cellalignment907" headers="r34c1-t5 r1c5-t5">
+<p>CNV</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r35c1-t5" headers="r1c1-t5">
+<p><span class="bold">Conversion</span></p>
+</td>
+<td class="cellalignment907" headers="r35c1-t5 r1c2-t5">
+<p>TO_CHAR</p>
+</td>
+<td class="cellalignment907" headers="r35c1-t5 r1c3-t5">
+<p class="synopsis">TO_CHAR(clobCol)</p>
+</td>
+<td class="cellalignment907" headers="r35c1-t5 r1c4-t5">
+<p>Yes</p>
+</td>
+<td class="cellalignment907" headers="r35c1-t5 r1c5-t5">
+<p>Yes</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r36c1-t5" headers="r1c1-t5">
+<p><span class="bold">Conversion</span></p>
+</td>
+<td class="cellalignment907" headers="r36c1-t5 r1c2-t5">
+<p>TO_NCHAR</p>
+</td>
+<td class="cellalignment907" headers="r36c1-t5 r1c3-t5">
+<p class="synopsis">TO_NCHAR(clobCol)</p>
+</td>
+<td class="cellalignment907" headers="r36c1-t5 r1c4-t5">
+<p>Yes</p>
+</td>
+<td class="cellalignment907" headers="r36c1-t5 r1c5-t5">
+<p>Yes</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r37c1-t5" headers="r1c1-t5">
+<p><span class="bold">Conversion</span></p>
+</td>
+<td class="cellalignment907" headers="r37c1-t5 r1c2-t5">
+<p>TO_LOB</p>
+</td>
+<td class="cellalignment907" headers="r37c1-t5 r1c3-t5">
+<p class="synopsis">INSERT INTO... SELECT TO_LOB(longCol)...</p>
+<p>Note that <code>TO_LOB</code> can only be used to create or insert into a table with LOB columns as <code>SELECT</code> <code>FROM</code> a table with a <code>LONG</code> column.</p>
+</td>
+<td class="cellalignment907" headers="r37c1-t5 r1c4-t5">
+<p>N/A</p>
+</td>
+<td class="cellalignment907" headers="r37c1-t5 r1c5-t5">
+<p>N/A</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r38c1-t5" headers="r1c1-t5">
+<p><span class="bold">Conversion</span></p>
+</td>
+<td class="cellalignment907" headers="r38c1-t5 r1c2-t5">
+<p>TO_CLOB</p>
+</td>
+<td class="cellalignment907" headers="r38c1-t5 r1c3-t5">
+<p class="synopsis">TO_CLOB(varchar2Col)</p>
+</td>
+<td class="cellalignment907" headers="r38c1-t5 r1c4-t5">
+<p>Yes</p>
+</td>
+<td class="cellalignment907" headers="r38c1-t5 r1c5-t5">
+<p>Yes</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r39c1-t5" headers="r1c1-t5">
+<p><span class="bold">Conversion</span></p>
+</td>
+<td class="cellalignment907" headers="r39c1-t5 r1c2-t5">
+<p>TO_NCLOB</p>
+</td>
+<td class="cellalignment907" headers="r39c1-t5 r1c3-t5">
+<p class="synopsis">TO_NCLOB(varchar2Clob)</p>
+</td>
+<td class="cellalignment907" headers="r39c1-t5 r1c4-t5">
+<p>Yes</p>
+</td>
+<td class="cellalignment907" headers="r39c1-t5 r1c5-t5">
+<p>Yes</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r40c1-t5" headers="r1c1-t5">
+<p><span class="bold">Aggregate Functions</span></p>
+</td>
+<td class="cellalignment907" headers="r40c1-t5 r1c2-t5">
+<p>COUNT</p>
+</td>
+<td class="cellalignment907" headers="r40c1-t5 r1c3-t5">
+<p class="synopsis">select count(clobCol) from...</p>
+</td>
+<td class="cellalignment907" headers="r40c1-t5 r1c4-t5">
+<p>No</p>
+</td>
+<td class="cellalignment907" headers="r40c1-t5 r1c5-t5">
+<p>N/A</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r41c1-t5" headers="r1c1-t5">
+<p><span class="bold">Aggregate Functions</span></p>
+</td>
+<td class="cellalignment907" headers="r41c1-t5 r1c2-t5">
+<p>MAX, MIN</p>
+</td>
+<td class="cellalignment907" headers="r41c1-t5 r1c3-t5">
+<p class="synopsis">select MAX(clobCol) from...</p>
+</td>
+<td class="cellalignment907" headers="r41c1-t5 r1c4-t5">
+<p>No</p>
+</td>
+<td class="cellalignment907" headers="r41c1-t5 r1c5-t5">
+<p>N/A</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r42c1-t5" headers="r1c1-t5">
+<p><span class="bold">Aggregate Functions</span></p>
+</td>
+<td class="cellalignment907" headers="r42c1-t5 r1c2-t5">
+<p>GROUPING</p>
+</td>
+<td class="cellalignment907" headers="r42c1-t5 r1c3-t5">
+<p class="synopsis">select grouping(clobCol) from... group by cube (clobCol);</p>
+</td>
+<td class="cellalignment907" headers="r42c1-t5 r1c4-t5">
+<p>No</p>
+</td>
+<td class="cellalignment907" headers="r42c1-t5 r1c5-t5">
+<p>N/A</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r43c1-t5" headers="r1c1-t5">
+<p><span class="bold">Other Functions</span></p>
+</td>
+<td class="cellalignment907" headers="r43c1-t5 r1c2-t5">
+<p>GREATEST, LEAST</p>
+</td>
+<td class="cellalignment907" headers="r43c1-t5 r1c3-t5">
+<p class="synopsis">select GREATEST (clobCol1, clobCol2) from...</p>
+</td>
+<td class="cellalignment907" headers="r43c1-t5 r1c4-t5">
+<p>No</p>
+</td>
+<td class="cellalignment907" headers="r43c1-t5 r1c5-t5">
+<p>CNV</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r44c1-t5" headers="r1c1-t5">
+<p><span class="bold">Other Functions</span></p>
+</td>
+<td class="cellalignment907" headers="r44c1-t5 r1c2-t5">
+<p>DECODE</p>
+</td>
+<td class="cellalignment907" headers="r44c1-t5 r1c3-t5">
+<p class="synopsis">select DECODE(clobCol, condition1, value1, defaultValue) from...</p>
+</td>
+<td class="cellalignment907" headers="r44c1-t5 r1c4-t5">
+<p>CNV</p>
+</td>
+<td class="cellalignment907" headers="r44c1-t5 r1c5-t5">
+<p>CNV</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r45c1-t5" headers="r1c1-t5">
+<p><span class="bold">Other Functions</span></p>
+</td>
+<td class="cellalignment907" headers="r45c1-t5 r1c2-t5">
+<p>NVL</p>
+</td>
+<td class="cellalignment907" headers="r45c1-t5 r1c3-t5">
+<p class="synopsis">select NVL(clobCol,'NULL') from...</p>
+</td>
+<td class="cellalignment907" headers="r45c1-t5 r1c4-t5">
+<p>Yes</p>
+</td>
+<td class="cellalignment907" headers="r45c1-t5 r1c5-t5">
+<p>Yes</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r46c1-t5" headers="r1c1-t5">
+<p><span class="bold">Other Functions</span></p>
+</td>
+<td class="cellalignment907" headers="r46c1-t5 r1c2-t5">
+<p>DUMP</p>
+</td>
+<td class="cellalignment907" headers="r46c1-t5 r1c3-t5">
+<p class="synopsis">select DUMP(clobCol) from...</p>
+</td>
+<td class="cellalignment907" headers="r46c1-t5 r1c4-t5">
+<p>No</p>
+</td>
+<td class="cellalignment907" headers="r46c1-t5 r1c5-t5">
+<p>N/A</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r47c1-t5" headers="r1c1-t5">
+<p><span class="bold">Other Functions</span></p>
+</td>
+<td class="cellalignment907" headers="r47c1-t5 r1c2-t5">
+<p>VSIZE</p>
+</td>
+<td class="cellalignment907" headers="r47c1-t5 r1c3-t5">
+<p class="synopsis">select VSIZE(clobCol) from...</p>
+</td>
+<td class="cellalignment907" headers="r47c1-t5 r1c4-t5">
+<p>No</p>
+</td>
+<td class="cellalignment907" headers="r47c1-t5 r1c5-t5">
+<p>N/A</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r48c1-t5" headers="r1c1-t5">
+<p><span class="bold">Unicode</span></p>
+</td>
+<td class="cellalignment907" headers="r48c1-t5 r1c2-t5">
+<p>INSTR2, SUBSTR2, LENGTH2, LIKE2</p>
+</td>
+<td class="cellalignment907" headers="r48c1-t5 r1c3-t5">
+<p>These functions use UCS2 code point semantics.</p>
+</td>
+<td class="cellalignment907" headers="r48c1-t5 r1c4-t5">
+<p>No</p>
+</td>
+<td class="cellalignment907" headers="r48c1-t5 r1c5-t5">
+<p>CNV</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r49c1-t5" headers="r1c1-t5">
+<p><span class="bold">Unicode</span></p>
+</td>
+<td class="cellalignment907" headers="r49c1-t5 r1c2-t5">
+<p>INSTR4, SUBSTR4, LENGTH4, LIKE4</p>
+</td>
+<td class="cellalignment907" headers="r49c1-t5 r1c3-t5">
+<p>These functions use UCS4 code point semantics.</p>
+</td>
+<td class="cellalignment907" headers="r49c1-t5 r1c4-t5">
+<p>No</p>
+</td>
+<td class="cellalignment907" headers="r49c1-t5 r1c5-t5">
+<p>CNV</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r50c1-t5" headers="r1c1-t5">
+<p><span class="bold">Unicode</span></p>
+</td>
+<td class="cellalignment907" headers="r50c1-t5 r1c2-t5">
+<p>INSTRC, SUBSTRC, LENGTHC, LIKEC</p>
+</td>
+<td class="cellalignment907" headers="r50c1-t5 r1c3-t5">
+<p>These functions use complete character semantics.</p>
+</td>
+<td class="cellalignment907" headers="r50c1-t5 r1c4-t5">
+<p>No</p>
+</td>
+<td class="cellalignment907" headers="r50c1-t5 r1c5-t5">
+<p>CNV</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblhruleformalwide" -->
+<div id="ADLOB45586" class="sect2"><a id="sthref857"></a>
+<h3 class="sect2"><a id="sthref858"></a>UNICODE Support</h3>
+<p>Variations on the <code>INSTR</code>, <code>SUBSTR</code>, <code>LENGTH</code>, and <code>LIKE</code> functions are provided for Unicode support. (These variations are indicated as "Unicode" in the "Category" column of <a href="#g1016221">Table 16-1</a>.)</p>
+<div class="infoboxnotealso">
+<p class="notep1"><span class="bold">See Also</span>:</p>
+<ul>
+<li>
+<p><a class="olink ARPLS" href="../e40758/toc.htm"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a></p>
+</li>
+<li>
+<p><a class="olink ADFNS" href="../e41502/toc.htm"><span class="italic">Oracle Database Advanced Application Developer's Guide</span></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF" href="../../server.112/e41084/toc.htm"><span class="italic">Oracle Database SQL Language Reference</span></a></p>
+</li>
+<li>
+<p><a class="olink NLSPG" href="../../server.112/e10729/toc.htm"><span class="italic">Oracle Database Globalization Support Guide</span></a></p>
+</li>
+</ul>
+<p>for a detailed description on the usage of UNICODE functions.</p>
+</div>
+</div>
+<!-- class="sect2" -->
+<div id="ADLOB45587" class="sect2"><a id="sthref859"></a>
+<h3 class="sect2"><a id="sthref860"></a>Codepoint Semantics</h3>
+<p>Codepoint semantics of the <code>INSTR</code>, <code>SUBSTR</code>, <code>LENGTH</code>, and <code>LIKE</code> functions, described in <a href="#g1016221">Table 16-1</a>, differ depending on the data type of the argument passed to the function. These functions use different codepoint semantics depending on whether the argument is a <code>VARCHAR2</code> or a <code>CLOB</code> type as follows:</p>
+<ul>
+<li>
+<p>When the argument is a <code>CLOB</code>, UCS2 codepoint semantics are used for all character sets.</p>
+</li>
+<li>
+<p>When the argument is a character type, such as <code>VARCHAR2</code>, the default codepoint semantics are used for the given character set:</p>
+<ul>
+<li>
+<p>UCS2 codepoint semantics are used for AL16UTF16 and UTF8 character sets.</p>
+</li>
+<li>
+<p>UCS4 codepoint semantics are used for all other character sets, such as AL32UTF8.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>If you are storing character data in a <code>CLOB</code> or <code>NCLOB</code>, then note that the amount and offset parameters for any APIs that read or write data to the <code>CLOB</code> or <code>NCLOB</code> are specified in UCS2 codepoints. In some character sets, a full character consists one or more UCS2 codepoints called a surrogate pair. In this scenario, you must ensure that the amount or offset you specify does not cut into a full character. This avoids reading or writing a partial character.</p>
+</li>
+<li>
+<p>Starting from 10<span class="italic">g</span>, Oracle Database helps to detect half surrogate pair on read/write boundaries in such scenarios. In the case of read, the offset and amount is adjusted accordingly to avoid returning a half character, in which case the amount returned could be less than what is asked for. In the case of write, an error is raised to prevent from corrupting the existing data caused by overwriting a partial character in the destination <code>CLOB</code> or <code>NCLOB</code>.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<div id="ADLOB45588" class="sect2"><a id="sthref861"></a>
+<h3 class="sect2">Return Values <a id="sthref862"></a><a id="sthref863"></a>for SQL Semantics on LOBs</h3>
+<p>The return type of a function or operator that takes a LOB or <code>VARCHAR2</code> is the same as the data type of the argument passed to the function or operator.</p>
+<p>Functions that take more than one argument, such as <code>CONCAT</code>, return a LOB data type if one or more arguments is a LOB. For example, <code>CONCAT(CLOB, VARCHAR2)</code> returns a <code>CLOB</code>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SQLRF" href="../../server.112/e41084/toc.htm"><span class="italic">Oracle Database SQL Language Reference</span></a> for details on the CONCAT function and the concatenation operator (||).</div>
+<p>A LOB instance is always accessed and manipulated through a LOB locator. This is also true for return values: SQL functions and operators return a LOB locator when the return value is a LOB instance.</p>
+<p>Any LOB instance returned by a <a id="sthref864"></a><a id="sthref865"></a>SQL function is a temporary LOB instance. LOB instances in tables (persistent LOBs) are not modified by SQL functions, even when the function is used in the <code>SELECT</code> list of a query.</p>
+</div>
+<!-- class="sect2" -->
+<div id="ADLOB45589" class="sect2"><a id="sthref866"></a>
+<h3 class="sect2">LENGTH <a id="sthref867"></a><a id="sthref868"></a>Return Value for LOBs</h3>
+<p>The return value of the <code>LENGTH</code> function differs depending on whether the argument passed is a LOB or a character string:</p>
+<ul>
+<li>
+<p>If the input is a character string of length zero, then <code>LENGTH</code> returns <code>NULL</code>.</p>
+</li>
+<li>
+<p>For a <code>CLOB</code> of length zero, or an empty locator such as that returned by <code>EMPTY_CLOB()</code>, the <code>LENGTH</code> and <code>DBMS_LOB.GETLENGTH</code> functions return <code>FALSE</code>.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1012806"></a>
+<div id="ADLOB45590" class="sect1">
+<h2 class="sect1">Implicit Conversion of LOB Data Types in SQL</h2>
+<p>Some LOB data types support implicit conversion and can be used in operations such as cross-type assignment and parameter passing. These conversions are processed at the SQL layer and can be performed in all client interfaces that use LOB types.</p>
+<a id="i1012373"></a>
+<div id="ADLOB45591" class="sect2">
+<h3 class="sect2">Implicit Conversion Between CLOB and NCLOB Data Types in SQL</h3>
+<p>The database enables you to perform operations such as cross-type assignment and cross-type parameter passing between <code>CLOB</code> and <code>NCLOB</code> data types. The database performs implicit conversions between these types when necessary to preserve properties such as character set formatting.</p>
+<p>Note that, when implicit conversions occur, each character in the source LOB is changed to the character set of the destination LOB, if needed. In this situation, some degradation of performance may occur if the data size is large. When the character set of the destination and the source are the same, there is no degradation of performance.</p>
+<p>After an implicit conversion between <code>CLOB</code> and <code>NCLOB</code> types, the destination LOB is implicitly created as a temporary LOB. This new temporary LOB is independent from the source LOB. If the implicit conversion occurs as part of a define operation in a <code>SELECT</code> statement, then any modifications to the destination LOB do not affect the persistent LOB in the table that the LOB was selected from as shown in the following example:</p>
+<pre>
+SQL&gt; -- check lob length before update 
+SQL&gt; select dbms_lob.getlength(ad_sourcetext) from Print_media 
+  2       where product_id=3106 and ad_id = 13001; 
+
+DBMS_LOB.GETLENGTH(AD_SOURCETEXT) 
+--------------------------------- 
+         205 
+
+SQL&gt; 
+SQL&gt; declare 
+  2   clob1 clob; 
+  3   amt number:=10; 
+  4  BEGIN 
+  5    -- select a clob column into a clob, no implicit convesion 
+  6    SELECT ad_sourcetext INTO clob1 FROM Print_media 
+  7      WHERE product_id=3106 and ad_id=13001 FOR UPDATE; 
+  8 
+  9    dbms_lob.trim(clob1, amt); -- Trim the selected lob to 10 bytes 
+ 10  END; 
+ 11  / 
+
+PL/SQL procedure successfully completed. 
+
+SQL&gt; -- Modification is performed on clob1 which points to the 
+SQL&gt; -- clob column in the table 
+SQL&gt; select dbms_lob.getlength(ad_sourcetext) from Print_media 
+  2       where product_id=3106 and ad_id = 13001; 
+
+DBMS_LOB.GETLENGTH(AD_SOURCETEXT) 
+--------------------------------- 
+          10 
+
+SQL&gt; 
+SQL&gt; rollback; 
+
+Rollback complete. 
+
+SQL&gt; -- check lob length before update 
+SQL&gt; select dbms_lob.getlength(ad_sourcetext) from Print_media 
+  2       where product_id=3106 and ad_id = 13001; 
+
+DBMS_LOB.GETLENGTH(AD_SOURCETEXT) 
+--------------------------------- 
+         205 
+
+SQL&gt; 
+SQL&gt; declare 
+  2   nclob1 nclob; 
+  3   amt number:=10; 
+  4  BEGIN 
+  5 
+  6    -- select a clob column into a nclob, implicit conversion occurs 
+  7    SELECT ad_sourcetext INTO nclob1 FROM Print_media 
+  8      WHERE product_id=3106 and ad_id=13001 FOR UPDATE; 
+  9 
+ 10    dbms_lob.trim(nclob1, amt); -- Trim the selected lob to 10 bytes 
+ 11  END; 
+ 12  / 
+
+PL/SQL procedure successfully completed. 
+
+SQL&gt; -- Modification to nclob1 does not affect the clob in the table, 
+SQL&gt; -- because nclob1 is a independent temporary LOB 
+
+SQL&gt; select dbms_lob.getlength(ad_sourcetext) from Print_media 
+  2       where product_id=3106 and ad_id = 13001; 
+
+DBMS_LOB.GETLENGTH(AD_SOURCETEXT) 
+--------------------------------- 
+         205 
+  
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="adlob_plsql_semantics.htm#i1006148">"Implicit Conversions Between CLOB and VARCHAR2"</a> for information on PL/SQL semantics support for implicit conversions between <code>CLOB</code> and <code>VARCHAR2</code> types.</p>
+</li>
+<li>
+<p><a href="adlob_tables.htm#i1006286">"Implicit Character Set Conversions with LOBs"</a> for more information on implicit character set conversions when loading LOBs from <code>BILE</code>s.</p>
+</li>
+<li>
+<p><a class="olink SQLRF00214" href="../../server.112/e41084/sql_elements002.htm#SQLRF00214"><span class="italic">Oracle Database SQL Language Reference</span></a> for details on implicit conversions supported for all data types.</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1010111"></a>
+<div id="ADLOB45592" class="sect1">
+<h2 class="sect1"><a id="sthref869"></a><a id="sthref870"></a>Unsupported Use of LOBs in SQL</h2>
+<p><a href="#g1016525">Table 16-2</a> lists SQL operations that are not supported on LOB columns.</p>
+<div id="ADLOB45593" class="tblhruleformalwide">
+<p class="titleintable"><a id="sthref871"></a><a id="g1016525"></a>Table 16-2 Unsupported Usage of LOBs in SQL</p>
+<table class="cellalignment910" title="Unsupported Usage of LOBs in SQL" summary="This table is described in the preceding text" dir="ltr">
+<thead>
+<tr class="cellalignment899">
+<th class="cellalignment906" id="r1c1-t9">SQL Operations Not Supported</th>
+<th class="cellalignment906" id="r1c2-t9">Example of unsupported usage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r2c1-t9" headers="r1c1-t9">
+<p>SELECT DISTINCT</p>
+</td>
+<td class="cellalignment907" headers="r2c1-t9 r1c2-t9">
+<p class="synopsis">SELECT DISTINCT clobCol from...</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r3c1-t9" headers="r1c1-t9">
+<p>SELECT clause</p>
+<p>ORDER BY</p>
+</td>
+<td class="cellalignment907" headers="r3c1-t9 r1c2-t9">
+<p class="synopsis">SELECT... ORDER BY clobCol</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r4c1-t9" headers="r1c1-t9">
+<p>SELECT clause</p>
+<p>GROUP BY</p>
+</td>
+<td class="cellalignment907" headers="r4c1-t9 r1c2-t9">
+<p class="synopsis">SELECT avg(num) FROM...</p>
+<p class="synopsis">GROUP BY clobCol</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r5c1-t9" headers="r1c1-t9">
+<p>UNION, INTERSECT, MINUS</p>
+<p>(Note that UNION ALL works for LOBs.)</p>
+</td>
+<td class="cellalignment907" headers="r5c1-t9 r1c2-t9">
+<p class="synopsis">SELECT clobCol1 from tab1 UNION SELECT clobCol2 from tab2;</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r6c1-t9" headers="r1c1-t9">
+<p>Join queries</p>
+</td>
+<td class="cellalignment907" headers="r6c1-t9 r1c2-t9">
+<p class="synopsis">SELECT... FROM... WHERE tab1.clobCol = tab2.clobCol</p>
+</td>
+</tr>
+<tr class="cellalignment899">
+<td class="cellalignment907" id="r7c1-t9" headers="r1c1-t9">
+<p>Index columns</p>
+</td>
+<td class="cellalignment907" headers="r7c1-t9 r1c2-t9">
+<p class="synopsis">CREATE INDEX clobIndx ON tab(clobCol)...</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblhruleformalwide" --></div>
+<!-- class="sect1" -->
+<a id="i1006781"></a>
+<div id="ADLOB45594" class="sect1">
+<h2 class="sect1"><a id="sthref872"></a>VARCHAR2 and RAW Semantics for LOBs</h2>
+<p>The following semantics, used with <code>VARCHAR2</code> and <code>RAW</code> data types, also apply to LOBs:</p>
+<ul>
+<li>
+<p>Defining a <code>CHAR</code> buffer on a <code>CLOB</code></p>
+<p>You can define a <code>VARCHAR2</code> for a <code>CLOB</code> and <code>RAW</code> for a <code>BLOB</code> column. You can also define <code>CLOB</code> and <code>BLOB</code> types for <code>VARCHAR2</code> and <code>RAW</code> columns.</p>
+</li>
+<li>
+<p>Selecting a <code>CLOB</code> column into a <code>CHAR</code> buffer or <code>VARCHAR2</code></p>
+<p>If a <code>CLOB</code> column is selected into a <code>VARCHAR2</code> variable, then data stored in the <code>CLOB</code> column is retrieved and put into the <code>CHAR</code> buffer. If the buffer is not large enough to contain all the <code>CLOB</code> data, then a truncation error is thrown and no data is written to the buffer. After successful completion of the <code>SELECT</code> operation, the <code>VARCHAR2</code> variable holds as a regular character buffer.</p>
+<p>In contrast, when a <code>CLOB</code> column is selected into a local <code>CLOB</code> variable, the <code>CLOB</code> locator is fetched.</p>
+</li>
+<li>
+<p>Selecting a <code>BLOB</code> column into a <code>RAW</code></p>
+<p>When a <code>BLOB</code> column is selected into a <code>RAW</code> variable, the <code>BLOB</code> data is copied into the <code>RAW</code> buffer. If the size of the <code>BLOB</code> exceeds the size of the buffer, then a truncation error is thrown and no data is written to the buffer.</p>
+</li>
+</ul>
+<a id="i1012891"></a>
+<div id="ADLOB45595" class="sect2">
+<h3 class="sect2">LOBs Returned from SQL Functions</h3>
+<p>When a LOB is returned from a SQL function, the result returned is a temporary LOB. Your application should view the temporary LOB as local storage for the data returned from the <code>SELECT</code> operation as follows:</p>
+<ul>
+<li>
+<p>In PL/SQL, the temporary LOB has the same lifetime (duration) as other local PL/SQL program variables. It can be passed to subsequent SQL or PL/SQL <code>VARCHAR2</code> functions or queries as a PL/SQL local variable. The temporary LOB goes out of scope at the end of the program block at which time, the LOB is freed. These are the same semantics as those for PL/SQL <code>VARCHAR2</code> variables. At any time, nonetheless, you can use a <code>DBMS_LOB.FREETEMPORARY()</code> call to release the resources taken by the local temporary LOBs.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If the SQL statement returns a LOB or a LOB is an <code>OUT</code> parameter for a PL/SQL function or procedure, you must test if it is a temporary LOB, and if it is, then free it after you are done with it.</div>
+</li>
+<li>
+<p>In OCI, the temporary LOBs returned from SQL queries are always in session duration, unless a user-defined duration is present, in which case, the temporary LOBs are in the user-defined duration.</p>
+<div class="infoboxnotewarn">
+<p class="notep1">Caution:</p>
+<p class="warnsp"><a id="i1006817"></a>Ensure that your temporary tablespace is large enough to store all temporary LOB results returned from queries in your program(s).</p>
+</div>
+</li>
+</ul>
+<p>The following example illustrates selecting out a <code>CLOB</code> column into a <code>VARCHAR2</code> and returning the result as a <code>CHAR</code> buffer of declared size:</p>
+<pre>
+DECLARE
+  vc1 VARCHAR2(32000);
+  lb1 CLOB;
+  lb2 CLOB;
+BEGIN
+  SELECT clobCol1 INTO vc1 FROM tab WHERE colID=1;
+  -- lb1 is a temporary LOB
+  SELECT clobCol2 || clobCol3 INTO lb1 FROM tab WHERE colID=2;
+
+  lb2 := vc1|| lb1;
+  -- lb2 is a still temporary LOB, so the persistent data in the database 
+  -- is not modified. An update is necessary to modify the table data.
+  UPDATE tab SET clobCol1 = lb2 WHERE colID = 1;
+  
+DBMS_LOB.FREETEMPORARY(lb2); -- Free up the space taken by lb2
+</pre>
+<pre>
+&lt;... some more queries ...&gt;
+</pre>
+<pre>
+END; -- at the end of the block, lb1 is automatically freed 
+</pre></div>
+<!-- class="sect2" -->
+<div id="ADLOB45596" class="sect2"><a id="sthref873"></a>
+<h3 class="sect2">IS NULL and IS NOT NULL Usage with <a id="sthref874"></a><a id="sthref875"></a>VARCHAR2s and CLOBs</h3>
+<p>You can use the <code>IS NULL</code> and <code>IS NOT NULL</code> operators with LOB columns. When used with LOBs, these operators determine whether a LOB locator is stored in the row.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+In the SQL 92 standard, a <a id="sthref876"></a>character string of length zero is distinct from a <code>NULL</code> string. The return value of IS <code>NULL</code> differs when you pass a LOB compared to a <code>VARCHAR2</code>:
+<ul>
+<li>
+<p>When you pass an initialized LOB of length zero to the <code>IS NULL</code> function, zero (<code>FALSE</code>) is returned. These semantics are compliant with the SQL standard.</p>
+</li>
+<li>
+<p>When you pass a <code>VARCHAR2</code> of length zero to the <code>IS NULL</code> function, <code>TRUE</code> is returned.</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<div id="ADLOB45597" class="sect2"><a id="sthref877"></a>
+<h3 class="sect2"><a id="sthref878"></a>WHERE Clause Usage with LOBs</h3>
+<p>SQL functions with LOBs as arguments, except functions that compare LOB values, are allowed in predicates of the <code>WHERE</code> clause. For example, the <code>LENGTH</code> function can be included in the predicate of the <code>WHERE</code> clause:</p>
+<pre>
+CREATE TABLE t (n NUMBER, c CLOB);
+INSERT INTO t VALUES (1, 'abc');
+
+SELECT * FROM t WHERE c IS NOT NULL;
+SELECT * FROM t WHERE LENGTH(c) &gt; 0;
+SELECT * FROM t WHERE c LIKE '%a%';
+SELECT * FROM t WHERE SUBSTR(c, 1, 2) LIKE '%b%';
+SELECT * FROM t WHERE INSTR(c, 'b') = 2;
+</pre></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BABBFDGI"></a>
+<div id="ADLOB45598" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><a id="sthref879"></a><a id="sthref880"></a>Built-in Functions for Remote LOBs and BFILEs</h2>
+<p>Whatever SQL built-in functions and user-defined functions that are supported on local LOBs and <code>BFILE</code>s are also supported on remote LOBs and <code>BFILE</code>s, as long as the final value returned by nested functions is not a LOB. This includes functions for remote persistent and temporary LOBs and for <code>BFILE</code>s.</p>
+<p>Built-in SQL functions which are executed on a remote site can be part of any SQL statement, like <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code>. For example:</p>
+<pre>
+SELECT LENGTH(ad_sourcetext) FROM print_media@remote_site -- CLOB
+SELECT LENGTH(ad_fltextn) FROM print_media@remote_site;   -- NCLOB
+SELECT LENGTH(ad_composite) FROM print_media@remote_site; -- BLOB
+SELECT product_id from print_media@remote_site WHERE LENGTH(ad_sourcetext) &gt; 3;
+
+UPDATE print_media@remote_site SET product_id = 2 WHERE LENGTH(ad_sourcetext) &gt; 3;
+
+SELECT TO_CHAR(foo@dbs2(...)) FROM dual@dbs2;
+-- where foo@dbs2 returns a temporary LOB
+</pre>
+<p>The SQL functions fall under the following (not necessarily exclusive) categories:</p>
+<ol>
+<li>
+<p>SQL functions that are not supported on LOBs. These functions are relevant only for <code>CLOB</code>s: an example is <code>DECODE</code>.</p>
+<p>These functions <span class="bold">cannot be supported</span> on remote LOBs because they are not supported on local LOBs.</p>
+</li>
+<li>
+<p>Functions taking exactly one LOB argument (all other arguments are of other data types) and not returning a LOB. These functions are relevant only for <code>CLOB</code>s, <code>NCLOB</code>s, and <code>BLOB</code>s: an example is <code>LENGTH</code> and <span class="bold">it is supported</span>. For example:</p>
+<pre>
+SELECT LENGTH(ad_composite) FROM print_media@remote_site;
+SELECT LENGTH(ad_header.logo) FROM print_media@remote_site; -- LOB in object
+
+SELECT product_id from print_media@remote_site WHERE LENGTH(ad_sourcetext) &gt; 3;
+</pre></li>
+<li>
+<p>Functions that return a LOB. <span class="bold">All these functions are relevant only for CLOBs and NCLOBs.</span> These functions may return the original LOB or produce a temporary LOB. These functions can be performed on the remote site, as long as the result returned to the local site is not a LOB.</p>
+<p>Functions returning a temporary LOB are: <code>REPLACE</code>, <code>SUBSTR</code>, <code>CONCAT</code>, ||, <code>TRIM</code>, <code>LTRIM</code>, <code>RTRIM</code>, <code>LOWER</code>, <code>UPPER</code>, <code>NLS_LOWER</code>, <code>NLS_UPPER</code>, <code>LPAD</code>, and <code>RPAD</code>.</p>
+<p>Functions returning the original LOB locator are: <code>NVL</code>, <code>DECODE</code>, and <code>CASE</code>. Note that even though <code>DECODE</code> and <code>CASE</code> are not supported currently to operate on LOBs, they could operate on other data types and return a LOB.</p>
+<p>For example, <span class="bold">the following statements are supported:</span></p>
+<pre>
+SELECT TO_CHAR(CONCAT(ad_sourcetext, ad_sourcetext)) FROM
+    print_media@remote_site;
+
+SELECT TO_CHAR(SUBSTR(ad_fltextnfs, 1, 3)) FROM
+    print_media@remote_site;
+</pre>
+<p>But the <span class="bold">following statements are not supported:</span></p>
+<pre>
+SELECT CONCAT(ad_sourcetext, ad_sourcetext) FROM
+    print_media@remote_site;
+
+SELECT SUBSTR(ad_sourcetext, 1, 3) FROM print_media@remote_site;
+</pre></li>
+<li>
+<p>Functions that take in more than one LOB argument:</p>
+<p>These are: <code>INSTR</code>, <code>LIKE</code>, <code>REPLACE</code>, <code>CONCAT</code>, ||, <code>SUBSTR</code>, <code>TRIM</code>, <code>LTRIM</code>, <code>RTRIM</code>, <code>LPAD</code>, and <code>RPAD</code>. All these functions are relevant only for <code>CLOB</code>s and <code>NCLOB</code>s.</p>
+<p>These functions are supported only if all the LOB arguments are in the same <code>dblink</code>, and the value returned is not a LOB. For example, <span class="bold">the following is supported:</span></p>
+<pre>
+SELECT TO_CHAR(CONCAT(ad_sourcetext, ad_sourcetext)) FROM
+print_media@remote_site; -- CLOB
+
+SELECT TO_CHAR(CONCAT(ad_fltextn, ad_fltextn)) FROM
+print_media@remote_site; -- NCLOB
+</pre>
+<p><span class="bold">But the following is not supported:</span></p>
+<pre>
+SELECT TO_CHAR(CONCAT(a.ad_sourcetext, b.ad_sourcetext)) FROM
+print_media@db1 a, print_media@db2 b WHERE a.product_id = b.product_id;
+</pre></li>
+</ol>
+</div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment898">
+<tr>
+<td class="cellalignment907">
+<table class="cellalignment903">
+<tr>
+<td class="cellalignment902"><a href="adlob_ddl.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment902"><a href="adlob_plsql_semantics.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1996, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment909">
+<table class="cellalignment901">
+<tr>
+<td class="cellalignment902"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment902"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment902"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment902"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment902"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment902"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

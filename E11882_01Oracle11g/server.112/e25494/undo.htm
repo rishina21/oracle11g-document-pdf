@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Managing Undo</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1055" />
+<meta name="dcterms.created" content="2015-05-05T8:27:35Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Administrator's Guide" />
+<meta name="dcterms.identifier" content="E25494-07" />
+<meta name="dcterms.isVersionOf" content="ADMIN" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2001, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="dfiles.htm" title="Previous" type="text/html" />
+<link rel="Next" href="omf.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e25494.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">24/49</span> <!-- End Header -->
+<div id="ADMIN013" class="chapter"><a id="g1012303"></a> <a id="i1008645"></a>
+<h1 class="chapter"><span class="secnum">16</span> Managing Undo</h1>
+<p>Beginning with Release 11<span class="italic">g</span>, for a default installation, Oracle Database automatically manages undo. There is typically no need for DBA intervention. However, if your installation uses Oracle Flashback operations, you may need to perform some undo management tasks to ensure the success of these operations.</p>
+<p>In this chapter:</p>
+<ul>
+<li>
+<p><a href="#i1006145">What Is Undo?</a></p>
+</li>
+<li>
+<p><a href="#BJFEHEIC">Introduction to Automatic Undo Management</a></p>
+</li>
+<li>
+<p><a href="#BABICDBD">Setting the Minimum Undo Retention Period</a></p>
+</li>
+<li>
+<p><a href="#BABJCFFE">Sizing a Fixed-Size Undo Tablespace</a></p>
+</li>
+<li>
+<p><a href="#BABGJBJH">Managing Undo Tablespaces</a></p>
+</li>
+<li>
+<p><a href="#BABJJIJI">Migrating to Automatic Undo Management</a></p>
+</li>
+<li>
+<p><a href="#i1006440">Undo Space Data Dictionary Views</a></p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1"><span class="bold">See Also</span>:</p>
+<a href="omf.htm#g1018000">Chapter 17, "Using Oracle Managed Files"</a>for information about creating an undo tablespace whose data files are both created and managed by Oracle Database.</div>
+<a id="i1006145"></a>
+<div id="ADMIN11460" class="sect1">
+<h2 class="sect1">What Is Undo<a id="sthref1760"></a><a id="sthref1761"></a>?</h2>
+<p>Oracle Database creates and manages information that is used to roll back, or undo, changes to the database. Such information consists of records of the actions of transactions, primarily before they are committed. These records are collectively referred to as <span class="bold">undo</span>.</p>
+<p>Undo records are used to:</p>
+<ul>
+<li>
+<p>Roll back transactions when a <code dir="ltr">ROLLBACK</code> statement is issued</p>
+</li>
+<li>
+<p>Recover the database</p>
+</li>
+<li>
+<p>Provide read consistency</p>
+</li>
+<li>
+<p>Analyze data as of an earlier point in time by using Oracle Flashback Query</p>
+</li>
+<li>
+<p>Recover from logical corruptions using Oracle Flashback features</p>
+</li>
+</ul>
+<p>When a <code dir="ltr">ROLLBACK</code> statement is issued, undo records are used to undo changes that were made to the database by the uncommitted transaction. During database recovery, undo records are used to undo any uncommitted changes applied from the redo log to the data files. Undo records provide read consistency by maintaining the before image of the data for users who are accessing the data at the same time that another user is changing it.</p>
+</div>
+<!-- class="sect1" -->
+<a id="BJFEHEIC"></a>
+<div id="ADMIN11461" class="sect1">
+<h2 class="sect1">Introduction to Automatic <a id="sthref1762"></a><a id="sthref1763"></a>Undo Management <a id="sthref1764"></a><a id="sthref1765"></a></h2>
+<p>This section introduces the concepts of Automatic Undo Management and discusses the following topics:</p>
+<ul>
+<li>
+<p><a href="#BJFECGIH">Overview of Automatic Undo Management</a></p>
+</li>
+<li>
+<p><a href="#BJFFIACJ">About the Undo Retention Period</a></p>
+</li>
+</ul>
+<a id="BJFECGIH"></a>
+<div id="ADMIN11462" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Overview of Automatic Undo Management</h3>
+<p>Oracle provides a fully automated mechanism, referred to as automatic undo management, for managing undo information and space. With automatic undo management, the database manages undo segments in an undo tablespace. Beginning with Release 11<span class="italic">g</span>, automatic undo management is the default mode for a newly installed database. An auto-extending undo tablespace named <code dir="ltr">UNDOTBS1</code> is automatically created when you create the database with Database Configuration Assistant (DBCA).</p>
+<p>An undo tablespace can also be created explicitly. The methods of creating an undo tablespace are explained in <a href="#i1006309">"Creating an Undo Tablespace"</a>.</p>
+<p>When the instance starts, the database automatically selects the first available undo tablespace. If no undo tablespace is available, the instance starts without an undo tablespace and stores undo records in the <code dir="ltr">SYSTEM</code> tablespace. This is not recommended, and an alert message is written to the alert log file to warn that the system is running without an undo tablespace.</p>
+<p>If the database contains multiple undo tablespaces, you can optionally specify at startup that you want to use a specific undo tablespace. This is done by setting the <code dir="ltr"><a id="sthref1766"></a><a id="sthref1767"></a>UNDO_TABLESPACE</code> initialization parameter, as shown in this example:</p>
+<pre dir="ltr">
+UNDO_TABLESPACE = undotbs_01
+</pre>
+<p>If the tablespace specified in the initialization parameter does not exist, the <code dir="ltr">STARTUP</code> command fails. The <code dir="ltr">UNDO_TABLESPACE</code> parameter can be used to assign a specific undo tablespace to an instance in an Oracle Real Application Clusters environment.</p>
+<p>The database can also run in <span class="italic">manual undo management mode</span>. In this mode, undo space is managed through rollback segments, and no undo tablespace is used.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Space management for rollback segments is complex. Oracle strongly recommends leaving the database in automatic undo management mode.</div>
+<p>The following is a summary of the <a id="sthref1768"></a>initialization parameters for undo management:</p>
+<div class="inftblinformal">
+<table class="cellalignment1333" title="Undo Management Initialization Parameters" summary="In column 1 this table lists the initialization parameters relating to automatic undo management. Column 2 describes each parameter." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t4">Initialization Parameter</th>
+<th class="cellalignment1334" id="r1c2-t4">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t4" headers="r1c1-t4"><code dir="ltr">UNDO_MANAGEMENT</code></td>
+<td class="cellalignment1335" headers="r2c1-t4 r1c2-t4">If <code dir="ltr">AUTO</code> or null, enables automatic undo management. If <code dir="ltr">MANUAL</code>, sets manual undo management mode. The default is <code dir="ltr">AUTO</code>.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t4" headers="r1c1-t4"><code dir="ltr">UNDO_TABLESPACE</code></td>
+<td class="cellalignment1335" headers="r3c1-t4 r1c2-t4">Optional, and valid only in automatic undo management mode. Specifies the name of an undo tablespace. Use only when the database has multiple undo tablespaces and you want to direct the database instance to use a particular undo tablespace.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformal" -->
+<p>When automatic undo management is enabled, if the initialization parameter file contains parameters relating to manual undo management, they are ignored.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Earlier releases of Oracle Database default to manual undo management mode. To change to automatic undo management, you must first create an undo tablespace and then change the <code dir="ltr">UNDO_MANAGEMENT</code> initialization parameter to <code dir="ltr">AUTO</code>. If your Oracle Database is release 9<span class="italic">i</span> or later and you want to change to automatic undo management, see <a class="olink UPGRD12439" href="../../server.112/e23633/afterup.htm#UPGRD12439"><span class="italic">Oracle Database Upgrade Guide</span></a> for instructions.
+<p>A null <code dir="ltr">UNDO_MANAGEMENT</code> initialization parameter defaults to automatic undo management mode in Release 11<span class="italic">g</span> and later, but defaults to manual undo management mode in earlier releases. You must therefore use caution when upgrading a previous release to Release 11g. <a class="olink UPGRD12439" href="../../server.112/e23633/afterup.htm#UPGRD12439"><span class="italic">Oracle Database Upgrade Guide</span></a> describes the correct method of migrating to automatic undo management mode, including information on how to size the undo tablespace.</p>
+</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink REFRN" href="../e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for complete descriptions of initialization parameters used in undo management</div>
+</div>
+<!-- class="sect2" -->
+<a id="BJFFIACJ"></a>
+<div id="ADMIN10180" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">About the Undo Re<a id="sthref1769"></a>tention Period</h3>
+<p>After a transaction is committed, undo data is no longer needed for rollback or transaction recovery purposes. However, for consistent read purposes, long-running queries may require this old undo information for producing older images of data blocks. Furthermore, the success of several Oracle Flashback features can also depend upon the availability of older undo information. For these reasons, it is desirable to retain the old undo information for as long as possible.</p>
+<p>When automatic undo management is enabled, there is always a current <span class="bold">undo retention period</span>, which is the minimum amount of time that Oracle Database attempts to retain old undo information before overwriting it. Old (committed) undo information that is older than the current undo retention period is said to be <span class="italic">expired</span> and its space is available to be overwritten by new transactions. Old undo information with an age that is less than the current undo retention period is said to be <span class="italic">unexpired</span> and is retained for consistent read and Oracle Flashback operations.</p>
+<p>Oracle Database automatically tunes the undo retention period based on undo tablespace size and system activity. You can optionally specify a minimum undo retention period (in seconds) by setting the <code dir="ltr">UNDO_RETENTION</code> initialization parameter. The exact impact this parameter on undo retention is as follows:</p>
+<ul>
+<li>
+<p>The <code dir="ltr">UNDO_RETENTION</code> parameter is ignored for a fixed size undo tablespace. The database always tunes the undo retention period for the best possible retention, based on system activity and undo tablespace size. See <a href="#BABCHJGA">"Automatic Tuning of Undo Retention"</a> for more information.</p>
+</li>
+<li>
+<p>For an undo tablespace with the <code dir="ltr">AUTOEXTEND</code> option enabled, the database attempts to honor the minimum retention period specified by <code dir="ltr">UNDO_RETENTION</code>. When space is low, instead of overwriting unexpired undo information, the tablespace auto-extends. If the <code dir="ltr">MAXSIZE</code> clause is specified for an auto-extending undo tablespace, when the maximum size is reached, the database may begin to overwrite unexpired undo information. The <code dir="ltr">UNDOTBS1</code> tablespace that is automatically created by DBCA is auto-extending.</p>
+</li>
+</ul>
+<a id="BABCHJGA"></a>
+<div id="ADMIN11464" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Automatic Tun<a id="sthref1770"></a>ing of Undo Retention</h4>
+<p>Oracle Database automatically tunes the undo retention period based on how the undo tablespace is configured.</p>
+<ul>
+<li>
+<p>If the undo tablespace is configured with the <code dir="ltr">AUTOEXTEND</code> option, the database dynamically tunes the undo retention period to be somewhat longer than the longest-running active query on the system. However, this retention period may be insufficient to accommodate Oracle Flashback operations. Oracle Flashback operations resulting in <code dir="ltr"><a id="sthref1771"></a>snapshot</code> <code dir="ltr">too</code> <code dir="ltr">old</code> errors are the indicator that you must intervene to ensure that sufficient undo data is retained to support these operations. To better accommodate Oracle Flashback features, you can either set the <code dir="ltr">UNDO_RETENTION</code> parameter to a value equal to the longest expected Oracle Flashback operation, or you can change the undo tablespace to fixed size.</p>
+</li>
+<li>
+<p>If the undo tablespace is fixed size, the database dynamically tunes the undo retention period for the best possible retention for that tablespace size and the current system load. This best possible retention time is typically significantly greater than the duration of the longest-running active query.</p>
+<p>If you decide to change the undo tablespace to fixed-size, you must choose a tablespace size that is sufficiently large. If you choose an undo tablespace size that is too small, the following two errors could occur:</p>
+<ul>
+<li>
+<p>DML could fail because there is not enough space to accommodate undo for new transactions.</p>
+</li>
+<li>
+<p>Long-running queries could fail with a <code dir="ltr">snapshot</code> <code dir="ltr">too</code> <code dir="ltr">old</code> error, which means that there was insufficient undo data for read consistency.</p>
+</li>
+</ul>
+<p>See <a href="#BABJCFFE">"Sizing a Fixed-Size Undo Tablespace"</a> for more information.</p>
+</li>
+</ul>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Automatic tuning of undo retention is not supported for LOBs. This is because undo information for LOBs is stored in the segment itself and not in the undo tablespace. For LOBs, the database attempts to honor the minimum undo retention period specified by <code dir="ltr">UNDO_RETENTION</code>. However, if space becomes low, unexpired LOB undo information may be overwritten.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#BABICDBD">"Setting the Minimum Undo Retention Period"</a></div>
+</div>
+<!-- class="sect3" -->
+<a id="BJFJCHCB"></a>
+<div id="ADMIN11463" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Reten<a id="sthref1772"></a>tion Guarantee</h4>
+<p>To guarantee the success of long-running queries or Oracle Flashback operations, you can enable retention guarantee. <a id="sthref1773"></a>If retention guarantee is enabled, the specified minimum undo retention is guaranteed; the database never overwrites unexpired undo data even if it means that transactions fail due to lack of space in the undo tablespace. If retention guarantee is not enabled, the database can overwrite unexpired undo when space is low, thus lowering the undo retention for the system. This option is disabled by default.</p>
+<div class="infoboxnotewarn">
+<p class="notep1">WARNING:</p>
+<p class="warnsp">Enabling retention guarantee can cause multiple DML operations to fail. Use with caution.</p>
+</div>
+<p>You enable retention guarantee by specifying the <code dir="ltr">RETENTION GUARANTEE</code> clause for the undo tablespace when you create it with either the <code dir="ltr">CREATE DATABASE</code> or <code dir="ltr">CREATE UNDO TABLESPACE</code> statement. Or, you can later specify this clause in an <code dir="ltr">ALTER TABLESPACE</code> statement. You disable retention guarantee with the <code dir="ltr">RETENTION NOGUARANTEE</code> clause.</p>
+<p>You can use the <code dir="ltr">DBA_TABLESPACES</code> view to determine the retention guarantee setting for the undo tablespace. A column named <code dir="ltr">RETENTION</code> contains a value of <code dir="ltr">GUARANTEE</code>, <code dir="ltr">NOGUARANTEE</code>, or <code dir="ltr">NOT</code> <code dir="ltr">APPLY</code>, where <code dir="ltr">NOT</code> <code dir="ltr">APPLY</code> is used for tablespaces other than the undo tablespace.</p>
+</div>
+<!-- class="sect3" -->
+<div id="ADMIN12328" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1774"></a>
+<h4 class="sect3">Undo Retention Tuning and Alert Thresholds</h4>
+<p>For a fixed-size undo tablespace, the database calculates the best possible retention based on database statistics and on the size of the undo tablespace. For optimal undo management, rather than tuning based on 100% of the tablespace size, the database tunes the undo retention period based on 85% of the tablespace size, or on the warning alert threshold percentage for space used, whichever is lower. (The warning alert threshold defaults to 85%, but can be changed.) Therefore, if you set the warning alert threshold of the undo tablespace below 85%, this may reduce the tuned size of the undo retention period. For more information on tablespace alert thresholds, see <a href="schema.htm#CHDHEHDB">"Managing Tablespace Alerts"</a>.</p>
+</div>
+<!-- class="sect3" -->
+<div id="ADMIN12329" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1775"></a>
+<h4 class="sect3">Tracking the Tuned Undo Retention Period</h4>
+<p>You can determine the current retention period by querying the <code dir="ltr">TUNED_UNDORETENTION</code> column of the <code dir="ltr">V$UNDOSTAT</code> view. This view contains one row for each 10-minute statistics collection interval over the last 4 days. (Beyond 4 days, the data is available in the <code dir="ltr">DBA_HIST_UNDOSTAT</code> view.) <code dir="ltr">TUNED_UNDORETENTION</code> is given in seconds.</p>
+<pre dir="ltr">
+select to_char(begin_time, 'DD-MON-RR HH24:MI') begin_time,
+to_char(end_time, 'DD-MON-RR HH24:MI') end_time, tuned_undoretention
+from v$undostat order by end_time;
+
+BEGIN_TIME      END_TIME        TUNED_UNDORETENTION
+--------------- --------------- -------------------
+04-FEB-05 00:01 04-FEB-05 00:11               12100
+      ...                                          
+07-FEB-05 23:21 07-FEB-05 23:31               86700
+07-FEB-05 23:31 07-FEB-05 23:41               86700
+07-FEB-05 23:41 07-FEB-05 23:51               86700
+07-FEB-05 23:51 07-FEB-05 23:52               86700
+
+576 rows selected.
+</pre>
+<p>See <a class="olink REFRN30295" href="../../server.112/e40402/dynviews_3118.htm#REFRN30295"><span class="italic">Oracle Database Reference</span></a> for more information about <code dir="ltr">V$UNDOSTAT</code>.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BABICDBD"></a>
+<div id="ADMIN11465" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Setting the Minimum Undo Rete<a id="sthref1776"></a>ntion Period</h2>
+<p>You specify the minimum undo retention period (in seconds) by setting the <code dir="ltr">UNDO_RETENTION</code> initialization parameter. As described in <a href="#BJFFIACJ">"About the Undo Retention Period"</a>, the current undo retention period may be automatically tuned to be greater than <code dir="ltr">UNDO_RETENTION</code>, or, unless retention guarantee is enabled, less than <code dir="ltr">UNDO_RETENTION</code> if space in the undo tablespace is low.</p>
+<p><span class="bold">To set the minimum undo retention period</span>:</p>
+<ul>
+<li>
+<p>Do one of the following:</p>
+<ul>
+<li>
+<p>Set <code dir="ltr">UNDO_RETENTION</code> in the initialization parameter file.</p>
+<pre dir="ltr">
+UNDO_RETENTION = 1800
+</pre></li>
+<li>
+<p>Change <code dir="ltr">UNDO_RETENTION</code> at any time using the <code dir="ltr">ALTER SYSTEM</code> statement:</p>
+<pre dir="ltr">
+ALTER SYSTEM SET UNDO_RETENTION = 2400;
+</pre></li>
+</ul>
+</li>
+</ul>
+<p>The effect of an <code dir="ltr">UNDO_RETENTION</code> parameter change is immediate, but it can only be honored if the current undo tablespace has enough space.</p>
+</div>
+<!-- class="sect1" -->
+<a id="BABJCFFE"></a>
+<div id="ADMIN11466" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Sizing a Fixed-Size <a id="sthref1777"></a><a id="sthref1778"></a><a id="sthref1779"></a>Undo Tablespace</h2>
+<p>Automatic tuning of undo retention typically achieves better results with a fixed-size undo tablespace. If you decide to use a fixed-size undo tablespace, the Undo Advisor can help you estimate needed capacity. You can access the Undo Advisor through Enterprise Manager or through the <code dir="ltr">DBMS_ADVISOR</code> PL/SQL package. Enterprise Manager is the preferred method of accessing the advisor. For more information on using the Undo Advisor through Enterprise Manager, see <a class="olink ADMQS0635" href="../../server.112/e10897/storage.htm#ADMQS0635"><span class="italic">Oracle Database 2 Day DBA</span></a>.</p>
+<p>The Undo Advisor relies for its analysis on data collected in the Automatic Workload Repository (AWR). It is therefore important that the AWR have adequate workload statistics available so that the Undo Advisor can make accurate recommendations. For newly created databases, adequate statistics may not be available immediately. In such cases, continue to use the default auto-extending undo tablespace until at least one workload cycle completes.</p>
+<p>An adjustment to the collection interval and retention period for AWR statistics can affect the precision and the type of recommendations that the advisor produces. See <a class="olink PFGRF94187" href="../../server.112/e41573/autostat.htm#PFGRF94187"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for more information.</p>
+<p>To use the Undo Advisor, you first estimate these two values:</p>
+<ul>
+<li>
+<p>The length of your expected longest running query</p>
+<p>After the database has completed a workload cycle, you can view the Longest Running Query field on the System Activity subpage of the Automatic Undo Management page.</p>
+</li>
+<li>
+<p>The longest interval that you will require for Oracle Flashback operations</p>
+<p>For example, if you expect to run Oracle Flashback queries for up to 48 hours in the past, your Oracle Flashback requirement is 48 hours.</p>
+</li>
+</ul>
+<p>You then take the maximum of these two values and use that value as input to the Undo Advisor.</p>
+<p>Running the Undo Advisor does not alter the size of the undo tablespace. The advisor just returns a recommendation. You must use <code dir="ltr">ALTER</code> <code dir="ltr">DATABASE</code> statements to change the tablespace data files to fixed sizes.</p>
+<p>The following example assumes that the undo tablespace has one auto-extending data file named <code dir="ltr">undotbs.dbf</code>. The example changes the tablespace to a fixed size of 300MB.</p>
+<pre dir="ltr">
+ALTER DATABASE DATAFILE '/oracle/dbs/undotbs.dbf' RESIZE 300M;
+ALTER DATABASE DATAFILE '/oracle/dbs/undotbs.dbf' AUTOEXTEND OFF;
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+To make the undo tablespace fixed-size, Oracle suggests that you first allow enough time after database creation to run a full workload, thus allowing the undo tablespace to grow to its minimum required size to handle the workload. Then, you can use the Undo Advisor to determine, if desired, how much larger to set the size of the undo tablespace to allow for long-running queries and Oracle Flashback operations.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ADMQS0635" href="../../server.112/e10897/storage.htm#ADMQS0635"><span class="italic">Oracle Database 2 Day DBA</span></a> for instructions for computing the minimum undo tablespace size with the Undo Advisor</div>
+<div id="ADMIN11469" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1780"></a>
+<h3 class="sect2">The Undo Advisor PL/SQL Interface</h3>
+<p>You can activate the Undo Advisor by creating an undo advisor task through the advisor framework. The following example creates an undo advisor task to evaluate the undo tablespace. The name of the advisor is 'Undo Advisor'. The analysis is based on Automatic Workload Repository snapshots, which you must specify by setting parameters <code dir="ltr">START_SNAPSHOT</code> and <code dir="ltr">END_SNAPSHOT</code>. In the following example, the <code dir="ltr">START_SNAPSHOT</code> is "1" and <code dir="ltr">END_SNAPSHOT</code> is "2".</p>
+<pre dir="ltr">
+DECLARE
+   tid    NUMBER;
+   tname  VARCHAR2(30);
+   oid    NUMBER;
+BEGIN
+   DBMS_ADVISOR.CREATE_TASK('Undo Advisor', tid, tname, 'Undo Advisor Task');
+   DBMS_ADVISOR.CREATE_OBJECT(tname, 'UNDO_TBS', null, null, null, 'null', oid);
+   DBMS_ADVISOR.SET_TASK_PARAMETER(tname, 'TARGET_OBJECTS', oid);
+   DBMS_ADVISOR.SET_TASK_PARAMETER(tname, 'START_SNAPSHOT', 1);
+   DBMS_ADVISOR.SET_TASK_PARAMETER(tname, 'END_SNAPSHOT', 2);
+   DBMS_ADVISOR.SET_TASK_PARAMETER(tname, 'INSTANCE', 1);
+   DBMS_ADVISOR.execute_task(tname);
+END;
+/
+</pre>
+<p>After you have created the advisor task, you can view the output and recommendations in the Automatic Database Diagnostic Monitor in Enterprise Manager. This information is also available in the <code dir="ltr">DBA_ADVISOR_*</code> data dictionary views (<code dir="ltr">DBA_ADVISOR_TASKS</code>, <code dir="ltr">DBA_ADVISOR_OBJECTS</code>, <code dir="ltr">DBA_ADVISOR_FINDINGS</code>, <code dir="ltr">DBA_ADVISOR_RECOMMENDATIONS</code>, and so on).</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="schema.htm#CHDHBHAB">"Using the Segment Advisor"</a> for an example of creating an advisor task for a different advisor</p>
+</li>
+<li>
+<p><a class="olink REFRN" href="../e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for information about the <code dir="ltr">DBA_ADVISOR_*</code> data dictionary views</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BABGJBJH"></a>
+<div id="ADMIN11470" class="sect1">
+<h2 class="sect1">Managing Undo<a id="sthref1781"></a> Tablespaces</h2>
+<p>This section describes the various steps involved in undo tablespace management and contains the following sections:</p>
+<ul>
+<li>
+<p><a href="#i1006309">Creating an Undo Tablespace</a></p>
+</li>
+<li>
+<p><a href="#i1106355">Altering an Undo Tablespace</a></p>
+</li>
+<li>
+<p><a href="#i1006389">Dropping an Undo Tablespace</a></p>
+</li>
+<li>
+<p><a href="#i1106407">Switching Undo Tablespaces</a></p>
+</li>
+<li>
+<p><a href="#i1006426">Establishing User Quotas for Undo Space</a></p>
+</li>
+<li>
+<p><a href="#i1006440">Undo Space Data Dictionary Views</a></p>
+</li>
+</ul>
+<a id="i1006309"></a>
+<div id="ADMIN11471" class="sect2">
+<h3 class="sect2">Creating an <a id="sthref1782"></a>Undo Tablespace</h3>
+<p>Although Database Configuration Assistant (DBCA) automatically creates an undo tablespace for new installations of Oracle Database Release 11<span class="italic">g</span>, there may be occasions when you want to manually create an undo tablespace.</p>
+<p>There are two methods of creating an undo tablespace. The first method creates the undo tablespace when the <code dir="ltr">CREATE DATABASE</code> statement is issued. This occurs when you are creating a new database, and the instance is started in automatic undo management mode (<code dir="ltr">UNDO_MANAGEMENT = AUTO</code>). The second method is used with an existing database. It uses the <code dir="ltr">CREATE UNDO TABLESPACE</code> statement.</p>
+<p>You cannot create database objects in an undo tablespace. It is reserved for system-managed undo data.</p>
+<p>Oracle Database enables you to create a single-file undo tablespace. Single-file, or bigfile, tablespaces are discussed in <a href="tspaces.htm#i1010733">"Bigfile Tablespaces"</a>.</p>
+<div id="ADMIN11472" class="sect3"><a id="sthref1783"></a>
+<h4 class="sect3">Using <a id="sthref1784"></a>CREATE DATABASE to Create an Undo Tablespace</h4>
+<p>You can create a specific undo tablespace using the <code dir="ltr">UNDO TABLESPACE</code> clause of the <code dir="ltr">CREATE DATABASE</code> statement.</p>
+<p>The following statement illustrates using the <code dir="ltr">UNDO TABLESPACE</code> clause in a <code dir="ltr">CREATE DATABASE</code> statement. The undo tablespace is named <code dir="ltr">undotbs_01</code> and one data file, <code dir="ltr">/u01/oracle/rbdb1/undo0101.dbf</code>, is allocated for it.</p>
+<pre dir="ltr">
+CREATE DATABASE rbdb1
+     CONTROLFILE REUSE
+     .
+     .
+     .
+     UNDO TABLESPACE undotbs_01 DATAFILE '/u01/oracle/rbdb1/undo0101.dbf';
+</pre>
+<p>If the undo tablespace cannot be created successfully during <code dir="ltr">CREATE DATABASE</code>, the entire <code dir="ltr">CREATE DATABASE</code> operation fails. You must clean up the database files, correct the error and retry the <code dir="ltr">CREATE DATABASE</code> operation.</p>
+<p>The <code dir="ltr">CREATE DATABASE</code> statement also lets you create a single-file undo tablespace at database creation. This is discussed in <a href="create.htm#i1015204">"Supporting Bigfile Tablespaces During Database Creation"</a>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SQLRF01204" href="../../server.112/e41084/statements_5004.htm#SQLRF01204"><span class="italic">Oracle Database SQL Language Reference</span></a> for the syntax for using the <code dir="ltr">CREATE DATABASE</code> statement to create an undo tablespace</div>
+</div>
+<!-- class="sect3" -->
+<div id="ADMIN11473" class="sect3"><a id="sthref1785"></a>
+<h4 class="sect3">Using the <a id="sthref1786"></a>CREATE UNDO TABLESPACE Statement</h4>
+<p>The <code dir="ltr">CREATE UNDO TABLESPACE</code> statement is the same as the <code dir="ltr">CREATE TABLESPACE</code> statement, but the <code dir="ltr">UNDO</code> keyword is specified. The database determines most of the attributes of the undo tablespace, but you can specify the <code dir="ltr">DATAFILE</code> clause.</p>
+<p>This example creates the <code dir="ltr">undotbs_02</code> undo tablespace with the <code dir="ltr">AUTOEXTEND</code> option:</p>
+<pre dir="ltr">
+CREATE UNDO TABLESPACE undotbs_02
+     DATAFILE '/u01/oracle/rbdb1/undo0201.dbf' SIZE 2M REUSE AUTOEXTEND ON;
+</pre>
+<p>You can create multiple undo tablespaces, but only one of them can be active at any one time.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SQLRF01403" href="../../server.112/e41084/statements_7003.htm#SQLRF01403"><span class="italic">Oracle Database SQL Language Reference</span></a> for the syntax for using the <code dir="ltr">CREATE UNDO TABLESPACE</code> statement to create an undo tablespace</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1106355"></a>
+<div id="ADMIN11474" class="sect2">
+<h3 class="sect2">Altering an Undo Tablespace</h3>
+<p><a id="sthref1787"></a>Undo tablespaces are altered using the <code dir="ltr">ALTER TABLESPACE</code> statement. However, since most aspects of undo tablespaces are system managed, you need only be concerned with the following actions:</p>
+<ul>
+<li>
+<p>Adding a data file</p>
+</li>
+<li>
+<p>Renaming a data file</p>
+</li>
+<li>
+<p>Bringing a data file online or taking it offline</p>
+</li>
+<li>
+<p>Beginning or ending an open backup on a data file</p>
+</li>
+<li>
+<p>Enabling and disabling undo retention guarantee</p>
+</li>
+</ul>
+<p>These are also the only attributes you are permitted to alter.</p>
+<p>If an undo tablespace runs out of space, or you want to prevent it from doing so, you can add more files to it or resize existing data files.</p>
+<p>The following example adds another data file to undo tablespace undotbs_01:</p>
+<pre dir="ltr">
+ALTER TABLESPACE undotbs_01
+     ADD DATAFILE '/u01/oracle/rbdb1/undo0102.dbf' AUTOEXTEND ON NEXT 1M 
+         MAXSIZE UNLIMITED;
+</pre>
+<p>You can use the <code dir="ltr">ALTER DATABASE...DATAFILE</code> statement to resize or extend a data file.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="dfiles.htm#i1006333">"Changing Data File Size"</a></p>
+</li>
+<li>
+<p><a class="olink SQLRF01002" href="../../server.112/e41084/statements_3002.htm#SQLRF01002"><span class="italic">Oracle Database SQL Language Reference</span></a> for <code dir="ltr">ALTER TABLESPACE</code> syntax</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1006389"></a>
+<div id="ADMIN11475" class="sect2">
+<h3 class="sect2">Dropping an Undo Tablespace</h3>
+<p><a id="sthref1788"></a>Use the <code dir="ltr">DROP TABLESPACE</code> statement to drop an undo tablespace. The following example drops the undo tablespace <code dir="ltr">undotbs_01</code>:</p>
+<pre dir="ltr">
+DROP TABLESPACE undotbs_01;
+</pre>
+<p>An undo tablespace can only be dropped if it is not currently used by any instance. If the undo tablespace contains any outstanding transactions (for example, a transaction died but has not yet been recovered), the <code dir="ltr">DROP TABLESPACE</code> statement fails. However, since <code dir="ltr">DROP TABLESPACE</code> drops an undo tablespace even if it contains unexpired undo information (within retention period), you must be careful not to drop an undo tablespace if undo information is needed by some existing queries.</p>
+<p><code dir="ltr">DROP TABLESPACE</code> for undo tablespaces behaves like <code dir="ltr">DROP TABLESPACE...INCLUDING CONTENTS</code>. All contents of the undo tablespace are removed.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SQLRF01807" href="../../server.112/e41084/statements_9004.htm#SQLRF01807"><span class="italic">Oracle Database SQL Language Reference</span></a> for <code dir="ltr">DROP TABLESPACE</code> syntax</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1106407"></a>
+<div id="ADMIN11476" class="sect2">
+<h3 class="sect2">Switching Undo Tablespaces</h3>
+<p>You can switch from using one <a id="sthref1789"></a>undo tablespace to another. Because the <code dir="ltr">UNDO_TABLESPACE</code> initialization parameter is a dynamic parameter, the <code dir="ltr">ALTER SYSTEM SET</code> statement can be used to assign a new undo tablespace.</p>
+<p>The following statement switches to a new undo tablespace:</p>
+<pre dir="ltr">
+ALTER SYSTEM SET UNDO_TABLESPACE = undotbs_02;
+</pre>
+<p>Assuming <code dir="ltr">undotbs_01</code> is the current undo tablespace, after this command successfully executes, the instance uses <code dir="ltr">undotbs_02</code> in place of <code dir="ltr">undotbs_01</code> as its undo tablespace.</p>
+<p>If any of the following conditions exist for the tablespace being switched to, an error is reported and no switching occurs:</p>
+<ul>
+<li>
+<p>The tablespace does not exist</p>
+</li>
+<li>
+<p>The tablespace is not an undo tablespace</p>
+</li>
+<li>
+<p>The tablespace is already being used by another instance (in an Oracle RAC environment only)</p>
+</li>
+</ul>
+<p>The database is online while the switch operation is performed, and user transactions can be executed while this command is being executed. When the switch operation completes successfully, all transactions started after the switch operation began are assigned to transaction tables in the new undo tablespace.</p>
+<p>The switch operation does not wait for transactions in the old undo tablespace to commit. If there are any pending transactions in the old undo tablespace, the old undo tablespace enters into a <code dir="ltr">PENDING OFFLINE</code> mode (status). In this mode, existing transactions can continue to execute, but undo records for new user transactions cannot be stored in this undo tablespace.</p>
+<p>An undo tablespace can exist in this <code dir="ltr">PENDING OFFLINE</code> mode, even after the switch operation completes successfully. A <code dir="ltr">PENDING OFFLINE</code> <a id="sthref1790"></a>undo tablespace cannot be used by another instance, nor can it be dropped. Eventually, after all active transactions have committed, the undo tablespace automatically goes from the <code dir="ltr">PENDING OFFLINE</code> mode to the <code dir="ltr">OFFLINE</code> mode. From then on, the undo tablespace is available for other instances (in an Oracle Real Application Cluster environment).</p>
+<p>If the parameter value for <code dir="ltr">UNDO TABLESPACE</code> is set to '' (two single quotes), then the current undo tablespace is switched out and the next available undo tablespace is switched in. Use this statement with care because there may be no undo tablespace available.</p>
+<p>The following example unassigns the current undo tablespace:</p>
+<pre dir="ltr">
+ALTER SYSTEM SET UNDO_TABLESPACE = '';
+</pre></div>
+<!-- class="sect2" -->
+<a id="i1006426"></a>
+<div id="ADMIN11477" class="sect2">
+<h3 class="sect2">Establishing User Quotas for Undo Space<a id="sthref1791"></a></h3>
+<p>The Oracle Database Resource Manager can be used to establish user quotas for undo space. The Database Resource Manager directive <code dir="ltr">UNDO_POOL</code> allows DBAs to limit the amount of undo space consumed by a group of users (resource consumer group).</p>
+<p>You can specify an undo pool for each consumer group. An undo pool controls the amount of total undo that can be generated by a consumer group. When the total undo generated by a consumer group exceeds its undo limit, the current <code dir="ltr">UPDATE</code> transaction generating the undo is terminated. No other members of the consumer group can perform further updates until undo space is freed from the pool.</p>
+<p>When no <code dir="ltr">UNDO_POOL</code> directive is explicitly defined, users are allowed unlimited undo space.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="dbrm.htm#g1021210">Chapter 27, "Managing Resources with Oracle Database Resource Manager"</a></div>
+</div>
+<!-- class="sect2" -->
+<div id="ADMIN11478" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1792"></a>
+<h3 class="sect2">Managing Space Threshold Alerts for the Undo <a id="sthref1793"></a><a id="sthref1794"></a>Tablespace</h3>
+<p>Oracle Database also provides proactive help in managing tablespace disk space use by alerting you when tablespaces run low on available space. See <a href="schema.htm#CHDHEHDB">"Managing Tablespace Alerts"</a> for information on how to set alert thresholds for the undo tablespace.</p>
+<p>In addition to the proactive undo space alerts, Oracle Database also provides alerts if your system has long-running queries that cause <code dir="ltr">SNAPSHOT</code> <code dir="ltr">TOO</code> <code dir="ltr">OLD</code> errors. To prevent excessive alerts, the long query alert is issued at most once every 24 hours. When the alert is generated, you can check the Undo Advisor Page of Enterprise Manager to get more information about the undo tablespace.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BABJJIJI"></a>
+<div id="ADMIN11479" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Migrating to <a id="sthref1795"></a>Automatic Undo Management</h2>
+<p>If you are currently using rollback segments to manage undo space, Oracle strongly recommends that you migrate your database to automatic undo management.</p>
+<p>For instructions, see <a class="olink UPGRD" href="../e23633/toc.htm"><span class="italic">Oracle Database Upgrade Guide</span></a>.</p>
+</div>
+<!-- class="sect1" -->
+<a id="i1006440"></a>
+<div id="ADMIN11480" class="sect1">
+<h2 class="sect1">Undo Space Data Dictionary Views<a id="sthref1796"></a><a id="sthref1797"></a></h2>
+<p><a id="sthref1798"></a>This section lists views that are useful for viewing information about undo space in the automatic undo management mode and provides some examples. In addition to views listed here, you can obtain information from the views available for viewing tablespace and data file information. See <a href="dfiles.htm#i1007111">"Data Files Data Dictionary Views"</a> for information on getting information about those views.</p>
+<p>The following dynamic performance views are useful for obtaining space information about the undo tablespace:</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="Viewing Information About the Undo Tablespace" summary="Column 1 lists the views that are useful for obtaining information about the undo tablespace. Column 2 describes each view." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t18">View</th>
+<th class="cellalignment1334" id="r1c2-t18">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t18" headers="r1c1-t18"><code dir="ltr"><a id="sthref1799"></a><a id="sthref1800"></a>V$UNDOSTAT</code></td>
+<td class="cellalignment1335" headers="r2c1-t18 r1c2-t18">Contains statistics for monitoring and tuning undo space. Use this view to help estimate the amount of undo space required for the current workload. The database also uses this information to help tune undo usage in the system. This view is meaningful only in automatic undo management mode.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t18" headers="r1c1-t18"><code dir="ltr"><a id="sthref1801"></a>V$ROLLSTAT</code></td>
+<td class="cellalignment1335" headers="r3c1-t18 r1c2-t18">For automatic undo management mode, information reflects behavior of the undo segments in the undo tablespace</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t18" headers="r1c1-t18"><code dir="ltr"><a id="sthref1802"></a>V$TRANSACTION</code></td>
+<td class="cellalignment1335" headers="r4c1-t18 r1c2-t18">Contains undo segment information</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r5c1-t18" headers="r1c1-t18"><code dir="ltr"><a id="sthref1803"></a>DBA_UNDO_EXTENTS</code></td>
+<td class="cellalignment1335" headers="r5c1-t18 r1c2-t18">Shows the status and size of each extent in the undo tablespace.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r6c1-t18" headers="r1c1-t18"><a id="sthref1804"></a><code dir="ltr">DBA_HIST_UNDOSTAT</code></td>
+<td class="cellalignment1335" headers="r6c1-t18 r1c2-t18">Contains statistical snapshots of <code dir="ltr">V$UNDOSTAT</code> information. See <a class="olink ADMQS010" href="../../server.112/e10897/montune.htm#ADMQS010"><span class="italic">Oracle Database 2 Day DBA</span></a> for more information.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink REFRN" href="../e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for complete descriptions of the views used in automatic undo management mode</div>
+<p><a id="sthref1805"></a>The <code dir="ltr">V$UNDOSTAT</code> view is useful for monitoring the effects of transaction execution on undo space in the current instance. Statistics are available for undo space consumption, transaction concurrency, the tuning of undo retention, and the length and SQL ID of long-running queries in the instance.</p>
+<p>Each row in the view contains statistics collected in the instance for a ten-minute interval. The rows are in descending order by the <code dir="ltr">BEGIN_TIME</code> column value. Each row belongs to the time interval marked by (<code dir="ltr">BEGIN_TIME</code>, <code dir="ltr">END_TIME</code>). Each column represents the data collected for the particular statistic in that time interval. The first row of the view contains statistics for the (partial) current time period. The view contains a total of 576 rows, spanning a 4 day cycle.</p>
+<p>The following example shows the results of a query on the <code dir="ltr">V$UNDOSTAT</code> view.</p>
+<pre dir="ltr">
+  SELECT TO_CHAR(BEGIN_TIME, 'MM/DD/YYYY HH24:MI:SS') BEGIN_TIME,
+         TO_CHAR(END_TIME, 'MM/DD/YYYY HH24:MI:SS') END_TIME,
+         UNDOTSN, UNDOBLKS, TXNCOUNT, MAXCONCURRENCY AS "MAXCON"
+         FROM v$UNDOSTAT WHERE rownum &lt;= 144;
+  
+  BEGIN_TIME          END_TIME               UNDOTSN   UNDOBLKS   TXNCOUNT     MAXCON
+  ------------------- ------------------- ---------- ---------- ---------- ----------
+  10/28/2004 14:25:12 10/28/2004 14:32:17          8         74   12071108          3
+  10/28/2004 14:15:12 10/28/2004 14:25:12          8         49   12070698          2
+  10/28/2004 14:05:12 10/28/2004 14:15:12          8        125   12070220          1
+  10/28/2004 13:55:12 10/28/2004 14:05:12          8         99   12066511          3
+  ...
+  10/27/2004 14:45:12 10/27/2004 14:55:12          8         15   11831676          1
+  10/27/2004 14:35:12 10/27/2004 14:45:12          8        154   11831165          2
+ 
+  144 rows selected.
+</pre>
+<p>The preceding example shows how undo space is consumed in the system for the previous 24 hours from the time 14:35:12 on 10/27/2004.</p>
+</div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1326">
+<tr>
+<td class="cellalignment1335">
+<table class="cellalignment1331">
+<tr>
+<td class="cellalignment1330"><a href="dfiles.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1330"><a href="omf.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2001, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1337">
+<table class="cellalignment1329">
+<tr>
+<td class="cellalignment1330"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1330"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1330"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1330"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1330"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1330"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

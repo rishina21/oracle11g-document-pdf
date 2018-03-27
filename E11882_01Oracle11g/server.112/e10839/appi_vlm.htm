@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Very Large Memory and HugePages</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1093" />
+<meta name="dcterms.created" content="2017-09-07T5:10:53Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Administrator's Reference" />
+<meta name="dcterms.identifier" content="E10839-25" />
+<meta name="dcterms.isVersionOf" content="UNXAR" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2006, 2017,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="appg_db_lmts.htm" title="Previous" type="text/html" />
+<link rel="Next" href="index.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10839.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">19/20</span> <!-- End Header -->
+<div id="UNXAR385" class="appendix"><a id="CACGAEDJ"></a>
+<h1 class="appendix"><span class="secnum">G</span> Very Large Memory and HugePages</h1>
+<p>This chapter guides Linux system administrators to configure very large memory configurations and HugePages on Linux systems.</p>
+<p>This chapter contains the following sections:</p>
+<ul>
+<li>
+<p><a href="#CACEGHIB">Very Large Memory on Linux x86</a></p>
+</li>
+<li>
+<p><a href="#CACDCGAH">Overview of HugePages</a></p>
+</li>
+</ul>
+<a id="CACEGHIB"></a>
+<div id="UNXAR386" class="sect1">
+<h2 class="sect1"><span class="secnum">G.1</span> Very Large Memory on Linux x86</h2>
+<p>Very Large Memory (VLM) configurations allow a 32-bit Oracle Database to access more than 4GB RAM that is traditionally available to Linux applications. The Oracle VLM option for 32-bit creates a large database buffer cache using an in-memory file system (<code dir="ltr">/dev/shm</code>). Other parts of the SGA are allocated from regular memory. VLM configurations improve database performance by caching more database buffers in memory, which significantly reduces the disk I/O compared to configurations without VLM. This chapter shows how to increase the SGA memory using VLM on a 32-bit computer.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The contents documented in this section apply only to 32-bit Linux operating system. With a 64-bit architecture, VLM support is available natively. All 64-bit Linux operating systems use the physical memory directly, as the maximum available virtual address space is 16 EB (exabyte = 2^60 bytes.)</div>
+<p>This section includes the following topics:</p>
+<ul>
+<li>
+<p><a href="#CACEFHBC">Implementing VLM on 32-bit Linux</a></p>
+</li>
+<li>
+<p><a href="#CACJCJDH">Prerequisites for Implementing VLM</a></p>
+</li>
+<li>
+<p><a href="#CACGFHJE">Methods To Increase SGA Limits</a></p>
+</li>
+<li>
+<p><a href="#CACCIGFE">Configuring Very Large Memory for Oracle Database</a></p>
+</li>
+<li>
+<p><a href="#CACGHJHI">Restrictions Involved in Implementing Very Large Memory</a></p>
+</li>
+</ul>
+<a id="CACEFHBC"></a>
+<div id="UNXAR387" class="sect2">
+<h3 class="sect2"><span class="secnum">G.1.1</span> Implementing VLM on 32-bit Linux</h3>
+<p>With 32-bit architectures, VLM is accessed through a VLM window of a specific size. The VLM window is a data structure in the process address space that provides access to the whole virtual address space from a window of a specific size. On 32-bit Linux, you must set the parameter <code dir="ltr">USE_INDIRECT_DATA_BUFFERS=TRUE</code>, and mount a <code dir="ltr">shmfs</code> or <code dir="ltr">tmpfs</code> or <code dir="ltr">ramfs</code> type of in-memory filesystem over <code dir="ltr">/dev/shm</code> to increase the usable address space.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CACJCJDH"></a>
+<div id="UNXAR388" class="sect2">
+<h3 class="sect2"><span class="secnum">G.1.2</span> Prerequisites for Implementing VLM</h3>
+<p>The following are some of the prerequisites for implementing VLM on a 32-bit operating system:</p>
+<ul>
+<li>
+<p>The computer on which Oracle Database is installed must have more than 4GB of memory.</p>
+</li>
+<li>
+<p>The computer must be configured to use a kernel with PAE support upon startup.</p>
+</li>
+<li>
+<p>The <code dir="ltr">USE_INDIRECT_DATA_BUFFERS=TRUE</code> must be present in the initialization parameter file for the database instance that uses VLM support.</p>
+</li>
+<li>
+<p>Initialization parameters <code dir="ltr">DB_BLOCK_BUFFERS</code> and <code dir="ltr">DB_BLOCK_SIZE</code> must be set to values you have chosen for the Oracle Database.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="CACGFHJE"></a>
+<div id="UNXAR389" class="sect2">
+<h3 class="sect2"><span class="secnum">G.1.3</span> Methods To Increase SGA Limits</h3>
+<p>In a typical 32-bit Linux kernel, one can create an SGA of up to 2.4GB size. Using a Linux Hugemem kernel enables the creation of an SGA of upto 3.2GB size. To go beyond 3.2GB on a 32-bit kernel, you must use the VLM feature.</p>
+<p>The following are the methods to increase SGA limits on a 32-bit computer:</p>
+<ul>
+<li>
+<p><a href="#CACFBJGF">Hugemem Kernel</a></p>
+</li>
+<li>
+<p><a href="#CACFFFHF">Hugemem Kernel with Very Large Memory</a></p>
+</li>
+</ul>
+<a id="CACFBJGF"></a>
+<div id="UNXAR390" class="sect3">
+<h4 class="sect3"><span class="secnum">G.1.3.1</span> Hugemem Kernel</h4>
+<p>Red Hat Enterprise Linux 4 and Oracle Linux 4 include a new kernel known as the Hugemem kernel. The Hugemem kernel feature is also called a 4GB-4GB Split Kernel as it supports a 4GB per process user space (versus 3GB for the other kernels), and a 4GB direct kernel space. Using this kernel enables RHEL 4/Oracle Linux 4 to run on systems with up to 64GB of main memory. The Hugemem kernel is required to use all the memory in system configurations containing more than 16GB of memory. The Hugemem kernel can run configurations with less memory.</p>
+<p>A classic 32-bit 4GB virtual address space is split 3GB for user processes and 1GB for the kernel. The new scheme (4GB/4GB) permits 4GB of virtual address space for the kernel and almost 4GB for each user process. Due to this scheme with hugemem kernel, 3.2GB of SGA can be created without using the indirect data buffer method.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Red Hat Enterprise Linux 5/ Oracle Linux 5 and Red Hat Enterprise Linux 6/ Oracle Linux 6 on 32-bit does not have the hugemem kernel. It supports only the 3GB user process/ 1GB kernel split. It has a PAE kernel that supports systems with more than 4GB of RAM and reliably upto 16GB. Since this has a 3GB/1GB kernel split, the system may run out of lowmem if the system's load consumes lots of lowmem. There is no equivalent kernel for hugemem in Enterprise Linux 5 and one is recommended to either use Enterprise Linux 4 with hugemem or go for 64-bit.</div>
+<p>The Hugemem kernel on large computers ensures better stability as compared to the performance overhead of address space switching.</p>
+<p>Run the following command to determine if you are using the <code dir="ltr">Hugemem</code> kernel:</p>
+<pre dir="ltr">
+$ uname -r
+2.6.9-5.0.3.ELhugemem
+</pre></div>
+<!-- class="sect3" -->
+<a id="CACFFFHF"></a>
+<div id="UNXAR391" class="sect3">
+<h4 class="sect3"><span class="secnum">G.1.3.2</span> Hugemem Kernel with Very Large Memory</h4>
+<p>If you use only Hugemem kernels on 32-bit systems, then the SGA size can be increased but not significantly. Refer to section <a href="#CACFBJGF">"Hugemem Kernel"</a>, for more information.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Red Hat Enterprise Linux 5/ Oracle Linux 5 and Red Hat Enterprise Linux 6/ Oracle Linux 6 does not support the hugemem kernel. It supports a PAE kernel that can be used to implement Very Large Memory (VLM) as long as the physical memory does not exceed 16GB.</div>
+<p>This section shows how the SGA can be significantly increased by using Hugemem kernel with VLM on 32-bit systems.</p>
+<p>The SGA can be increased to about 62GB (depending on block size) on a 32-bit system with 64GB RAM. A processor feature called Page Address Extension (PAE) permits you to physically address 64GB of RAM. Since PAE does not enable a process or program to either address more than 4GB directly, or have a virtual address space larger than 4GB, a process cannot attach to shared memory directly. To address this issue, a shared memory filesystem (memory-based filesystem) must be created which can be as large as the maximum allowable virtual memory supported by the kernel. With a shared memory filesystem processes can dynamically attach to regions of the filesystem allowing applications like Oracle to have virtually a much larger shared memory on 32-bit operating systems. This is not an issue on 64-bit operating systems.</p>
+<p>VLM moves the database buffer cache part of the SGA from the System V shared memory to the shared memory filesystem. It is still considered one large SGA but it consists now of two different operating system shared memory entities. VLM uses 512MB of the non-buffer cache SGA to manage VLM. This memory area is needed for mapping the indirect data buffers (shared memory filesystem buffers) into the process address space since a process cannot attach to more than 4GB directly on a 32-bit system.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+<code dir="ltr">USE_INDIRECT_DATA_BUFFERS</code>=<code dir="ltr">TRUE</code> must be present in the initialization parameter file for the database instance that use Very Large Memory support. If this parameter is not set, then Oracle Database 11<span class="italic">g</span> Release 2 (11.2) or later behaves in the same way as previous releases.
+<p>You must also manually set the initialization parameters <code dir="ltr">DB_BLOCK_BUFFERS</code> and <code dir="ltr">SHARED_POOL_SIZE</code> to values you have chosen for an Oracle Database. Automatic Memory Management (AMM) cannot be used. The initialization parameter <code dir="ltr">DB_BLOCK_SIZE</code> sets the block size and in combination with <code dir="ltr">DB_BLOCK_BUFFERS</code> determines the buffer cache size for an instance</p>
+</div>
+<p>For example, if the non-buffer cache SGA is 2.5GB, then you will only have 2GB of non-buffer cache SGA for shared pool, large pool, and redo log buffer since 512MB is used for managing VLM. It is not recommended to use VLM if buffer cache size is less than 512MB.</p>
+<p>In RHEL 4/ Oracle Linux 4 there are two different memory file systems that can be used for VLM:</p>
+<ul>
+<li>
+<p><code dir="ltr">tmpfs or shmfs</code>: mount a <code dir="ltr">shmfs</code> with a certain size to <code dir="ltr">/dev/shm</code>, and set the correct permissions. For <code dir="ltr">tmpfs</code> you do not need to specify a size. <code dir="ltr">Tmpfs or</code> <code dir="ltr">shmfs</code> allocated memory is pageable.</p>
+<p>For example:</p>
+<pre dir="ltr">
+Example Mount shmfs:
+# mount -t shm shmfs -o size=20g /dev/shm
+
+Edit /etc/fstab:
+shmfs /dev/shm shm size=20g 0 0
+
+OR
+
+Example Mount tmpfs:
+# mount &ndash;t tmpfs tmpfs /dev/shm
+
+Edit /etc/fstab:
+none /dev/shm tmpfs defaults 0 0
+</pre></li>
+<li>
+<p><code dir="ltr">ramfs</code>: <code dir="ltr">ramfs</code> is similar to <code dir="ltr">shmfs</code>, except that pages are not pageable or swappable. This approach provides the commonly desired effect. <code dir="ltr">ramfs</code> is created by:</p>
+<pre dir="ltr">
+umount /dev/shm
+mount -t ramfs ramfs /dev/shm
+</pre></li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CACCIGFE"></a>
+<div id="UNXAR392" class="sect2">
+<h3 class="sect2"><span class="secnum">G.1.4</span> Configuring Very Large Memory for Oracle Database</h3>
+<p>Complete the following procedure to configure Very Large Memory on Red Hat Enterprise Linux 4/ Oracle Linux 4 using <code dir="ltr">ramfs</code>:</p>
+<ol>
+<li>
+<p>Log in as a <code dir="ltr">root</code> user:</p>
+<pre dir="ltr">
+sudo -sh
+Password:
+</pre></li>
+<li>
+<p>Edit the <code dir="ltr">/etc/rc.local</code> file and add the following entries to it to configure the computer to mount <code dir="ltr">ramfs</code> over the <code dir="ltr">/dev/shm</code> directory, whenever you start the computer:</p>
+<pre dir="ltr">
+umount /dev/shm
+mount -t ramfs ramfs /dev/shm
+chown oracle:oinstall /dev/shm
+</pre>
+<p>In the preceding commands, <code dir="ltr">oracle</code> is the owner of Oracle software files and <code dir="ltr">oinstall</code> is the group for Oracle owner account. If the new configuration disables <code dir="ltr">/etc/rc.local</code> file or you start an instance of Oracle database using a Linux service script present under the <code dir="ltr">/etc/init.d</code> file, then you can add those entries in the service script too.</p>
+<p>Note, this configuration will make <code dir="ltr">ramfs</code> ready even before your system autostarts crucial Oracle Database instances. The commands can also be included in your startup scripts. It is important that you test the commands extensively by repeated restart action, after you complete configuring the computer using the following steps:</p>
+</li>
+<li>
+<p>Restart the server.</p>
+</li>
+<li>
+<p>Log in as a <code dir="ltr">root</code> user.</p>
+</li>
+<li>
+<p>Run the following command to check if the <code dir="ltr">/dev/shm</code> directory is mounted with the ramfs type:</p>
+<pre dir="ltr">
+/dev/shm directory is mounted with the ramfs type:
+
+# mount | grep shm
+ramfs on /dev/shm type ramfs (rw)
+</pre></li>
+<li>
+<p>Run the following command to check the permissions on the <code dir="ltr">/dev/shm</code> directory:</p>
+<pre dir="ltr">
+# ls -ld /dev/shm
+drwxr-xr-x  3 oracle oinstall 0 Jan 13 12:12 /dev/shm
+</pre></li>
+<li>
+<p>Edit the <code dir="ltr">/etc/security/limits.conf</code> file and add the following entries to it to increase the max locked memory limit:</p>
+<pre dir="ltr">
+soft    memlock        3145728
+hard    memlock        3145728
+</pre></li>
+<li>
+<p>Switch to the <code dir="ltr">oracle</code> user:</p>
+<pre dir="ltr">
+# sudo - oracle
+Password:
+</pre></li>
+<li>
+<p>Run the following command to check the max locked memory limit:</p>
+<pre dir="ltr">
+$ ulimit -l
+3145728
+</pre></li>
+<li>
+<p>Complete the following procedure to configure instance parameters for Very Large Memory:</p>
+<ol>
+<li>
+<p>Replace the <code dir="ltr">DB_CACHE_SIZE</code>, <code dir="ltr">DB_xK_CACHE_SIZE</code>, <code dir="ltr">sga_target</code>, and <code dir="ltr">memory_target</code> parameters with <code dir="ltr">DB_BLOCK_BUFFERS</code> parameter.</p>
+</li>
+<li>
+<p>Add the <code dir="ltr">USE_INDIRECT_DATA_BUFFERS=TRUE</code> parameter.</p>
+</li>
+<li>
+<p>Configure SGA size according to the SGA requirements.</p>
+</li>
+<li>
+<p>Remove <code dir="ltr">SGA_TARGET</code>, <code dir="ltr">MEMORY_TARGET</code>, or <code dir="ltr">MEMORY_MAX_TARGET</code> parameters, if set.</p>
+</li>
+</ol>
+</li>
+<li>
+<p>Start the database instance.</p>
+</li>
+<li>
+<p>Run the following commands to check the memory allocation:</p>
+<pre dir="ltr">
+$ ls -l /dev/shm
+$ ipcs -m
+</pre></li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#CACFIHHA">"Configuring HugePages on Linux"</a> section for more information about HugePages.</div>
+</div>
+<!-- class="sect2" -->
+<a id="CACGHJHI"></a>
+<div id="UNXAR393" class="sect2">
+<h3 class="sect2"><span class="secnum">G.1.5</span> Restrictions Involved in Implementing Very Large Memory</h3>
+<p>Following are the limitations of running a computer in the Very Large Memory mode:</p>
+<ul>
+<li>
+<p>You cannot use Automatic Memory Management (AMM) while implementing VLM using <code dir="ltr">ramfs</code>, because AMM works on dynamic SGA tuning. With AMM swapping is possible. For example, you can unmap the unused SGA space and map it to PGA. Dynamic SGA and multiple block size are not supported with Very Large Memory because <code dir="ltr">ramfs</code> is not swappable. To enable Very Large Memory, you must ensure that you set the value of <code dir="ltr">MEMORY_TARGET</code> to zero.</p>
+</li>
+<li>
+<p>VLM can be implemented only if Database Buffer Cache size is greater than 512MB.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CACDCGAH"></a>
+<div id="UNXAR394" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">G.2</span> Overview of HugePages</h2>
+<p>HugePages is a feature integrated into the Linux kernel 2.6. Enabling HugePages makes it possible for the operating system to support memory pages greater than the default (usually 4KB). Using very large page sizes can improve system performance by reducing the amount of system resources required to access page table entries. HugePages is useful for both 32-bit and 64-bit configurations. HugePage sizes vary from 2MB to 256MB, depending on the kernel version and the hardware architecture. For Oracle Databases, using HugePages reduces the operating system maintenance of page states, and increases Translation Lookaside Buffer (TLB) hit ratio.</p>
+<p>This section includes the following topics:</p>
+<ul>
+<li>
+<p><a href="#CACIBJBB">Tuning SGA With HugePages</a></p>
+</li>
+<li>
+<p><a href="#CACFIHHA">Configuring HugePages on Linux</a></p>
+</li>
+<li>
+<p><a href="#CACDBJGC">Restrictions for HugePages Configurations</a></p>
+</li>
+<li>
+<p><a href="#CIADECDI">Disabling Transparent HugePages</a></p>
+</li>
+</ul>
+<a id="CACIBJBB"></a>
+<div id="UNXAR395" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">G.2.1</span> Tuning SGA With HugePages</h3>
+<p>Without HugePages, the operating system keeps each 4KB of memory as a page, and when it is allocated to the SGA, then the lifecycle of that page (dirty, free, mapped to a process, and so on) is kept up to date by the operating system kernel.</p>
+<p>With HugePages, the operating system page table (virtual memory to physical memory mapping) is smaller, since each page table entry is pointing to pages from 2MB to 256MB. Also, the kernel has fewer pages whose lifecyle must be monitored.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+2MB size of HugePages is available with Linux x86-64, Linux x86, and IBM: Linux on System z.</div>
+<p>The following are the advantages of using HugePages:</p>
+<ul>
+<li>
+<p>Increased performance through increased TLB hits.</p>
+</li>
+<li>
+<p>Pages are locked in memory and are never swapped out which guarantees that shared memory like SGA remains in RAM.</p>
+</li>
+<li>
+<p>Contiguous pages are preallocated and cannot be used for anything else but for System V shared memory (for example, SGA)</p>
+</li>
+<li>
+<p>Less bookkeeping work for the kernel for that part of virtual memory due to larger page sizes</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="CACFIHHA"></a>
+<div id="UNXAR396" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">G.2.2</span> Configuring HugePages on Linux</h3>
+<p>Complete the following steps to configure HugePages on the computer:</p>
+<ol>
+<li>
+<p>Edit the <code dir="ltr">memlock</code> setting in the <code dir="ltr">/etc/security/limits.conf</code> file. The <code dir="ltr">memlock</code> setting is specified in KB and set slightly lesser than the installed RAM. For example, if you have 64GB RAM installed, add the following entries to increase the max locked memory limit:</p>
+<pre dir="ltr">
+*   soft   memlock    60397977
+*   hard   memlock    60397977
+</pre>
+<p>You can also set the <code dir="ltr">memlock</code> value higher than your SGA requirements.</p>
+</li>
+<li>
+<p>Login as the <code dir="ltr">oracle</code> user again and run the <code dir="ltr">ulimit -l</code> command to verify the new <code dir="ltr">memlock</code> setting:</p>
+<pre dir="ltr">
+$ ulimit -l
+60397977
+</pre></li>
+<li>
+<p>Run the following command to display the value of <code dir="ltr">Hugepagesize</code> variable:</p>
+<pre dir="ltr">
+$ grep Hugepagesize /proc/meminfo
+</pre></li>
+<li>
+<p>Complete the following procedure to create a script that computes recommended values for <code dir="ltr">hugepages</code> configuration for the current shared memory segments:</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Following is an example that may require modifications.</div>
+<ol>
+<li>
+<p>Create a text file named <code dir="ltr">hugepages_settings.sh</code>.</p>
+</li>
+<li>
+<p>Add the following content in the file:</p>
+<pre dir="ltr">
+#!/bin/bash
+#
+# hugepages_settings.sh
+#
+# Linux bash script to compute values for the
+# recommended HugePages/HugeTLB configuration
+#
+# Note: This script does calculation for all shared memory
+# segments available when the script is run, no matter it
+# is an Oracle RDBMS shared memory segment or not.
+# Check for the kernel version
+KERN=`uname -r | awk -F. '{ printf("%d.%d\n",$1,$2); }'`
+# Find out the HugePage size
+HPG_SZ=`grep Hugepagesize /proc/meminfo | awk {'print $2'}`
+# Start from 1 pages to be on the safe side and guarantee 1 free HugePage
+NUM_PG=1
+# Cumulative number of pages required to handle the running shared memory segments
+for SEG_BYTES in `ipcs -m | awk {'print $5'} | grep "[0-9][0-9]*"`
+do
+   MIN_PG=`echo "$SEG_BYTES/($HPG_SZ*1024)" | bc -q`
+   if [ $MIN_PG -gt 0 ]; then
+      NUM_PG=`echo "$NUM_PG+$MIN_PG+1" | bc -q`
+   fi
+done
+# Finish with results
+case $KERN in
+   '2.4') HUGETLB_POOL=`echo "$NUM_PG*$HPG_SZ/1024" | bc -q`;
+          echo "Recommended setting: vm.hugetlb_pool = $HUGETLB_POOL" ;;
+   '2.6'|'3.8') echo "Recommended setting: vm.nr_hugepages = $NUM_PG" ;;
+    *) echo "Unrecognized kernel version $KERN. Exiting." ;;
+esac
+# End
+</pre></li>
+<li>
+<p>Run the following command to change the permission of the file:</p>
+<pre dir="ltr">
+$ chmod +x hugepages_settings.sh
+</pre></li>
+</ol>
+</li>
+<li id="CACJDEDA">
+<p>Run the <code dir="ltr">hugepages_settings.sh</code> script to compute the values for <code dir="ltr">hugepages</code> configuration:</p>
+<pre dir="ltr">
+$ ./hugepages_settings.sh
+</pre></li>
+<li>
+<p>Set the following kernel parameter:</p>
+<pre dir="ltr">
+# sysctl -w vm.nr_hugepages=<span class="italic">value_displayed_in_step_<a href="#CACJDEDA">5</a></span>
+</pre></li>
+<li>
+<p>To make the value of the parameter available for every time you restart the computer, edit the <code dir="ltr">/etc/sysctl.conf</code> file and add the following entry:</p>
+<pre dir="ltr">
+vm.nr_hugepages=<span class="italic">value_displayed_in_step_<a href="#CACJDEDA">5</a></span>
+</pre></li>
+<li>
+<p>Restart the server.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+To check the available <code dir="ltr">hugepages</code>, run the following command:
+<pre dir="ltr">
+$ grep Huge /proc/meminfo
+</pre></div>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="CACDBJGC"></a>
+<div id="UNXAR397" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">G.2.3</span> Restrictions for HugePages Configurations</h3>
+<p>Following are the limitations of using HugePages:</p>
+<ul>
+<li>
+<p>Automatic Memory Management (AMM) and HugePages are not compatible. When you use AMM, the entire SGA memory is allocated by creating files under <code dir="ltr">/dev/shm</code>. When Oracle Database allocates SGA with AMM, HugePages are not reserved. To use HugePages on Oracle Database 12<span class="italic">c</span>, You must disable AMM.</p>
+</li>
+<li>
+<p>If you are using VLM in a 32-bit environment, then you cannot use HugePages for the Database Buffer cache. You can use HugePages for other parts of the SGA, such as <code dir="ltr">shared_pool</code>, <code dir="ltr">large_pool</code>, and so on. Memory allocation for VLM (buffer cache) is done using shared memory file systems (<code dir="ltr">ramfs/tmpfs/shmfs</code>). Memory file systems do not reserve or use HugePages.</p>
+</li>
+<li>
+<p>HugePages are not subject to allocation or release after system startup, unless a system administrator changes the HugePages configuration, either by modifying the number of pages available, or by modifying the pool size. If the space required is not reserved in memory during system startup, then HugePages allocation fails.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="CIADECDI"></a>
+<div id="UNXAR411" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">G.2.4</span> Disabling Transparent HugePages</h3>
+<p>Transparent HugePages memory is enabled by default with Red Hat Enterprise Linux 6, SUSE 11, and Oracle Linux 6 with earlier releases of Oracle Linux Unbreakable Enterprise Kernel 2 (UEK2) kernels. Transparent HugePages memory is disabled by default in later releases of UEK2 kernels.</p>
+<p>Transparent HugePages can cause memory allocation delays at runtime. To avoid performance issues, Oracle recommends that you disable Transparent HugePages on all Oracle Database servers. Oracle recommends that you instead use standard HugePages for enhanced performance.</p>
+<p>Transparent HugePages memory differs from standard HugePages memory because the kernel <code dir="ltr">khugepaged</code> thread allocates memory dynamically during runtime. Standard HugePages memory is pre-allocated at startup, and does not change during runtime.</p>
+<p>To check if Transparent HugePages is enabled run one of the following commands as the <code dir="ltr">root</code> user:</p>
+<p>Red Hat Enterprise Linux kernels:</p>
+<pre dir="ltr">
+# cat /sys/kernel/mm/redhat_transparent_hugepage/enabled
+</pre>
+<p>Other kernels:</p>
+<pre dir="ltr">
+# cat /sys/kernel/mm/transparent_hugepage/enabled
+</pre>
+<p>The following is a sample output that shows Transparent HugePages is being used as the <code dir="ltr">[always]</code> flag is enabled.</p>
+<pre dir="ltr">
+[always] never
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If Transparent HugePages is removed from the kernel then the <code dir="ltr">/sys/kernel/mm/transparent_hugepage</code> or <code dir="ltr">/sys/kernel/mm/redhat_transparent_hugepage</code> files do not exist.</div>
+<p>To disable Transparent HugePages perform the following steps:</p>
+<ol>
+<li>
+<p>Add the following entry to the kernel boot line in the <code dir="ltr">/etc/grub.conf</code> file:</p>
+<pre dir="ltr">
+transparent_hugepage=never
+</pre>
+<p>For example:</p>
+<pre dir="ltr">
+title Oracle Linux Server (2.6.32-300.25.1.el6uek.x86_64)
+        root (hd0,0)
+        kernel /vmlinuz-2.6.32-300.25.1.el6uek.x86_64 ro root=LABEL=/ transparent_hugepage=never
+        initrd /initramfs-2.6.32-300.25.1.el6uek.x86_64.img
+</pre></li>
+</ol>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="appendix" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1783">
+<tr>
+<td class="cellalignment1792">
+<table class="cellalignment1788">
+<tr>
+<td class="cellalignment1787"><a href="appg_db_lmts.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1787"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2006, 2017,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1794">
+<table class="cellalignment1786">
+<tr>
+<td class="cellalignment1787"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1787"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1787"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1787"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1787"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1787"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

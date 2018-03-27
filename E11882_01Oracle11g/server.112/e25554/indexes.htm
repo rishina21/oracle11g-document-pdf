@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Indexes</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 070" />
+<meta name="dcterms.created" content="2013-07-04T23:23:15Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Data Warehousing Guide" />
+<meta name="dcterms.identifier" content="E25554-02" />
+<meta name="dcterms.isVersionOf" content="DWHSG" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2001, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="px.htm" title="Previous" type="text/html" />
+<link rel="Next" href="constra.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e25554.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">14/35</span> <!-- End Header --><a id="g1009447"></a><a id="DWHSG006"></a><a id="i1004902"></a>
+<h1 class="chapter"><span class="secnum">7</span> Indexes</h1>
+<p>This chapter contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#CIHGAFFF">Using Bitmap Indexes in Data Warehouses</a></p>
+</li>
+<li>
+<p><a href="#i1006549">Using B-Tree Indexes in Data Warehouses</a></p>
+</li>
+<li>
+<p><a href="#CHDDDFEG">Using Index Compression</a></p>
+</li>
+<li>
+<p><a href="#i1006565">Choosing Between Local Indexes and Global Indexes</a></p>
+<div class="infoboxnotealso">
+<p class="notep1"><span class="bold">See Also</span>:</p>
+<a class="olink CNCPT811" href="../../server.112/e40540/indexiot.htm#CNCPT811"><span class="italic">Oracle Database Concepts</span></a> for general information regarding indexing</div>
+</li>
+</ul>
+<a id="CIHGAFFF"></a><a id="DWHSG8130"></a>
+<div class="sect1">
+<h2 class="sect1">Using Bitmap Indexes in Data Warehouses</h2>
+<p><a id="sthref92"></a>Bitmap indexes are widely used in data warehousing environments. The environments typically have large amounts of data and ad hoc queries, but a low level of concurrent DML transactions. For such applications, bitmap indexing provides:</p>
+<ul>
+<li>
+<p>Reduced response time for large classes of ad hoc queries.</p>
+</li>
+<li>
+<p>Reduced storage requirements compared to other indexing techniques.</p>
+</li>
+<li>
+<p>Dramatic performance gains even on hardware with a relatively small number of CPUs or a small amount of memory.</p>
+</li>
+<li>
+<p>Efficient maintenance during parallel DML and loads.</p>
+</li>
+</ul>
+<p>Fully indexing a large table with a traditional B-tree index can be prohibitively expensive in terms of disk space because the indexes can be several times larger than the data in the table. Bitmap indexes are typically only a fraction of the size of the indexed data in the table.</p>
+<p>An index provides pointers to the rows in a table that contain a given key value. A regular index stores a list of rowids for each key corresponding to the rows with that key value. In a bitmap index, a bitmap for each key value replaces a list of rowids.</p>
+<p>Each bit in the bitmap corresponds to a possible rowid, and if the bit is set, it means that the row with the corresponding rowid contains the key value. A mapping function converts the bit position to an actual rowid, so that the bitmap index provides the same functionality as a regular index. Bitmap indexes store the bitmaps in a compressed way. If the number of distinct key values is small, bitmap indexes compress better and the space saving benefit compared to a B-tree index becomes even better.</p>
+<p>Bitmap indexes are most effective for queries that contain multiple conditions in the <code>WHERE</code> clause. Rows that satisfy some, but not all, conditions are filtered out before the table itself is accessed. This improves response time, often dramatically. If you are unsure of which indexes to create, the SQL Access Advisor can generate recommendations on what to create. As the bitmaps from bitmap indexes can be combined quickly, it is usually best to use single-column bitmap indexes.</p>
+<p>When creating bitmap indexes, you should use <code>NOLOGGING</code> and <code>COMPUTE</code> <code>STATISTICS</code>. In addition, you should keep in mind that bitmap indexes are usually easier to destroy and re-create than to maintain.</p>
+<a id="i1006225"></a><a id="DWHSG8131"></a>
+<div class="sect2">
+<h3 class="sect2">Benefits for Data Warehousing Applications</h3>
+<p><a id="sthref93"></a><a id="sthref94"></a>Bitmap indexes are primarily intended for data warehousing applications where users query the data rather than update it. They are not suitable for OLTP applications with large numbers of concurrent transactions modifying the data.</p>
+<p><a id="sthref95"></a><a id="sthref96"></a><a id="sthref97"></a><a id="sthref98"></a><a id="sthref99"></a>Parallel query and parallel DML work with bitmap indexes. Bitmap indexing also supports parallel create indexes and concatenated indexes.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="schemas.htm#g1008401">Chapter 20, "Schema Modeling Techniques"</a> for further information about using bitmap indexes in data warehousing environments</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1006242"></a><a id="DWHSG8132"></a>
+<div class="sect2">
+<h3 class="sect2">Cardinality</h3>
+<p><a id="sthref100"></a><a id="sthref101"></a><a id="sthref102"></a><a id="sthref103"></a>The advantages of using bitmap indexes are greatest for columns in which the ratio of the number of distinct values to the number of rows in the table is small. We refer to this ratio as the <a href="glossary.htm#i996860"><span class="xrefglossterm">degree of cardinality</span></a>. A gender column, which has only two distinct values (male and female), is optimal for a bitmap index. However, data warehouse administrators also build bitmap indexes on columns with higher cardinalities.</p>
+<p><a id="sthref104"></a>For example, on a table with one million rows, a column with 10,000 distinct values is a candidate for a bitmap index. A bitmap index on this column can outperform a B-tree index, particularly when this column is often queried in conjunction with other indexed columns. In fact, in a typical data warehouse environments, a bitmap index can be considered for any non-unique column.</p>
+<p>B-tree indexes are most effective for high-cardinality data: that is, for data with many possible values, such as <code>customer_name</code> or <code>phone_number</code>. In a data warehouse, B-tree indexes should be used only for unique columns or other columns with very high cardinalities (that is, columns that are almost unique). The majority of indexes in a data warehouse should be bitmap indexes.</p>
+<p>In ad hoc queries and similar situations, bitmap indexes can dramatically improve query performance. <code>AND</code> and <code>OR</code> conditions in the <code>WHERE</code> clause of a query can be resolved quickly by performing the corresponding Boolean operations directly on the bitmaps before converting the resulting bitmap to rowids. If the resulting number of rows is small, the query can be answered quickly without resorting to a full table scan.</p>
+<div class="example">
+<p class="titleinexample"><a id="CIHFJEII"></a><a id="DWHSG8133"></a>Example 7-1 Bitmap Index</p>
+<p>The following shows a portion of a company's <code>customers</code> table.</p>
+<pre>
+SELECT cust_id, cust_gender, cust_marital_status, cust_income_level
+FROM customers;
+
+CUST_ID    C CUST_MARITAL_STATUS  CUST_INCOME_LEVEL
+---------- - -------------------- ---------------------
+... 
+        70 F                      D: 70,000 - 89,999
+        80 F married              H: 150,000 - 169,999
+        90 M single               H: 150,000 - 169,999
+       100 F                      I: 170,000 - 189,999
+       110 F married              C: 50,000 - 69,999
+       120 M single               F: 110,000 - 129,999
+       130 M                      J: 190,000 - 249,999
+       140 M married              G: 130,000 - 149,999
+...
+</pre>
+<p>Because <code>cust_gender</code>, <code>cust_marital_status</code>, and <code>cust_income_level</code> are all low-cardinality columns (there are only three possible values for marital status, two possible values for gender, and 12 for income level), bitmap indexes are ideal for these columns. Do not create a bitmap index on <code>cust_id</code> because this is a unique column. Instead, a unique B-tree index on this column provides the most efficient representation and retrieval.</p>
+<p><a href="#g1007545">Table 7-1</a> illustrates the bitmap index for the <code>cust_gender</code> column in this example. It consists of two separate bitmaps, one for gender.</p>
+</div>
+<!-- class="example" -->
+<div class="tblformal">
+<p class="titleintable"><a id="DWHSG8134"></a><a id="sthref105"></a><a id="g1007545"></a>Table 7-1 Sample Bitmap Index</p>
+<table class="cellalignment1381" title="Sample Bitmap Index" summary="Sample Bitmap Index" dir="ltr">
+<thead>
+<tr class="cellalignment1372">
+<th class="cellalignment1382" id="r1c1-t4"><br /></th>
+<th class="cellalignment1382" id="r1c2-t4">gender='M'</th>
+<th class="cellalignment1382" id="r1c3-t4">gender='F'</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1372">
+<td class="cellalignment1378" id="r2c1-t4" headers="r1c1-t4">
+<p><code>cust_id 70</code></p>
+</td>
+<td class="cellalignment1378" headers="r2c1-t4 r1c2-t4">
+<p>0</p>
+</td>
+<td class="cellalignment1378" headers="r2c1-t4 r1c3-t4">
+<p>1</p>
+</td>
+</tr>
+<tr class="cellalignment1372">
+<td class="cellalignment1378" id="r3c1-t4" headers="r1c1-t4">
+<p><code>cust_id 80</code></p>
+</td>
+<td class="cellalignment1378" headers="r3c1-t4 r1c2-t4">
+<p>0</p>
+</td>
+<td class="cellalignment1378" headers="r3c1-t4 r1c3-t4">
+<p>1</p>
+</td>
+</tr>
+<tr class="cellalignment1372">
+<td class="cellalignment1378" id="r4c1-t4" headers="r1c1-t4">
+<p><code>cust_id 90</code></p>
+</td>
+<td class="cellalignment1378" headers="r4c1-t4 r1c2-t4">
+<p>1</p>
+</td>
+<td class="cellalignment1378" headers="r4c1-t4 r1c3-t4">
+<p>0</p>
+</td>
+</tr>
+<tr class="cellalignment1372">
+<td class="cellalignment1378" id="r5c1-t4" headers="r1c1-t4">
+<p><code>cust_id 100</code></p>
+</td>
+<td class="cellalignment1378" headers="r5c1-t4 r1c2-t4">
+<p>0</p>
+</td>
+<td class="cellalignment1378" headers="r5c1-t4 r1c3-t4">
+<p>1</p>
+</td>
+</tr>
+<tr class="cellalignment1372">
+<td class="cellalignment1378" id="r6c1-t4" headers="r1c1-t4">
+<p><code>cust_id 110</code></p>
+</td>
+<td class="cellalignment1378" headers="r6c1-t4 r1c2-t4">
+<p>0</p>
+</td>
+<td class="cellalignment1378" headers="r6c1-t4 r1c3-t4">
+<p>1</p>
+</td>
+</tr>
+<tr class="cellalignment1372">
+<td class="cellalignment1378" id="r7c1-t4" headers="r1c1-t4">
+<p><code>cust_id 120</code></p>
+</td>
+<td class="cellalignment1378" headers="r7c1-t4 r1c2-t4">
+<p>1</p>
+</td>
+<td class="cellalignment1378" headers="r7c1-t4 r1c3-t4">
+<p>0</p>
+</td>
+</tr>
+<tr class="cellalignment1372">
+<td class="cellalignment1378" id="r8c1-t4" headers="r1c1-t4">
+<p><code>cust_id 130</code></p>
+</td>
+<td class="cellalignment1378" headers="r8c1-t4 r1c2-t4">
+<p>1</p>
+</td>
+<td class="cellalignment1378" headers="r8c1-t4 r1c3-t4">
+<p>0</p>
+</td>
+</tr>
+<tr class="cellalignment1372">
+<td class="cellalignment1378" id="r9c1-t4" headers="r1c1-t4">
+<p><code>cust_id 140</code></p>
+</td>
+<td class="cellalignment1378" headers="r9c1-t4 r1c2-t4">
+<p>1</p>
+</td>
+<td class="cellalignment1378" headers="r9c1-t4 r1c3-t4">
+<p>0</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<p>Each entry (or bit) in the bitmap corresponds to a single row of the <code>customers</code> table. The value of each bit depends upon the values of the corresponding row in the table. For example, the bitmap <code>cust_gender='F'</code> contains a one as its first bit because the gender is <code>F</code> in the first row of the <code>customers</code> table. The bitmap <code>cust_gender='F'</code> has a zero for its third bit because the gender of the third row is not <code>F</code>.</p>
+<p>An analyst investigating demographic trends of the company's customers might ask, "How many of our married customers have an income level of G or H?" This corresponds to the following query:</p>
+<pre>
+SELECT COUNT(*) FROM customers
+WHERE cust_marital_status = 'married' 
+AND cust_income_level IN ('H: 150,000 - 169,999', 'G: 130,000 - 149,999');
+</pre>
+<p>Bitmap indexes can efficiently process this query by merely counting the number of ones in the bitmap illustrated in <a href="#i1006355">Figure 7-1</a>. The result set will be found by using bitmap <code>OR</code> merge operations without the necessity of a conversion to rowids. To identify additional specific customer attributes that satisfy the criteria, use the resulting bitmap to access the table after a bitmap to rowid conversion.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="i1006355"></a><a id="DWHSG8135"></a>Figure 7-1 Executing a Query Using Bitmap Indexes</p>
+<img width="489" height="187" src="./dwhsg093.gif" alt="Description of Figure 7-1 follows" /><br />
+<a id="sthref106" href="./img_text/dwhsg093.htm">Description of "Figure 7-1 Executing a Query Using Bitmap Indexes"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<a id="DWHSG8136"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref107"></a>
+<h4 class="sect3">How to Determine Candidates for Using a Bitmap Index</h4>
+<p>Bitmap indexes should help when either the fact table is queried alone, and there are predicates on the indexed column, or when the fact table is joined with two or more dimension tables, and there are indexes on foreign key columns in the fact table, and predicates on dimension table columns.</p>
+<p>A fact table column is a candidate for a bitmap index when the following conditions are met:</p>
+<ul>
+<li>
+<p>There are 100 or more rows for each distinct value in the indexed column. When this limit is met, the bitmap index will be much smaller than a regular index, and you will be able to create the index much faster than a regular index. An example would be one million distinct values in a multi-billion row table.</p>
+</li>
+</ul>
+<p>And either of the following are true:</p>
+<ul>
+<li>
+<p>The indexed column will be restricted in queries (referenced in the <code>WHERE</code> clause).</p>
+</li>
+</ul>
+<p>or</p>
+<ul>
+<li>
+<p>The indexed column is a foreign key for a dimension table. In this case, such an index will make star transformation more likely.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1006362"></a><a id="DWHSG8137"></a>
+<div class="sect2">
+<h3 class="sect2">Bitmap Indexes and Nulls</h3>
+<p>Unlike most other types of indexes, <a id="sthref108"></a><a id="sthref109"></a><a id="sthref110"></a>bitmap indexes include rows that have <code>NULL</code> values. Indexing of nulls can be useful for some types of <a id="sthref111"></a>SQL statements, such as queries with the aggregate function <code>COUNT</code>.</p>
+<div class="example">
+<p class="titleinexample"><a id="CIHJGEIA"></a><a id="DWHSG8138"></a>Example 7-2 Bitmap Index</p>
+<pre>
+SELECT COUNT(*) FROM customers WHERE cust_marital_status IS NULL;
+</pre>
+<p>This query uses a bitmap index on <code>cust_marital_status</code>. Note that this query would not be able to use a B-tree index, because B-tree indexes do not store the <code>NULL</code> values.</p>
+<pre>
+SELECT COUNT(*) FROM customers;
+</pre>
+<p>Any bitmap index can be used for this query because all table rows are indexed, including those that have <code>NULL</code> data. If nulls were not indexed, the optimizer would be able to use indexes only on columns with <code>NOT NULL</code> constraints.</p>
+</div>
+<!-- class="example" --></div>
+<!-- class="sect2" -->
+<a id="i1006376"></a><a id="DWHSG8139"></a>
+<div class="sect2">
+<h3 class="sect2">Bitmap Indexes on Partitioned Tables</h3>
+<p><a id="sthref112"></a><a id="sthref113"></a><a id="sthref114"></a><a id="sthref115"></a><a id="sthref116"></a>You can create bitmap indexes on partitioned tables but they must be local to the partitioned table&mdash;they cannot be global indexes. A partitioned table can only have global B-tree indexes, partitioned or nonpartitioned.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><span class="italic">Oracle Database VLDB and Partitioning Guide</span> for more information</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="DWHSG8140"></a>
+<div class="sect2"><a id="sthref117"></a>
+<h3 class="sect2">Using Bitmap Join Indexes in Data Warehouses</h3>
+<p>In addition <a id="sthref118"></a><a id="sthref119"></a>to a bitmap index on a single table, you can create a bitmap join index, which is a bitmap index for the join of two or more tables. In a bitmap join index, the bitmap for the table to be indexed is built for values coming from the joined tables. In a data warehousing environment, the join condition is an equi-inner join between the primary key column or columns of the dimension tables and the foreign key column or columns in the fact table.</p>
+<p>A bitmap join index can improve the performance by an order of magnitude. By storing the result of a join, the join can be avoided completely for SQL statements using a bitmap join index. Furthermore, since it is most likely to have a much smaller number of distinct values for a bitmap join index compared to a regular bitmap index on the join column, the bitmaps compress better, yielding to less space consumption than a regular bitmap index on the join column.</p>
+<p>Bitmap join indexes are much more efficient in storage than materialized join views, an alternative for materializing joins in advance. This is because the materialized join views do not compress the rowids of the fact tables.</p>
+<p>B-tree and bitmap indexes have different maximum column limitations.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink SQLRF54037" href="../../server.112/e41084/statements_5012.htm#SQLRF54037"><span class="italic">Oracle Database SQL Language Reference</span></a> for details regarding these limitations</p>
+</li>
+</ul>
+</div>
+<a id="DWHSG8141"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref120"></a>
+<h4 class="sect3">Four Join Models for Bitmap Join Indexes</h4>
+<p>The most common usage of a bitmap join index is in star model environments, where a large table is indexed on columns joined by one or several smaller tables. We will refer to the large table as the fact table and to the smaller tables as dimension tables. The following section describes the four different join models supported by bitmap join indexes. See <a href="schemas.htm#g1008401">Chapter 20, "Schema Modeling Techniques"</a> for schema modeling techniques.</p>
+<div class="example">
+<p class="titleinexample"><a id="DWHSG8142"></a><a id="sthref121"></a>Example 7-3 Bitmap Join Index: One Dimension Table Columns Joins One Fact Table</p>
+<p>Unlike the example in <a href="#CIHFJEII">"Bitmap Index"</a>, where a bitmap index on the <code>cust_gender</code> column on the <code>customers</code> table was built, we now create a bitmap join index on the fact table <code>sales</code> for the joined column <code>customers(cust_gender)</code>. Table <code>sales</code> stores <code>cust_id</code> values only:</p>
+<pre>
+SELECT time_id, cust_id, amount_sold FROM sales;
+
+TIME_ID   CUST_ID    AMOUNT_SOLD
+--------- ---------- -----------
+01-JAN-98      29700        2291
+01-JAN-98       3380         114
+01-JAN-98      67830         553
+01-JAN-98     179330           0
+01-JAN-98     127520         195
+01-JAN-98      33030         280
+...
+</pre>
+<p>To create such a bitmap join index, column <code>customers(cust_gender)</code> has to be joined with table <code>sales</code>. The join condition is specified as part of the <code>CREATE</code> statement for the bitmap join index as follows:</p>
+<pre>
+CREATE BITMAP INDEX sales_cust_gender_bjix
+ON sales(customers.cust_gender)
+FROM sales, customers
+WHERE sales.cust_id = customers.cust_id
+LOCAL NOLOGGING COMPUTE STATISTICS;
+</pre>
+<p>The following query shows illustrates the join result that is used to create the bitmaps that are stored in the bitmap join index:</p>
+<pre>
+SELECT sales.time_id, customers.cust_gender, sales.amount_sold
+FROM sales, customers
+WHERE sales.cust_id = customers.cust_id;
+
+TIME_ID   C AMOUNT_SOLD
+--------- - -----------
+01-JAN-98 M        2291
+01-JAN-98 F         114
+01-JAN-98 M         553
+01-JAN-98 M           0
+01-JAN-98 M         195
+01-JAN-98 M         280
+01-JAN-98 M          32
+...
+</pre>
+<p><a href="#g1007505">Table 7-2</a> illustrates the bitmap representation for the bitmap join index in this example.</p>
+</div>
+<!-- class="example" -->
+<div class="tblformal">
+<p class="titleintable"><a id="DWHSG8143"></a><a id="sthref122"></a><a id="g1007505"></a>Table 7-2 Sample Bitmap Join Index</p>
+<table class="cellalignment1381" title="Sample Bitmap Join Index" summary="Sample Bitmap Join Index" dir="ltr">
+<thead>
+<tr class="cellalignment1372">
+<th class="cellalignment1382" id="r1c1-t7"><br /></th>
+<th class="cellalignment1382" id="r1c2-t7">cust_gender='M'</th>
+<th class="cellalignment1382" id="r1c3-t7">cust_gender='F'</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1372">
+<td class="cellalignment1378" id="r2c1-t7" headers="r1c1-t7">
+<p>sales record 1</p>
+</td>
+<td class="cellalignment1378" headers="r2c1-t7 r1c2-t7">
+<p>1</p>
+</td>
+<td class="cellalignment1378" headers="r2c1-t7 r1c3-t7">
+<p>0</p>
+</td>
+</tr>
+<tr class="cellalignment1372">
+<td class="cellalignment1378" id="r3c1-t7" headers="r1c1-t7">
+<p>sales record 2</p>
+</td>
+<td class="cellalignment1378" headers="r3c1-t7 r1c2-t7">
+<p>0</p>
+</td>
+<td class="cellalignment1378" headers="r3c1-t7 r1c3-t7">
+<p>1</p>
+</td>
+</tr>
+<tr class="cellalignment1372">
+<td class="cellalignment1378" id="r4c1-t7" headers="r1c1-t7">
+<p>sales record 3</p>
+</td>
+<td class="cellalignment1378" headers="r4c1-t7 r1c2-t7">
+<p>1</p>
+</td>
+<td class="cellalignment1378" headers="r4c1-t7 r1c3-t7">
+<p>0</p>
+</td>
+</tr>
+<tr class="cellalignment1372">
+<td class="cellalignment1378" id="r5c1-t7" headers="r1c1-t7">
+<p>sales record 4</p>
+</td>
+<td class="cellalignment1378" headers="r5c1-t7 r1c2-t7">
+<p>1</p>
+</td>
+<td class="cellalignment1378" headers="r5c1-t7 r1c3-t7">
+<p>0</p>
+</td>
+</tr>
+<tr class="cellalignment1372">
+<td class="cellalignment1378" id="r6c1-t7" headers="r1c1-t7">
+<p>sales record 5</p>
+</td>
+<td class="cellalignment1378" headers="r6c1-t7 r1c2-t7">
+<p>1</p>
+</td>
+<td class="cellalignment1378" headers="r6c1-t7 r1c3-t7">
+<p>0</p>
+</td>
+</tr>
+<tr class="cellalignment1372">
+<td class="cellalignment1378" id="r7c1-t7" headers="r1c1-t7">
+<p>sales record 6</p>
+</td>
+<td class="cellalignment1378" headers="r7c1-t7 r1c2-t7">
+<p>1</p>
+</td>
+<td class="cellalignment1378" headers="r7c1-t7 r1c3-t7">
+<p>0</p>
+</td>
+</tr>
+<tr class="cellalignment1372">
+<td class="cellalignment1378" id="r8c1-t7" headers="r1c1-t7">
+<p>sales record 7</p>
+</td>
+<td class="cellalignment1378" headers="r8c1-t7 r1c2-t7">
+<p>1</p>
+</td>
+<td class="cellalignment1378" headers="r8c1-t7 r1c3-t7">
+<p>0</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<p>You can create other bitmap join indexes using more than one column or more than one table, as shown in these examples.</p>
+<div class="example">
+<p class="titleinexample"><a id="DWHSG8144"></a><a id="sthref123"></a>Example 7-4 Bitmap Join Index: Multiple Dimension Columns Join One Fact Table</p>
+<p>You can create a bitmap join index on more than one column from a single dimension table, as in the following example, which uses <code>customers(cust_gender, cust_marital_status)</code> from the <code>sh</code> schema:</p>
+<pre>
+CREATE BITMAP INDEX sales_cust_gender_ms_bjix
+ON sales(customers.cust_gender, customers.cust_marital_status)
+FROM sales, customers
+WHERE sales.cust_id = customers.cust_id
+LOCAL NOLOGGING COMPUTE STATISTICS;
+</pre></div>
+<!-- class="example" -->
+<div class="example">
+<p class="titleinexample"><a id="DWHSG8145"></a><a id="sthref124"></a>Example 7-5 Bitmap Join Index: Multiple Dimension Tables Join One Fact Table</p>
+<p>You can create a bitmap join index on multiple dimension tables, as in the following, which uses <code>customers(gender)</code> and <code>products(category)</code>:</p>
+<pre>
+CREATE BITMAP INDEX sales_c_gender_p_cat_bjix
+ON sales(customers.cust_gender, products.prod_category)
+FROM sales, customers, products
+WHERE sales.cust_id = customers.cust_id
+AND sales.prod_id = products.prod_id
+LOCAL NOLOGGING COMPUTE STATISTICS;
+</pre></div>
+<!-- class="example" -->
+<div class="example">
+<p class="titleinexample"><a id="DWHSG8146"></a><a id="sthref125"></a>Example 7-6 Bitmap Join Index: Snowflake Schema</p>
+<p>You can create a bitmap join index on more than one table, in which the indexed column is joined to the indexed table by using another table. For example, you can build an index on <code>countries.country_name</code>, even though the <code>countries</code> table is not joined directly to the <code>sales</code> table. Instead, the <code>countries</code> table is joined to the <code>customers</code> table, which is joined to the <code>sales</code> table. This type of schema is commonly called a <a href="glossary.htm#i997104"><span class="xrefglossterm">snowflake schema</span></a>.</p>
+<pre>
+CREATE BITMAP INDEX sales_co_country_name_bjix
+ON sales(countries.country_name)
+FROM sales, customers, countries
+WHERE sales.cust_id = customers.cust_id
+  AND customers.country_id = countries.country_id
+LOCAL NOLOGGING COMPUTE STATISTICS;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect3" -->
+<a id="DWHSG8147"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref126"></a>
+<h4 class="sect3">Bitmap Join Index Restrictions and Requirements</h4>
+<p>Join results must be stored, therefore, bitmap join indexes have the following restrictions:</p>
+<ul>
+<li>
+<p>Parallel DML is only supported on the fact table. Parallel DML on one of the participating dimension tables will mark the index as unusable.</p>
+</li>
+<li>
+<p>Only one table can be updated concurrently by different transactions when using the bitmap join index.</p>
+</li>
+<li>
+<p>No table can appear twice in the join.</p>
+</li>
+<li>
+<p>You cannot create a bitmap join index on a temporary table.</p>
+</li>
+<li>
+<p>The columns in the index must all be columns of the dimension tables.</p>
+</li>
+<li>
+<p>The dimension table join columns must be either primary key columns or have unique constraints.</p>
+</li>
+<li>
+<p>The dimension table column(s) participating the join with the fact table must be either the primary key column(s) or with the unique constraint.</p>
+</li>
+<li>
+<p>If a dimension table has composite primary key, each column in the primary key must be part of the join.</p>
+</li>
+<li>
+<p>The restrictions for creating a regular bitmap index also apply to a bitmap join index. For example, you cannot create a bitmap index with the <code>UNIQUE</code> attribute. See <a class="olink SQLRF01209" href="../../server.112/e41084/statements_5012.htm#SQLRF01209"><span class="italic">Oracle Database SQL Language Reference</span></a> for other restrictions.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006549"></a><a id="DWHSG8148"></a>
+<div class="sect1">
+<h2 class="sect1">Using B-Tree Indexes in Data Warehouses</h2>
+<p><a id="sthref127"></a><a id="sthref128"></a>A B-tree index is organized like an upside-down tree. The bottom level of the index holds the actual data values and pointers to the corresponding rows, much as the index in a book has a page number associated with each index entry.</p>
+<p>In general, use B-tree indexes when you know that your typical query refers to the indexed column and retrieves a few rows. In these queries, it is faster to find the rows by looking at the index. However, using the book index analogy, if you plan to look at every single topic in a book, you might not want to look in the index for the topic and then look up the page. It might be faster to read through every chapter in the book. Similarly, if you are retrieving most of the rows in a table, it might not make sense to look up the index to find the table rows. Instead, you might want to read or scan the table.</p>
+<p>B-tree indexes are most commonly used in a data warehouse to enforce unique keys. In many cases, it may not even be necessary to index these columns in a data warehouse, because the uniqueness was enforced as part of the preceding ETL processing, and because typical data warehouse queries may not work better with such indexes. B-tree indexes are more common in environments using third normal form schemas. In general, bitmap indexes should be more common than B-tree indexes in most data warehouse environments.</p>
+<p>B-tree and bitmap indexes have different maximum column limitations. See <a class="olink SQLRF54037" href="../../server.112/e41084/statements_5012.htm#SQLRF54037"><span class="italic">Oracle Database SQL Language Reference</span></a> for these limitations.</p>
+</div>
+<!-- class="sect1" -->
+<a id="CHDDDFEG"></a><a id="DWHSG8149"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Using Index Compression</h2>
+<p>Bitmap indexes are always stored in a patented, compressed manner without the need of any user intervention. B-tree indexes, however, can be stored specifically in a compressed manner to enable huge space savings, storing more keys in each index block, which also leads to less I/O and better performance.</p>
+<p>Key compression lets you compress a B-tree index, which reduces the storage overhead of repeated values. In the case of a nonunique index, all index columns can be stored in a compressed format, whereas in the case of a unique index, at least one index column has to be stored uncompressed.</p>
+<p>Generally, keys in an index have two pieces, a grouping piece and a unique piece. If the key is not defined to have a unique piece, Oracle provides one in the form of a rowid appended to the grouping piece. Key compression is a method of breaking off the grouping piece and storing it so it can be shared by multiple unique pieces. The cardinality of the chosen columns to be compressed determines the compression ratio that can be achieved. So, for example, if a unique index that consists of five columns provides the uniqueness mostly by the last two columns, it is most optimal to choose the three leading columns to be stored compressed. If you choose to compress four columns, the repetitiveness will be almost gone, and the compression ratio will be worse.</p>
+<p>Although key compression reduces the storage requirements of an index, it can increase the CPU time required to reconstruct the key column values during an index scan. It also incurs some additional storage overhead, because every prefix entry has an overhead of four bytes associated with it.</p>
+</div>
+<!-- class="sect1" -->
+<a id="i1006565"></a><a id="DWHSG8150"></a>
+<div class="sect1">
+<h2 class="sect1">Choosing Between Local Indexes and Global Indexes</h2>
+<p><a id="i1006567"></a>B-tree indexes on partitioned tables can be global or local. With Oracle8<span class="italic">i</span> and earlier releases, Oracle recommended that global indexes not be used in data warehouse environments because a partition DDL statement (for example, <code>ALTER</code> <code>TABLE</code> ... <code>DROP</code> <code>PARTITION</code>) would invalidate the entire index, and rebuilding the index is expensive. Since Oracle Database 10<span class="italic">g</span>, global indexes can be maintained without Oracle marking them as unusable after DDL. This enhancement makes global indexes more effective for data warehouse environments.</p>
+<p>However, local indexes will be more common than global indexes. Global indexes should be used when there is a specific requirement which cannot be met by local indexes (for example, a unique index on a non-partitioning key, or a performance requirement).</p>
+<p>Bitmap indexes on partitioned tables are always local.</p>
+</div>
+<!-- class="sect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1371">
+<tr>
+<td class="cellalignment1378">
+<table class="cellalignment1376">
+<tr>
+<td class="cellalignment1375"><a href="px.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1375"><a href="constra.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2001, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1380">
+<table class="cellalignment1374">
+<tr>
+<td class="cellalignment1375"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1375"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1375"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1375"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1375"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1375"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

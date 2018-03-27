@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Migrating from Release 10.2 DICOM Support</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 009" />
+<meta name="dcterms.created" content="2010-08-02T8:12:23Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Multimedia DICOM Developer's Guide" />
+<meta name="dcterms.identifier" content="E10778-03" />
+<meta name="dcterms.isVersionOf" content="IMDCM" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2007, 2010,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="dm_glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="ap_dcm_demos.htm" title="Previous" type="text/html" />
+<link rel="Next" href="dm_glossary.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10778.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">29/31</span> <!-- End Header --><a id="CHDDHAJG"></a><a id="IMDCM13000"></a>
+<h1 class="appendix"><span class="secnum">F</span> Migrating from Release 10.2 DICOM Support</h1>
+<p>This appendix describes two options for migrating data and application code from DICOM support (in ORDImage objects) in Oracle Database 10<span class="italic">g</span> Release 2 (10.2) to the new DICOM support in Oracle Database 11<span class="italic">g</span> Release 1 (11.1). The first migration option has less impact on existing applications. The second migration option takes full advantage of the new DICOM features.</p>
+<p>The examples in this appendix are based on the table <code>imageTable</code>, which is defined as follows:</p>
+<pre>
+imageTable( id           integer,
+            image        ordsys.ordimage,
+            thumb        ordsys.ordimage
+</pre>
+<p>where:</p>
+<ul>
+<li>
+<p>image: the name of the ORDImage column.</p>
+</li>
+<li>
+<p>thumb: the name of the thumbnail image column.</p>
+</li>
+</ul>
+<p>This appendix includes these sections:</p>
+<ul>
+<li>
+<p><a href="#CIAFFGGJ">Using the DICOM Relational Interface to Migrate Applications</a></p>
+</li>
+<li>
+<p><a href="#CIAIHAHF">Copying Data and Rewriting Applications for DICOM</a></p>
+</li>
+<li>
+<p><a href="#CIAFAHIH">Choosing a Migration Option</a></p>
+</li>
+</ul>
+<a id="CIAFFGGJ"></a><a id="IMDCM13100"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">F.1</span> Using the DICOM Relational Interface to Migrate Applications</h2>
+<p>You can leave the data in the original ORDImage objects and use the new DICOM relational<a id="sthref1029"></a> interface to access the new DICOM functions.</p>
+<p>The advantages of using this migration option are as follows:</p>
+<ul>
+<li>
+<p>You can migrate your applications quickly, and with minimal impact to your existing Oracle Database 10<span class="italic">g</span> Release 2 application.</p>
+</li>
+<li>
+<p>You do not have to copy your existing DICOM content.</p>
+</li>
+</ul>
+<p>The only disadvantage of using this migration option is that the DICOM relational interface does not take full advantage of the new DICOM features. Use the migration option explained in <a href="#CIAIHAHF">Section F.2</a> to take full advantage of the new DICOM features.</p>
+<p>Use this migration option as follows:</p>
+<ol>
+<li>
+<p>Leave your data in ORDImage columns.</p>
+</li>
+<li>
+<p>Use ORDImage methods to access ORDImage functions, as you did in Release 10.2.</p>
+</li>
+<li>
+<p>Use the new ORD_DICOM relational package to access new DICOM features.</p>
+</li>
+</ol>
+<p>The following code segment shows this process, using ORDImage objects to store DICOM content.</p>
+<pre>
+<span class="bold">alter table imageTable add (meta sys.xmltype);</span>
+declare
+    img ordsys.ordimage; thb ordsys.ordimage;
+    ctx raw(64) := null; <span class="bold">meta sys.xmltype;</span>
+begin
+  insert into imageTable (id,image, thumb)
+      values (1, ordsys.ordimage.init(),
+              ordsys.ordimage.init())
+         returning image, thumb into img, thb;
+  img.importFrom(ctx, 'file', 'DICOMDIR',
+                 'example.dcm');
+  img.processCopy('fileFormat = jfif
+                  maxScale=100 100', thb);
+     <span class="bold">meta :=</span> 
+  <span class="bold">ORD_DICOM.extractMetadata(img.getContent,</span>
+        <span class="bold">'ALL');</span>
+.
+.
+.
+</pre>
+<p>In this segment, the first two lines of code highlighted in bold show how to modify the ORDImage table (<code>imageTable</code>) by adding a column to store DICOM metadata as an XML document. The last line of highlighted code shows the use of the extractMetadata( ) method in the ORD_DICOM package (relational interface) to extract all attributes of the embedded DICOM content.</p>
+</div>
+<!-- class="sect1" -->
+<a id="CIAIHAHF"></a><a id="IMDCM13200"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">F.2</span> Copying Data and Rewriting Applications for DICOM</h2>
+<p>You can copy data into the ORDDicom object type and <a id="sthref1030"></a>rewrite your application to use ORDDicom methods. Using this migration option enables you to take full advantage of the features of the new ORDDicom object type.</p>
+<p>The disadvantages of using this migration option are as follows:</p>
+<ul>
+<li>
+<p>You must copy your existing DICOM content into an ORDDicom object type.</p>
+</li>
+<li>
+<p>You must rewrite the parts of your application that access Oracle Multimedia.</p>
+</li>
+</ul>
+<p>Use this migration option as follows:</p>
+<ol>
+<li>
+<p>Copy your data into ORDDicom objects, as shown in the following code example:</p>
+<pre>
+alter table imageTable add (dicomImage 
+  ORDSYS.ORDDicom, metadata sys.XMLTYPE); 
+-- For each row
+update imageTable t set t.dicomImage = new 
+  orddicom(t.image);
+alter table imageTable drop column image;
+</pre>
+<p>Assuming that you have an existing table (<code>imageTable</code>) with an ORDImage column (<code>image</code>), this example adds a DICOM image column (<code>dicomImage</code>) to store DICOM content as type ORDDicom, adds a metadata column (<code>metadata</code>) to store extracted attributes as an XML document, updates the table by copying the new DICOM content from the <code>image</code> column into the <code>dicomImage</code> column, and then removes the <code>image</code> column from the table.</p>
+</li>
+<li>
+<p>Modify your application to use the new ORDDicom methods, as shown in the following code segment:</p>
+<pre>
+declare
+    <span class="bold">img ordsys.orddicom;</span> thb ordsys.ordimage;
+                         <span class="bold">meta sys.xmltype;</span>
+begin
+    insert into imageTable (id, dicomImage, thumb,
+    metadata)
+        values <span class="bold">(1, ordsys.orddicom('file', 'DICOMDIR', </span>
+                      <span class="bold">'example.dcm', 1),</span>
+    ordsys.ordimage.init(), null))
+           returning dicomimage, thumb into 
+           img, thb;
+    <span class="bold">img.processCopy('fileFormat=jfif maxScale=100</span> 
+  <span class="bold">100', thb);</span>
+    <span class="bold">meta := img.extractMetadata('ALL');</span>
+.
+.
+.
+</pre>
+<p>This segment shows an existing application that has been changed to use the new ORDDicom object type. The first two lines of code highlighted in bold show variable declarations for the ORDDicom object (<code>img</code>) and the XMLType metadata (<code>meta</code>). The next line of highlighted code shows how to insert a row into a table with an ORDDicom object pointing to a DICOM file in the local file system. The next line of highlighted code is similar to the syntax for Oracle Database 10<span class="italic">g</span> Release 2, and shows how to generate a JPEG thumbnail image from a DICOM image. The last line of highlighted code shows how to extract all attributes in the embedded DICOM content into an XML document.</p>
+</li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<p><a class="olink ADXDB0400" href="../../appdev.112/e23094/xdb04cre.htm#ADXDB0400"><span class="italic">Oracle XML DB Developer's Guide</span></a> for more information about XMLType operations</p>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="CIAFAHIH"></a><a id="IMDCM13300"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">F.3</span> Choosing a Migration Option</h2>
+<p>Determining whether to migrate your application by using either the new DICOM relational interface or the new ORDDicom object type depends on your situation and the kinds of applications that exist in your environment. <a id="sthref1031"></a>For example, if you have extensive data and limited resources, the migration option of copying your existing DICOM content into an ORDDicom object type might prove too costly and inconvenient. Instead, you might choose to forego the new DICOM features in favor of speedily migrating your application, with limited impact on the existing data. In contrast, if you have limited data in ORDImage objects, you might choose to rewrite your applications and copy your existing data into the ORDDicom object type to enable access to all the new DICOM features.</p>
+</div>
+<!-- class="sect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1189">
+<tr>
+<td class="cellalignment1196">
+<table class="cellalignment1194">
+<tr>
+<td class="cellalignment1193"><a href="ap_dcm_demos.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1193"><a href="dm_glossary.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2007, 2010,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1198">
+<table class="cellalignment1192">
+<tr>
+<td class="cellalignment1193"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1193"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1193"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1193"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1193"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1193"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

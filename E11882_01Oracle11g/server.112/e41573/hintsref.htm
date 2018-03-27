@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Using Optimizer Hints</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1023" />
+<meta name="dcterms.created" content="2014-06-30T4:25:7Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Performance Tuning Guide" />
+<meta name="dcterms.identifier" content="E41573-04" />
+<meta name="dcterms.isVersionOf" content="PFGRF" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2000, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="advisor.htm" title="Previous" type="text/html" />
+<link rel="Next" href="outlines.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e41573.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">27/31</span> <!-- End Header -->
+<div id="PFGRF005" class="chapter"><a id="i8327"></a>
+<h1 class="chapter"><span class="secnum">19</span> Using Optimizer Hints</h1>
+<p>You can use optimizer <span class="bold">hints</span> with SQL statements to alter execution plans. This chapter explains how to use hints to instruct the optimizer to use specific approaches.</p>
+<p>The chapter contains the following sections:</p>
+<ul>
+<li>
+<p><a href="#i17496">Overview of Optimizer Hints</a></p>
+</li>
+<li>
+<p><a href="#CHDCCFCC">Specifying Hints</a></p>
+</li>
+<li>
+<p><a href="#i22065">Using Hints with Views</a></p>
+</li>
+</ul>
+<a id="i17496"></a>
+<div id="PFGRF501" class="sect1">
+<h2 class="sect1"><span class="secnum">19.1</span> Overview of Optimizer Hints</h2>
+<p>A <a href="glossary.htm#BGBHDFAC"><span class="xrefglossterm">hint</span></a> is an instruction to the optimizer. When writing SQL, you may know information about the data unknown to the optimizer. Hints enable you to make decisions normally made by the optimizer, sometimes causing the optimizer to select a plan that it sees as higher cost.</p>
+<p>In a test or development environments, hints are useful for testing the performance of a specific access path. For example, you may know that a certain index is more selective for certain queries. In this case, you may use hints to instruct the optimizer to use a better execution plan.</p>
+<p>The disadvantage of hints is the extra code that must be managed, checked, and controlled. Changes in the database and host environment can make hints obsolete or even have negative consequences. For this reason, test by means of hints, but use other techniques to manage the SQL execution plans, such as SQL Tuning advisor and SQL Plan Baselines.</p>
+<p>Oracle Database supports more than 60 hints, each of which may have zero or more parameters. A statement block can have only one comment containing hints, and that comment must follow the <code>SELECT</code>, <code>UPDATE</code>, <code>INSERT</code>, <code>MERGE</code>, or <code>DELETE</code> keyword. For example, the following hint directs the optimizer to pick the query plan that produces the first 10 rows from the <code>employees</code> table at the lowest cost:</p>
+<pre>
+SELECT /*+ FIRST_ROWS(10) */ * FROM employees;
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SQLRF00219" href="../../server.112/e41084/sql_elements006.htm#SQLRF00219"><span class="italic">Oracle Database SQL Language Reference</span></a> to a complete list of hints supported by Oracle Database</div>
+<div id="PFGRF94936" class="sect2"><a id="sthref1471"></a>
+<h3 class="sect2"><span class="secnum">19.1.1</span> Types of Hints</h3>
+<p>Hints can be of the following general types:</p>
+<ul>
+<li>
+<p>Single-table</p>
+<p>Single-table hints are specified on one table or view. <a class="olink SQLRF50405" href="../../server.112/e41084/sql_elements006.htm#SQLRF50405"><code>INDEX</code></a> and <a class="olink SQLRF50701" href="../../server.112/e41084/sql_elements006.htm#SQLRF50701"><code>USE_NL</code></a> are examples of single-table hints.</p>
+</li>
+<li>
+<p>Multi-table</p>
+<p>Multi-table hints are like single-table hints, except that the hint can specify one or more tables or views. <a class="olink SQLRF50705" href="../../server.112/e41084/sql_elements006.htm#SQLRF50705"><code>LEADING</code></a> is an example of a multi-table hint. Note that <a class="olink SQLRF50701" href="../../server.112/e41084/sql_elements006.htm#SQLRF50701"><code>USE_NL(table1 table2)</code></a> is not considered a multi-table hint because it is a shortcut for <code>USE_NL(table1)</code> and <code>USE_NL(table2)</code>.</p>
+</li>
+<li>
+<p>Query block</p>
+<p>Query block hints operate on single query blocks. <a class="olink SQLRF50508" href="../../server.112/e41084/sql_elements006.htm#SQLRF50508"><code>STAR_TRANSFORMATION</code></a> and <a class="olink SQLRF50905" href="../../server.112/e41084/sql_elements006.htm#SQLRF50905"><code>UNNEST</code></a> are examples of query block hints.</p>
+</li>
+<li>
+<p>Statement</p>
+<p>Statement hints apply to the entire SQL statement. <a class="olink SQLRF50301" href="../../server.112/e41084/sql_elements006.htm#SQLRF50301"><code>ALL_ROWS</code></a> is an example of a statement hint.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<div id="PFGRF94937" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1472"></a>
+<h3 class="sect2"><span class="secnum">19.1.2</span> Hints by Category</h3>
+<p>Optimizer hints are grouped into the following categories:</p>
+<ul>
+<li>
+<p><a href="#CHDFIAJD">Hints for Optimization Approaches and Goals</a></p>
+</li>
+<li>
+<p><a href="#CHDFEEBE">Hints for Enabling Optimizer Features</a></p>
+</li>
+<li>
+<p><a href="#CHDJDIAH">Hints for Access Paths</a></p>
+</li>
+<li>
+<p><a href="#CHDGGCHC">Hints for Join Orders</a></p>
+</li>
+<li>
+<p><a href="#CHDBAFID">Hints for Join Operations</a></p>
+</li>
+<li>
+<p><a href="#CHDJEBJF">Hints for Online Application Upgrade</a></p>
+</li>
+<li>
+<p><a href="#CHDJIGDG">Hints for Parallel Execution</a></p>
+</li>
+<li>
+<p><a href="#CHDEHFHG">Hints for Query Transformations</a></p>
+</li>
+<li>
+<p><a href="#CHDIDIDI">Additional Hints</a></p>
+</li>
+</ul>
+<p>These categories, and the hints contained within each category, are listed in the sections that follow.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SQLRF00217" href="../../server.112/e41084/sql_elements003.htm#SQLRF00217"><span class="italic">Oracle Database SQL Language Reference</span></a> for syntax and a more detailed description of each hint</div>
+<a id="CHDFIAJD"></a>
+<div id="PFGRF503" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">19.1.2.1</span> Hints for Optimization Approaches and Goals</h4>
+<p><a id="sthref1473"></a>The <code>ALL_ROWS</code> and <a class="olink SQLRF50302" href="../../server.112/e41084/sql_elements006.htm#SQLRF50302"><code>FIRST_ROWS(</code><code><span class="codeinlineitalic">n</span></code><code>)</code></a> hints let you choose between optimization approaches and goals. If a SQL statement has a hint specifying an optimization approach and goal, then the optimizer uses the specified approach regardless of the presence or absence of statistics, the value of the <code>OPTIMIZER_MODE<a id="sthref1474"></a></code> initialization parameter<a id="sthref1475"></a>, and the <code>OPTIMIZER_MODE</code> parameter of the <code>ALTER</code> <code>SESSION</code> statement.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The optimizer goal applies only to queries submitted directly. Use hints to specify the access path for any SQL statements submitted from within PL/SQL. The <code>ALTER</code> <code>SESSION ...</code> <code>SET</code> <code>OPTIMIZER_MODE</code> statement does not affect SQL run within PL/SQL.</div>
+<p>If you specify either the <code>ALL_ROWS</code> or the <code>FIRST_ROWS</code>(<code><span class="codeinlineitalic">n</span></code>) hint in a SQL statement, and if the data dictionary does not have statistics about tables accessed by the statement, then the optimizer uses default statistical values, such as allocated storage for such tables, to estimate the missing statistics and choose an execution plan. These estimates might not be as accurate as those gathered by the <code>DBMS_STATS</code> package, so use <code>DBMS_STATS</code> to gather statistics.</p>
+<p>If you specify hints for access paths or join operations along with either the <code>ALL_ROWS</code> or <code>FIRST_ROWS</code>(<code><span class="codeinlineitalic">n</span></code>) hint, then the optimizer gives precedence to the access paths and join operations specified by the hints.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#CHDGDFJE">"Optimization Approaches and Goal Hints in Views"</a> for hint behavior with mergeable views</div>
+</div>
+<!-- class="sect3" -->
+<a id="CHDFEEBE"></a>
+<div id="PFGRF95167" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">19.1.2.2</span> Hints for Enabling Optimizer Features</h4>
+<p>The <code>OPTIMIZER_FEATURES_ENABLE</code> hint acts as an umbrella parameter for enabling a series of optimizer features based on an Oracle Database release number. This hint is a useful way to check for plan regressions after database upgrades.</p>
+<p>Specify the release number as an argument to the hint. The following example runs a query with the optimizer features from Oracle Database 11<span class="italic">g</span> Release 1 (11.1.0.6):</p>
+<pre>
+SELECT /*+ optimizer_features_enable('11.1.0.6') */ employee_id, last_name
+FROM    employees
+ORDER BY employee_id;
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink REFRN10141" href="../../server.112/e40402/initparams168.htm#REFRN10141"><span class="italic">Oracle Database Reference</span></a> to learn about the <code>OPTIMIZER_FEATURES_ENABLE</code> initialization parameter</div>
+</div>
+<!-- class="sect3" -->
+<a id="CHDJDIAH"></a>
+<div id="PFGRF94938" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">19.1.2.3</span> Hints for Access Paths</h4>
+<p>The following hints instructs the optimizer to use a specific access path for a table:</p>
+<ul>
+<li>
+<p><a class="olink SQLRF50401" href="../../server.112/e41084/sql_elements006.htm#SQLRF50401"><code>FULL</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50403" href="../../server.112/e41084/sql_elements006.htm#SQLRF50403"><code>CLUSTER</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50404" href="../../server.112/e41084/sql_elements006.htm#SQLRF50404"><code>HASH</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50405" href="../../server.112/e41084/sql_elements006.htm#SQLRF50405"><code>INDEX</code></a> and <a class="olink SQLRF50411" href="../../server.112/e41084/sql_elements006.htm#SQLRF50411"><code>NO_INDEX</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50406" href="../../server.112/e41084/sql_elements006.htm#SQLRF50406"><code>INDEX_ASC</code></a> and <a class="olink SQLRF50409" href="../../server.112/e41084/sql_elements006.htm#SQLRF50409"><code>INDEX_DESC</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50407" href="../../server.112/e41084/sql_elements006.htm#SQLRF50407"><code>INDEX_COMBINE</code></a> and <a class="olink SQLRF50408" href="../../server.112/e41084/sql_elements006.htm#SQLRF50408"><code>INDEX_JOIN</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50408" href="../../server.112/e41084/sql_elements006.htm#SQLRF50408"><code>INDEX_JOIN</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50410" href="../../server.112/e41084/sql_elements006.htm#SQLRF50410"><code>INDEX_FFS</code></a> and <a class="olink SQLRF50413" href="../../server.112/e41084/sql_elements006.htm#SQLRF50413"><code>NO_INDEX_FFS</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50415" href="../../server.112/e41084/sql_elements006.htm#SQLRF50415"><code>INDEX_SS</code></a> and <a class="olink SQLRF50414" href="../../server.112/e41084/sql_elements006.htm#SQLRF50414"><code>NO_INDEX_SS</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50416" href="../../server.112/e41084/sql_elements006.htm#SQLRF50416"><code>INDEX_SS_ASC</code></a> and <a class="olink SQLRF50417" href="../../server.112/e41084/sql_elements006.htm#SQLRF50417"><code>INDEX_SS_DESC</code></a></p>
+</li>
+</ul>
+<p>Specifying one of the preceding hints causes the optimizer to choose the specified access path only if the access path is available based on the existence of an index or cluster and on the syntactic constructs of the SQL statement. If a hint specifies an unavailable access path, then the optimizer ignores it.</p>
+<p>You must specify the table to be accessed exactly as it appears in the statement. If the statement uses an alias for the table, then use the alias rather than the table name in the hint. The table name within the hint should not include the schema name if the schema name is present in the statement.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+For access path hints, Oracle Database ignores the hint if you specify the <code>SAMPLE</code> option in the <code>FROM</code> clause of a <code>SELECT</code> statement.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#i30558">"Access Path and Join Hints on Views"</a> and <a href="#i30571">"Access Path and Join Hints Inside Views"</a> for hint behavior with mergeable views</p>
+</li>
+<li>
+<p><a class="olink SQLRF" href="../e41084/toc.htm"><span class="italic">Oracle Database SQL Language Reference</span></a> for more information on the <code>SAMPLE</code> option</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect3" -->
+<a id="CHDGGCHC"></a>
+<div id="PFGRF94939" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">19.1.2.4</span> Hints for Join Orders</h4>
+<p>The following hints suggest join orders:</p>
+<ul>
+<li>
+<p><a class="olink SQLRF50705" href="../../server.112/e41084/sql_elements006.htm#SQLRF50705"><code>LEADING</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50601" href="../../server.112/e41084/sql_elements006.htm#SQLRF50601"><code>ORDERED</code></a></p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<a id="CHDBAFID"></a>
+<div id="PFGRF94940" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">19.1.2.5</span> Hints for Join Operations</h4>
+<p>The following hints instructs the optimizer to use a specific join operation for a table:</p>
+<ul>
+<li>
+<p><a class="olink SQLRF50701" href="../../server.112/e41084/sql_elements006.htm#SQLRF50701"><code>USE_NL</code></a> and <a class="olink SQLRF50708" href="../../server.112/e41084/sql_elements006.htm#SQLRF50708"><code>NO_USE_NL</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50702" href="../../server.112/e41084/sql_elements006.htm#SQLRF50702"><code>USE_NL_WITH_INDEX</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50702" href="../../server.112/e41084/sql_elements006.htm#SQLRF50702"><code>USE_MERGE</code></a> and <a class="olink SQLRF50710" href="../../server.112/e41084/sql_elements006.htm#SQLRF50710"><code>NO_USE_MERGE</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50703" href="../../server.112/e41084/sql_elements006.htm#SQLRF50703"><code>USE_HASH</code></a> and <a class="olink SQLRF50703" href="../../server.112/e41084/sql_elements006.htm#SQLRF50703"><code>NO_USE_HASH</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50711" href="../../server.112/e41084/sql_elements006.htm#SQLRF50711"><code>NO_USE_HASH</code></a></p>
+</li>
+</ul>
+<p>Use of the <code>USE_NL</code> and <code>USE_MERGE</code> hints is recommended with any join order hint. See <a href="#CHDGGCHC">"Hints for Join Orders"</a>. Oracle Database uses these hints when the referenced table is forced to be the inner table of a join; the hints are ignored if the referenced table is the outer table.</p>
+<p>See <a href="#i30558">"Access Path and Join Hints on Views"</a> and <a href="#i30571">"Access Path and Join Hints Inside Views"</a> for hint behavior with mergeable views.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CHDJEBJF"></a>
+<div id="PFGRF94941" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">19.1.2.6</span> Hints for Online Application Upgrade</h4>
+<p>The <span class="bold">online application upgrade hints</span> suggest how to handle conflicting <code>INSERT</code> and <code>UPDATE</code> operations when performing an online application upgrade using edition-based redefinition:</p>
+<ul>
+<li>
+<p><a class="olink SQLRF30053" href="../../server.112/e41084/sql_elements006.htm#SQLRF30053"><code>CHANGE_DUPKEY_ERROR_INDEX</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF30052" href="../../server.112/e41084/sql_elements006.htm#SQLRF30052"><code>IGNORE_ROW_ON_DUPKEY_INDEX</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF30054" href="../../server.112/e41084/sql_elements006.htm#SQLRF30054"><code>RETRY_ON_ROW_CHANGE</code></a></p>
+</li>
+</ul>
+<p>You can use the <code>CHANGE_DUPKEY_ERROR_INDEX</code> and <code>IGNORE_ROW_ON_DUPKEY_INDEX</code> hints to handle conflicting <code>INSERT</code> operations during an online application upgrade. You can use the <code>CHANGE_DUPKEY_ERROR_INDEX</code> hint to identify unique key violations for a specified set of columns or index. When a unique key violation is encountered during an <code>INSERT</code> or <code>UPDATE</code> operation, an <code>ORA-38911</code> error is reported instead of an <code>ORA-001</code>. You can use the <code>IGNORE_ROW_ON_DUPKEY_INDEX</code> hint to ignore unique key violations for a specified set of columns or index. When a unique key violation is encountered during a single-table <code>INSERT</code> operation, a row-level rollback occurs and execution resumes with the next input row. Therefore, a unique key violation does not cause the <code>INSERT</code> to terminate or an error to be reported.</p>
+<p>You can use the <code>RETRY_ON_ROW_CHANGE</code> hint to handle conflicting <code>UPDATE</code> operations during an online application upgrade. You can use this hint to retry an <code>UPDATE</code> or <code>DELETE</code> operation if one or more rows changed from the time when the set of rows to be modified was determined to the time when the set of rows was actually modified.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ADFNS020" href="../../appdev.112/e41502/adfns_editions.htm#ADFNS020"><span class="italic">Oracle Database Advanced Application Developer's Guide</span></a> for more information about performing an online application upgrade using edition-based redefinition</div>
+</div>
+<!-- class="sect3" -->
+<a id="CHDJIGDG"></a>
+<div id="PFGRF94942" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">19.1.2.7</span> Hints for Parallel Execution</h4>
+<p><a id="sthref1476"></a><a id="sthref1477"></a>The <span class="bold">parallel execution hints</span> instruct the optimizer about whether and how to parallelize operations. You can use the following parallel hints:</p>
+<ul>
+<li>
+<p><a class="olink SQLRF50801" href="../../server.112/e41084/sql_elements006.htm#SQLRF50801"><code>PARALLEL</code></a> and <a class="olink SQLRF50802" href="../../server.112/e41084/sql_elements006.htm#SQLRF50802"><code>NO_PARALLEL</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50804" href="../../server.112/e41084/sql_elements006.htm#SQLRF50804"><code>PARALLEL_INDEX</code></a> and <a class="olink SQLRF50805" href="../../server.112/e41084/sql_elements006.htm#SQLRF50805"><code>NO_PARALLEL_INDEX</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50803" href="../../server.112/e41084/sql_elements006.htm#SQLRF50803"><code>PQ_DISTRIBUTE</code></a></p>
+</li>
+</ul>
+<p>The following sections group the hints into functional categories.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink VLDBG010" href="../../server.112/e25523/parallel.htm#VLDBG010"><span class="italic">Oracle Database VLDB and Partitioning Guide</span></a> to learn how to use parallel execution</p>
+</li>
+<li>
+<p><a class="olink TDPDW00831" href="../../server.112/e25555/tdpdw_perform.htm#TDPDW00831"><span class="italic">Oracle Database 2 Day + Data Warehousing Guide</span></a> for more information on parallel execution</p>
+</li>
+</ul>
+</div>
+<div id="PFGRF95144" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref1478"></a>
+<h5 class="sect4"><span class="secnum">19.1.2.7.1</span> Hints Controlling the Degree of Parallelism</h5>
+<p>Hints beginning with the keyword <code>PARALLEL</code> indicate the degree of parallelism for the query. Hints beginning with <code>NO_PARALLEL</code> disable parallelism.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You can perform conventional inserts in parallel mode using the /<code>*+ NOAPPEND PARALLEL */</code> hint.</div>
+<p>You can specify parallelism at the statement or object level. If you do not explicitly specify an object in the hint, then parallelism occurs at the statement level. In contrast to most hints, parallel statement-level hints take precedence over object-level hints.</p>
+<p>To illustrate the difference between object-level and statement-level parallelism settings, suppose that you perform the following steps:</p>
+<ol>
+<li id="CHDDBAEI">
+<p>You set the parallelism setting on the <code>employees</code> table to <code>2</code> and disable parallelism on the <code>departments</code> table as follows:</p>
+<pre>
+ALTER TABLE employees PARALLEL 2;
+ALTER TABLE departments NOPARALLEL;
+</pre></li>
+<li>
+<p>You execute the following <code>SELECT</code> statement:</p>
+<pre>
+SELECT /*+ PARALLEL(employees 3) */ e.last_name, d.department_name
+FROM   employees e, departments d
+WHERE  e.department_id=d.department_id;
+</pre>
+<p>The <code>PARALLEL</code> hint for <code>employees</code> overrides the degree of parallelism of <code>2</code> for this table specified in Step <a href="#CHDDBAEI">1</a>.</p>
+<p>In the explain plan in <a href="#CHDIFEEB">Example 19-1</a>, the <code>IN-OUT</code> column shows <code>PCWP</code> for parallel access of <code>employees</code> and <code>S</code> for serial access of <code>departments</code>. Access to <code>departments</code> is serialized because a <code>NOPARALLEL</code> setting was applied to this table in Step <a href="#CHDDBAEI">1</a>.</p>
+<div id="PFGRF95145" class="example">
+<p class="titleinexample"><a id="CHDIFEEB"></a>Example 19-1 Explain Plan for Query with /*+ PARALLEL(employees 3) */ Hint</p>
+<pre>
+----------------------------------------------------------------------------------------------------------------
+| Id | Operation               | Name        | Rows | Bytes | Cost (%CPU)| Time     |    TQ  |IN-OUT| PQ Distrib 
+----------------------------------------------------------------------------------------------------------------
+|  0 | SELECT STATEMENT        |             |   14 |   588 |     5  (20)| 00:00:01 |        |      |          |
+|  1 |  PX COORDINATOR         |             |      |       |            |          |        |      |          |
+|  2 |   PX SEND QC (RANDOM)   | :TQ10001    |   14 |   588 |     5  (20)| 00:00:01 |  Q1,01 | P-&gt;S | QC (RAND)|
+|* 3 |    HASH JOIN            |             |   14 |   588 |     5  (20)| 00:00:01 |  Q1,01 | PCWP |          |
+|  4 |     BUFFER SORT         |             |      |       |            |          |  Q1,01 | PCWC |          |
+|  5 |      PX RECEIVE         |             |    4 |    88 |     2   (0)| 00:00:01 |  Q1,01 | PCWP |          |
+<span class="bold">|  6 |       PX SEND BROADCAST | :TQ10000    |    4 |    88 |     2   (0)| 00:00:01 |        | S-&gt;P | BROADCAST|</span>
+<span class="bold">|  7 |        TABLE ACCESS FULL| DEPARTMENTS |    4 |    88 |     2   (0)| 00:00:01 |        |      |          |</span>
+|  8 |     PX BLOCK ITERATOR   |             |   14 |   280 |     2   (0)| 00:00:01 |  Q1,01 | PCWC |          |
+<span class="bold">|  9 |      TABLE ACCESS FULL  | EMPLOYEES   |   14 |   280 |     2   (0)| 00:00:01 |  Q1,01 | PCWP |          |</span>
+----------------------------------------------------------------------------------------------------------------
+</pre></div>
+<!-- class="example" --></li>
+<li>
+<p>You execute the following <code>SELECT</code> statement:</p>
+<pre>
+SELECT /*+ PARALLEL(4) */ hr_emp.last_name, d.department_name
+FROM   employees hr_emp, departments d
+WHERE  hr_emp.department_id=d.department_id;
+</pre>
+<p>Because no schema object is specified in the <code>PARALLEL</code> hint, the scope of the hint is the statement, not an object. This statement forces the query of the <code>employees</code> and <code>departments</code> tables to execute with a degree of parallelism of <code>4</code>, overriding the parallelism setting defined on the tables.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect4" -->
+<div id="PFGRF95146" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref1479"></a>
+<h5 class="sect4"><span class="secnum">19.1.2.7.2</span> Hints Controlling the Distribution Method for Joins</h5>
+<p>The <code>PQ_DISTRIBUTE</code> hint controls the distribution method for a specified join operation. The basic syntax is as follows, where <code><span class="codeinlineitalic">distribution</span></code> is the distribution method to use between the producer and the consumer slaves for the left and the right side of the join:</p>
+<pre>
+/*+ PQ_DISTRIBUTE(<span class="italic">tablespec</span>, <span class="italic">distribution</span>) */
+</pre>
+<p>For example, in a <code>HASH,HASH</code> distribution the rows of each table are mapped to consumer query servers, using a hash function on the join keys. When mapping is complete, each query server performs the join between a pair of resulting partitions. This distribution is recommended when the tables are comparable in size and the join operation is implemented by hash join or sort merge join. The following query contains a hint to use hash distribution:</p>
+<pre>
+SELECT /*+ORDERED PQ_DISTRIBUTE(departments HASH, HASH) USE_HASH (departments)*/
+       e.employee_id, d.department_name
+FROM   employees e, departments d
+WHERE  e.department_id=d.department_id;
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SQLRF50803" href="../../server.112/e41084/sql_elements006.htm#SQLRF50803"><span class="italic">Oracle Database SQL Language Reference</span></a> for valid syntax and semantics for the <code>PQ_DISTRIBUTE</code> hint</div>
+</div>
+<!-- class="sect4" -->
+<div id="PFGRF95147" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref1480"></a>
+<h5 class="sect4"><span class="secnum">19.1.2.7.3</span> Hints Controlling the Distribution Method for Loads</h5>
+<p>The <code>PQ_DISTRIBUTE</code> hint applies to parallel <code>INSERT ... SELECT</code> and parallel <code>CREATE TABLE AS SELECT</code> statements to specify how rows should be distributed between the producer (query) and the consumer (load) slaves.</p>
+<p>For example, a <code>PARTITION</code> distribution use the partitioning information of the table being loaded to distribute rows from the query slaves to the load slaves. Use this method when the following conditions are met:</p>
+<ul>
+<li>
+<p>It is not possible or desirable to combine the query and load operations into each slave.</p>
+</li>
+<li>
+<p>The number of partitions being loaded is greater than or equal to the number of load slaves.</p>
+</li>
+<li>
+<p>The input data is evenly distributed across the partitions being loaded.</p>
+</li>
+</ul>
+<p>The following sample statement creates a table and specifies the <code>PARTITION</code> distribution method:</p>
+<pre>
+CREATE /*+ PQ_DISTRIBUTE(lineitem, PARTITION) */ TABLE lineitem
+  NOLOGGING PARALLEL 16
+  PARTITION BY HASH (l_orderkey) PARTITIONS 512
+  AS SELECT * FROM lineitemxt; 
+</pre>
+<p>In contrast, a <code>NONE</code> distribution combines the query and load operation into each slave. Thus, all slaves load all partitions. Use this distribution to avoid the overhead of distribution of rows when there is no skew. The following sample SQL statement specifies a distribution of <code>NONE</code> for an insert into the <code>lineitem</code> table:</p>
+<pre>
+INSERT /*+ APPEND PARALLEL(LINEITEM, 16) PQ_DISTRIBUTE(LINEITEM, NONE) */
+  INTO lineitem
+  (SELECT * FROM lineitemxt);
+</pre></div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<a id="CHDEHFHG"></a>
+<div id="PFGRF94943" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">19.1.2.8</span> Hints for Query Transformations</h4>
+<p><a id="sthref1481"></a>Each of the following hints instructs the optimizer to use a specific SQL query transformation:</p>
+<ul>
+<li>
+<p><a class="olink SQLRF50512" href="../../server.112/e41084/sql_elements006.htm#SQLRF50512"><code>NO_QUERY_TRANSFORMATION</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50501" href="../../server.112/e41084/sql_elements006.htm#SQLRF50501"><code>USE_CONCAT</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50502" href="../../server.112/e41084/sql_elements006.htm#SQLRF50502"><code>NO_EXPAND</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50503" href="../../server.112/e41084/sql_elements006.htm#SQLRF50503"><code>REWRITE</code></a> and <a class="olink SQLRF50505" href="../../server.112/e41084/sql_elements006.htm#SQLRF50505"><code>NO_REWRITE</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50706" href="../../server.112/e41084/sql_elements006.htm#SQLRF50706"><code>MERGE</code></a> and <a class="olink SQLRF50507" href="../../server.112/e41084/sql_elements006.htm#SQLRF50507"><code>NO_MERGE</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50508" href="../../server.112/e41084/sql_elements006.htm#SQLRF50508"><code>STAR_TRANSFORMATION</code></a> and <a class="olink SQLRF50511" href="../../server.112/e41084/sql_elements006.htm#SQLRF50511"><code>NO_STAR_TRANSFORMATION</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50509" href="../../server.112/e41084/sql_elements006.htm#SQLRF50509"><code>FACT</code></a> and <a class="olink SQLRF50510" href="../../server.112/e41084/sql_elements006.htm#SQLRF50510"><code>NO_FACT</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50905" href="../../server.112/e41084/sql_elements006.htm#SQLRF50905"><code>UNNEST</code></a> and <a class="olink SQLRF50906" href="../../server.112/e41084/sql_elements006.htm#SQLRF50906"><code>NO_UNNEST</code></a></p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<a id="CHDIDIDI"></a>
+<div id="PFGRF94944" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">19.1.2.9</span> Additional Hints</h4>
+<p>The following are several additional hints:</p>
+<ul>
+<li>
+<p><a class="olink SQLRF50901" href="../../server.112/e41084/sql_elements006.htm#SQLRF50901"><code>APPEND</code></a>, <code>APPEND_VALUES</code>, and <a class="olink SQLRF50902" href="../../server.112/e41084/sql_elements006.htm#SQLRF50902"><code>NOAPPEND</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50903" href="../../server.112/e41084/sql_elements006.htm#SQLRF50903"><code>CACHE</code></a> and <a class="olink SQLRF50904" href="../../server.112/e41084/sql_elements006.htm#SQLRF50904"><code>NOCACHE</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50907" href="../../server.112/e41084/sql_elements006.htm#SQLRF50907"><code>PUSH_PRED</code></a> and <a class="olink SQLRF50908" href="../../server.112/e41084/sql_elements006.htm#SQLRF50908"><code>NO_PUSH_PRED</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50909" href="../../server.112/e41084/sql_elements006.htm#SQLRF50909"><code>PUSH_SUBQ</code></a> and <a class="olink SQLRF50910" href="../../server.112/e41084/sql_elements006.htm#SQLRF50910"><code>NO_PUSH_SUBQ</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50917" href="../../server.112/e41084/sql_elements006.htm#SQLRF50917"><code>QB_NAME</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50912" href="../../server.112/e41084/sql_elements006.htm#SQLRF50912"><code>CURSOR_SHARING_EXACT</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50704" href="../../server.112/e41084/sql_elements006.htm#SQLRF50704"><code>DRIVING_SITE</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50913" href="../../server.112/e41084/sql_elements006.htm#SQLRF50913"><code>DYNAMIC_SAMPLING</code></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF50916" href="../../server.112/e41084/sql_elements006.htm#SQLRF50916"><code>MODEL_MIN_ANALYSIS</code></a></p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDCCFCC"></a>
+<div id="PFGRF50101" class="sect1">
+<h2 class="sect1"><span class="secnum">19.2</span> Specifying Hints</h2>
+<p>Hints apply only to the optimization of the block of a statement in which they appear. A statement block is any one of the following statements or parts of statements:</p>
+<ul>
+<li>
+<p>A simple <code>SELECT</code>, <code>UPDATE</code>, or <code>DELETE</code> statement</p>
+</li>
+<li>
+<p>A parent statement or subquery of a complex statement</p>
+</li>
+<li>
+<p>A part of a compound query</p>
+</li>
+</ul>
+<p>For example, a compound query consisting of two component queries combined by the <code>UNION</code> operator has two blocks, one for each component query. For this reason, hints in the first component query apply only to its optimization, not to the optimization of the second component query.</p>
+<p>The following sections discuss the use of hints in more detail.</p>
+<a id="i4852"></a>
+<div id="PFGRF50102" class="sect2">
+<h3 class="sect2"><span class="secnum">19.2.1</span> Specifying a Full Set of Hints</h3>
+<p>When using hints, in some cases, you might need to specify a full set of hints to ensure the optimal execution plan. For example, if you have a very complex query, which consists of many table joins, and if you specify only the <code>INDEX</code> hint for a given table, then the optimizer must determine the remaining access paths to be used, and the corresponding join methods. Therefore, even though you gave the <code>INDEX</code> hint, the optimizer might not necessarily use that hint, because the optimizer might have determined that the requested index cannot be used due to the join methods and access paths selected by the optimizer.</p>
+<p>In <a href="#i29027">Example 19-2</a>, the <code>LEADING</code> hint specifies the exact join order. The join methods are also specified.</p>
+<div id="PFGRF94945" class="example">
+<p class="titleinexample"><a id="i29027"></a>Example 19-2 Specifying a Full Set of Hints</p>
+<pre>
+SELECT /*+ LEADING(e2 e1) USE_NL(e1) INDEX(e1 emp_emp_id_pk) 
+           USE_MERGE(j) FULL(j) */
+    e1.first_name, e1.last_name, j.job_id, sum(e2.salary) total_sal
+  FROM employees e1, employees e2, job_history j
+  WHERE e1.employee_id = e2.manager_id
+    AND e1.employee_id = j.employee_id
+    AND e1.hire_date = j.start_date
+  GROUP BY e1.first_name, e1.last_name, j.job_id
+  ORDER BY total_sal;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" -->
+<a id="i26205"></a>
+<div id="PFGRF50107" class="sect2">
+<h3 class="sect2"><span class="secnum">19.2.2</span> Specifying a Query Block in a Hint</h3>
+<p><a id="sthref1482"></a><a id="sthref1483"></a>To identify a query block in a query, you can use an optional query block name in a hint to specify the block to which the hint applies. The syntax of the query block argument is of the form <code>@</code><code><span class="codeinlineitalic">queryblock</span></code>, where <code><span class="codeinlineitalic">queryblock</span></code> is an identifier that specifies a block in the query. The <code><span class="codeinlineitalic">queryblock</span></code> identifier can either be system-generated or user-specified.</p>
+<p>Note the following guidelines:</p>
+<ul>
+<li>
+<p>You can obtain the system-generated identifier by using <code>EXPLAIN</code> <code>PLAN</code> for the query. You can determine pre-transformation query block names by running <code>EXPLAIN</code> <code>PLAN</code> for the query using the <code>NO_QUERY_TRANSFORMATION</code> hint.</p>
+</li>
+<li>
+<p>You can set the user-specified name with the <a class="olink SQLRF50917" href="../../server.112/e41084/sql_elements006.htm#SQLRF50917"><code>QB_NAME</code></a> hint.</p>
+</li>
+</ul>
+<p class="subhead2"><a id="PFGRF95288"></a>Assumptions</p>
+<p>This tutorial assumes the following:</p>
+<ul>
+<li>
+<p>You intend to create a join view of <code>employees</code> and <code>job_history</code> that contains a nested query block.</p>
+</li>
+<li>
+<p>You want to query all rows in the view, but apply the <code>NO_UNNEST</code> hint to the query block only.</p>
+</li>
+</ul>
+<p class="orderedlisttitle">To apply the NO_UNNEST hint to the query block:&nbsp;</p>
+<ol>
+<li>
+<p>Start SQL*Plus and log in as user <code>hr</code>.</p>
+</li>
+<li>
+<p>Create the view.</p>
+<p>For example, run the following statement:</p>
+<pre>
+CREATE OR REPLACE VIEW v_emp_job_history AS
+  SELECT e1.first_name, e1.last_name, j.job_id, sum(e2.salary) total_sal
+  FROM   employees e1, (SELECT * FROM employees e3) e2, job_history j
+  WHERE  e1.employee_id = e2.manager_id
+  AND    e1.employee_id = j.employee_id
+  AND    e1.hire_date = j.start_date
+  AND    e1.salary = ( <span class="bold">SELECT</span> <span class="bold">max(e2.salary)</span> 
+                       <span class="bold">FROM</span> <span class="bold">employees</span> <span class="bold">e2</span> 
+                       <span class="bold">WHERE</span> <span class="bold">e2.department_id</span> <span class="bold">=</span> <span class="bold">e1.department_id</span> ) 
+  GROUP BY e1.first_name, e1.last_name, j.job_id
+  ORDER BY total_sal;
+</pre></li>
+<li>
+<p>Explain the plan for a query of <code>v_emp_job_history</code>.</p>
+<p>For example, run the following SQL statement:</p>
+<pre>
+EXPLAIN PLAN FOR SELECT * FROM v_emp_job_history; 
+</pre></li>
+<li>
+<p>Query the plan table.</p>
+<p>For example, run the following SQL statement:</p>
+<pre>
+SELECT PLAN_TABLE_OUTPUT 
+FROM   TABLE(DBMS_XPLAN.DISPLAY(NULL, NULL, 'ALL'));
+</pre>
+<p>The database displays the plan.</p>
+</li>
+<li>
+<p>In the query plan output, obtain the operation ID associated with the query block, and then use the ID to find the query block name.</p>
+<p>For example, the following plan shows that the full scan of the <code>employees</code> table occurs in operation <code>11</code>, which corresponds to query block <code>@SEL$4</code>:</p>
+<pre>
+------------------------------------------------------------------------------
+|Id| Operation                        |Name        |Rows|Bytes|Cost |Time
+------------------------------------------------------------------------------
+|0 | SELECT STATEMENT                 |            |1   |46   |9(34)|00:00:01|
+.
+.
+.
+<span class="bold">|11|          TABLE ACCESS FULL</span>       | EMPLOYEES  |107 |749  |3(0) |00:00:01|
+.
+.
+.
+-------------------------------------------------------------------------------
+
+Query Block Name / Object Alias (identified by operation id):
+-------------------------------------------------------------
+ 
+   1 - SEL$2980E977 / V_EMP_JOB_HISTORY@SEL$1
+   2 - SEL$2980E977
+   8 - SEL$8F9407EC / VW_SQ_1@SEL$32F848CB
+   9 - SEL$8F9407EC
+<span class="bold">  11 - SEL$8F9407EC / E2@SEL$4</span>
+</pre></li>
+<li>
+<p>Query the view using the <code>NO_UNNEST</code> hint.</p>
+<p>For example, run the following SQL statement to apply the <code>NO_UNNEST</code> hint to query block <code>@SEL$4</code> (sample output included):</p>
+<pre>
+SQL&gt; SELECT /*+ NO_UNNEST( <span class="bold">@SEL$4</span> ) */ * FROM v_emp_job_history;
+
+FIRST_NAME           LAST_NAME                 JOB_ID      TOTAL_SAL
+-------------------- ------------------------- ---------- ----------
+Michael              Hartstein                 MK_REP           6000
+</pre></li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="i27644"></a>
+<div id="PFGRF50104" class="sect2">
+<h3 class="sect2"><span class="secnum">19.2.3</span> Specifying Global Table Hints</h3>
+<p><a id="sthref1485"></a><a id="sthref1486"></a><a id="sthref1487"></a>Hints that specify a table typically refer to tables in the <code>DELETE</code>, <code>SELECT</code>, or <code>UPDATE</code> query block in which the hint occurs, not to tables inside any views referenced by the statement. When you want to specify hints for tables that appear inside views, Oracle recommends using <a id="sthref1488"></a><a id="sthref1489"></a>global hints instead of embedding the hint in the view. You can transform the table hints described in this chapter into a global hint by using an <a id="sthref1490"></a><a id="sthref1491"></a><a id="sthref1492"></a>extended <code>tablespec</code> syntax that includes view names with the table name.</p>
+<p>In addition, an optional query block name can precede the <code>tablespec</code> syntax. See <a href="#i26205">"Specifying a Query Block in a Hint"</a>.</p>
+<p>Hints that specify a table use the following syntax, where <code>view</code> specifies a view name and <code>table</code> specifies the name or alias of the table:</p>
+<p><span class="syntaxinline">tablespec::=</span> <img width="496" height="48" src="img/tablespec.gif" alt="Description of tablespec.gif follows" /><br />
+<a id="sthref1493" href="img_text/tablespec.htm">Description of the illustration tablespec.gif</a><br />
+<br /></p>
+<p>If the view path is specified, then the database resolves the hint from left to right, where the first view must be present in the <code>FROM</code> clause, and each subsequent view must be specified in the <code>FROM</code> clause of the preceding view.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The <span class="italic">view_name.table_name</span> notation for global hints does not work for queries using ANSI join syntax because the optimizer generates additional views during parsing. When using ANSI join syntax, specify the query block name in the hint instead of the <span class="italic">view_name.table_name</span> notation.</div>
+<p><a href="#i21188">Example 19-3</a> creates a view <code>v</code> to return the first and last name of the employee, his or her first job, and the total salary of all direct reports of that employee for each employee with the highest salary in his or her department. When querying the data, you want to force the use of the index <code>emp_job_ix</code> for the table <code>e3</code> in view <code>e2</code>.</p>
+<div id="PFGRF94947" class="example">
+<p class="titleinexample"><a id="i21188"></a>Example 19-3 Using Global Hints Example</p>
+<pre>
+CREATE OR REPLACE VIEW v AS
+  SELECT e1.first_name, e1.last_name, j.job_id, sum(e2.salary) total_sal
+  FROM   employees e1, ( SELECT * FROM <span class="bold">employees e3</span>) <span class="bold">e2</span>, job_history j
+  WHERE e1.employee_id = e2.manager_id
+  AND e1.employee_id = j.employee_id
+  AND e1.hire_date = j.start_date
+  AND e1.salary = ( SELECT max(e2.salary) FROM employees e2
+                    WHERE e2.department_id = e1.department_id )
+  GROUP BY e1.first_name, e1.last_name, j.job_id
+  ORDER BY total_sal;
+</pre>
+<p>By using the global hint structure, you can avoid the modification of view <code>v</code> with the specification of the index hint in the body of view <code>e2</code>. To force the use of the index <code>emp_job_ix</code> for the table <code>e3</code>, you can use one of the following statements:</p>
+<pre>
+SELECT /*+ INDEX(v.e2.e3 emp_job_ix) */  * FROM v;
+
+SELECT /*+ INDEX(@SEL$2 e2.e3 emp_job_ix) */ * FROM v;
+
+SELECT /*+ INDEX(@SEL$3 e3 emp_job_ix) */ * FROM v;
+</pre></div>
+<!-- class="example" -->
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Oracle Database ignores global hints that refer to multiple query blocks. For example, the <code>LEADING</code> hint is ignored in the following query because it uses the dot notation to the main query block containing table <code>a</code> and view query block <code>v</code>:
+<pre>
+SELECT /*+ LEADING(v.b a v.c) */ *
+FROM a, v
+WHERE a.id = v.id;
+</pre>
+<p>To avoid this issue, Oracle recommends that you specify a query block in the hint using the <code>@SEL</code> notation:</p>
+<pre>
+SELECT /*+ LEADING(A@SEL$1 B@SEL$2 C@SEL$2) */
+FROM a a, v v
+WHERE a.id = v.id;
+</pre></div>
+<div id="PFGRF94948" class="example">
+<p class="titleinexample"><a id="i22340"></a>Example 19-4 Using Global Hints with NO_MERGE</p>
+<p>The global hint syntax also applies to unmergeable views as in <a href="#i22340">Example 19-4</a>.</p>
+<pre>
+CREATE OR REPLACE VIEW v1 AS
+  SELECT *
+    FROM employees
+    WHERE employee_id &lt; 150;
+
+CREATE OR REPLACE VIEW v2 AS
+  SELECT v1.employee_id employee_id, departments.department_id department_id
+    FROM v1, departments
+    WHERE v1.department_id = departments.department_id;
+
+SELECT /*+ NO_MERGE(v2) INDEX(v2.v1.employees emp_emp_id_pk)
+                        FULL(v2.departments) */ *
+  FROM v2
+  WHERE department_id = 30;
+</pre>
+<p>The hints cause <code>v2</code> not to be merged and specify access path hints for the employee and department tables. These hints are pushed down into the (nonmerged) view <code>v2</code>.</p>
+</div>
+<!-- class="example" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#i22065">"Using Hints with Views"</a></div>
+</div>
+<!-- class="sect2" -->
+<a id="i20220"></a>
+<div id="PFGRF50105" class="sect2">
+<h3 class="sect2"><span class="secnum">19.2.4</span> Specifying Complex Index Hints</h3>
+<p><a id="sthref1494"></a><a id="sthref1495"></a><a id="sthref1496"></a><a id="sthref1497"></a>Hints that specify an index can use either a simple index name or a parenthesized list of columns as follows:</p>
+<p><span class="syntaxinline">indexspec::=</span></p>
+<img width="496" height="72" src="img/indexspec.gif" alt="Description of indexspec.gif follows" /><br />
+<a id="sthref1498" href="img_text/indexspec.htm">Description of the illustration indexspec.gif</a><br />
+<br />
+<p>The semantics are as follows:</p>
+<ul>
+<li>
+<p><code>table</code> specifies the name</p>
+</li>
+<li>
+<p><code>column</code> specifies the name of a column in the specified table</p>
+<ul>
+<li>
+<p>The columns can optionally be prefixed with table qualifiers allowing the hint to specify bitmap join indexes where the index columns are on a different table than the indexed table. If tables qualifiers are present, then they must be base tables, not aliases in the query.</p>
+</li>
+<li>
+<p>Each column in an index specification must be a base column in the specified table, not an expression. Function-based indexes cannot be hinted using a column specification unless the columns specified in the index specification form the prefix of a function-based index.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>index</code> specifies an index name</p>
+<p>When <code>tablespec</code> is followed by <code>indexspec</code> in the specification of a hint, a comma separating the table name and index name is permitted but not required. Commas are also permitted, but not required, to separate multiple occurrences of <code>indexspec</code>.</p>
+</li>
+</ul>
+<p>The hint is resolved as follows:</p>
+<ul>
+<li>
+<p>If an index name is specified, then the database only considered the specified index.</p>
+</li>
+<li>
+<p>If a column list is specified, and if an index exists whose columns match the specified columns in number and order, then the database only consider this index. If no such index exists, then any index on the table with the specified columns as the prefix in the order specified is considered. In either case, the behavior is exactly as if the user had specified the same hint individually on all the matching indexes.</p>
+</li>
+</ul>
+<p>For example, in <a href="#i21188">Example 19-3</a> the <code>job_history</code> table has a single-column index on the <code>employee_id</code> column and a concatenated index on <code>employee_id</code> and <code>start_date</code> columns. To specifically instruct the optimizer on index use, you can hint the query as follows:</p>
+<pre>
+SELECT /*+ INDEX(v.j jhist_employee_ix (employee_id start_date)) */ * FROM v;
+</pre></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i22065"></a>
+<div id="PFGRF51000" class="sect1">
+<h2 class="sect1"><span class="secnum">19.3</span> Using Hints with Views</h2>
+<p>Oracle does not encourage hints inside or on views (or subqueries) because you can define views in one context and use them in another. Also, such hints can result in unexpected execution plans. In particular, hints inside views or on views are handled differently, depending on whether the view is mergeable into the top-level query.</p>
+<p>To specify a hint for a table in a view or subquery, the global hint syntax is preferable. See <a href="#i27644">"Specifying Global Table Hints"</a>.</p>
+<p>If you decide to use hints with views, then the following sections describe the behavior.</p>
+<a id="i22087"></a>
+<div id="PFGRF50103" class="sect2">
+<h3 class="sect2"><span class="secnum">19.3.1</span> Hints and Complex Views</h3>
+<p>By default, hints do not propagate inside a complex view. For example, if you specify a hint in a query that selects against a complex view, then this hint is not honored, because it is not pushed inside the view.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If the view is on a single table, then the hint is propagated.</div>
+<p>Unless the hints are inside the base view, they might not be honored from a query against the view.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i22098"></a>
+<div id="PFGRF94949" class="sect2">
+<h3 class="sect2"><span class="secnum">19.3.2</span> Hints and Mergeable Views</h3>
+<p>A <span class="bold">mergeable view</span> is a view that Oracle Database can replace with the query that defines the view. For example, suppose you create a view as follows:</p>
+<pre>
+CREATE OR REPLACE VIEW emp_view AS 
+  SELECT last_name, department_name FROM employees e, departments d
+  WHERE e.department_id=d.department_id;
+</pre>
+<p>This view is mergeable because the database can optimize the following query to use the <code>SELECT</code> statement that defines the view, avoiding use of the view itself.</p>
+<pre>
+SELECT * FROM emp_view;
+</pre>
+<a id="CHDGDFJE"></a>
+<div id="PFGRF95148" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">19.3.2.1</span> Optimization Approaches and Goal Hints in Views</h4>
+<p>Optimization approach and goal hints can occur in a top-level query or inside views.</p>
+<ul>
+<li>
+<p>If such a hint exists in the top-level query, then the database uses this hint regardless of any such hints inside the views.</p>
+</li>
+<li>
+<p>If there is no top-level optimizer mode hint, then the database uses mode hints in referenced views as long as all mode hints in the views are consistent.</p>
+</li>
+<li>
+<p>If two or more mode hints in the referenced views conflict, then the database discards all mode hints in the views and uses the session mode, whether default or user-specified.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<div id="PFGRF94951" class="sect3"><!-- infolevel="all" infotype="General" --><a id="i30558"></a>
+<h4 class="sect3"><span class="secnum">19.3.2.2</span> Access Path and Join Hints on Views</h4>
+<p>Access path and join hints on referenced views are ignored unless the view contains a single table or references an <a href="#CHDIDIDI">Additional Hints</a> view with a single table. For such single-table views, an access path hint or a join hint on the view applies to the table inside the view.</p>
+</div>
+<!-- class="sect3" -->
+<div id="PFGRF94952" class="sect3"><!-- infolevel="all" infotype="General" --><a id="i30571"></a>
+<h4 class="sect3"><span class="secnum">19.3.2.3</span> Access Path and Join Hints Inside Views</h4>
+<p>Access path and join hints can appear in a view definition.</p>
+<ul>
+<li>
+<p>If the view is an inline view (that is, if it appears in the <code>FROM</code> clause of a <code>SELECT</code> statement), then all access path and join hints inside the view are preserved when the view is merged with the top-level query.</p>
+</li>
+<li>
+<p>For views that are non-inline views, access path and join hints in the view are preserved only if the referencing query references no other tables or views (that is, if the <code>FROM</code> clause of the <code>SELECT</code> statement contains only the view).</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i22120"></a>
+<div id="PFGRF94955" class="sect2">
+<h3 class="sect2"><span class="secnum">19.3.3</span> Hints and Nonmergeable Views</h3>
+<p>With nonmergeable views, optimization approach and goal hints inside the view are ignored; the top-level query decides the optimization mode.</p>
+<p>Because nonmergeable views are optimized separately from the top-level query, access path and join hints inside the view are preserved. For the same reason, access path hints on the view in the top-level query are ignored.</p>
+<p>However, join hints on the view in the top-level query are preserved because, in this case, a nonmergeable view is similar to a table.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1679">
+<tr>
+<td class="cellalignment1688">
+<table class="cellalignment1684">
+<tr>
+<td class="cellalignment1683"><a href="advisor.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1683"><a href="outlines.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2000, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1690">
+<table class="cellalignment1682">
+<tr>
+<td class="cellalignment1683"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1683"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1683"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1683"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1683"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1683"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

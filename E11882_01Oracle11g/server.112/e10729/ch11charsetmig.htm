@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Character Set Migration</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 070" />
+<meta name="dcterms.created" content="2013-07-05T0:14:31Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Globalization Support Guide" />
+<meta name="dcterms.identifier" content="E10729-08" />
+<meta name="dcterms.isVersionOf" content="NLSPG" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1996, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="ch10oci.htm" title="Previous" type="text/html" />
+<link rel="Next" href="ch12scanner.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10729.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">15/21</span> <!-- End Header --><a id="g1011430"></a><a id="NLSPG011"></a>
+<h1 class="chapter"><span class="secnum">11</span> Character Set Migration</h1>
+<p>This chapter discusses character set conversion and character set migration. This chapter includes the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1005921">Overview of Character Set Migration</a></p>
+</li>
+<li>
+<p><a href="#CEGDHJFF">Changing the Database Character Set of an Existing Database</a></p>
+</li>
+<li>
+<p><a href="#CEGBIJHD">Migrating to NCHAR Data Types</a></p>
+</li>
+<li>
+<p><a href="#CEGGICAJ">Post-Conversion Considerations After Character Set Migration</a></p>
+</li>
+</ul>
+<a id="i1005921"></a><a id="NLSPG460"></a>
+<div class="sect1">
+<h2 class="sect1">Overview of Character Set Migration</h2>
+<p><a id="sthref1079"></a><a id="sthref1080"></a><a id="sthref1081"></a><a id="sthref1082"></a>Choosing the appropriate character set for your database is an important decision. When you choose the database character set, consider the following factors:</p>
+<ul>
+<li>
+<p>The type of data you need to store</p>
+</li>
+<li>
+<p>The languages that the database needs to accommodate now and in the future</p>
+</li>
+<li>
+<p>The different size requirements of each character set and the corresponding performance implications</p>
+</li>
+</ul>
+<p>A related topic is choosing a new character set for an existing database. Changing the database character set for an existing database is called <span class="bold">character set migration</span>. When you migrate from one database character set to another you must choose an appropriate character set. You should also plan to minimize data loss from the following sources:</p>
+<ul>
+<li>
+<p><a href="#i1005945">Data Truncation</a></p>
+</li>
+<li>
+<p><a href="#i1005993">Character Set Conversion Issues</a></p>
+<div class="infoboxnotealso">
+<p class="notep1"><span class="bold">See Also</span>:</p>
+<a href="ch2charset.htm#g1015066">Chapter 2, "Choosing a Character Set"</a></div>
+</li>
+</ul>
+<a id="i1005945"></a><a id="NLSPG461"></a>
+<div class="sect2">
+<h3 class="sect2">Data Truncation</h3>
+<p>When <a id="sthref1083"></a>the database is created using byte semantics, the sizes of the <code>CHAR</code> and <code>VARCHAR2</code> data types are specified in bytes, not characters. For example, the specification <code>CHAR(20)</code> in a table definition allows 20 bytes for storing character data. When the database character set uses a single-byte character encoding scheme, no data loss occurs when characters are stored because the number of characters is equivalent to the number of bytes. If the database character set uses a multibyte character set, then the number of bytes no longer equals the number of characters because a character can consist of one or more bytes.</p>
+<p>During migration to a new character set, it is important to verify the column widths of existing <code>CHAR</code> and <code>VARCHAR2</code> columns because they may need to be extended to support an encoding that requires multibyte storage. Truncation of data can occur if conversion causes expansion of data.</p>
+<p><a href="#g1007573">Table 11-1</a> shows an example of <a id="sthref1084"></a><a id="sthref1085"></a>data expansion when single-byte characters become multibyte characters through conversion.</p>
+<div class="tblformal">
+<p class="titleintable"><a id="NLSPG857"></a><a id="sthref1086"></a><a id="g1007573"></a>Table 11-1 Single-Byte and Multibyte Encoding</p>
+<table class="cellalignment1916" title="Single-Byte and Multibyte Encoding " summary="This table is described in the preceding text" dir="ltr">
+<thead>
+<tr class="cellalignment1905">
+<th class="cellalignment1915" id="r1c1-t3">Character</th>
+<th class="cellalignment1915" id="r1c2-t3">WE8MSWIN 1252 Encoding</th>
+<th class="cellalignment1915" id="r1c3-t3">AL32UTF8 Encoding</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1905">
+<td class="cellalignment1911" id="r2c1-t3" headers="r1c1-t3">
+<p>&auml;</p>
+</td>
+<td class="cellalignment1911" headers="r2c1-t3 r1c2-t3">
+<p>E4</p>
+</td>
+<td class="cellalignment1911" headers="r2c1-t3 r1c3-t3">
+<p>C3 A4</p>
+</td>
+</tr>
+<tr class="cellalignment1905">
+<td class="cellalignment1911" id="r3c1-t3" headers="r1c1-t3">
+<p>&ouml;</p>
+</td>
+<td class="cellalignment1911" headers="r3c1-t3 r1c2-t3">
+<p>F6</p>
+</td>
+<td class="cellalignment1911" headers="r3c1-t3 r1c3-t3">
+<p>C3 B6</p>
+</td>
+</tr>
+<tr class="cellalignment1905">
+<td class="cellalignment1911" id="r4c1-t3" headers="r1c1-t3">
+<p>&copy;</p>
+</td>
+<td class="cellalignment1911" headers="r4c1-t3 r1c2-t3">
+<p>A9</p>
+</td>
+<td class="cellalignment1911" headers="r4c1-t3 r1c3-t3">
+<p>C2 A9</p>
+</td>
+</tr>
+<tr class="cellalignment1905">
+<td class="cellalignment1911" id="r5c1-t3" headers="r1c1-t3">
+<p><span class="euromono">&euro;</span></p>
+</td>
+<td class="cellalignment1911" headers="r5c1-t3 r1c2-t3">
+<p>80</p>
+</td>
+<td class="cellalignment1911" headers="r5c1-t3 r1c3-t3">
+<p>E2 82 AC</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<p>The first column of <a href="#g1007573">Table 11-1</a> shows selected characters. The second column shows the hexadecimal representation of the characters in the WE8MSWIN1252 character set. The third column shows the hexadecimal representation of each character in the AL32UTF8 character set. Each pair of letters and numbers represents one byte. For example, <code>&auml;</code> (<code>a</code> with an umlaut) is a single-byte character (<code>E4</code>) in WE8MSWIN1252, but it becomes a two-byte character (<code>C3 A4</code>) in AL32UTF8. Also, the encoding for the euro symbol expands from one byte (<code>80</code>) to three bytes (<code>E2 82 AC</code>).</p>
+<p>If the data in the new character set requires storage that is greater than the supported byte size of the data types, then you must change your schema. You may need to use <code>CLOB</code> columns.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="ch2charset.htm#i1006683">"Length Semantics"</a></div>
+<a id="NLSPG462"></a>
+<div class="sect3"><a id="sthref1087"></a>
+<h4 class="sect3">Additional Problems Caused by Data Truncation</h4>
+<p><a id="sthref1088"></a><a id="sthref1089"></a>Data truncation can cause the following problems:</p>
+<ul>
+<li>
+<p>In the database data dictionary, schema object names cannot exceed 30 bytes in length. You must rename schema objects if their names exceed 30 bytes in the new database character set. For example, one Thai character in the Thai national character set requires 1 byte. In AL32UTF8, it requires 3 bytes. If you have defined a table whose name is 11 Thai characters, then the table name must be shortened to 10 or fewer Thai characters when you change the database character set to AL32UTF8.</p>
+</li>
+<li>
+<p>If existing Oracle usernames <a id="sthref1090"></a><a id="sthref1091"></a>or passwords are created based on characters that change in size in the new character set, then users will have trouble logging in because of authentication failures after the migration to a new character set. This occurs because the encrypted usernames and passwords stored in the data dictionary may not be updated during migration to a new character set. For example, if the current database character set is WE8MSWIN1252 and the new database character set is AL32UTF8, then the length of the username <code>sc&ouml;tt</code> (<code>o</code> with an umlaut) changes from 5 bytes to 6 bytes. In AL32UTF8, <code>sc&ouml;tt</code> can no longer log in because of the difference in the username. Oracle recommends that usernames and passwords be based on ASCII characters. If they are not, then you must reset the affected usernames and passwords after migrating to a new character set.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Encrypted usernames and passwords stored in the data dictionary are not updated when migration is accomplished with the <code>CSALTER</code> script, but they are updated if the migration is accomplished with the Import and Export utilities.</div>
+</li>
+<li>
+<p>When <code>CHAR</code> data contains characters that expand after migration to a new character set, <a id="sthref1092"></a><a id="sthref1093"></a>space padding is not removed during database export by default. This means that these rows will be rejected upon import into the database with the new character set. The workaround is to set the <a id="sthref1094"></a><a id="sthref1095"></a><code>BLANK_TRIMMING</code> initialization parameter to <code>TRUE</code> before importing the <code>CHAR</code> data.</p>
+<div class="infoboxnotealso">
+<p class="notep1"><span class="bold">See Also</span>:</p>
+<a class="olink REFRN" href="../e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for more information about the <code>BLANK_TRIMMING</code> initialization parameter</div>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1005993"></a><a id="NLSPG463"></a>
+<div class="sect2">
+<h3 class="sect2">Character Set Conversion Issues</h3>
+<p>This section includes the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1006004">Replacement Characters that Result from Using the Export and Import Utilities</a></p>
+</li>
+<li>
+<p><a href="#CEGCGEAF">Invalid Data That Results from Setting the Client's NLS_LANG Parameter Incorrectly</a></p>
+</li>
+<li>
+<p><a href="#CBDHJEFF">Conversion from Single-byte to Multibyte Character Set and Oracle Data Pump</a></p>
+</li>
+</ul>
+<a id="i1006004"></a><a id="NLSPG464"></a>
+<div class="sect3">
+<h4 class="sect3">Replacement Characters that Result from Using the Export and Import Utilities</h4>
+<p><a id="sthref1096"></a><a id="sthref1097"></a>The Export and Import utilities can convert character sets from the original database character set to the new database character set. However, character set conversions can sometimes cause data loss or data corruption. For example, if you are migrating from character set A to character set B, then the destination character set B should be a superset of character set A. The destination character, B, is a <span class="bold">superset</span> if it contains all the characters defined in character set A. Characters that are not available in character set B are converted to replacement characters, which are often specified as <code>?</code> or <code>&iquest;</code> or as a character that is related to the unavailable character. For example, <code>&auml;</code> (<code>a</code> with an umlaut) can be replaced by <code>a</code>. Replacement characters are defined by the target character set.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+There is an exception to the requirement that the destination character set B should be a superset of character set A. If your data contains no characters that are in character set A but are not in character set B, then the destination character set does not need to be a superset of character set A to avoid data loss or data corruption.</div>
+<p><a href="#i1006012">Figure 11-1</a> shows an example of a character set conversion in which the copyright and euro symbols are converted to <code>?</code> and <code>&auml;</code> is converted to <code>a</code>.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="i1006012"></a><a id="NLSPG858"></a>Figure 11-1 Replacement Characters in Character Set Conversion</p>
+<img width="567" height="192" src="img/nlspg020.gif" alt="Description of Figure 11-1 follows" /><br />
+<a id="sthref1098" href="./img_text/nlspg020.htm">Description of "Figure 11-1 Replacement Characters in Character Set Conversion"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>To reduce the risk of losing data, choose a destination character set with a similar character repertoire. Migrating to Unicode may be the best option, because AL32UTF8 contains characters from most legacy character sets.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CEGCGEAF"></a><a id="NLSPG465"></a>
+<div class="sect3">
+<h4 class="sect3">Invalid Data That Results from Setting the Client's NLS_LANG Parameter Incorrectly</h4>
+<p>Another character set migration scenario that can cause the loss of data is migrating a database that contains invalid data. Invalid data usually occurs in a database because the <code>NLS_LANG</code> parameter is not set properly on the client. The <code>NLS_LANG</code> value should reflect the client operating system code page. For example, in an English Windows environment, the code page is WE8MSWIN1252. When the <code>NLS_LANG</code> parameter is set properly, the database can automatically convert incoming data from the client operating system. When the <code>NLS_LANG</code> parameter is not set properly, then the data coming into the database is not converted properly. For example, suppose that the database character set is AL32UTF8, the client is an English Windows operating system, and the <code>NLS_LANG</code> setting on the client is AL32UTF8. Data coming into the database is encoded in WE8MSWIN1252 and is not converted to AL32UTF8 data because the <code>NLS_LANG</code> setting on the client matches the database character set. Thus Oracle assumes that no conversion is necessary, and invalid data is entered into the database.</p>
+<p><a id="sthref1099"></a><a id="sthref1100"></a>This can lead to two possible data inconsistency problems. One problem occurs when a database contains data from a character set that is different from the database character set but the same code points exist in both character sets. For example, if the database character set is WE8ISO8859P1 and the <code>NLS_LANG</code> setting of the Chinese Windows NT client is SIMPLIFIED CHINESE_CHINA.WE8ISO8859P1, then all multibyte Chinese data (from the ZHS16GBK character set) is stored as multiples of single-byte WE8ISO8859P1 data. This means that Oracle treats these characters as single-byte WE8ISO8859P1 characters. Hence all SQL string manipulation functions such as SUBSTR or LENGTH are based on bytes rather than characters. All bytes constituting ZHS16GBK data are legal WE8ISO8859P1 codes. If such a database is migrated to another character set such as AL32UTF8, then character codes are converted as if they were in WE8ISO8859P1. This way, each of the two bytes of a ZHS16GBK character are converted separately, yielding meaningless values in AL32UTF8. <a href="#i1006027">Figure 11-2</a> shows an example of this incorrect character set replacement.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="i1006027"></a><a id="NLSPG859"></a>Figure 11-2 Incorrect Character Set Replacement</p>
+<img width="567" height="179" src="img/nlspg021.gif" alt="Description of Figure 11-2 follows" /><br />
+<a id="sthref1101" href="./img_text/nlspg021.htm">Description of "Figure 11-2 Incorrect Character Set Replacement"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>The second possible problem is having data from mixed character sets inside the database. For example, if the data character set is WE8MSWIN1252, and two separate Windows clients using German and Greek are both using WE8MSWIN1252 as the <code>NLS_LANG</code> character set, then the database contains a mixture of German and Greek<a id="sthref1102"></a><a id="sthref1103"></a> characters. <a href="#i1006038">Figure 11-3</a> shows how different clients can use different character sets in the same database.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="i1006038"></a><a id="NLSPG860"></a>Figure 11-3 Mixed Character Sets</p>
+<img width="567" height="329" src="img/nlspg022.gif" alt="Description of Figure 11-3 follows" /><br />
+<a id="sthref1104" href="./img_text/nlspg022.htm">Description of "Figure 11-3 Mixed Character Sets"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>For database character set migration to be successful, both of these cases require manual intervention because Oracle Database cannot determine the character sets of the data being stored. Incorrect data conversion can lead to data corruption, so perform a full backup of the database before attempting to migrate the data to a new character set.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CBDHJEFF"></a><a id="NLSPG466"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Conversion from Single-byte to Multibyte Character Set and <a id="sthref1105"></a>Oracle Data Pump</h4>
+<p>If Oracle Data Pump is being used, and if a character set migration from single-byte to multibyte is performed, then the <a id="sthref1106"></a>Data Pump PL/SQL packages must be reloaded.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CEGDHJFF"></a><a id="NLSPG467"></a>
+<div class="sect1">
+<h2 class="sect1">Changing the Database Character Set of an Existing Database</h2>
+<p>Database character set migration has two stages: data scanning and data conversion. <a id="sthref1107"></a><a id="sthref1108"></a><a id="sthref1109"></a>Before you change the database character set, you must identify possible database character set conversion problems and truncation of data. This step is called <span class="bold">data scanning</span>.</p>
+<p>Data scanning identifies the amount of effort required to migrate data into the new character encoding scheme before changing the database character set. Some examples of what may be found during a data scan are the number of schema objects where the column widths need to be expanded and the extent of the data that does not exist in the target character repertoire. This information helps to determine the best approach for converting the database character set.</p>
+<p>Incorrect data conversion can lead to data corruption, so perform a full backup of the database before attempting to migrate the data to a new character set.</p>
+<p><a id="sthref1110"></a><a id="sthref1111"></a>There are three approaches to converting data from one database character set to another if the database does not contain any of the inconsistencies described in <a href="#i1005993">"Character Set Conversion Issues"</a>. A description of methods to migrate databases with such inconsistencies is out of the scope of this documentation. For more information, contact Oracle Consulting Services for assistance.</p>
+<p>The approaches are:</p>
+<ul>
+<li>
+<p><a href="#CEGCHGIJ">Migrating Character Data Using a Full Export and Import</a></p>
+</li>
+<li>
+<p><a href="#CEGHDCJF">Migrating a Character Set Using the CSALTER Script</a></p>
+</li>
+<li>
+<p><a href="#i1006149">Migrating Character Data Using the CSALTER Script and Selective Imports</a></p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="ch12scanner.htm#g1035448">Chapter 12, "Character Set Scanner Utilities"</a> for more information about data scanning</div>
+</li>
+</ul>
+<a id="CEGCHGIJ"></a><a id="NLSPG468"></a>
+<div class="sect2">
+<h3 class="sect2">Migrating Character Data Using a Full Export and Import</h3>
+<p>In most cases, a full export and import is recommended to properly convert all data to a new character set. It is important to be aware of data truncation issues, because columns with character data types may need to be extended before the import to handle an increase in size. Existing PL/SQL code should be reviewed to ensure that all byte-based SQL functions such as <code>LENGTHB</code>, <code>SUBSTRB</code>, and <code>INSTRB</code>, and <code>PL/SQL CHAR</code> and <code>VARCHAR2</code> declarations are still valid.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SUTIL" href="../e22490/toc.htm"><span class="italic">Oracle Database Utilities</span></a> for more information about the Export and Import utilities</div>
+</div>
+<!-- class="sect2" -->
+<a id="CEGHDCJF"></a><a id="NLSPG469"></a>
+<div class="sect2">
+<h3 class="sect2">Migrating a Character Set Using the <a id="sthref1112"></a><a id="sthref1113"></a><a id="sthref1114"></a>CSALTER Script</h3>
+<p>The <code>CSALTER</code> script is part of the Database Character Set Scanner utility. The <code>CSALTER</code> script is the most straightforward way to migrate a character set, but it can be used only if all of the schema data is a strict subset of the new character set. The new character set is a strict superset of the current character set if:</p>
+<ul>
+<li>
+<p>Each and every character in the current character set is available in the new character set.</p>
+</li>
+<li>
+<p>Each and every character in the current character set has the same code point value in the new character set. For example, many character sets are strict supersets of US7ASCII.</p>
+</li>
+</ul>
+<p>With the strict superset criteria in mind, only the metadata is converted to the new character set by the <code>CSALTER</code> script, with the following exception: the <code>CSALTER</code> script performs data conversion only on <code>CLOB</code> columns in the data dictionary and sample schemas that have been created by Oracle. <code>CLOB</code> columns that users have created may need to be handled separately. Beginning with Oracle9<span class="italic">i</span>, some internal fields in the data dictionary and sample schemas are stored in <code>CLOB</code> columns. Customers may also store data in <code>CLOB</code> fields. When the database character set is multibyte, then <code>CLOB</code> data is stored in a format that is compatible with UCS-2 data. When the database character set is single-byte, then <code>CLOB</code> data is stored using the database character set. Because the <code>CSALTER</code> script converts data only in <code>CLOB</code> columns in the data dictionary and sample schemas that were created by Oracle, any other <code>CLOB</code> columns that are created must be first exported and then dropped from the schema before the <code>CSALTER</code> script can be run.</p>
+<p>To change the database character set, perform the following steps:</p>
+<ol>
+<li>
+<p>Shut down the database, using either a <code>SHUTDOWN IMMEDIATE</code> or a <code>SHUTDOWN NORMAL</code> statement.</p>
+</li>
+<li>
+<p>Do a full backup of the database, because the <code>CSALTER</code> script cannot be rolled back.</p>
+</li>
+<li>
+<p>Start up the database.</p>
+</li>
+<li>
+<p>Run the Database Character Set Scanner utility.</p>
+<pre>
+CSSCAN /AS SYSDBA FULL=Y...
+</pre></li>
+<li>
+<p>Run the <code>CSALTER</code> script.</p>
+<pre>
+@@CSALTER.PLB
+SHUTDOWN IMMEDIATE; -- or SHUTDOWN NORMAL;
+STARTUP;
+</pre></li>
+</ol>
+<p>Note that the <code>CSALTER</code> script does not perform any user data conversion. It only changes the character set metadata in the data dictionary. Thus, after the <code>CSALTER</code> operation, Oracle behaves as if the database was created using the new character set.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#i1006149">"Migrating Character Data Using the CSALTER Script and Selective Imports"</a></p>
+</li>
+<li>
+<p><a href="ch12scanner.htm#i1013848">"Database Character Set Scanner CSALTER Script"</a></p>
+</li>
+</ul>
+</div>
+<a id="i1006141"></a><a id="NLSPG470"></a>
+<div class="sect3">
+<h4 class="sect3">Using the CSALTER Script in an Oracle Real Application Clusters Environment</h4>
+<p><a id="sthref1115"></a>In an Oracle Real Application Clusters environment, ensure that no other Oracle background processes are running, with the exception of the background processes associated with the instance through which a user is connected, before attempting to issue the <code><a id="sthref1116"></a><a id="sthref1117"></a><a id="sthref1118"></a>CSALTER</code> script. With DBA privileges, use the following SQL statement to verify that no other Oracle background processes are running:</p>
+<pre>
+SELECT SID, SERIAL#, PROGRAM FROM V$SESSION;
+</pre>
+<p>Set the <code>CLUSTER_DATABASE</code> initialization parameter to <code>FALSE</code> to allow the character set change to be completed. Reset it to <code>TRUE</code> after the character set has been changed.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1006149"></a><a id="NLSPG471"></a>
+<div class="sect2">
+<h3 class="sect2">Migrating Character Data Using the CSALTER Script and Selective Imports</h3>
+<p>Another approach to migrating character data is to perform selective exports followed by rescanning and running the <code>CSALTER</code> script. This approach is most common when the subset character set is single-byte and the migration is to a multibyte character set. In this scenario, user-created <code>CLOB</code>s must be converted because the encoding changes from the single- byte character set to a UCS-2-compatible format which Oracle uses for storage of <code>CLOB</code>s regardless of the multibyte encoding. The Database Character Set Scanner identifies these columns as convertible. It is up to the user to export these columns and then drop them from the schema, rescan, and, if the remaining data is clean, run the <code>CSALTER</code> script. When these steps have been completed, then import the <code>CLOB</code> columns to the database to complete migration.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CEGBIJHD"></a><a id="NLSPG472"></a>
+<div class="sect1">
+<h2 class="sect1">Migrating to <a id="sthref1119"></a><a id="sthref1120"></a>NCHAR Data Types</h2>
+<p>In Oracle Database, data that is stored in columns of the <code>NCHAR</code> data types is stored exclusively in a Unicode encoding regardless of the database character set. This enables users to store Unicode in a database that does not use Unicode as the database character set.</p>
+<p>This section includes the following topics:</p>
+<ul>
+<li>
+<p><a href="#CEGGHFAJ">Migrating Version 8 NCHAR Columns to Oracle9<span class="italic">i</span> and Later</a></p>
+</li>
+<li>
+<p><a href="#i1006200">Changing the National Character Set</a></p>
+</li>
+<li>
+<p><a href="#i1006220">Migrating CHAR Columns to NCHAR Columns</a></p>
+</li>
+</ul>
+<a id="CEGGHFAJ"></a><a id="NLSPG473"></a>
+<div class="sect2">
+<h3 class="sect2">Migrating Version 8 NCHAR <a id="sthref1121"></a><a id="sthref1122"></a><a id="sthref1123"></a>Columns to Oracle9<span class="italic">i</span> and Later</h3>
+<p>In version 8 of Oracle Database, Oracle <a id="sthref1124"></a>introduced a national character data type (<code>NCHAR</code>) that enables a second, alternative character set in addition to the database character set. The <code>NCHAR</code> data types support several fixed-width Asian character sets that were introduced to provide better performance when processing Asian character data.</p>
+<p>Beginning with Oracle9<span class="italic">i</span>, the SQL <code>NCHAR</code> data types are limited to Unicode character set encoding (UTF8 and AL16UTF16). Any other version 8 character sets that were available for the <code>NCHAR</code> data types, including Asian character sets such as JA16SJISFIXED are no longer supported.</p>
+<p>The steps for migrating existing <code>NCHAR</code>, <code>NVARCHAR2</code>, and <code>NCLOB</code> columns to <code>NCHAR</code> data types in Oracle9<span class="italic">i</span> and later are as follows:</p>
+<ol>
+<li>
+<p>Export all <code>NCHAR</code> columns from the version 8 or Oracle8<span class="italic">i</span> database.</p>
+</li>
+<li>
+<p>Drop the <code>NCHAR</code> columns.</p>
+</li>
+<li>
+<p>Upgrade the database to the later release<span class="italic">.</span></p>
+</li>
+<li>
+<p>Import the <code>NCHAR</code> columns into the upgraded database.</p>
+</li>
+</ol>
+<p>The migration utility can also convert version 8 and Oracle8<span class="italic">i</span> <code>NCHAR</code> columns to <code>NCHAR</code> columns in later releases. A SQL <code>NCHAR</code> upgrade script called <code>utlnchar.sql</code> is supplied with the migration utility. Run it at the end of the database migration to convert version 8 and Oracle8<span class="italic">i</span> <code>NCHAR</code> columns to the <code>NCHAR</code> columns in later releases. After the script has been executed, the data cannot be downgraded. The only way to move back to version 8 or Oracle8<span class="italic">i</span> is to drop all <code>NCHAR</code> columns, downgrade the database, and import the old <code>NCHAR</code> data from a previous version 8 or Oracle8<span class="italic">i</span> export file. Ensure that you have a backup (export file) of version 8 or Oracle8<span class="italic">i</span> <code>NCHAR</code> data, in case you need to downgrade your database in the future.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink SUTIL" href="../e22490/toc.htm"><span class="italic">Oracle Database Utilities</span></a> for a description of export and import procedures</p>
+</li>
+<li>
+<p><a class="olink UPGRD" href="../e23633/toc.htm"><span class="italic">Oracle Database Upgrade Guide</span></a> for <code>NCHAR</code> migration information</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1006200"></a><a id="NLSPG474"></a>
+<div class="sect2">
+<h3 class="sect2">Changing the National Character Set</h3>
+<p>Use the <code>CSALTER</code> script to change the national character set.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="ch12scanner.htm#g1035448">Chapter 12, "Character Set Scanner Utilities"</a> for the syntax of the <code>CSALTER</code> script</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1006220"></a><a id="NLSPG475"></a>
+<div class="sect2">
+<h3 class="sect2">Migrating <a id="sthref1125"></a><a id="sthref1126"></a>CHAR Columns to NCHAR Columns</h3>
+<p>You can change a column's data type definition using the following methods:</p>
+<ul>
+<li>
+<p>The <code><a id="sthref1127"></a>ALTER TABLE MODIFY</code> statement</p>
+</li>
+<li>
+<p>Online table redefinition</p>
+</li>
+</ul>
+<p>The <code>ALTER TABLE MODIFY</code> statement has the following advantages over online table redefinition:</p>
+<ul>
+<li>
+<p>Easier to use</p>
+</li>
+<li>
+<p>Fewer restrictions</p>
+</li>
+</ul>
+<p><a id="sthref1128"></a>Online table redefinition has the following advantages over the <code>ALTER TABLE MODIFY</code> statement:</p>
+<ul>
+<li>
+<p>Faster for columns with a large amount of data</p>
+</li>
+<li>
+<p>Can migrate several columns at one time</p>
+</li>
+<li>
+<p>Table is available for DML during most of the migration process</p>
+</li>
+<li>
+<p>Avoids table fragmentation, which saves space and allows faster access to data.</p>
+</li>
+<li>
+<p>Can be used for migration from the <code>CLOB</code> data type to the <code>NCLOB</code> data type</p>
+</li>
+</ul>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1006246">Using the ALTER TABLE MODIFY Statement to Change CHAR Columns to NCHAR Columns</a></p>
+</li>
+<li>
+<p><a href="#i1006270">Using Online Table Redefinition to Migrate a Large Table to Unicode</a></p>
+</li>
+</ul>
+<a id="i1006246"></a><a id="NLSPG476"></a>
+<div class="sect3">
+<h4 class="sect3">Using the ALTER TABLE MODIFY Statement to Change CHAR Columns to NCHAR Columns</h4>
+<p>The <code><a id="sthref1129"></a>ALTER TABLE MODIFY</code> statement can be used to change table column definitions from the <code>CHAR</code> data types to <code>NCHAR</code> data types. It also converts all of the data in the column from the database character set to the <code>NCHAR</code> character set. The syntax of the <code>ALTER TABLE MODIFY</code> statement is as follows:</p>
+<pre>
+ALTER TABLE <span class="codeinlineitalic">table_name</span> MODIFY (<span class="codeinlineitalic">column_name datatype</span>);
+</pre>
+<p>If indexes have been built on the migrating column, then dropping the indexes can improve the performance of the <code>ALTER TABLE MODIFY</code> statement because indexes are updated when each row is updated.</p>
+<p>The maximum column lengths for <code>NCHAR</code> and <code>NVARCHAR2</code> columns are 2000 and 4000 bytes. When the <code>NCHAR</code> character set is AL16UTF16, the maximum column lengths for <code>NCHAR</code> and <code>NVARCHAR2</code> columns are 1000 and 2000 characters, which are 2000 and 4000 bytes. If this size limit is violated during migration, then consider changing the column to the <code>NCLOB</code> data type instead.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+<code>CLOB</code> columns cannot be migrated to <code>NCLOB</code> columns using the <code>ALTER TABLE MODIFY</code> statement. Use online table redefinition to change a column from the <code>CLOB</code> data type to the <code>NCLOB</code> data type.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#i1006270">"Using Online Table Redefinition to Migrate a Large Table to Unicode"</a></div>
+</div>
+<!-- class="sect3" -->
+<a id="i1006270"></a><a id="NLSPG477"></a>
+<div class="sect3">
+<h4 class="sect3">Using Online Table Redefinition to Migrate a Large Table to Unicode</h4>
+<p>It takes <a id="sthref1130"></a>significant time to migrate a large table with a large number of rows to Unicode data types. During the migration, the column data is unavailable for both reading and updating. Online table redefinition can significantly reduce migration time. Using online table redefinition also allows the table to be accessible to DML during most of the migration time.</p>
+<p>Perform the following tasks to migrate a table to Unicode data types using online table redefinition:</p>
+<ol>
+<li>
+<p>Use the <code><a id="sthref1131"></a>DBMS_REDEFINITION.CAN_REDEF_TABLE</code> PL/SQL procedure to verify that the table can be redefined online. For example, to migrate the <code>scott.emp</code> table, enter the following command:</p>
+<pre>
+DBMS_REDEFINITION.CAN_REDEF_TABLE('scott','emp');
+</pre></li>
+<li>
+<p>Create an empty interim table in the same schema as the table that is to be redefined. Create it with <code>NCHAR</code> data types as the attributes. For example, enter a statement similar to the following:</p>
+<pre>
+CREATE TABLE int_emp(
+   empno NUMBER(4),
+   ename NVARCHAR2(10),
+   job NVARCHAR2(9),
+   mgr NUMBER(4),
+   hiredate DATE,
+   sal NUMBER(7,2),
+   deptno NUMBER(2),
+   org NVARCHAR2(10));
+</pre></li>
+<li>
+<p>Start the online table redefinition. Enter a command similar to the following:</p>
+<pre>
+DBMS_REDEFINITION.START_REDEF_TABLE('scott',
+   'emp',
+   'int_emp',
+   'empno empno,
+   to_nchar(ename) ename,
+   to_nchar(job) job,
+   mgr mgr,
+   hiredate hiredate,
+   sal sal,
+   deptno deptno,
+   to_nchar(org) org');
+</pre>
+<p>If you are migrating <code>CLOB</code> columns to <code>NCLOB</code> columns, then use the <code>TO_NCLOB</code> SQL conversion function instead of the <code>TO_NCHAR</code> SQL function.</p>
+</li>
+<li>
+<p>Create triggers, indexes, grants, and constraints on the interim table. Referential constraints that apply to the interim table (the interim table is a parent or child table of the referential constraint) must be created in <code>DISABLED</code> mode. Triggers that are defined on the interim table are not executed until the online table redefinition process has been completed.</p>
+</li>
+<li>
+<p>You can synchronize the interim table with the original table. If many DML operations have been applied to the original table since the online redefinition began, then execute the <code>DBMS_REDEFINITION.SYNC_INTERIM_TABLE</code> procedure. This reduces the time required for the <code>DBMS_REDEFINITION.FINISH_REDEF_TABLE</code> procedure. Enter a command similar to the following:</p>
+<pre>
+DBMS_REDEFINITION.SYNC_INTERIM_TABLE('scott', 'emp', 'int_emp');
+</pre></li>
+<li>
+<p>Execute the <code>DBMS_REDEFINITION.FINISH_REDEF_TABLE</code> procedure. Enter a command similar to the following:</p>
+<pre>
+DBMS_REDEFINITION.FINISH_REDEF_TABLE('scott', 'emp', 'int_emp');
+</pre>
+<p>When this procedure has been completed, the following conditions are true:</p>
+<ul>
+<li>
+<p>The original table is redefined so that it has all the attributes, indexes, constraints, grants, and triggers of the interim table.</p>
+</li>
+<li>
+<p>The referential constraints that apply to the interim table apply to the redefined original table.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Drop the interim table. Enter a statement similar to the following:</p>
+<pre>
+DROP TABLE int_emp;
+</pre></li>
+</ol>
+<p>The results of the online table redefinition tasks are as follows:</p>
+<ul>
+<li>
+<p>The original table is migrated to Unicode columns.</p>
+</li>
+<li>
+<p>The triggers, grants, indexes, and constraints defined on the interim table after the <code>START_REDEF_TABLE</code> subprogram and before the <code>FINISH_REDEF_TABLE</code> subprogram are defined for the redefined original table. Referential constraints that apply to the interim table now apply to the redefined original table and are enabled.</p>
+</li>
+<li>
+<p>The triggers, grants, indexes, and constraints defined on the original table before redefinition are transferred to the interim table and are dropped when you drop the interim table. Referential constraints that applied to the original table before redefinition were applied to the interim table and are now disabled.</p>
+</li>
+<li>
+<p>PL/SQL procedures and cursors that were defined on the original table before redefinition are invalidated. They are automatically revalidated the next time they are used. Revalidation may fail because the table definition has changed.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ADMIN" href="../e25494/toc.htm"><span class="italic">Oracle Database Administrator's Guide</span></a> for more information about online table redefinition</div>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CEGGICAJ"></a><a id="NLSPG478"></a>
+<div class="sect1">
+<h2 class="sect1">Post-Conversion Considerations After Character Set Migration<a id="sthref1132"></a></h2>
+<p>You may need to perform additional tasks to recover a migrated database schema to its original state. Consider the issues described in <a href="#g1007539">Table 11-2</a>.</p>
+<div class="tblformalwide">
+<p class="titleintable"><a id="NLSPG861"></a><a id="sthref1133"></a><a id="g1007539"></a>Table 11-2 Issues During Recovery of a Migrated Database Schema</p>
+<table class="cellalignment1914" title="Issues During Recovery of a Migrated Database Schema " summary="This table is described in the preceding text" dir="ltr">
+<thead>
+<tr class="cellalignment1905">
+<th class="cellalignment1915" id="r1c1-t16">Issue</th>
+<th class="cellalignment1915" id="r1c2-t16">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1905">
+<td class="cellalignment1911" id="r2c1-t16" headers="r1c1-t16">
+<p>Indexes</p>
+</td>
+<td class="cellalignment1911" headers="r2c1-t16 r1c2-t16">
+<p>When table columns are changed from <code>CHAR</code> data types to <code>NCHAR</code> data types by the <code>ALTER TABLE MODIFY</code> statement, indexes that are built on the columns are changed automatically by the database. This slows down performance for the <code>ALTER TABLE MODIFY</code> statement. If you drop indexes before issuing the <code>ALTER TABLE MODIFY</code> statement, then re-create them after migration.</p>
+</td>
+</tr>
+<tr class="cellalignment1905">
+<td class="cellalignment1911" id="r3c1-t16" headers="r1c1-t16">
+<p>Constraints</p>
+</td>
+<td class="cellalignment1911" headers="r3c1-t16 r1c2-t16">
+<p>If you disable constraints before migration, then re-enable them after migration.</p>
+</td>
+</tr>
+<tr class="cellalignment1905">
+<td class="cellalignment1911" id="r4c1-t16" headers="r1c1-t16">
+<p>Triggers</p>
+</td>
+<td class="cellalignment1911" headers="r4c1-t16 r1c2-t16">
+<p>If you disable triggers before migration, then re-enable them after migration.</p>
+</td>
+</tr>
+<tr class="cellalignment1905">
+<td class="cellalignment1911" id="r5c1-t16" headers="r1c1-t16">
+<p>Replication</p>
+</td>
+<td class="cellalignment1911" headers="r5c1-t16 r1c2-t16">
+<p>If the columns that are migrated to Unicode data types are replicated across several sites, then the changes should be executed at the master definition site. Then they are propagated to the other sites.</p>
+</td>
+</tr>
+<tr class="cellalignment1905">
+<td class="cellalignment1911" id="r6c1-t16" headers="r1c1-t16">
+<p>Binary order</p>
+</td>
+<td class="cellalignment1911" headers="r6c1-t16 r1c2-t16">
+<p>The migration from <code>CHAR</code> data types to <code>NCHAR</code> data types involves character set conversion if the database and <code>NCHAR</code> data have different character sets. The binary order of the same data in different encodings can be different. This affects applications that rely on binary order.</p>
+</td>
+</tr>
+<tr class="cellalignment1905">
+<td class="cellalignment1911" id="r7c1-t16" headers="r1c1-t16">
+<p>Applications</p>
+</td>
+<td class="cellalignment1911" headers="r7c1-t16 r1c2-t16">
+<p>You may need to modify your application's API calls to set the character set form of input and output variables to <code>NCHAR</code>. The exact changes depend on the particular API. Changes required for the common Oracle APIs are described in <a href="ch7progrunicode.htm#g1022957">Chapter 7, "Programming with Unicode"</a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformalwide" --></div>
+<!-- class="sect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1904">
+<tr>
+<td class="cellalignment1911">
+<table class="cellalignment1909">
+<tr>
+<td class="cellalignment1908"><a href="ch10oci.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1908"><a href="ch12scanner.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1996, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1913">
+<table class="cellalignment1907">
+<tr>
+<td class="cellalignment1908"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1908"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1908"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1908"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1908"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1908"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

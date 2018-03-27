@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Data Guard Protection Modes</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 748" />
+<meta name="dcterms.created" content="2014-02-25T8:43:1Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Data Guard Concepts and Administration" />
+<meta name="dcterms.identifier" content="E41134-03" />
+<meta name="dcterms.isVersionOf" content="SBYDB" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1999, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="create_ls.htm" title="Previous" type="text/html" />
+<link rel="Next" href="log_transport.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e41134.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">13/34</span> <!-- End Header -->
+<div id="SBYDB02000" class="chapter"><a id="CHDEDGIF"></a>
+<h1 class="chapter"><span class="secnum">5</span> Data Guard Protection Modes</h1>
+<p>This chapter contains the following sections:</p>
+<ul>
+<li>
+<p><a href="#CHDDAHJD">Data Guard Protection Modes</a></p>
+</li>
+<li>
+<p><a href="#CHDHFHJI">Setting the Data Protection Mode of a Primary Database</a></p>
+</li>
+</ul>
+<a id="CHDDAHJD"></a>
+<div id="SBYDB4743" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">5.1</span> Data Guard Protection Modes</h2>
+<p>This section describes the Data Guard protection modes.</p>
+<p>In these descriptions, a synchronized standby database is meant to be one that meets the minimum requirements of the configured data protection mode and that does not have a redo gap. Redo gaps are discussed in <a href="log_transport.htm#BABBFCDE">Section 6.4.3</a>.</p>
+<p class="subhead1"><a id="SBYDB5024"></a>Maximum Availability</p>
+<p>This protection mode provides the highest level of data protection that is possible without compromising the availability of a primary database. Transactions do not commit until all redo data needed to recover those transactions has been written to the online redo log and to the standby redo log on at least one synchronized standby database. If the primary database cannot write its redo stream to at least one synchronized standby database, it operates as if it were in maximum performance mode to preserve primary database availability until it is again able to write its redo stream to a synchronized standby database.</p>
+<p>This mode ensures that no data loss will occur if the primary database fails, but only if a second fault does not prevent a complete set of redo data from being sent from the primary database to at least one standby database.</p>
+<p class="subhead1"><a id="SBYDB5025"></a>Maximum Performance</p>
+<p>This protection<a id="sthref315"></a><a id="sthref316"></a> mode provides the highest level of data protection that is possible without affecting the performance of a primary database. This is accomplished by allowing transactions to commit as soon as all redo data generated by those transactions has been written to the online log. Redo data is also written to one or more standby databases, but this is done asynchronously with respect to transaction commitment, so primary database performance is unaffected by delays in writing redo data to the standby database(s).</p>
+<p>This protection mode offers slightly less data protection than maximum availability mode and has minimal impact on primary database performance.</p>
+<p>This is the default protection mode.</p>
+<p class="subhead1"><a id="SBYDB5026"></a>Maximum Protection</p>
+<p>This protection mode ensures that no data loss will occur if the primary database fails. To provide this level of protection, the redo data needed to recover a transaction must be written to both the online redo log and to the standby redo log on at least one synchronized standby database before the transaction commits. To ensure that data loss cannot occur, the primary database will shut down, rather than continue processing transactions, if it cannot write its redo stream to at least one synchronized standby database.</p>
+<p>Transactions on the primary are considered protected as soon as Data Guard has written the redo data to persistent storage in a standby redo log file. Once that is done, acknowledgment is quickly made back to the primary database so that it can proceed to the next transaction. This minimizes the impact of synchronous transport on primary database throughput and response time. To fully benefit from complete Data Guard validation at the standby database, be sure to operate in real-time apply mode so that redo changes are applied to the standby database as fast as they are received. Data Guard signals any corruptions that are detected so that immediate corrective action can be taken.</p>
+<p>Because this data protection mode prioritizes data protection over primary database availability, Oracle recommends that a minimum of two standby databases be used to protect a primary database that runs in maximum protection mode to prevent a single standby database failure from causing the primary database to shut down.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Asynchronously committed transactions are not protected by Data Guard against loss until the redo generated by those transactions has been written to the standby redo log of at least one synchronized standby database.
+<p>For more information about the asynchronous commit feature, see:</p>
+<ul>
+<li>
+<p><a class="olink CNCPT" href="../e40540/toc.htm"><span class="italic">Oracle Database Concepts</span></a></p>
+</li>
+<li>
+<p><a class="olink SQLRF" href="../e41084/toc.htm"><span class="italic">Oracle Database SQL Language Reference</span></a></p>
+</li>
+<li>
+<p><a class="olink ADFNS" href="../../appdev.112/e41502/toc.htm"><span class="italic">Oracle Database Advanced Application Developer's Guide</span></a></p>
+</li>
+<li>
+<p><a class="olink LNPLS006" href="../../appdev.112/e25519/static.htm#LNPLS006"><span class="italic">Oracle Database PL/SQL Language Reference</span></a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="CHDHFHJI"></a>
+<div id="SBYDB4744" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">5.2</span> Setting the Data Protection Mode of a Primary Database</h2>
+<p>Perform the following steps<a id="sthref317"></a> to set the data protection mode of a primary database:</p>
+<dl>
+<dd><a id="SBYDB5159"></a><a id="sthref318"></a></dd>
+<dt class="seghead">Step 1&nbsp;&nbsp;&nbsp;Select a data protection mode that meets your availability, performance, and data protection requirements.</dt>
+<dd>
+<p>See <a href="#CHDDAHJD">Section 5.1</a> for a description of the data protection modes.</p>
+</dd>
+<dd><a id="SBYDB5160"></a><a id="sthref319"></a></dd>
+<dt class="seghead">Step 2&nbsp;&nbsp;&nbsp;Verify that at least one standby database meets the redo transport requirements for the desired data protection mode.</dt>
+<dd>
+<p>The <code>LOG_ARCHIVE_DEST_</code><code><span class="codeinlineitalic">n</span></code> database initialization parameter that corresponds to at least one standby database must include the redo transport attributes listed in <a href="#CHDDIEEA">Table 5-1</a> for the desired data protection mode.</p>
+<p>The standby database must also have a standby redo log.</p>
+<p>See <a href="log_transport.htm#g1296022">Chapter 6, "Redo Transport Services"</a> for more information about configuring redo transport and standby redo logs.</p>
+<div id="SBYDB5027" class="tblhruleformal">
+<p class="titleintable"><a id="sthref320"></a><a id="CHDDIEEA"></a>Table 5-1 Required Redo Transport Attributes for Data Protection Modes</p>
+<table class="cellalignment1823" title="Required Redo Transport Attributes for Data Protection Modes" summary="Required Redo Transport Attributes" dir="ltr">
+<thead>
+<tr class="cellalignment1814">
+<th class="cellalignment1824" id="r1c1-t3">Maximum Availability</th>
+<th class="cellalignment1824" id="r1c2-t3">Maximum Performance</th>
+<th class="cellalignment1824" id="r1c3-t3">Maximum Protection</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1814">
+<td class="cellalignment1820" id="r2c1-t3" headers="r1c1-t3">
+<p><code>AFFIRM</code></p>
+</td>
+<td class="cellalignment1820" headers="r2c1-t3 r1c2-t3">
+<p><code>NOAFFIRM</code></p>
+</td>
+<td class="cellalignment1820" headers="r2c1-t3 r1c3-t3">
+<p><code>AFFIRM</code></p>
+</td>
+</tr>
+<tr class="cellalignment1814">
+<td class="cellalignment1820" id="r3c1-t3" headers="r1c1-t3">
+<p><code>SYNC</code></p>
+</td>
+<td class="cellalignment1820" headers="r3c1-t3 r1c2-t3">
+<p><code>ASYNC</code></p>
+</td>
+<td class="cellalignment1820" headers="r3c1-t3 r1c3-t3">
+<p><code>SYNC</code></p>
+</td>
+</tr>
+<tr class="cellalignment1814">
+<td class="cellalignment1820" id="r4c1-t3" headers="r1c1-t3">
+<p><code>DB_UNIQUE_NAME</code></p>
+</td>
+<td class="cellalignment1820" headers="r4c1-t3 r1c2-t3">
+<p><code>DB_UNIQUE_NAME</code></p>
+</td>
+<td class="cellalignment1820" headers="r4c1-t3 r1c3-t3">
+<p><code>DB_UNIQUE_NAME</code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblhruleformal" --></dd>
+<dd><a id="SBYDB5161"></a><a id="sthref321"></a></dd>
+<dt class="seghead">Step 3&nbsp;&nbsp;&nbsp;Verify that the DB_UNIQUE_NAME database initialization parameter has been set to a unique value on the primary database and on each standby database.</dt>
+<dd><a id="SBYDB5162"></a><a id="sthref322"></a></dd>
+<dt class="seghead">Step 4&nbsp;&nbsp;&nbsp;Verify that the LOG_ARCHIVE_CONFIG database initialization parameter has been defined on the primary database and on each standby database, and that its value includes a DG_CONFIG list that includes the DB_UNIQUE_NAME of the primary database and each standby database.</dt>
+<dd>
+<p>For example, the following SQL statement might be used to configure the <code>LOG_ARCHIVE_CONFIG</code> parameter:</p>
+<pre>
+SQL&gt; ALTER SYSTEM SET LOG_ARCHIVE_CONFIG='DG_CONFIG=(CHICAGO,BOSTON)';
+</pre></dd>
+<dd><a id="SBYDB5163"></a><a id="CHDJIHIG"></a></dd>
+<dt class="seghead">Step 5&nbsp;&nbsp;&nbsp;Set the data protection mode.</dt>
+<dd>
+<p>Execute the following SQL statement on the primary database:</p>
+<pre>
+SQL&gt; ALTER DATABASE -
+&gt; SET STANDBY DATABASE TO MAXIMIZE {AVAILABILITY | PERFORMANCE | PROTECTION};
+</pre>
+<p>Note that the data protection mode can be set to MAXIMUM PROTECTION on an open database only if the current data protection mode is MAXIMUM AVAILABILITY and if there is at least one synchronized standby database.</p>
+</dd>
+<dd><a id="SBYDB5164"></a><a id="sthref323"></a></dd>
+<dt class="seghead">Step 6&nbsp;&nbsp;&nbsp;Confirm that the primary database is operating in the new protection mode.</dt>
+<dd>
+<p>Perform the following query on the primary database to confirm that it is operating in the new protection mode:</p>
+<pre>
+SQL&gt; SELECT PROTECTION_MODE FROM V$DATABASE;
+</pre></dd>
+</dl>
+</div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1813">
+<tr>
+<td class="cellalignment1820">
+<table class="cellalignment1818">
+<tr>
+<td class="cellalignment1817"><a href="create_ls.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1817"><a href="log_transport.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1999, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1822">
+<table class="cellalignment1816">
+<tr>
+<td class="cellalignment1817"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1817"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1817"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1817"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1817"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1817"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

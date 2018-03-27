@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>PSBTREE: Extensible Indexing Example</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1" />
+<meta name="dcterms.created" content="2010-03-08T13:16:28Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Data Cartridge Developer's Guide" />
+<meta name="dcterms.identifier" content="E10765-02" />
+<meta name="dcterms.isVersionOf" content="ADDCI" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1996, 2010,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="pwr_example.htm" title="Previous" type="text/html" />
+<link rel="Next" href="pipelined_example.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10765.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">26/36</span> <!-- End Header --><a id="CHDIDEJC"></a><a id="ADDCI3160"></a><a id="i1007227"></a>
+<h1 class="chapter"><span class="secnum">16</span> PSBTREE: Extensible Indexing Example</h1>
+<p>This chapter presents an extensible indexing example in which some <code>ODCIIndex</code> interface routines are implemented in C.</p>
+<p>This chapter contains these topics:</p>
+<ul>
+<li>
+<p><a href="#CCHBBFEI">Introducing the PSBTREE Example</a></p>
+</li>
+<li>
+<p><a href="#i1004605">Designing of the Indextype</a></p>
+</li>
+<li>
+<p><a href="#i1004613">Implementing Operators</a></p>
+</li>
+<li>
+<p><a href="#i1004667">Implementing the ODCIIndex Interfaces</a></p>
+</li>
+<li>
+<p><a href="#i1005594">Implementing the Indextype</a></p>
+</li>
+<li>
+<p><a href="#i1005604">Using PSBTREE</a></p>
+</li>
+</ul>
+<a id="CCHBBFEI"></a><a id="ADDCI4877"></a>
+<div class="sect1">
+<h2 class="sect1">Introducing the PSBTREE Example</h2>
+<p>The example in this chapter illustrates how to implement the extensible indexing interface routines in C. The example's focus is on topics that are common to all implementations; it does not expose domain-specific details.</p>
+<p>The code for the example is in the demo directory, in the file <code>extdemo6.sql</code>. It extends an earlier example (<code>extdemo2.sql</code>, also in demo directory) by adding to the indextype support for <a id="sthref679"></a>local domain indexes on range partitioned tables.</p>
+</div>
+<!-- class="sect1" -->
+<a id="i1004605"></a><a id="ADDCI4878"></a>
+<div class="sect1">
+<h2 class="sect1">Designing of the Indextype</h2>
+<p>The <a id="sthref680"></a>indextype implemented here, called <code>PSBtree,</code> operates like a b-tree index. It supports three user-defined operators: <code>eq</code> (equals), <code>lt</code> (less than), and <code>gt</code> (greater than). These operators operate on operands of <code>VARCHAR2</code> data type.</p>
+<p>The index data consists of records of the form <code>&lt;key, rid&gt;</code> where <code>key</code> is the value of the indexed column and <code>rid</code> is the row identifier of the corresponding row. To simplify the implementation of the indextype, the index data is stored in an system-partitioned table.</p>
+<p>When an index is a system-managed local domain index, one partition in a system-partitioned table is created for each partition to store the index data for that partition. Thus, the index manipulation routines merely translate operations on the <code>PSBtree</code> into operations on the table partition that stores the index data.</p>
+<p>When a user creates a <code>PSBtree</code> index (a local index), <code>n</code> table partitions are created consisting of the indexed column and a <code>rowid</code> column, where <code>n</code> is the number of partitions in the base table. Inserts into the base table cause appropriate insertions into the affected index table partition. Deletes and updates are handled similarly. When the <code>PSBtree</code> is queried based on a user-defined operator (one of <code>gt</code>, <code>lt</code> and <code>eq</code>), an appropriate query is issued against the index table partitions to retrieve all the satisfying rows. Appropriate partition pruning occurs, and only the index table partitions that correspond to the relevant, or "interesting", partitions are accessed.</p>
+</div>
+<!-- class="sect1" -->
+<a id="i1004613"></a><a id="ADDCI4879"></a>
+<div class="sect1">
+<h2 class="sect1">Implementing Operators</h2>
+<p>The <code>PSBtree</code> indextype supports three operators. Each operator has a corresponding functional implementation. The functional implementations of the <code>eq</code>, <code>gt</code> and <code>lt</code> operators are presented in the following section.</p>
+<a id="ADDCI4880"></a>
+<div class="sect2"><a id="sthref681"></a>
+<h3 class="sect2">Create Functional Implementations</h3>
+<p>This section describes the functional implementation of comparison operators. <a href="#CACFGDEF">Example 16-1</a> shows how to implement <code>eq</code> (equals), <a href="#CACBEEIH">Example 16-2</a> shows how to implement <code>lt</code> (less than), and <a href="#CACDGGHF">Example 16-3</a> shows how to implement <code>gt</code> (greater than) operators.</p>
+<div class="example">
+<p class="titleinexample"><a id="CACFGDEF"></a><a id="ADDCI4881"></a>Example 16-1 Implementing the EQUALS Operator</p>
+<p>The functional implementation for <code>eq</code> is provided by a function (<code>bt_eq</code>) that takes in two <code>VARCHAR2</code> parameters and returns <code>1</code> if they are equal and <code>0</code> otherwise.</p>
+<pre>
+CREATE FUNCTION bt_eq(a VARCHAR2, b VARCHAR2) RETURN NUMBER AS
+BEGIN 
+  IF a = b then
+    RETURN 1;
+  ELSE
+    RETURN 0;
+  END IF;
+END;
+</pre></div>
+<!-- class="example" -->
+<div class="example">
+<p class="titleinexample"><a id="CACBEEIH"></a><a id="ADDCI4882"></a>Example 16-2 Implementing the LESS THAN Operator</p>
+<p>The functional implementation for <code>lt</code> is provided by a function (<code>bt_lt</code>) that takes in two <code>VARCHAR2</code> parameters and returns <code>1</code> if the first parameter is less than the second, <code>0</code> otherwise.</p>
+<pre>
+CREATE FUNCTION bt_lt(a VARCHAR2, b VARCHAR2) RETURN NUMBER AS
+BEGIN 
+  IF a &lt; b then
+    RETURN 1;
+  ELSE
+    RETURN 0;
+  END IF;
+END;
+</pre></div>
+<!-- class="example" -->
+<div class="example">
+<p class="titleinexample"><a id="CACDGGHF"></a><a id="ADDCI4883"></a>Example 16-3 Implementing the GREATER THAN Operator</p>
+<p>The functional implementation for <code>gt</code> is provided by a function (<code>bt_gt</code>) that takes in two <code>VARCHAR2</code> parameters and returns <code>1</code> if the first parameter is greater than the second, <code>0</code> otherwise.</p>
+<pre>
+CREATE FUNCTION bt_gt(a VARCHAR2, b VARCHAR2) RETURN NUMBER AS
+BEGIN 
+  IF a &gt; b then
+    RETURN 1;
+  ELSE
+    RETURN 0;
+  END IF;
+END;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" -->
+<a id="ADDCI4884"></a>
+<div class="sect2"><a id="sthref682"></a>
+<h3 class="sect2">Create Operators</h3>
+<p>To create the operator, you must specify the signature of the operator along with its return type and its functional implementation. <a href="#CACGHFEC">Example 16-4</a> shows how to create <code>eq</code> (equals), <a href="#CACDBEEI">Example 16-5</a> shows how to create <code>lt</code> (less than), and <a href="#CACHCAHE">Example 16-6</a> shows how to create <code>gt</code> (greater than) operators.</p>
+<div class="example">
+<p class="titleinexample"><a id="CACGHFEC"></a><a id="ADDCI4885"></a>Example 16-4 Creating the EQUALS Operator</p>
+<pre>
+CREATE OPERATOR eq 
+BINDING (VARCHAR2, VARCHAR2) RETURN NUMBER 
+USING bt_eq;
+</pre></div>
+<!-- class="example" -->
+<div class="example">
+<p class="titleinexample"><a id="CACDBEEI"></a><a id="ADDCI4886"></a>Example 16-5 Creating the LESS THAN Operator</p>
+<pre>
+CREATE OPERATOR lt 
+BINDING (VARCHAR2, VARCHAR2) RETURN NUMBER 
+USING bt_lt;
+</pre></div>
+<!-- class="example" -->
+<div class="example">
+<p class="titleinexample"><a id="CACHCAHE"></a><a id="ADDCI4887"></a>Example 16-6 Creating the GREATER THAN Operator</p>
+<pre>
+CREATE OPERATOR gt 
+BINDING (VARCHAR2, VARCHAR2) RETURN NUMBER 
+USING bt_gt;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1004667"></a><a id="ADDCI4888"></a>
+<div class="sect1">
+<h2 class="sect1">Implementing the ODCIIndex Interfaces</h2>
+<p>To implement the <code>PSBTREE</code>, you must implement the <code>ODCIIndex</code><code><span class="codeinlineitalic">XXX</span></code><code>()</code> routines, as outlined in the following sections. You can implement the index routines in any language supported by Oracle. This section implements the <a href="ext_idx_ref.htm#BJEJEIJD">ODCIGetInterfaces()</a> routine in the C programming language. Note that these require advance setup, such as creating a library object, <code>extdemo6l</code>, for your compiled C code.</p>
+<a id="ADDCI4889"></a>
+<div class="sect2"><a id="sthref683"></a>
+<h3 class="sect2">Defining an Implementation Type for PSBTREE</h3>
+<p>Define an implementation type that implements the <code>ODCIIndex</code> interface routines, as demonstrated in <a href="#CACCEJJA">Example 16-7</a>.</p>
+<div class="example">
+<p class="titleinexample"><a id="CACCEJJA"></a><a id="ADDCI4890"></a>Example 16-7 Creating a PSBTREE Index Type</p>
+<pre>
+CREATE TYPE psbtree_im AS OBJECT
+(
+  scanctx RAW(4),
+  STATIC FUNCTION ODCIGetInterfaces(ifclist OUT SYS.ODCIObjectList)
+    RETURN NUMBER,
+  STATIC FUNCTION ODCIIndexCreate (ia SYS.ODCIIndexInfo, parms VARCHAR2,
+    env SYS.ODCIEnv) RETURN NUMBER,
+  STATIC FUNCTION ODCIIndexAlter (ia sys.ODCIIndexInfo, 
+    parms IN OUT VARCHAR2, altopt number, env sys.ODCIEnv) RETURN NUMBER, 
+  STATIC FUNCTION ODCIIndexDrop(ia SYS.ODCIIndexInfo, env SYS.ODCIEnv) 
+    RETURN NUMBER,
+  STATIC FUNCTION ODCIIndexExchangePartition(ia SYS.ODCIIndexInfo,
+    ia1 SYS.ODCIIndexInfo, env SYS.ODCIEnv) RETURN NUMBER,
+  STATIC FUNCTION ODCIIndexUpdPartMetadata(ia sys.ODCIIndexInfo, 
+    palist sys.ODCIPartInfoList, env sys.ODCIEnv) RETURN NUMBER,
+  STATIC FUNCTION ODCIIndexExchangePartition (ia sys.ODCIIndexInfo,
+    ia1 sys.ODCIIndexInfo, env sys.ODCIEnv) RETURN NUMBER,
+  STATIC FUNCTION ODCIIndexInsert(ia SYS.ODCIIndexInfo, rid VARCHAR2,
+    newval VARCHAR2, env SYS.ODCIEnv) RETURN NUMBER,
+  STATIC FUNCTION ODCIIndexDelete(ia SYS.ODCIIndexInfo, rid VARCHAR2,
+    oldval VARCHAR2, env SYS.ODCIEnv) RETURN NUMBER,
+  STATIC FUNCTION ODCIIndexUpdate(ia SYS.ODCIIndexInfo, rid VARCHAR2,
+    oldval VARCHAR2, newval VARCHAR2, env SYS.ODCIEnv) RETURN NUMBER,
+  STATIC FUNCTION ODCIIndexStart(sctx IN OUT psbtree_im, ia SYS.ODCIIndexInfo,
+    op SYS.ODCIPredInfo, qi sys.ODCIQueryInfo, strt number, stop number,
+    cmpval VARCHAR2, env SYS.ODCIEnv) RETURN NUMBER,
+  MEMBER FUNCTION ODCIIndexFetch(nrows NUMBER, rids OUT SYS.ODCIridlist,
+    env SYS.ODCIEnv) RETURN NUMBER,
+  MEMBER FUNCTION ODCIIndexClose(env SYS.ODCIEnv) RETURN NUMBER
+);
+/
+SHOW ERRORS
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" -->
+<a id="ADDCI4891"></a>
+<div class="sect2"><a id="sthref684"></a>
+<h3 class="sect2">Creating the Implementation Type Body</h3>
+<p>Define the implementation type body, as demonstrated in <a href="#CACEJJHI">Example 16-8</a>.</p>
+<div class="example">
+<p class="titleinexample"><a id="CACEJJHI"></a><a id="ADDCI4892"></a>Example 16-8 Creating the Implementation Body for PBSTREE</p>
+<pre>
+CREATE OR REPLACE TYPE BODY psbtree_im IS 
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" -->
+<a id="ADDCI4893"></a>
+<div class="sect2"><a id="sthref685"></a>
+<h3 class="sect2">Defining PL/SQL Routines in the Implementation Body</h3>
+<p>The examples in this section demonstrate how to implement the index definition routines in PL/SQL. <a href="#CACBBCJI">Example 16-9</a> shows how to implement <a href="ext_idx_ref.htm#BJEJEIJD">ODCIGetInterfaces()</a>, <a href="#CACGFBIH">Example 16-10</a> shows how to implement <a href="ext_idx_ref.htm#i78714">ODCIIndexCreate()</a>, <a href="#CACDJCFF">Example 16-11</a> shows how to implement <a href="ext_idx_ref.htm#i79038">ODCIIndexDrop()</a>, <a href="#CACCCEAE">Example 16-12</a> shows how to implement <a href="ext_idx_ref.htm#i76608">ODCIIndexAlter()</a>, <a href="#CACBFDJC">Example 16-13</a> shows how to implement <a href="ext_idx_ref.htm#CHEDHCCB">ODCIIndexUpdPartMetadata()</a>, and <a href="#CACJCGBH">Example 16-14</a> shows how to implement <a href="ext_idx_ref.htm#i78919">ODCIIndexExchangePartition()</a>.</p>
+<div class="example">
+<p class="titleinexample"><a id="CACBBCJI"></a><a id="ADDCI4894"></a>Example 16-9 Implementing ODCIGetInterfaces() for PBSTREE in PL/SQL</p>
+<p>The <a href="ext_idx_ref.htm#BJEJEIJD">ODCIGetInterfaces()</a> routine, demonstrated in <a href="#CACBBCJI">Example 16-9</a>, returns the expected interface name through its <code>OUT</code> parameter.</p>
+<pre>
+STATIC FUNCTION ODCIGetInterfaces(
+  ifclist OUT sys.ODCIObjectList) 
+RETURN NUMBER IS
+BEGIN
+  ifclist := sys.ODCIObjectList(sys.ODCIObject('SYS','ODCIINDEX2'));
+  RETURN ODCIConst.Success;
+END ODCIGetInterfaces;
+</pre></div>
+<!-- class="example" -->
+<div class="example">
+<p class="titleinexample"><a id="CACGFBIH"></a><a id="ADDCI4895"></a>Example 16-10 Implementing ODCIIndexCreate() for PBSTREE in PL/SQL</p>
+<p>The <a href="ext_idx_ref.htm#i78714">ODCIIndexCreate()</a> routine creates a system-partitioned index storage table with two columns. The first column stores the <code>VARCHAR2</code> indexed column value. The routine makes use of the information passed in to determine the context in which it is invoked. Dynamic SQL is used to execute the dynamically constructed SQL statement.</p>
+<pre>
+STATIC FUNCTION ODCIIndexCreate (
+  ia sys.ODCIIndexInfo, 
+  parms VARCHAR2, 
+  env sys.ODCIEnv) 
+RETURN NUMBER IS
+  i INTEGER;
+  stmt VARCHAR2(2000);
+  cursor cur1(ianame VARCHAR2) IS
+    SELECT partition_name, parameters 
+    FROM user_ind_partitions 
+    WHERE index_name = ianame order by partition_name;
+BEGIN
+  stmt := '';
+ 
+  IF (env.CallProperty is null)  THEN
+    stmt := 'create table ' ||ia.IndexSchema || '.' || ia.IndexName ||
+      '_sbtree(f1 VARCHAR2(1000), f2 rowid)';
+
+  ELSEIF (env.callproperty = sys.ODCIConst.FirstCall) THEN
+  stmt := '';
+  i := 1;
+  FOR c1 in cur1(ia.indexname) LOOP
+    IF (i &gt;1) THEN
+      stmt := stmt || ',';
+    END IF;
+    stmt := stmt || 'partition ' || c1.partition_name;
+    i := i+1;
+  END LOOP;
+  stmt := 'create table ' || ia.indexschema || '.' || ia.indexname ||
+    '_sbtree (f1 VARCHAR2(1000), f2 rowid) partition by system ' ||
+     '( ' || stmt || ')';
+
+  ELSEIF (env.callproperty = sys.ODCIConst.FinalCall) THEN
+    stmt := 'create index ' || ia.indexschema || '.' || ia.indexname ||
+      '_sbti on ' || ia.indexschema || '.' || ia.indexname ||
+      '_sbtree (f1) local';
+  END IF;
+ 
+  dbms_output.put_line('Create');
+  dbms_output.put_line(stmt);
+ 
+  -- execute the statement
+  IF ((env.CallProperty is null) OR
+      (env.CallProperty = sys.ODCIConst.FirstCall) OR
+      (env.CallProperty = sys.ODCIConst.FinalCall) ) THEN
+    execute immediate stmt;
+
+  IF (env.CallProperty is null) THEN
+    execute immediate 'insert into ' ||ia.IndexSchema || '.' || ia.IndexName 
+      || '_sbtree select '  || ia.IndexCols(1).Colname || ', ROWID from ' ||
+      ia.IndexCols(1).TableSchema || '.' || ia.IndexCols(1).TableName;
+    execute immediate 'create index ' || ia.indexschema || '.' || 
+      ia.indexname || '_sbti on ' || ia.indexschema || '.' || 
+      ia.indexname || '_sbtree (f1)';
+    END IF;
+  END IF;
+ 
+  RETURN ODCIConst.Success;
+END ODCIIndexCreate;
+</pre></div>
+<!-- class="example" -->
+<div class="example">
+<p class="titleinexample"><a id="CACDJCFF"></a><a id="ADDCI4896"></a>Example 16-11 Implementing ODCIIndexDrop() for PBSTREE in PL/SQL</p>
+<p>The <a href="ext_idx_ref.htm#i79038">ODCIIndexDrop()</a> routine drops the index storage tables.</p>
+<pre>
+STATIC FUNCTION ODCIIndexDrop(
+  ia sys.ODCIIndexInfo,
+  env sys.ODCIEnv) 
+RETURN NUMBER IS
+  stmt VARCHAR2(1000);
+  cnum INTEGER;
+  junk INTEGER;
+BEGIN
+  -- construct the sql statement
+  stmt := '';
+
+  IF (env.CallProperty is null) THEN
+    stmt := 'drop table ' || ia.IndexSchema || '.' || ia.IndexName || '_sbtree';
+    dbms_output.put_line('Drop');
+    dbms_output.put_line(stmt);
+    execute immediate stmt;
+  END IF;
+  RETURN ODCIConst.Success;
+END ODCIIndexDrop;
+</pre></div>
+<!-- class="example" -->
+<div class="example">
+<p class="titleinexample"><a id="CACCCEAE"></a><a id="ADDCI4897"></a>Example 16-12 Implementing ODCIIndexAlter() for PSBTREE in PL/SQL</p>
+<p>The <a href="ext_idx_ref.htm#i76608">ODCIIndexAlter()</a> routine can perform many index alteration tasks, such as rebuilding and renaming an index.</p>
+<pre>
+STATIC FUNCTION ODCIIndexAlter (
+  ia sys.ODCIIndexInfo, 
+  parms IN OUT VARCHAR2, 
+  altopt NUMBER,
+  env sys.ODCIEnv) 
+RETURN NUMBER IS
+  stmt    VARCHAR2(2000);
+BEGIN
+  stmt := '';
+  IF (altopt = ODCIConst.AlterIndexRebuild) THEN
+    IF (ia.IndexPartition is null) THEN
+      stmt := 'insert into ' || ia.indexschema || '.' || ia.indexname ||
+          '_sbtree select ' || ia.indexcols(1).colname || ', rowid from ' ||
+          ia.indexcols(1).tableschema || '.' || ia.indexcols(1).tablename;
+    ELSE
+      stmt := 'insert into ' || ia.indexschema || '.' || ia.indexname ||
+          '_sbtree partition (' || ia.indexpartition || ') select ' || 
+          ia.indexcols(1).colname || ', rowid from ' ||
+          ia.indexcols(1).tableschema || '.' || ia.indexcols(1).tablename ||
+          ' partition (' || ia.indexcols(1).tablepartition || ')';
+    END IF;
+  ELSEIF (altopt = ODCIConst.AlterIndexRename) THEN
+    IF (ia.IndexPartition is not null) THEN
+      stmt := 'alter table ' || ia.indexschema || '.' || ia.indexname ||
+          '_sbtree rename partition ' || ia.indexpartition || ' to ' || parms;
+    ELSE
+      stmt := 'alter table ' || ia.indexschema || '.' || ia.indexname ||
+          '_sbtree rename to ' || parms || '_sbtree';
+    END IF;
+  END IF;
+
+  dbms_output.put_line('Alter');
+  IF ((altopt=ODCIConst.AlterIndexRebuild) or (altopt=ODCIConst.AlterIndexRename))
+  THEN
+    dbms_output.put_line(stmt);
+    execute immediate stmt;
+  END IF;
+  RETURN ODCIConst.Success;
+END ODCIIndexAlter;
+</pre></div>
+<!-- class="example" -->
+<div class="example">
+<p class="titleinexample"><a id="CACBFDJC"></a><a id="ADDCI4898"></a>Example 16-13 Implementing ODCIIndexUpdPartMetadata() for PSBTREE in PL/SQL</p>
+<p>To handle partition maintenance operations, the kernel performs the maintenance tasks on behalf of the user. The indextype, to maintain its metadata, should have the <a href="ext_idx_ref.htm#CHEDHCCB">ODCIIndexUpdPartMetadata()</a> routine.</p>
+<pre>
+STATIC FUNCTION ODCIIndexUpdPartMetadata(
+  ia sys.ODCIIndexInfo, 
+  palist sys.ODCIPartInfoList, 
+  env sys.ODCIEnv) 
+RETURN NUMBER IS
+  col  number;
+BEGIN
+  dbms_output.put_line('ODCIUpdPartMetadata');
+  sys.ODCIIndexInfoDump(ia);
+  sys.ODCIPartInfoListDump(palist);
+  sys.ODCIEnvDump(env);
+  RETURN ODCIConst.Success;
+END ODCIIndexUpdPartMetadata;
+</pre></div>
+<!-- class="example" -->
+<div class="example">
+<p class="titleinexample"><a id="CACJCGBH"></a><a id="ADDCI4899"></a>Example 16-14 Implementing ODCIIndexExchangePartition() for PSBTREE in PL/SQL</p>
+<p>The <a href="ext_idx_ref.htm#i78919">ODCIIndexExchangePartition()</a> exchanges the index storage tables for the index partition being exchanged, with the index storage table for the global domain index.</p>
+<pre>
+STATIC FUNCTION ODCIIndexExchangePartition(
+  ia sys.ODCIIndexInfo,
+  ia1 sys.ODCIIndexInfo,
+  env sys.ODCIEnv)
+RETURN NUMBER IS
+  stmt VARCHAR2(2000);
+  cnum INTEGER;
+  junk INTEGER;
+BEGIN
+  stmt := '';
+  dbms_output.put_line('Exchange Partitions');
+
+  -- construct the sql statement
+  stmt := 'alter table ' || ia.IndexSchema || '.' || ia.IndexName ||
+    '_sbtree exchange partition ' ||   ia.IndexPartition || ' with table ' ||
+    ia1.IndexSchema || '.' || ia1.IndexName || '_sbtree';
+ 
+  dbms_output.put_line(stmt);
+  execute immediate stmt;
+ 
+  RETURN ODCIConst.Success;
+END ODCIIndexExchangePartition;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" -->
+<a id="ADDCI4900"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref686"></a>
+<h3 class="sect2">Registering the C Implementation of the ODCIIndex<span class="italic">XXX</span>() Methods</h3>
+<p>After creating the <code>extdemo6l</code> library object for the compiled C methods, you must register the implementations of each of the routines. <a href="#CACGAHCG">Example 16-15</a> demonstrates how to register the <a href="ext_idx_ref.htm#i76892">ODCIIndexInsert()</a> implementation, <a href="#CACBHAHC">Example 16-16</a> registers the <a href="ext_idx_ref.htm#i76734">ODCIIndexDelete()</a> implementation, <a href="#CACBCCEH">Example 16-17</a> registers the <a href="ext_idx_ref.htm#i77033">ODCIIndexUpdate()</a> implementation, <a href="#CACJADGC">Example 16-18</a> registers the <a href="ext_idx_ref.htm#i78634">ODCIIndexStart()</a> implementation, <a href="#CACEEGIJ">Example 16-19</a> registers the <a href="ext_idx_ref.htm#i76798">ODCIIndexFetch()</a> implementation, and <a href="#CACIDHBA">Example 16-20</a> registers the <a href="ext_idx_ref.htm#i77457">ODCIIndexClose()</a> implementation.</p>
+<div class="example">
+<p class="titleinexample"><a id="CACGAHCG"></a><a id="ADDCI4901"></a>Example 16-15 Registering the Implementation of ODCIIndexInsert()</p>
+<p>Register the implementation of the <a href="ext_idx_ref.htm#i76892">ODCIIndexInsert()</a> routine.</p>
+<pre>
+STATIC FUNCTION ODCIIndexInsert(
+  ia SYS.ODCIIndexInfo,
+  rid VARCHAR2,
+  newval VARCHAR2,
+  env SYS.ODCIEnv)
+RETURN NUMBER AS EXTERNAL
+name "qxiqtbspi"
+library extdemo6l
+with context
+parameters (
+  context,
+  ia,
+  ia indicator struct,
+  rid,
+  rid indicator,
+  newval,
+  newval indicator,
+  env,
+  env indicator struct,
+  return OCINumber
+);
+</pre></div>
+<!-- class="example" -->
+<div class="example">
+<p class="titleinexample"><a id="CACBHAHC"></a><a id="ADDCI4902"></a>Example 16-16 Registering the Implementation of ODCIIndexDelete()</p>
+<p>Register the implementation of the <a href="ext_idx_ref.htm#i76734">ODCIIndexDelete()</a> routine.</p>
+<pre>
+STATIC FUNCTION ODCIIndexDelete(
+  ia SYS.ODCIIndexInfo, 
+  rid VARCHAR2,
+  oldval VARCHAR2, 
+  env SYS.ODCIEnv)
+RETURN NUMBER AS EXTERNAL
+name "qxiqtbspd"
+library extdemo6l
+with context
+parameters (
+  context,
+  ia,
+  ia indicator struct,
+  rid,
+  rid indicator,
+  oldval,
+  oldval indicator,
+  env,
+  env indicator struct,
+  return OCINumber
+);
+</pre></div>
+<!-- class="example" -->
+<div class="example">
+<p class="titleinexample"><a id="CACBCCEH"></a><a id="ADDCI4903"></a>Example 16-17 Registering the Implementation of ODCIIndexUpdate()</p>
+<p>Register the implementation of the <a href="ext_idx_ref.htm#i77033">ODCIIndexUpdate()</a> routine.</p>
+<pre>
+STATIC FUNCTION ODCIIndexUpdate(
+  ia SYS.ODCIIndexInfo, 
+  rid VARCHAR2,
+  oldval VARCHAR2,
+  newval VARCHAR2,
+  env SYS.ODCIEnv)
+RETURN NUMBER AS EXTERNAL
+name "qxiqtbspu"
+library extdemo6l
+with context
+parameters (
+  context,
+  ia,
+  ia indicator struct,
+  rid,
+  rid indicator,
+  oldval,
+  oldval indicator,
+  newval,
+  newval indicator,
+  env,
+  env indicator struct,
+  return OCINumber
+);
+</pre></div>
+<!-- class="example" -->
+<div class="example">
+<p class="titleinexample"><a id="CACJADGC"></a><a id="ADDCI4904"></a>Example 16-18 Registering the Implementation of ODCIIndexStart()</p>
+<p>Register the implementation of the <a href="ext_idx_ref.htm#i78634">ODCIIndexStart()</a> routine.</p>
+<pre>
+STATIC FUNCTION ODCIIndexStart(
+  sctx IN OUT psbtree_im,
+  ia SYS.ODCIIndexInfo,
+  op SYS.ODCIPredInfo,
+  qi SYS.ODCIQueryInfo,
+  strt NUMBER,
+  stop NUMBER,
+  cmpval VARCHAR2,
+  env SYS.ODCIEnv)
+RETURN NUMBER AS EXTERNAL
+name "qxiqtbsps"
+library extdemo6l
+with context
+parameters (
+  context,
+  sctx,
+  sctx indicator struct,
+  ia,
+  ia indicator struct,
+  op,
+  op indicator struct,
+  qi,
+  qi indicator struct,
+  strt,
+  strt indicator,
+  stop,
+  stop indicator,
+  cmpval,
+  cmpval indicator,
+  env,
+  env indicator struct,
+  return OCINumber
+);
+</pre></div>
+<!-- class="example" -->
+<div class="example">
+<p class="titleinexample"><a id="CACEEGIJ"></a><a id="ADDCI4905"></a>Example 16-19 Registering the Implementation of ODCIIndexFetch()</p>
+<p>Register the implementation of the <a href="ext_idx_ref.htm#i76798">ODCIIndexFetch()</a> routine.</p>
+<pre>
+MEMBER FUNCTION ODCIIndexFetch(
+  nrows NUMBER,
+  rids OUT SYS.ODCIRidList,
+  env SYS.ODCIEnv)
+RETURN NUMBER AS EXTERNAL
+name "qxiqtbspf"
+library extdemo6l
+with context
+parameters (
+  context,
+  self,
+  self indicator struct,
+  nrows,
+  nrows indicator,
+  rids,
+  rids indicator,
+  env,
+  env indicator struct,
+  return OCINumber
+ );
+</pre></div>
+<!-- class="example" -->
+<div class="example">
+<p class="titleinexample"><a id="CACIDHBA"></a><a id="ADDCI4906"></a>Example 16-20 Registering the Implementation of ODCIIndexClose()</p>
+<p>Register the implementation of the <a href="ext_idx_ref.htm#i77457">ODCIIndexClose()</a> routine.</p>
+<pre>
+MEMBER FUNCTION ODCIIndexClose (
+  env SYS.ODCIEnv) 
+RETURN NUMBER AS EXTERNAL
+name "qxiqtbspc"
+library extdemo6l
+with context
+parameters (
+  context,
+  self,
+  self indicator struct,
+  env,
+  env indicator struct,
+  return OCINumber
+);
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" -->
+<a id="ADDCI4907"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref687"></a>
+<h3 class="sect2">Defining Additional Structures in C Implementation</h3>
+<p>The <code>stuct</code>s <code>qxiqtim</code> and <code>qciqtin</code>, and the <code>struct</code> <code>qxiqtcx</code> are used for mapping the object type and its <code>null</code> value (demonstrated in <a href="#CACBHEBF">Example 16-21</a>) and for keeping state during fetching calls (demonstrated in <a href="#CACCIGGI">Example 16-22</a>). These structures are used by the methods described in section <a href="#CACEBJAG">"Defining C Methods in the Implementation Body"</a>.</p>
+<p>The C <code>struct</code>s for mapping the ODCI types are defined in the file <code>odci.h</code>. For example, the C <code>struct</code> <code>ODCIIndexInfo</code> is the mapping for the corresponding ODCI object type. The C <code>struct</code> <code>ODCIIndexInfo_ind</code> is the mapping for the <code>null</code> object.</p>
+<div class="example">
+<p class="titleinexample"><a id="CACBHEBF"></a><a id="ADDCI4908"></a>Example 16-21 Defining Mappings for the Object Type and Its Null Value</p>
+<p>We have defined a C <code>struct</code>, <code>qxiqtim</code>, as a mapping for the object type. There is an additional C <code>struct</code>, <code>qxiqtin</code>, for the corresponding <code>null</code> object. The C <code>struct</code>s for the object type and its <code>null</code> object can be generated from the Object Type Translator (OTT).</p>
+<pre>
+/* The index implementation type is an object type with a single RAW attribute
+ * used to store the context key value. 
+ * C mapping of the implementation type : */
+
+struct qxiqtim{
+  OCIRaw *sctx_qxiqtim;
+}; 
+typedef struct qxiqtim qxiqtim;
+
+struct qxiqtin{
+  short atomic_qxiqtin;
+  short scind_qxiqtin;
+}; 
+typedef struct qxiqtin qxiqtin;
+</pre></div>
+<!-- class="example" -->
+<div class="example">
+<p class="titleinexample"><a id="CACCIGGI"></a><a id="ADDCI4909"></a>Example 16-22 Keeping the Scan State During Fetching Calls</p>
+<p>There are a set of OCI handles that must be cached away and retrieved during fetch calls. A C <code>struct</code>, <code>qxiqtcx</code>, is defined to hold all the necessary scan state. This structure is allocated out of <code>OCI_DURATION_STATEMENT</code> memory to ensure that it persists till the end of <code>fetch</code>. After populating the structure with the required info, a pointer to the structure is saved in OCI context. The context is identified by a 4-byte key that is generated by calling an OCI routine. The 4-byte key is stashed away in the scan context - <code>exiting</code>. This object is returned back to the Oracle server and is passed in as a parameter to the next fetch call.</p>
+<pre>
+/* The index scan context - should be stored in "statement" duration memory
+ * and used by start, fetch and close routines.
+ */
+struct qxiqtcx
+{
+  OCIStmt *stmthp;
+  OCIDefine *defnp;
+  OCIBind *bndp;
+  char ridp[19];
+}; 
+typedef struct qxiqtcx qxiqtcx;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" -->
+<a id="CACEBJAG"></a><a id="ADDCI4910"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Defining C Methods in the Implementation Body</h3>
+<p>The following methods have been implemented in the C language. <a href="#CACJIECE">Example 16-23</a> demonstrates how to implement an error processing routine, <a href="#CACJJDAC">Example 16-24</a> implements <a href="ext_idx_ref.htm#i76892">ODCIIndexInsert()</a>, <a href="#CACIJGIF">Example 16-25</a> implements <a href="ext_idx_ref.htm#i76734">ODCIIndexDelete()</a>, <a href="#CACFICAJ">Example 16-26</a> implements <a href="ext_idx_ref.htm#i77033">ODCIIndexUpdate()</a>, <a href="#CACIFFCE">Example 16-27</a> implements <a href="ext_idx_ref.htm#i78634">ODCIIndexStart()</a>, <a href="#CACGCEBA">Example 16-28</a> implements <a href="ext_idx_ref.htm#i76798">ODCIIndexFetch()</a>, and <a href="#CACBFHDA">Example 16-29</a> implements <a href="ext_idx_ref.htm#i77457">ODCIIndexClose()</a>.</p>
+<div class="example">
+<p class="titleinexample"><a id="CACJIECE"></a><a id="ADDCI4911"></a>Example 16-23 Implementing a Common Error Processing Routine in C</p>
+<p>This function is used to check and process the return code from all <code>OCI</code> routines. It checks the status code and raises an exception in case of errors.</p>
+<pre>
+static int qxiqtce(
+  OCIExtProcContext *ctx,
+  OCIError *errhp,
+  sword status)
+{
+  text errbuf[512];
+  sb4 errcode = 0;
+  int errnum = 29400;  /* choose some oracle error number */
+  int rc = 0;
+
+  switch (status)
+  {
+    case OCI_SUCCESS: 
+      rc = 0;
+      break;
+    case OCI_ERROR:
+      (void) OCIErrorGet((dvoid *)errhp, (ub4)1, (text *)NULL, &amp;errcode,
+      errbuf, (ub4)sizeof(errbuf), OCI_HTYPE_ERROR);
+      /* Raise exception */
+      OCIExtProcRaiseExcpWithMsg(ctx, errnum, errbuf, strlen((char *)errbuf));
+      rc = 1;
+      break;
+    default:
+      (void) sprintf((char *)errbuf, "Warning - some error\n");
+      /* Raise exception */
+      OCIExtProcRaiseExcpWithMsg(ctx, errnum, errbuf, strlen((char *)errbuf));
+      rc = 1;
+      break;
+  }
+  return (rc);
+}
+</pre></div>
+<!-- class="example" -->
+<div class="example">
+<p class="titleinexample"><a id="CACJJDAC"></a><a id="ADDCI4912"></a>Example 16-24 Implementing ODCIIndexInsert() for PSBTREE in C</p>
+<p>The insert routine, <a href="ext_idx_ref.htm#i76892">ODCIIndexInsert()</a>, parses and executes a statement that inserts a new row into the index table. The new row consists of the new value of the indexed column and the <code>rowid</code> that have been passed in as parameters.</p>
+<pre>
+OCINumber *qxiqtbspi(
+  OCIExtProcContext *ctx,
+  ODCIIndexInfo     *ix,
+  ODCIIndexInfo_ind *ix_ind,
+  char              *rid,
+  short             rid_ind,
+  char              *newval,
+  short             newval_ind,
+  ODCIEnv           *env,
+  ODCIEnv_ind       *env_ind)
+{
+  OCIEnv *envhp = (OCIEnv *) 0;             /* env. handle */
+  OCISvcCtx *svchp = (OCISvcCtx *) 0;       /* service handle */
+  OCIError *errhp = (OCIError *) 0;         /* error handle */
+  OCIStmt *stmthp = (OCIStmt *) 0;          /* statement handle */
+  OCIBind *bndp = (OCIBind *) 0;            /* bind handle */
+
+  int retval = (int)ODCI_SUCCESS;           /* return from this function */
+  OCINumber *rval = (OCINumber *)0;
+
+  char insstmt[2000];                       /* sql insert statement */
+  ODCIColInfo  *colinfo;                    /* column info */
+  ODCIColInfo_ind  *colinfo_ind;
+  boolean exists = TRUE;
+  unsigned int partiden;                    /* table partition iden */ 
+  unsigned int idxflag;                     /* index info flag  
+
+  /* allocate memory for OCINumber first */
+  rval = (OCINumber *)OCIExtProcAllocCallMemory(ctx, sizeof(OCINumber));
+
+  /* Get oci handles */
+  if (qxiqtce(ctx, errhp, OCIExtProcGetEnv(ctx, &amp;envhp, &amp;svchp, &amp;errhp)))
+    return(rval);
+
+  /* set up return code */
+  if (qxiqtce(ctx, errhp, OCINumberFromInt(errhp, (dvoid *)&amp;retval,
+      sizeof(retval), OCI_NUMBER_SIGNED, rval)))
+    return(rval);
+
+  /* Convert idxflag to integer from OCINumber */
+  if (qxiqtce(ctx, errhp, OCINumberToInt(errhp, &amp;(ix-&gt;IndexInfoFlags),
+      sizeof(idxflag), OCI_NUMBER_UNSIGNED, ( void *)&amp;idxflag)))
+    return(rval);
+
+  /*****************************
+  * Construct insert Statement *
+  ******************************/
+  if ((idxflag &amp; ODCI_INDEX_RANGE_PARTN) != ODCI_INDEX_RANGE_PARTN)
+    (void)sprintf(insstmt, "INSERT into %s.%s_sbtree values (:newval, :mrid)",
+      OCIStringPtr(envhp, ix-&gt;IndexSchema), OCIStringPtr(envhp, ix-&gt;IndexName));
+  else
+  {
+    if (qxiqtce(ctx, errhp, OCICollGetElem(envhp, errhp, (OCIColl *)ix-&gt;IndexCols,
+        (sb4)0, &amp;exists, (void **) &amp;colinfo, (void **) &amp;colinfo_ind)))
+      return(rval);
+ 
+  (void)sprintf(insstmt,
+      "INSERT into %s.%s_sbtree partition (SYS_OP_DOBJTOPNUM(%s, :partiden))
+        VALUES (:newval, :mrid)",
+      OCIStringPtr(envhp, ix-&gt;IndexSchema), OCIStringPtr(envhp, ix-&gt;IndexName),
+      OCIStringPtr(envhp, colinfo-&gt;TableName));
+  }
+
+  /***************************************
+  * Parse and Execute Create Statement   *
+  ****************************************/
+
+  /* allocate stmt handle */
+  if (qxiqtce(ctx, errhp, OCIHandleAlloc((dvoid *)envhp, (dvoid **)&amp;stmthp,
+      (ub4)OCI_HTYPE_STMT, (size_t)0, (dvoid **)0)))
+    return(rval);
+ 
+    /* prepare the statement */
+    if (qxiqtce(ctx, errhp, OCIStmtPrepare(stmthp, errhp, (text *)insstmt,
+        (ub4)strlen(insstmt), OCI_NTV_SYNTAX, OCI_DEFAULT)))
+      return(rval);
+
+    if ((idxflag &amp; ODCI_INDEX_RANGE_PARTN) == ODCI_INDEX_RANGE_PARTN)
+    {
+      /* Convert partiden to integer from OCINumber */
+      if (qxiqtce(ctx, errhp, OCINumberToInt(errhp, 
+          &amp;(colinfo-&gt;TablePartitionIden), sizeof(partiden), OCI_NUMBER_UNSIGNED,
+          ( void *)&amp;partiden)))
+        return(rval);
+
+      /* Set up bind for partiden */
+      if (qxiqtce(ctx, errhp, OCIBindByName(stmthp, &amp;bndp, errhp, 
+          text *)":partiden", sizeof(":partiden")-1, (dvoid *)&amp;partiden,
+          (sb4)(sizeof(partiden)), (ub2)SQLT_INT, (dvoid *)0, (ub2 *)0,
+          (ub2 *)0, (ub4)0, (ub4 *)0, (ub4)OCI_DEFAULT)))
+        return(rval);
+    }
+
+    /* Set up bind for newval */
+    if (qxiqtce(ctx, errhp, OCIBindByName(stmthp, &amp;bndp, errhp, (text *)":newval",
+        sizeof(":newval")-1, (dvoid *)newval, (sb4)(strlen(newval)+1),
+        (ub2)SQLT_STR, (dvoid *)0, (ub2 *)0, (ub2 *)0, (ub4)0, (ub4 *)0,
+        (ub4)OCI_DEFAULT)))
+      return(rval);
+
+    /* Set up bind for rid */
+    if (qxiqtce(ctx, errhp, OCIBindByName(stmthp, &amp;bndp, errhp, (text *)":mrid",
+        sizeof(":mrid")-1, (dvoid *)rid, (sb4)(strlen(rid)+1), (ub2)SQLT_STR, 
+        (dvoid *)0, (ub2 *)0, (ub2 *)0, (ub4)0, (ub4 *)0, (ub4)OCI_DEFAULT)))
+      return(rval);
+
+    /* Execute statement */
+    if (qxiqtce(ctx, errhp, OCIStmtExecute(svchp, stmthp, errhp, (ub4)1,
+        (ub4)0, (OCISnapshot *)NULL, (OCISnapshot *)NULL, (ub4)OCI_DEFAULT)))
+      return(rval);
+ 
+    /* free stmt handle */
+    if (qxiqtce(ctx, errhp, OCIHandleFree((dvoid *)stmthp, (ub4)OCI_HTYPE_STMT)))
+      return(rval);
+
+    return(rval);
+}
+</pre></div>
+<!-- class="example" -->
+<div class="example">
+<p class="titleinexample"><a id="CACIJGIF"></a><a id="ADDCI4913"></a>Example 16-25 Implementing ODCIIndexDelete() for PSBTREE in C</p>
+<p>The delete routine constructs a SQL statement to delete a row from the index table corresponding to the row being deleted from the base table. The row in the index table is identified by the value of <code>rowid</code> that is passed in as a parameter to this routine.</p>
+<pre>
+OCINumber *qxiqtbspd(
+  OCIExtProcContext *ctx,
+  ODCIIndexInfo     *ix,
+  ODCIIndexInfo_ind *ix_ind,
+  char              *rid,
+  short             rid_ind,
+  char              *oldval,
+  short             oldval_ind,
+  ODCIEnv           *env,
+  ODCIEnv_ind       *env_ind)
+{
+  OCIEnv *envhp = (OCIEnv *) 0;             /* env. handle */
+  OCISvcCtx *svchp = (OCISvcCtx *) 0;       /* service handle */
+  OCIError *errhp = (OCIError *) 0;         /* error handle */
+  OCIStmt *stmthp = (OCIStmt *) 0;          /* statement handle */
+  OCIBind *bndp = (OCIBind *) 0;            /* bind handle */
+ 
+  int retval = (int)ODCI_SUCCESS;           /* return from this function */
+  OCINumber *rval = (OCINumber *)0;
+ 
+  char delstmt[2000];                       /* sql delete statement */
+  ODCIColInfo  *colinfo;                    /* column info */
+  ODCIColInfo_ind  *colinfo_ind;
+  boolean exists = TRUE;
+  unsigned int partiden;                    /* table partition iden */ 
+  unsigned int idxflag;                     /* index info flag  
+ 
+  /* Get oci handles */
+  if (qxiqtce(ctx, errhp, OCIExtProcGetEnv(ctx, &amp;envhp, &amp;svchp, &amp;errhp)))
+    return(rval);
+ 
+  /* set up return code */
+  rval = (OCINumber *)OCIExtProcAllocCallMemory(ctx, sizeof(OCINumber));
+  if (qxiqtce(ctx, errhp, OCINumberFromInt(errhp, (dvoid *)&amp;retval,
+      sizeof(retval), OCI_NUMBER_SIGNED, rval)))
+    return(rval);
+ 
+  /* Convert idxflag to integer from OCINumber */
+  if (qxiqtce(ctx, errhp, OCINumberToInt(errhp, &amp;(ix-&gt;IndexInfoFlags),
+      sizeof(idxflag), OCI_NUMBER_UNSIGNED, ( void *)&amp;idxflag)))
+    return(rval);
+ 
+  /*****************************
+  * Construct delete Statement *
+  ******************************/
+  if ((idxflag &amp; ODCI_INDEX_RANGE_PARTN) != ODCI_INDEX_RANGE_PARTN)
+    (void)sprintf(delstmt, "DELETE FROM %s.%s_sbtree WHERE f2 = :rr",
+      OCIStringPtr(envhp, ix-&gt;IndexSchema), OCIStringPtr(envhp, ix-&gt;IndexName));
+  else
+  {
+    if (qxiqtce(ctx, errhp, OCICollGetElem(envhp, errhp, (OCIColl *)ix-&gt;IndexCols,
+        (sb4)0, &amp;exists, (void **) &amp;colinfo, (void **) &amp;colinfo_ind)))
+      return(rval);
+
+    (void)sprintf(delstmt, 
+        "DELETE FROM %s.%s_sbtree partition (SYS_OP_DOBJTOPNUM(%s, :partiden))
+          WHERE f2 = :rr",
+        OCIStringPtr(envhp, ix-&gt;IndexSchema), OCIStringPtr(envhp, ix-&gt;IndexName),
+        OCIStringPtr(envhp, colinfo-&gt;TableName));
+  }
+
+  /***************************************
+  * Parse and Execute delete Statement   *
+  ****************************************/
+
+/* allocate stmt handle */
+  if (qxiqtce(ctx, errhp, OCIHandleAlloc((dvoid *)envhp, (dvoid **)&amp;stmthp,
+      (ub4)OCI_HTYPE_STMT, (size_t)0, (dvoid **)0)))
+    return(rval);
+
+/* prepare the statement */
+  if (qxiqtce(ctx, errhp, OCIStmtPrepare(stmthp, errhp, (text *)delstmt,
+      (ub4)strlen(delstmt), OCI_NTV_SYNTAX, OCI_DEFAULT)))
+    return(rval);
+
+  if ( (idxflag &amp; ODCI_INDEX_RANGE_PARTN) == ODCI_INDEX_RANGE_PARTN)
+  {
+    /* Convert partiden to integer from OCINumber */
+    if (qxiqtce(ctx, errhp, OCINumberToInt(errhp, &amp;(colinfo-&gt;TablePartitionIden),
+        sizeof(partiden), OCI_NUMBER_UNSIGNED, ( void *)&amp;partiden)))
+      return(rval);
+
+    /* Set up bind for partiden */
+    if (qxiqtce(ctx, errhp, OCIBindByName(stmthp, &amp;bndp, errhp, 
+        (text *)":partiden", sizeof(":partiden")-1, (dvoid *)&amp;partiden,
+        sb4)(sizeof(partiden)), (ub2)SQLT_INT, (dvoid *)0, (ub2 *)0,
+        (ub2 *)0, (ub4)0, (ub4 *)0, (ub4)OCI_DEFAULT)))
+      return(rval);
+  }
+
+  /* Set up bind for rid */
+  if (qxiqtce(ctx, errhp, OCIBindByName(stmthp, &amp;bndp, errhp, (text *)":rr",
+      sizeof(":rr")-1, (dvoid *)rid, (sb4)(strlen(rid)+1), (ub2)SQLT_STR, 
+      (dvoid *)0, (ub2 *)0, (ub2 *)0, (ub4)0, (ub4 *)0, (ub4)OCI_DEFAULT)))
+    return(rval);
+
+  /* Execute statement */
+  if (qxiqtce(ctx, errhp, OCIStmtExecute(svchp, stmthp, errhp, (ub4)1, (ub4)0,
+      (OCISnapshot *)NULL, (OCISnapshot *)NULL, (ub4)OCI_DEFAULT)))
+    return(rval);
+
+  /* free stmt handle */
+  if (qxiqtce(ctx, errhp, OCIHandleFree((dvoid *)stmthp, (ub4)OCI_HTYPE_STMT)))
+    return(rval);
+
+  return(rval);
+}
+</pre></div>
+<!-- class="example" -->
+<div class="example">
+<p class="titleinexample"><a id="CACFICAJ"></a><a id="ADDCI4914"></a>Example 16-26 Implementing ODCIIndexUpdate() for PSBTree in C</p>
+<p>The update routine constructs a SQL statement to update a row in the index table corresponding to the row being updated in the base table. The row in the index table is identified by the value of <code>rowid</code> that is passed in as a parameter to this routine. The old column value (<code>oldval</code>) is replaced by the new value (<code>newval</code>).</p>
+<pre>
+OCINumber *qxiqtbspu(
+  OCIExtProcContext *ctx,
+  ODCIIndexInfo     *ix,
+  ODCIIndexInfo_ind *ix_ind,
+  char              *rid,
+  short             rid_ind,
+  char              *oldval,
+  short             oldval_ind,
+  char              *newval,
+  short             newval_ind,
+  ODCIEnv           *env,
+  ODCIEnv_ind       *env_ind)
+{
+  OCIEnv *envhp = (OCIEnv *) 0;             /* env. handle */
+  OCISvcCtx *svchp = (OCISvcCtx *) 0;       /* service handle */
+  OCIError *errhp = (OCIError *) 0;         /* error handle */
+  OCIStmt *stmthp = (OCIStmt *) 0;          /* statement handle */
+  OCIBind *bndp = (OCIBind *) 0;            /* bind handle */
+
+  int retval = (int)ODCI_SUCCESS;           /* return from this function */
+  OCINumber *rval = (OCINumber *)0;
+
+  char updstmt[2000];                       /* sql upate statement */
+  ODCIColInfo  *colinfo;                    /* column info */
+  ODCIColInfo_ind  *colinfo_ind;
+  boolean exists = TRUE;
+  unsigned int partiden;                    /* table partition iden */ 
+  unsigned int idxflag;                     /* index info flag  
+
+  /* Get oci handles */
+  if (qxiqtce(ctx, errhp, OCIExtProcGetEnv(ctx, &amp;envhp, &amp;svchp, &amp;errhp)))
+    return(rval);
+
+  /* set up return code */
+  rval = (OCINumber *)OCIExtProcAllocCallMemory(ctx, sizeof(OCINumber));
+  if (qxiqtce(ctx, errhp, OCINumberFromInt(errhp, (dvoid *)&amp;retval,
+      sizeof(retval), OCI_NUMBER_SIGNED, rval)))
+    return(rval);
+
+  /* Convert idxflag to integer from OCINumber */
+  if (qxiqtce(ctx, errhp, OCINumberToInt(errhp, &amp;(ix-&gt;IndexInfoFlags),
+      sizeof(idxflag), OCI_NUMBER_UNSIGNED, ( void *)&amp;idxflag)))
+    return(rval);
+
+  /*****************************
+  * Construct update Statement *
+  ******************************/
+  if ( (idxflag &amp; ODCI_INDEX_RANGE_PARTN) != ODCI_INDEX_RANGE_PARTN)
+    (void)sprintf(updstmt, "UPDATE %s.%s_sbtree SET f1 = :newval WHERE f2 = :rr",
+        OCIStringPtr(envhp, ix-&gt;IndexSchema), OCIStringPtr(envhp, ix-&gt;IndexName));
+  else
+  {
+    if (qxiqtce(ctx, errhp, OCICollGetElem(envhp, errhp, OCIColl *)ix-&gt;IndexCols,
+        (sb4)0, &amp;exists, (void **) &amp;colinfo, (void **) &amp;colinfo_ind)))
+      return(rval);
+
+    (void)sprintf(updstmt, "UPDATE %s.%s_sbtree partition 
+        (SYS_OP_DOBJTOPNUM(%s, :partiden)) SET f1 = :newval WHERE f2 = :rr",
+        OCIStringPtr(envhp, ix-&gt;IndexSchema), OCIStringPtr(envhp, ix-&gt;IndexName),
+        OCIStringPtr(envhp, colinfo-&gt;TableName));
+  }
+
+  /****************************************
+  * Parse and Execute Create Statement   *
+  ****************************************/
+
+  /* allocate stmt handle */
+  if (qxiqtce(ctx, errhp, OCIHandleAlloc((dvoid *)envhp, (dvoid **)&amp;stmthp,
+      (ub4)OCI_HTYPE_STMT, (size_t)0, (dvoid **)0)))
+    return(rval);
+
+  /* prepare the statement */
+  if (qxiqtce(ctx, errhp, OCIStmtPrepare(stmthp, errhp, (text *)updstmt,
+      (ub4)strlen(updstmt), OCI_NTV_SYNTAX, OCI_DEFAULT)))
+    return(rval);
+
+  if ( (idxflag &amp; ODCI_INDEX_RANGE_PARTN) == ODCI_INDEX_RANGE_PARTN)
+  {
+    /* Convert partiden to integer from OCINumber */
+    if (qxiqtce(ctx, errhp, OCINumberToInt(errhp, 
+        &amp;(colinfo-&gt;TablePartitionIden), sizeof(partiden), OCI_NUMBER_UNSIGNED,
+        ( void *)&amp;partiden)))
+      return(rval);
+
+    /* Set up bind for partiden */
+    if (qxiqtce(ctx, errhp, OCIBindByName(stmthp, &amp;bndp, errhp, 
+        (text *)":partiden", sizeof(":partiden")-1, (dvoid *)&amp;partiden,
+        (sb4)(sizeof(partiden)), (ub2)SQLT_INT, (dvoid *)0, (ub2 *)0,
+        (ub2 *)0, (ub4)0, (ub4 *)0, (ub4)OCI_DEFAULT)))
+      return(rval);
+  }
+
+  /* Set up bind for newval */
+  if (qxiqtce(ctx, errhp, OCIBindByName(stmthp, &amp;bndp, errhp, (text *)":newval",
+      sizeof(":newval")-1, (dvoid *)newval, (sb4)(strlen(newval)+1), 
+      (ub2)SQLT_STR, (dvoid *)0, (ub2 *)0, (ub2 *)0, (ub4)0, (ub4 *)0, (
+      ub4)OCI_DEFAULT)))
+    return(rval);
+
+  /* Set up bind for rid */
+  if (qxiqtce(ctx, errhp, OCIBindByName(stmthp, &amp;bndp, errhp, (text *)":rr",
+      sizeof(":rr")-1, (dvoid *)rid, (sb4)(strlen(rid)+1), (ub2)SQLT_STR, 
+      (dvoid *)0, (ub2 *)0, (ub2 *)0, (ub4)0, (ub4 *)0, (ub4)OCI_DEFAULT)))
+    return(rval);
+
+  /* Execute statement */
+  if (qxiqtce(ctx, errhp, OCIStmtExecute(svchp, stmthp, errhp, (ub4)1,
+      ub4)0, (OCISnapshot *)NULL, (OCISnapshot *)NULL, (ub4)OCI_DEFAULT)))
+    return(rval);
+
+  /* free stmt handle */
+  if (qxiqtce(ctx, errhp, OCIHandleFree((dvoid *)stmthp, (ub4)OCI_HTYPE_STMT)))
+    return(rval);
+
+  return(rval);
+}
+</pre></div>
+<!-- class="example" -->
+<div class="example">
+<p class="titleinexample"><a id="CACIFFCE"></a><a id="ADDCI4915"></a>Example 16-27 Implementing ODCIIndexStart() for PSBTREE in C</p>
+<p>The start routine performs the setup for an <code>psbtree</code> index scan. The query information in terms of the operator predicate, its arguments, and the bounds on return values are passed in as parameters to this function. The scan context that is shared among the index scan routines is an instance of the type <code>psbtree_im</code>.</p>
+<p>This function sets up a cursor that scans the index table. The scan retrieves the stored rowids for the rows in the index table that satisfy the specified predicate. The predicate for the index table is generated based on the operator predicate information that is passed in as parameters. For example, if the operator predicate is of the form <code>eq(col, 'joe') = 1</code>, then the predicate on the index table is set up to be <code>f1 = 'joe'</code>.</p>
+<p>This function uses the <code>struct</code>s <code>qxiqtim</code>, <code>qxiqtin</code>, and <code>qxiqtcx</code>, which were demonstrated in <a href="#CACBHEBF">Example 16-21</a> and <a href="#CACCIGGI">Example 16-22</a>.</p>
+<pre>
+OCINumber *qxiqtbsps(
+  OCIExtProcContext *ctx,
+  qxiqtim           *sctx,
+  qxiqtin           *sctx_ind,
+  ODCIIndexInfo     *ix,
+  ODCIIndexInfo_ind *ix_ind,
+  ODCIPredInfo      *pr,
+  ODCIPredInfo_ind  *pr_ind,
+  ODCIQueryInfo     *qy,
+  ODCIQueryInfo_ind *qy_ind,
+  OCINumber         *strt,
+  short             strt_ind,
+  OCINumber         *stop,
+  short             stop_ind,
+  char              *cmpval,
+  short             cmpval_ind,
+  ODCIEnv           *env,
+  ODCIEnv_ind       *env_ind)
+{
+  sword status;
+  OCIEnv *envhp = (OCIEnv *) 0;                               /* env. handle */
+  OCISvcCtx *svchp = (OCISvcCtx *) 0;                      /* service handle */
+  OCIError *errhp = (OCIError *) 0;                          /* error handle */
+  OCISession *usrhp = (OCISession *) 0;                       /* user handle */
+  qxiqtcx *icx = (qxiqtcx *) 0;         /* state to be saved for later calls */
+
+  int strtval;                   /* start bound */
+  int stopval;                   /* stop bound */
+
+  int errnum = 29400;            /* choose some oracle error number */
+  char errmsg[512];              /* error message buffer */
+  size_t errmsglen;              /* Length of error message */
+
+  char relop[3];                 /* relational operator used in sql stmt */
+  char selstmt[2000];            /* sql select statement */
+
+  int retval = (int)ODCI_SUCCESS;       /* return from this function */
+  OCINumber *rval = (OCINumber *)0;
+  ub4 key;                              /* key value set in "sctx" */
+
+  ub1 *rkey;                            /* key to retrieve context */
+  ub4 rkeylen;                          /* length of key */
+  ODCIColInfo  *colinfo;                /* column info */
+  ODCIColInfo_ind  *colinfo_ind;
+  boolean exists = TRUE;
+  unsigned int partiden;                /* table partition iden */ 
+  unsigned int idxflag;                 /* index info flag  
+
+  /* Get oci handles */
+  if (qxiqtce(ctx, errhp, OCIExtProcGetEnv(ctx, &amp;envhp, &amp;svchp, &amp;errhp)))
+    return(rval);
+
+  /* set up return code */
+  rval = (OCINumber *)OCIExtProcAllocCallMemory(ctx, sizeof(OCINumber));
+  if (qxiqtce(ctx, errhp, OCINumberFromInt(errhp, (dvoid *)&amp;retval,
+      sizeof(retval), OCI_NUMBER_SIGNED, rval)))
+    return(rval);
+
+  /* get the user handle */
+  if (qxiqtce(ctx, errhp, OCIAttrGet((dvoid *)svchp, (ub4)OCI_HTYPE_SVCCTX,
+      (dvoid *)&amp;usrhp, (ub4 *)0, (ub4)OCI_ATTR_SESSION, errhp)))
+    return(rval);
+
+  /**********************************************/
+  /* Allocate memory to hold index scan context */
+  /**********************************************/
+  if (sctx_ind -&gt;atomic_qxiqtin == OCI_IND_NULL ||
+      sctx_ind -&gt;scind_qxiqtin == OCI_IND_NULL)
+  {
+    if (qxiqtce(ctx, errhp, OCIMemoryAlloc((dvoid *)usrhp, errhp, (dvoid **)&amp;icx,
+        OCI_DURATION_STATEMENT, (ub4)(sizeof(qxiqtcx)), OCI_MEMORY_CLEARED)))
+    return(rval);
+
+  icx-&gt;stmthp = (OCIStmt *)0;
+  icx-&gt;defnp = (OCIDefine *)0;
+  icx-&gt;bndp = (OCIBind *)0;
+  }
+
+  else
+  {
+    /*************************/
+    /* Retrieve scan context */
+    /*************************/
+    rkey = OCIRawPtr(envhp, sctx-&gt;sctx_qxiqtim);
+    rkeylen = OCIRawSize(envhp, sctx-&gt;sctx_qxiqtim);
+
+    if (qxiqtce(ctx, errhp, OCIContextGetValue((dvoid *)usrhp, errhp,
+        rkey, (ub1)rkeylen, (dvoid **)&amp;(icx))))
+      return(rval);
+  }
+
+  /***********************************/
+  /* Check that the bounds are valid */
+  /***********************************/
+  /* convert from oci numbers to native numbers */
+  if (qxiqtce(ctx, errhp, OCINumberToInt(errhp, strt, sizeof(strtval), 
+      OCI_NUMBER_SIGNED, (dvoid *)&amp;strtval)))
+    return(rval);
+
+  if (qxiqtce(ctx, errhp, OCINumberToInt(errhp, stop, sizeof(stopval),
+      OCI_NUMBER_SIGNED, (dvoid *)&amp;stopval)))
+    return(rval);
+
+  /* verify that strtval/stopval are both either 0 or 1 */
+  if (!(((strtval == 0) &amp;&amp; (stopval == 0)) || ((strtval == 1) &amp;&amp; (stopval == 1))))
+    {
+    strcpy(errmsg, (char *)"Incorrect predicate for sbtree operator");
+    errmsglen = (size_t)strlen(errmsg);
+    if (OCIExtProcRaiseExcpWithMsg(ctx, errnum, (text *)errmsg, errmsglen)
+        != OCIEXTPROC_SUCCESS)
+      /* Use cartridge error services here */;
+      return(rval);
+    }
+
+  /*********************************************/
+  /* Generate the SQL statement to be executed */
+  /*********************************************/
+  if (memcmp((dvoid *)OCIStringPtr(envhp, pr-&gt;ObjectName), (dvoid *)"EQ", 2) == 0)
+    if (strtval == 1)
+      strcpy(relop, (char *)"=");
+    else
+      strcpy(relop, (char *)"!=");
+    else if 
+      (memcmp((dvoid *)OCIStringPtr(envhp, pr-&gt;ObjectName), (dvoid *)"LT",2) == 0)
+      if (strtval == 1)
+        strcpy(relop, (char *)"&lt;");
+      else
+        strcpy(relop, (char *)"&gt;=");
+      else
+        if (strtval == 1)
+            strcpy(relop, (char *)"&gt;");
+          else
+            strcpy(relop, (char *)"&lt;=");
+
+  /* Convert idxflag to integer from OCINumber */
+  if (qxiqtce(ctx, errhp, OCINumberToInt(errhp, &amp;(ix-&gt;IndexInfoFlags),
+      sizeof(idxflag), OCI_NUMBER_UNSIGNED, ( void *)&amp;idxflag)))
+    return(rval);
+
+  if ( (idxflag &amp; ODCI_INDEX_RANGE_PARTN) != ODCI_INDEX_RANGE_PARTN)
+    (void)sprintf(selstmt, "select f2 from %s.%s_sbtree where f1 %s :val",
+      OCIStringPtr(envhp, ix-&gt;IndexSchema), OCIStringPtr(envhp, ix-&gt;IndexName),
+      relop);
+  else
+  {
+    if (qxiqtce(ctx, errhp, OCICollGetElem(envhp, errhp, OCIColl *)ix-&gt;IndexCols,
+        (sb4)0, &amp;exists, (void **) &amp;colinfo, (void **) &amp;colinfo_ind)))
+      return(rval);
+
+    /* Convert partiden to integer from OCINumber */
+  if (qxiqtce(ctx, errhp, OCINumberToInt(errhp, &amp;(colinfo-&gt;TablePartitionIden),
+      sizeof(partiden), OCI_NUMBER_UNSIGNED, ( void *)&amp;partiden)))
+    return(rval);
+
+  (void)sprintf(selstmt, "select f2 from %s.%s_sbtree partition        (SYS_OP_DOBJTOPNUM(%s, %d)) where f1 %s :val",
+      OCIStringPtr(envhp, ix-&gt;IndexSchema), OCIStringPtr(envhp, ix-&gt;IndexName),
+      OCIStringPtr(envhp, colinfo-&gt;TableName), partiden, relop);
+  }
+  
+  /***********************************/
+  /* Parse, bind, define and execute */
+  /***********************************/
+  if (sctx_ind -&gt;atomic_qxiqtin == OCI_IND_NULL ||
+      sctx_ind -&gt;scind_qxiqtin == OCI_IND_NULL)
+  {
+    /* allocate stmt handle */
+    if (qxiqtce(ctx, errhp, OCIHandleAlloc((dvoid *)envhp, 
+        (dvoid **)&amp;(icx-&gt;stmthp), (ub4)OCI_HTYPE_STMT, (size_t)0, (dvoid **)0)))  
+      return(rval);
+  }
+
+  /* prepare the statement */
+  if (qxiqtce(ctx, errhp, OCIStmtPrepare(icx-&gt;stmthp, errhp, (text *)selstmt,
+      (ub4)strlen(selstmt), OCI_NTV_SYNTAX, OCI_DEFAULT)))
+    return(rval);
+
+  /* Set up bind for compare value */
+  if (qxiqtce(ctx, errhp, OCIBindByName(icx-&gt;stmthp, &amp;(icx-&gt;bndp), errhp, 
+      (text *)":val", sizeof(":val")-1, (dvoid *)cmpval, (sb4)(strlen(cmpval)+1),
+      (ub2)SQLT_STR, (dvoid *)0, (ub2 *)0, (ub2 *)0, (ub4)0, (ub4 *)0,
+      (ub4)OCI_DEFAULT)))
+    return(rval);
+
+  /* Set up define */
+  if (qxiqtce(ctx, errhp, OCIDefineByPos(icx-&gt;stmthp, &amp;(icx-&gt;defnp), errhp,
+      (ub4)1, (dvoid *)(icx-&gt;ridp), (sb4) sizeof(icx-&gt;ridp), (ub2)SQLT_STR, 
+      (dvoid *)0, (ub2 *)0, (ub2 *)0, (ub4)OCI_DEFAULT)))
+    return(rval);
+
+  /* execute */
+  if (qxiqtce(ctx, errhp, OCIStmtExecute(svchp, icx-&gt;stmthp, errhp, (ub4)0,
+      (ub4)0, (OCISnapshot *)NULL, (OCISnapshot *)NULL, (ub4)OCI_DEFAULT)))
+    return(rval);
+
+  /************************************/
+  /* Set index context to be returned */
+  /************************************/
+  if (sctx_ind -&gt;atomic_qxiqtin == OCI_IND_NULL ||
+      sctx_ind -&gt;scind_qxiqtin == OCI_IND_NULL)
+  {
+    /* generate a key */
+    if (qxiqtce(ctx, errhp, OCIContextGenerateKey((dvoid *)usrhp, errhp, &amp;key)))
+      return(rval);
+
+    /* set the memory address of the struct to be saved in the context */
+    if (qxiqtce(ctx, errhp, OCIContextSetValue((dvoid *)usrhp, errhp,
+        OCI_DURATION_STATEMENT, (ub1 *)&amp;key, (ub1)sizeof(key), (dvoid *)icx)))
+      return(rval);
+
+    /* statement duration memory alloc for key */ 
+    if (qxiqtce(ctx, errhp, OCIMemoryAlloc(( void *)usrhp, errhp,
+        ( void **)&amp;(sctx-&gt;sctx_qxiqtim), OCI_DURATION_STATEMENT,
+        (sb4)(sizeof(key)+sizeof(ub4)), OCI_MEMORY_CLEARED)))
+      return(rval);
+
+    /* set the key as the member of "sctx" */
+    if (qxiqtce(ctx, errhp, OCIRawAssignBytes(envhp, errhp, (ub1 *)&amp;key,
+        ub4)sizeof(key), &amp;(sctx-&gt;sctx_qxiqtim))))
+      return(rval);
+
+    sctx_ind-&gt;atomic_qxiqtin = OCI_IND_NOTNULL;
+    sctx_ind-&gt;scind_qxiqtin = OCI_IND_NOTNULL;
+
+    return(rval);
+  }
+
+  return(rval);
+}
+</pre></div>
+<!-- class="example" -->
+<div class="example">
+<p class="titleinexample"><a id="CACGCEBA"></a><a id="ADDCI4916"></a>Example 16-28 Implementing ODCIIndexFetch() for PSBTREE in C</p>
+<p>The scan context set up by the start routine is passed in as a parameter to the fetch routine. This function first retrieves the 4-byte key from the scan context. The C mapping for the scan context is <code>qxiqtim</code> (see <a href="#CACBHEBF">Example 16-21</a>). Next, key is used to look up the OCI context. This gives the memory address of the <code>qxiqtcx</code> structure (see <a href="#CACCIGGI">Example 16-22</a>) that holds the OCI handles.</p>
+<p>This function returns the next batch of rowids that satisfy the operator predicate. It uses the value of the <code>nrows</code> parameter as the size of the batch. It repeatedly fetches rowids from the open cursor and populates the <code>rowid</code> list. When the batch is full or when there are no more rowids left, the function returns them back to the Oracle server.</p>
+<pre>
+OCINumber *qxiqtbspf(
+  OCIExtProcContext *ctx,
+  qxiqtim           *self,
+  qxiqtin           *self_ind,
+  OCINumber         *nrows,
+  short             nrows_ind,
+  OCIArray          **rids,
+  short             *rids_ind,
+  ODCIEnv           *env,
+  ODCIEnv_ind       *env_ind)
+{
+  sword status;
+  OCIEnv *envhp = (OCIEnv *) 0;                               /* env. handle */
+  OCISvcCtx *svchp = (OCISvcCtx *) 0;                      /* service handle */
+  OCIError *errhp = (OCIError *) 0;                          /* error handle */
+  OCISession *usrhp = (OCISession *) 0;                       /* user handle */
+  qxiqtcx *icx = (qxiqtcx *) 0;         /* state to be saved for later calls */
+
+  int idx = 1;
+  int nrowsval;
+
+  OCIArray *ridarrp = *rids;                  /* rowid collection */
+  OCIString *ridstr = (OCIString *)0;
+
+  int done = 0;
+  int retval = (int)ODCI_SUCCESS;
+  OCINumber *rval = (OCINumber *)0;
+
+  ub1 *key;                                   /* key to retrieve context */
+  ub4 keylen;                                 /* length of key */
+
+  /*******************/
+  /* Get OCI handles */
+  /*******************/
+  if (qxiqtce(ctx, errhp, OCIExtProcGetEnv(ctx, &amp;envhp, &amp;svchp, &amp;errhp)))
+    return(rval);
+
+  /* set up return code */
+  rval = (OCINumber *)OCIExtProcAllocCallMemory(ctx, sizeof(OCINumber));
+  if (qxiqtce(ctx, errhp, OCINumberFromInt(errhp, (dvoid *)&amp;retval,
+      sizeof(retval), OCI_NUMBER_SIGNED, rval)))
+    return(rval);
+
+  /* get the user handle */
+  if (qxiqtce(ctx, errhp, OCIAttrGet((dvoid *)svchp, (ub4)OCI_HTYPE_SVCCTX,
+      (dvoid *)&amp;usrhp, (ub4 *)0, (ub4)OCI_ATTR_SESSION, errhp)))
+    return(rval);
+
+  /********************************/
+  /* Retrieve context from key    */
+  /********************************/
+  key = OCIRawPtr(envhp, self-&gt;sctx_qxiqtim);
+  keylen = OCIRawSize(envhp, self-&gt;sctx_qxiqtim);
+
+  if (qxiqtce(ctx, errhp, OCIContextGetValue((dvoid *)usrhp, errhp, key,
+      (ub1)keylen, (dvoid **)&amp;(icx))))
+    return(rval);
+
+  /* get value of nrows */
+  if (qxiqtce(ctx, errhp, OCINumberToInt(errhp, nrows, sizeof(nrowsval),
+      OCI_NUMBER_SIGNED, (dvoid *)&amp;nrowsval)))
+    return(rval);
+
+  /****************/
+  /* Fetch rowids */
+  /****************/
+  while (!done)
+  {
+    if (idx &gt; nrowsval)
+      done = 1;
+    else
+    {
+      status =OCIStmtFetch(icx-&gt;stmthp, errhp, (ub4)1, (ub2) 0, (ub4)OCI_DEFAULT);
+      if (status == OCI_NO_DATA)
+      {
+        short col_ind = OCI_IND_NULL;
+        /* have to create dummy oci string */
+        OCIStringAssignText(envhp, errhp, (text *)"dummy", (ub2)5, &amp;ridstr);
+        /* append null element to collection */
+        if (qxiqtce(ctx, errhp, OCICollAppend(envhp, errhp, (dvoid *)ridstr,
+            (dvoid *)&amp;col_ind, (OCIColl *)ridarrp)))
+          return(rval);
+        done = 1;
+      }
+      else if (status == OCI_SUCCESS)
+      {
+        OCIStringAssignText(envhp, errhp, (text *)icx-&gt;ridp, (ub2)18, 
+            OCIString **)&amp;ridstr);
+        /* append rowid to collection */
+        if (qxiqtce(ctx, errhp, OCICollAppend(envhp, errhp, (dvoid *)ridstr,
+            (dvoid *)0, (OCIColl *)ridarrp)))
+          return(rval);
+        idx++;
+      }
+      else if (qxiqtce(ctx, errhp, status))
+        return(rval);
+    }
+  }
+
+  /* free ridstr finally */
+  if (ridstr &amp;&amp;
+      (qxiqtce(ctx, errhp, OCIStringResize(envhp, errhp, (ub4)0, &amp;ridstr))))
+    return(rval);
+
+  *rids_ind = OCI_IND_NOTNULL;
+
+  return(rval);
+}
+</pre></div>
+<!-- class="example" -->
+<div class="example">
+<p class="titleinexample"><a id="CACBFHDA"></a><a id="ADDCI4917"></a>Example 16-29 Implementing ODCIIndexClose() for PSBTREE in C</p>
+<p>The scan context set up by the start routine is passed in as a parameter to the close routine. This function first retrieves the 4-byte key from the scan context. The C mapping for the scan context is <code>qxiqtim</code> (see <a href="#CACBHEBF">Example 16-21</a>). Next, the OCI context is looked up based on the key. This gives the memory address of the structure that holds the OCI handles, the <code>qxiqtcx</code> structure (see <a href="#CACCIGGI">Example 16-22</a>).</p>
+<p>This function closes and frees all the OCI handles. It also frees the memory that was allocated in the start routine.</p>
+<pre>
+OCINumber *qxiqtbspc(
+  OCIExtProcContext *ctx,
+  qxiqtim           *self,
+  qxiqtin           *self_ind,
+  ODCIEnv           *env,
+  ODCIEnv_ind       *env_ind)
+{
+  sword status;
+  OCIEnv *envhp = (OCIEnv *) 0;                               /* env. handle */
+  OCISvcCtx *svchp = (OCISvcCtx *) 0;                      /* service handle */
+  OCIError *errhp = (OCIError *) 0;                          /* error handle */
+  OCISession *usrhp = (OCISession *) 0;                       /* user handle */
+  qxiqtcx *icx = (qxiqtcx *) 0;         /* state to be saved for later calls */
+
+  int retval = (int) ODCI_SUCCESS;
+  OCINumber *rval = (OCINumber *)0;
+
+  ub1 *key;                                   /* key to retrieve context */
+  ub4 keylen;                                 /* length of key */
+
+  if (qxiqtce(ctx, errhp, OCIExtProcGetEnv(ctx, &amp;envhp, &amp;svchp, &amp;errhp)))
+    return(rval);
+
+  /* set up return code */
+  rval = (OCINumber *)OCIExtProcAllocCallMemory(ctx, sizeof(OCINumber));
+  if (qxiqtce(ctx, errhp, OCINumberFromInt(errhp, (dvoid *)&amp;retval,
+      sizeof(retval), OCI_NUMBER_SIGNED, rval)))
+    return(rval);
+
+  /* get the user handle */
+  if (qxiqtce(ctx, errhp, OCIAttrGet((dvoid *)svchp, (ub4)OCI_HTYPE_SVCCTX,
+      (dvoid *)&amp;usrhp, (ub4 *)0,
+      (ub4)OCI_ATTR_SESSION, errhp)))
+    return(rval);
+  /********************************/
+  /* Retrieve context using key   */
+  /********************************/
+  key = OCIRawPtr(envhp, self-&gt;sctx_qxiqtim);
+  keylen = OCIRawSize(envhp, self-&gt;sctx_qxiqtim);
+
+  if (qxiqtce(ctx, errhp, OCIContextGetValue((dvoid *)usrhp, errhp, key,
+      (ub1)keylen, (dvoid **)&amp;(icx))))
+    return(rval);
+
+  /* Free handles and memory */
+  if (qxiqtce(ctx, errhp, OCIHandleFree((dvoid *)icx-&gt;stmthp, 
+      (ub4)OCI_HTYPE_STMT)))
+    return(rval);
+
+  if (qxiqtce(ctx, errhp, OCIMemoryFree((dvoid *)usrhp, errhp, (dvoid *)icx)))
+    return(rval);
+
+  /* free the memory allocated for the index context. */
+  if (qxiqtce(ctx, errhp, OCIContextClearValue((dvoid *)usrhp, errhp, key,
+      (ub1)keylen)))
+    return(rval);
+
+    return(rval);
+}
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" -->
+<a id="i1005594"></a><a id="ADDCI4918"></a>
+<div class="sect2">
+<h3 class="sect2">Implementing the Indextype</h3>
+<p>You should next create the indextype object and specify the list of operators that it supports. In addition, specify the name of the implementation type that implements the <code>ODCIIndex</code><code><span class="codeinlineitalic">XXX</span></code><code>()</code> interface routines. This step is demonstrated in <a href="#CACGICCC">Example 16-30</a>.</p>
+<div class="example">
+<p class="titleinexample"><a id="CACGICCC"></a><a id="ADDCI4919"></a>Example 16-30 Implementing the Indextype for PSBTREE</p>
+<pre>
+CREATE INDEXTYPE psbtree
+FOR
+eq(VARCHAR2, VARCHAR2),
+lt(VARCHAR2, VARCHAR2),
+gt(VARCHAR2, VARCHAR2)
+USING psbtree_im
+WITH LOCAL RANGE PARTITION
+WITH SYSTEM MANAGED STORAGE TABLES
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1005604"></a><a id="ADDCI4920"></a>
+<div class="sect1">
+<h2 class="sect1">Using PSBTREE</h2>
+<p>One typical usage scenario is to create a range partitioned table and populate it, as demonstrated in <a href="#CACCEACF">Example 16-31</a>.</p>
+<div class="example">
+<p class="titleinexample"><a id="CACCEACF"></a><a id="ADDCI4921"></a>Example 16-31 Creating and Populating a Partitioned Table for PSBTREE</p>
+<pre>
+CREATE TABLE t1 (f1 NUMBER, f2 VARCHAR2(200))
+PARTITION BY RANGE(f1)
+(
+  PARTITION p1 VALUES LESS THAN (101),
+  PARTITION p2 VALUES LESS THAN (201),
+  PARTITION p3 VALUES LESS THAN (301),
+  PARTITION p4 VALUES LESS THAN (401)
+ );
+INSERT INTO t1 VALUES (10, 'aaaa');
+INSERT INTO t1 VALUES (200, 'bbbb');
+INSERT INTO t1 VALUES (100, 'cccc');
+INSERT INTO t1 VALUES (300, 'dddd');
+INSERT INTO t1 VALUES (400, 'eeee');
+COMMIT;
+</pre></div>
+<!-- class="example" -->
+<p>You can then create a <code>psbtree</code> index on column <code>f2</code>. The <code>CREATE INDEX</code> statement specifies the indextype that should be used, as demonstrated in <a href="#CACJJHIG">Example 16-32</a>.</p>
+<div class="example">
+<p class="titleinexample"><a id="CACJJHIG"></a><a id="ADDCI4922"></a>Example 16-32 Creating a PSBTREE Index on a Column</p>
+<pre>
+CREATE INDEX it1 ON t1(f2) iINDEXTYPE IS psbtree LOCAL 
+(PARTITION pe1 PARAMETERS('test1'), PARTITION pe2,
+ PARTITION pe3, PARTITION pe4 PARAMETERS('test4')) 
+PARAMETERS('test');
+</pre></div>
+<!-- class="example" -->
+<p>To execute a query that uses one of the <code>psbtree</code> operators, use the code in <a href="#CACHDCED">Example 16-33</a></p>
+<div class="example">
+<p class="titleinexample"><a id="CACHDCED"></a><a id="ADDCI4923"></a>Example 16-33 Using PSBTREE Operators in a Query</p>
+<pre>
+SELECT * FROMM t1 WHERE eq(f2, 'dddd') = 1 AND f1&gt;101 ;
+</pre>
+<p>The explain plan output for this query should look like this:</p>
+<pre>
+OPERATION            OPTIONS                PARTITION_START       PARTITION_STOP
+--------------------------------------------------------------------------------
+SELECT STATEMENT
+PARTITION RANGE      ITERATOR               2                     4
+TABLE ACCESS         BY LOCAL INDEX ROWID   2                     4
+DOMAIN INDEX
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1236">
+<tr>
+<td class="cellalignment1243">
+<table class="cellalignment1241">
+<tr>
+<td class="cellalignment1240"><a href="pwr_example.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1240"><a href="pipelined_example.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1996, 2010,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1245">
+<table class="cellalignment1239">
+<tr>
+<td class="cellalignment1240"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1240"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1240"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1240"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1240"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1240"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

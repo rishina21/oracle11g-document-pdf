@@ -1,0 +1,354 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en-US">
+<head>
+<title>Examples for MdmMetadataProvider</title>
+<meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+<meta name="generator" content="Oracle ST-Doc Jadey 2.3">
+</head>
+<body>
+<table class="oac_no_warn" summary="Layout table... probably." border="0" width="100%" cellpadding="1" cellspacing="0">
+<tr>
+<td>
+<table class="oac_no_warn" summary="Layout table... probably." border="0" cellpadding="0" cellspacing="3">
+<tr align="center" valign="top">
+<td bgcolor="#EEEEFF" class="NavBarCell1"><a href="../../../../../overview-summary.html"><b>Overview</b></a>&nbsp;</td>
+</tr>
+</table>
+</td>
+<td align="right" valign="top" rowspan="3"><em><b>Oracle&reg; OLAP Java API Reference<br>
+11<i>g</i> Release 2 (11.2)</b><br>
+E10794-06</em></td>
+</tr>
+</table>
+<hr>
+<p><span><b>Examples for MdmMetadataProvider</b></span></p>
+<p>This file contains the following examples of exporting and importing Oracle OLAP metadata objects by using the <code>exportFullXML</code>, <code>exportIncrementalXML</code>, and <code>importXML</code> methods of an <code>MdmMetadataProvider</code>.</p>
+<ul>
+<li><a href="#exp1">Example 1</a> exports objects by using the <code>exportFullXML</code> and <code>exportIncrementalXML</code> methods.</li>
+<li><a href="#exp2">Example 2</a> exports and imports objects and uses the <code>bindVariables</code> and <code>bindValues</code> parameters.</li>
+</ul>
+<p>Example 1 gets a persistent <code>MdmCube</code>, gets the <code>AWCubeOrganization</code> for the cube, and changes the measure storage option. The example then exports the full XML for the object, the full XML that has changed for the object in the transaction, and the incremental XML, which is just the line of XML that records the changed option for the object. In the code, <code>mp</code> is the <code>MdmMetadataProvider</code> and <code>mdmDBSchema</code> is an <code>MdmDatabaseSchema</code>.</p>
+<p><a name="exp1" id="exp1"></a> <span><b>Example 1 Exporting XML</b></span></p>
+<pre>
+  private void exportingXMLExample()
+  {
+    MdmCube mdmUnitsCube = (MdmCube) 
+                            mdmDBSchema.getTopLevelObject("UNITS_CUBE_AWJ");
+    AWCubeOrganization awCubeOrg = (AWCubeOrganization) 
+                                    mdmUnitsCube.getOrganization();
+    // Change an option in the current Transaction.
+    awCubeOrg.setMeasureStorage(awCubeOrg.INDEPENDENT_MEASURE_STORAGE);   
+    ArrayList objects = new ArrayList();
+    objects.add(mdmUnitsCube);
+    try 
+    {
+      println("Export the full definition of the cube.");
+      println(mp.exportFullXML(objects, null, false));
+      println("\nExport the full definition of the changed object only.");
+      // A null Transaction specfies the persistent state of the object,
+      // which in this case is the state before the change to the option.
+      println(mp.exportFullXML((Transaction)null, null, false)); 
+      println("\nExport the incremental change only.");
+      println(mp.exportIncrementalXML(null, null, false));
+    } 
+    catch (Exception ex) 
+    {
+      println("Cannot export the XML.");
+      ex.printStackTrace();
+    }
+    // Commit the current Transation, which moves the change to persistent 
+    // storage.
+    getContext().commit();
+  }
+</pre>
+<p>The preceding code displays the following output. Most of the lines of the full XML are not shown.</p>
+<pre>
+Export the full definition of the cube.
+
+&lt;Metadata
+  Version="1.0"&gt;
+  &lt;Cube
+    ETViewname="UNITS_CUBE_AWJ_VIEW"
+    name="UNITS_CUBE_AWJ"
+    ConsistentSolve="SOLVE 
+(
+  SUM OVER ALL
+)"&gt;
+...
+   &lt;Organization&gt;
+     &lt;AWCubeOrganization
+       MVOption="NONE"
+       SparseType="COMPRESSED"
+       MeasureStorage="INDEPENDENT"
+...
+     &lt;/AWCubeOrganization&gt;
+   &lt;/Organization&gt;
+...
+  &lt;/Cube&gt;
+&lt;/Metadata&gt;
+
+Export the full definition of the changed option only.
+
+&lt;Metadata
+  Version="1.0"&gt;
+  &lt;Cube
+    name="UNITS_CUBE_AWJ"&gt;
+    &lt;Organization&gt;
+      &lt;AWCubeOrganization
+        MVOption="NONE"
+        SparseType="COMPRESSED"
+        MeasureStorage="INDEPENDENT"
+ ...
+      &lt;/AWCubeOrganization&gt;
+    &lt;/Organization&gt;
+  &lt;/Cube&gt;
+&lt;/Metadata&gt;
+
+Export the incremental change only.
+ 
+&lt;Metadata
+  Version="1.0"&gt;
+  &lt;Cube
+    name="UNITS_CUBE_AWJ"&gt;
+    &lt;Organization&gt;
+      &lt;AWCubeOrganization
+        MeasureStorage="INDEPENDENT"&gt;
+      &lt;/AWCubeOrganization&gt;
+    &lt;/Organization&gt;
+  &lt;/Cube&gt;
+&lt;/Metadata&gt;
+</pre>
+<p><a name="exp2" id="exp2"></a> <span><b>Example 2 Exporting and Importing XML With Bind Variables</b></span></p>
+<p>This example gets the GLOBAL_AWJ analytic workspace, the UNITS_CUBE_AWJ cube, and the CHANNEL_AWJ dimension. It creates an <code>ArrayList</code> for the objects to export. It creates <code>HashMap</code> objects for the <code>bindVariables</code> and <code>bindValues</code> parameters and puts keys and values in those hash maps.</p>
+<p>It exports the objects to XML using the <code>exportFullXML(List objects, Map renameMap, boolean includeOwnerString, Map bindVariables)</code> method. The example displays the XML string. It then imports the XML using the <code>importXML(String inXML, MdmDatabaseSchema destinationSchema, boolean modifyIfExists, Map&lt;String, String&gt; bindValues)</code> method. It iterates through the imported objects and displays the name of the <code>MdmPrimaryDimension</code> objects and the owning <code>AW</code> object. Finally, the example exports and displays the XML for the imported objects.</p>
+<pre>
+  private void bindVariablesExample()
+  {
+    AW aw = mdmDBSchema.findOrCreateAW("GLOBAL_AWJ");
+    AW newAW = mdmDBSchema.findOrCreateAW(aw.getName() + "_NEW");
+
+    MdmCube mdmUnitsCube = mdmDBSchema.findOrCreateCube("UNITS_CUBE_AWJ");    
+    
+    MdmStandardDimension mdmChanDim = 
+                 mdmDBSchema.findOrCreateStandardDimension("CHANNEL_AWJ");
+    
+    ArrayList objs = new ArrayList(1);
+    HashMap bindVariables = new HashMap();
+    HashMap bindValues = new HashMap();
+
+    String bindVar = "B1";
+    bindVariables.put(aw, bindVar);
+    bindValues.put(bindVar, newAW.getName());
+
+    bindVar = "B2";
+    bindVariables.put(mdmUnitsCube, bindVar);
+    bindValues.put(bindVar, mdmUnitsCube.getName() + "_NEW");
+    
+    bindVar = "B3";
+    bindVariables.put(mdmChanDim, bindVar);
+    bindValues.put(bindVar, mdmChanDim.getName() + "_NEW");
+
+    objs.add(mdmUnitsCube);
+    objs.add(mdmChanDim);
+    
+    String xml = null;
+    try
+    { 
+      println("Exporting the XML.");      
+      xml = mp.exportFullXML(objs, null, false, bindVariables);
+      println("The XML is:" + xml);
+    }
+    catch (Exception ex)
+    {
+      println("Cannot export XML.");
+      ex.printStackTrace();
+    }
+
+    List modObjs = null;
+    ArrayList newObjs = new ArrayList();
+    
+    try
+    { 
+      println("Importing the XML.");
+      modObjs = mp.importXML(xml, mdmDBSchema, false, bindValues);
+    }
+    catch (Exception ex)
+    {
+      println("Cannot import the XML.");
+      ex.printStackTrace();
+    }
+  
+    for (Iterator iter = modObjs.iterator(); iter.hasNext();)
+    {
+      BaseMetadataObject obj = (BaseMetadataObject) iter.next();
+   
+      AW currAW = null;
+
+      if (obj instanceof MdmCube)
+      {
+        println("\nThe name of the imported cube is " +
+            ((MdmCube)obj).getName());
+        CubeOrganization cubeOrg = ((MdmCube)obj).getOrganization();
+        currAW = ((AWCubeOrganization)cubeOrg).getAW();
+        println("The cube is deployed to the analytic workspace "+
+                 currAW.getName());
+      }
+      else if (obj instanceof MdmPrimaryDimension)
+      {
+        println("\nThe name of the imported dimension is " +
+                ((MdmPrimaryDimension)obj).getName());
+        PrimaryDimensionOrganization dimOrg =
+          ((MdmPrimaryDimension)obj).getOrganization();
+        currAW = ((AWPrimaryDimensionOrganization)dimOrg).getAW();
+        println("The dimension is deployed to the analytic workspace "+
+                 currAW.getName());
+      }
+      
+      newObjs.add(obj);
+    }
+    
+    try
+    {
+      println("\nExporting the new objects to XML:");
+      println("The XML is:" + mp.exportFullXML(newObjs, null, false));  
+    }
+    catch(Exception ex)
+    {
+      println("Cannot export the XML");
+      ex.printStackTrace();
+    }       
+
+  }
+</pre>
+<p>The preceding code displays the following output. Most of the lines of the full XML are not shown.</p>
+<pre>
+Exporting the XML.
+The XML is:
+&lt;!DOCTYPE Metadata [
+  &lt;!ENTITY % BIND_VALUES PUBLIC "OLAP BIND VALUES" "OLAP METADATA"&gt;
+  %BIND_VALUES;
+  ]&gt;
+&lt;Metadata
+  Version="1.0"&gt;
+  &lt;Cube
+    ETViewname="UNITS_CUBE_AWJ_VIEW"
+    name="O_B2_"
+...
+  &gt;
+...
+    &lt;CubeMap
+      name="MAP1"
+...
+    &gt;
+...
+      &lt;CubeDimensionalityMap
+        name="CHANNEL_AWJ"
+        Expression="UNITS_FACT.CHANNEL_ID"&gt;
+...
+        &lt;Dimensionality
+          name="CHANNEL_AWJ"/&gt;
+        &lt;MappedDimension
+          name="O_B3__CHANNEL_PRIMARY_CHANNEL"/&gt;
+      &lt;/CubeDimensionalityMap&gt;
+    &lt;/CubeMap&gt;
+    &lt;Organization&gt;
+      &lt;AWCubeOrganization
+....
+        &lt;AW
+          name="O_B1_"/&gt;
+      &lt;/AWCubeOrganization&gt;
+    &lt;/Organization&gt;
+...
+    &lt;Dimensionality
+      name="CHANNEL_AWJ"
+      ETKeyColumnname="CHANNEL_AWJ"&gt;
+      &lt;Dimension
+        name="O_B3_"/&gt;
+    &lt;/Dimensionality&gt;
+  &lt;/Cube&gt;
+
+  &lt;StandardDimension
+    name="O_B3_"
+...
+    &lt;Organization&gt;
+      &lt;AWPrimaryDimensionOrganization
+...
+      &gt;
+...
+        &lt;AW
+          name="O_B1_"/&gt;
+      &lt;/AWPrimaryDimensionOrganization&gt;
+    &lt;/Organization&gt;
+...
+  &lt;/StandardDimension&gt;
+&lt;/Metadata&gt;
+
+The name of the imported cube is UNITS_CUBE_AWJ_NEW
+The cube is deployed to the analytic workspace GLOBAL_AWJ_NEW
+
+The name of the imported dimension is CHANNEL_AWJ_NEW
+The dimension is deployed to the analytic workspace GLOBAL_AWJ_NEW
+
+Exporting the new objects to XML:
+The XML is:
+&lt;Metadata
+  Version="1.0"&gt;
+  &lt;Cube
+    ETViewname="UNITS_CUBE_AWJ_VIEW"
+    name="UNITS_CUBE_AWJ_NEW"
+...
+  &gt;
+...
+    &lt;CubeMap
+      name="MAP1"
+...
+    &gt;
+...
+      &lt;CubeDimensionalityMap
+        name="CHANNEL_AWJ"
+        Expression="UNITS_FACT.CHANNEL_ID"&gt;
+        &lt;Dimensionality
+          name="CHANNEL_AWJ"/&gt;
+        &lt;MappedDimension
+          name="CHANNEL_AWJ_NEW_CHANNEL_PRIMARY_CHANNEL"/&gt;
+      &lt;/CubeDimensionalityMap&gt;
+    &lt;/CubeMap&gt;
+...
+    &lt;Organization&gt;
+      &lt;AWCubeOrganization
+...
+        &lt;AW
+          name="GLOBAL_AWJ_NEW"/&gt;
+      &lt;/AWCubeOrganization&gt;
+    &lt;/Organization&gt;
+...
+    &lt;Dimensionality
+      name="CHANNEL_AWJ"
+      ETKeyColumnname="CHANNEL_AWJ"&gt;
+      &lt;Dimension
+        name="CHANNEL_AWJ_NEW"/&gt;
+    &lt;/Dimensionality&gt;
+  &lt;/Cube&gt;
+
+  &lt;StandardDimension
+    name="CHANNEL_AWJ_NEW"
+    ETViewname="CHANNEL_AWJ_VIEW"
+...
+    &lt;Organization&gt;
+      &lt;AWPrimaryDimensionOrganization
+...
+      &gt;
+...
+        &lt;AW
+          name="GLOBAL_AWJ_NEW"/&gt;
+      &lt;/AWPrimaryDimensionOrganization&gt;
+    &lt;/Organization&gt;
+...
+  &lt;/StandardDimension&gt;
+&lt;/Metadata&gt;
+</pre>
+<hr>
+<center>Copyright &copy; 2002, 2010, Oracle. All rights reserved.</center>
+</body>
+</html>

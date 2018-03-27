@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Multithreaded extproc Agent</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1032" />
+<meta name="dcterms.created" content="2014-12-06T1:49:51Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Advanced Application Developer's Guide" />
+<meta name="dcterms.identifier" content="E41502-06" />
+<meta name="dcterms.isVersionOf" content="ADFNS" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1996, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="adfns_editions.htm" title="Previous" type="text/html" />
+<link rel="Next" href="index.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e41502.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">30/31</span> <!-- End Header -->
+<div id="ADFNS00099" class="appendix"><a id="sthref1297"></a>
+<h1 class="appendix"><span class="secnum">A</span> Multithreaded extproc Agent</h1>
+<p><a id="sthref1298"></a><a id="sthref1299"></a>This appendix explains what the multithreaded <code dir="ltr">extproc</code> agent is, how it contributes to the overall efficiency of a distributed database system, and how to administer it.</p>
+<p class="subhead2"><a id="sthref1300"></a>Topics:</p>
+<ul>
+<li>
+<p><a href="#CHDGJFGB">Why Use the Multithreaded extproc Agent?</a></p>
+</li>
+<li>
+<p><a href="#CHDCJHHC">Multithreaded extproc Agent Architecture</a></p>
+</li>
+<li>
+<p><a href="#CHDEEJJE">Administering the Multithreaded extproc Agent</a></p>
+</li>
+</ul>
+<a id="CHDGJFGB"></a>
+<div id="ADFNS945" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Why Use the Multithreaded extproc Agent?</h2>
+<p>This section explains how the multithreaded <code dir="ltr">extproc</code> agent contributes to the efficiency of external procedures.</p>
+<p class="subhead2"><a id="sthref1301"></a>Topics:</p>
+<ul>
+<li>
+<p><a href="#CHDEABAE">The Challenge of Dedicated Agent Architecture</a></p>
+</li>
+<li>
+<p><a href="#CHDFABEG">The Advantage of Multithreading</a></p>
+</li>
+</ul>
+<a id="CHDEABAE"></a>
+<div id="ADFNS946" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">The Challenge of Dedicated Agent Architecture</h3>
+<p>By default, an <code dir="ltr">extproc</code> agent is started for each user session and the <code dir="ltr">extproc</code> agent process terminates only when the user session ends.</p>
+<p>This architecture can consume an unnecessarily large amount of system resources. For example, suppose that several thousand user sessions simultaneously spawn <code dir="ltr">extproc</code> agent processes. Because an <code dir="ltr">extproc</code> agent process is started for each session, several thousand <code dir="ltr">extproc</code> agent processes run concurrently. The <code dir="ltr">extproc</code> agent processes operate regardless of whether each individual <code dir="ltr">extproc</code> agent process is active at the moment. Thus <code dir="ltr">extproc</code> agent processes and open connections can consume a disproportionate amount of system resources. When sessions connect to Oracle Database, this problem is addressed by starting the server in shared server mode. Shared server mode allows database connections to be shared by a small number of server processes.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDFABEG"></a>
+<div id="ADFNS947" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">The Advantage of Multithreading</h3>
+<p>The Oracle Database shared server architecture assumes that even when several thousand user sessions are open, only a small percentage of these connections are active at any given time. In shared server mode, there is a pool of shared server processes. User sessions connect to dispatcher processes that place the requested tasks in a queue. The tasks are picked up by the first available shared server processes. The number of shared server processes is usually less that the number of user sessions.</p>
+<p>The multithreaded <code dir="ltr">extproc</code> agent provides similar functionality for connections to external procedures. The multithreaded <code dir="ltr">extproc</code> agent architecture uses a pool of shared agent threads. The tasks requested by the user sessions are put in a queue and are picked up by the first available multithreaded <code dir="ltr">extproc</code> agent thread. Because only a small percentage of user connections are active at a given moment, using a multithreaded <code dir="ltr">extproc</code> architecture allows more efficient use of system resources.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDCJHHC"></a>
+<div id="ADFNS948" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Multithreaded extproc Agent Architecture</h2>
+<p>One multithreaded <code dir="ltr">extproc</code> agent must be started for each system identifier (SID) before attempting to connect to the external procedure. This is done using the agent control utility <a id="sthref1302"></a><code dir="ltr">agtctl</code>. This utility is also used to configure the agent and to shut down the agent.</p>
+<p>Each Oracle Net listener that is running on a system listens for incoming connection requests for a set of SIDs. If the SID in an incoming Oracle Net connect string is an SID for which the listener is listening, then that listener processes the connection. Further, if a multithreaded <code dir="ltr">extproc</code> agent was started for the SID, then the listener passes the request to that <code dir="ltr">extproc</code> agent.</p>
+<p>In the architecture for multithreaded <code dir="ltr">extproc</code> agents, each incoming connection request is processed by different kinds of threads:</p>
+<ul>
+<li>
+<p>A single <span class="bold">monitor</span> thread. The <a id="sthref1303"></a><a id="sthref1304"></a>monitor thread is responsible for:</p>
+<ul>
+<li>
+<p>Maintaining communication with the listener</p>
+</li>
+<li>
+<p>Monitoring the load on the process</p>
+</li>
+<li>
+<p>Starting and stopping threads when required</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Several <span class="bold">dispatcher</span> threads. The <a id="sthref1305"></a><a id="sthref1306"></a>dispatcher threads are responsible for:</p>
+<ul>
+<li>
+<p>Handling communication with the Oracle Database</p>
+</li>
+<li>
+<p>Passing task requests to the task threads</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Several <span class="bold">task</span> threads. The<a id="sthref1307"></a><a id="sthref1308"></a> task threads handle requests from the Oracle Database processes.</p>
+</li>
+</ul>
+<p><a href="#CFABDEFF">Figure A-1</a> illustrates the architecture of the multithreaded <code dir="ltr">extproc</code> agent. User sessions 1 and 2 issue requests for callouts to functions in some DLLs. These requests get serviced through heterogeneous services to the multithreaded <code dir="ltr">extproc</code> agent. These requests get handled by the agent's dispatcher threads, which then pass them on to the task threads. The task thread that is actually handling a request is responsible for loading the respective DLL and calling the function therein.</p>
+<ul>
+<li>
+<p>All requests from a user session get handled by the same dispatcher thread. For example, dispatcher&nbsp;1 handles communication with user session&nbsp;1, and dispatcher&nbsp;2 handles communication with user session&nbsp;2. This is the case for the lifetime of the session.</p>
+</li>
+<li>
+<p>The individual requests can be serviced by different task threads. For example, task thread&nbsp;1 can handle the request from user session&nbsp;1, and later handle the request from user session&nbsp;2.</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ADMIN00501" href="../../server.112/e25494/manproc.htm#ADMIN00501"><span class="italic">Oracle Database Administrator's Guide</span></a>. for details on managing processes for external procedures</div>
+<div id="ADFNS949" class="figure">
+<p class="titleinfigure"><a id="CFABDEFF"></a>Figure A-1 Multithreaded extproc Agent Architecture</p>
+<img width="268" height="359" src="img/adfns100.gif" alt="Description of Figure A-1 follows" /><br />
+<a id="sthref1309" href="img_text/adfns100.htm">Description of "Figure A-1 Multithreaded extproc Agent Architecture"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>These three thread types roughly correspond to the Oracle Database multithreaded server PMON, dispatcher, and shared server processes, respectively.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+All requests from a user session go through the same dispatcher thread, but can be serviced by different task threads. Also, several task threads can use the same connection to the external procedure.</div>
+<p>These topics explain each type of thread in more detail:</p>
+<ul>
+<li>
+<p><a href="#CHDEHDGB">Monitor Thread</a></p>
+</li>
+<li>
+<p><a href="#CHDEGGEF">Dispatcher Threads</a></p>
+</li>
+<li>
+<p><a href="#CHDEGCCA">Task Threads</a></p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#CHDEEJJE">"Administering the Multithreaded extproc Agent"</a> for more information about starting and stopping the multithreaded <code dir="ltr">exproc</code> agent by using the agent control utility <code dir="ltr">agtctl</code></div>
+</li>
+</ul>
+<a id="CHDEHDGB"></a>
+<div id="ADFNS950" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Monitor Thread</h3>
+<p>When the agent control utility <code dir="ltr">agtctl</code> starts a multithreaded <code dir="ltr">extproc</code> agent for a SID, <code dir="ltr">agtctl</code> creates the monitor thread. The monitor thread performs these functions:</p>
+<ul>
+<li>
+<p>Creates the dispatcher and task threads.</p>
+</li>
+<li>
+<p>Registers the dispatcher threads with all the listeners that are handling connections to this <code dir="ltr">extproc</code> agent. While the dispatcher for this SID is running, the listener does not start a process when it gets an incoming connection. Instead, the listener gives the connection to this same dispatcher.</p>
+</li>
+<li>
+<p>Monitors the other threads and sends load information about the dispatcher threads to all the listener processes handling connections to this <code dir="ltr">extproc</code> agent, enabling listeners to give incoming connections to the least loaded dispatcher.</p>
+</li>
+<li>
+<p>Continues to monitor each of the threads it has created.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="CHDEGGEF"></a>
+<div id="ADFNS951" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Dispatcher Threads</h3>
+<p>Dispatcher threads perform these functions:</p>
+<ul>
+<li>
+<p>Accept incoming connections and task requests from Oracle Database servers.</p>
+</li>
+<li>
+<p>Place incoming requests on a queue for a task thread to pick up.</p>
+</li>
+<li>
+<p>Send results of a request back to the server that issued the request.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+After a user session establishes a connection with a dispatcher, all requests from that user session go to the same dispatcher until the end of the user session.</div>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="CHDEGCCA"></a>
+<div id="ADFNS952" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Task Threads</h3>
+<p>Task threads perform these functions:</p>
+<ul>
+<li>
+<p>Pick up requests from a queue.</p>
+</li>
+<li>
+<p>Perform the necessary operations.</p>
+</li>
+<li>
+<p>Place the results on a queue for a dispatcher to pick up.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDEEJJE"></a>
+<div id="ADFNS953" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Administering the Multithreaded extproc Agent</h2>
+<p>One multithreaded <code dir="ltr">extproc</code> agent must be started for each system identifier (SID) before attempting to connect to the external procedure.</p>
+<p>A multithreaded <code dir="ltr">extproc</code> agent is started, stopped, and configured by an agent control utility called <a id="sthref1310"></a><code dir="ltr">agtctl</code>, which works like <code dir="ltr">lsnrctl</code>. However, unlike <code dir="ltr">lsnrctl</code>, which reads a configuration file (<code dir="ltr">listener.ora</code>), <code dir="ltr">agtctl</code> takes configuration information from the command line and writes it to a control file.</p>
+<p>Before starting <code dir="ltr">agtctl</code>, ensure that Oracle Listener is running. Then use the <code dir="ltr">agtctl</code> commands to set the <code dir="ltr">agtctl</code> configuration parameters (if you do not want their default values) and to start <code dir="ltr">agtctl</code>, as in <a href="#BEJGACBC">Example A-1</a>.</p>
+<div id="ADFNS954" class="example">
+<p class="titleinexample"><a id="BEJGACBC"></a>Example A-1 Setting Configuration Parameters and Starting agtctl</p>
+<pre dir="ltr">
+agtctl set max_dispatchers  2 ep_agt1
+agtctl set tcp_dispatchers  1   ep_agt1
+agtctl set max_task_threads 2  ep_agt1
+agtctl set max_sessions     5 ep_agt1
+agtctl unset listener_address ep_agt1
+agtctl set listener_address "(address=(protocol=ipc)(key=extproc))" ep_agt1
+agtctl startup extproc ep_agt1
+</pre></div>
+<!-- class="example" -->
+<p>You can use <code dir="ltr">agtctl</code> commands in either single-line command <a id="sthref1311"></a>mode or shell mode.</p>
+<p class="subhead2"><a id="sthref1312"></a>Topics:</p>
+<ul>
+<li>
+<p><a href="#CHDEIDID">Agent Control Utility (agtctl) Commands</a></p>
+</li>
+<li>
+<p><a href="#CHDEHJGI">Using agtctl in Single-Line Command Mode</a></p>
+</li>
+<li>
+<p><a href="#CHDEDGBD">Using Shell Mode Commands</a></p>
+</li>
+<li>
+<p><a href="#CHDIJFFF">Configuration Parameters for Multithreaded extproc Agent Control</a></p>
+</li>
+</ul>
+<a id="CHDEIDID"></a>
+<div id="ADFNS955" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Agent Control Utility (agtctl) Commands</h3>
+<p>You can start and stop <code dir="ltr">agtctl</code> and create and maintain its control file by using the <a id="sthref1313"></a>commands shown in <a href="#g1006650">Table A-1</a>.</p>
+<div id="ADFNS956" class="tblruleformal">
+<p class="titleintable"><a id="sthref1314"></a><a id="g1006650"></a>Table A-1 Agent Control Utility (agtctl) Commands</p>
+<table class="cellalignment1273" title="Agent Control Utility (agtctl) Commands" summary="This table is described in the preceding text" dir="ltr">
+<thead>
+<tr class="cellalignment1267">
+<th class="cellalignment1274" id="r1c1-t6">Command</th>
+<th class="cellalignment1274" id="r1c2-t6">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1267">
+<td class="cellalignment1275" id="r2c1-t6" headers="r1c1-t6">
+<p><code dir="ltr">startup</code></p>
+</td>
+<td class="cellalignment1275" headers="r2c1-t6 r1c2-t6">
+<p>Starts a multithreaded <code dir="ltr">extproc</code> agent</p>
+</td>
+</tr>
+<tr class="cellalignment1267">
+<td class="cellalignment1275" id="r3c1-t6" headers="r1c1-t6">
+<p><code dir="ltr">shutdown</code></p>
+</td>
+<td class="cellalignment1275" headers="r3c1-t6 r1c2-t6">
+<p>Stops a multithreaded <code dir="ltr">extproc</code> agent</p>
+</td>
+</tr>
+<tr class="cellalignment1267">
+<td class="cellalignment1275" id="r4c1-t6" headers="r1c1-t6">
+<p><code dir="ltr">set</code></p>
+</td>
+<td class="cellalignment1275" headers="r4c1-t6 r1c2-t6">
+<p>Sets a configuration parameter for a multithreaded <code dir="ltr">extproc</code> agent</p>
+</td>
+</tr>
+<tr class="cellalignment1267">
+<td class="cellalignment1275" id="r5c1-t6" headers="r1c1-t6">
+<p><code dir="ltr">unset</code></p>
+</td>
+<td class="cellalignment1275" headers="r5c1-t6 r1c2-t6">
+<p>Causes a parameter to revert to its default value</p>
+</td>
+</tr>
+<tr class="cellalignment1267">
+<td class="cellalignment1275" id="r6c1-t6" headers="r1c1-t6">
+<p><code dir="ltr">show</code></p>
+</td>
+<td class="cellalignment1275" headers="r6c1-t6 r1c2-t6">
+<p>Displays the value of a configuration parameter</p>
+</td>
+</tr>
+<tr class="cellalignment1267">
+<td class="cellalignment1275" id="r7c1-t6" headers="r1c1-t6">
+<p><code dir="ltr">delete</code></p>
+</td>
+<td class="cellalignment1275" headers="r7c1-t6 r1c2-t6">
+<p>Deletes the entry for a particular SID from the control file</p>
+</td>
+</tr>
+<tr class="cellalignment1267">
+<td class="cellalignment1275" id="r8c1-t6" headers="r1c1-t6">
+<p><code dir="ltr">exit</code></p>
+</td>
+<td class="cellalignment1275" headers="r8c1-t6 r1c2-t6">
+<p>Exits shell mode</p>
+</td>
+</tr>
+<tr class="cellalignment1267">
+<td class="cellalignment1275" id="r9c1-t6" headers="r1c1-t6">
+<p><code dir="ltr">help</code></p>
+</td>
+<td class="cellalignment1275" headers="r9c1-t6 r1c2-t6">
+<p>Lists available commands</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformal" -->
+<p>These commands can be issued in one of two ways:</p>
+<ul>
+<li>
+<p>You can issue commands from the UNIX or DOS shell. This mode is called single-line command mode.</p>
+</li>
+<li>
+<p>You can enter <code dir="ltr">agtctl</code> and an <code dir="ltr">AGTCTL&gt;</code> prompt appears. You then can enter commands from within the <code dir="ltr">agtctl</code> shell. This mode is called shell mode.</p>
+</li>
+</ul>
+<p>The syntax and parameters for <code dir="ltr">agtctl</code> commands depend on the mode in which they are issued.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+<ul>
+<li>
+<p>All commands are case-sensitive.</p>
+</li>
+<li>
+<p>The <code dir="ltr">agtctl</code> utility puts its control file in the directory specified by either one of two environment variables, <code dir="ltr">AGTCTL_ADMIN</code> or <code dir="ltr">TNS_ADMIN</code>. Ensure that at least one of these environment variables is set and that it specifies a directory to which the agent has access.</p>
+</li>
+<li>
+<p>If the multithreaded <code dir="ltr">extproc</code> agent requires that an environment variable be set, or if the <code dir="ltr">ENVS</code> parameter was used when configuring the <code dir="ltr">listener.ora</code> entry for the agent working in dedicated mode, then all required environment variables must be set in the UNIX or DOS shell that runs the <code dir="ltr">agtctl</code> utility.</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="CHDEHJGI"></a>
+<div id="ADFNS957" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Using agtctl in Single-Line Command Mode</h3>
+<p>This section describes the use of <code dir="ltr">agtctl</code> commands. They are presented in <a id="sthref1315"></a>single-line command mode.</p>
+<div id="ADFNS958" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1316"></a>
+<h4 class="sect3">Setting Configuration Parameters for a Multithreaded extproc Agent</h4>
+<p>Set the configuration parameters for a multithreaded <code dir="ltr">extproc</code> agent before you start the agent. If a configuration parameter is not specifically set, a default value is used. Configuration parameters and their default values are shown in <a href="#g1006685">Table A-2</a>.</p>
+<p>Use the <code dir="ltr">set</code> command to set multithreaded <code dir="ltr">extproc</code> agent configuration parameters.</p>
+<p class="subhead2"><a id="ADFNS959"></a>Syntax</p>
+<pre dir="ltr">
+agtctl set <span class="italic">parameter</span> <span class="italic">parameter_value agent_sid</span>
+</pre>
+<p><code dir="ltr"><span class="codeinlineitalic">parameter</span></code> is the parameter that you are setting.</p>
+<p><code dir="ltr"><span class="codeinlineitalic">parameter_value</span></code> is the value being assigned to that parameter.</p>
+<p><code dir="ltr"><span class="codeinlineitalic">agent_sid</span></code> is the SID that this agent services. This must be specified for single-line command mode.</p>
+<p class="subhead2"><a id="ADFNS960"></a>Example</p>
+<pre dir="ltr">
+agtctl set max_dispatchers 5 salesDB
+</pre></div>
+<!-- class="sect3" -->
+<div id="ADFNS961" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1317"></a>
+<h4 class="sect3">Starting a Multithreaded extproc Agent</h4>
+<p>Use the <code dir="ltr">startup</code> command to start a multithreaded <code dir="ltr">extproc</code> agent.</p>
+<p class="subhead2"><a id="ADFNS962"></a>Syntax</p>
+<pre dir="ltr">
+agtctl startup extproc <span class="italic">agent_sid</span>
+</pre>
+<p><code dir="ltr"><span class="codeinlineitalic">agent_sid</span></code> is the SID that this multithreaded <code dir="ltr">extproc</code> agent services. This must be specified for single-line command mode.</p>
+<p class="subhead2"><a id="ADFNS963"></a>Example</p>
+<pre dir="ltr">
+agtctl startup extproc salesDB
+</pre></div>
+<!-- class="sect3" -->
+<div id="ADFNS964" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1318"></a>
+<h4 class="sect3">Shutting Down a Multithreaded extproc Agent</h4>
+<p>Use the <code dir="ltr">shutdown</code> command to stop a multithreaded <code dir="ltr">extproc</code> agent. There are three forms of shutdown:</p>
+<ul>
+<li>
+<p>Normal (default)</p>
+<p><code dir="ltr">agtctl</code> asks the multithreaded <code dir="ltr">extproc</code> agent to terminate itself gracefully. All sessions complete their current operations and then shut down.</p>
+</li>
+<li>
+<p>Immediate</p>
+<p><code dir="ltr">agtctl</code> tells the multithreaded <code dir="ltr">extproc</code> agent to terminate immediately. The agent exits immediately regardless of the state of current sessions.</p>
+</li>
+<li>
+<p>Abort</p>
+<p>Without talking to the multithreaded <code dir="ltr">extproc</code> agent, <code dir="ltr">agtctl</code> issues a system call to stop it.</p>
+</li>
+</ul>
+<p class="subhead2"><a id="ADFNS965"></a>Syntax</p>
+<pre dir="ltr">
+agtctl shutdown [immediate|abort] <span class="italic">agent_sid</span>
+</pre>
+<p><code dir="ltr"><span class="codeinlineitalic">agent_sid</span></code> is the SID that the multithreaded <code dir="ltr">extproc</code> agent services. It must be specified for single-line command mode.</p>
+<p class="subhead2"><a id="ADFNS966"></a>Example</p>
+<pre dir="ltr">
+agtctl shutdown immediate salesDB
+</pre></div>
+<!-- class="sect3" -->
+<div id="ADFNS967" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1319"></a>
+<h4 class="sect3">Examining the Value of Configuration Parameters</h4>
+<p>To examine the value of a configuration parameter, use the <code dir="ltr">show</code> command.</p>
+<p class="subhead2"><a id="ADFNS968"></a>Syntax</p>
+<pre dir="ltr">
+agtctl show <span class="italic">parameter</span> <span class="italic">agent_sid</span>
+</pre>
+<p><code dir="ltr"><span class="codeinlineitalic">parameter</span></code> is the parameter that you are examining.</p>
+<p><code dir="ltr"><span class="codeinlineitalic">agent_sid</span></code> is the SID that this multithreaded <code dir="ltr">extproc</code> agent services. This must be specified for single-line command mode.</p>
+<p class="subhead2"><a id="ADFNS969"></a>Example</p>
+<pre dir="ltr">
+agtctl show max_dispatchers salesDB
+</pre></div>
+<!-- class="sect3" -->
+<div id="ADFNS970" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1320"></a>
+<h4 class="sect3">Resetting a Configuration Parameter to Its Default Value</h4>
+<p>You can reset a configuration parameter to its default value using the <code dir="ltr">unset</code> command.</p>
+<p class="subhead2"><a id="ADFNS971"></a>Syntax</p>
+<pre dir="ltr">
+agtctl unset <span class="italic">parameter</span> <span class="italic">agent_sid</span>
+</pre>
+<p><code dir="ltr"><span class="codeinlineitalic">parameter</span></code> is the parameter that you are resetting (or changing).</p>
+<p><code dir="ltr"><span class="codeinlineitalic">agent_sid</span></code> is the SID that this multithreaded <code dir="ltr">extproc</code> agent services. It must be specified for single-line command mode.</p>
+<p class="subhead2"><a id="ADFNS972"></a>Example</p>
+<pre dir="ltr">
+agtctl unset max_dispatchers salesDB
+</pre></div>
+<!-- class="sect3" -->
+<div id="ADFNS973" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1321"></a>
+<h4 class="sect3">Deleting an Entry for a Specific SID from the Control File</h4>
+<p>The <code dir="ltr">delete</code> command deletes the entry for the specified SID from the control file.</p>
+<p class="subhead2"><a id="ADFNS974"></a>Syntax</p>
+<pre dir="ltr">
+agtctl delete <span class="italic">agent_sid</span>
+</pre>
+<p><code dir="ltr"><span class="codeinlineitalic">agent_sid</span></code> is the SID entry to delete.</p>
+<p class="subhead2"><a id="ADFNS975"></a>Example</p>
+<pre dir="ltr">
+agtctl delete salesDB
+</pre></div>
+<!-- class="sect3" -->
+<div id="ADFNS976" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1322"></a>
+<h4 class="sect3">Requesting Help</h4>
+<p>Use the <code dir="ltr">help</code> command to view a list of available commands for <code dir="ltr">agtctl</code> or to see the syntax for a particular command.</p>
+<p class="subhead2"><a id="ADFNS977"></a>Syntax</p>
+<pre dir="ltr">
+agtctl help [<span class="italic">command</span>]
+</pre>
+<p><code dir="ltr"><span class="codeinlineitalic">command</span></code> is the name of the command whose syntax you want to view. The default is all <code dir="ltr">agtctl</code> commands.</p>
+<p class="subhead2"><a id="ADFNS978"></a>Example</p>
+<pre dir="ltr">
+agtctl help set
+</pre></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CHDEDGBD"></a>
+<div id="ADFNS979" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Using Shell Mode Commands</h3>
+<p>In <a id="sthref1323"></a>shell mode, start <code dir="ltr">agtctl</code> by entering:</p>
+<pre dir="ltr">
+agtctl
+</pre>
+<p>This results in the prompt <code dir="ltr">AGTCTL&gt;</code>. Thereafter, because you are issuing commands from within the <code dir="ltr">agtctl</code> shell, you need not prefix the command string with <code dir="ltr">agtctl</code>.</p>
+<p>Set the name of the agent SID by entering:</p>
+<pre dir="ltr">
+AGTCTL&gt; set agent_sid <span class="italic">agent_sid</span>
+</pre>
+<p>All subsequent commands are assumed to be for the specified SID until the <code dir="ltr">agent_sid</code> value is changed. Unlike single-line command mode, you do not specify <code dir="ltr"><span class="codeinlineitalic">agent_sid</span></code> in the command string.</p>
+<p>You can set the language for error messages as follows:</p>
+<pre dir="ltr">
+AGTCTL&gt; set language <span class="italic">language</span>
+</pre>
+<p>The commands themselves are the same as those for the single-line command mode. To exit shell mode, enter <code dir="ltr">exit</code>.</p>
+<p>The following examples use shell mode commands.</p>
+<div id="ADFNS980" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1324"></a>
+<h4 class="sect3">Example: Setting a Configuration Parameter</h4>
+<p>This example sets a value for the <code dir="ltr">shutdown_address</code> configuration parameter.</p>
+<pre dir="ltr">
+AGTCTL&gt; set shutdown_address (address=(protocol=ipc)(key=oraDBsalesDB))
+</pre></div>
+<!-- class="sect3" -->
+<div id="ADFNS981" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1325"></a>
+<h4 class="sect3">Example: Starting a Multithreaded extproc Agent</h4>
+<p>This example starts a multithreaded <code dir="ltr">extproc</code> agent.</p>
+<pre dir="ltr">
+AGTCTL&gt; startup extproc
+</pre></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CHDIJFFF"></a>
+<div id="ADFNS982" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Configuration Parameters for Multithreaded extproc Agent Control</h3>
+<p><a href="#g1006685">Table A-2</a> describes and gives the defaults of the configuration parameters for the agent control utility.</p>
+<div id="ADFNS983" class="tblformalwide">
+<p class="titleintable"><a id="sthref1326"></a><a id="g1006685"></a>Table A-2 Configuration Parameters for agtctl</p>
+<table class="cellalignment1273" title="Configuration Parameters for agtctl" summary="This table is described in the preceding text" dir="ltr">
+<thead>
+<tr class="cellalignment1267">
+<th class="cellalignment1274" id="r1c1-t8">Parameter</th>
+<th class="cellalignment1274" id="r1c2-t8">Description</th>
+<th class="cellalignment1274" id="r1c3-t8">Default Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1267">
+<td class="cellalignment1275" id="r2c1-t8" headers="r1c1-t8">
+<p><code dir="ltr">max_dispatchers</code></p>
+</td>
+<td class="cellalignment1275" headers="r2c1-t8 r1c2-t8">
+<p>Maximum number of dispatchers</p>
+</td>
+<td class="cellalignment1275" headers="r2c1-t8 r1c3-t8">
+<p>1</p>
+</td>
+</tr>
+<tr class="cellalignment1267">
+<td class="cellalignment1275" id="r3c1-t8" headers="r1c1-t8">
+<p><code dir="ltr">tcp_dispatchers</code></p>
+</td>
+<td class="cellalignment1275" headers="r3c1-t8 r1c2-t8">
+<p>Number of dispatchers listening on TCP (the rest are using IPC)</p>
+</td>
+<td class="cellalignment1275" headers="r3c1-t8 r1c3-t8">
+<p>0</p>
+</td>
+</tr>
+<tr class="cellalignment1267">
+<td class="cellalignment1275" id="r4c1-t8" headers="r1c1-t8">
+<p><code dir="ltr">max_task_threads</code></p>
+</td>
+<td class="cellalignment1275" headers="r4c1-t8 r1c2-t8">
+<p>Maximum number of task threads</p>
+</td>
+<td class="cellalignment1275" headers="r4c1-t8 r1c3-t8">
+<p>2</p>
+</td>
+</tr>
+<tr class="cellalignment1267">
+<td class="cellalignment1275" id="r5c1-t8" headers="r1c1-t8">
+<p><code dir="ltr">max_sessions</code></p>
+</td>
+<td class="cellalignment1275" headers="r5c1-t8 r1c2-t8">
+<p>Maximum number of sessions for each task thread</p>
+</td>
+<td class="cellalignment1275" headers="r5c1-t8 r1c3-t8">
+<p>5</p>
+</td>
+</tr>
+<tr class="cellalignment1267">
+<td class="cellalignment1275" id="r6c1-t8" headers="r1c1-t8">
+<p><code dir="ltr">listener_address</code></p>
+</td>
+<td class="cellalignment1275" headers="r6c1-t8 r1c2-t8">
+<p>Address on which the listener is listening (needed for registration)</p>
+</td>
+<td class="cellalignment1275" headers="r6c1-t8 r1c3-t8">
+<pre dir="ltr">
+(ADDRESS_LIST=
+    (ADDRESS=
+        (PROTOCOL=IPC)
+        (KEY=PNPKEY))
+    (ADDRESS=
+        (PROTOCOL=IPC)
+        (KEY=<span class="italic">listener_sid</span>))
+    (ADDRESS=
+        (PROTOCOL=TCP)
+        (HOST=127.0.0.1)
+        (PORT=1521)))
+</pre>
+<p>Note: <code dir="ltr"><span class="codeinlineitalic">listener_sid</span></code> is the IPC key of the address, on the Oracle Database, on which the listener is listening.</p>
+</td>
+</tr>
+<tr class="cellalignment1267">
+<td class="cellalignment1275" id="r7c1-t8" headers="r1c1-t8">
+<p><code dir="ltr">shutdown_address</code></p>
+</td>
+<td class="cellalignment1275" headers="r7c1-t8 r1c2-t8">
+<p>Address the agent uses to communicate with the listener. This is the address on which the agent listens for all communication, including shutdown messages from <code dir="ltr">agtctl</code>.</p>
+</td>
+<td class="cellalignment1275" headers="r7c1-t8 r1c3-t8">
+<pre dir="ltr">
+(ADDRESS=
+    (PROTOCOL=IPC)
+    (KEY=<span class="italic">listener_sid</span> ||<span class="italic"> agent_sid</span>))
+(ADDRESS=
+    (PROTOCOL=TCP)
+    (HOST=127.0.0.1)
+    (PORT=1521))
+</pre>
+<p>Notes:</p>
+<ul>
+<li>
+<p><code dir="ltr"><span class="codeinlineitalic">agent_sid</span></code> is the SID of the multithreaded <code dir="ltr">extproc</code> agent.</p>
+</li>
+<li>
+<p>|| indicates that <code dir="ltr"><span class="codeinlineitalic">listener_sid</span></code> and <code dir="ltr"><span class="codeinlineitalic">agent_sid</span></code> are concatenated into one string.</p>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformalwide" -->
+<p class="subhead1"><a id="ADFNS984"></a>max_dispatchers, tcp_dispatchers, max_task_threads, and max_sessions</p>
+<p>To improve performance, you might need to change the values of some or all of the parameters <code dir="ltr">max_dispatchers</code>, <code dir="ltr">tcp_dispatchers</code>, <code dir="ltr">max_task_threads</code>, and <code dir="ltr">max_sessions</code>.</p>
+<p>You can calculate the optimum values of <code dir="ltr">max_dispatchers</code>, <code dir="ltr">tcp_dispatchers</code>, <code dir="ltr">max_task_threads</code> with these formulas:</p>
+<pre dir="ltr">
+max_dispatchers = CEIL(<span class="italic">x</span>/<span class="italic">y</span>)
+tcp_dispatchers = CEIL(<span class="italic">x_tcpip</span>/<span class="italic">y</span>)
+max_task_threads = CEIL(<span class="italic">x</span>/max_sessions)
+</pre>
+<p>Where:</p>
+<ul>
+<li>
+<p><code dir="ltr">CEIL</code> is a SQL function that returns the smallest integer greater than or equal to its argument.</p>
+</li>
+<li>
+<p><code dir="ltr"><span class="codeinlineitalic">x</span></code> is the maximum number of sessions that can be connected to <code dir="ltr">extproc</code> concurrently.</p>
+</li>
+<li>
+<p><code dir="ltr"><span class="codeinlineitalic">y</span></code> is the maximum number of connections that the system can support for each dispatcher.</p>
+</li>
+<li>
+<p><code dir="ltr"><span class="codeinlineitalic">x_tcpip</span></code> is the maximum number of sessions that can be connected to <code dir="ltr">extproc</code> concurrently by TCP/IP.</p>
+<p>(<code dir="ltr"><span class="codeinlineitalic">x</span></code> - <code dir="ltr"><span class="codeinlineitalic">x_tcpip</span></code> is the maximum number of sessions that can be connected to <code dir="ltr">extproc</code> concurrently by IPC.)</p>
+</li>
+</ul>
+<p>There is no formula for computing the optimum value of <code dir="ltr">max_sessions</code>, which affects <code dir="ltr">max_task_threads</code>.</p>
+<p>You must fine-tune these parameter settings, based on the capability of your hardware, and ensure that the concurrent threads do not exhaust your operating system.</p>
+<p>The value of <code dir="ltr">max_dispatchers</code> must be at least 1 (which is the default).</p>
+<p class="subhead2"><a id="ADFNS985"></a>Example</p>
+<p>Suppose:</p>
+<ul>
+<li>
+<p>The maximum number of sessions that can be connected to <code dir="ltr">extproc</code> concurrently (<code dir="ltr">x</code>) is 650.</p>
+</li>
+<li>
+<p>The maximum number of sessions that can be connected to <code dir="ltr">extproc</code> concurrently by TCP/IP (<code dir="ltr"><span class="codeinlineitalic">x_tcpip</span></code>) is 400.</p>
+<p>(The maximum number of sessions that can be connected to <code dir="ltr">extproc</code> concurrently by IPC is 650-400=250.)</p>
+</li>
+<li>
+<p>The maximum number of connections that the system can support for each dispatcher (<code dir="ltr"><span class="codeinlineitalic">y</span></code>) is 100.</p>
+</li>
+<li>
+<p>The maximum number of sessions for each task thread (<code dir="ltr">max_sessions</code>) is 20.</p>
+</li>
+</ul>
+<p>The optimum values for these parameters are:</p>
+<pre dir="ltr">
+max_dispatchers = CEIL(650/100) = CEIL(6.5)  = 7
+tcp_dispatchers  = CEIL(400/100) = CEIL(4)    = 4
+max_task_threads = CEIL(650/20)  = CEIL(32.5) = 33
+</pre>
+<p>That is, optimally:</p>
+<ul>
+<li>
+<p>The maximum number of dispatchers is seven.</p>
+</li>
+<li>
+<p>Four of the seven dispatchers are listening on TCP/IP, and the remaining three are listening on IPC.</p>
+</li>
+<li>
+<p>The maximum number of task threads is 33.</p>
+</li>
+</ul>
+<p class="subhead1"><a id="ADFNS986"></a>listener_address and shutdown_address</p>
+<p>The values of the configuration parameters <code dir="ltr">listener_address</code> and <code dir="ltr">shutdown_address</code> are specified with <code dir="ltr">ADDRESS</code>, as shown in both <a href="#g1006685">Table A-2</a> and <a href="#BEJGACBC">Example A-1</a>. Within <code dir="ltr">ADDRESS</code>, you can specify the parameter <code dir="ltr">HOST</code>, which can be either an IPv6 or IPv4 address or a host name. If <code dir="ltr">HOST</code> is a host name, then these values of the optional <code dir="ltr">ADDRESS</code> parameter <code dir="ltr">IP</code> are relevant:</p>
+<div class="inftblinformal">
+<table class="cellalignment1273" title="Values of IP Parameter of ADDRESS" summary="This table lists the IP values that are relevant when HOST is a host name, and gives their meanings." dir="ltr">
+<thead>
+<tr class="cellalignment1267">
+<th class="cellalignment1274" id="r1c1-t9">IP Value</th>
+<th class="cellalignment1274" id="r1c2-t9">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1267">
+<td class="cellalignment1275" id="r2c1-t9" headers="r1c1-t9"><code dir="ltr">FIRST</code></td>
+<td class="cellalignment1275" headers="r2c1-t9 r1c2-t9">Listen on the first IP address returned by the DNS resolution of the host name.</td>
+</tr>
+<tr class="cellalignment1267">
+<td class="cellalignment1275" id="r3c1-t9" headers="r1c1-t9"><code dir="ltr">V4_ONLY</code></td>
+<td class="cellalignment1275" headers="r3c1-t9 r1c2-t9">Listen only on the IPv4 interfaces in the system.</td>
+</tr>
+<tr class="cellalignment1267">
+<td class="cellalignment1275" id="r4c1-t9" headers="r1c1-t9"><code dir="ltr">V6_ONLY</code></td>
+<td class="cellalignment1275" headers="r4c1-t9 r1c2-t9">Listen only on the IPv6 interfaces in the system.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformal" -->
+<p>For example, this value of <code dir="ltr">listener_address</code> or <code dir="ltr">shutdown_address</code> restricts it to IPv6 interfaces:</p>
+<pre dir="ltr">
+"(ADDRESS=(PROTOCOL=tcp)(HOST=sales)(PORT=1521)<span class="bold">(IP=V6_ONLY)</span>)"
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink NETAG999" href="../../network.112/e41945/layers.htm#NETAG999"><span class="italic">Oracle Database Net Services Administrator's Guide</span></a> for detailed information about IPv6 support in Oracle Database</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="appendix" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1266">
+<tr>
+<td class="cellalignment1275">
+<table class="cellalignment1271">
+<tr>
+<td class="cellalignment1270"><a href="adfns_editions.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1270"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1996, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1277">
+<table class="cellalignment1269">
+<tr>
+<td class="cellalignment1270"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1270"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1270"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1270"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1270"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1270"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

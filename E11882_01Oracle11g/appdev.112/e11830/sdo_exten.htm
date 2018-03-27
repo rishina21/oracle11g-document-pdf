@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Extending Spatial Indexing Capabilities</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 743" />
+<meta name="description" content="Provides usage and reference information for indexing and storing spatial data and for developing spatial applications using Oracle Spatial and Graph and Oracle Locator." />
+<meta name="dcterms.created" content="2013-11-26T3:11:45Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Spatial Developer's Guide" />
+<meta name="dcterms.identifier" content="E11830-15" />
+<meta name="dcterms.isVersionOf" content="SPATL" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1999, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="sdo_sam_concepts.htm" title="Previous" type="text/html" />
+<link rel="Next" href="sdo_prtwebserv.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e11830.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">17/51</span> <!-- End Header -->
+<div id="SPATL080" class="chapter"><a id="g1007068"></a> <a id="i1005666"></a>
+<h1 class="chapter"><span class="secnum">9</span> Extending <a id="sthref689"></a>Spatial Indexing Capabilities</h1>
+<p>This chapter shows how to create and use spatial indexes on objects other than a geometry column. In other chapters, the focus is on indexing and querying spatial data that is stored in a single column of type SDO_GEOMETRY. This chapter shows how to:</p>
+<ul>
+<li>
+<p>Embed an SDO_GEOMETRY object in a user-defined object type, and index the geometry attribute of that type (see <a href="#i1004568">Section 9.1</a>)</p>
+</li>
+<li>
+<p>Create and use a function-based index where the function returns an SDO_GEOMETRY object (see <a href="#i1005799">Section 9.2</a>)</p>
+</li>
+</ul>
+<p>The techniques in this chapter are intended for experienced and knowledgeable application developers. You should be familiar with the Spatial concepts and techniques described in other chapters. You should also be familiar with, or able to learn about, relevant Oracle database features, such as user-defined data types and function-based indexing.</p>
+<a id="i1004568"></a>
+<div id="SPATL798" class="sect1">
+<h2 class="sect1"><span class="secnum">9.1</span> <a id="sthref690"></a><a id="sthref691"></a><a id="sthref692"></a><a id="sthref693"></a>SDO_GEOMETRY Objects in User-Defined Type Definitions</h2>
+<p>The SDO_GEOMETRY type can be embedded in a user-defined data type definition. The procedure is very similar to that for using the SDO_GEOMETRY type for a spatial data column:</p>
+<ol>
+<li>
+<p>Create the user-defined data type.</p>
+</li>
+<li>
+<p>Create a table with a column based on that data type.</p>
+</li>
+<li>
+<p>Insert data into the table.</p>
+</li>
+<li>
+<p>Update the USER_SDO_GEOM_METADATA view.</p>
+</li>
+<li>
+<p>Create the spatial index on the geometry attribute.</p>
+</li>
+<li>
+<p>Perform queries on the data.</p>
+</li>
+</ol>
+<p>For example, assume that you want to follow the cola markets scenario in the simplified example in <a href="sdo_objrelschema.htm#i1004750">Section 2.1</a>, but want to incorporate the market name attribute and the geometry attribute in a single type. First, create the user-defined data type, as in the following example that creates an object type named MARKET_TYPE:</p>
+<pre>
+CREATE OR REPLACE TYPE market_type AS OBJECT 
+  (name VARCHAR2(32), shape SDO_GEOMETRY);
+/
+</pre>
+<p>Create a table that includes a column based on the user-defined type. The following example creates a table named COLA_MARKETS_2 that will contain the same information as the COLA_MARKETS table used in the example in <a href="sdo_objrelschema.htm#i1004750">Section 2.1</a>.</p>
+<pre>
+CREATE TABLE cola_markets_2 (
+  mkt_id NUMBER PRIMARY KEY,
+  market MARKET_TYPE);
+</pre>
+<p>Insert data into the table, using the object type name as a constructor. For example:</p>
+<pre>
+INSERT INTO cola_markets_2 VALUES(
+  1,
+  MARKET_TYPE('cola_a',
+    SDO_GEOMETRY(
+      2003,  -- two-dimensional polygon
+      NULL,
+      NULL,
+      SDO_ELEM_INFO_ARRAY(1,1003,3), -- one rectangle (1003 = exterior)
+      SDO_ORDINATE_ARRAY(1,1, 5,7) -- only 2 points needed to
+            -- define rectangle (lower left and upper right)
+      )
+  )
+);
+</pre>
+<p>Update the USER_SDO_GEOM_METADATA view, using dot-notation to specify the column name and spatial attribute. The following example specifies MARKET.SHAPE as the COLUMN_NAME (explained in <a href="sdo_objrelschema.htm#i1010466">Section 2.8.2</a>) in the metadata view.</p>
+<pre>
+INSERT INTO user_sdo_geom_metadata
+    (TABLE_NAME,
+     COLUMN_NAME,
+     DIMINFO,
+     SRID)
+  VALUES (
+  'cola_markets_2',
+  'market.shape',
+  SDO_DIM_ARRAY(   -- 20X20 grid
+    SDO_DIM_ELEMENT('X', 0, 20, 0.005),
+    SDO_DIM_ELEMENT('Y', 0, 20, 0.005)
+     ),
+  NULL   -- SRID
+);
+</pre>
+<p>Create the spatial index, specifying the column name and spatial attribute using dot-notation. For example.</p>
+<pre>
+CREATE INDEX cola_spatial_idx_2
+ON cola_markets_2(market.shape)
+INDEXTYPE IS MDSYS.SPATIAL_INDEX;
+</pre>
+<p>Perform queries on the data, using dot-notation to refer to attributes of the user-defined type. The following simple query returns information associated with the cola market named <code>cola_a</code>.</p>
+<pre>
+SELECT c.mkt_id, c.market.name, c.market.shape 
+  FROM cola_markets_2 c
+  WHERE c.market.name = 'cola_a';
+</pre>
+<p>The following query returns information associated with all geometries that have any spatial interaction with a specified query window, namely, the rectangle with lower-left coordinates (4,6) and upper-right coordinates (8,8).</p>
+<pre>
+SELECT c.mkt_id, c.market.name, c.market.shape
+  FROM cola_markets_2 c
+  WHERE SDO_RELATE(c.market.shape,
+            SDO_GEOMETRY(2003, NULL, NULL,
+              SDO_ELEM_INFO_ARRAY(1,1003,3),
+              SDO_ORDINATE_ARRAY(4,6, 8,8)),
+            'mask=anyinteract' = 'TRUE';
+</pre></div>
+<!-- class="sect1" -->
+<a id="i1005799"></a>
+<div id="SPATL799" class="sect1">
+<h2 class="sect1"><span class="secnum">9.2</span> <a id="sthref694"></a><a id="sthref695"></a><a id="sthref696"></a>SDO_GEOMETRY Objects in Function-Based Indexes</h2>
+<p>A function-based spatial index facilitates queries that use locational information (of type SDO_GEOMETRY) returned by a function or expression. In this case, the spatial index is created based on the precomputed values returned by the function or expression.</p>
+<p>If you are not already familiar with function-based indexes, see the following for detailed explanations of their benefits, options, and requirements, as well as usage examples:</p>
+<ul>
+<li>
+<p><a class="olink ADFNS" href="../e41502/toc.htm"><span class="italic">Oracle Database Advanced Application Developer's Guide</span></a></p>
+</li>
+<li>
+<p><a class="olink ADMIN" href="../../server.112/e25494/toc.htm"><span class="italic">Oracle Database Administrator's Guide</span></a></p>
+</li>
+</ul>
+<p>The procedure for using an SDO_GEOMETRY object in a function-based index is as follows:</p>
+<ol>
+<li>
+<p>Create the function that returns an SDO_GEOMETRY object.</p>
+<p>The function must be declared as DETERMINISTIC.</p>
+</li>
+<li>
+<p>If the spatial data table does not already exist, create it, and insert data into the table.</p>
+</li>
+<li>
+<p>Update the USER_SDO_GEOM_METADATA view.</p>
+</li>
+<li>
+<p>Create the spatial index.</p>
+<p>For a function-based spatial index, the number of parameters must not exceed 32.</p>
+</li>
+<li>
+<p>Perform queries on the data.</p>
+</li>
+</ol>
+<p>The rest of this section describes two examples of using function-based indexes. In both examples, a function is created that returns an SDO_GEOMETRY object, and a spatial index is created on that function. In the first example, the input parameters to the function are a standard Oracle data type (NUMBER). In the second example, the input to the function is a user-defined object type.</p>
+<div id="SPATL800" class="sect2"><a id="sthref697"></a>
+<h3 class="sect2"><span class="secnum">9.2.1</span> Example: Function with Standard Types</h3>
+<p>In the following example, the input parameters to the function used for the function-based index are standard numeric values (longitude and latitude).</p>
+<p>Assume that you want to create a function that returns the longitude and latitude of a point and to use that function in a spatial index. First, create the function, as in the following example that creates a function named GET_LONG_LAT_PT:</p>
+<pre>
+-- Create a function to return a point geometry (SDO_GTYPE = 2001) with
+-- input of 2 numbers: longitude and latitude (SDO_SRID = 8307, for
+-- "Longitude / Latitude (WGS 84)",  probably the most widely used 
+--  coordinate system, and the one used for GPS devices.
+-- Specify DETERMINISTIC for the function.
+
+create or replace function get_long_lat_pt(longitude in number, 
+                                           latitude in number)
+return SDO_GEOMETRY deterministic is
+begin
+     return sdo_geometry(2001, 8307, 
+                sdo_point_type(longitude, latitude, NULL),NULL, NULL);
+end;
+/
+</pre>
+<p>If the spatial data table does not already exist, create the table and add data to it, as in the following example that creates a table named LONG_LAT_TABLE:</p>
+<pre>
+create table LONG_LAT_TABLE 
+(lon number, lat number, name varchar2(32));
+
+insert into LONG_LAT_TABLE values (10,10, 'Place1');
+insert into LONG_LAT_TABLE values (20,20, 'Place2');
+insert into LONG_LAT_TABLE values (30,30, 'Place3');
+</pre>
+<p>Update the USER_SDO_GEOM_METADATA view, using dot-notation to specify the schema name and function name. The following example specifies SCOTT.GET_LONG_LAT_PT(LON,LAT) as the COLUMN_NAME (explained in <a href="sdo_objrelschema.htm#i1010466">Section 2.8.2</a>) in the metadata view.</p>
+<pre>
+-- Set up the metadata entry for this table.
+-- The column name sets up the function on top
+-- of the two columns used in this function,
+-- along with the owner of the function.
+insert into user_sdo_geom_metadata values('LONG_LAT_TABLE',
+ 'scott.get_long_lat_pt(lon,lat)',
+ sdo_dim_array(
+   sdo_dim_element('Longitude', -180, 180, 0.005),
+   sdo_dim_element('Latitude', -90, 90, 0.005)), 8307);
+</pre>
+<p>Create the spatial index, specifying the function name with parameters. For example:</p>
+<pre>
+create index LONG_LAT_TABLE_IDX on 
+   LONG_LAT_TABLE(get_long_lat_pt(lon,lat))
+   indextype is mdsys.spatial_index;
+</pre>
+<p>Perform queries on the data. The following example specifies the user-defined function in a call to the <a href="sdo_operat.htm#BJAFBCFC">SDO_FILTER</a> operator.</p>
+<pre>
+select name from LONG_LAT_TABLE a
+  where sdo_filter(
+    get_long_lat_pt(a.lon,a.lat), 
+    sdo_geometry(2001, 8307, sdo_point_type(10,10,NULL), NULL, NULL)
+  )='TRUE';
+
+NAME
+--------------------------------
+Place1
+</pre></div>
+<!-- class="sect2" -->
+<div id="SPATL801" class="sect2"><a id="sthref698"></a>
+<h3 class="sect2"><span class="secnum">9.2.2</span> <a id="sthref699"></a><a id="sthref700"></a><a id="sthref701"></a>Example: Function with a User-Defined Object Type</h3>
+<p>In the following example, the input parameter to the function used for the function-based index is an object of a user-defined type that includes the longitude and latitude.</p>
+<p>Assume that you want to create a function that returns the longitude and latitude of a point and to create a spatial index on that function. First, create the user-defined data type, as in the following example that creates an object type named LONG_LAT and its member function GetGeometry:</p>
+<pre>
+create type long_lat as object ( 
+   longitude number, 
+   latitude number, 
+member function GetGeometry(SELF in long_lat) 
+RETURN SDO_GEOMETRY DETERMINISTIC) 
+/ 
+
+create or replace type body long_lat as 
+  member function GetGeometry(self in long_lat) 
+  return SDO_GEOMETRY is 
+    begin 
+       return sdo_geometry(2001, 8307, 
+           sdo_point_type(longitude, latitude, NULL), NULL,NULL); 
+    end; 
+end; 
+/ 
+  
+</pre>
+<p>If the spatial data table does not already exist, create the table and add data to it, as in the following example that creates a table named TEST_LONG_LAT:</p>
+<pre>
+create table test_long_lat 
+   (location long_lat, name varchar2(32)); 
+
+insert into test_long_lat values (long_lat(10,10), 'Place1'); 
+insert into test_long_lat values (long_lat(20,20), 'Place2'); 
+insert into test_long_lat values (long_lat(30,30), 'Place3'); 
+</pre>
+<p>Update the USER_SDO_GEOM_METADATA view, using dot-notation to specify the schema name, table name, and function name and parameter value. The following example specifies SCOTT.LONG_LAT.GetGeometry(LOCATION) as the COLUMN_NAME (explained in <a href="sdo_objrelschema.htm#i1010466">Section 2.8.2</a>) in the metadata view.</p>
+<pre>
+insert into user_sdo_geom_metadata values('test_long_lat', 
+ 'scott.long_lat.GetGeometry(location)', 
+ sdo_dim_array( 
+   sdo_dim_element('Longitude', -180, 180, 0.005),
+   sdo_dim_element('Latitude', -90, 90, 0.005)), 8307);
+</pre>
+<p>Create the spatial index, specifying the column name and function name using dot-notation. For example:</p>
+<pre>
+create index test_long_lat_idx on test_long_lat(location.GetGeometry()) 
+  indextype is mdsys.spatial_index;
+</pre>
+<p>Perform queries on the data. The following query performs a primary filter operation, asking for the names of geometries that are likely to interact spatially with point (10,10).</p>
+<pre>
+SELECT a.name FROM test_long_lat a
+  WHERE SDO_FILTER(a.location.GetGeometry(),
+            SDO_GEOMETRY(2001, 8307,
+                SDO_POINT_TYPE(10,10,NULL), NULL, NULL)
+            ) = 'TRUE';
+</pre></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment733">
+<tr>
+<td class="cellalignment742">
+<table class="cellalignment738">
+<tr>
+<td class="cellalignment737"><a href="sdo_sam_concepts.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment737"><a href="sdo_prtwebserv.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1999, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment744">
+<table class="cellalignment736">
+<tr>
+<td class="cellalignment737"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment737"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment737"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment737"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment737"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment737"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

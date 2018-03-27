@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Managing Data Files and Temp Files</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1055" />
+<meta name="dcterms.created" content="2015-05-05T8:27:35Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Administrator's Guide" />
+<meta name="dcterms.identifier" content="E25494-07" />
+<meta name="dcterms.isVersionOf" content="ADMIN" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2001, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="tspaces.htm" title="Previous" type="text/html" />
+<link rel="Next" href="undo.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e25494.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">23/49</span> <!-- End Header -->
+<div id="ADMIN012" class="chapter"><a id="g1017522"></a> <a id="i1106090"></a>
+<h1 class="chapter"><span class="secnum">15</span> Managing Data Files and Temp Files</h1>
+<p><a id="sthref1671"></a>In this chapter:</p>
+<ul>
+<li>
+<p><a href="#i1206149">Guidelines for Managing Data Files</a></p>
+</li>
+<li>
+<p><a href="#i1006242">Creating Data Files and Adding Data Files to a Tablespace</a></p>
+</li>
+<li>
+<p><a href="#i1006333">Changing Data File Size</a></p>
+</li>
+<li>
+<p><a href="#i1006391">Altering Data File Availability</a></p>
+</li>
+<li>
+<p><a href="#i1006457">Renaming and Relocating Data Files</a></p>
+</li>
+<li>
+<p><a href="#i1006556">Dropping Data Files</a></p>
+</li>
+<li>
+<p><a href="#i1106577">Verifying Data Blocks in Data Files</a></p>
+</li>
+<li>
+<p><a href="#i1008252">Copying Files Using the Database Server</a></p>
+</li>
+<li>
+<p><a href="#i1006604">Mapping Files to Physical Devices</a></p>
+</li>
+<li>
+<p><a href="#i1007111">Data Files Data Dictionary Views</a></p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Temp files are a special class of data files that are associated only with temporary tablespaces. Information in this chapter applies to both data files and temp files except where differences are noted. Temp files are further described in <a href="tspaces.htm#i1009563">"Creating a Locally Managed Temporary Tablespace"</a></div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="omf.htm#g1018000">Chapter 17, "Using Oracle Managed Files"</a> for information about creating data files and temp files that are both created and managed by the Oracle Database server</p>
+</li>
+<li>
+<p><a class="olink CNCPT403" href="../../server.112/e40540/physical.htm#CNCPT403"><span class="italic">Oracle Database Concepts</span></a></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+<a id="i1206149"></a>
+<div id="ADMIN11414" class="sect1">
+<h2 class="sect1">Guidelines for Managing Data Files<a id="sthref1672"></a></h2>
+<p>Data files are physical files<a id="sthref1673"></a> of the operating system that store the data of all logical structures in the database. They must be explicitly created for each tablespace.</p>
+<p>Oracle Database assigns each data file two associated file numbers, an <a id="sthref1674"></a>absolute file number and a relative file number, that are used to uniquely identify it. These numbers are described in the following table:</p>
+<div class="inftblinformal">
+<table class="cellalignment1333" title="Absolute and Relative File Numbers" summary="Column 1 lists the two different types of file numbers, column 2 contains a description of each type." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t4">Type of File Number</th>
+<th class="cellalignment1334" id="r1c2-t4">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t4" headers="r1c1-t4">Absolute</td>
+<td class="cellalignment1335" headers="r2c1-t4 r1c2-t4">Uniquely identifies a data file <span class="italic">in the database</span>. This file number can be used in many SQL statements that reference data files in place of using the file name. The absolute file number can be found in the <code dir="ltr">FILE#</code> column of the <code dir="ltr">V$DATAFILE</code> or <code dir="ltr">V$TEMPFILE</code> view, or in the <code dir="ltr">FILE_ID</code> column of the <code dir="ltr">DBA_DATA_FILES</code> or <code dir="ltr">DBA_TEMP_FILES</code> view.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t4" headers="r1c1-t4">Relative</td>
+<td class="cellalignment1335" headers="r3c1-t4 r1c2-t4">Uniquely identifies a data file <span class="italic">within a tablespace</span>. For small and medium size databases, relative file numbers usually have the same value as the absolute file number. However, when the number of data files in a database exceeds a threshold (typically 1023), the relative file number differs from the absolute file number. In a bigfile tablespace, the relative file number is always 1024 (4096 on OS/390 platform).</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformal" -->
+<p>This section describes aspects of managing data files, and contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1206187">Determine the Number of Data Files</a></p>
+</li>
+<li>
+<p><a href="#i1106224">Determine the Size of Data Files</a></p>
+</li>
+<li>
+<p><a href="#i1006228">Place Data Files Appropriately</a></p>
+</li>
+<li>
+<p><a href="#i1006235">Store Data Files Separate from Redo Log Files</a></p>
+</li>
+</ul>
+<a id="i1206187"></a>
+<div id="ADMIN11415" class="sect2">
+<h3 class="sect2">Determine the Number of Data Files</h3>
+<p><a id="sthref1675"></a>At least one data file is required for the <code dir="ltr">SYSTEM</code> and <code dir="ltr">SYSAUX</code> tablespaces of a database. Your database should contain several other tablespaces with their associated data files or temp files. The number of data files that you anticipate creating for your database can affect the settings of initialization parameters and the specification of <code dir="ltr">CREATE</code> <code dir="ltr">DATABASE</code> statement clauses.</p>
+<p>Be aware that your operating system might impose limits on the number of data files contained in your Oracle Database. Also consider that the number of data files, and how and where they are allocated can affect the performance of your database.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+One means of controlling the number of data files in your database and simplifying their management is to use bigfile tablespaces. Bigfile tablespaces comprise a single, very large data file and are especially useful in ultra large databases and where a logical volume manager is used for managing operating system files. Bigfile tablespaces are discussed in <a href="tspaces.htm#i1010733">"Bigfile Tablespaces"</a>.</div>
+<p>Consider the following guidelines when determining the number of data files for your database.</p>
+<div id="ADMIN11416" class="sect3"><a id="sthref1676"></a>
+<h4 class="sect3">Determine a Value for the DB_FILES Initialization Parameter</h4>
+<p>When starting an Oracle Database instance, the <a id="sthref1677"></a><a id="sthref1678"></a><code dir="ltr">DB_FILES</code> initialization parameter indicates the amount of SGA space to reserve for data file information and thus, the maximum number of data files that can be created for the instance. This limit applies for the life of the instance. You can change the value of <code dir="ltr">DB_FILES</code> (by changing the initialization parameter setting), but the new value does not take effect until you shut down and restart the instance.</p>
+<p>When determining a value for <code dir="ltr">DB_FILES</code>, take the following into consideration:</p>
+<ul>
+<li>
+<p>If the value of <code dir="ltr">DB_FILES</code> is too low, you cannot add data files beyond the <code dir="ltr">DB_FILES</code> limit without first shutting down the database.</p>
+</li>
+<li>
+<p>If the value of <code dir="ltr">DB_FILES</code> is too high, memory is unnecessarily consumed.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<div id="ADMIN11417" class="sect3"><a id="sthref1679"></a>
+<h4 class="sect3">Consider Possible Limitations When Adding Data Files to a Tablespace</h4>
+<p>You can add data files to traditional smallfile tablespaces, subject to the following limitations:</p>
+<ul>
+<li>
+<p>Operating systems often impose a limit on the number of files a process can open simultaneously. More data files cannot be created when the operating system limit of open files is reached.</p>
+</li>
+<li>
+<p>Operating systems impose limits on the number and size of data files.</p>
+</li>
+<li>
+<p>The database imposes a maximum limit on the number of data files for any Oracle Database opened by any instance. This limit is operating system specific.</p>
+</li>
+<li>
+<p>You cannot exceed the number of data files specified by the <code dir="ltr">DB_FILES</code> initialization parameter.</p>
+</li>
+<li>
+<p>When you issue <code dir="ltr">CREATE DATABASE</code> or <code dir="ltr">CREATE CONTROLFILE</code> statements, the <code dir="ltr">MAXDATAFILES</code> parameter specifies an initial size of the data file portion of the control file. However, if you attempt to add a new file whose number is greater than <code dir="ltr">MAXDATAFILES</code>, but less than or equal to <code dir="ltr">DB_FILES</code>, the control file will expand automatically so that the data files section can accommodate more files.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<div id="ADMIN11418" class="sect3"><a id="sthref1680"></a>
+<h4 class="sect3">Consider the Performance Impact</h4>
+<p>The number of data files contained in a tablespace, and ultimately the database, can have an impact upon performance.</p>
+<p>Oracle Database allows more data files in the database than the operating system defined limit. The database DBW<span class="italic">n</span> processes can open all online data files. Oracle Database is capable of treating open file descriptors as a cache, automatically closing files when the number of open file descriptors reaches the operating system-defined limit. This can have a negative performance impact. When possible, adjust the operating system limit on open file descriptors so that it is larger than the number of online data files in the database.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p>Your operating system specific Oracle documentation for more information on operating system limits</p>
+</li>
+<li>
+<p><a class="olink SQLRF012" href="../../server.112/e41084/statements_5.htm#SQLRF012"><span class="italic">Oracle Database SQL Language Reference</span></a> for more information about the <code dir="ltr">MAXDATAFILES</code> parameter of the <code dir="ltr">CREATE DATABASE</code> or <code dir="ltr">CREATE CONTROLFILE</code> statement</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1106224"></a>
+<div id="ADMIN11419" class="sect2">
+<h3 class="sect2">Determine the Size of Data Files</h3>
+<p><a id="sthref1681"></a>When creating a tablespace, you should estimate the potential size of database objects and create sufficient data files. Later, if needed, you can create additional data files and add them to a tablespace to increase the total amount of disk space allocated to it, and consequently the database. Preferably, place data files on multiple devices to ensure that data is spread evenly across all devices.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1006228"></a>
+<div id="ADMIN11420" class="sect2">
+<h3 class="sect2">Place Data Files Appropriately</h3>
+<p><a id="sthref1682"></a><a id="sthref1683"></a><a id="sthref1684"></a>Tablespace location is determined by the physical location of the data files that constitute that tablespace. Use the hardware resources of your computer appropriately.</p>
+<p>For example, if several disk drives are available to store the database, consider placing potentially contending data files on separate disks.This way, when users query information, both disk drives can work simultaneously, retrieving data at the same time.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink PFGRF015" href="../../server.112/e41573/iodesign.htm#PFGRF015"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for information about I/O and the placement of data files</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1006235"></a>
+<div id="ADMIN11421" class="sect2">
+<h3 class="sect2">Store Data Files Separate from Redo Log Files</h3>
+<p><a id="sthref1685"></a><a id="sthref1686"></a>Data files should not be stored on the same disk drive that stores the database redo log files. If the data files and redo log files are stored on the same disk drive and that disk drive fails, the files cannot be used in your database recovery procedures.</p>
+<p>If you multiplex your redo log files, then the likelihood of losing all of your redo log files is low, so you can store data files on the same drive as some redo log files.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006242"></a>
+<div id="ADMIN11422" class="sect1">
+<h2 class="sect1">Creating Data Files and Adding Data Files to a Tablespace</h2>
+<p><a id="sthref1687"></a><a id="sthref1688"></a><a id="sthref1689"></a><a id="sthref1690"></a><a id="sthref1691"></a>You can create data files and associate them with a tablespace using any of the statements listed in the following table. In all cases, you can either specify the file specifications for the data files being created, or you can use the Oracle Managed Files feature to create files that are created and managed by the database server. The table includes a brief description of the statement, as used to create data files, and references the section of this book where use of the statement is specifically described:</p>
+<div class="inftblinformalwide">
+<table class="cellalignment1333" title="Creating Datafiles and Adding Datafiles to a Tablespace" summary="Column 1 lists the various SQL statements that can be used to create or add datafiles to a tablespace. Column 2 describes the use of the statement and column 3 points to additional information." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t8">SQL Statement</th>
+<th class="cellalignment1334" id="r1c2-t8">Description</th>
+<th class="cellalignment1334" id="r1c3-t8">Additional Information</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t8" headers="r1c1-t8"><code dir="ltr">CREATE TABLESPACE</code></td>
+<td class="cellalignment1335" headers="r2c1-t8 r1c2-t8">Creates a tablespace and the data files that comprise it</td>
+<td class="cellalignment1335" headers="r2c1-t8 r1c3-t8"><a href="tspaces.htm#i1006225">"Creating Tablespaces"</a></td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t8" headers="r1c1-t8"><code dir="ltr">CREATE TEMPORARY TABLESPACE</code></td>
+<td class="cellalignment1335" headers="r3c1-t8 r1c2-t8">Creates a locally-managed temporary tablespace and the <span class="italic">temp files</span> (temp files are a special kind of data file) that comprise it</td>
+<td class="cellalignment1335" headers="r3c1-t8 r1c3-t8"><a href="tspaces.htm#i1009563">"Creating a Locally Managed Temporary Tablespace"</a></td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t8" headers="r1c1-t8"><code dir="ltr">ALTER TABLESPACE ... ADD DATAFILE</code></td>
+<td class="cellalignment1335" headers="r4c1-t8 r1c2-t8">Creates and adds a data file to a tablespace</td>
+<td class="cellalignment1335" headers="r4c1-t8 r1c3-t8"><a href="tspaces.htm#BABFDDCI">"Altering a Locally Managed Tablespace"</a></td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r5c1-t8" headers="r1c1-t8"><code dir="ltr">ALTER TABLESPACE ... ADD TEMPFILE</code></td>
+<td class="cellalignment1335" headers="r5c1-t8 r1c2-t8">Creates and adds a temp file to a temporary tablespace</td>
+<td class="cellalignment1335" headers="r5c1-t8 r1c3-t8"><a href="tspaces.htm#i1006555">"Altering a Locally Managed Temporary Tablespace"</a></td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r6c1-t8" headers="r1c1-t8"><code dir="ltr">CREATE DATABASE</code></td>
+<td class="cellalignment1335" headers="r6c1-t8 r1c2-t8">Creates a database and associated data files</td>
+<td class="cellalignment1335" headers="r6c1-t8 r1c3-t8"><a href="create.htm#CIAEJDBE">"Creating a Database with the CREATE DATABASE Statement"</a></td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r7c1-t8" headers="r1c1-t8"><code dir="ltr">ALTER DATABASE ... CREATE DATAFILE</code></td>
+<td class="cellalignment1335" headers="r7c1-t8 r1c2-t8">Creates a new empty data file in place of an old one--useful to re-create a data file that was lost with no backup.</td>
+<td class="cellalignment1335" headers="r7c1-t8 r1c3-t8">See <a class="olink BRADV224" href="../../backup.112/e10642/osadvsce.htm#BRADV224"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a>.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformalwide" -->
+<p><a id="sthref1692"></a><a id="sthref1693"></a><a id="sthref1694"></a>If you add new data files to a tablespace and do not fully specify the filenames, the database creates the data files in the default database directory or the current directory, depending upon your operating system. Oracle recommends you always specify a fully qualified name for a data file. Unless you want to reuse existing files, make sure the new filenames do not conflict with other files. Old files that have been previously dropped will be overwritten.</p>
+<p>If a statement that creates a data file fails, the database removes any created operating system files. However, because of the large number of potential errors that can occur with file systems and storage subsystems, there can be situations where you must manually remove the files using operating system commands.</p>
+</div>
+<!-- class="sect1" -->
+<a id="i1006333"></a>
+<div id="ADMIN11423" class="sect1">
+<h2 class="sect1">Changing Data File Size</h2>
+<p>This section describes the various ways to alter the size of a data file, and contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1006344">Enabling and Disabling Automatic Extension for a Data File</a></p>
+</li>
+<li>
+<p><a href="#i1106377">Manually Resizing a Data File</a></p>
+</li>
+</ul>
+<a id="i1006344"></a>
+<div id="ADMIN11424" class="sect2">
+<h3 class="sect2">Enabling and Disabling Automatic Extension for a Data File<a id="sthref1695"></a><a id="sthref1696"></a></h3>
+<p>You can create data files or alter existing data files so that they automatically increase in size when more space is needed in the database. The file size increases in specified increments up to a specified maximum.</p>
+<p>Setting your data files to extend automatically provides these advantages:</p>
+<ul>
+<li>
+<p>Reduces the need for immediate intervention when a tablespace runs out of space</p>
+</li>
+<li>
+<p>Ensures applications will not halt or be suspended because of failures to allocate extents</p>
+</li>
+</ul>
+<p>To determine whether a data file is auto-extensible, query the <code dir="ltr">DBA_DATA_FILES</code> view and examine the <code dir="ltr">AUTOEXTENSIBLE</code> column.</p>
+<p>You can specify automatic file extension by specifying an <code dir="ltr">AUTOEXTEND ON</code> clause when you create data files using the following SQL statements:</p>
+<ul>
+<li>
+<p><code dir="ltr">CREATE</code> <code dir="ltr">DATABASE</code></p>
+</li>
+<li>
+<p><code dir="ltr">ALTER DATABASE</code></p>
+</li>
+<li>
+<p><code dir="ltr">CREATE</code> <code dir="ltr">TABLESPACE</code></p>
+</li>
+<li>
+<p><code dir="ltr">ALTER</code> <code dir="ltr">TABLESPACE</code></p>
+</li>
+</ul>
+<p>You can enable or disable automatic file extension for existing data files, or manually resize a data file, using the <code dir="ltr">ALTER</code> <code dir="ltr">DATABASE</code> statement. For a bigfile tablespace, you are able to perform these operations using the <code dir="ltr">ALTER</code> <code dir="ltr">TABLESPACE</code> statement.</p>
+<p>The following example enables automatic extension for a data file added to the <code dir="ltr">users</code> tablespace:</p>
+<pre dir="ltr">
+ALTER TABLESPACE users
+    ADD DATAFILE '/u02/oracle/rbdb1/users03.dbf' SIZE 10M
+      AUTOEXTEND ON
+      NEXT 512K
+      MAXSIZE 250M;
+</pre>
+<p>The value of <code dir="ltr">NEXT</code> is the minimum size of the increments added to the file when it extends. The value of <code dir="ltr">MAXSIZE</code> is the maximum size to which the file can automatically extend.</p>
+<p>The next example disables the automatic extension for the data file.</p>
+<pre dir="ltr">
+ALTER DATABASE DATAFILE '/u02/oracle/rbdb1/users03.dbf' 
+    AUTOEXTEND OFF;
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SQLRF" href="../e41084/toc.htm"><span class="italic">Oracle Database SQL Language Reference</span></a> for more information about the SQL statements for creating or altering data files</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1106377"></a>
+<div id="ADMIN11425" class="sect2">
+<h3 class="sect2">Manually Resizing a Data File</h3>
+<p>You can manually increase or decrease the size of a data file using the <code dir="ltr">ALTER DATABASE</code> statement. Therefore, you can add more space to your database without adding more data files. This is beneficial if you are concerned about reaching the maximum number of data files allowed in your database.</p>
+<p>For a bigfile tablespace you can use the <code dir="ltr">ALTER</code> <code dir="ltr">TABLESPACE</code> statement to resize a data file. You are not allowed to add a data file to a bigfile tablespace.</p>
+<p>Manually reducing the sizes of data files enables you to reclaim unused space in the database. This is useful for correcting errors in estimates of space requirements.</p>
+<p>In the next example, assume that the data file <code dir="ltr">/u02/oracle/rbdb1/stuff01.dbf</code> has extended up to 250M. However, because its tablespace now stores smaller objects, the data file can be reduced in size.</p>
+<p>The following statement decreases the size of data file <code dir="ltr">/u02/oracle/rbdb1/stuff01.dbf</code>:</p>
+<pre dir="ltr">
+ALTER DATABASE DATAFILE '/u02/oracle/rbdb1/stuff01.dbf'
+   RESIZE 100M;
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+It is not always possible to decrease the size of a file to a specific value. It could be that the file contains data beyond the specified decreased size, in which case the database will return an error.</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006391"></a>
+<div id="ADMIN11426" class="sect1">
+<h2 class="sect1">Altering Data File Availability<a id="sthref1697"></a></h2>
+<p>You can alter the availability of individual data files or temp files by taking them offline or bringing them online. Offline data files are unavailable to the database and cannot be accessed until they are brought back online.</p>
+<p>Reasons for altering data file availability include the following:</p>
+<ul>
+<li>
+<p>You want to perform an offline backup of a data file.</p>
+</li>
+<li>
+<p>You want to rename or relocate a data file. You must first take it offline or take the tablespace offline.</p>
+</li>
+<li>
+<p>The database has problems writing to a data file and automatically takes the data file offline. Later, after resolving the problem, you can bring the data file back online manually<a id="sthref1698"></a>.</p>
+</li>
+<li>
+<p>A data file becomes missing or corrupted. You must take it offline before you can open the database.</p>
+</li>
+</ul>
+<p>The data files of a read-only tablespace can be taken offline or brought online, but bringing a file online does not affect the read-only status of the tablespace. You cannot write to the data file until the tablespace is returned to the read/write state.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You can make all data files of a tablespace temporarily unavailable by taking the tablespace itself offline. You <span class="italic">must</span> leave these files in the tablespace to bring the tablespace back online, although you can relocate or rename them following procedures similar to those shown in <a href="#i1006457">"Renaming and Relocating Data Files"</a>.
+<p>For more information, see <a href="tspaces.htm#i1006775">"Taking Tablespaces Offline"</a>.</p>
+</div>
+<p>To take a data file offline or bring it online, you must have the <code dir="ltr">ALTER DATABASE</code> system privilege. To take all data files or temp files offline using the <code dir="ltr">ALTER TABLESPACE</code> statement, you must have the <code dir="ltr">ALTER TABLESPACE</code> or <code dir="ltr">MANAGE TABLESPACE</code> system privilege. In an Oracle Real Application Clusters environment, the database must be open in exclusive mode.</p>
+<p>This section describes ways to alter data file availability, and contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1106425">Bringing Data Files Online or Taking Offline in ARCHIVELOG Mode</a></p>
+</li>
+<li>
+<p><a href="#i1006438">Taking Data Files Offline in NOARCHIVELOG Mode</a></p>
+</li>
+<li>
+<p><a href="#i1106447">Altering the Availability of All Data Files or Temp Files in a Tablespace</a></p>
+</li>
+</ul>
+<a id="i1106425"></a>
+<div id="ADMIN11427" class="sect2">
+<h3 class="sect2">Bringing Data Files Online or Taking Offline in ARCHIVELOG Mode</h3>
+<p><a id="sthref1699"></a>To bring an individual data file online, issue the <code dir="ltr">ALTER DATABASE</code> statement and include the <code dir="ltr">DATAFILE</code> clause. The following statement brings the specified data file online:</p>
+<pre dir="ltr">
+ALTER DATABASE DATAFILE '/u02/oracle/rbdb1/stuff01.dbf' ONLINE;
+</pre>
+<p>To take the same file offline, issue the following statement:</p>
+<pre dir="ltr">
+ALTER DATABASE DATAFILE '/u02/oracle/rbdb1/stuff01.dbf' OFFLINE;
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+To use this form of the <code dir="ltr">ALTER DATABASE</code> statement, the database must be in <code dir="ltr">ARCHIVELOG</code> mode. This requirement prevents you from accidentally losing the data file, since taking the data file offline while in <code dir="ltr">NOARCHIVELOG</code> mode is likely to result in losing the file.</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1006438"></a>
+<div id="ADMIN11428" class="sect2">
+<h3 class="sect2">Taking Data Files Offline in NOARCHIVELOG Mode</h3>
+<p><a id="sthref1700"></a><a id="sthref1701"></a><a id="sthref1702"></a><a id="sthref1703"></a><a id="sthref1704"></a>To take a data file offline when the database is in <code dir="ltr">NOARCHIVELOG</code> mode, use the <code dir="ltr">ALTER</code> <code dir="ltr">DATABASE</code> statement with both the <code dir="ltr">DATAFILE</code> and <code dir="ltr">OFFLINE</code> <code dir="ltr">FOR</code> <code dir="ltr">DROP</code> clauses.</p>
+<ul>
+<li>
+<p>The <code dir="ltr">OFFLINE</code> keyword causes the database to mark the data file <code dir="ltr">OFFLINE</code>, whether or not it is corrupted, so that you can open the database.</p>
+</li>
+<li>
+<p>The <code dir="ltr">FOR</code> <code dir="ltr">DROP</code> keywords mark the data file for subsequent dropping. Such a data file can no longer be brought back online.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+This operation does not actually drop the data file. It remains in the data dictionary, and you must drop it yourself using one of the following methods:
+<ul>
+<li>
+<p>An <code dir="ltr">ALTER</code> <code dir="ltr">TABLESPACE</code> ... <code dir="ltr">DROP</code> <code dir="ltr">DATAFILE</code> statement.</p>
+<p>After an <code dir="ltr">OFFLINE</code> <code dir="ltr">FOR</code> <code dir="ltr">DROP</code>, this method works for dictionary managed tablespaces only.</p>
+</li>
+<li>
+<p>A <code dir="ltr">DROP</code> <code dir="ltr">TABLESPACE</code> ... <code dir="ltr">INCLUDING</code> <code dir="ltr">CONTENTS</code> <code dir="ltr">AND</code> <code dir="ltr">DATAFILES</code> statement</p>
+</li>
+<li>
+<p>If the preceding methods fail, an operating system command to delete the data file. This is the least desirable method, as it leaves references to the data file in the data dictionary and control files.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+<p>The following statement takes the specified data file offline and marks it to be dropped:</p>
+<pre dir="ltr">
+ALTER DATABASE DATAFILE '/u02/oracle/rbdb1/users03.dbf' OFFLINE FOR DROP;
+</pre></div>
+<!-- class="sect2" -->
+<a id="i1106447"></a>
+<div id="ADMIN11429" class="sect2">
+<h3 class="sect2">Altering the Availability of All Data Files or Temp Files in a Tablespace</h3>
+<p>Clauses of the <code dir="ltr">ALTER TABLESPACE<a id="sthref1705"></a></code> statement allow you to change the online or offline status of all of the data files or temp files within a tablespace. Specifically, the statements that affect online/offline status are:</p>
+<ul>
+<li>
+<p><code dir="ltr">ALTER</code> <code dir="ltr">TABLESPACE</code> ... <code dir="ltr">DATAFILE</code> {<code dir="ltr">ONLINE</code>|<code dir="ltr">OFFLINE</code>}</p>
+</li>
+<li>
+<p><code dir="ltr">ALTER</code> <code dir="ltr">TABLESPACE</code> ... <code dir="ltr">TEMPFILE</code> {<code dir="ltr">ONLINE</code>|<code dir="ltr">OFFLINE</code>}</p>
+</li>
+</ul>
+<p>You are required only to enter the tablespace name, not the individual data files or temp files. All of the data files or temp files are affected, but the online/offline status of the tablespace itself is not changed.</p>
+<p>In most cases the preceding <code dir="ltr">ALTER TABLESPACE</code> statements can be issued whenever the database is mounted, even if it is not open. However, the database <span class="italic">must not</span> be open if the tablespace is the <code dir="ltr">SYSTEM</code> tablespace, an undo tablespace, or the default temporary tablespace. The <code dir="ltr">ALTER DATABASE DATAFILE<a id="sthref1706"></a><a id="sthref1707"></a></code> and <code dir="ltr">ALTER DATABASE TEMPFILE</code> statements also have <code dir="ltr">ONLINE/OFFLINE</code> clauses, however in those statements you must enter all of the filenames for the tablespace.</p>
+<p>The syntax is different from the <code dir="ltr">ALTER TABLESPACE...ONLINE|OFFLINE</code> statement that alters tablespace availability, because that is a different operation. The <code dir="ltr">ALTER TABLESPACE</code> statement takes data files offline as well as the tablespace, but it cannot be used to alter the status of a temporary tablespace or its temp file(s).</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006457"></a>
+<div id="ADMIN11430" class="sect1">
+<h2 class="sect1">Renaming and Relocating Data Files<a id="sthref1708"></a><a id="sthref1709"></a></h2>
+<p>You can rename data files to either change their names or relocate them. Some possible procedures for doing this are described in the following sections:</p>
+<ul>
+<li>
+<p><a href="#i1006478">Procedures for Renaming and Relocating Data Files in a Single Tablespace</a></p>
+</li>
+<li>
+<p><a href="#i1006537">Procedure for Renaming and Relocating Data Files in Multiple Tablespaces</a></p>
+</li>
+</ul>
+<p><a id="sthref1710"></a>When you rename and relocate data files with these procedures, only the pointers to the data files, as recorded in the database control file, are changed. The procedures do not physically rename any operating system files, nor do they copy files at the operating system level. Renaming and relocating data files involves several steps. Read the steps and examples carefully before performing these procedures.</p>
+<a id="i1006478"></a>
+<div id="ADMIN11431" class="sect2">
+<h3 class="sect2">Procedures for Renaming and Relocating Data Files in a Single Tablespace</h3>
+<p>The section suggests some procedures for renaming and relocating data files that can be used for a single tablespace. You must have <code dir="ltr">ALTER TABLESPACE</code> system privileges.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="tspaces.htm#i1006775">"Taking Tablespaces Offline"</a> for more information about taking tablespaces offline in preparation for renaming or relocating data files</div>
+<div id="ADMIN11432" class="sect3"><a id="sthref1711"></a>
+<h4 class="sect3">Procedure for Renaming Data Files in a Single Tablespace</h4>
+<p>To rename data files in a single tablespace, complete the following steps:</p>
+<ol>
+<li>
+<p>Take the tablespace that contains the data files offline. The database must be open.</p>
+<p>For example:</p>
+<pre dir="ltr">
+ALTER TABLESPACE users OFFLINE NORMAL;
+</pre></li>
+<li>
+<p>Rename the data files using the operating system.</p>
+</li>
+<li>
+<p><a id="sthref1712"></a>Use the <code dir="ltr">ALTER TABLESPACE</code> statement with the <code dir="ltr">RENAME DATAFILE</code> clause to change the filenames within the database.</p>
+<p>For example, the following statement renames the data files <code dir="ltr">/u02/oracle/rbdb1/user1.dbf</code> and <code dir="ltr">/u02/oracle/rbdb1/user2.dbf</code> to<code dir="ltr">/u02/oracle/rbdb1/users01.dbf</code> and <code dir="ltr">/u02/oracle/rbdb1/users02.dbf</code>, respectively:</p>
+<pre dir="ltr">
+ALTER TABLESPACE users
+    RENAME DATAFILE '/u02/oracle/rbdb1/user1.dbf',
+                    '/u02/oracle/rbdb1/user2.dbf'
+                 TO '/u02/oracle/rbdb1/users01.dbf', 
+                    '/u02/oracle/rbdb1/users02.dbf';
+</pre>
+<p>Always provide complete filenames (including their paths) to properly identify the old and new data files. In particular, specify the old data file name exactly as it appears in the <code dir="ltr">DBA_DATA_FILES</code> view of the data dictionary.</p>
+</li>
+<li>
+<p>Back up the database. After making any structural changes to a database, always perform an immediate and complete backup.</p>
+</li>
+<li>
+<p>Bring the tablespace back online using an <code dir="ltr">ALTER</code> <code dir="ltr">TABLESPACE</code> statement with the <code dir="ltr">ONLINE</code> clause:</p>
+<pre dir="ltr">
+ALTER TABLESPACE users ONLINE
+</pre></li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<div id="ADMIN11433" class="sect3"><a id="sthref1713"></a>
+<h4 class="sect3">Procedure for Relocating Data Files in a Single Tablespace</h4>
+<p>Here is a sample procedure for relocating a data file.</p>
+<p>Assume the following conditions:</p>
+<ul>
+<li>
+<p>An open database has a tablespace named <code dir="ltr">users</code> that is made up of data files all located on the same disk.</p>
+</li>
+<li>
+<p>The data files of the <code dir="ltr">users</code> tablespace are to be relocated to different and separate disk drives.</p>
+</li>
+<li>
+<p>You are currently connected with administrator privileges to the open database.</p>
+</li>
+<li>
+<p>You have a current backup of the database.</p>
+</li>
+</ul>
+<p>Complete the following steps:</p>
+<ol>
+<li>
+<p>If you do not know the specific file names or sizes, you can obtain this information by issuing the following query of the data dictionary view <code dir="ltr">DBA_DATA_FILES</code>:<a id="sthref1714"></a></p>
+<pre dir="ltr">
+SQL&gt; SELECT FILE_NAME, BYTES FROM DBA_DATA_FILES
+  2&gt; WHERE TABLESPACE_NAME = 'USERS';
+
+FILE_NAME                                  BYTES
+------------------------------------------ ----------------
+/u02/oracle/rbdb1/users01.dbf              102400000
+/u02/oracle/rbdb1/users02.dbf              102400000
+</pre></li>
+<li>
+<p>Take the tablespace containing the data files offline:</p>
+<pre dir="ltr">
+ALTER TABLESPACE users OFFLINE NORMAL;
+</pre></li>
+<li>
+<p>Copy the data files to their new locations and rename them using the operating system. You can copy the files using the <code dir="ltr">DBMS_FILE_TRANSFER</code> package discussed in <a href="#i1008252">"Copying Files Using the Database Server"</a>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You can temporarily exit SQL*Plus to execute an operating system command to copy a file by using the SQL*Plus <code dir="ltr">HOST</code> command.</div>
+</li>
+<li>
+<p>Rename the data files within the database.</p>
+<p>The data file pointers for the files that comprise the <code dir="ltr">users</code> tablespace, recorded in the control file of the associated database, must now be changed from the old names to the new names.</p>
+<p>Use the <code dir="ltr">ALTER TABLESPACE...RENAME DATAFILE</code> statement.</p>
+<pre dir="ltr">
+ALTER TABLESPACE users
+    RENAME DATAFILE '/u02/oracle/rbdb1/users01.dbf',
+                    '/u02/oracle/rbdb1/users02.dbf'
+                 TO '/u03/oracle/rbdb1/users01.dbf', 
+                    '/u04/oracle/rbdb1/users02.dbf';
+</pre></li>
+<li>
+<p>Back up the database. After making any structural changes to a database, always perform an immediate and complete backup.</p>
+</li>
+<li>
+<p>Bring the tablespace back online using an <code dir="ltr">ALTER</code> <code dir="ltr">TABLESPACE</code> statement with the <code dir="ltr">ONLINE</code> clause:</p>
+<pre dir="ltr">
+ALTER TABLESPACE users ONLINE
+</pre></li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1006537"></a>
+<div id="ADMIN11434" class="sect2">
+<h3 class="sect2">Procedure for Renaming and Relocating Data Files in Multiple Tablespaces</h3>
+<p><a id="sthref1715"></a>You can rename and relocate data files in one or more tablespaces using the <code dir="ltr">ALTER DATABASE RENAME FILE</code> statement. This method is the only choice if you want to rename or relocate data files of several tablespaces in one operation. You must have the <code dir="ltr">ALTER DATABASE</code> system privilege.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+To rename or relocate data files of the <code dir="ltr">SYSTEM</code> tablespace, the default temporary tablespace, or the active undo tablespace you must use this <code dir="ltr">ALTER</code> <code dir="ltr">DATABASE</code> method because you cannot take these tablespaces offline.</div>
+<p>To rename data files in multiple tablespaces, follow these steps.</p>
+<ol>
+<li>
+<p>Ensure that the database is mounted but closed.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Optionally, the database does not have to be closed, but the data files (or temp files) must be offline.</div>
+</li>
+<li>
+<p>Copy the data files to be renamed to their new locations and new names, using the operating system. You can copy the files using the <code dir="ltr">DBMS_FILE_TRANSFER</code> package discussed in <a href="#i1008252">"Copying Files Using the Database Server"</a>.</p>
+</li>
+<li>
+<p>Use <code dir="ltr">ALTER DATABASE</code> to rename the file pointers in the database control file.</p>
+<p>For example, the following statement renames the data files<code dir="ltr">/u02/oracle/rbdb1/sort01.dbf</code> and <code dir="ltr">/u02/oracle/rbdb1/user3.dbf</code> to <code dir="ltr">/u02/oracle/rbdb1/temp01.dbf</code> and <code dir="ltr">/u02/oracle/rbdb1/users03.dbf</code>, respectively:</p>
+<pre dir="ltr">
+ALTER DATABASE
+    RENAME FILE '/u02/oracle/rbdb1/sort01.dbf',
+                '/u02/oracle/rbdb1/user3.dbf'
+             TO '/u02/oracle/rbdb1/temp01.dbf',
+                '/u02/oracle/rbdb1/users03.dbf';
+</pre>
+<p>Always provide complete filenames (including their paths) to properly identify the old and new data files. In particular, specify the old data file names exactly as they appear in the <code dir="ltr">DBA_DATA_FILES</code> view.</p>
+</li>
+<li>
+<p>Back up the database. After making any structural changes to a database, always perform an immediate and complete backup.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006556"></a>
+<div id="ADMIN11435" class="sect1">
+<h2 class="sect1">Dropping Data Files<a id="sthref1716"></a><a id="sthref1717"></a><a id="sthref1718"></a><a id="sthref1719"></a></h2>
+<p>You use the <code dir="ltr">DROP</code> <code dir="ltr">DATAFILE</code> and <code dir="ltr">DROP</code> <code dir="ltr">TEMPFILE</code> clauses of the <code dir="ltr">ALTER</code> <code dir="ltr">TABLESPACE</code> command to drop a single data file or temp file. The data file must be empty. (A data file is considered to be empty when no extents remain allocated from it.) When you drop a data file or temp file, references to the data file or temp file are removed from the data dictionary and control files, and the physical file is deleted from the file system or Oracle Automatic Storage Management (Oracle ASM) disk group.</p>
+<p>The following example drops the data file identified by the alias <code dir="ltr">example_df3.f</code> in the Oracle ASM disk group <code dir="ltr">DGROUP1</code>. The data file belongs to the <code dir="ltr">example</code> tablespace.</p>
+<pre dir="ltr">
+ALTER TABLESPACE example DROP DATAFILE '+DGROUP1/example_df3.f';
+</pre>
+<p>The next example drops the temp file <code dir="ltr">lmtemp02.dbf</code>, which belongs to the <code dir="ltr">lmtemp</code> tablespace.</p>
+<pre dir="ltr">
+ALTER TABLESPACE lmtemp DROP TEMPFILE '/u02/oracle/data/lmtemp02.dbf';
+</pre>
+<p>This is equivalent to the following statement:</p>
+<pre dir="ltr">
+ALTER DATABASE TEMPFILE '/u02/oracle/data/lmtemp02.dbf' DROP 
+     INCLUDING DATAFILES;
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If there are sessions using a temp file, and you attempt to drop the temp file, then an error is returned, and the temp file is not dropped. In this case, the temp file is taken offline, and queries that attempt to use the temp file will fail while the temp file is offline.</div>
+<p>See <a class="olink SQLRF53561" href="../../server.112/e41084/statements_3002.htm#SQLRF53561"><span class="italic">Oracle Database SQL Language Reference</span></a> for <code dir="ltr">ALTER</code> <code dir="ltr">TABLESPACE</code> syntax details.</p>
+<p class="subhead2"><a id="ADMIN12608"></a>Restrictions for Dropping Data Files</p>
+<p>The following are restrictions for dropping data files and temp files:</p>
+<ul>
+<li>
+<p>The database must be open.</p>
+</li>
+<li>
+<p>If a data file is not empty, it cannot be dropped.</p>
+<p>If you must remove a data file that is not empty and that cannot be made empty by dropping schema objects, you must drop the tablespace that contains the data file.</p>
+</li>
+<li>
+<p>You cannot drop the first or only data file in a tablespace.</p>
+<p>Therefore, <code dir="ltr">DROP</code> <code dir="ltr">DATAFILE</code> cannot be used with a bigfile tablespace.</p>
+</li>
+<li>
+<p>You cannot drop data files in a read-only tablespace that was migrated from dictionary managed to locally managed. Dropping a data file from all other read-only tablespaces is supported.</p>
+</li>
+<li>
+<p>You cannot drop data files in the <code dir="ltr">SYSTEM</code> tablespace.</p>
+</li>
+<li>
+<p>If a data file in a locally managed tablespace is offline, it cannot be dropped.</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="tspaces.htm#i1007008">Dropping Tablespaces</a></div>
+</div>
+<!-- class="sect1" -->
+<a id="i1106577"></a>
+<div id="ADMIN11436" class="sect1">
+<h2 class="sect1">Verifying Data Blocks in Data Files<a id="sthref1720"></a><a id="sthref1721"></a><a id="sthref1722"></a></h2>
+<p>To configure the database to use checksums to verify data blocks, set the initialization parameter <code dir="ltr">DB_BLOCK_CHECKSUM</code> to <code dir="ltr">TYPICAL</code> (the default). This causes the DBW<span class="italic">n</span><a id="sthref1723"></a> process and the direct loader to calculate a checksum for each block and to store the checksum in the block header when writing the block to disk.</p>
+<p>The checksum is verified when the block is read, but only if <code dir="ltr">DB_BLOCK_CHECKSUM</code> is <code dir="ltr">TRUE</code> and the last write of the block stored a checksum. If corruption is detected, the database returns message <code dir="ltr">ORA-01578<a id="sthref1724"></a></code> and writes information about the corruption to the alert log.</p>
+<p>The value of the <code dir="ltr">DB_BLOCK_CHECKSUM</code> parameter can be changed dynamically using the <code dir="ltr">ALTER SYSTEM</code> statement. Regardless of the setting of this parameter, checksums are always used to verify data blocks in the <code dir="ltr">SYSTEM</code> tablespace.<a id="sthref1725"></a><a id="sthref1726"></a><a id="sthref1727"></a><a id="sthref1728"></a></p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink REFRN10030" href="../../server.112/e40402/initparams049.htm#REFRN10030"><span class="italic">Oracle Database Reference</span></a> for more information about the <code dir="ltr">DB_BLOCK_CHECKSUM</code> initialization parameter</div>
+</div>
+<!-- class="sect1" -->
+<a id="i1008252"></a>
+<div id="ADMIN01201" class="sect1">
+<h2 class="sect1">Copying Files Using the Database Server<a id="sthref1729"></a></h2>
+<p>You do not necessarily have to use the operating system to copy a file within a database, or transfer a file between databases as you would do when using the transportable tablespace feature. You can use the <a class="olink ARPLS095" href="../../appdev.112/e40758/d_ftran.htm#ARPLS095"><code dir="ltr">DBMS_FILE_TRANSFER</code></a> package, or you can use Streams propagation. Using Streams is not discussed in this book, but an example of using the <code dir="ltr">DBMS_FILE_TRANSFER</code> package is shown in <a href="#i1008450">"Copying a File on a Local File System"</a>.</p>
+<p>The <code dir="ltr">DBMS_FILE_TRANSFER</code> package can use a local file system or an Oracle Automatic Storage Management (Oracle ASM) disk group as the source or destination for a file transfer. Only Oracle database files (data files, temp files, control files, and so on) can be involved in transfers to and from Oracle ASM.</p>
+<div class="infobox-note">
+<p class="notep1">Caution:</p>
+Do not use the <code dir="ltr">DBMS_FILE_TRANSFER</code> package to copy or transfer a file that is being modified by a database because doing so may result in an inconsistent file.</div>
+<p>On UNIX systems, the owner of a file created by the <a class="olink ARPLS095" href="../../appdev.112/e40758/d_ftran.htm#ARPLS095"><code dir="ltr">DBMS_FILE_TRANSFER</code></a> package is the owner of the shadow process running the instance. Normally, this owner is <code dir="ltr">ORACLE</code>. A file created using <code dir="ltr">DBMS_FILE_TRANSFER</code> is always writable and readable by all processes in the database, but non privileged users who need to read or write such a file directly may need access from a system administrator.</p>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1008450">Copying a File on a Local File System</a></p>
+</li>
+<li>
+<p><a href="#i1008602">Third-Party File Transfer</a></p>
+</li>
+<li>
+<p><a href="#i1008476">File Transfer and the DBMS_SCHEDULER Package</a></p>
+</li>
+<li>
+<p><a href="#i1008485">Advanced File Transfer Mechanisms</a></p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink STRMS003" href="../../server.112/e17069/strms_prop.htm#STRMS003"><span class="italic">Oracle Streams Concepts and Administration</span></a></p>
+</li>
+<li>
+<p><a href="tspaces.htm#i1007169">"Transporting Tablespaces Between Databases"</a></p>
+</li>
+<li>
+<p><a class="olink ARPLS095" href="../../appdev.112/e40758/d_ftran.htm#ARPLS095"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for a description of the <code dir="ltr">DBMS_FILE_TRANSFER</code> package.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+<a id="i1008450"></a>
+<div id="ADMIN11437" class="sect2">
+<h3 class="sect2">Copying a File on a Local File System</h3>
+<p>This section includes an example that uses the <code dir="ltr">COPY_FILE</code> procedure in the <code dir="ltr">DBMS_FILE_TRANSFER</code> package to copy a file on a local file system. The following example copies a binary file named <code dir="ltr">db1.dat</code> from the <code dir="ltr">/usr/admin/source</code> directory to the <code dir="ltr">/usr/admin/destination</code> directory as <code dir="ltr">db1_copy.dat</code> on a local file system:</p>
+<a id="i1008394"></a>
+<ol>
+<li>
+<p>In SQL*Plus, connect as an administrative user who can grant privileges and create directory objects using SQL.</p>
+</li>
+<li>
+<p>Use the SQL command <code dir="ltr">CREATE DIRECTORY</code> to create a directory object for the directory from which you want to copy the file. A directory object is similar to an alias for the directory. For example, to create a directory object called <code dir="ltr">SOURCE_DIR</code> for the <code dir="ltr">/usr/admin/source</code> directory on your computer system, execute the following statement:</p>
+<pre dir="ltr">
+CREATE DIRECTORY SOURCE_DIR AS '/usr/admin/source';
+</pre></li>
+<li>
+<p>Use the SQL command <code dir="ltr">CREATE</code> <code dir="ltr">DIRECTORY</code> to create a directory object for the directory into which you want to copy the binary file. For example, to create a directory object called <code dir="ltr">DEST_DIR</code> for the <code dir="ltr">/usr/admin/destination</code> directory on your computer system, execute the following statement:</p>
+<pre dir="ltr">
+CREATE DIRECTORY DEST_DIR AS '/usr/admin/destination';
+</pre></li>
+<li>
+<p>Grant the required privileges to the user who will run the <code dir="ltr">COPY_FILE</code> procedure. In this example, the <code dir="ltr">strmadmin</code> user runs the procedure.</p>
+<pre dir="ltr">
+GRANT EXECUTE ON DBMS_FILE_TRANSFER TO strmadmin;
+
+GRANT READ ON DIRECTORY source_dir TO strmadmin;
+
+GRANT WRITE ON DIRECTORY dest_dir TO strmadmin;
+</pre></li>
+<li>
+<p>Connect as <code dir="ltr">strmadmin</code> user and provide the user password when prompted:</p>
+<pre dir="ltr">
+CONNECT strmadmin
+</pre></li>
+<li>
+<p>Run the <code dir="ltr">COPY_FILE</code> procedure to copy the file:</p>
+<pre dir="ltr">
+BEGIN
+  DBMS_FILE_TRANSFER.COPY_FILE(
+        source_directory_object       =&gt;  'SOURCE_DIR',
+        source_file_name              =&gt;  'db1.dat',
+        destination_directory_object  =&gt;  'DEST_DIR',
+        destination_file_name         =&gt;  'db1_copy.dat');
+END;
+/
+</pre></li>
+</ol>
+<div class="infobox-note">
+<p class="notep1">Caution:</p>
+Do not use the <code dir="ltr">DBMS_FILE_TRANSFER</code> package to copy or transfer a file that is being modified by a database because doing so may result in an inconsistent file.</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1008602"></a>
+<div id="ADMIN11438" class="sect2">
+<h3 class="sect2">Third-Party File Transfer</h3>
+<p>Although the procedures in the <code dir="ltr">DBMS_FILE_TRANSFER</code> package typically are invoked as local procedure calls, they can also be invoked as remote procedure calls. A remote procedure call lets you copy a file within a database even when you are connected to a different database. For example, you can make a copy of a file on database <code dir="ltr">DB</code>, even if you are connected to another database, by executing the following remote procedure call:</p>
+<pre dir="ltr">
+DBMS_FILE_TRANSFER.COPY_FILE@DB(...)
+</pre>
+<p>Using remote procedure calls enables you to copy a file between two databases, even if you are not connected to either database. For example, you can connect to database <code dir="ltr">A</code> and then transfer a file from database <code dir="ltr">B</code> to database <code dir="ltr">C</code>. In this example, database <code dir="ltr">A</code> is the third party because it is neither the source of nor the destination for the transferred file.</p>
+<p>A third-party file transfer can both push and pull a file. Continuing with the previous example, you can perform a third-party file transfer if you have a database link from <code dir="ltr">A</code> to either <code dir="ltr">B</code> or <code dir="ltr">C</code>, and that database has a database link to the other database. Database <code dir="ltr">A</code> does not need a database link to both <code dir="ltr">B</code> and <code dir="ltr">C</code>.</p>
+<p>For example, if you have a database link from <code dir="ltr">A</code> to <code dir="ltr">B</code>, and another database link from <code dir="ltr">B</code> to <code dir="ltr">C</code>, then you can run the following procedure at <code dir="ltr">A</code> to transfer a file from <code dir="ltr">B</code> to <code dir="ltr">C</code>:</p>
+<pre dir="ltr">
+DBMS_FILE_TRANSFER.PUT_FILE@B(...) 
+</pre>
+<p>This configuration pushes the file.</p>
+<p>Alternatively, if you have a database link from <code dir="ltr">A</code> to <code dir="ltr">C</code>, and another database link from <code dir="ltr">C</code> to <code dir="ltr">B</code>, then you can run the following procedure at database <code dir="ltr">A</code> to transfer a file from <code dir="ltr">B</code> to <code dir="ltr">C</code>:</p>
+<pre dir="ltr">
+DBMS_FILE_TRANSFER.GET_FILE@C(...)
+</pre>
+<p>This configuration pulls the file.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1008476"></a>
+<div id="ADMIN11439" class="sect2">
+<h3 class="sect2">File Transfer and the DBMS_SCHEDULER Package</h3>
+<p>You can use the <code dir="ltr">DBMS_SCHEDULER</code> package to transfer files automatically within a single database and between databases. Third-party file transfers are also supported by the <code dir="ltr">DBMS_SCHEDULER</code> package. You can monitor a long-running file transfer done by the Scheduler using the <code dir="ltr">V$SESSION_LONGOPS</code> dynamic performance view at the databases reading or writing the file. Any database links used by a Scheduler job must be fixed user database links.</p>
+<p>You can use a restartable Scheduler job to improve the reliability of file transfers automatically, especially if there are intermittent failures. If a file transfer fails before the destination file is closed, then you can restart the file transfer from the beginning once the database has removed any partially written destination file. Hence you should consider using a restartable Scheduler job to transfer a file if the rest of the job is restartable. See <a href="scheduse.htm#g1046708">Chapter 29, "Scheduling Jobs with Oracle Scheduler"</a> for more information on Scheduler jobs.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If a single restartable job transfers several files, then you should consider restart scenarios in which some of the files have been transferred already and some have not been transferred yet.</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1008485"></a>
+<div id="ADMIN11440" class="sect2">
+<h3 class="sect2">Advanced File Transfer Mechanisms</h3>
+<p>You can create more sophisticated file transfer mechanisms using both the <code dir="ltr">DBMS_FILE_TRANSFER</code> package and the <code dir="ltr">DBMS_SCHEDULER</code> package. For example, when several databases have a copy of the file you want to transfer, you can consider factors such as source availability, source load, and communication bandwidth to the destination database when deciding which source database to contact first and which source databases to try if failures occur. In this case, the information about these factors must be available to you, and you must create the mechanism that considers these factors.</p>
+<p>As another example, when early completion time is more important than load, you can submit several Scheduler jobs to transfer files in parallel. As a final example, knowing something about file layout on the source and destination databases enables you to minimize disk contention by performing or scheduling simultaneous transfers only if they use different I/O devices.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006604"></a>
+<div id="ADMIN11441" class="sect1">
+<h2 class="sect1">Mapping Files to Physical Devices<a id="sthref1730"></a><a id="sthref1731"></a><a id="sthref1732"></a></h2>
+<p>In an environment where data files are simply file system files or are created directly on a raw device, it is relatively straight forward to see the association between a tablespace and the underlying device. Oracle Database provides views, such as <code dir="ltr">DBA_TABLESPACES</code>, <code dir="ltr">DBA_DATA_FILES</code>, and <code dir="ltr">V$DATAFILE</code>, that provide a mapping of files onto devices. These mappings, along with device statistics can be used to evaluate I/O performance.</p>
+<p>However, with the introduction of host based Logical Volume Managers (LVM), and sophisticated storage subsystems that provide RAID (Redundant Array of Inexpensive Disks) features, it is not easy to determine file to device mapping. This poses a problem because it becomes difficult to determine your "hottest" files when they are hidden behind a "black box". This section presents the Oracle Database approach to resolving this problem.</p>
+<p>The following topics are contained in this section:</p>
+<ul>
+<li>
+<p><a href="#i1006632">Overview of Oracle Database File Mapping Interface</a></p>
+</li>
+<li>
+<p><a href="#i1006637">How the Oracle Database File Mapping Interface Works</a></p>
+</li>
+<li>
+<p><a href="#i1006753">Using the Oracle Database File Mapping Interface</a></p>
+</li>
+<li>
+<p><a href="#i1007014">File Mapping Examples</a></p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+This section presents an overview of the Oracle Database file mapping interface and explains how to use the <code dir="ltr">DBMS_STORAGE_MAP</code> package and dynamic performance views to expose the mapping of files onto physical devices. You can more easily access this functionality through the Oracle Enterprise Manager. It provides an easy to use graphical interface for mapping files to physical devices.</div>
+</li>
+</ul>
+<a id="i1006632"></a>
+<div id="ADMIN11442" class="sect2">
+<h3 class="sect2">Overview of Oracle Database File Mapping Interface<a id="sthref1733"></a></h3>
+<p>To acquire an understanding of I/O performance, one must have detailed knowledge of the storage hierarchy in which files reside. Oracle Database provides a mechanism to show a complete mapping of a file to intermediate layers of logical volumes to actual physical devices. This is accomplished though a set of dynamic performance views (<code dir="ltr">V$</code> views). Using these views, you can locate the exact disk on which any block of a file resides.</p>
+<p>To build these views, storage vendors must provide mapping libraries that are responsible for mapping their particular I/O stack elements. The database communicates with these libraries through an external non-Oracle Database process that is spawned by a background process called FMON. FMON is responsible for managing the mapping information. Oracle provides a PL/SQL package, <code dir="ltr">DBMS_STORAGE_MAP</code>, that you use to invoke mapping operations that populate the mapping views.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The file mapping interface is not available on Windows platforms.</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1006637"></a>
+<div id="ADMIN11443" class="sect2">
+<h3 class="sect2">How the Oracle Database File Mapping Interface Works<a id="sthref1734"></a></h3>
+<p>This section describes the components of the Oracle Database file mapping interface and how the interface works. It contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1006657">Components of File Mapping</a></p>
+</li>
+<li>
+<p><a href="#i1006711">Mapping Structures</a></p>
+</li>
+<li>
+<p><a href="#i1006730">Example of Mapping Structures</a></p>
+</li>
+<li>
+<p><a href="#i1006745">Configuration ID</a></p>
+</li>
+</ul>
+<a id="i1006657"></a>
+<div id="ADMIN11444" class="sect3">
+<h4 class="sect3">Components of File Mapping</h4>
+<p>The following figure shows the components of the file mapping mechanism.</p>
+<div id="ADMIN13047" class="figure">
+<p class="titleinfigure"><a id="sthref1735"></a>Figure 15-1 Components of File Mapping</p>
+<img width="438" height="178" src="img/admin058.gif" alt="Description of Figure 15-1 follows" /><br />
+<a id="sthref1736" href="img_text/admin058.htm">Description of "Figure 15-1 Components of File Mapping"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>The following sections briefly describes these components and how they work together to populate the mapping views:</p>
+<ul>
+<li>
+<p><a href="#i1006679">FMON</a></p>
+</li>
+<li>
+<p><a href="#i1006701">External Process (FMPUTL)</a></p>
+</li>
+<li>
+<p><a href="#i1006706">Mapping Libraries</a></p>
+</li>
+</ul>
+<a id="i1006679"></a>
+<div id="ADMIN11445" class="sect4">
+<h5 class="sect4"><a id="sthref1737"></a><a id="sthref1738"></a>FMON</h5>
+<p>FMON is a background process started by the database whenever the <code dir="ltr">FILE_MAPPING</code> initialization parameter is set to <code dir="ltr">TRUE</code>. FMON is responsible for:</p>
+<ul>
+<li>
+<p>Building mapping information, which is stored in the SGA. This information is composed of the following structures:</p>
+<ul>
+<li>
+<p>Files</p>
+</li>
+<li>
+<p>File system extents</p>
+</li>
+<li>
+<p>Elements</p>
+</li>
+<li>
+<p>Subelements</p>
+</li>
+</ul>
+<p>These structures are explained in <a href="#i1006711">"Mapping Structures"</a>.</p>
+</li>
+<li>
+<p>Refreshing mapping information when a change occurs because of:</p>
+<ul>
+<li>
+<p>Changes to data files (size)</p>
+</li>
+<li>
+<p>Addition or deletion of data files</p>
+</li>
+<li>
+<p>Changes to the storage configuration (not frequent)</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Saving mapping information in the data dictionary to maintain a view of the information that is persistent across startup and shutdown operations</p>
+</li>
+<li>
+<p>Restoring mapping information into the SGA at instance startup. This avoids the need for a potentially expensive complete rebuild of the mapping information on every instance startup.</p>
+</li>
+</ul>
+<p>You help control this mapping using procedures that are invoked with the <code dir="ltr">DBMS_STORAGE_MAP</code> package.</p>
+</div>
+<!-- class="sect4" -->
+<a id="i1006701"></a>
+<div id="ADMIN11446" class="sect4">
+<h5 class="sect4">External Process (FMPUTL)</h5>
+<p>FMON spawns an external non-Oracle Database process called <code dir="ltr"><a id="sthref1739"></a>FMPUTL</code>, that communicates directly with the vendor supplied mapping libraries. This process obtains the mapping information through all levels of the I/O stack, assuming that mapping libraries exist for all levels. On some platforms the external process requires that the <code dir="ltr">SETUID</code> bit is set to <code dir="ltr">ON</code> because root privileges are needed to map through all levels of the I/O mapping stack.</p>
+<p>The external process is responsible for discovering the mapping libraries and dynamically loading them into its address space.</p>
+</div>
+<!-- class="sect4" -->
+<a id="i1006706"></a>
+<div id="ADMIN11447" class="sect4">
+<h5 class="sect4">Mapping Libraries</h5>
+<p>Oracle Database uses mapping libraries to discover mapping information for the elements that are owned by a particular mapping library. Through these mapping libraries information about individual I/O stack elements is communicated. This information is used to populate dynamic performance views that can be queried by users.</p>
+<p>Mapping libraries need to exist for all levels of the stack for the mapping to be complete, and different libraries may own their own parts of the I/O mapping stack. For example, a VERITAS VxVM library would own the stack elements related to the VERITAS Volume Manager, and an EMC library would own all EMC storage specific layers of the I/O mapping stack.</p>
+<p>Mapping libraries are vendor supplied. However, Oracle currently supplies a mapping library for EMC storage. The mapping libraries available to a database server are identified in a special file named filemap.ora.</p>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<a id="i1006711"></a>
+<div id="ADMIN11448" class="sect3">
+<h4 class="sect3">Mapping Structures<a id="sthref1740"></a></h4>
+<p>The mapping structures and the Oracle Database representation of these structures are described in this section. You will need to understand this information in order to interpret the information in the mapping views.</p>
+<p>The following are the primary structures that compose the mapping information:</p>
+<ul>
+<li>
+<p>Files</p>
+<p>A file mapping structure provides a set of attributes for a file, including file size, number of file system extents that the file is composed of, and the file type.</p>
+</li>
+<li>
+<p>File system extents</p>
+<p>A file system extent mapping structure describes a contiguous chunk of blocks residing on one element. This includes the device offset, the extent size, the file offset, the type (data or parity), and the name of the element where the extent resides.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+File system extents are different from Oracle Database extents. File system extents are physical contiguous blocks of data written to a device as managed by the file system. Oracle Database extents are logical structures managed by the database, such as tablespace extents.</div>
+</li>
+<li>
+<p>Elements</p>
+<p>An element mapping structure is the abstract mapping structure that describes a storage component within the I/O stack. Elements may be mirrors, stripes, partitions, RAID5, concatenated elements, and disks. These structures are the mapping building blocks.</p>
+</li>
+<li>
+<p>Subelements</p>
+<p>A subelement mapping structure describes the link between an element and the next elements in the I/O mapping stack. This structure contains the subelement number, size, the element name where the subelement exists, and the element offset.</p>
+</li>
+</ul>
+<p>All of these mapping structures are illustrated in the following example.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i1006730"></a>
+<div id="ADMIN11449" class="sect3">
+<h4 class="sect3">Example of Mapping Structures</h4>
+<p>Consider an Oracle Database which is composed of two data files X and Y. Both files X and Y reside on a file system mounted on volume A. File X is composed of two extents while file Y is composed of only one extent.</p>
+<p>The two extents of File X and the one extent of File Y both map to Element A. Element A is striped to Elements B and C. Element A maps to Elements B and C by way of Subelements B0 and C1, respectively.</p>
+<p>Element B is a partition of Element D (a physical disk), and is mapped to Element D by way of subelement D0.</p>
+<p>Element C is mirrored over Elements E and F (both physical disks), and is mirrored to those physical disks by way of Subelements E0 and F1, respectively.</p>
+<p>All of the mapping structures are illustrated in <a href="#i1006737">Figure 15-2</a>.</p>
+<div id="ADMIN13048" class="figure">
+<p class="titleinfigure"><a id="i1006737"></a>Figure 15-2 Illustration of Mapping Structures</p>
+<img width="585" height="419" src="img/admin059.gif" alt="Description of Figure 15-2 follows" /><br />
+<a id="sthref1741" href="img_text/admin059.htm">Description of "Figure 15-2 Illustration of Mapping Structures"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>Note that the mapping structures represented are sufficient to describe the entire mapping information for the Oracle Database instance and consequently to map every logical block within the file into a (element name, element offset) tuple (or more in case of mirroring) at each level within the I/O stack.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i1006745"></a>
+<div id="ADMIN11450" class="sect3">
+<h4 class="sect3">Configuration ID</h4>
+<p>The configuration ID captures the version information associated with elements or files. The vendor library provides the configuration ID and updates it whenever a change occurs. Without a configuration ID, there is no way for the database to tell whether the mapping has changed.</p>
+<p>There are two kinds of configuration IDs:</p>
+<ul>
+<li>
+<p>Persistent</p>
+<p>These configuration IDs are persistent across instance shutdown</p>
+</li>
+<li>
+<p>Non-persistent</p>
+<p>The configuration IDs are not persistent across instance shutdown. The database is only capable of refreshing the mapping information while the instance is up.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1006753"></a>
+<div id="ADMIN11451" class="sect2">
+<h3 class="sect2">Using the Oracle Database File Mapping Interface<a id="sthref1742"></a></h3>
+<p>This section discusses how to use the Oracle Database file mapping interface. It contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1006769">Enabling File Mapping</a></p>
+</li>
+<li>
+<p><a href="#i1106796">Using the DBMS_STORAGE_MAP Package</a></p>
+</li>
+<li>
+<p><a href="#i1006868">Obtaining Information from the File Mapping Views</a></p>
+</li>
+</ul>
+<a id="i1006769"></a>
+<div id="ADMIN11452" class="sect3">
+<h4 class="sect3">Enabling File Mapping</h4>
+<p>The following steps enable the file mapping feature:</p>
+<ol>
+<li>
+<p>Ensure that a valid filemap.ora file exists in the /opt/ORCLfmap/prot1_32/etc directory for 32-bit platforms, or in the /opt/ORCLfmap/prot1_64/etc directory for 64-bit platforms.</p>
+<div class="infobox-note">
+<p class="notep1">Caution:</p>
+While the format and content of the filemap.ora file is discussed here, it is for informational reasons only. The filemap.ora file is created by the database when your system is installed. Until such time that vendors supply their own libraries, there will be only one entry in the filemap.ora file, and that is the Oracle-supplied EMC library. This file should be modified manually by uncommenting this entry <span class="italic">only</span> if an EMC Symmetrix array is available.</div>
+<p>The filemap.ora file is the configuration file that describes all of the available mapping libraries. FMON requires that a filemap.ora file exists and that it points to a valid path to mapping libraries. Otherwise, it will not start successfully.</p>
+<p>The following row must be included in filemap.ora for each library:</p>
+<p><code dir="ltr">lib</code>=<code dir="ltr"><span class="codeinlineitalic">vendor_name:mapping_library_path</span></code></p>
+<p>where:</p>
+<ul>
+<li>
+<p><span class="italic">vendor_name</span> should be <code dir="ltr">Oracle</code> for the EMC Symmetric library</p>
+</li>
+<li>
+<p><span class="italic">mapping_library_path</span> is the full path of the mapping library</p>
+</li>
+</ul>
+<p>Note that the ordering of the libraries in this file is extremely important. The libraries are queried based on their order in the configuration file.</p>
+<p>The file mapping service can be started even if no mapping libraries are available. The filemap.ora file still must be present even though it is empty. In this case, the mapping service is constrained in the sense that new mapping information cannot be discovered. Only restore and drop operations are allowed in such a configuration.</p>
+</li>
+<li>
+<p>Set the <code dir="ltr"><a id="sthref1743"></a><a id="sthref1744"></a>FILE_MAPPING</code> initialization parameter to <code dir="ltr">TRUE</code>.</p>
+<p>The instance does not have to be shut down to set this parameter. You can set it using the following <code dir="ltr">ALTER SYSTEM</code> statement:</p>
+<pre dir="ltr">
+ALTER SYSTEM SET FILE_MAPPING=TRUE;
+</pre></li>
+<li>
+<p>Invoke the appropriate <code dir="ltr"><a id="sthref1745"></a>DBMS_STORAGE_MAP</code> mapping procedure. You have two options:</p>
+<ul>
+<li>
+<p>In a cold startup scenario, the Oracle Database is just started and no mapping operation has been invoked yet. You execute the <code dir="ltr">DBMS_STORAGE_MAP.MAP_ALL</code> procedure to build the mapping information for the entire I/O subsystem associated with the database.</p>
+</li>
+<li>
+<p>In a warm start scenario where the mapping information is already built, you have the option to invoke the <code dir="ltr">DBMS_STORAGE_MAP.MAP_SAVE</code> procedure to save the mapping information in the data dictionary. (Note that this procedure is invoked in <code dir="ltr">DBMS_STORAGE_MAP.MAP_ALL()</code> by default.) This forces all of the mapping information in the SGA to be flushed to disk.</p>
+<p>Once you restart the database, use <code dir="ltr">DBMS_STORAGE_MAP.RESTORE()</code> to restore the mapping information into the SGA. If needed, <code dir="ltr">DBMS_STORAGE_MAP.MAP_ALL()</code> can be called to refresh the mapping information.</p>
+</li>
+</ul>
+</li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<a id="i1106796"></a>
+<div id="ADMIN11453" class="sect3">
+<h4 class="sect3">Using the <a id="sthref1746"></a>DBMS_STORAGE_MAP Package</h4>
+<p>The <code dir="ltr">DBMS_STORAGE_MAP</code> package enables you to control the mapping operations. The various procedures available to you are described in the following table.</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="DBMS_STORAGE_MAP Procedures" summary="Column 1 lists the various procedures of the DBMS_STORAGE_MAP package. Column 2 describes their use." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t29">Procedure</th>
+<th class="cellalignment1334" id="r1c2-t29">Use to:</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t29" headers="r1c1-t29"><code dir="ltr">MAP_OBJECT</code></td>
+<td class="cellalignment1335" headers="r2c1-t29 r1c2-t29">Build the mapping information for the database object identified by object name, owner, and type</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t29" headers="r1c1-t29"><code dir="ltr">MAP_ELEMENT</code></td>
+<td class="cellalignment1335" headers="r3c1-t29 r1c2-t29">Build mapping information for the specified element</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t29" headers="r1c1-t29"><code dir="ltr">MAP_FILE</code></td>
+<td class="cellalignment1335" headers="r4c1-t29 r1c2-t29">Build mapping information for the specified filename</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r5c1-t29" headers="r1c1-t29"><code dir="ltr">MAP_ALL</code></td>
+<td class="cellalignment1335" headers="r5c1-t29 r1c2-t29">Build entire mapping information for all types of database files (excluding archive logs)</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r6c1-t29" headers="r1c1-t29"><code dir="ltr">DROP_ELEMENT</code></td>
+<td class="cellalignment1335" headers="r6c1-t29 r1c2-t29">Drop the mapping information for a specified element</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r7c1-t29" headers="r1c1-t29"><code dir="ltr">DROP_FILE</code></td>
+<td class="cellalignment1335" headers="r7c1-t29 r1c2-t29">Drop the file mapping information for the specified filename</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r8c1-t29" headers="r1c1-t29"><code dir="ltr">DROP_ALL</code></td>
+<td class="cellalignment1335" headers="r8c1-t29 r1c2-t29">Drop all mapping information in the SGA for this instance</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r9c1-t29" headers="r1c1-t29"><code dir="ltr">SAVE</code></td>
+<td class="cellalignment1335" headers="r9c1-t29 r1c2-t29">Save into the data dictionary the required information needed to regenerate the entire mapping</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r10c1-t29" headers="r1c1-t29"><code dir="ltr">RESTORE</code></td>
+<td class="cellalignment1335" headers="r10c1-t29 r1c2-t29">Load the entire mapping information from the data dictionary into the shared memory of the instance</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r11c1-t29" headers="r1c1-t29"><code dir="ltr">LOCK_MAP</code></td>
+<td class="cellalignment1335" headers="r11c1-t29 r1c2-t29">Lock the mapping information in the SGA for this instance</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r12c1-t29" headers="r1c1-t29"><code dir="ltr">UNLOCK_MAP</code></td>
+<td class="cellalignment1335" headers="r12c1-t29 r1c2-t29">Unlock the mapping information in the SGA for this instance</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ARPLS137" href="../../appdev.112/e40758/d_stmap.htm#ARPLS137"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for a description of the <code dir="ltr">DBMS_STORAGE_MAP</code> package</p>
+</li>
+<li>
+<p><a href="#i1007014">"File Mapping Examples"</a> for an example of using the <code dir="ltr">DBMS_STORAGE_MAP</code> package</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect3" -->
+<a id="i1006868"></a>
+<div id="ADMIN11454" class="sect3">
+<h4 class="sect3">Obtaining Information from the File Mapping <a id="sthref1747"></a><a id="sthref1748"></a>Views</h4>
+<p>Mapping information generated by <code dir="ltr"><a id="sthref1749"></a><a id="sthref1750"></a>DBMS_STORAGE_MAP</code> package is captured in dynamic performance views. Brief descriptions of these views are presented here.</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="Viewing Mapping Information" summary="This table lists the file mapping views where information is captured from use of the DBMS_STORAGE_MAP package. Column 1 lists the view, column 2 contains a description of each view.." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t31">View</th>
+<th class="cellalignment1334" id="r1c2-t31">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t31" headers="r1c1-t31"><code dir="ltr">V$MAP_LIBRARY</code></td>
+<td class="cellalignment1335" headers="r2c1-t31 r1c2-t31">Contains a list of all mapping libraries that have been dynamically loaded by the external process</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t31" headers="r1c1-t31"><code dir="ltr">V$MAP_FILE</code></td>
+<td class="cellalignment1335" headers="r3c1-t31 r1c2-t31">Contains a list of all file mapping structures in the shared memory of the instance</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t31" headers="r1c1-t31"><code dir="ltr">V$MAP_FILE_EXTENT</code></td>
+<td class="cellalignment1335" headers="r4c1-t31 r1c2-t31">Contains a list of all file system extent mapping structures in the shared memory of the instance</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r5c1-t31" headers="r1c1-t31"><code dir="ltr">V$MAP_ELEMENT</code></td>
+<td class="cellalignment1335" headers="r5c1-t31 r1c2-t31">Contains a list of all element mapping structures in the SGA of the instance</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r6c1-t31" headers="r1c1-t31"><code dir="ltr">V$MAP_EXT_ELEMENT</code></td>
+<td class="cellalignment1335" headers="r6c1-t31 r1c2-t31">Contains supplementary information for all element mapping</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r7c1-t31" headers="r1c1-t31"><code dir="ltr">V$MAP_SUBELEMENT</code></td>
+<td class="cellalignment1335" headers="r7c1-t31 r1c2-t31">Contains a list of all subelement mapping structures in the shared memory of the instance</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r8c1-t31" headers="r1c1-t31"><code dir="ltr">V$MAP_COMP_LIST</code></td>
+<td class="cellalignment1335" headers="r8c1-t31 r1c2-t31">Contains supplementary information for all element mapping structures.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r9c1-t31" headers="r1c1-t31"><code dir="ltr">V$MAP_FILE_IO_STACK</code></td>
+<td class="cellalignment1335" headers="r9c1-t31 r1c2-t31">The hierarchical arrangement of storage containers for the file displayed as a series of rows. Each row represents a level in the hierarchy.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink REFRN" href="../e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for a complete description of the dynamic performance views</div>
+<p>However, the information generated by the <code dir="ltr">DBMS_STORAGE_MAP.MAP_OBJECT</code> procedure is captured in a global temporary table named <code dir="ltr">MAP_OBJECT</code>. This table displays the hierarchical arrangement of storage containers for objects. Each row in the table represents a level in the hierarchy. A description of the <code dir="ltr">MAP_OBJECT</code> table follows.</p>
+<div class="inftblinformal">
+<table class="cellalignment1333" title="The MAP_OBJECT TABLE" summary="This table describes the MAP_OBJECT table. Column 1 lists the column name, column 2 lists its datatype, and column 3 describes the column." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t33">Column</th>
+<th class="cellalignment1334" id="r1c2-t33">Data Type</th>
+<th class="cellalignment1334" id="r1c3-t33">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t33" headers="r1c1-t33"><code dir="ltr">OBJECT_NAME</code></td>
+<td class="cellalignment1335" headers="r2c1-t33 r1c2-t33"><code dir="ltr">VARCHAR2(2000)</code></td>
+<td class="cellalignment1335" headers="r2c1-t33 r1c3-t33">Name of the object</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t33" headers="r1c1-t33"><code dir="ltr">OBJECT_OWNER</code></td>
+<td class="cellalignment1335" headers="r3c1-t33 r1c2-t33"><code dir="ltr">VARCHAR2(2000)</code></td>
+<td class="cellalignment1335" headers="r3c1-t33 r1c3-t33">Owner of the object</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t33" headers="r1c1-t33"><code dir="ltr">OBJECT_TYPE</code></td>
+<td class="cellalignment1335" headers="r4c1-t33 r1c2-t33"><code dir="ltr">VARCHAR2(2000)</code></td>
+<td class="cellalignment1335" headers="r4c1-t33 r1c3-t33">Object type</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r5c1-t33" headers="r1c1-t33"><code dir="ltr">FILE_MAP_IDX</code></td>
+<td class="cellalignment1335" headers="r5c1-t33 r1c2-t33"><code dir="ltr">NUMBER</code></td>
+<td class="cellalignment1335" headers="r5c1-t33 r1c3-t33">File index (corresponds to <code dir="ltr">FILE_MAP_IDX</code> in <code dir="ltr">V$MAP_FILE</code>)</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r6c1-t33" headers="r1c1-t33"><code dir="ltr">DEPTH</code></td>
+<td class="cellalignment1335" headers="r6c1-t33 r1c2-t33"><code dir="ltr">NUMBER</code></td>
+<td class="cellalignment1335" headers="r6c1-t33 r1c3-t33">Element depth within the I/O stack</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r7c1-t33" headers="r1c1-t33"><code dir="ltr">ELEM_IDX</code></td>
+<td class="cellalignment1335" headers="r7c1-t33 r1c2-t33"><code dir="ltr">NUMBER</code></td>
+<td class="cellalignment1335" headers="r7c1-t33 r1c3-t33">Index corresponding to element</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r8c1-t33" headers="r1c1-t33"><code dir="ltr">CU_SIZE</code></td>
+<td class="cellalignment1335" headers="r8c1-t33 r1c2-t33"><code dir="ltr">NUMBER</code></td>
+<td class="cellalignment1335" headers="r8c1-t33 r1c3-t33">Contiguous set of logical blocks of the file, in HKB (half KB) units, that is resident contiguously on the element</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r9c1-t33" headers="r1c1-t33"><code dir="ltr">STRIDE</code></td>
+<td class="cellalignment1335" headers="r9c1-t33 r1c2-t33"><code dir="ltr">NUMBER</code></td>
+<td class="cellalignment1335" headers="r9c1-t33 r1c3-t33">Number of HKB between contiguous units (CU) in the file that are contiguous on this element. Used in RAID5 and striped files.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r10c1-t33" headers="r1c1-t33"><code dir="ltr">NUM_CU</code></td>
+<td class="cellalignment1335" headers="r10c1-t33 r1c2-t33"><code dir="ltr">NUMBER</code></td>
+<td class="cellalignment1335" headers="r10c1-t33 r1c3-t33">Number of contiguous units that are adjacent to each other on this element that are separated by <code dir="ltr">STRIDE</code> HKB in the file. In RAID5, the number of contiguous units also include the parity stripes.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r11c1-t33" headers="r1c1-t33"><code dir="ltr">ELEM_OFFSET</code></td>
+<td class="cellalignment1335" headers="r11c1-t33 r1c2-t33"><code dir="ltr">NUMBER</code></td>
+<td class="cellalignment1335" headers="r11c1-t33 r1c3-t33">Element offset in HKB units</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r12c1-t33" headers="r1c1-t33"><code dir="ltr">FILE_OFFSET</code></td>
+<td class="cellalignment1335" headers="r12c1-t33 r1c2-t33"><code dir="ltr">NUMBER</code></td>
+<td class="cellalignment1335" headers="r12c1-t33 r1c3-t33">Offset in HKB units from the start of the file to the first byte of the contiguous units</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r13c1-t33" headers="r1c1-t33"><code dir="ltr">DATA_TYPE</code></td>
+<td class="cellalignment1335" headers="r13c1-t33 r1c2-t33"><code dir="ltr">VARCHAR2(2000)</code></td>
+<td class="cellalignment1335" headers="r13c1-t33 r1c3-t33">Data type (<code dir="ltr">DATA</code>, <code dir="ltr">PARITY</code>, or <code dir="ltr">DATA AND PARITY</code>)</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r14c1-t33" headers="r1c1-t33"><code dir="ltr">PARITY_POS</code></td>
+<td class="cellalignment1335" headers="r14c1-t33 r1c2-t33"><code dir="ltr">NUMBER</code></td>
+<td class="cellalignment1335" headers="r14c1-t33 r1c3-t33">Position of the parity. Only for RAID5. This field is needed to distinguish the parity from the data part.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r15c1-t33" headers="r1c1-t33"><code dir="ltr">PARITY_PERIOD</code></td>
+<td class="cellalignment1335" headers="r15c1-t33 r1c2-t33"><code dir="ltr">NUMBER</code></td>
+<td class="cellalignment1335" headers="r15c1-t33 r1c3-t33">Parity period. Only for RAID5.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformal" --></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1007014"></a>
+<div id="ADMIN11455" class="sect2">
+<h3 class="sect2">File Mapping Examples<a id="sthref1751"></a></h3>
+<p>The following examples illustrates some of the powerful capabilities of the Oracle Database file mapping feature. This includes:</p>
+<ul>
+<li>
+<p>The ability to map all the database files that span a particular device</p>
+</li>
+<li>
+<p>The ability to map a particular file into its corresponding devices</p>
+</li>
+<li>
+<p>The ability to map a particular database object, including its block distribution at all levels within the I/O stack</p>
+</li>
+</ul>
+<p>Consider an Oracle Database instance which is composed of two data files:</p>
+<ul>
+<li>
+<p><code dir="ltr">t_db1.f</code></p>
+</li>
+<li>
+<p><code dir="ltr">t_db2.f</code></p>
+</li>
+</ul>
+<p>These files are created on a Solaris UFS file system mounted on a VERITAS VxVM host based striped volume, <code dir="ltr">/dev/vx/dsk/ipfdg/ipf-vol1</code>, that consists of the following host devices as externalized from an EMC Symmetrix array:</p>
+<ul>
+<li>
+<p><code dir="ltr">/dev/vx/rdmp/c2t1d0s2</code></p>
+</li>
+<li>
+<p><code dir="ltr">/dev/vx/rdmp/c2t1d1s2</code></p>
+</li>
+</ul>
+<p>Note that the following examples require the execution of a <code dir="ltr">MAP_ALL()</code> operation.</p>
+<div id="ADMIN11456" class="sect3"><a id="sthref1752"></a>
+<h4 class="sect3">Example 1: Map All Database Files that Span a Device</h4>
+<p>The following query returns all Oracle Database files associated with the <code dir="ltr">/dev/vx/rdmp/c2t1d1s2</code> host device:</p>
+<pre dir="ltr">
+SELECT UNIQUE me.ELEM_NAME, mf.FILE_NAME
+   FROM V$MAP_FILE_IO_STACK fs, V$MAP_FILE mf, V$MAP_ELEMENT me
+   WHERE mf.FILE_MAP_IDX = fs.FILE_MAP_IDX
+   AND me.ELEM_IDX = fs.ELEM_IDX
+   AND me.ELEM_NAME = '/dev/vx/rdmp/c2t1d1s2';
+ 
+</pre>
+<p>The query results are:</p>
+<pre dir="ltr">
+ELEM_NAME                 FILE_NAME
+------------------------  --------------------------------
+/dev/vx/rdmp/c2t1d1s2     /oracle/dbs/t_db1.f
+/dev/vx/rdmp/c2t1d1s2     /oracle/dbs/t_db2.f
+</pre></div>
+<!-- class="sect3" -->
+<div id="ADMIN11457" class="sect3"><a id="sthref1753"></a>
+<h4 class="sect3">Example 2: Map a File into Its Corresponding Devices</h4>
+<p>The following query displays a topological graph of the <code dir="ltr">/oracle/dbs/t_db1.f</code> data file:</p>
+<pre dir="ltr">
+WITH fv AS 
+  (SELECT FILE_MAP_IDX, FILE_NAME FROM V$MAP_FILE 
+   WHERE FILE_NAME = '/oracle/dbs/t_db1.f')
+SELECT fv.FILE_NAME, LPAD(' ', 4 * (LEVEL - 1)) || el.ELEM_NAME ELEM_NAME 
+   FROM V$MAP_SUBELEMENT sb, V$MAP_ELEMENT el, fv, 
+     (SELECT UNIQUE ELEM_IDX FROM V$MAP_FILE_IO_STACK io, fv 
+      WHERE io.FILE_MAP_IDX = fv.FILE_MAP_IDX) fs
+   WHERE el.ELEM_IDX = sb.CHILD_IDX
+   AND fs.ELEM_IDX = el.ELEM_IDX
+   START WITH sb.PARENT_IDX IN
+     (SELECT DISTINCT ELEM_IDX 
+      FROM V$MAP_FILE_EXTENT fe, fv
+      WHERE fv.FILE_MAP_IDX = fe.FILE_MAP_IDX)
+   CONNECT BY PRIOR sb.CHILD_IDX = sb.PARENT_IDX;
+</pre>
+<p>The resulting topological graph is:</p>
+<pre dir="ltr">
+FILE_NAME                    ELEM_NAME
+-----------------------      -------------------------------------------------
+/oracle/dbs/t_db1.f          _sym_plex_/dev/vx/rdsk/ipfdg/ipf-vol1_-1_-1
+/oracle/dbs/t_db1.f              _sym_subdisk_/dev/vx/rdsk/ipfdg/ipf-vol1_0_0_0
+/oracle/dbs/t_db1.f                  /dev/vx/rdmp/c2t1d0s2
+/oracle/dbs/t_db1.f                      _sym_symdev_000183600407_00C
+/oracle/dbs/t_db1.f                          _sym_hyper_000183600407_00C_0
+/oracle/dbs/t_db1.f                          _sym_hyper_000183600407_00C_1
+/oracle/dbs/t_db1.f              _sym_subdisk_/dev/vx/rdsk/ipfdg/ipf-vol1_0_1_0
+/oracle/dbs/t_db1.f                  /dev/vx/rdmp/c2t1d1s2
+/oracle/dbs/t_db1.f                      _sym_symdev_000183600407_00D
+/oracle/dbs/t_db1.f                          _sym_hyper_000183600407_00D_0
+/oracle/dbs/t_db1.f                          _sym_hyper_000183600407_00D_1
+</pre></div>
+<!-- class="sect3" -->
+<div id="ADMIN11458" class="sect3"><a id="sthref1754"></a>
+<h4 class="sect3">Example 3: Map a Database Object<a id="sthref1755"></a><a id="sthref1756"></a></h4>
+<p>This example displays the block distribution at all levels within the I/O stack for the <code dir="ltr">scott.bonus</code> table.</p>
+<p>A <code dir="ltr">MAP_OBJECT()</code> operation must first be executed as follows:</p>
+<pre dir="ltr">
+EXECUTE DBMS_STORAGE_MAP.MAP_OBJECT('BONUS','SCOTT','TABLE');
+</pre>
+<p>The query is as follows:</p>
+<pre dir="ltr">
+SELECT io.OBJECT_NAME o_name, io.OBJECT_OWNER o_owner, io.OBJECT_TYPE o_type,
+       mf.FILE_NAME, me.ELEM_NAME, io.DEPTH,
+      (SUM(io.CU_SIZE * (io.NUM_CU - DECODE(io.PARITY_PERIOD, 0, 0, 
+                         TRUNC(io.NUM_CU / io.PARITY_PERIOD)))) / 2) o_size
+   FROM MAP_OBJECT io, V$MAP_ELEMENT me, V$MAP_FILE mf
+   WHERE io.OBJECT_NAME =  'BONUS'
+   AND   io.OBJECT_OWNER = 'SCOTT'
+   AND   io.OBJECT_TYPE =  'TABLE'
+   AND   me.ELEM_IDX = io.ELEM_IDX
+   AND   mf.FILE_MAP_IDX = io.FILE_MAP_IDX
+   GROUP BY io.ELEM_IDX, io.FILE_MAP_IDX, me.ELEM_NAME, mf.FILE_NAME, io.DEPTH,
+         io.OBJECT_NAME, io.OBJECT_OWNER, io.OBJECT_TYPE
+   ORDER BY io.DEPTH;
+</pre>
+<p>The following is the result of the query. Note that the <code dir="ltr">o_size</code> column is expressed in KB.</p>
+<pre dir="ltr">
+O_NAME O_OWNER O_TYPE  FILE_NAME            ELEM_NAME                      DEPTH   O_SIZE
+------ ------- ------  -------------------  -----------------------------  ------  ------
+BONUS  SCOTT   TABLE   /oracle/dbs/t_db1.f  /dev/vx/dsk/ipfdg/ipf-vol1          0      20
+BONUS  SCOTT   TABLE   /oracle/dbs/t_db1.f  _sym_plex_/dev/vx/rdsk/ipf          1      20
+                                            pdg/if-vol1_-1_-1
+BONUS  SCOTT   TABLE   /oracle/dbs/t_db1.f  _sym_subdisk_/dev/vx/rdsk/          2      12
+                                            ipfdg/ipf-vol1_0_1_0
+BONUS  SCOTT   TABLE   /oracle/dbs/t_db1.f  _sym_subdisk_/dev/vx/rdsk/ipf       2       8
+                                            dg/ipf-vol1_0_2_0 
+BONUS  SCOTT   TABLE   /oracle/dbs/t_db1.f  /dev/vx/rdmp/c2t1d1s2               3      12
+BONUS  SCOTT   TABLE   /oracle/dbs/t_db1.f  /dev/vx/rdmp/c2t1d2s2               3       8
+BONUS  SCOTT   TABLE   /oracle/dbs/t_db1.f  _sym_symdev_000183600407_00D        4      12
+BONUS  SCOTT   TABLE   /oracle/dbs/t_db1.f  _sym_symdev_000183600407_00E        4       8
+BONUS  SCOTT   TABLE   /oracle/dbs/t_db1.f  _sym_hyper_000183600407_00D_0       5      12
+BONUS  SCOTT   TABLE   /oracle/dbs/t_db1.f  _sym_hyper_000183600407_00D_1       5      12
+BONUS  SCOTT   TABLE   /oracle/dbs/t_db1.f  _sym_hyper_000183600407_00E_0       6       8
+BONUS  SCOTT   TABLE   /oracle/dbs/t_db1.f  _sym_hyper_000183600407_00E_1       6       8
+</pre></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1007111"></a>
+<div id="ADMIN11459" class="sect1">
+<h2 class="sect1">Data Files Data Dictionary Views<a id="sthref1757"></a><a id="sthref1758"></a></h2>
+<p>The following data dictionary views provide useful information about the data files of a database:</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="Viewing Information About Datafiles" summary="Column 1 contains the names of views containing information about datafiles in the database. Column 2 describes each view." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t34">View</th>
+<th class="cellalignment1334" id="r1c2-t34">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t34" headers="r1c1-t34"><code dir="ltr">DBA_DATA_FILES</code></td>
+<td class="cellalignment1335" headers="r2c1-t34 r1c2-t34">Provides descriptive information about each data file, including the tablespace to which it belongs and the file ID. The file ID can be used to join with other views for detail information.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t34" headers="r1c1-t34"><code dir="ltr">DBA_EXTENTS</code>
+<p><code dir="ltr">USER_EXTENTS</code></p>
+</td>
+<td class="cellalignment1335" headers="r3c1-t34 r1c2-t34"><code dir="ltr">DBA</code> view describes the extents comprising all segments in the database. Contains the file ID of the data file containing the extent. <code dir="ltr">USER</code> view describes extents of the segments belonging to objects owned by the current user.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t34" headers="r1c1-t34"><code dir="ltr">DBA_FREE_SPACE</code>
+<p><code dir="ltr">USER_FREE_SPACE</code></p>
+</td>
+<td class="cellalignment1335" headers="r4c1-t34 r1c2-t34"><code dir="ltr">DBA</code> view lists the free extents in all tablespaces. Includes the file ID of the data file containing the extent. <code dir="ltr">USER</code> view lists the free extents in the tablespaces accessible to the current user.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r5c1-t34" headers="r1c1-t34"><code dir="ltr">V$DATAFILE</code></td>
+<td class="cellalignment1335" headers="r5c1-t34 r1c2-t34">Contains data file information from the control file</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r6c1-t34" headers="r1c1-t34"><code dir="ltr">V$DATAFILE_HEADER</code></td>
+<td class="cellalignment1335" headers="r6c1-t34 r1c2-t34">Contains information from data file headers</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" -->
+<p>This example illustrates the use of one of these views, <code dir="ltr">V$DATAFILE</code>.</p>
+<pre dir="ltr">
+SELECT NAME,
+    FILE#,
+    STATUS,
+    CHECKPOINT_CHANGE# "CHECKPOINT"   
+  FROM   V$DATAFILE;
+
+NAME                                      FILE#     STATUS       CHECKPOINT
+--------------------------------          -----     -------       ----------
+/u01/oracle/rbdb1/system01.dbf                1     SYSTEM              3839
+/u02/oracle/rbdb1/temp01.dbf                  2     ONLINE              3782
+/u02/oracle/rbdb1/users03.dbf                 3     OFFLINE             3782
+</pre>
+<p><code dir="ltr">FILE#</code> lists the file number of each data file; the first data file in the <code dir="ltr">SYSTEM</code> tablespace created with the database is always file 1. <code dir="ltr">STATUS</code> lists other information about a data file. If a data file is part of the <code dir="ltr">SYSTEM</code> tablespace, its status is <code dir="ltr">SYSTEM</code> (unless it requires recovery). If a data file in a non-<code dir="ltr">SYSTEM</code> tablespace is online, its status is <code dir="ltr">ONLINE</code>. If a data file in a non-<code dir="ltr">SYSTEM</code> tablespace is offline, its status can be either <code dir="ltr">OFFLINE</code> or <code dir="ltr">RECOVER</code>. <code dir="ltr">CHECKPOINT</code> lists the final SCN<a id="sthref1759"></a> (system change number) written for the most recent checkpoint of a data file.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink REFRN" href="../e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for complete descriptions of these views</div>
+</div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1326">
+<tr>
+<td class="cellalignment1335">
+<table class="cellalignment1331">
+<tr>
+<td class="cellalignment1330"><a href="tspaces.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1330"><a href="undo.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2001, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1337">
+<table class="cellalignment1329">
+<tr>
+<td class="cellalignment1330"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1330"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1330"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1330"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1330"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1330"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

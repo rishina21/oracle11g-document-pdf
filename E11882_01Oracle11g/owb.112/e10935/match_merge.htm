@@ -1,0 +1,2063 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Matching, Merging, and Deduplication</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 037" />
+<meta name="dcterms.created" content="2011-09-21T18:21:39Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Warehouse Builder Data Modeling, ETL, and Data Quality Guide" />
+<meta name="dcterms.identifier" content="E10935-05" />
+<meta name="dcterms.isVersionOf" content="WBETL" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2000, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="name_address.htm" title="Previous" type="text/html" />
+<link rel="Next" href="part_4.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10935.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">29/37</span> <!-- End Header --><a id="g1140280"></a><a id="WBETL23000"></a>
+<h1 class="chapter"><span class="secnum">23</span> Matching, Merging, and Deduplication</h1>
+<p>This chapter discusses the matching, merging and data duplication features of Oracle Warehouse Builder.</p>
+<p>This chapter contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#BGBIFFAG">"About Matching and Merging in Oracle Warehouse Builder"</a>.</p>
+</li>
+<li>
+<p><a href="#BGBDHCFG">"Using the Match Merge Operator to Eliminate Duplicate Source Records"</a>.</p>
+</li>
+</ul>
+<a id="BGBIFFAG"></a><a id="WBETL23002"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">About Matching and Merging in Oracle Warehouse Builder<a id="sthref1901"></a><a id="sthref1902"></a><a id="sthref1903"></a><a id="sthref1904"></a><a id="sthref1905"></a></h2>
+<p>Oracle Warehouse Builder implements general-purpose data matching and merging capabilities that can be applied to any type of data.</p>
+<p>You can write the list of rows matched by your algorithms to a target table. You can also implement complex deduplication logic to generated merged records, again using a variety of built-in merge rules or implementing your own merge rules.</p>
+<p>Oracle Warehouse Builder matching and merging provides the following functionality:</p>
+<ul>
+<li>
+<p>Determine matches using built-in algorithms, such as the Jaro-Winkler and Levenshtein edit distance algorithms, or using a custom algorithm you implement.</p>
+</li>
+<li>
+<p>Use weighting to determine matches between records.</p>
+</li>
+<li>
+<p>Generate a table containing candidate matches, as input to some other merge logic, such as an existing master data management application.</p>
+</li>
+<li>
+<p>Generate a table with merged data records, with merge logic based on built-in merge rules, custom-implemented merge logic, or complex merge rules that can combine packaged and custom rules.</p>
+</li>
+<li>
+<p>Cross reference data to track and audit matches.</p>
+</li>
+<li>
+<p>Built-in advanced matching rules for person, firm and address data.</p>
+</li>
+</ul>
+<p>Oracle Warehouse Builder matching and merging can be combined with Oracle Warehouse Builder name and address cleansing functionality to support <span class="bold">householding</span><a id="sthref1906"></a>, which is the process of identifying unique households in name and address data.</p>
+<p>See <a href="name_address.htm#BABDDFIE">Chapter 22, "Name and Address Cleansing"</a> for details on name and address cleansing.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Oracle Warehouse Builder exposes its matching and merging functionality through the Match Merge operator used in an Oracle Warehouse Builder ETL mapping. Users of third-party ETL products can still use Oracle Warehouse Builder for matching and merging, while retaining their existing ETL solution.
+<ul>
+<li>
+<p>Use the third-party ETL tool to load match-merge input data in a staging table.</p>
+</li>
+<li>
+<p>Use an Oracle Warehouse Builder ETL mapping to apply match-merge and load the results into an output table.</p>
+</li>
+<li>
+<p>Use the third-party ETL tool to pick up the merged results from the output table for further processing.</p>
+</li>
+</ul>
+<p>Because the deployed code for the mapping is just a PL/SQL package loaded in the database where the matching and merging takes place, this technique can be used from any ETL tool that can call logic from a PL/SQL package.</p>
+</div>
+<a id="WBETL19004"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1907"></a>
+<h3 class="sect2">Example: A Basic Mapping with a Match Merge Operator</h3>
+<p><a href="#BGBJHHIG">Figure 23-1</a> shows a mapping that uses a Match Merge operator. Notice that the Match Merge operator is preceded by a Name and Address operator, NAMEADDR, and a staging table, CLN_CUSTOMERS. In many scenarios, when cleansing and deduplicating name and address data, it makes sense to combine the Match Merge operator with the Name and Address operator in a mapping. Performing name and address cleansing on your source data provides clean and standardized input data for matching and merging. This improves the quality of your results, and can improve performance because cleansed rows are more easily identified as matches</p>
+<div class="figure">
+<p class="titleinfigure"><a id="BGBJHHIG"></a>Figure 23-1 Match Merge Operator in a Mapping</p>
+<img width="655" height="306" src="img/mm_map.gif" alt="Description of Figure 23-1 follows" /><br />
+<a id="sthref1908" href="img_text/mm_map.htm">Description of "Figure 23-1 Match Merge Operator in a Mapping"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>The simple mapping represents the flow of data for the matching and merging process:</p>
+<ul>
+<li>
+<p>The Customers table provides input to the Name and Address operator, which stores its output in the CLN_CUSTOMERS table.</p>
+</li>
+<li>
+<p>The CLN_CUSTOMERS table provides FIRST, LAST, and ADDRESS columns as inputs to the Match Merge operator.</p>
+</li>
+<li>
+<p>The Match Merge operator provides FIRST, LAST, and ADDRESS input to the MM_CUSTOMERS table (the actual deduplicated rows), and FIRST, LAST, ADDRESS, MM_FIRST, MM_LAST, and MM_ADDRESS input to the REF_TABLE table, which identifies the groups of matched rows from the input.</p>
+</li>
+</ul>
+<p>Details of how this matching process works are described in <a href="#BGBFFGFC">"Overview of the Matching and Merging Process"</a>.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BGBFFGFC"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Overview of the Matching and Merging Process</h3>
+<p>Matching determines which records refer to the same logical data. Oracle Warehouse Builder provides a variety of match rules to compare records. Match rules range from a simple exact match to sophisticated algorithms that can discover and correct common data entry errors.</p>
+<p>Merging consolidates matched records into a single consolidated "golden" record based on survivorship rules called merge rules that you select or define for creating a merged value for each column.</p>
+<p>If you have some other tool, such as a packaged MDM application, that has logic for merging duplicate records, you can still use Oracle Warehouse Builder to generate the set of candidate matched rows and store those in an intermediate table.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#BGBHGABH">"Match Rules"</a></p>
+</li>
+<li>
+<p><a href="#BGBEGCFI">"Merge Rules"</a></p>
+</li>
+</ul>
+</div>
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1909"></a>
+<h4 class="sect3">Elements of Matching and Merging Records</h4>
+<p>The following concepts and terms are important in understanding the matching and merging process.</p>
+<ul>
+<li>
+<p><a href="#CDEIIECF">"Match Bins"</a></p>
+</li>
+<li>
+<p><a href="#CDEGCFII">"Match Bin Attributes"</a></p>
+</li>
+<li>
+<p><a href="#CDECEFDH">"Match Record Sets"</a></p>
+</li>
+<li>
+<p><a href="#CDEJAHEI">"Merged Records"</a></p>
+</li>
+</ul>
+<p><a id="CDEIIECF"></a><span class="subhead3">Match Bins&nbsp;</span></p>
+<p>Match bins are containers for similar records and are used to identify potential matches. The match bin attributes are used to determine how records are grouped into match bins. While performing matching, Oracle Warehouse Builder compares only records within the same match bin. Match bins limit the number of potential matches in a data set, thus improving performance of the match algorithm.</p>
+<p><a id="CDEGCFII"></a><span class="subhead3">Match Bin Attributes&nbsp;</span></p>
+<p>Before performing matching, Oracle Warehouse Builder divides the source records into smaller groups of similar records. <span class="italic">Match bin attributes</span> are the source attributes used to determine how records are grouped. Records having the same match bin attributes reside in the same match bin. Match bin attributes also limit match bins to manageable sets.</p>
+<p>Select match bin attributes carefully to fulfill the following two conflicting needs:</p>
+<ul>
+<li>
+<p>Ensure that any records that could match reside in the same match bin.</p>
+</li>
+<li>
+<p>Keep the size of the match bin as small as possible.</p>
+<p>A small match bin is desirable for efficiency, because records that are binned must be tested against each other to identify matches. The larger the bin, the slower the performance.</p>
+</li>
+</ul>
+<p><a id="CDECEFDH"></a><span class="subhead3">Match Record Sets&nbsp;</span></p>
+<p>A match record set consists of one or more similar records within the match bin. After matching, each match bin contains one or more match record sets. You can define match rules that determine if two records are similar.</p>
+<p><a id="CDEJAHEI"></a><span class="subhead3">Merged Records&nbsp;</span></p>
+<p>A merged record contains data that is merged using multiple records in the match record set. Each match record set generates its own merged record.</p>
+</div>
+<!-- class="sect3" -->
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1910"></a>
+<h4 class="sect3">Process for Matching and Merging Records</h4>
+<p>You use the Match Merge operator to match and merge records. This operator accepts records from an input source, determines the records that are logically the same, and constructs a new merged record from the matched records.</p>
+<p>The high-level tasks involved in matching and merging process include the following:</p>
+<ul>
+<li>
+<p><a href="#BGBCFFDE">"Constructing Match Bins"</a></p>
+</li>
+<li>
+<p><a href="#BGBJCEFD">"Constructing Match Record Sets"</a></p>
+</li>
+<li>
+<p><a href="#BGBEIHJG">"Constructing Merge Records"</a></p>
+</li>
+</ul>
+<p><a href="#BGBIFFEI">Figure 23-2</a> represents high-level tasks involved in the matching and merging process.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="BGBIFFEI"></a>Figure 23-2 Matching and Merging Process</p>
+<img width="349" height="141" src="img/match_merge_process.gif" alt="Description of Figure 23-2 follows" /><br />
+<a id="sthref1911" href="img_text/match_merge_process.htm">Description of "Figure 23-2 Matching and Merging Process"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<a id="BGBCFFDE"></a>
+<div class="sect4"><!-- infolevel="all" infotype="General" -->
+<h5 class="sect4">Constructing Match Bins</h5>
+<p>The match bin is constructed using the match bin attributes. Records with the same match bin attribute values reside in the same match bin. A small match bin is desirable for efficiency.</p>
+</div>
+<!-- class="sect4" -->
+<a id="BGBJCEFD"></a>
+<div class="sect4"><!-- infolevel="all" infotype="General" -->
+<h5 class="sect4">Constructing Match Record Sets</h5>
+<p>Match rules are applied to all the records in each match bin to generate one or more match record sets. Match rules determine if two records match. The matching algorithm is an <span class="italic">n</span> X <span class="italic">n</span> algorithm where all records in the match bin are compared.</p>
+<p>One important point of this algorithm is the transitive matching. Consider three records A, B, and C. If record A equals record B and record B equals record C, then record A equals record C.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#BGBHGABH">"Match Rules"</a> for information about the types of match rules and how to create them.</div>
+</div>
+<!-- class="sect4" -->
+<a id="BGBEIHJG"></a>
+<div class="sect4"><!-- infolevel="all" infotype="General" -->
+<h5 class="sect4">Constructing Merge Records</h5>
+<p>A single merge record is constructed from each match record set. You can create specific rules to define merge attributes by using merge rules.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#BGBEGCFI">"Merge Rules"</a> for more information about the types of merge rules.</div>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BGBHGABH"></a><a id="WBETL19003"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Match Rules<a id="sthref1912"></a></h3>
+<p>Match rules are used to determine if two records are logically similar. Oracle Warehouse Builder enables you to use different types of rules to match source records. You can define match rules using the MatchMerge Wizard or the MatchMerge Editor. Use the editor to edit existing match rules or add new rules.</p>
+<p>Match rules can be active or passive. Active rules are generated and run in the order specified. Passive rules are generated but are not automatically run. A passive rule may be run by a custom rule.</p>
+<p><a href="#BGBGABHD">Table 23-1</a> describes the types of match rules.</p>
+<div class="tblformal">
+<p class="titleintable"><a id="sthref1913"></a><a id="BGBGABHD"></a>Table 23-1 Types of Match Rules</p>
+<table class="cellalignment2975" title="Types of Match Rules" summary="This table describes the types of match rules. The first column contains the match rule name and the other contains the description." dir="ltr">
+<thead>
+<tr class="cellalignment2969">
+<th class="cellalignment2976" id="r1c1-t6">Match Rule</th>
+<th class="cellalignment2976" id="r1c2-t6">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r2c1-t6" headers="r1c1-t6">
+<p>All Match</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t6 r1c2-t6">
+<p>Matches all rows within a match bin</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r3c1-t6" headers="r1c1-t6">
+<p>None Match</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t6 r1c2-t6">
+<p>Turns off matching. No rows match within the match bin.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r4c1-t6" headers="r1c1-t6">
+<p>Conditional</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t6 r1c2-t6">
+<p>Matches rows based on the algorithm you set. For more information about Conditional match rules and how to create one, see <a href="#BGBEDHBD">"Conditional Match Rules"</a>.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r5c1-t6" headers="r1c1-t6">
+<p>Weight</p>
+</td>
+<td class="cellalignment2977" headers="r5c1-t6 r1c2-t6">
+<p>Matches rows based on scores that you assign to the attributes. For more information about Weight match rules and how to create one, see <a href="#BGBBACII">"Weight Match Rules"</a>.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r6c1-t6" headers="r1c1-t6">
+<p>Person</p>
+</td>
+<td class="cellalignment2977" headers="r6c1-t6 r1c2-t6">
+<p>Matches records based on the names of people. For more information about Person match rules and how to create one, see <a href="#BGBCFGCE">"Person Match Rules"</a>.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r7c1-t6" headers="r1c1-t6">
+<p>Firm</p>
+</td>
+<td class="cellalignment2977" headers="r7c1-t6 r1c2-t6">
+<p>Matches records based on the name of the organization or firm. For more information about Firm match rules and how to create one, see <a href="#BGBGHCIH">"Firm Match Rules"</a>.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r8c1-t6" headers="r1c1-t6">
+<p>Address</p>
+</td>
+<td class="cellalignment2977" headers="r8c1-t6 r1c2-t6">
+<p>Matches records based on postal addresses. For more information about Address match rules and how to create one, see <a href="#BGBBCFFE">"Address Match Rules"</a>.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r9c1-t6" headers="r1c1-t6">
+<p>Custom</p>
+</td>
+<td class="cellalignment2977" headers="r9c1-t6 r1c2-t6">
+<p>Matches records based on a custom comparison algorithm that you define. For more information about Custom match rules and how to create one, see <a href="#BGBEEAJE">"Custom Match Rules"</a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" --></div>
+<!-- class="sect2" -->
+<a id="BGBEDHBD"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Conditional<a id="sthref1914"></a> Match Rules</h3>
+<p>Conditional match rules specify the conditions under which records match.</p>
+<p>A conditional match rule enables you to combine multiple attribute comparisons into one composite rule. When multiple attribute is involved in a rule, two records are considered to be a match only if all comparisons are true. Oracle Warehouse Builder displays an AND icon in the left-most column of subsequent conditions.</p>
+<p>You can specify how attributes are compared using comparison algorithms.</p>
+<p class="subhead2"><a id="sthref1915"></a>Attribute</p>
+<p>Identifies the attribute that is tested for a particular condition. You can select from any input attribute (INGRP1).</p>
+<p class="subhead2"><a id="sthref1916"></a>Position</p>
+<p>The order of execution. You can change the position of a rule by clicking on the row header and dragging the row to its new location. The row headers are the boxes to the left of the Attribute column.</p>
+<p class="subhead2"><a id="sthref1917"></a>Algorithm</p>
+<p>You use a list of methods to determine a match. <a href="#BGBCIGGB">Table 23-2</a> describes the algorithms.</p>
+<p class="subhead2"><a id="sthref1918"></a>Similarity Score</p>
+<p>The minimum similarity value required for two strings to match, as calculated by the Edit Distance, Standardized Edit Distance, Jaro-Winkler, or Standardized Jaro-Winkler algorithms. Enter a value between 0 and 100. A value of 100 indicates an exact match, and a value of 0 indicates no similarity.</p>
+<p class="subhead2"><a id="sthref1919"></a>Blank Matching</p>
+<p>Lists options for handling empty strings in a match.</p>
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1920"></a>
+<h4 class="sect3">Comparison Algorithms</h4>
+<p>Each attribute in a conditional match rule is assigned a comparison algorithm, which specifies how the attribute values are compared. Multiple attributes may be compared in one rule with a separate comparison algorithm selected for each.</p>
+<p><a href="#BGBCIGGB">Table 23-2</a> describes the types of comparisons.</p>
+<div class="tblformal">
+<p class="titleintable"><a id="sthref1921"></a><a id="BGBCIGGB"></a>Table 23-2 Types of Comparison Algorithms for Conditional Match Rules</p>
+<table class="cellalignment2975" title="Types of Comparison Algorithms for Conditional Match Rules" summary="This table describes the types of comparison algorithms." dir="ltr">
+<thead>
+<tr class="cellalignment2969">
+<th class="cellalignment2976" id="r1c1-t7">Algorithm</th>
+<th class="cellalignment2976" id="r1c2-t7">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r2c1-t7" headers="r1c1-t7">
+<p>Exact</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t7 r1c2-t7">
+<p>Attributes match if their values are the same. For example, "Dog" and "dog!" would not match, because the second string is not capitalized and contains an extra character.</p>
+<p>For data types other than <code>STRING</code>, this is the only type of comparison enabled.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r3c1-t7" headers="r1c1-t7">
+<p>Standardized Exact</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t7 r1c2-t7">
+<p>Standardizes the values of the attributes before comparing them for an exact match. With standardization, the comparison ignores case, spaces, and nonalphanumeric characters. Using this algorithm, "Dog" and "dog!" would match.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r4c1-t7" headers="r1c1-t7">
+<p>Soundex</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t7 r1c2-t7">
+<p>Converts the data to a Soundex representation and then compares the text strings. If the Soundex representations match, then the two attribute values are considered matched.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r5c1-t7" headers="r1c1-t7">
+<p>Edit Distance</p>
+</td>
+<td class="cellalignment2977" headers="r5c1-t7 r1c2-t7">
+<p>A "similarity score" in the range 0 to 100 is entered. If the similarity of the two attributes equals or greater than the specified value, then the attribute values are considered matched.</p>
+<p>The similarity algorithm computes the edit distance between two strings. A value of 100 indicates that the two values are identical; a value of zero indicates no similarity whatsoever.</p>
+<p>For example, if the string "tootle" is compared with the string "tootles", then the edit distance is 1. The length of the string "tootles" is 7. The similarity value is therefore (6/7)*100 or 85.</p>
+<p>The algorithm used here is the Levenshtein edit distance algorithm.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r6c1-t7" headers="r1c1-t7">
+<p>Standardized Edit Distance</p>
+</td>
+<td class="cellalignment2977" headers="r6c1-t7 r1c2-t7">
+<p>Standardizes the values of the attribute before using the Similarity algorithm to determine a match. With standardization, the comparison ignores case, spaces, and nonalphanumeric characters.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r7c1-t7" headers="r1c1-t7">
+<p>Partial Name</p>
+</td>
+<td class="cellalignment2977" headers="r7c1-t7 r1c2-t7">
+<p>The values of a string attribute are considered a match if the value of one entire attribute is contained within the other, starting with the first word. For example, "Midtown Power" would match "Midtown Power and Light", but would not match "Northern Midtown Power". The comparison ignores case and nonalphanumeric characters.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r8c1-t7" headers="r1c1-t7">
+<p>Abbreviation</p>
+</td>
+<td class="cellalignment2977" headers="r8c1-t7 r1c2-t7">
+<p>The values of a string attribute are considered a match if one string contains words that are abbreviations of corresponding words in the other. Before attempting to find an abbreviation, this algorithm performs a Std Exact comparison on the entire string. The comparison ignores case and nonalphanumeric character. For each word, the match rule looks for abbreviations, as follows. If the larger of the words being compared contains all of the letters from the shorter word, and the letters appear in the same order as the shorter word, then the words are considered a match.</p>
+<p>For example, "Intl. Business Products" would match "International Bus Prd".</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r9c1-t7" headers="r1c1-t7">
+<p>Acronym</p>
+</td>
+<td class="cellalignment2977" headers="r9c1-t7 r1c2-t7">
+<p>The values of a string attribute are considered a match if one string is an acronym for the other. Before attempting to identify an acronym, this algorithm performs a Std Exact comparison on the entire string. If no match is found, then each word of one string is compared to the corresponding word in the other string. If the entire word does not match, then each character of the word in one string is compared to the first character of each remaining word in the other string. If the characters are the same, then the names are considered a match.</p>
+<p>For example, "Chase Manhattan Bank NA" matches "CMB North America". The comparison ignores case and nonalphanumeric characters.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r10c1-t7" headers="r1c1-t7">
+<p>Jaro-Winkler</p>
+</td>
+<td class="cellalignment2977" headers="r10c1-t7 r1c2-t7">
+<p>Matches strings based on their similarity value using an improved comparison system over the Edit Distance algorithm. The Jaro-Winkler algorithm accounts for the length of the strings and penalizes more for errors at the beginning. It also recognizes common typographical errors.</p>
+<p>The strings match when their similarity value equals or greater than the Similarity Score that you specify. A similarity value of 100 indicates that the two strings are identical. A value of zero indicates no similarity whatsoever. The value actually calculated by the algorithm (0.0 to 1.0) is multiplied by 100 to correspond to the Edit Distance scores.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r11c1-t7" headers="r1c1-t7">
+<p>Standardized Jaro-Winkler</p>
+</td>
+<td class="cellalignment2977" headers="r11c1-t7 r1c2-t7">
+<p>Eliminates case, spaces, and nonalphanumeric characters before using the Jaro-Winkler algorithm to determine a match.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r12c1-t7" headers="r1c1-t7">
+<p>Double Metaphone</p>
+</td>
+<td class="cellalignment2977" headers="r12c1-t7 r1c2-t7">
+<p>Matches phonetically similar strings using an improved coding system over the Soundex algorithm. It generates two codes for strings that could be pronounced in multiple ways. If the primary codes match for the two strings, or if the secondary codes match, then the strings match. The Double Metaphone algorithm accounts for alternate pronunciations in Italian, Spanish, French, and Germanic and Slavic languages. Unlike the Soundex algorithm, Double Metaphone encodes the first letter, so that "Kathy" and "Cathy" evaluate to the same phonetic code.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" --></div>
+<!-- class="sect3" -->
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1922"></a>
+<h4 class="sect3">Creating Conditional Match Rules</h4>
+<p>To define a conditional match rule, complete the following steps:</p>
+<ol>
+<li>
+<p>On the top portion of the Match Rules tab or the Match Rules page, select <span class="bold">Conditional</span> in the Rule Type column.</p>
+<p>A Details section is displayed.</p>
+</li>
+<li>
+<p>Click <span class="bold">Add</span> to add a new row.</p>
+</li>
+<li>
+<p>Select an attribute in the Attribute column.</p>
+</li>
+<li>
+<p>In the Algorithm column, select a comparison algorithm. See <a href="#BGBCIGGB">Table 23-2</a> for descriptions.</p>
+</li>
+<li>
+<p>Specify a similarity score for the Edit Distance, Standardized Edit Distance, Jaro-Winkler, or Standardized Jaro-Winkler algorithms.</p>
+</li>
+<li>
+<p>Select a method for handling blanks.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1923"></a>
+<h3 class="sect2">Match Rules: Basic <a id="sthref1924"></a>Example</h3>
+<p>The following discussions illustrate how some basic match rules apply to real data and how multiple match rules can interact with each other.</p>
+<div class="sect3"><a id="sthref1925"></a>
+<h4 class="sect3">Example: Matching and Merging Customer Data</h4>
+<p>Consider how you could use the Match Merge operator to manage a customer mailing list. Use matching to find records that refer to the same person in a table of customer data containing 10,000 rows.</p>
+<p>For example, you can define a match rule that screens records that have similar first and last names. Through matching, you may discover that 5 rows could refer to the same person. You can then merge those records into one new record. For example, you can create a merge rule to retain the values from the one of the five matched records with the longest address. The newly merged table now contains one record for each customer.</p>
+<p><a href="#g1251589">Table 23-3</a> shows records that refer to the same person before using the Match Merge operator.</p>
+<div class="tblformal">
+<p class="titleintable"><a id="sthref1926"></a><a id="g1251589"></a>Table 23-3 Sample Records</p>
+<table class="cellalignment2975" title="Sample Records" summary="This table contains seven columns describing sample records before using the match merge operator. The sample table records contain Row ID, First Name, Last Name, SSN, Address, Unit, and Zip information." dir="ltr">
+<thead>
+<tr class="cellalignment2969">
+<th class="cellalignment2976" id="r1c1-t8">Row</th>
+<th class="cellalignment2976" id="r1c2-t8">First Name</th>
+<th class="cellalignment2976" id="r1c3-t8">Last Name</th>
+<th class="cellalignment2976" id="r1c4-t8">SSN</th>
+<th class="cellalignment2976" id="r1c5-t8">Address</th>
+<th class="cellalignment2976" id="r1c6-t8">Unit</th>
+<th class="cellalignment2976" id="r1c7-t8">Zip</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r2c1-t8" headers="r1c1-t8">
+<p>1</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t8 r1c2-t8">
+<p>Jane</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t8 r1c3-t8">
+<p>Doe</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t8 r1c4-t8">
+<p>NULL</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t8 r1c5-t8">
+<p>123 Main Street</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t8 r1c6-t8">
+<p>NULL</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t8 r1c7-t8">
+<p>22222</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r3c1-t8" headers="r1c1-t8">
+<p>2</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t8 r1c2-t8">
+<p>Jane</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t8 r1c3-t8">
+<p>Doe</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t8 r1c4-t8">
+<p>111111111</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t8 r1c5-t8">
+<p>NULL</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t8 r1c6-t8">
+<p>NULL</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t8 r1c7-t8">
+<p>22222</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r4c1-t8" headers="r1c1-t8">
+<p>3</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t8 r1c2-t8">
+<p>J.</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t8 r1c3-t8">
+<p>Doe</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t8 r1c4-t8">
+<p>NULL</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t8 r1c5-t8">
+<p>123 Main Street</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t8 r1c6-t8">
+<p>Apt 4</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t8 r1c7-t8">
+<p>22222</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r5c1-t8" headers="r1c1-t8">
+<p>4</p>
+</td>
+<td class="cellalignment2977" headers="r5c1-t8 r1c2-t8">
+<p>NULL</p>
+</td>
+<td class="cellalignment2977" headers="r5c1-t8 r1c3-t8">
+<p>Smith</p>
+</td>
+<td class="cellalignment2977" headers="r5c1-t8 r1c4-t8">
+<p>111111111</p>
+</td>
+<td class="cellalignment2977" headers="r5c1-t8 r1c5-t8">
+<p>123 Main Street</p>
+</td>
+<td class="cellalignment2977" headers="r5c1-t8 r1c6-t8">
+<p>Apt 4</p>
+</td>
+<td class="cellalignment2977" headers="r5c1-t8 r1c7-t8">
+<p>22222</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r6c1-t8" headers="r1c1-t8">
+<p>5</p>
+</td>
+<td class="cellalignment2977" headers="r6c1-t8 r1c2-t8">
+<p>Jane</p>
+</td>
+<td class="cellalignment2977" headers="r6c1-t8 r1c3-t8">
+<p>Smith-Doe</p>
+</td>
+<td class="cellalignment2977" headers="r6c1-t8 r1c4-t8">
+<p>111111111</p>
+</td>
+<td class="cellalignment2977" headers="r6c1-t8 r1c5-t8">
+<p>NULL</p>
+</td>
+<td class="cellalignment2977" headers="r6c1-t8 r1c6-t8">
+<p>NULL</p>
+</td>
+<td class="cellalignment2977" headers="r6c1-t8 r1c7-t8">
+<p>22222</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<p><a href="#CHDICCFG">Table 23-4</a> shows the single record for Jane Doe after using the Match Merge operator. Notice that the new record includes data from different rows in the sample.</p>
+<div class="tblformal">
+<p class="titleintable"><a id="sthref1927"></a><a id="CHDICCFG"></a>Table 23-4 Match-Merge Results</p>
+<table class="cellalignment2975" title="Match-Merge Results" summary="This table contains sixcolumns describing sample records after data cleansing using the match merge operator. The clean sample table contains First Name, Last Name, SSN, Address, Unit, and Zip information." dir="ltr">
+<thead>
+<tr class="cellalignment2969">
+<th class="cellalignment2976" id="r1c1-t9">First Name</th>
+<th class="cellalignment2976" id="r1c2-t9">Last Name</th>
+<th class="cellalignment2976" id="r1c3-t9">SSN</th>
+<th class="cellalignment2976" id="r1c4-t9">Address</th>
+<th class="cellalignment2976" id="r1c5-t9">Unit</th>
+<th class="cellalignment2976" id="r1c6-t9">Zip</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r2c1-t9" headers="r1c1-t9">
+<p>Jane</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t9 r1c2-t9">
+<p>Doe</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t9 r1c3-t9">
+<p>111111111</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t9 r1c4-t9">
+<p>123 Main Street</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t9 r1c5-t9">
+<p>Apt 4</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t9 r1c6-t9">
+<p>22222</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" --></div>
+<!-- class="sect3" -->
+<div class="sect3"><a id="sthref1928"></a>
+<h4 class="sect3">Example: How Multiple Match Rules Combine<a id="sthref1929"></a></h4>
+<p>If you create multiple match rule, Oracle Warehouse Builder determines two rows match if those rows satisfy any of the match rules. In other words, Oracle Warehouse Builder evaluates multiple match rules using OR logic.</p>
+<p>The following example illustrates how Oracle Warehouse Builder evaluates multiple match rules.</p>
+<p>In the top portion of the Match Rules tab, create two match rules as described in <a href="#CHDIEDFD">Table 23-5</a>.</p>
+<div class="tblformal">
+<p class="titleintable"><a id="sthref1930"></a><a id="CHDIEDFD"></a>Table 23-5 Two Match Rules</p>
+<table class="cellalignment2975" title="Two Match Rules" summary="This table describes two sample match rules. The table contains five columns describing the name, position, rule type, usage, and description of each sample match rule." dir="ltr">
+<thead>
+<tr class="cellalignment2969">
+<th class="cellalignment2976" id="r1c1-t10">Name</th>
+<th class="cellalignment2976" id="r1c2-t10">Position</th>
+<th class="cellalignment2976" id="r1c3-t10">Rule Type</th>
+<th class="cellalignment2976" id="r1c4-t10">Usage</th>
+<th class="cellalignment2976" id="r1c5-t10">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r2c1-t10" headers="r1c1-t10">
+<p>Rule_1</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t10 r1c2-t10">
+<p>1</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t10 r1c3-t10">
+<p>Conditional</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t10 r1c4-t10">
+<p>Active</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t10 r1c5-t10">
+<p>Match SSN</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r3c1-t10" headers="r1c1-t10">
+<p>Rule_2</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t10 r1c2-t10">
+<p>2</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t10 r1c3-t10">
+<p>Conditional</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t10 r1c4-t10">
+<p>Active</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t10 r1c5-t10">
+<p>Match Last Name and PHN</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<p>In the lower portion of the tab, assign the details to Rule_1 as described in <a href="#CHDEHDHH">Table 23-6</a>.</p>
+<div class="tblformal">
+<p class="titleintable"><a id="sthref1931"></a><a id="CHDEHDHH"></a>Table 23-6 Details for Rule_1</p>
+<table class="cellalignment2975" title="Details for Rule_1" summary="This table describes the details for the sample match rule, Rule_1. This table contains five columns describing the attribute, position, algorithm, similarity score, and blank matching for Rule_1." dir="ltr">
+<thead>
+<tr class="cellalignment2969">
+<th class="cellalignment2976" id="r1c1-t11">Attribute</th>
+<th class="cellalignment2976" id="r1c2-t11">Position</th>
+<th class="cellalignment2976" id="r1c3-t11">Algorithm</th>
+<th class="cellalignment2976" id="r1c4-t11">Similarity Score</th>
+<th class="cellalignment2976" id="r1c5-t11">Blank Matching</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r2c1-t11" headers="r1c1-t11">
+<p>SSN</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t11 r1c2-t11">
+<p>1</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t11 r1c3-t11">
+<p>Exact</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t11 r1c4-t11">
+<p>0</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t11 r1c5-t11">
+<p>Do not match if either is blank</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<p>For Rule_2, assign the details as described in <a href="#CHDEEBJA">Table 23-7</a>.</p>
+<div class="tblformal">
+<p class="titleintable"><a id="sthref1932"></a><a id="CHDEEBJA"></a>Table 23-7 Details for Rule_2</p>
+<table class="cellalignment2975" title="Details for Rule_2" summary="This table describes the details for the sample match rule, Rule_2. This table contains five columns describing the attribute, position, algorithm, similarity score, and blank matching for Rule_2." dir="ltr">
+<thead>
+<tr class="cellalignment2969">
+<th class="cellalignment2976" id="r1c1-t12">Attribute</th>
+<th class="cellalignment2976" id="r1c2-t12">Position</th>
+<th class="cellalignment2976" id="r1c3-t12">Algorithm</th>
+<th class="cellalignment2976" id="r1c4-t12">Similarity Score</th>
+<th class="cellalignment2976" id="r1c5-t12">Blank Matching</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r2c1-t12" headers="r1c1-t12">
+<p>LastName</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t12 r1c2-t12">
+<p>1</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t12 r1c3-t12">
+<p>Exact</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t12 r1c4-t12">
+<p>0</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t12 r1c5-t12">
+<p>Do not match if either is blank</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r3c1-t12" headers="r1c1-t12">
+<p>PHN</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t12 r1c2-t12">
+<p>2</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t12 r1c3-t12">
+<p>Exact</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t12 r1c4-t12">
+<p>0</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t12 r1c5-t12">
+<p>Do not match if either is blank</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<p>Assume that you have the data listed in <a href="#CHDBJFAD">Table 23-8</a>.</p>
+<div class="tblformal">
+<p class="titleintable"><a id="sthref1933"></a><a id="CHDBJFAD"></a>Table 23-8 Example Data</p>
+<table class="cellalignment2975" title="Example Data" summary="This table describes example data for the example outilined in this section. The table contains five columns describing the row, first name, last name, PHN, and SSN records of the sample data." dir="ltr">
+<thead>
+<tr class="cellalignment2969">
+<th class="cellalignment2976" id="r1c1-t13">Row</th>
+<th class="cellalignment2976" id="r1c2-t13">First Name</th>
+<th class="cellalignment2976" id="r1c3-t13">Last Name</th>
+<th class="cellalignment2976" id="r1c4-t13">PHN</th>
+<th class="cellalignment2976" id="r1c5-t13">SSN</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r2c1-t13" headers="r1c1-t13">
+<p>A</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t13 r1c2-t13">
+<p>John</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t13 r1c3-t13">
+<p>Doe</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t13 r1c4-t13">
+<p>650-123-1111</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t13 r1c5-t13">
+<p>NULL</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r3c1-t13" headers="r1c1-t13">
+<p>B</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t13 r1c2-t13">
+<p>Jonathan</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t13 r1c3-t13">
+<p>Doe</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t13 r1c4-t13">
+<p>650-123-1111</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t13 r1c5-t13">
+<p>555-55-5555</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r4c1-t13" headers="r1c1-t13">
+<p>C</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t13 r1c2-t13">
+<p>John</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t13 r1c3-t13">
+<p>Dough</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t13 r1c4-t13">
+<p>650-123-1111</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t13 r1c5-t13">
+<p>555-55-5555</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<p>According to Rule_1, rows B and C match. According to Rule_2, rows A and B match. Therefore, because Oracle Warehouse Builder handles match rules using OR logic, all three records match.</p>
+</div>
+<!-- class="sect3" -->
+<div class="sect3"><a id="sthref1934"></a>
+<h4 class="sect3">Example of Transitive Matching<a id="sthref1935"></a></h4>
+<p><a id="sthref1936"></a>The general rule is, if A matches B, and B matches C, then A matches C. Assign a conditional match rule based on similarity such as described in <a href="#g1252025">Table 23-9</a>.</p>
+<div class="tblformal">
+<p class="titleintable"><a id="sthref1937"></a><a id="g1252025"></a>Table 23-9 Conditional Match Rule</p>
+<table class="cellalignment2975" title="Conditional Match Rule" summary="This table provides an example of a conditional match rule. This table contains five columns describing the attribute, position, algorithm, similarity score, and blank matching for the conditional match rule." dir="ltr">
+<thead>
+<tr class="cellalignment2969">
+<th class="cellalignment2976" id="r1c1-t14">Attribute</th>
+<th class="cellalignment2976" id="r1c2-t14">Position</th>
+<th class="cellalignment2976" id="r1c3-t14">Algorithm</th>
+<th class="cellalignment2976" id="r1c4-t14">Similarity Score</th>
+<th class="cellalignment2976" id="r1c5-t14">Blank Matching</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r2c1-t14" headers="r1c1-t14">
+<p>LastName</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t14 r1c2-t14">
+<p>1</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t14 r1c3-t14">
+<p>Similarity</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t14 r1c4-t14">
+<p>80</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t14 r1c5-t14">
+<p>Do not match if either is blank</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<p>Assume that you have the data listed in <a href="#CIHGEAHE">Table 23-10</a>.</p>
+<div class="tblformal">
+<p class="titleintable"><a id="sthref1938"></a><a id="CIHGEAHE"></a>Table 23-10 Sample Data</p>
+<table class="cellalignment2975" title="Sample Data" summary="This table descirbes the sample data used in this example. This table has five columns describing the row, first name, last name, PHN, and SSN records in the sample data." dir="ltr">
+<thead>
+<tr class="cellalignment2969">
+<th class="cellalignment2976" id="r1c1-t15">Row</th>
+<th class="cellalignment2976" id="r1c2-t15">First Name</th>
+<th class="cellalignment2976" id="r1c3-t15">Last Name</th>
+<th class="cellalignment2976" id="r1c4-t15">PHN</th>
+<th class="cellalignment2976" id="r1c5-t15">SSN</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r2c1-t15" headers="r1c1-t15">
+<p>A</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t15 r1c2-t15">
+<p>John</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t15 r1c3-t15">
+<p>Jones</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t15 r1c4-t15">
+<p>650-123-1111</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t15 r1c5-t15">
+<p>NULL</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r3c1-t15" headers="r1c1-t15">
+<p>B</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t15 r1c2-t15">
+<p>Jonathan</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t15 r1c3-t15">
+<p>James</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t15 r1c4-t15">
+<p>650-123-1111</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t15 r1c5-t15">
+<p>555-55-5555</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r4c1-t15" headers="r1c1-t15">
+<p>C</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t15 r1c2-t15">
+<p>John</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t15 r1c3-t15">
+<p>Jamos</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t15 r1c4-t15">
+<p>650-123-1111</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t15 r1c5-t15">
+<p>555-55-5555</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<p>Jones matches James with a similarity of 80, and James matches Jamos with a similarity of 80. Jones does not match Jamos because the similarity is 60, which is less than the threshold of 80. However, because Jones matches James, and James matches Jamos, all three records match (Jones, James, and Jamos).</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BGBBACII"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Weight<a id="sthref1939"></a> Match Rules</h3>
+<p>A weighted match rule enables you to assign an integer weight to each attribute included in the rule. You must also specify a threshold. For each attribute, the Match Merge operator multiplies the weight by the similarity score, and sums the scores. If the sum equals or exceeds the threshold, then the two records being compared are considered a match.</p>
+<p>Weight match rules are most useful when you must compare a large number of attributes, without having a single attribute that is different causing a non-match, as can happen with conditional rules.</p>
+<p>Weight rules implicitly invoke the similarity algorithm to compare two attribute values. This algorithm returns an integer, a percentage value in the range 0 to 100, which represents the degree to which two values are alike. A value of 100 indicates that the two values are identical; a value of zero indicates no similarity whatsoever.</p>
+<p class="subhead2"><a id="sthref1940"></a>Similarity Algorithm</p>
+<p>The method used to determine a match. Choose from these algorithms:</p>
+<ul>
+<li>
+<p><span class="bold">Edit Distance:</span> Calculates the number of deletions, insertions, or substitutions required to transform one string into another.</p>
+</li>
+<li>
+<p><span class="bold">Jaro-Winkler:</span> Uses an improved comparison system over the Edit Distance algorithm. It accounts for the length of the strings and penalizes more for errors at the beginning. It also recognizes common typographical errors.</p>
+</li>
+</ul>
+<p class="subhead2"><a id="sthref1941"></a>Attribute</p>
+<p>Identifies the attribute that is tested for a particular condition. You can select from any input attribute (INGRP1).</p>
+<p class="subhead2"><a id="sthref1942"></a>Maximum Score</p>
+<p>The weight value for the attribute. This value should be greater than the value of Required Score to Match.</p>
+<p class="subhead2"><a id="sthref1943"></a>Score When Blank</p>
+<p>The similarity value when one of the records is empty.</p>
+<p class="subhead2"><a id="sthref1944"></a>Required Score to Match</p>
+<p>A value that represents the similarity required for a match. A value of 100 indicates that the two values are identical. A value of zero indicates there is no similarity.</p>
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1945"></a>
+<h4 class="sect3">Example of Weight Match Rules</h4>
+<p><a href="#BGBIAGFJ">Table 23-11</a> displays the attribute values contained in two separate records that are read in the following order.</p>
+<div class="tblformal">
+<p class="titleintable"><a id="sthref1946"></a><a id="BGBIAGFJ"></a>Table 23-11 Example of Weight Match Rule</p>
+<table class="cellalignment2975" title="Example of Weight Match Rule" summary="This table provides an example of two records compared using a weight match rule." dir="ltr">
+<thead>
+<tr class="cellalignment2969">
+<th class="cellalignment2976" id="r1c1-t16">Record Number</th>
+<th class="cellalignment2976" id="r1c2-t16">First Name</th>
+<th class="cellalignment2976" id="r1c3-t16">Middle Name</th>
+<th class="cellalignment2976" id="r1c4-t16">Last Name</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r2c1-t16" headers="r1c1-t16">
+<p>Record 1</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t16 r1c2-t16">
+<p>Robert</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t16 r1c3-t16">
+<p>Steve</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t16 r1c4-t16">
+<p>Paul</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r3c1-t16" headers="r1c1-t16">
+<p>Record 2</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t16 r1c2-t16">&nbsp;</td>
+<td class="cellalignment2977" headers="r3c1-t16 r1c3-t16">
+<p>Steven</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t16 r1c4-t16">
+<p>Paul</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<p>You define a match rule that uses the Edit Distance similarity algorithm. The Required Score to Match is 120. The attributes for first name and middle name are defined with a Maximum Score of 50 and Score When Blank of 20. The attribute for last name has a Maximum Score of 80 and a Score When Blank of 0.</p>
+<p>Consider an example of the comparison of Record 1 and Record 2 using the weight match rule.</p>
+<ul>
+<li>
+<p>Because first name is blank for Record 2, the Blank Score = 20.</p>
+</li>
+<li>
+<p>The similarity of middle name in the two records is 0.83. Since the weight assigned to this attribute is 50, the similarity score for this attribute is 41.5 (0.83 X 50).</p>
+</li>
+<li>
+<p>Because the last name attributes are the same, the similarity score for the last name is 1. The weighted score is 80 (1 X 80).</p>
+</li>
+</ul>
+<p>The total score for this comparison is 143 (20+43+80). Since this is more than the value defined for Required Score to Match, the records are considered a match.</p>
+</div>
+<!-- class="sect3" -->
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1947"></a>
+<h4 class="sect3">Creating Weight Match Rules</h4>
+<p>To use the Weight match rule, complete the following steps:</p>
+<ol>
+<li>
+<p>On the Match Rules tab or the Match Rules page, select <span class="bold">Weight</span> as the Rule Type.</p>
+<p>The Details tab is displayed at the bottom of the page.</p>
+</li>
+<li>
+<p>Select <span class="bold">Add</span> at the bottom of the page to add a new row.</p>
+</li>
+<li>
+<p>For each row, select an attribute to add to the rule using the Attribute column.</p>
+</li>
+<li>
+<p>In <span class="bold">Maximum Score,</span> assign a weight to each attribute. Oracle Warehouse Builder compares each attribute using a similarity algorithm that returns a score between 0 and 100 to represent the similarity between the rows.</p>
+</li>
+<li>
+<p>In <span class="bold">Score When Blank</span>, assign a value to be used when the attribute is blank in one of the records.</p>
+</li>
+<li>
+<p>In <span class="bold">Required score to match,</span> assign an overall score for the match.</p>
+<p>For two rows to be considered a match, the total counts must be greater than the value specified in the Required score to match parameter.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BGBCFGCE"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Person<a id="sthref1948"></a> Match Rules</h3>
+<p>Built-in Person rules provide an easy and convenient way for matching names of individuals. Person match rules are most effective when the data has first been corrected using the Name and Address operator.</p>
+<p>When you use Person match rules, you must specify which data within the record represents the name of the person. The data can come from multiple columns. Each column must be assigned an input role that specifies what the data represents.</p>
+<p>To define a Person match rule, you must define the Person Attributes that are part of the rule. For example, you can create a Person match rule that uses the Person Attributes first name and last name for comparison. For each Person Attribute, you must define the Person Role that the attribute uses. Next you define the rule options used for the comparison. For example, while comparing last names, you can specify that hyphenated last names should be considered a match.</p>
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1949"></a>
+<h4 class="sect3">Person Roles</h4>
+<p><a href="#g1252159">Table 23-12</a> describes the roles for different parts of a name that are used for matching. On the Match Rules page or Match Rules tab, use the Roles column on the Person Attributes tab to define person details.</p>
+<div class="tblformal">
+<p class="titleintable"><a id="sthref1950"></a><a id="g1252159"></a>Table 23-12 Name Roles for Person Match Rules</p>
+<table class="cellalignment2975" title="Name Roles for Person Match Rules" summary="This table contains two columns describing the name roles you can assign for the name match rule. The first column lists the name of the role and the second column provides a description of the role." dir="ltr">
+<thead>
+<tr class="cellalignment2969">
+<th class="cellalignment2976" id="r1c1-t17">Role</th>
+<th class="cellalignment2976" id="r1c2-t17">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r2c1-t17" headers="r1c1-t17">
+<p>Prename</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t17 r1c2-t17">
+<p>Prenames are compared only if the following are true:</p>
+<ul>
+<li>
+<p>The Last_name and, if present, the middle name (Middle_name_std, Middle_name_2_std, and Middle_name_3_std roles) in both records match.</p>
+</li>
+<li>
+<p>The "Mrs. Match" option is selected.</p>
+</li>
+<li>
+<p>Either record has a missing First_name_std.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r3c1-t17" headers="r1c1-t17">
+<p>First Name Standardized</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t17 r1c2-t17">
+<p>Compares the first names. By default, the first names must match, but you can specify other comparison options as well.</p>
+<p>First names match if both are blank. A blank first name does not matches a nonblank first name unless the Prename role has been assigned and the "Mrs. Match" option is set. If a Last_name role has not been assigned, then a role of First_name_std must be assigned.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r4c1-t17" headers="r1c1-t17">
+<p>Middle Name Standardized, Middle Name 2 Standardized, Middle Name 3 Standardized</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t17 r1c2-t17">
+<p>Compares the middle names. By default, the middle names must match, but other comparison options can be specified. If multiple middle name role is assigned, then attributes assigned to the different roles are cross-compared.</p>
+<p>For example, values for Middle_name_std is compared not only against other Middle_name_std values, but also against Middle_name_2_std, if that role is also assigned. Middle names match if either or both are blank. If any of the middle name roles are assigned, then the First_name_std role must also be assigned.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r5c1-t17" headers="r1c1-t17">
+<p>Last Name</p>
+</td>
+<td class="cellalignment2977" headers="r5c1-t17 r1c2-t17">
+<p>Compares the last names. By default, the last names must match, but you can specify other comparison options. The last names match if both are blank, but not if only one is blank.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r6c1-t17" headers="r1c1-t17">
+<p>Maturity Post Name</p>
+</td>
+<td class="cellalignment2977" headers="r6c1-t17 r1c2-t17">
+<p>Compares the post name, such as "Jr.", "III," and so on. The post names match if the values are the same, or if either value is blank.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" --></div>
+<!-- class="sect3" -->
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1951"></a>
+<h4 class="sect3">Person Details</h4>
+<p><a href="#g1252181">Table 23-13</a> describes the options that determine a match for Person match rules. Use the Details tab of the Match Rules tab or the Match Rules page to define person details.</p>
+<div class="tblformal">
+<p class="titleintable"><a id="sthref1952"></a><a id="g1252181"></a>Table 23-13 Options for Person Match Rule</p>
+<table class="cellalignment2975" title="Options for Person Match Rule" summary="This table contains two columns describing the options you can select from the details tab in the name match rule. The first column lists the name of the option and the second columns provides a description of the option." dir="ltr">
+<thead>
+<tr class="cellalignment2969">
+<th class="cellalignment2976" id="r1c1-t18">Option</th>
+<th class="cellalignment2976" id="r1c2-t18">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r2c1-t18" headers="r1c1-t18">
+<p>Detect switched name order</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t18 r1c2-t18">
+<p>Detects switched name orders such as matching "Elmer Fudd" to "Fudd Elmer". You can select this option if you selected First Name and Last Name roles for attributes on the Person Attributes tab.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r3c1-t18" headers="r1c1-t18">
+<p>Match on initials</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t18 r1c2-t18">
+<p>Matches initials to names such as "R"' and "Robert". You can select this option for first name and middle name roles.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r4c1-t18" headers="r1c1-t18">
+<p>Match on substrings</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t18 r1c2-t18">
+<p>Matches substrings to names such as "Rob" to "Robert". You can select this option for first name and middle name roles.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r5c1-t18" headers="r1c1-t18">
+<p>Similarity Score</p>
+</td>
+<td class="cellalignment2977" headers="r5c1-t18 r1c2-t18">
+<p>Records are considered a match if the similarity is greater than or equal to the score. For example, "Susan" matches "Susen" if the score is less than or equal to 80.</p>
+<p>Uses a similarity score to determine a match, as calculated by the Edit Distance or Jaro-Winkler algorithm. A value of 100 requires an exact match, and a value of 0 requires no similarity whatsoever.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r6c1-t18" headers="r1c1-t18">
+<p>Match on Phonetic Codes</p>
+</td>
+<td class="cellalignment2977" headers="r6c1-t18 r1c2-t18">
+<p>Determines a match using either the Soundex or the Double Metaphone algorithm.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r7c1-t18" headers="r1c1-t18">
+<p>Detect compound name</p>
+</td>
+<td class="cellalignment2977" headers="r7c1-t18 r1c2-t18">
+<p>Matches compound names to names such as "De Anne" to "Deanne". You can select this option for the first name role.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r8c1-t18" headers="r1c1-t18">
+<p>"Mrs" Match</p>
+</td>
+<td class="cellalignment2977" headers="r8c1-t18 r1c2-t18">
+<p>Matches prenames to first and last names such as "Mrs. Washington" to "George Washington". You can select this option for the prename role.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r9c1-t18" headers="r1c1-t18">
+<p>Match hyphenated names</p>
+</td>
+<td class="cellalignment2977" headers="r9c1-t18 r1c2-t18">
+<p>Matches hyphenated names to unhyphenated names such as "Reese-Jones" to "Reese". You can select this option for the last name role.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r10c1-t18" headers="r1c1-t18">
+<p>Detect missing hyphen</p>
+</td>
+<td class="cellalignment2977" headers="r10c1-t18 r1c2-t18">
+<p>The operator detects missing hyphens, such as matching "Hillary Rodham Clinton" to "Hillary Rodham-Clinton". You can select this option for the last name role.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" --></div>
+<!-- class="sect3" -->
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1953"></a>
+<h4 class="sect3">Creating Person Match Rules</h4>
+<p>To define a Person match rule, complete the following steps:</p>
+<ol>
+<li>
+<p>On the Match Rules tab, select <span class="bold">Person</span> as the Rule Type.</p>
+<p>The Person Attributes tab and Details tab are displayed at the bottom of the page.</p>
+</li>
+<li>
+<p>In the left panel of the Person Attributes tab, select the attributes that describe a full name and use the right arrow to move them to the Name Roles section.</p>
+</li>
+<li>
+<p>For each attribute, select the role that it plays in a name.</p>
+<p>You must define either the Last Name or First Name Standardized for the match rule to be effective. See <a href="#g1252159">Table 23-12</a> for the types of roles that you can assign.</p>
+</li>
+<li>
+<p>Select the Details tab and select the applicable options as listed in <a href="#g1252181">Table 23-13</a>.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BGBGHCIH"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Firm<a id="sthref1954"></a> Match Rules</h3>
+<p>Built-in Firm match rules provide an easy and convenient way for matching business names. Firm match rules are most effective when the data has first been corrected using the Name and Address operator. Similar to the Person rule, this rule requires users to set what data within the record represents the name of the firm. The data can come from multiple columns and each column specified must be assigned an input role that indicates what the data represents.</p>
+<p>You need not assign a firm role to every attribute, and not every role must be assigned to an attribute. The attributes assigned to firm roles are used in the match rule to compare the records. The attributes are compared based on the role that they have been assigned and other comparison options that you have set. For a complete list of firm roles and how each role is treated in a firm match rule, see <a href="#BGBDIFGF">"Firm Roles"</a>.</p>
+<a id="BGBDIFGF"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Firm Roles</h4>
+<p>Firm roles define the parts of a firm name that are used for matching. The options that you can select for firm role are Firm1 or Firm2. If you select one attribute for firm name, then select Firm1 as the role. If you select two attributes, then designate one of them as Firm1 and the other as Firm2.</p>
+<ul>
+<li>
+<p><span class="bold">Firm1:</span> If this role is assigned, then the business names represented by Firm1 are compared. Firm1 name is not compared against Firm2 names unless the Cross-match firm1 and firm2 box is checked. By default, the firm names must match, but other comparison options can also be specified. Firm1 names do not match if either or both names are blank.</p>
+</li>
+<li>
+<p><span class="bold">Firm2:</span> If this role is assigned, then the values of the attribute assigned to Firm2 is compared. Firm2 names are not compared against Firm1 names unless the Cross-match firm1 and firm2 box is checked. By default, the firm names must match, but other comparison options can also be specified. Firm2 names do not match if either or both names are blank. If a Firm1 role is not assigned, then a Firm2 role must be assigned.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<a id="BGBIEBDF"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Firm Details</h4>
+<p><a href="#BABHGBHD">Table 23-14</a> describes the rule options that you can set for each component of the firm name to determine a match.</p>
+<div class="tblformal">
+<p class="titleintable"><a id="sthref1955"></a><a id="BABHGBHD"></a>Table 23-14 Options for Firm Rules</p>
+<table class="cellalignment2975" title="Options for Firm Rules" summary="Descriptions of options for Match-Merge Firm Rules" dir="ltr">
+<thead>
+<tr class="cellalignment2969">
+<th class="cellalignment2976" id="r1c1-t19">Option</th>
+<th class="cellalignment2976" id="r1c2-t19">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r2c1-t19" headers="r1c1-t19">
+<p>Strip noise words</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t19 r1c2-t19">
+<p>Removes the following words from Firm1 and Firm2 before matching: THE, AND, CORP, CORPORATION, CO, COMPANY, INC, INCORPORATED, LTD, TO, OF, and BY.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r3c1-t19" headers="r1c1-t19">
+<p>Cross-match firm1 and firm2</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t19 r1c2-t19">
+<p>When comparing two records for matching, in addition to matching firm1 to firm1 and firm2 to firm2 of the respective records, match firm1 against firm2 for the records.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r4c1-t19" headers="r1c1-t19">
+<p>Match on partial firm name</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t19 r1c2-t19">
+<p>Uses the Partial Name algorithm to determine a match. For example, match "Midtown Power" to "Midtown Power and Light".</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r5c1-t19" headers="r1c1-t19">
+<p>Match on abbreviations</p>
+</td>
+<td class="cellalignment2977" headers="r5c1-t19 r1c2-t19">
+<p>Uses the Abbreviation algorithm to determine a match. For example, match "International Business Machines" to "IBM".</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r6c1-t19" headers="r1c1-t19">
+<p>Match on acronyms</p>
+</td>
+<td class="cellalignment2977" headers="r6c1-t19 r1c2-t19">
+<p>Uses the Acronym algorithm to determine a match. For example, match "CMB, North America" to "Chase Manhattan Bank, NA".</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r7c1-t19" headers="r1c1-t19">
+<p>Similarity score</p>
+</td>
+<td class="cellalignment2977" headers="r7c1-t19 r1c2-t19">
+<p>Uses a similarity score to determine a match, as calculated by the Edit Distance or Jaro-Winkler algorithm. Enter a value between 0 and 100 as the minimum similarity value required for a match. A value of 100 requires an exact match, and a value of 0 requires no similarity whatsoever.</p>
+<p>Two records are considered as a match if the similarity is greater than or equal to the value of similarity score.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" --></div>
+<!-- class="sect3" -->
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1956"></a>
+<h4 class="sect3">Creating Firm Match Rules</h4>
+<p>To define a Firm match rule, complete the following steps:</p>
+<ol>
+<li>
+<p>On the Match Rules tab or the Match Rules page, select <span class="bold">Firm</span> as the Rule Type.</p>
+<p>The Firm Attributes tab and Details tab are displayed at the bottom of the page.</p>
+</li>
+<li>
+<p>In the left panel of the Firm Attributes tab, select one or two attributes that represent the firm name and click the right shuttle button.</p>
+<p>The attributes are moved to the Firm Roles box.</p>
+</li>
+<li>
+<p>For each attribute, click <span class="bold">Roles</span>. From the list, select Firm 1 for the first attribute, and Firm 2 for the second attribute, if it exists.</p>
+</li>
+<li>
+<p>On the Details tab, select the applicable options. For more details, see <a href="#BGBIEBDF">"Firm Details"</a>.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BGBBCFFE"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Address<a id="sthref1957"></a> Match Rules</h3>
+<p>Address match rules provide a method of matching records based on postal addresses. Address match rules are most effective when the data has first been corrected using a Name and Address operator.</p>
+<p>Address match rules work differently depending on whether the address being processed has been corrected using the Name and Address operator. Generally, corrected addresses have been identified in a postal matching database, and are therefore syntactically correct, legal, and existing addresses according to the Postal Service of the country containing the address. Corrected addresses can be processed more quickly, because the match rule can ensure assumptions about their format.</p>
+<p>Uncorrected addresses may be syntactically correct, but have not been found in a postal matching database. Addresses may have not been found because they are not in the database, or because there is no postal matching database installed for the country containing the address. Address match rules determine whether an address has been corrected based on the Is_found role. If the Is_found role is not assigned, then the match rule performs the comparisons for both the corrected and uncorrected addresses.</p>
+<p>To create an Address match rule, assign address roles to the various attributes. The attributes assigned to address roles are used in the match rule to compare the records. Attributes are compared depending on which role they have been assigned, and what other comparison options have been set.</p>
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1958"></a>
+<h4 class="sect3">Address Roles</h4>
+<p><a href="#g1252069">Table 23-15</a> describes the address roles that you can select for each part of an address.</p>
+<div class="tblformal">
+<p class="titleintable"><a id="sthref1959"></a><a id="g1252069"></a>Table 23-15 Address Roles</p>
+<table class="cellalignment2975" title="Address Roles" summary="This table describes the address roles you can assign for the address match rule. This table contains two columns. The first column lists the name of the role and the second column provides a description of that role." dir="ltr">
+<thead>
+<tr class="cellalignment2969">
+<th class="cellalignment2976" id="r1c1-t20">Role</th>
+<th class="cellalignment2976" id="r1c2-t20">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r2c1-t20" headers="r1c1-t20">
+<p>Primary Address</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t20 r1c2-t20">
+<p>Compares the primary addresses. Primary addresses can be, for example, street addresses ("100 Main Street") or PO boxes ("PO Box 100"). By default, the primary addresses must match, but a similarity option can also be specified.</p>
+<p>The Primary_address role must be assigned.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r3c1-t20" headers="r1c1-t20">
+<p>Unit Number</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t20 r1c2-t20">
+<p>Unit numbers (such as suite numbers, floor numbers, or apartment numbers) are compared if the primary addresses match. The unit numbers match if both are blank, but not if one is blank, unless the Match on blank secondary address option is set. If the Allow differing secondary address option is set, then the unit numbers are ignored.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r4c1-t20" headers="r1c1-t20">
+<p>PO Box</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t20 r1c2-t20">
+<p>Compares the Post Office Boxes. The PO Box is just the number portion of the PO Box ("100"), and is a subset of the primary address, when the primary address represents a PO Box ("PO Box 100"). If the primary address represents a street address, then the PO Box is blank.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r5c1-t20" headers="r1c1-t20">
+<p>Dual Primary Address</p>
+</td>
+<td class="cellalignment2977" headers="r5c1-t20 r1c2-t20">
+<p>The Dual_primary_address is compared against the other record's Dual_primary_address and Primary_address to determine a match.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r6c1-t20" headers="r1c1-t20">
+<p>Dual Unit Number</p>
+</td>
+<td class="cellalignment2977" headers="r6c1-t20 r1c2-t20">
+<p>Compares the Dual_unit_number address with the Dual_unit_number and Unit_number of the other record. The unit numbers match if one or both are blank. To assign the Dual_unit_number role, the Dual_primary_address role must also be assigned.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r7c1-t20" headers="r1c1-t20">
+<p>Dual PO Box</p>
+</td>
+<td class="cellalignment2977" headers="r7c1-t20 r1c2-t20">
+<p>Dual_PO_Box address of a record is compared with the Dual_PO_Box and the PO_Box of the other record. To assign the Dual_PO_Box role, the Dual_primary_address role must also be assigned.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r8c1-t20" headers="r1c1-t20">
+<p>City</p>
+</td>
+<td class="cellalignment2977" headers="r8c1-t20 r1c2-t20">
+<p>Compares the cities for uncorrected addresses. For corrected addresses, the cities are only compared if the postal codes do not match. If both City and State roles match, then the address line roles, such as Primary_address, can be compared.</p>
+<p>By default, the cities must match. But you may specify a last line similarity option. The cities match if both are blank, but not if only one is blank. If the City role is assigned, then the State role must also be assigned.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r9c1-t20" headers="r1c1-t20">
+<p>State</p>
+</td>
+<td class="cellalignment2977" headers="r9c1-t20 r1c2-t20">
+<p>Assign this role only when also assigning the City role.</p>
+<p>The states are compared for uncorrected addresses. For corrected addresses, the states are only compared if the postal codes do not match. If both State and City roles match, then the address line roles, such as Primary_address, can be compared. By default, the states must match, but a last line similarity option may be specified. The states match if both are blank, but not if only one is blank. If the State role is assigned, then the City role must also be assigned.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r10c1-t20" headers="r1c1-t20">
+<p>Postal Code</p>
+</td>
+<td class="cellalignment2977" headers="r10c1-t20 r1c2-t20">
+<p>For uncorrected address data, the operator does not use Postal Code.</p>
+<p>The postal codes are compared for corrected addresses. For uncorrected addresses, the Postal_code role is not used. To match, the postal codes must be the same. The postal codes are not considered a match if one or both are blank. If the postal codes match, then the address line roles, such as Primary_address, can be compared. If the postal codes do not match, then City and State roles are compared to determine whether the address line roles should be compared.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r11c1-t20" headers="r1c1-t20">
+<p>Is Found</p>
+</td>
+<td class="cellalignment2977" headers="r11c1-t20 r1c2-t20">
+<p>The Is_found_flag attributes are not compared, but instead are used to determine whether an address has been found in a postal matching database, and therefore represents a legal address according to the postal service of the country containing the address. This determination is important because the type of comparison done during matching depends on whether the address has been found in the postal database.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" --></div>
+<!-- class="sect3" -->
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1960"></a>
+<h4 class="sect3">Address Details</h4>
+<p><a href="#g1252106">Table 23-16</a> describes the options for determining a match for an Address rule.</p>
+<div class="tblformal">
+<p class="titleintable"><a id="sthref1961"></a><a id="g1252106"></a>Table 23-16 Options for Address Roles</p>
+<table class="cellalignment2975" title="Options for Address Roles" summary="This table describes the options you can assign to address roles. This table contains two columns. The first column lists the type of option and the second column provides a description of that option." dir="ltr">
+<thead>
+<tr class="cellalignment2969">
+<th class="cellalignment2976" id="r1c1-t21">Option</th>
+<th class="cellalignment2976" id="r1c2-t21">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r2c1-t21" headers="r1c1-t21">
+<p>Allow differing secondary address</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t21 r1c2-t21">
+<p>Enable addresses to match even if the unit numbers are not null and are different.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r3c1-t21" headers="r1c1-t21">
+<p>Match on blank secondary address</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t21 r1c2-t21">
+<p>Enable addresses to match even if exactly one unit number is null.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r4c1-t21" headers="r1c1-t21">
+<p>Match on either street or post office box</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t21 r1c2-t21">
+<p>Match records if either the street address or the post office box match.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r5c1-t21" headers="r1c1-t21">
+<p>Address line similarity</p>
+</td>
+<td class="cellalignment2977" headers="r5c1-t21 r1c2-t21">
+<p>Match if address line similarity &gt;= the score. All spaces and non-alpanumeric characters are removed before the similarity is calculated.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r6c1-t21" headers="r1c1-t21">
+<p>Last line similarity</p>
+</td>
+<td class="cellalignment2977" headers="r6c1-t21 r1c2-t21">
+<p>Match if the last line similarity &gt;= score. The last line consists of city and state. All spaces and nonalphanumeric characters are removed before the similarity is calculated.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" --></div>
+<!-- class="sect3" -->
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1962"></a>
+<h4 class="sect3">Creating Address Match Rules</h4>
+<p>To define an Address match rule, complete the following steps:</p>
+<ol>
+<li>
+<p>On the Match Rules tab or the Match Rules page, select <span class="bold">Address</span> as the Rule Type.</p>
+<p>The Address Attributes tab and Details tab are displayed at the bottom of the page.</p>
+</li>
+<li>
+<p>In the left panel of the Address Attributes tab, select the attribute that represents the primary address. Use the right shuttle key to move it to the Address Roles Attributes column.</p>
+</li>
+<li>
+<p>Click <span class="bold">Role Required</span> and designate that attribute as the Primary Address.</p>
+<p>You must designate one attribute as the primary address. If you do not assign the Primary Address role, then the match rule is invalid.</p>
+</li>
+<li>
+<p>Add other attributes and designate their roles as necessary. See <a href="#g1252069">Table 23-15</a> for the types of roles that you can assign.</p>
+</li>
+<li>
+<p>Select the Details tab and select the applicable options as listed in <a href="#g1252106">Table 23-16</a>.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BGBEEAJE"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Custom<a id="sthref1963"></a> Match Rules</h3>
+<p>Custom match rules enable you to write your own comparison algorithms to match records. You can use any input attributes or match functions within this comparison. You can use an active custom rule to control the execution of passive rules.</p>
+<p>Consider the following three passive built-in rules:</p>
+<ul>
+<li>
+<p><code>NAME_MATCH</code>: built-in name rule</p>
+</li>
+<li>
+<p><code>ADDRESS_MATCH</code>: built-in address rule</p>
+</li>
+<li>
+<p><code>TN_MATCH</code>: built-in conditional rule</p>
+</li>
+</ul>
+<p>You can create a custom rule to specify that two records can be considered a match if any two of these rules are satisfied. <a href="#BGBCGJGH">Example 23-1</a> describes the PL/SQL code used to create the custom match rule that implements this example.</p>
+<div class="example">
+<p class="titleinexample"><a id="BGBCGJGH"></a>Example 23-1 Creating a Custom Rule Using Existing Passive Rules</p>
+<pre>
+BEGIN
+   RETURN(
+       (NAME_MATCH(THIS_,THAT_) AND ADDRESS_MATCH(THIS_,THAT_))
+     OR
+       (NAME_MATCH(THIS_,THAT_) AND TN_MATCH(THIS_,THAT_))
+     OR
+       (ADDRESS_MATCH(THIS_,THAT_) AND TN_MATCH(THIS_,THAT_))
+         );
+END;
+</pre></div>
+<!-- class="example" -->
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1964"></a>
+<h4 class="sect3">Creating Custom Match Rules</h4>
+<p>To define a Custom match rule, complete the following steps:</p>
+<ol>
+<li>
+<p>On the Match Rules tab or the Match Rules page, select <span class="bold">Custom</span> as the Rule Type.</p>
+<p>A Details field is displayed at the bottom of the page with the skeleton of a PL/SQL program.</p>
+</li>
+<li>
+<p>Click <span class="bold">Edit</span> to open the Custom Match Rules Editor.</p>
+<p>For more information about using the editor, select <span class="bold">Help Topic</span> from the Help menu.</p>
+</li>
+<li>
+<p>To enter PL/SQL code, use any combination of the following:</p>
+<ul>
+<li>
+<p>To read in a file, select <span class="bold">Open File</span> from the Code menu.</p>
+</li>
+<li>
+<p>To enter text, first position the cursor using the mouse or arrow keys, then begin typing. You can also use the commands on the Edit and Search menus.</p>
+</li>
+<li>
+<p>To reference any function, parameter, or transformation in the navigation tree, first position the cursor, then double-click or drag-and-drop the object onto the Implementation field.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>To validate your code, select <span class="bold">Validate</span> from the Test menu.</p>
+<p>The validation results appear on the Messages tab.</p>
+</li>
+<li>
+<p>To save your code, select <span class="bold">Save</span> from the Code menu.</p>
+</li>
+<li>
+<p>To close the Custom Match Rules Editor, select <span class="bold">Close</span> from the Code menu.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BGBEGCFI"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Merge Rules<a id="sthref1965"></a></h3>
+<p>Matching produces a set of records that are logically the same. Merging is the process of creating one record from the set of matched records. A Merge rule is applied to attributes in the matched record set to obtain a single value for the attribute in the merged record.</p>
+<p>You can define one Merge rule for all the attributes in the Merge record or define a rule for each attribute. For instance, if the merged record is a customer record, it may have attributes such as ADDRESS1, ADDRESS2, CITY, STATE, and ZIP. You can write five rules that select the value of each attribute from up to five different records, or one Record rule that selects the values of all five attributes from one record. Use Record rules when multiple attributes compose a logical unit, such as an address. For example, City, State, and Zip Code might be three different attributes, but the data for these attributes should all come from the same record.</p>
+<p><a href="#CHDGGHEA">Table 23-17</a> describes the types of merge rules.</p>
+<div class="tblformal">
+<p class="titleintable"><a id="sthref1966"></a><a id="CHDGGHEA"></a>Table 23-17 Merge Rule Types</p>
+<table class="cellalignment2975" title="Merge Rule Types" summary="This table contains two columns describing the merge rule types. The first column lists the merge rule type. The second column describes the merge rule." dir="ltr">
+<thead>
+<tr class="cellalignment2969">
+<th class="cellalignment2976" id="r1c1-t22">Merge Rule</th>
+<th class="cellalignment2976" id="r1c2-t22">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r2c1-t22" headers="r1c1-t22">
+<p>Any</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t22 r1c2-t22">
+<p>Uses the first nonblank value</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r3c1-t22" headers="r1c1-t22">
+<p>Match ID</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t22 r1c2-t22">
+<p>Merges records that have been output from another Match Merge operator</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r4c1-t22" headers="r1c1-t22">
+<p>Rank</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t22 r1c2-t22">
+<p>Ranks the records from the match set. The associated attribute from the highest ranked record is used to populate the merge attribute value</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r5c1-t22" headers="r1c1-t22">
+<p>Sequence</p>
+</td>
+<td class="cellalignment2977" headers="r5c1-t22 r1c2-t22">
+<p>Specify a database sequence for this rule. The next value of the sequence is used for the value.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r6c1-t22" headers="r1c1-t22">
+<p>Min Max</p>
+</td>
+<td class="cellalignment2977" headers="r6c1-t22 r1c2-t22">
+<p>Specify an attribute and a relation to choose the record to be used as a source for the merge attribute.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r7c1-t22" headers="r1c1-t22">
+<p>Copy</p>
+</td>
+<td class="cellalignment2977" headers="r7c1-t22 r1c2-t22">
+<p>Choose a value from a different previously merged value.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r8c1-t22" headers="r1c1-t22">
+<p>Custom</p>
+</td>
+<td class="cellalignment2977" headers="r8c1-t22 r1c2-t22">
+<p>Create a PL/SQL package function to select the merge value. The operator provides the signature of this function. The user is responsible for the implementation of the rule from "BEGIN" to "END;" The matched records and merge record are parameters for this function.</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r9c1-t22" headers="r1c1-t22">
+<p>Any Record</p>
+</td>
+<td class="cellalignment2977" headers="r9c1-t22 r1c2-t22">
+<p>Identical to the Any rule, except that an Any Record rule applies to multiple attributes</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r10c1-t22" headers="r1c1-t22">
+<p>Rank Record</p>
+</td>
+<td class="cellalignment2977" headers="r10c1-t22 r1c2-t22">
+<p>Identical to the Rank rule, except that a Rank Record rule applies to multiple attributes</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r11c1-t22" headers="r1c1-t22">
+<p>Min Max Record</p>
+</td>
+<td class="cellalignment2977" headers="r11c1-t22 r1c2-t22">
+<p>Identical to the Min Max rule, except that a Min Max Record rule applies to multiple attributes</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r12c1-t22" headers="r1c1-t22">
+<p>Custom Record</p>
+</td>
+<td class="cellalignment2977" headers="r12c1-t22 r1c2-t22">
+<p>Identical to the Custom rule, except that a Custom Record rule applies to multiple attributes</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" --></div>
+<!-- class="sect2" -->
+<a id="BABBHJAH"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Match ID Merge Rule</h3>
+<p>Use the Match ID merge rule to merge records that have been output in the XREF group from another Match Merge operator. No other operator is valid for this type of input. For more information, see <a href="#i1190422">"Example: Using Two Match Merge Operators for Householding"</a>.</p>
+<p class="subhead2"><a id="sthref1967"></a>Next Value of the Sequence</p>
+<p>Identifies the sequence that is used by the rule.</p>
+<p class="subhead2"><a id="sthref1968"></a>Sequences list</p>
+<p>Lists all sequences defined in the current project.</p>
+<p class="subhead2"><a id="sthref1969"></a>Select Sequence</p>
+<p>Sets the sequence for the rule to the sequence currently selected in the list. Move a sequence from the sequences list to Select Sequence.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BABEEBDF"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Rank and Rank Record Merge Rules</h3>
+<p>Use the Rank and Rank Record rules when merging data from multiple sources. These rules enable you to identify your preference for certain sources. Your data must have a second input attribute on which the rule is based.</p>
+<p>For example, the second attribute might identify the data source, and these data sources are ranked in order of reliability. The most reliable value would be used in the merged record. The merge rule might look like this:</p>
+<pre>
+INGRP1.SOURCE = 'Order Entry'
+</pre>
+<p class="subhead2"><a id="sthref1970"></a>Name</p>
+<p>An arbitrary name for the rule. Oracle Warehouse Builder creates a default name such as RULE_0 for each Rank merge rule. You can replace these names with meaningful ones.</p>
+<p class="subhead2"><a id="sthref1971"></a>Position</p>
+<p>The order of execution. You can change the position of a rule by clicking on the row header and dragging the row to its new location. The row headers are the boxes to the left of the Name column.</p>
+<p class="subhead2"><a id="sthref1972"></a>Expression Record Selection</p>
+<p>The custom SQL expression used in the ranking. Click the Ellipsis button to display the Rank Rule Editor (also called the Expression Builder User Interface). Use this editor to develop the ranking expression.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BABHBIFE"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Sequence Merge Rule</h3>
+<p>The Sequence rule uses the next value in a sequence.</p>
+<p class="subhead2"><a id="sthref1973"></a>Next Value of the Sequence</p>
+<p>Identifies the sequence that is used by the rule.</p>
+<p class="subhead2"><a id="sthref1974"></a>Sequences list</p>
+<p>Lists all sequences defined in the current project.</p>
+<p class="subhead2"><a id="sthref1975"></a>Select Sequence</p>
+<p>Sets the sequence for the rule to the sequence currently selected in the list.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BABGGFAG"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Min Max and Min Max Record Merge Rules</h3>
+<p>The Min Max and Min Max Record rules select an attribute value based on the size of another attribute value in the record.</p>
+<p>For example, you might select the First Name value from the record in each bin that contains the longest Last Name value.</p>
+<p class="subhead2"><a id="sthref1976"></a>Selecting Attribute</p>
+<p>Lists all input attributes. Select the attribute whose values provide the order.</p>
+<p class="subhead2"><a id="sthref1977"></a>Attribute Relation</p>
+<p>Select the characteristic for choosing a value in the selected attribute.</p>
+<ul>
+<li>
+<p><span class="bold">Minimum</span>. Selects the smallest numeric value or the oldest date value.</p>
+</li>
+<li>
+<p><span class="bold">Maximum</span>. Selects the largest numeric value or the most recent date value.</p>
+</li>
+<li>
+<p><span class="bold">Shortest</span>. Selects the shortest character value.</p>
+</li>
+<li>
+<p><span class="bold">Longest</span>. Selects the longest character value.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="BABCGAFJ"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Copy Merge Rule</h3>
+<p>The Copy rule uses the values from another merged attribute.</p>
+<p class="subhead2"><a id="sthref1978"></a>Merged Attribute</p>
+<p>Lists the other merged attributes, which you selected on the Merge Attributes page.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1186681"></a>
+<div class="sect2">
+<h3 class="sect2">Custom and Custom Record Merge Rule<a id="sthref1979"></a><a id="sthref1980"></a>s</h3>
+<p>The Custom and Custom Record rules use PL/SQL code that you provide to merge the records. The following is an example of a Custom merge rule, which returns the value of the TAXID attribute for record 1.</p>
+<pre>
+BEGIN
+RETURN M_MATCHES(1)."TAXID";
+END;
+</pre>
+<p>The following is an example of a Custom Record merge rule, which returns a record for record 1:</p>
+<pre>
+BEGIN
+RETURN M_MATCHES(1);
+END;
+</pre>
+<p class="subhead2"><a id="sthref1981"></a>Merge Rules Detail</p>
+<p>Displays the PL/SQL code composing your custom algorithm. You can edit code directly in this field or use the Custom Merge Rule Editor.</p>
+<p class="subhead2"><a id="sthref1982"></a>Edit</p>
+<p>Displays the Custom Merge Rule Editor.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BGBDHCFG"></a><a id="WBETL23003"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Using the Match Merge Operator to Eliminate Duplicate Source Records</h2>
+<p>Use the Match Merge operator to identify matching records in a data source and to merge them into a single record.</p>
+<p>The Match Merge operator has one input group and two output groups, Merge and Xref. The source data is mapped to the input group. The Merge group contains records that have been merged after the matching process is complete. The Xref group provides a record of the merge process. Every record in the input group has a corresponding record in the Xref group. This record may contain the original attribute values and the merged attributes.</p>
+<p>The Match Merge operator uses an ordered record stream as input. From this stream, it constructs the match bins. From each match bin, matched sets are constructed. From each matched set, a merged record is created. The initial query contains an <code>ORDER BY</code> clause consisting of the match bin attributes.</p>
+<div class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1983"></a>
+<h3 class="sect2">Steps to Use a Match Merge Operator<a id="sthref1984"></a></h3>
+<p><span class="bold">To match and merge source data using the Match Merge operator:</span></p>
+<ol>
+<li>
+<p>Drag and drop the operators representing the source data and the operator representing the merged data onto the Mapping Editor canvas.</p>
+<p>For example, if your source data is stored in a table, and the merged data is stored in another table, drag and drop two Table operators that are bound to the tables onto the canvas.</p>
+</li>
+<li>
+<p>Drag and drop a Match Merge operator onto the Mapping Editor canvas.</p>
+<p>The MatchMerge Wizard is displayed.</p>
+</li>
+<li>
+<p>On the Name page, the Name field contains a default name for the operator. You can change this name or accept the default name.</p>
+<p>You can enter an optional description for the operator.</p>
+</li>
+<li>
+<p>On the Groups page, you can rename groups or provide descriptions for them.</p>
+<p>This page contains the following three groups:</p>
+<ul>
+<li>
+<p><span class="bold">INGRP1:</span> Contains input attributes.</p>
+</li>
+<li>
+<p><span class="bold">MERGE:</span> Contains the merged records (usually this means fewer records than INGRP1).</p>
+</li>
+<li>
+<p><span class="bold">XREF:</span> Contains the link between the original and merged data sets. This is the tracking mechanism used when a merge is performed.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>On the Input Connections page, move the attributes to match and merge from the Available Attributes section to the Mapped Attributes section. Click <span class="bold">Next</span>.</p>
+<p>The Available Attributes section of this page displays nodes for each operator on the canvas. Expand a node to display the attributes contained in the operator, select the attributes, and use the shuttle arrows to move selected attributes to the Mapped Attributes section.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The Match Merge operator requires an ordered input data set. If you have source data from multiple operator, then use a Set Operation operator to combine the data and obtain an ordered data set.</div>
+</li>
+<li>
+<p>On the Input Attributes page, review the attribute data types and lengths.</p>
+<p>In general, if you go through the wizard, you need not change any of these values. Oracle Warehouse Builder populates them based on the output attributes.</p>
+</li>
+<li>
+<p>On the Merge Output page, select the attributes to be merged from the input attributes.</p>
+<p>These attributes appear in the Merge output group (the cleansed group). The attributes in this group retain the name and properties of the input attributes.</p>
+</li>
+<li>
+<p>On the Cross Reference Output page, select attributes for the XREF output group.</p>
+<p>The Source Attributes section contains all the input attributes and the Merge attributes that you selected on the Merge Output page. The attributes from the Merge group are prefixed with MM_. The other attributes define the unmodified input attribute values. Select at least one attribute from the Merge group that provides a link between the input and Merge groups.</p>
+</li>
+<li>
+<p>On the Match Bins page, specify the match bin attributes. These attributes are used to group source data into match bins.</p>
+<p>After the first deployment, you can choose whether to match and merge all records or only new records. To match and merge only the new records, select <span class="bold">Match New Records Only</span>.</p>
+<p>You must designate a condition that identifies new records. The Match Merge operator treats the new records in the following way:</p>
+<ul>
+<li>
+<p>No matching is performed for any records in a match bin unless the match bin contains a new record.</p>
+</li>
+<li>
+<p>Old records are not compared with each other.</p>
+</li>
+<li>
+<p>A matched record set is not presented to the merge processing unless the matched record set contains a new record.</p>
+</li>
+<li>
+<p>An old record is not presented to the Xref output unless the record is matched to a new record.</p>
+</li>
+</ul>
+<p>For more information about match bin attributes and match bins, see <a href="#BGBFFGFC">"Overview of the Matching and Merging Process"</a>.</p>
+</li>
+<li>
+<p>On the Define Match Rules page, define the match rules that is used to match the source data.</p>
+<p>Match rules can be active or passive. A passive match rule is generated but not automatically invoked. You must define at least one active match rule.</p>
+<p>For more information about the match rules, the types of match rules that you can define, and the steps used to define them, see <a href="#BGBHGABH">"Match Rules"</a>.</p>
+</li>
+<li>
+<p>On the Merge Rules page, define the rules that is used to merge the sets of matched records created from the source data.</p>
+<p>You can define Merge rules for each attribute in a record or for the entire record. Oracle Warehouse Builder provides different types of Merge rules.</p>
+<p>For more information about the types of Merge rules and the steps to create Merge rules, see <a href="#BGBEGCFI">"Merge Rules"</a>.</p>
+</li>
+<li>
+<p>On the Summary page, review your selections. Click <span class="bold">Back</span> to modify any selection that you made. Click <span class="bold">Next</span> to complete creating the Match Merge operator.</p>
+</li>
+<li>
+<p>Map the Merge group of the Match Merge operator to the input group of the operator that stores the merged data.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<div class="sect2"><a id="sthref1985"></a>
+<h3 class="sect2">Considerations When Designing <a id="sthref1986"></a>Mappings Containing Match Merge Operators<a id="sthref1987"></a></h3>
+<p>Be aware of the following considerations as you design your mapping:</p>
+<ul>
+<li>
+<p><span class="bold">Operating modes:</span> A mapping that contains a Match Merge operator can only run in set-based mode. Operators may accept either set-based or row-based input and generate either set-based or row-based output. SQL is set-based, so a set of records is processed. PL/SQL is row-based, so each row is processed separately. When the Match Merge operator matches records, it compares each row with the subsequent row in the source, and generates row-based code only.</p>
+</li>
+<li>
+<p><span class="bold">SQL-based operators before Match Merge:</span> The Match Merge operator accepts set-based SQL input, but generates only row-based PL/SQL output. Any operators that generate only SQL code must precede the Match Merge operator. For example, the Joiner, Lookup, and Set operators generate set-based SQL output, so they must precede the Match Merge operator. If set-based operators appear after Match Merge operator, then the mapping is invalid. If you process the output of a match-merge mapping using a set-based SQL operator, then stage the output in an intermediate table.</p>
+</li>
+<li>
+<p><span class="bold">PL/SQL input:</span> The Match Merge operator requires SQL input except from another Match Merge operator, as described in <a href="#i1190422">"Example: Using Two Match Merge Operators for Householding"</a>. To precede a Match Merge operator with an operator that generates only PL/SQL output, then you must first load the data into a staging table.</p>
+</li>
+<li>
+<p><span class="bold">Refining data from Match Merge operators:</span> To achieve greater data refinement, map the XREF output from one Match Merge operator into another Match Merge operator. This scenario is the one exception to the SQL input rule for Match Merge operators. With additional design elements, the second Match Merge operator accepts PL/SQL. For more information, see <a href="#i1190422">"Example: Using Two Match Merge Operators for Householding"</a>.</p>
+</li>
+</ul>
+<div class="sect3"><a id="sthref1988"></a>
+<h4 class="sect3">Restrictions<a id="sthref1989"></a> on Using the Match Merge Operator</h4>
+<ul>
+<li>
+<p>Because the match-merge process generates only PL/SQL, you cannot map the Merge or XREF output groups of the Match Merge operator to a SQL-only operator such as a Sorter operator or another Match Merge operator.</p>
+</li>
+<li>
+<p>Because the Match Merge operator only accepts SQL input, you cannot map the output of the Name and Address operator directly to the Match Merge operator. You must use a staging table.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1190422"></a><a id="WBETL19001"></a>
+<div class="sect2">
+<h3 class="sect2">Example: Using Two Match Merge Operators for Householding</h3>
+<p>Most match-merge operations can be performed by a single Match Merge operator. However, if you are directing the output to two different targets, then you must use two Match Merge operators in succession.</p>
+<p>For example, when householding<a id="sthref1990"></a> name and address data, you must merge the data first for addresses and then again for names. Assuming that you map the MERGE output to a target table, you can map the XREF group to another Match Merge operator.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Although you could map the XREF group to a staging table, this intermediate step adds significant overhead. The match-merge functionality is designed to support maximum performance using two Match Merge operators as described in this section.</div>
+<p><a href="#CDECHDBI">Figure 23-3</a> shows a mapping that uses two Match Merge operators. The XREF group from MM is mapped directly to MM_1. For this mapping to be valid, you must assign the Match ID generated for the first XREF group as the Match Bin rule on the second Match Merge operator.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CDECHDBI"></a>Figure 23-3 Householding Data: XREF Group Merged to Second Match Merge Operator</p>
+<img width="733" height="244" src="img/refinemm_nested.gif" alt="Description of Figure 23-3 follows" /><br />
+<a id="sthref1991" href="img_text/refinemm_nested.htm">Description of "Figure 23-3 Householding Data: XREF Group Merged to Second Match Merge Operator"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+A more complete solution for the householding problem might apply name and address cleansing on individual records before performing the matching and merging to group customers into households.</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment2968">
+<tr>
+<td class="cellalignment2977">
+<table class="cellalignment2973">
+<tr>
+<td class="cellalignment2972"><a href="name_address.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment2972"><a href="part_4.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2000, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment2980">
+<table class="cellalignment2971">
+<tr>
+<td class="cellalignment2972"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment2972"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment2972"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment2972"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment2972"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment2972"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

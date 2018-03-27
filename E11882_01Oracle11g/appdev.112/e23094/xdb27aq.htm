@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Exchanging XML Data using Oracle Streams&nbsp;AQ</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 748" />
+<meta name="description" content="This manual describes Oracle XML&nbsp;DB. It includes guidelines and examples for storing, generating, accessing, searching, validating, transforming, evolving, and indexing XML data in Oracle Database." />
+<meta name="dcterms.created" content="2014-02-20T9:56:17Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="XML DB Developer's Guide" />
+<meta name="dcterms.identifier" content="E23094-04" />
+<meta name="dcterms.isVersionOf" content="ADXDB" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2002, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="xdb26imp.htm" title="Previous" type="text/html" />
+<link rel="Next" href="partpg7.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e23094.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">50/54</span> <!-- End Header -->
+<div id="ADXDB3100" class="chapter"><a id="g1033468"></a>
+<h1 class="chapter"><span class="secnum">37</span> Exchanging XML Data using Oracle Streams&nbsp;AQ</h1>
+<p>Oracle Streams Advanced Queuing (AQ) provides database-integrated message-queuing:</p>
+<ul>
+<li>
+<p>It enables and manages asynchronous communication of two or more applications, using messages</p>
+</li>
+<li>
+<p>It supports<a id="sthref1885"></a> <a id="sthref1886"></a>point-to-point and <a id="sthref1887"></a><a id="sthref1888"></a>publish/subscribe communication models</p>
+</li>
+</ul>
+<p>Integration of message queuing with Oracle Database brings the integrity, reliability, recoverability, scalability, performance, and security features of Oracle Database to message queuing. It also facilitates the extraction of intelligence from message flows.</p>
+<p>This chapter describes how XML data can be exchanged using AQ. It contains these topics:</p>
+<ul>
+<li>
+<p><a href="#i1028990">How Do AQ and XML Complement Each Other?</a></p>
+</li>
+<li>
+<p><a href="#i1030174">Oracle Streams and AQ</a></p>
+</li>
+<li>
+<p><a href="#i1030179">XMLType Attributes in Object Types</a></p>
+</li>
+<li>
+<p><a href="#i1029045">Internet Data Access Presentation (iDAP)</a></p>
+</li>
+<li>
+<p><a href="#i1029071">iDAP Architecture</a></p>
+</li>
+<li>
+<p><a href="#i1029340">Guidelines for Using XML and Oracle Streams Advanced Queuing</a></p>
+</li>
+</ul>
+<a id="i1028990"></a>
+<div id="ADXDB5750" class="sect1">
+<h2 class="sect1">How Do AQ and XML Complement Each Other?</h2>
+<p>XML has emerged as a standard format for business communications. XML is being used not only for data communicated between business applications, but also to represent business logic.</p>
+<p>In Oracle Database, AQ supports native XML messages. It lets AQ operations be defined using the XML-based Internet-Data-Access-Presentation (iDAP) format. iDAP is an extensible message invocation protocol. It is built on Internet standards, using HTTP(S) and e-mail protocols as the transport mechanism. XML is the data representation language for iDAP.</p>
+<div id="ADXDB5751" class="sect2"><a id="sthref1889"></a>
+<h3 class="sect2">AQ and XML Message Payloads</h3>
+<p><a href="#i1029921">Figure 37-1</a> shows an Oracle database using AQ to communicate with three applications. The message payload is XML data. The general tasks performed by AQ in this <a id="sthref1890"></a>scenario are:</p>
+<ul>
+<li>
+<p>Message flow using subscription rules</p>
+</li>
+<li>
+<p>Message management</p>
+</li>
+<li>
+<p>Extraction of business intelligence from messages</p>
+</li>
+<li>
+<p>Message transformation</p>
+</li>
+</ul>
+<p>XML messages are passed asynchronously among applications using AQ.</p>
+<ul>
+<li>
+<p>Intra-business. Typical examples include sales order fulfillment and supply-chain management.</p>
+</li>
+<li>
+<p>Inter-business. Multiple integration hubs can communicate over the Internet. Examples include travel reservations, coordination between manufacturers and suppliers, transfer of funds between banks, and insurance claims settlements.</p>
+<p>Oracle uses this approach in its enterprise application integration products. XML messages are sent from applications to an Oracle AQ hub. The hub serves as a message server for any application that wants the message. Through this hub-and-spoke architecture, XML messages can be communicated asynchronously to multiple loosely coupled applications.</p>
+</li>
+</ul>
+<p><a href="#i1029921">Figure 37-1</a> shows XML payload messages transported using AQ in the following ways:</p>
+<ul>
+<li>
+<p>A Web-based application uses an AQ operation over an HTTP(S) connection using iDAP</p>
+</li>
+<li>
+<p>An application uses AQ to propagate an XML message over a Net* connection</p>
+</li>
+<li>
+<p>An application uses AQ to propagate an Internet or XML message directly to the database using HTTP(S) or SMTP</p>
+</li>
+</ul>
+<p><a href="#i1029921">Figure 37-1</a> also shows that AQ clients can access data using OCI, Java, or PL/SQL.</p>
+<div id="ADXDB5752" class="figure">
+<p class="titleinfigure"><a id="i1029921"></a>Figure 37-1 Oracle Streams Advanced Queuing and XML Message Payloads</p>
+<img width="638" height="409" src="img/adque437.gif" alt="Description of Figure 37-1 follows" /><br />
+<a id="sthref1891" href="img_text/adque437.htm">Description of "Figure 37-1 Oracle Streams Advanced Queuing and XML Message Payloads"</a><br />
+<br /></div>
+<!-- class="figure" --></div>
+<!-- class="sect2" -->
+<div id="ADXDB5756" class="sect2"><a id="sthref1892"></a>
+<h3 class="sect2">Advantages of Using AQ</h3>
+<p>AQ provides flexibility in configuring communication between different applications. It makes an integrated solution easy to manage, easy to configure, and easy to modify, to meet changing business needs. It enables multiple applications to cooperate, coordinate, and synchronize, to carry out complex business transactions.</p>
+<p>Message management provided by AQ manages the flow of messages between different applications. AQ can also retain messages for auditing and tracking purposes, and for extracting business intelligence.</p>
+<p>AQ provides SQL views to access messages. You can use these views to analyze trends.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1030174"></a>
+<div id="ADXDB5757" class="sect1">
+<h2 class="sect1">Oracle Streams and AQ</h2>
+<p>Oracle Streams (Streams) enables you to share data and events in a stream. The stream can propagate this information within a database or from one database to another. The stream routes specified information to specified destinations. This provides greater functionality and flexibility than traditional solutions for capturing and managing events, and sharing the events with other databases and applications.</p>
+<p>Streams enables you to break the cycle of trading off one solution for another. It enable you to build and operate distributed enterprises and applications, data warehouses, and high availability solutions. You can use all the capabilities of Oracle Streams at the same time.</p>
+<p>You can use Streams to:</p>
+<ul>
+<li>
+<p><span class="italic">Capture changes at a database.</span> You can configure a background capture process to capture changes made to tables, database schemas, or the entire database. A capture process captures changes from the redo log and formats each captured change into a logical change record (LCR). The database where changes are generated in the redo log is called the source database.</p>
+</li>
+<li>
+<p><span class="italic">Enqueue events into a queue.</span> Two types of events may be staged in a Streams queue: LCRs and user messages. A capture process enqueues LCR events into a queue that you specify. The queue can then share the LCR events within the same database or with other databases. You can also enqueue user events explicitly with a user application. These explicitly enqueued events can be LCRs or user messages.</p>
+</li>
+<li>
+<p><span class="italic">Propagate events from one queue to another.</span> These queues may be in the same database or in different databases.</p>
+</li>
+<li>
+<p><span class="italic">Dequeue events.</span> A background apply process can dequeue events. You can also dequeue events explicitly with a user application.</p>
+</li>
+<li>
+<p><span class="italic">Apply events at a database.</span> You can configure an apply process to apply all of the events in a queue or only the events that you specify. You can also configure an apply process to call your own PL/SQL subprograms to process events.</p>
+<p>The database where LCR events are applied and other types of events are processed is called the destination database. In some configurations, the source database and the destination database may be the same.</p>
+</li>
+</ul>
+<div id="ADXDB5758" class="sect2"><a id="sthref1893"></a>
+<h3 class="sect2">Streams Message Queuing</h3>
+<p>Streams lets user applications:</p>
+<ul>
+<li>
+<p>Enqueue messages of different types</p>
+</li>
+<li>
+<p>Propagate messages are ready for consumption</p>
+</li>
+<li>
+<p>Dequeue messages at the destination database</p>
+</li>
+</ul>
+<p>Streams introduces a new type of queue that stages messages of type <code>SYS.AnyData</code>. Messages of almost any type can be wrapped in a <code>SYS.AnyData</code> wrapper and staged in <code>SYS.AnyData</code> queues. Streams interoperates with Advanced Queuing (AQ), which supports all the standard features of message queuing systems, including multiconsumer queues, publishing and subscribing, content-based routing, internet propagation, transformations, and gateways to other messaging subsystems.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink STRMS" href="../../server.112/e17069/toc.htm"><span class="italic">Oracle Streams Concepts and Administration,</span></a> and its Appendix A, "XML Schema for LCRs".</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1030179"></a>
+<div id="ADXDB5759" class="sect1">
+<h2 class="sect1">XMLType Attributes in Object Types</h2>
+<p>You can create queues that use Oracle object types containing <code>XMLType</code> attributes. These queues can be used to transmit and store messages that are XML documents. Using <code>XMLType</code>, you can do the following:</p>
+<ul>
+<li>
+<p>Store any type of message in a queue</p>
+</li>
+<li>
+<p>Store <code>d</code>ocuments internally as <code>CLOB</code> values</p>
+</li>
+<li>
+<p>Store <code>m</code>ore than one type of payload in a queue</p>
+</li>
+<li>
+<p>Query <code>XMLType</code> columns using SQL/XML functions such as <code>XMLExists</code></p>
+</li>
+<li>
+<p>Specify the operators in subscriber rules or dequeue selectors</p>
+</li>
+</ul>
+</div>
+<!-- class="sect1" -->
+<a id="i1029045"></a>
+<div id="ADXDB5760" class="sect1">
+<h2 class="sect1"><a id="sthref1894"></a>Internet Data Access Presentation (iDAP)</h2>
+<p>You can access AQ over the Internet <a id="sthref1895"></a>by using SOAP. Internet Data Access Presentation (iDAP) is the <a id="sthref1896"></a>SOAP specification for AQ operations. iDAP defines XML message structure for the body of the SOAP request. <a id="sthref1897"></a>An iDAP-structured message is transmitted over the Internet using transport protocols such as HTTP(S) and SMTP.</p>
+<p>iDAP uses the <code>text/xml</code> content type to specify the body of the SOAP request. XML provides the presentation for iDAP request and response messages as follows:</p>
+<ul>
+<li>
+<p>All request and response tags are scoped in the SOAP namespace.</p>
+</li>
+<li>
+<p>AQ operations are scoped in the iDAP namespace.</p>
+</li>
+<li>
+<p>The sender includes namespaces in iDAP elements and attributes in the SOAP body.</p>
+</li>
+<li>
+<p>The receiver processes iDAP messages that have correct namespaces. For the requests with incorrect namespaces, the receiver returns an invalid request error.</p>
+</li>
+<li>
+<p>The SOAP namespace has this value: <code>http://schemas.xmlsoap.org/soap/envelope/</code></p>
+</li>
+<li>
+<p>The iDAP namespace has this value: <code>http://ns.oracle.com/AQ/schemas/access</code></p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ADQUE" href="../../server.112/e11013/toc.htm"><span class="italic">Oracle Streams Advanced Queuing User's Guide</span></a></div>
+</li>
+</ul>
+</div>
+<!-- class="sect1" -->
+<a id="i1029071"></a>
+<div id="ADXDB5761" class="sect1">
+<h2 class="sect1"><a id="sthref1898"></a>iDAP Architecture</h2>
+<p><a href="#i1029082">Figure 37-2</a> shows the following components needed to send HTTP(S) messages:</p>
+<ul>
+<li>
+<p>A client program that sends XML messages, conforming to iDAP format, to the AQ Servlet. This can be any HTTP client, such as Web browsers.</p>
+</li>
+<li>
+<p>The Web server or <code>ServletRunner</code> which hosts the AQ servlet that can interpret the incoming XML messages, for example, Apache/Jserv or Tomcat.</p>
+</li>
+<li>
+<p>Oracle Server/Database. Oracle Streams AQ servlet connects to Oracle Database to perform operations on your queues.</p>
+</li>
+</ul>
+<div id="ADXDB5762" class="figure">
+<p class="titleinfigure"><a id="i1029082"></a>Figure 37-2 iDAP Architecture for Performing AQ Operations using HTTP(S)</p>
+<img width="404" height="137" src="img/adxdb052.gif" alt="Description of Figure 37-2 follows" /><br />
+<a id="sthref1899" href="img_text/adxdb052.htm">Description of "Figure 37-2 iDAP Architecture for Performing AQ Operations using HTTP(S)"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<a id="i1029088"></a>
+<div id="ADXDB5763" class="sect2">
+<h3 class="sect2">XMLType <a id="sthref1900"></a><a id="sthref1901"></a>Queue Payloads</h3>
+<p>You can create queues with payloads that contain <code>XMLType</code> <a id="sthref1902"></a>attributes. These can be used for transmitting and storing messages that contain XML documents. By defining Oracle objects with <code>XMLType</code> attributes, you can do the following:</p>
+<ul>
+<li>
+<p>Store more than one type of XML document in the same queue. The documents are stored internally as <code>CLOB</code> instances.</p>
+</li>
+<li>
+<p>Selectively dequeue messages with <code>XMLType</code> attributes using SQL/XML functions such as <code>XMLExists</code> and <code>XMLQuery</code>.</p>
+</li>
+<li>
+<p>Define transformations to convert Oracle objects to <code>XMLType</code>.</p>
+</li>
+<li>
+<p>Define rule-based subscribers that query message content using SQL/XML functions such as <code>XMLExists</code> and <code>XMLQuery</code>.</p>
+</li>
+</ul>
+<p>In the BooksOnline application, assume that the Overseas Shipping site represents an order using <code>SYS.XMLType</code>. The Order Entry site represents an order as an Oracle object, <code>ORDER_TYP</code>.</p>
+<p><a href="#BGBIBGJE">Example 37-1</a> creates the queue table and queue for Overseas Shipping.</p>
+<div id="ADXDB5764" class="example">
+<p class="titleinexample"><a id="BGBIBGJE"></a>Example 37-1 Creating a Queue Table and Queue</p>
+<pre>
+BEGIN
+   DBMS_AQADM.create_queue_table(
+     queue_table        =&gt; 'OS_orders_pr_mqtab',
+     comment            =&gt; 'Overseas Shipping MultiConsumer Orders queue table',
+     multiple_consumers =&gt; TRUE,
+     queue_payload_type =&gt; 'SYS.XMLtype',
+     compatible         =&gt; '8.1');
+END;
+/
+ 
+BEGIN
+   DBMS_AQADM.create_queue(queue_name   =&gt; 'OS_bookedorders_que',
+                           queue_table  =&gt; 'OS_orders_pr_mqtab');
+END;
+/
+</pre></div>
+<!-- class="example" -->
+<p>Because the representation of orders at the overseas shipping site is different from the representation of orders at the order-entry site, messages need to be transformed before sending them from the order-entry site to the overseas shipping site. <a href="#BGBIDEGH">Example 37-2</a> creates the transformation, and <a href="#BGBDECHG">Example 37-3</a> applies it.</p>
+<div id="ADXDB5933" class="example">
+<p class="titleinexample"><a id="BGBIDEGH"></a>Example 37-2 Creating a Transformation to Convert Message Data to XML</p>
+<pre>
+CREATE OR REPLACE FUNCTION convert_to_order_xml(input_order ORDER_TYP)
+  RETURN XMLType AS
+    new_order XMLType;
+BEGIN
+  SELECT sys_xmlgen(input_order) INTO new_order FROM DUAL;
+  RETURN new_order;
+END convert_to_order_xml;
+/
+ 
+BEGIN
+  SYS.DBMS_TRANSFORM.create_transformation(
+    schema =&gt;         'OE',
+    name   =&gt;         'OE2XML',
+    from_schema =&gt;    'OE',
+    from_type =&gt;      'ORDER_TYP',
+    to_schema =&gt;      'SYS',
+    to_type =&gt;        'XMLTYPE',
+    transformation =&gt; 'convert_to_order_xml(source.user_data)');
+END;
+/
+</pre></div>
+<!-- class="example" -->
+<div id="ADXDB5934" class="example">
+<p class="titleinexample"><a id="BGBDECHG"></a>Example 37-3 Applying a Transformation before Sending Messages Overseas</p>
+<pre>
+-- Add a rule-based subscriber for overseas shipping to the booked-orders
+-- queues with transformation.
+DECLARE
+   subscriber SYS.AQ$_AGENT;
+BEGIN
+   subscriber := SYS.AQ$_AGENT('Overseas_Shipping',
+                               'OS.OS_bookedorders_que',
+                               NULL);
+   DBMS_AQADM.add_subscriber(
+     queue_name     =&gt; 'OS_bookedorders_que',
+     subscriber     =&gt; subscriber,
+     rule           =&gt; 'XMLSerialize(CONTENT XMLQuery(''//orderregion''' ||
+                       'PASSING tab.user_data RETURNING CONTENT)' ||
+                       ' AS VARCHAR2(1000)) = ''INTERNATIONAL''',
+     transformation =&gt; 'OE.OE2XML');
+END;
+/
+</pre></div>
+<!-- class="example" -->
+<p>For more information about defining transformations that convert the type used by the order entry application to the type used by Overseas Shipping, see <a class="olink ADQUE0813" href="../../server.112/e11013/aq_admin.htm#ADQUE0813"><span class="italic">Oracle Streams Advanced Queuing User's Guide</span></a>.</p>
+<p><a href="#BGBBFGHC">Example 37-4</a> shows how an application that processes orders for customers in another country, in this case Canada, can dequeue messages.</p>
+<div id="ADXDB5765" class="example">
+<p class="titleinexample"><a id="BGBBFGHC"></a>Example 37-4 XMLType and AQ: Dequeuing Messages</p>
+<pre>
+-- Create procedure to enqueue into single-consumer queues.
+CREATE OR REPLACE PROCEDURE get_canada_orders AS
+   deq_msgid             RAW(16);
+   dopt                  DBMS_AQ.dequeue_options_t;
+   mprop                 DBMS_AQ.message_properties_t;
+   deq_order_data        SYS.XMLType;
+   deq_order_data_text   CLOB;
+   no_messages           EXCEPTION;
+   PRAGMA EXCEPTION_INIT (no_messages, -25228);
+   new_orders            BOOLEAN := TRUE;
+BEGIN
+   dopt.wait := 1;
+   -- Specify dequeue condition to select orders for Canada.
+   dopt.deq_condition := 'XMLSerialize(CONTENT ' ||
+                         'XMLQuery(''/ORDER_TYP/CUSTOMER/COUNTRY/text()''' ||
+                         ' PASSING tab.user_data RETURNING CONTENT)' ||
+                         ' AS VARCHAR2(1000))=''CANADA''';
+   dopt.consumer_name := 'Overseas_Shipping';
+   WHILE (new_orders) LOOP
+     BEGIN
+       DBMS_AQ.dequeue(queue_name         =&gt; 'OS.OS_bookedorders_que',
+                       dequeue_options    =&gt; dopt,
+                       message_properties =&gt; mprop,
+                       payload            =&gt; deq_order_data,
+                       msgid              =&gt; deq_msgid);
+       COMMIT;
+       SELECT XMLSerialize(DOCUMENT deq_order_data AS CLOB)
+         INTO deq_order_data_text FROM DUAL;
+       DBMS_OUTPUT.put_line('Order for Canada - Order: ' || deq_order_data_text);
+     EXCEPTION
+       WHEN no_messages THEN
+         DBMS_OUTPUT.put_line (' ---- NO MORE ORDERS  ---- ');
+         new_orders := FALSE;
+     END;
+   END LOOP;
+END;
+/
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1029340"></a>
+<div id="ADXDB5767" class="sect1">
+<h2 class="sect1">Guidelines for Using XML and Oracle Streams Advanced Queuing</h2>
+<p>This section describes guidelines for using XML and Oracle Streams Advanced Queuing.</p>
+<div id="ADXDB5768" class="sect2"><a id="sthref1903"></a>
+<h3 class="sect2">Storing Oracle Streams AQ XML Messages with Many PDFs as One Record?</h3>
+<p>You can exchange XML documents between businesses using Oracle Streams Advanced Queuing, where each message received or sent includes an XML header, XML attachment (XML data stream), DTDs, and PDF files, and store the data in a database table, such as a <code>queuetable</code>. You can enqueue the messages into Oracle queue tables as one record or piece. Or you can enqueue the messages as multiple records, such as one record for XML data streams as <code>CLOB</code> type, one record for PDF files as <code>RAW</code> type, and so on. You can also then dequeue the messages.</p>
+<p>You can achieve this in the following ways:</p>
+<ul>
+<li>
+<p>By defining an object type with (<code>CLOB</code>, <code>RAW</code>,...) attributes, and storing it as a single message.</p>
+</li>
+<li>
+<p>By using the AQ message grouping feature and storing it in multiple messages. Here the message properties are associated with a group. To use the message grouping feature, all messages must be the same payload type.</p>
+</li>
+</ul>
+<p>To specify the payload, first create an object type, for example:</p>
+<pre>
+CREATE TYPE mypayload_type as OBJECT (xmlDataStream CLOB, dtd CLOB, pdf BLOB);
+</pre>
+<p>then store it as a single message.</p>
+</div>
+<!-- class="sect2" -->
+<div id="ADXDB5769" class="sect2"><a id="sthref1904"></a>
+<h3 class="sect2">Adding New Recipients After Messages Are Enqueued</h3>
+<p>You can use the queue table to support message assignments. For example, when other businesses send messages to a specific company, they do not know who should be assigned to process the messages, but they know the messages are for Human Resources (HR) for example. Hence all messages go to the HR supervisor. At this point, the message is enqueued in the queue table. The HR supervisor is the only recipient of this message, and the entire HR staff have been pre-defined as subscribers for this queue.</p>
+<p>You cannot change the recipient list after the message is enqueued. If you do not specify a recipient list then subscribers can subscribe to the queue and dequeue the message. Here, new recipients must be subscribers to the queue. Otherwise, you must dequeue the message and enqueue it again with new recipients.</p>
+</div>
+<!-- class="sect2" -->
+<div id="ADXDB5770" class="sect2"><a id="sthref1905"></a>
+<h3 class="sect2">Enqueuing and Dequeuing XML Messages?</h3>
+<p>Oracle Streams AQ supports enqueuing and dequeuing objects. These objects can have an attribute of type <code>XMLType</code> that contains an XML document, in addition to metadata attributes. Refer to <a class="olink ADQUE" href="../../server.112/e11013/toc.htm"><span class="italic">Oracle Streams Advanced Queuing User's Guide</span></a> for specific details and more examples.</p>
+</div>
+<!-- class="sect2" -->
+<div id="ADXDB5771" class="sect2"><a id="sthref1906"></a>
+<h3 class="sect2">Parsing Messages with XML Content from Oracle Streams AQ Queues</h3>
+<p>You can parse messages with XML content from an Oracle Streams AQ queue and then update tables and fields in an ODS (Operational Data Store).</p>
+<p>You can use Oracle XML Parser for Java and Java Stored Procedures together with Oracle Streams AQ to obtain metadata such as AQ enqueue or dequeue times and JMS header information, based on queries that target certain XML data. You can combine this with using Oracle Text XML search.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="xdb09sea.htm#i1006756">Chapter 12, "Full-Text Search Over XML Data"</a>.</div>
+</div>
+<!-- class="sect2" -->
+<div id="ADXDB5772" class="sect2"><a id="sthref1907"></a>
+<h3 class="sect2">Preventing the Listener from Stopping Until the XML Document Is Processed</h3>
+<p>When receiving XML messages from clients as messages you may need to process them as soon as they arrive. But each XML document might take several seconds to process. For PL/SQL, one procedure starts the listener, dequeues the message, and calls another procedure to process the XML document. The listener could be held up until the XML document is processed, and messages would accumulate in the queue.</p>
+<p>After receiving a message, you can instead submit a job using PL/SQL package <code>DBMS_JOB</code>. The job is invoked asynchronously in a different database session.</p>
+<p>You can register a PL/SQL callback, which is invoked asynchronously when a message shows up in a queue. PL/SQL callbacks are part of the Oracle Streams AQ notification framework.</p>
+</div>
+<!-- class="sect2" -->
+<div id="ADXDB5773" class="sect2"><a id="sthref1908"></a>
+<h3 class="sect2">Using HTTPS with AQ</h3>
+<p>You can use Oracle Streams AQ Internet access to send XML messages to suppliers using HTTPS and receive a response. Using XML, you can enqueue and dequeue messages over HTTP(S) securely and transactionally.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ADQUE0600" href="../../server.112/e11013/internet.htm#ADQUE0600"><span class="italic">Oracle Streams Advanced Queuing User's Guide</span></a></div>
+</div>
+<!-- class="sect2" -->
+<div id="ADXDB5774" class="sect2"><a id="sthref1909"></a>
+<h3 class="sect2">Storing XML in Oracle Streams AQ Message Payloads</h3>
+<p>You can store XML data in Oracle Streams AQ message payloads natively other than having an ADT as the payload with <code>SYS.XMLType</code> as part of the ADT. You can create queues with payloads and attributes as <code>XMLType</code>.</p>
+</div>
+<!-- class="sect2" -->
+<div id="ADXDB5775" class="sect2"><a id="sthref1910"></a>
+<h3 class="sect2">Comparing iDAP and SOAP</h3>
+<p>iDAP is the SOAP specification for AQ operations. iDAP is the XML specification for Oracle Streams AQ operations. SOAP defines a generic mechanism to invoke a service. iDAP defines these mechanisms to perform AQ operations.</p>
+<p>iDAP has the following key properties not defined by SOAP:</p>
+<ul>
+<li>
+<p>Transactional behavior. You can perform AQ operations in a transactional manner. A transaction can span multiple iDAP requests.</p>
+</li>
+<li>
+<p>Security. iDAP operations can be carried out only by authorized and authenticated users.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1019">
+<tr>
+<td class="cellalignment1028">
+<table class="cellalignment1024">
+<tr>
+<td class="cellalignment1023"><a href="xdb26imp.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1023"><a href="partpg7.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2002, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1030">
+<table class="cellalignment1022">
+<tr>
+<td class="cellalignment1023"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1023"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1023"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1023"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1023"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1023"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

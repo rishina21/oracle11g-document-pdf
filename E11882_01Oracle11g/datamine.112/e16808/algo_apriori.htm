@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Apriori</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 735" />
+<meta name="dcterms.created" content="2013-06-29T13:13:16Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Data Mining Concepts" />
+<meta name="dcterms.identifier" content="E16808-07" />
+<meta name="dcterms.isVersionOf" content="DMCON" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2005, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="part3.htm" title="Previous" type="text/html" />
+<link rel="Next" href="algo_decisiontree.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e16808.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">20/34</span> <!-- End Header -->
+<div id="DMCON061" class="chapter"><a id="CHDJFDED"></a>
+<h1 class="chapter"><span class="secnum">10</span> Apriori</h1>
+<p><a id="ABC4585453"></a>This <a id="sthref386"></a>chapter describes Apriori, the algorithm used by Oracle Data Mining for calculating <a id="sthref387"></a>association rules.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="market_basket.htm#BABDCBJG">Chapter 8, "Association"</a></div>
+<p>This chapter contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1007565">About Apriori</a></p>
+</li>
+<li>
+<p><a href="#BGBCDHEB">Association Rules and Frequent Itemsets</a></p>
+</li>
+<li>
+<p><a href="#CHDCDJEF">Data Preparation for Apriori</a></p>
+</li>
+<li>
+<p><a href="#BGBIHIBA">Calculating Association Rules</a></p>
+</li>
+<li>
+<p><a href="#BGBEFCBG">Evaluating Association Rules</a></p>
+</li>
+</ul>
+<a id="i1007565"></a>
+<div id="DMCON283" class="sect1">
+<h2 class="sect1">About Apriori</h2>
+<p><a id="i1008199"></a>An association mining problem can be decomposed into two subproblems:</p>
+<ul>
+<li>
+<p>Find all combinations of items in a set of transactions that occur with a specified minimum frequency. These combinations are called <a id="sthref388"></a><span class="bold">frequent itemsets</span>.</p>
+</li>
+<li>
+<p>Calculate <a id="sthref389"></a>rules that express the probable co-occurrence of items within frequent itemsets. (See <a href="#BGBEAADE">"Example: Calculating Rules from Frequent Itemsets"</a>.)</p>
+</li>
+</ul>
+<p>Apriori calculates the probability of an item being present in a frequent itemset, given that another item or items is present.</p>
+<p>Association rule mining is not recommended for finding associations involving rare events in problem domains with a large number of items. Apriori discovers patterns with frequency above the minimum support threshold. Therefore, in order to find associations involving rare events, the algorithm must run with very low minimum support values. However, doing so could potentially explode the number of enumerated itemsets, especially in cases with a large number of items. This could increase the execution time significantly. Classification or anomaly detection may be more suitable for discovering rare events when the data has a high number of attributes.</p>
+</div>
+<!-- class="sect1" -->
+<a id="BGBCDHEB"></a>
+<div id="DMCON284" class="sect1">
+<h2 class="sect1">Association Rules and Frequent Itemsets</h2>
+<p>The Apriori algorithm calculates rules that express probabilistic relationships between items in frequent itemsets For example, a rule derived from frequent itemsets containing A, B, and C might state that if A and B are included in a transaction, then C is likely to also be included.</p>
+<p>An association rule states that an item or group of items implies the presence of another item with some probability. Unlike decision tree rules, which predict a target, association rules simply express correlation.</p>
+<div id="DMCON285" class="sect2"><a id="sthref390"></a>
+<h3 class="sect2">Antecedent and Consequent</h3>
+<p>The IF component of an association rule is known as the <span class="bold">antecedent</span>. The THEN component is known as the <span class="bold">consequent</span>. The antecedent and the consequent are disjoint; they have no items in common.</p>
+<p>Oracle Data Mining supports association rules that have one or more items in the antecedent and a single item in the consequent.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BGBJEJDH"></a>
+<div id="DMCON286" class="sect2">
+<h3 class="sect2">Confidence</h3>
+<p>Rules have an associated <a id="sthref391"></a>, which is the conditional probability that the consequent will occur given the occurrence of the antecedent. The minimum confidence for rules can be specified by the user.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDCDJEF"></a>
+<div id="DMCON295" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Data Preparation for Apriori</h2>
+<p><a id="sthref392"></a>Association models<a id="sthref393"></a> are designed to use <a id="sthref394"></a>transactional data. In transactional data, there is a one-to-many relationship between the case identifier and the values for each case. Each case ID/value pair is specified in a separate record (row).</p>
+<div id="DMCON549" class="sect2"><a id="sthref395"></a>
+<h3 class="sect2">Native Transactional Data and <a id="sthref396"></a>Star Schemas</h3>
+<p>Transactional data may be stored in native transactional format, with a non-unique case ID column and a values column, or it may be stored in some other configuration, such as a star schema. If the data is not stored in native transactional format, it must be transformed to a <a id="sthref397"></a>nested column for processing by the Apriori algorithm.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<p><a href="market_basket.htm#BABEEEHE">"Transactional Data"</a></p>
+<p><a class="olink DMPRG006" href="../../datamine.112/e12218/xform_casetbl.htm#DMPRG006"><span class="italic">Oracle Data Mining Application Developer's Guide</span></a> for details about transforming transactional data to nested columns</p>
+</div>
+</div>
+<!-- class="sect2" -->
+<div id="DMCON550" class="sect2"><a id="sthref398"></a>
+<h3 class="sect2">Items and Collections</h3>
+<p>In transactional data, a collection of items is associated with each case. The collection could theoretically include all possible members of the collection. For example, all products could theoretically be purchased in a single market-basket transaction. However, in actuality, only a tiny subset of all possible items are present in a given transaction; the items in the market-basket represent only a small fraction of the items available for sale in the store.</p>
+</div>
+<!-- class="sect2" -->
+<div id="DMCON551" class="sect2"><a id="sthref399"></a>
+<h3 class="sect2">Sparse Data</h3>
+<p>Missing items in a collection indicate <span class="bold">sparsity</span>. Missing items may be present with a null value, or they may simply be missing.</p>
+<p>Nulls in transactional data are assumed to represent values that are known but not present in the transaction. For example, three items out of hundreds of possible items might be purchased in a single transaction. The items that were not purchased are known but not present in the transaction.</p>
+<p>Oracle Data Mining assumes sparsity in transactional data. The Apriori algorithm is optimized for processing sparse data.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink DMPRG015" href="../../datamine.112/e12218/xform_casetbl.htm#DMPRG015"><span class="italic">Oracle Data Mining Application Developer's Guide</span></a> for information about missing value treatment</div>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Apriori is not affected by Automatic Data Preparation.</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BGBIHIBA"></a>
+<div id="DMCON552" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Calculating Association Rules</h2>
+<p>The first step in association analysis is the enumeration of <span class="bold"><a id="sthref400"></a>itemsets</span>. An itemset is any combination of two or more items in a transaction.</p>
+<a id="BABJICFE"></a>
+<div id="DMCON255" class="sect2">
+<h3 class="sect2">Itemsets</h3>
+<p>The maximum number of items in an itemset is user-specified. If the maximum is two, all the item pairs will be counted. If the maximum is greater than two, all the item pairs, all the item triples, and all the item combinations up to the specified maximum will be counted.</p>
+<div id="DMCON553" class="example">
+<p class="titleinexample"><a id="BGBFDAFB"></a>Example 10-1 Sample Transactional Data</p>
+<pre>
+TRANS_ID   ITEM_ID
+---------  -------------------
+11         B
+11         D
+11         E
+12         A
+12         B
+12         C
+12         E
+13         B
+13         C
+13         D
+13         E
+</pre></div>
+<!-- class="example" -->
+<p><a href="#BABFFIEG">Table 10-1</a> shows the itemsets derived from the transactions shown in <a href="#BGBFDAFB">Example 10-1</a>, assuming that maximum number of items in an itemset is set to 3.</p>
+<div id="DMCON256" class="tblformal">
+<p class="titleintable"><a id="sthref401"></a><a id="BABFFIEG"></a>Table 10-1 Itemsets</p>
+<table class="cellalignment1321" title="Itemsets" summary="Pairs of items (itemsets) in transactions shown in the sample transaction data in this chapter." dir="ltr">
+<thead>
+<tr class="cellalignment1312">
+<th class="cellalignment1322" id="r1c1-t6">Transaction</th>
+<th class="cellalignment1322" id="r1c2-t6">Itemsets</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r2c1-t6" headers="r1c1-t6">
+<p>11</p>
+</td>
+<td class="cellalignment1318" headers="r2c1-t6 r1c2-t6">
+<p>(B,D) (B,E) (D,E) (B,D,E)</p>
+</td>
+</tr>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r3c1-t6" headers="r1c1-t6">
+<p>12</p>
+</td>
+<td class="cellalignment1318" headers="r3c1-t6 r1c2-t6">
+<p>(A,B) (A,C) (A,E) (B,C) (B,E) (C,E) (A,B,C) (A,B,E) (A,C,E) (B,C,E)</p>
+</td>
+</tr>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r4c1-t6" headers="r1c1-t6">
+<p>13</p>
+</td>
+<td class="cellalignment1318" headers="r4c1-t6 r1c2-t6">
+<p>(B,C) (B,D) (B,E) (C,D) (C,E) (D,E) (B,C,D) (B,C,E) (B,D,E) (C,D,E)</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" --></div>
+<!-- class="sect2" -->
+<a id="BABEEGCB"></a>
+<div id="DMCON257" class="sect2">
+<h3 class="sect2"><a id="sthref402"></a>Frequent Itemsets</h3>
+<p>Association rules are calculated from itemsets. If rules are generated from all possible itemsets, there may be a very high number of rules and the rules may not be very meaningful. Also, the model may take a long time to build. Typically it is desirable to only generate rules from itemsets that are well-represented in the data. <span class="bold">Frequent itemsets</span> are those that occur with a minimum frequency specified by the user.</p>
+<p>The minimum frequent itemset <span class="bold"><a id="sthref403"></a>support</span> is a user-specified percentage that limits the number of itemsets used for association rules. An itemset must appear in at least this percentage of all the transactions if it is to be used as a basis for rules.</p>
+<p><a href="#BABIBFFH">Table 10-2</a> shows the itemsets from <a href="#BABFFIEG">Table 10-1</a> that are frequent itemsets with support &gt; 66%.</p>
+<div id="DMCON258" class="tblformal">
+<p class="titleintable"><a id="sthref404"></a><a id="BABIBFFH"></a>Table 10-2 Frequent Itemsets</p>
+<table class="cellalignment1321" title="Frequent Itemsets" summary="Frequent itemsets derived from sample transactions shown in figure 8-1. Only the frequent itemsets with support &gt; 5% are shown. There are seven frequent itemsets with support &gt; 5%." dir="ltr">
+<thead>
+<tr class="cellalignment1312">
+<th class="cellalignment1322" id="r1c1-t7">Frequent Itemset</th>
+<th class="cellalignment1322" id="r1c2-t7">Transactions</th>
+<th class="cellalignment1322" id="r1c3-t7">Support</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r2c1-t7" headers="r1c1-t7">
+<p>(B,C)</p>
+</td>
+<td class="cellalignment1318" headers="r2c1-t7 r1c2-t7">
+<p>2 of 3</p>
+</td>
+<td class="cellalignment1318" headers="r2c1-t7 r1c3-t7">
+<p>67%</p>
+</td>
+</tr>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r3c1-t7" headers="r1c1-t7">
+<p>(B,D)</p>
+</td>
+<td class="cellalignment1318" headers="r3c1-t7 r1c2-t7">
+<p>2 of 3</p>
+</td>
+<td class="cellalignment1318" headers="r3c1-t7 r1c3-t7">
+<p>67%</p>
+</td>
+</tr>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r4c1-t7" headers="r1c1-t7">
+<p>(B,E)</p>
+</td>
+<td class="cellalignment1318" headers="r4c1-t7 r1c2-t7">
+<p>3 of 3</p>
+</td>
+<td class="cellalignment1318" headers="r4c1-t7 r1c3-t7">
+<p>100%</p>
+</td>
+</tr>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r5c1-t7" headers="r1c1-t7">
+<p>(C,E)</p>
+</td>
+<td class="cellalignment1318" headers="r5c1-t7 r1c2-t7">
+<p>2 of 3</p>
+</td>
+<td class="cellalignment1318" headers="r5c1-t7 r1c3-t7">
+<p>67%</p>
+</td>
+</tr>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r6c1-t7" headers="r1c1-t7">
+<p>(D,E)</p>
+</td>
+<td class="cellalignment1318" headers="r6c1-t7 r1c2-t7">
+<p>2 of 3</p>
+</td>
+<td class="cellalignment1318" headers="r6c1-t7 r1c3-t7">
+<p>67%</p>
+</td>
+</tr>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r7c1-t7" headers="r1c1-t7">
+<p>(B,C,E)</p>
+</td>
+<td class="cellalignment1318" headers="r7c1-t7 r1c2-t7">
+<p>2 of 3</p>
+</td>
+<td class="cellalignment1318" headers="r7c1-t7 r1c3-t7">
+<p>67%</p>
+</td>
+</tr>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r8c1-t7" headers="r1c1-t7">
+<p>(B,D,E)</p>
+</td>
+<td class="cellalignment1318" headers="r8c1-t7 r1c2-t7">
+<p>2 of 3</p>
+</td>
+<td class="cellalignment1318" headers="r8c1-t7 r1c3-t7">
+<p>67%</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#CHDJFDED">Chapter 10, "Apriori"</a> for information about the calculation of association rules</div>
+</div>
+<!-- class="sect2" -->
+<a id="BGBEAADE"></a>
+<div id="DMCON287" class="sect2">
+<h3 class="sect2">Example: Calculating Rules from Frequent Itemsets</h3>
+<p><a href="#BGBCGCBA">Table 10-4</a> and <a href="#BGBCGCBA">Table 10-4</a> show the itemsets and frequent itemsets that were calculated in <a href="market_basket.htm#BABDCBJG">Chapter 8</a>. The frequent itemsets are the itemsets that occur with a minimum support of 67%; at least 2 of the 3 transactions must include the itemset.</p>
+<div id="DMCON288" class="tblformal">
+<p class="titleintable"><a id="sthref405"></a><a id="BGBHGCEF"></a>Table 10-3 Itemsets</p>
+<table class="cellalignment1321" title="Itemsets" summary="Pairs of items (itemsets) in transactions shown in the sample transaction data in this chapter." dir="ltr">
+<thead>
+<tr class="cellalignment1312">
+<th class="cellalignment1322" id="r1c1-t9">Transaction</th>
+<th class="cellalignment1322" id="r1c2-t9">Itemsets</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r2c1-t9" headers="r1c1-t9">
+<p>11</p>
+</td>
+<td class="cellalignment1318" headers="r2c1-t9 r1c2-t9">
+<p>(B,D) (B,E) (D,E) (B,D,E)</p>
+</td>
+</tr>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r3c1-t9" headers="r1c1-t9">
+<p>12</p>
+</td>
+<td class="cellalignment1318" headers="r3c1-t9 r1c2-t9">
+<p>(A,B) (A,C) (A,E) (B,C) (B,E) (C,E) (A,B,C) (A,B,E) (A,C,E) (B,C,E)</p>
+</td>
+</tr>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r4c1-t9" headers="r1c1-t9">
+<p>13</p>
+</td>
+<td class="cellalignment1318" headers="r4c1-t9 r1c2-t9">
+<p>(B,C) (B,D) (B,E) (C,D) (C,E) (D,E) (B,C,D) (B,C,E) (B,D,E) (C,D,E)</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<div id="DMCON289" class="tblformal">
+<p class="titleintable"><a id="sthref406"></a><a id="BGBCGCBA"></a>Table 10-4 Frequent Itemsets with Minimum Support 67%</p>
+<table class="cellalignment1321" title="Frequent Itemsets with Minimum Support 67%" summary="Sample set of frequent itemsets as shown in the chapter on Association" dir="ltr">
+<thead>
+<tr class="cellalignment1312">
+<th class="cellalignment1322" id="r1c1-t10">Itemset</th>
+<th class="cellalignment1322" id="r1c2-t10">Transactions</th>
+<th class="cellalignment1322" id="r1c3-t10">Support</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r2c1-t10" headers="r1c1-t10">
+<p>(B,C)</p>
+</td>
+<td class="cellalignment1318" headers="r2c1-t10 r1c2-t10">
+<p>12 and 13</p>
+</td>
+<td class="cellalignment1318" headers="r2c1-t10 r1c3-t10">
+<p>67%</p>
+</td>
+</tr>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r3c1-t10" headers="r1c1-t10">
+<p>(B,D)</p>
+</td>
+<td class="cellalignment1318" headers="r3c1-t10 r1c2-t10">
+<p>11 and 13</p>
+</td>
+<td class="cellalignment1318" headers="r3c1-t10 r1c3-t10">
+<p>67%</p>
+</td>
+</tr>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r4c1-t10" headers="r1c1-t10">
+<p>(B,E)</p>
+</td>
+<td class="cellalignment1318" headers="r4c1-t10 r1c2-t10">
+<p>11, 12, and 13</p>
+</td>
+<td class="cellalignment1318" headers="r4c1-t10 r1c3-t10">
+<p>100%</p>
+</td>
+</tr>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r5c1-t10" headers="r1c1-t10">
+<p>(C,E)</p>
+</td>
+<td class="cellalignment1318" headers="r5c1-t10 r1c2-t10">
+<p>12 and 13</p>
+</td>
+<td class="cellalignment1318" headers="r5c1-t10 r1c3-t10">
+<p>67%</p>
+</td>
+</tr>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r6c1-t10" headers="r1c1-t10">
+<p>(D,E)</p>
+</td>
+<td class="cellalignment1318" headers="r6c1-t10 r1c2-t10">
+<p>11 and 13</p>
+</td>
+<td class="cellalignment1318" headers="r6c1-t10 r1c3-t10">
+<p>67%</p>
+</td>
+</tr>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r7c1-t10" headers="r1c1-t10">
+<p>(B,C,E)</p>
+</td>
+<td class="cellalignment1318" headers="r7c1-t10 r1c2-t10">
+<p>12 and 13</p>
+</td>
+<td class="cellalignment1318" headers="r7c1-t10 r1c3-t10">
+<p>67%</p>
+</td>
+</tr>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r8c1-t10" headers="r1c1-t10">
+<p>(B,D,E)</p>
+</td>
+<td class="cellalignment1318" headers="r8c1-t10 r1c2-t10">
+<p>11 and 13</p>
+</td>
+<td class="cellalignment1318" headers="r8c1-t10 r1c3-t10">
+<p>67%</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<p>A rule expresses a conditional probability. Confidence in a rule is calculated by dividing the probability of the items occurring together by the probability of the occurrence of the antecedent.</p>
+<p>For example, if B (antecedent) is present, what is the chance that C (consequent) will also be present? What is the confidence for the rule "IF B, THEN C"?</p>
+<p>As shown in <a href="#BGBHGCEF">Table 10-3</a>:</p>
+<ul>
+<li>
+<p>All 3 transactions include B (3/3 or 100%)</p>
+</li>
+<li>
+<p>Only 2 transactions include both B and C (2/3 or 67%)</p>
+</li>
+<li>
+<p>Therefore, the confidence of the rule "IF B, THEN C" is 67/100 or 67%.</p>
+</li>
+</ul>
+<p><a href="#BABBECFA">Table 10-5</a>, shows the rules that could be derived from the frequent itemsets in <a href="#BGBCGCBA">Table 10-4</a>.</p>
+<div id="DMCON290" class="tblformal">
+<p class="titleintable"><a id="sthref407"></a><a id="BABBECFA"></a>Table 10-5 Frequent Itemsets and Rules</p>
+<table class="cellalignment1321" title="Frequent Itemsets and Rules" summary="This table lists the frequent itemsets with support &gt; 5% and the rules that are derived from each. The confidence is displayed for each rule." dir="ltr">
+<thead>
+<tr class="cellalignment1312">
+<th class="cellalignment1322" id="r1c1-t11">Frequent Itemset</th>
+<th class="cellalignment1322" id="r1c2-t11">Rules</th>
+<th class="cellalignment1322" id="r1c3-t11">prob(antecedent and consequent) / prob(antecedent)</th>
+<th class="cellalignment1322" id="r1c4-t11">Confidence</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r2c1-t11" headers="r1c1-t11">
+<p>(B,C)</p>
+</td>
+<td class="cellalignment1318" headers="r2c1-t11 r1c2-t11"><br />
+(If B then C)<br />
+(If C then B)</td>
+<td class="cellalignment1318" headers="r2c1-t11 r1c3-t11"><br />
+67/100<br />
+67/67</td>
+<td class="cellalignment1318" headers="r2c1-t11 r1c4-t11"><br />
+67%<br />
+100%</td>
+</tr>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r3c1-t11" headers="r1c1-t11">
+<p>(B,D)</p>
+</td>
+<td class="cellalignment1318" headers="r3c1-t11 r1c2-t11"><br />
+(If B then D)<br />
+(If D then B)</td>
+<td class="cellalignment1318" headers="r3c1-t11 r1c3-t11"><br />
+67/100<br />
+67/67</td>
+<td class="cellalignment1318" headers="r3c1-t11 r1c4-t11"><br />
+67%<br />
+100%</td>
+</tr>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r4c1-t11" headers="r1c1-t11">
+<p>(B,E)</p>
+</td>
+<td class="cellalignment1318" headers="r4c1-t11 r1c2-t11"><br />
+(If B then E)<br />
+(If E then B)</td>
+<td class="cellalignment1318" headers="r4c1-t11 r1c3-t11"><br />
+100/100<br />
+100/100</td>
+<td class="cellalignment1318" headers="r4c1-t11 r1c4-t11"><br />
+100%<br />
+100%</td>
+</tr>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r5c1-t11" headers="r1c1-t11">
+<p>(C,E)</p>
+</td>
+<td class="cellalignment1318" headers="r5c1-t11 r1c2-t11"><br />
+(If C then E)<br />
+(If E then C)</td>
+<td class="cellalignment1318" headers="r5c1-t11 r1c3-t11"><br />
+67/67<br />
+67/100</td>
+<td class="cellalignment1318" headers="r5c1-t11 r1c4-t11"><br />
+100%<br />
+67%</td>
+</tr>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r6c1-t11" headers="r1c1-t11">
+<p>(D,E)</p>
+</td>
+<td class="cellalignment1318" headers="r6c1-t11 r1c2-t11"><br />
+(If D then E)<br />
+I(f E then D)</td>
+<td class="cellalignment1318" headers="r6c1-t11 r1c3-t11"><br />
+67/67<br />
+67/100</td>
+<td class="cellalignment1318" headers="r6c1-t11 r1c4-t11"><br />
+100%<br />
+67%</td>
+</tr>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r7c1-t11" headers="r1c1-t11">
+<p>(B,C,E)</p>
+</td>
+<td class="cellalignment1318" headers="r7c1-t11 r1c2-t11"><br />
+(If B and C then E)<br />
+(If B and E then C)<br />
+(If C and E then B)</td>
+<td class="cellalignment1318" headers="r7c1-t11 r1c3-t11"><br />
+67/67<br />
+67/100<br />
+67/67</td>
+<td class="cellalignment1318" headers="r7c1-t11 r1c4-t11"><br />
+100%<br />
+67%<br />
+100%</td>
+</tr>
+<tr class="cellalignment1312">
+<td class="cellalignment1318" id="r8c1-t11" headers="r1c1-t11">
+<p>(B,D,E)</p>
+</td>
+<td class="cellalignment1318" headers="r8c1-t11 r1c2-t11"><br />
+(If B and D then E)<br />
+(If B and E then D)<br />
+(If D and E then B)</td>
+<td class="cellalignment1318" headers="r8c1-t11 r1c3-t11"><br />
+67/67<br />
+67/100<br />
+67/67</td>
+<td class="cellalignment1318" headers="r8c1-t11 r1c4-t11"><br />
+100%<br />
+67%<br />
+100%</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<p>If the minimum confidence is 70%, ten rules will be generated for these frequent itemsets. If the minimum confidence is 60%, sixteen rules will be generated</p>
+<div class="infoboxnotealso">
+<p class="notep1">Tip:</p>
+Increase the minimum confidence if you want to decrease the build time for the model and generate fewer rules.</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BGBEFCBG"></a>
+<div id="DMCON291" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Evaluating Association Rules</h2>
+<p>Minimum support and confidence are used to influence the build of an association model. Support and confidence are also the primary metrics for evaluating the quality of the rules generated by the model. Additionally, Oracle Data Mining supports lift for association rules. These statistical measures can be used to rank the rules and hence the usefulness of the predictions.</p>
+<div id="DMCON292" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref408"></a>
+<h3 class="sect2">Support</h3>
+<p>The support of a <a id="sthref409"></a>rule indicates how frequently the items in the rule occur together. For example, cereal and milk might appear together in 40% of the transactions. If so, the following two rules would each have a support of 40%.</p>
+<pre>
+cereal implies milk
+milk implies cereal
+</pre>
+<p>Support is the ratio of transactions that include all the items in the antecedent and consequent to the number of total transactions.</p>
+<p>Support can be expressed in probability notation as follows.</p>
+<pre>
+support(A implies B) = P(A, B)
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#BABEEGCB">"Frequent Itemsets"</a></div>
+</div>
+<!-- class="sect2" -->
+<a id="BABBEJHI"></a>
+<div id="DMCON293" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Confidence</h3>
+<p>The <a id="sthref410"></a>confidence of a rule indicates the probability of both the antecedent and the consequent appearing in the same transaction. Confidence is the conditional probability of the consequent given the antecedent. For example, cereal might appear in 50 transactions; 40 of the 50 might also include milk. The rule confidence would be:</p>
+<pre>
+cereal implies milk with 80% confidence
+</pre>
+<p>Confidence is the ratio of the rule support to the number of transactions that include the antecedent.</p>
+<p>Confidence can be expressed in probability notation as follows.</p>
+<pre>
+confidence (A implies B) = P (B/A), which is equal to P(A, B) / P(A)
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#BGBJEJDH">"Confidence"</a> and <a href="#BGBEAADE">"Example: Calculating Rules from Frequent Itemsets"</a></div>
+</div>
+<!-- class="sect2" -->
+<div id="DMCON294" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref411"></a>
+<h3 class="sect2">Lift</h3>
+<p>Both <a id="sthref412"></a>support and confidence must be used to determine if a rule is valid. However, there are times when both of these measures may be high, and yet still produce a rule that is not useful. For example:</p>
+<pre>
+Convenience store customers who buy orange juice also buy milk with 
+a 75% confidence. 
+The combination of milk and orange juice has a support of 30%.
+</pre>
+<p>This at first sounds like an excellent rule, and in most cases, it would be. It has high confidence and high support. However, what if convenience store customers in general buy milk 90% of the time? In that case, orange juice customers are actually <span class="italic">less</span> likely to buy milk than customers in general.</p>
+<p>A third measure is needed to evaluate the quality of the rule. Lift indicates the strength of a rule over the random co-occurrence of the antecedent and the consequent, given their individual support. It provides information about the improvement, the increase in probability of the consequent given the antecedent. Lift is defined as follows.</p>
+<pre>
+(Rule Support) /(Support(Antecedent) * Support(Consequent))
+</pre>
+<p>This can also be defined as the confidence of the combination of items divided by the support of the consequent. So in our milk example, assuming that 40% of the customers buy orange juice, the improvement would be:</p>
+<pre>
+30% / (40% * 90%)
+</pre>
+<p>which is 0.83 &ndash; an improvement of less than 1.</p>
+<p>Any rule with an improvement of less than 1 does not indicate a real cross-selling opportunity, no matter how high its support and confidence, because it actually offers less ability to predict a purchase than does random chance.</p>
+<div class="infoboxnotealso">
+<p class="notep1">Tip:</p>
+Decrease the maximum rule length if you want to decrease the build time for the model and generate simpler rules.</div>
+<div class="infoboxnotealso">
+<p class="notep1">Tip<a id="sthref413"></a>:</p>
+Increase the minimum support if you want to decrease the build time for the model and generate fewer rules.</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1311">
+<tr>
+<td class="cellalignment1318">
+<table class="cellalignment1316">
+<tr>
+<td class="cellalignment1315"><a href="part3.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1315"><a href="algo_decisiontree.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2005, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1320">
+<table class="cellalignment1314">
+<tr>
+<td class="cellalignment1315"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1315"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1315"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1315"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1315"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1315"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

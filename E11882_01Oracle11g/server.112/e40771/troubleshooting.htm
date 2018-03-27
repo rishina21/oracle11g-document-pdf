@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Troubleshooting Data Guard</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1071" />
+<meta name="dcterms.created" content="2015-11-24T12:57:39Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Data Guard Broker" />
+<meta name="dcterms.identifier" content="E40771-07" />
+<meta name="dcterms.isVersionOf" content="DGBKR" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1999, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="dbpropref.htm" title="Previous" type="text/html" />
+<link rel="Next" href="deprecated_appx.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e40771.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">16/20</span> <!-- End Header -->
+<div id="DGBKR1020" class="chapter"><a id="i1008260"></a>
+<h1 class="chapter"><span class="secnum">9</span> Troubleshooting Data Guard</h1>
+<p>This chapter describes various errors and how to solve them. It contains the following topics<a id="sthref1281"></a><a id="sthref1282"></a>:</p>
+<ul>
+<li>
+<p><a href="#i1009720">Sources of Diagnostic Information</a></p>
+</li>
+<li>
+<p><a href="#i1007227">General Problems and Solutions</a></p>
+</li>
+<li>
+<p><a href="#i1009813">Troubleshooting Problems During a Switchover Operation</a></p>
+</li>
+<li>
+<p><a href="#i1007247">Troubleshooting Problems During a Failover Operation</a></p>
+</li>
+<li>
+<p><a href="#CEGIFCGJ">Troubleshooting Problems with the Observer</a></p>
+</li>
+</ul>
+<a id="i1009720"></a>
+<div id="DGBKR1025" class="sect1">
+<h2 class="sect1"><span class="secnum">9.1</span> Sour<a id="sthref1283"></a>ces of Diagnostic Information</h2>
+<p>The Data Guard broker provides information about its activities in several forms:</p>
+<ul>
+<li>
+<p>Database status information (see <a href="dbresource.htm#i1024834">Section 4.9</a>)</p>
+</li>
+<li>
+<p>Oracle alert log files</p>
+<p>The broker records key information in the alert log file for each instance of each database in a broker configuration. You can check the alert log files for such information when troubleshooting Data Guard.</p>
+</li>
+<li>
+<p>Data Guard "broker log files" <a id="sthref1284"></a><a id="sthref1285"></a><a id="sthref1286"></a></p>
+<p>For each instance of each database in a broker configuration, the broker DMON process records important behavior and status information in a "broker log file," useful in diagnosing Data Guard failures.</p>
+<p>The broker log file is created in the same directory as the alert log and is named <code dir="ltr">drc&lt;$ORACLE_SID&gt;.log</code>.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect1" -->
+<a id="i1007227"></a>
+<div id="DGBKR1030" class="sect1">
+<h2 class="sect1"><span class="secnum">9.2</span> General Problems and Solutions</h2>
+<p>This section describes general problems and solutions. This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1007270">ORA-16596: database not part of the Data Guard broker configuration</a></p>
+</li>
+<li>
+<p><a href="#i1009593">Redo Accumulating on the Primary Is Not Sent to Some Standby Databases</a></p>
+</li>
+<li>
+<p><a href="#i1007315">Many Log Files Are Received on a Standby Database But Not Applied</a></p>
+</li>
+<li>
+<p><a href="#i1010129">The Request Timed Out or Enterprise Manager Performance Is Sluggish</a></p>
+</li>
+<li>
+<p><a href="#BCGHAIEJ">The Primary Database is Flashed Back</a></p>
+</li>
+<li>
+<p><a href="#BABFEGAH">Standby Fails to Automatically Start Up Due to Unknown Service (ORA-12514)</a></p>
+</li>
+</ul>
+<a id="i1007270"></a>
+<div id="DGBKR1035" class="sect2">
+<h3 class="sect2"><span class="secnum">9.2.1</span> ORA-16596: database not part of the Data Guard broker configuration</h3>
+<p>A request was issued to the broker, but the database instance through which you have connected is no longer a part of the broker configuration. You may see this error when the broker fails to locate a broker configuration profile for the database upon which it is running.</p>
+<p><a id="DGBKR3614"></a><span class="subhead3">Solution&nbsp;</span>Reconnect to the configuration through another database that you know is part of the broker configuration. Confirm that a database exists in the broker configuration that has a name that matches the <code dir="ltr">db_unique_name</code> value of the database that returned the ORA-16596 error.</p>
+<p>This problem can also occur if you attempt to enable a configuration, but the broker configuration file for one of its databases was accidentally removed or is outdated. In this case, remove the database from the broker configuration, manually delete the configuration file for that standby database (not for the primary database), and try again to enable the configuration. After the configuration is enabled, to create a new database profile for the previously deleted standby database, you can either use the Enterprise Manager Add Standby Database wizard and choose the Add existing standby database option, or you can use the DGMGRL command-line interface and issue the <code dir="ltr">ADD DATABASE</code> command.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1009593"></a>
+<div id="DGBKR1040" class="sect2">
+<h3 class="sect2"><span class="secnum">9.2.2</span> Redo Accumulating on the Primary Is Not Sent to Some Standby Databases</h3>
+<p>By viewing the Log File Details page in Enterprise Manager, you have determined that log files are accumulating on the primary database and are not being archived to some of the standby databases in the broker configuration.</p>
+<p><a id="DGBKR3615"></a><span class="subhead3">Solution&nbsp;</span>To narrow down the problem, do the following:</p>
+<ul>
+<li>
+<p>Verify that the state of the primary database is in the <code dir="ltr">TRANSPORT-ON</code> state (not <code dir="ltr">TRANSPORT-OFF</code>).</p>
+</li>
+<li>
+<p>Verify that the value of the <code dir="ltr">LogShipping</code> database property of the standby database in question is <code dir="ltr">ON</code>.</p>
+</li>
+<li>
+<p>Check the status of the redo transport services on the primary database using the <code dir="ltr">LogXptStatus</code> monitorable database property. If redo transport services have an error, then use the error message to determine further checking and resolution action. For example:</p>
+<ul>
+<li>
+<p>If the error indicates the standby database is not available, you need to restart the standby database.</p>
+</li>
+<li>
+<p>If the error indicates no listener, you need to restart the listener.</p>
+</li>
+<li>
+<p>If the error indicates the standby database has no local destination, you need to set up a standby location to store archived redo log files from the primary database.</p>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="i1007315"></a>
+<div id="DGBKR1045" class="sect2">
+<h3 class="sect2"><span class="secnum">9.2.3</span> Many Log Files Are Received on a Standby Database But Not Applied</h3>
+<p>By viewing the Performance page or Log File Details page in Enterprise Manager, you have determined that the standby database accumulates too many log files without applying them.</p>
+<p><a id="DGBKR3616"></a><span class="subhead3">Solution&nbsp;</span>There are many possible reasons why archived redo log files might not be applied to the standby database. Investigate why the log files are building up and rule out the valid reasons.</p>
+<p class="subhead2"><a id="DGBKR3617"></a>If the current status of the standby database is not normal:</p>
+<ul>
+<li>
+<p>Determine whether or not the log apply services might be unexpectedly stopped. See the ORA-16766 (for physical standby databases) or ORA-16768 (for logical standby databases) error description and solution statement for more help.</p>
+</li>
+<li>
+<p>If this is a logical standby database, check to see if a failed transaction has occurred.</p>
+</li>
+<li>
+<p>If you want to suppress the error while you investigate the problem, you can temporarily disable broker management of the database.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="dgmgrl.htm#g1019606">Chapter 7</a> for additional information about disabling the database using the DGMGRL command-line interface</div>
+</li>
+</ul>
+<p class="subhead2"><a id="DGBKR3618"></a>If the current status of the standby database is normal:</p>
+<ul>
+<li>
+<p>Verify the state of the standby database is <code dir="ltr">APPLY-ON</code> (not in the <code dir="ltr">APPLY-OFF</code> state).</p>
+</li>
+<li>
+<p>Verify the state of the primary database is <code dir="ltr">TRANSPORT-ON</code> (not in the <code dir="ltr">TRANSPORT-OFF</code> state).</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="dbpropref.htm#g1012962">Chapter 8</a> for additional information about the <code dir="ltr">LogShipping</code> database property</div>
+</li>
+<li>
+<p>Check to see if log files are building up because the value of the <code dir="ltr">DelayMins</code> property is set too large. (Log apply services will delay applying the archived redo log files on the standby database for the number of minutes specified.)</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="dbpropref.htm#g1012962">Chapter 8</a> for additional information about the <code dir="ltr">DelayMins</code> database property</div>
+</li>
+<li>
+<p>If you cannot see any errors, compare the archive rate to the apply rate on the Performance page in Enterprise Manager to see if the apply rate is lower than the archive rate.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="i1010129"></a>
+<div id="DGBKR3443" class="sect2">
+<h3 class="sect2"><span class="secnum">9.2.4</span> The Request Timed Out or Enterprise Manager Performance Is Sluggish</h3>
+<p>If the broker requests are not completing within the normal timeout parameters, try the following actions to solve the problem:</p>
+<ol>
+<li>
+<p>Verify the network is operating appropriately.</p>
+</li>
+<li>
+<p>Try to ping all of the nodes in the configuration.</p>
+</li>
+<li>
+<p>Try reconnecting through another database to retry the operation.</p>
+</li>
+<li>
+<p>Run the <code dir="ltr">VERIFY</code> command to determine on which database the broker is unable to process the requests.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="BCGHAIEJ"></a>
+<div id="DGBKR1050" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">9.2.5</span> The Primary Database is Flashed Back</h3>
+<p>If the primary database is flashed back, the standby databases in the configuration must be also be flashed back or re-created to be viable targets for switchovers or failovers. The broker will report errors for the standby databases if the primary database has been flashed back.</p>
+<p>For more information about restoring the viability of a standby database that was disabled by the broker, see <a href="sofo.htm#CHDEHEEF">Section 5.4.3</a>.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BABFEGAH"></a>
+<div id="DGBKR3783" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">9.2.6</span> Standby Fails to Automatically Start Up Due to Unknown Service (ORA-12514)</h3>
+<p>If the DGMGRL CLI fails to automatically start up an instance after a broker operation (for example, a switchover, reinstatement, convert to physical standby, or upgrade of protection mode to maximum protection mode), and you receive an <code dir="ltr">ORA-12514: TNS:listener does not currently know of service requested in connect descriptor</code> error, then you must manually start the instance to complete or continue the broker operation.</p>
+<p>You can restart the instance before or after completing the following steps:</p>
+<ol>
+<li>
+<p>Issue the following DGMGRL CLI command to check the value of the <code dir="ltr">StaticConnectIdentifer</code> configurable property for the instance the DGMGRL CLI was unable to restart. (You will have to connect to another running instance to issue this command):</p>
+<pre dir="ltr">
+DGMGRL&gt; SHOW INSTANCE VERBOSE '<span class="italic">instance_name</span>' ON DATABASE <span class="italic">db_unique_name</span>;
+</pre></li>
+<li>
+<p>The static service name specified in the value of the <code dir="ltr">StaticConnectIdentifer</code> instance property should be registered with the listener specified in the property value. The default value for the static service name is of the following form:</p>
+<pre dir="ltr">
+<span class="italic">db_unique_name</span>_DGMGRL.<span class="italic">db_domain</span>
+</pre>
+<p>See <a href="install.htm#BABECEJC">Section 2.2</a> for more information about this, and other prerequisites, for using the broker.</p>
+</li>
+<li>
+<p>Confirm that the static service name is registered with the listener specified in the <code dir="ltr">StaticConnectIdentifer</code> configurable property value by using the Listener Control utility's status command. If the static service name is properly registered with the listener, it will be included in the output generated by the following command:</p>
+<pre dir="ltr">
+lsnrctl status
+</pre></li>
+<li>
+<p>If you are working in an Oracle RAC environment, you may want to repeat steps 1 and 2 for each instance to ensure that a static service name is properly registered with its respective listener.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1009813"></a>
+<div id="DGBKR1060" class="sect1">
+<h2 class="sect1"><span class="secnum">9.3</span> Troubleshooting Problems During a Switchover Operation</h2>
+<p>If the switchover fails due to problems with the configuration, the broker reports any problems it encounters in the alert log files or in the broker log files (see <a href="#i1009720">Section 9.1</a>). In general, you can choose another database for the switchover or restore the configuration to its pre-switchover state and then retry the switchover. The following subsections describe how to recover from the most common problems.</p>
+<p>If fast-start failover is enabled, the broker does not allow switchover to any standby database except to the target standby database. In addition, switchover to the target standby database is allowed only when the value of the <code dir="ltr">FS_FAILOVER_STATUS</code> column in the <code dir="ltr">V$DATABASE</code> view on the target standby database is either <code dir="ltr">READY</code> or <code dir="ltr">SUSPENDED</code>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="sofo.htm#BCGHEJFH">Section 5.5.2.1, "When Fast-Start Failover Is Enabled and the Observer Is Running"</a></div>
+<div id="DGBKR3444" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1287"></a>
+<h3 class="sect2"><span class="secnum">9.3.1</span> Failed Switchovers to Physical Standby Databases</h3>
+<p>Examine the alert and DRC log files on the original primary and the target standby databases to determine the cause of the failure. The following sections describe the steps necessary to recover from a failed switchover to a physical standby, based on the types of errors contained in the log files:</p>
+<ul>
+<li>
+<p><a href="#BABGBIIC">Failure to Convert the Original Primary Database</a></p>
+</li>
+<li>
+<p><a href="#BABFJGHA">Failure to Convert Target Physical Standby Database</a></p>
+</li>
+<li>
+<p><a href="#BABFBDAC">Failure to Open New Primary Database</a></p>
+</li>
+</ul>
+<a id="BABGBIIC"></a>
+<div id="DGBKR3445" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">9.3.1.1</span> Failure to Convert the Original Primary Database</h4>
+<p>If the broker switchover failed and the <code dir="ltr">DATABASE_ROLE</code> column of the <code dir="ltr">V$DATABASE</code> view contains a value of <code dir="ltr">PRIMARY</code>, take the following steps:</p>
+<ol>
+<li>
+<p>Disable fast-start failover if it is enabled.</p>
+</li>
+<li>
+<p>If the old primary database has been closed, open it.</p>
+</li>
+<li>
+<p>Correct the errors reported in the alert and DRC log files.</p>
+</li>
+<li>
+<p>Retry the broker switchover.</p>
+</li>
+<li>
+<p>Reenable fast-start failover if it was disabled in Step 1.</p>
+</li>
+</ol>
+<p>If the <code dir="ltr">DATABASE_ROLE</code> column of <code dir="ltr">V$DATABASE</code> contains a value of <code dir="ltr">PHYSICAL STANDBY</code>, then you can perform either one of the following procedures:</p>
+<ol>
+<li>
+<p>Disable fast-start failover if it is enabled.</p>
+</li>
+<li>
+<p>Connect to the new physical standby database (original primary database) and disable the broker configuration.</p>
+</li>
+<li>
+<p>Restart the new physical standby database.</p>
+</li>
+<li>
+<p>Use the <code dir="ltr">ALTER DATABASE COMMIT TO SWITCHOVER TO PRIMARY DATABASE</code> SQL statement to convert the new physical standby database back into a primary database.</p>
+</li>
+<li>
+<p>Open the new primary database.</p>
+</li>
+<li>
+<p>Reenable the broker configuration.</p>
+</li>
+<li>
+<p>Reenable fast-start failover if it was disabled in step 1.</p>
+</li>
+<li>
+<p>Reattempt the broker switchover.</p>
+</li>
+</ol>
+<p>OR</p>
+<ol>
+<li>
+<p>Disable fast-start failover if it is enabled.</p>
+</li>
+<li>
+<p>Connect to the new physical standby database (original primary database) and remove the broker configuration.</p>
+</li>
+<li>
+<p>Connect to target standby database.</p>
+</li>
+<li>
+<p>Use the <code dir="ltr">ALTER DATABASE COMMIT TO SWITCHOVER TO PRIMARY DATABASE</code> SQL statement to complete the switchover to the target physical standby.</p>
+</li>
+<li>
+<p>Open the new primary database.</p>
+</li>
+<li>
+<p>Shut down and restart the new physical standby database.</p>
+</li>
+<li>
+<p>Connect to the new primary database and re-create the broker configuration.</p>
+</li>
+<li>
+<p>Enable the broker configuration.</p>
+</li>
+<li>
+<p>Reenable fast-start failover if it was disabled in step 1.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<a id="BABFJGHA"></a>
+<div id="DGBKR3446" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">9.3.1.2</span> Failure to Convert Target Physical Standby Database</h4>
+<p>If the broker switchover failed and the <code dir="ltr">DATABASE_ROLE</code> column of the <code dir="ltr">V$DATABASE</code> view on the target physical standby database contains a value of <code dir="ltr">PHYSICAL STANDBY</code>, take the following steps:</p>
+<ol>
+<li>
+<p>Disable fast-start failover if it is enabled.</p>
+</li>
+<li>
+<p>Check the alert and DRC log files to see what caused the switchover to fail and correct it. Once the problem has been corrected you can perform either one of the following procedures:</p>
+<ol>
+<li>
+<p>Connect to the new physical standby database and disable the configuration.</p>
+</li>
+<li>
+<p>Shut down and restart the new physical standby.</p>
+</li>
+<li>
+<p>Use the <code dir="ltr">ALTER DATABASE COMMIT TO SWITCHOVER TO PRIMARY DATABASE</code> SQL statement to convert the new physical standby database back into a primary database.</p>
+</li>
+<li>
+<p>Reenable the configuration.</p>
+</li>
+<li>
+<p>Reattempt the switchover.</p>
+</li>
+</ol>
+<p>OR</p>
+<ol>
+<li>
+<p>Connect to the new physical standby database (original primary database) and remove the broker configuration.</p>
+</li>
+<li>
+<p>Use the <code dir="ltr">ALTER DATABASE COMMIT TO SWITCHOVER TO PRIMARY DATABASE</code> SQL statement to complete the switchover to the target physical standby database. Open the new primary database.</p>
+</li>
+<li>
+<p>Shut down and restart the new physical standby database.</p>
+</li>
+<li>
+<p>Connect to the new primary database and re-create the broker configuration.</p>
+</li>
+<li>
+<p>Enable the broker configuration.</p>
+</li>
+</ol>
+</li>
+<li>
+<p>Reenable fast-start failover if it was disabled in Step 1.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<a id="BABFBDAC"></a>
+<div id="DGBKR3447" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">9.3.1.3</span> Failure to Open New Primary Database</h4>
+<p>If the broker switchover failed because the new primary database could not be opened, follow these steps:</p>
+<ol>
+<li>
+<p>Disable fast-start failover if it is enabled.</p>
+</li>
+<li>
+<p>Connect to the new physical standby database (original primary database) and remove the broker configuration.</p>
+</li>
+<li>
+<p>Check the new primary database's alert log file to see what prevented the database from opening and correct it, and then open the database.</p>
+</li>
+<li>
+<p>Shut down and restart the new physical standby database.</p>
+</li>
+<li>
+<p>Connect to the new primary database and re-create the broker configuration.</p>
+</li>
+<li>
+<p>Enable the broker configuration.</p>
+</li>
+<li>
+<p>Reenable fast-start failover if it was disabled in Step 1.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<div id="DGBKR3448" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1288"></a>
+<h3 class="sect2"><span class="secnum">9.3.2</span> Failed Switchovers to Logical Standby Databases</h3>
+<p>Examine the alert and DRC log files on the original primary and the target standby databases to determine the cause of the failure. The following sections describe the steps necessary to recover from a failed switchover to a logical standby, based on the types of errors contained in the log files:</p>
+<ul>
+<li>
+<p><a href="#BABFBFCH">Failure to Convert Original Primary Database</a></p>
+</li>
+<li>
+<p><a href="#BABJGIAH">Failure to Convert Target Logical Standby Database</a></p>
+</li>
+</ul>
+<a id="BABFBFCH"></a>
+<div id="DGBKR3449" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">9.3.2.1</span> Failure to Convert Original Primary Database</h4>
+<p>If the broker switchover failed because there was an error converting the primary database, take the following steps:</p>
+<ol>
+<li>
+<p>Disable fast-start failover if it is enabled.</p>
+</li>
+<li>
+<p>Disable the broker configuration.</p>
+</li>
+<li>
+<p>Take the corrective actions described in <a class="olink SBYDB01415" href="../../server.112/e41134/troubleshooting.htm#SBYDB01415"><span class="italic">Oracle Data Guard Concepts and Administration</span></a>.</p>
+<p>If after taking corrective action, you have:</p>
+<ul>
+<li>
+<p>Restored the original primary database to the primary role, take the following steps:</p>
+<ol>
+<li>
+<p>Reenable the broker configuration.</p>
+</li>
+<li>
+<p>Retry the broker switchover.</p>
+</li>
+</ol>
+</li>
+</ul>
+<ul>
+<li>
+<p>Manually switched over the target logical standby to a primary database, take the following steps:</p>
+<ol>
+<li>
+<p>Connect to the original primary database and remove the broker configuration.</p>
+</li>
+<li>
+<p>Connect to the target logical standby database and convert it to a primary database using the <code dir="ltr">ALTER DATABASE COMMIT TO SWITCHOVER TO PRIMARY</code> SQL statement.</p>
+</li>
+<li>
+<p>Connect to the new primary database and re-create the broker configuration.</p>
+</li>
+<li>
+<p>Enable the broker configuration.</p>
+</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>
+<p>Enable fast-start failover if it was disabled in step 1.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<a id="BABJGIAH"></a>
+<div id="DGBKR3450" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">9.3.2.2</span> Failure to Convert Target Logical Standby Database</h4>
+<p>If the broker switchover failed and the <code dir="ltr">DATABASE_ROLE</code> column of the <code dir="ltr">V$DATABASE</code> view contains a value of <code dir="ltr">PRIMARY</code>, or if the column contains a value of <code dir="ltr">LOGICAL STANDBY</code> and you intend to complete the switchover, follow these steps:</p>
+<ol>
+<li>
+<p>Disable fast-start failover if it is enabled.</p>
+</li>
+<li>
+<p>Connect to the target logical standby database and disable the broker configuration.</p>
+</li>
+<li>
+<p>Take the corrective actions described in <a class="olink SBYDB01420" href="../../server.112/e41134/troubleshooting.htm#SBYDB01420"><span class="italic">Oracle Data Guard Concepts and Administration</span></a>.</p>
+</li>
+<li>
+<p>Reenable the broker configuration.</p>
+</li>
+<li>
+<p>Enable fast-start failover if it was disabled in step 1.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<div id="DGBKR3451" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1289"></a>
+<h3 class="sect2"><span class="secnum">9.3.3</span> Additional Problems That May Occur During a Switchover Operation</h3>
+<p><a id="DGBKR3619"></a><span class="subhead3">Problem:&nbsp;</span>The broker switchover fails due to problems with redo transport services.</p>
+<p><a id="DGBKR3620"></a><span class="subhead3">Solution: &nbsp;</span>Verify the state and status of the primary and standby database by viewing its information on the Enterprise Manager Data Guard Overview page or through the DGMGRL client <code dir="ltr">SHOW DATABASE</code> commands.</p>
+<p>If using Enterprise Manager, then run the Verify operation after the switchover completes to examine the alert log file of the new primary database and to verify the status of the configuration.</p>
+<p><a id="DGBKR3621"></a><span class="subhead3">Problem:&nbsp;</span>The switchover may fail during verification checks done by Data Guard broker (for example, redo transport services might return errors on a database that is involved in the switchover).</p>
+<p><a id="DGBKR3622"></a><span class="subhead3">Solution:&nbsp;</span>Choose another database for the switchover or fix the problem by transporting the archived redo log files.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1007247"></a>
+<div id="DGBKR1055" class="sect1">
+<h2 class="sect1"><span class="secnum">9.4</span> Troubleshooting Problems During a Failover Operation</h2>
+<p>Although it is possible for a failover to stop, it is unlikely. If an error occurs, it is likely to happen when the standby database is transitioning to the primary role. Use these guidelines to fix the problem and continue the broker failover.</p>
+<div id="DGBKR3452" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1290"></a>
+<h3 class="sect2"><span class="secnum">9.4.1</span> Failed Failovers to Physical Standby Databases</h3>
+<p>Use the steps below to recover from a failed broker failover to a physical standby database.</p>
+<div id="DGBKR3453" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1291"></a>
+<h4 class="sect3"><span class="secnum">9.4.1.1</span> Failed Broker Complete Physical Failovers</h4>
+<p>Examine the alert and DRC log files on the target standby database to determine the cause of the failure and correct the problem. If the <code dir="ltr">ALTER DATABASE RECOVER MANAGED STANDBY DATABASE FINISH</code> SQL statement returned an error, or if the statement completes successfully but the database could not be converted to a primary database, follow these steps:</p>
+<ol>
+<li>
+<p>Connect to the target standby database and disable fast-start failover using the <code dir="ltr">FORCE</code> option if it is enabled.</p>
+</li>
+<li>
+<p>Then you can either:</p>
+<ul>
+<li>
+<p>Connect to another physical standby database and attempt a broker complete failover.</p>
+</li>
+<li>
+<p>Perform a broker immediate failover to the target physical standby database.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Reinstate the original primary database and any bystander physical standby databases that are disabled with a status of reinstatement required (<code dir="ltr">ORA-16661</code>).</p>
+</li>
+<li>
+<p>Reenable fast-start failover if it was disabled in step 1.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<div id="DGBKR3454" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1292"></a>
+<h4 class="sect3"><span class="secnum">9.4.1.2</span> Failed Broker Immediate Physical Failovers</h4>
+<p>Examine the alert and DRC log files on the target standby database to determine the cause of the failure and correct the problem. If the problem can be corrected, retry the broker immediate failover. Otherwise connect to another physical standby database and attempt either a broker complete or immediate failover.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<div id="DGBKR3455" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1293"></a>
+<h3 class="sect2"><span class="secnum">9.4.2</span> Failed Failovers to Logical Standby Databases</h3>
+<ol>
+<li>
+<p>Examine the alert and DRC log files on the target standby database to determine the cause of the failure and correct the problem.</p>
+</li>
+<li>
+<p>Connect to the target standby database and disable fast-start failover using the <code dir="ltr">FORCE</code> option if it is enabled.</p>
+</li>
+<li>
+<p>Retry the broker failover.</p>
+</li>
+<li>
+<p>Reinstate the old primary database. All bystander standby databases will be re-created from a copy of the new primary database.</p>
+</li>
+<li>
+<p>Reenable fast-start failover if it was disabled in step 1.</p>
+</li>
+</ol>
+<p>If broker failover continues to fail, you should stop the broker on all databases in the Data Guard configuration (set the <code dir="ltr">DG_BROKER_START</code> initialization parameter to <code dir="ltr">FALSE</code>). Remove the Data Guard broker configuration files from all databases. Attempt a manual failover using the guidelines for role transitions in <a class="olink SBYDB00635" href="../../server.112/e41134/role_management.htm#SBYDB00635"><span class="italic">Oracle Data Guard Concepts and Administration</span></a>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You can enable or disable the broker configuration using DGMGRL <code dir="ltr">ENABLE CONFIGURATION</code> and <code dir="ltr">DISABLE CONFIGURATION</code> commands. You cannot disable the configuration using the Enterprise Manager. You can only enable the configuration using Enterprise Manager if it was previously disabled using DGMGRL.</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CEGIFCGJ"></a>
+<div id="DGBKR3456" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">9.5</span> Troubleshooting Problems with the Observer</h2>
+<p>The observer continuously monitors the fast-start failover environment to ensure the primary database is available. Installing and starting the observer is an integral part of using fast-start failover. The following sections describe techniques for troubleshooting the observer:</p>
+<ul>
+<li>
+<p><a href="#BABIHFGF">Problems Starting the Observer</a></p>
+</li>
+<li>
+<p><a href="#BABBAJEB">Problems Because the Observer Has Stopped</a></p>
+</li>
+<li>
+<p><a href="#BABHDHCH">Capturing Observer Actions in the Observer Log File</a></p>
+</li>
+</ul>
+<a id="BABIHFGF"></a>
+<div id="DGBKR3457" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">9.5.1</span> Problems Starting the Observer</h3>
+<p>Only one observer can be observing the broker configuration at any given time. If you attempt to start a second observer, one of the following errors is returned:</p>
+<pre dir="ltr">
+ORA-16647: could not start more than one observer
+DGM-16954: Unable to open and lock the Observer configuration file
+</pre>
+<p>Use the DGMGRL <code dir="ltr">SHOW CONFIGURATION VERBOSE</code> command to determine the location of the observer that is currently associated with the broker configuration.</p>
+<pre dir="ltr">
+DGMGRL&gt; SHOW CONFIGURATION VERBOSE;
+ 
+Configuration - DRSolution
+ 
+  Protection Mode: MaxAvailability
+  Databases:
+    North_Sales  - Primary database
+    South_Sales  - (*) Physical standby database
+ 
+  (*) Fast-Start Failover target
+ 
+  Properties:
+    FastStartFailoverThreshold      = '60'
+    OperationTimeout                = '30'
+    FastStartFailoverLagLimit       = '30'
+    CommunicationTimeout            = '180'
+    FastStartFailoverAutoReinstate  = 'TRUE'
+    FastStartFailoverPmyShutdown    = 'TRUE'
+    BystandersFollowRoleChange      = 'ALL'
+ 
+Fast-Start Failover: ENABLED
+ 
+  Threshold:        180 seconds
+  Target:           South_Sales
+  <span class="bold">Observer:         observer.example.com</span>
+  Lag Limit:        30 seconds (not in use)
+  Shutdown Primary: TRUE
+  Auto-reinstate:   TRUE
+ 
+Configuration Status:
+SUCCESS
+</pre></div>
+<!-- class="sect2" -->
+<a id="BABBAJEB"></a>
+<div id="DGBKR3458" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">9.5.2</span> Problems Because the Observer Has Stopped</h3>
+<p>If the observer host machine crashes, the broker configuration is no longer observed and fast-start failover is no longer possible. In this case, you may have to move the observer to a new host if the original host machine cannot be repaired in a timely fashion. To move the observer, you must stop allowing the first observer to observe this broker configuration, and then start a new observer on another host.</p>
+<ol>
+<li>
+<p>Issue the DGMGRL <code dir="ltr">STOP OBSERVER</code> command to sever the link between the original observer and the broker configuration:</p>
+<pre dir="ltr">
+DGMGRL&gt; STOP OBSERVER;
+Done.
+</pre></li>
+<li>
+<p>Issue the DGMGRL <code dir="ltr">SHOW CONFIGURATION VERBOSE</code> command to verify that the configuration is no longer being observed:</p>
+<pre dir="ltr">
+DGMGRL&gt; SHOW CONFIGURATION VERBOSE;
+ 
+Configuration - DRSolution
+ 
+  Protection Mode: MaxAvailability
+  Databases:
+    North_Sales  - Primary database
+    South_Sales  - (*) Physical standby database
+ 
+  (*) Fast-Start Failover target
+ 
+  Properties:
+    FastStartFailoverThreshold      = '60'
+    OperationTimeout                = '30'
+    FastStartFailoverLagLimit       = '30'
+    CommunicationTimeout            = '180'
+    FastStartFailoverAutoReinstate  = 'TRUE'
+    FastStartFailoverPmyShutdown    = 'TRUE'
+    BystandersFollowRoleChange      = 'ALL'
+ 
+Fast-Start Failover: ENABLED
+ 
+  Threshold:        180 seconds
+  Target:           South_Sales
+  <span class="bold">Observer:         (none)</span>
+  Lag Limit:        30 seconds (not in use)
+  Shutdown Primary: TRUE
+  Auto-reinstate:   TRUE
+ 
+Configuration Status:
+SUCCESS
+</pre></li>
+<li>
+<p>Note that you do not need to issue the DGMGRL <code dir="ltr">SHOW CONFIGURATION</code> command to verify that the observer has actually stopped. Successful completion of the DGMGRL <code dir="ltr">STOP OBSERVER</code> command will allow a new observer to become associated with the configuration.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="BABHDHCH"></a>
+<div id="DGBKR3459" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">9.5.3</span> Capturing Observer Actions in the Observer Log File</h3>
+<p>You can use the DGMGRL <code dir="ltr">-logfile</code> option to start the observer, so that all of the troubleshooting actions performed in <a href="#BABIHFGF">Section 9.5.1</a> can be captured in a file. For example:</p>
+<pre dir="ltr">
+% dgmgrl -logfile observer.log / "start observer"
+</pre>
+<p>All the observer output is then recorded in a file named <code dir="ltr">observer.log</code> in the current working directory where you issued the DGMGRL command. If the specified log file is not accessible, then the observer output is sent to standard output as though a log file had not been specified.</p>
+<p>Note that this is not only useful for troubleshooting problems with the observer, but also for troubleshooting problems with fast-start failover in general.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1477">
+<tr>
+<td class="cellalignment1484">
+<table class="cellalignment1482">
+<tr>
+<td class="cellalignment1481"><a href="dbpropref.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1481"><a href="deprecated_appx.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1999, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1486">
+<table class="cellalignment1480">
+<tr>
+<td class="cellalignment1481"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1481"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1481"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1481"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1481"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1481"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

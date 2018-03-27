@@ -1,0 +1,4087 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>OCI XStream Functions</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 735" />
+<meta name="dcterms.created" content="2013-07-02T6:44:43Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database XStream Guide" />
+<meta name="dcterms.identifier" content="E16545-09" />
+<meta name="dcterms.isVersionOf" content="XSTRM" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2009, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="xstrm_oci_intro.htm" title="Previous" type="text/html" />
+<link rel="Next" href="xstrm_pt_views.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e16545.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">18/22</span> <!-- End Header -->
+<div id="XSTRM17710" class="chapter"><a id="CIHEDDAB"></a>
+<h1 class="chapter"><span class="secnum">11</span> OCI XStream Functions</h1>
+<p><a id="sthref454"></a>This chapter describes the XStream functions for OCI.</p>
+<p>A row logical change record (LCR) is used to encapsulate each row change. It includes the schema name, table name, DML operation, and the column values. For update operations, both before and after column values are included. The column data is in the format specified by the "Program Variable" column in <a href="#BABGBCAF">Table 11-3</a>. Character columns are converted to the client's character set.</p>
+<p>A DDL LCR is used to encapsulate each DDL change. It includes the object name, the DDL text, and the DDL command, for example, <code>ALTER</code> <code>TABLE</code> or <code>TRUNCATE</code> <code>TABLE</code>. See <a class="olink LNOCI251" href="../../appdev.112/e10646/ociaahan.htm#LNOCI251"><span class="italic">Oracle Call Interface Programmer's Guide</span></a> for a list of DDL command codes.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink NLSPG" href="../e10729/toc.htm"><span class="italic">Oracle Database Globalization Support Guide</span></a> for more information about NLS settings.
+<p>XStream sample programs are found in <code>xstream/oci</code> under the <code>$ORACLE_HOME/demo</code> directory.</p>
+</div>
+<p>Each LCR also has a transaction ID and position. For transactions captured outside Oracle databases, any byte-comparable <code>RAW</code> array can be used as the LCR position, if the position of each LCR in the stream is strictly increasing.</p>
+<p>This chapter contains the topic:</p>
+<ul>
+<li>
+<p><a href="#CIHFDHEB">Introduction to XStream Functions</a></p>
+</li>
+<li>
+<p><a href="#BABGCCFF">OCI XStream Functions</a></p>
+</li>
+</ul>
+<a id="CIHFDHEB"></a>
+<div id="XSTRM17711" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Introduction to XStream Functions</h2>
+<p>This section includes the conventions used to describe the functions.</p>
+<div id="XSTRM17712" class="sect2"><a id="sthref455"></a>
+<h3 class="sect2">Conventions for OCI Functions</h3>
+<p>For each function, the following information is listed:</p>
+</div>
+<!-- class="sect2" -->
+<div id="XSTRM17713" class="sect2"><a id="sthref456"></a>
+<h3 class="sect2">Purpose</h3>
+<p>A brief description of the action performed by the function.</p>
+</div>
+<!-- class="sect2" -->
+<div id="XSTRM17714" class="sect2"><a id="sthref457"></a>
+<h3 class="sect2">Syntax</h3>
+<p>The function declaration.</p>
+</div>
+<!-- class="sect2" -->
+<div id="XSTRM17715" class="sect2"><a id="sthref458"></a>
+<h3 class="sect2">Parameters<a id="sthref459"></a><a id="sthref460"></a></h3>
+<p>A description of each of the function's parameters. This includes the parameter's mode. The mode of a parameter has three possible values, as described in <a href="#CIHGBIJH">Table 11-1</a>.</p>
+<div id="XSTRM17716" class="tblformal">
+<p class="titleintable"><a id="sthref461"></a><a id="CIHGBIJH"></a>Table 11-1 Mode of a Parameter</p>
+<table class="cellalignment1353" title="Mode of a Parameter" summary="This table is described in the preceding text" dir="ltr">
+<thead>
+<tr class="cellalignment1342">
+<th class="cellalignment1352" id="r1c1-t3">Mode</th>
+<th class="cellalignment1352" id="r1c2-t3">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r2c1-t3" headers="r1c1-t3">
+<p>IN</p>
+</td>
+<td class="cellalignment1348" headers="r2c1-t3 r1c2-t3">
+<p>A parameter that passes data to the OCI.</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r3c1-t3" headers="r1c1-t3">
+<p>OUT</p>
+</td>
+<td class="cellalignment1348" headers="r3c1-t3 r1c2-t3">
+<p>A parameter that receives data from the OCI on this call.</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r4c1-t3" headers="r1c1-t3">
+<p>IN/OUT</p>
+</td>
+<td class="cellalignment1348" headers="r4c1-t3 r1c2-t3">
+<p>A parameter that passes data on the call and receives data on the return from this or a subsequent call.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" --></div>
+<!-- class="sect2" -->
+<div id="XSTRM17717" class="sect2"><a id="sthref462"></a>
+<h3 class="sect2">Comments</h3>
+<p>More detailed information about the function (if available), which can include return values, restrictions on the use of the function, examples, or other information that can be useful when using the function in an application.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<div class="refentry"><a id="BABGCCFF"></a>
+<hr />
+<div id="XSTRM17718" class="refsect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="refsect1">OCI XStream Functions</h2>
+<p>This section and <a href="#CIHGBIJH">Table 11-1</a> describe the OCI XStream functions.</p>
+<div id="XSTRM17719" class="tblformalwide">
+<p class="titleintable"><a id="sthref463"></a><a id="sthref464"></a>Table 11-2 OCI XStream Functions &nbsp;</p>
+<table class="cellalignment1351" title="OCI XStream Functions &nbsp;" summary="This table is described in the preceding text" dir="ltr">
+<thead>
+<tr class="cellalignment1342">
+<th class="cellalignment1352" id="r1c1-t4">Function</th>
+<th class="cellalignment1352" id="r1c2-t4">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r2c1-t4" headers="r1c1-t4">
+<p><span class="bold">LCR Functions</span></p>
+</td>
+<td class="cellalignment1348" headers="r2c1-t4 r1c2-t4">
+<p>To get and set one or more values of an LCR. <span class="bold">Note:</span> These calls do not require a server round-trip.</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r3c1-t4" headers="r1c1-t4">
+<p><a href="#CIHIEHAF">"OCILCRAttributesGet()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r3c1-t4 r1c2-t4">
+<p>Returns existing extra attributes from the LCR</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r4c1-t4" headers="r1c1-t4">
+<p><a href="#CIHHDACE">"OCILCRAttributesSet()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r4c1-t4 r1c2-t4">
+<p>Sets extra attributes in a row or DDL LCR</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r5c1-t4" headers="r1c1-t4">
+<p><a href="#CIHJICEF">"OCILCRFree()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r5c1-t4 r1c2-t4">
+<p>Frees the LCR</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r6c1-t4" headers="r1c1-t4">
+<p><a href="#CIHIAEDE">"OCILCRHeaderGet()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r6c1-t4 r1c2-t4">
+<p>Returns the common header fields for a row/DDL LCR</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r7c1-t4" headers="r1c1-t4">
+<p><a href="#CIHBHGCF">"OCILCRHeaderSet()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r7c1-t4 r1c2-t4">
+<p>Initializes the common header fields for a row or DDL LCR</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r8c1-t4" headers="r1c1-t4">
+<p><a href="#CIHHAIJF">"OCILCRDDLInfoGet()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r8c1-t4 r1c2-t4">
+<p>Retrieves specific fields in a DDL LCR</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r9c1-t4" headers="r1c1-t4">
+<p><a href="#CIHECCIH">"OCILCRDDLInfoSet()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r9c1-t4 r1c2-t4">
+<p>Populates DDL-specific fields in a DDL LCR</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r10c1-t4" headers="r1c1-t4">
+<p><a href="#CIHHDBIJ">"OCILCRLobInfoGet()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r10c1-t4 r1c2-t4">
+<p>Returns the LOB information for a piece-wise LOB LCR</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r11c1-t4" headers="r1c1-t4">
+<p><a href="#CIHBFJJI">"OCILCRLobInfoSet()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r11c1-t4 r1c2-t4">
+<p>Sets the LOB information for a piece-wise LOB LCR</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r12c1-t4" headers="r1c1-t4">
+<p><a href="#CIHBDEFF">"OCILCRNew()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r12c1-t4 r1c2-t4">
+<p>Constructs a new LCR object of the specified type (ROW or DDL) for the given duration</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r13c1-t4" headers="r1c1-t4">
+<p><a href="#CIHHGIID">"OCILCRRowColumnInfoGet()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r13c1-t4 r1c2-t4">
+<p>Returns the column fields in a row LCR</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r14c1-t4" headers="r1c1-t4">
+<p><a href="#CIHFHADB">"OCILCRRowColumnInfoSet()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r14c1-t4 r1c2-t4">
+<p>Populates column fields in a row LCR</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r15c1-t4" headers="r1c1-t4">
+<p><a href="#CIHIBCDB">"OCILCRRowStmtGet()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r15c1-t4 r1c2-t4">
+<p>Returns the generated SQL statement for the row LCR, with values in-lined</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r16c1-t4" headers="r1c1-t4">
+<p><a href="#CIHIEDDJ">"OCILCRRowStmtWithBindVarGet()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r16c1-t4 r1c2-t4">
+<p>Returns the generated SQL statement, which uses bind variables for column values</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r17c1-t4" headers="r1c1-t4">
+<p><a href="#CIHJIGAJ">"OCILCRSCNsFromPosition()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r17c1-t4 r1c2-t4">
+<p>Gets the SCN and commit SCN from a position value</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r18c1-t4" headers="r1c1-t4">
+<p><a href="#CIHBJJHC">"OCILCRSCNToPosition()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r18c1-t4 r1c2-t4">
+<p>Converts SCN to position</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r19c1-t4" headers="r1c1-t4">
+<p><a href="#CIHFBAJH">"OCILCRWhereClauseGet()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r19c1-t4 r1c2-t4">
+<p>Gets the <code>WHERE</code> clause statement for the given row LCR</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r20c1-t4" headers="r1c1-t4">
+<p><a href="#CIHJHDHF">"OCILCRWhereClauseWithBindVarGet()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r20c1-t4 r1c2-t4">
+<p>Gets the <code>WHERE</code> clause statement with bind variables for the given row LCR</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r21c1-t4" headers="r1c1-t4">
+<p><span class="bold">XStream In Functions</span></p>
+</td>
+<td class="cellalignment1348" headers="r21c1-t4 r1c2-t4">
+<p>To send an LCR stream to an XStream inbound server</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r22c1-t4" headers="r1c1-t4">
+<p><a href="#CIHJAIEG">"OCIXStreamInAttach()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r22c1-t4 r1c2-t4">
+<p>Attaches to an inbound server</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r23c1-t4" headers="r1c1-t4">
+<p><a href="#CIHGFIBB">"OCIXStreamInChunkSend()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r23c1-t4 r1c2-t4">
+<p>Sends chunk data to the inbound server</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r24c1-t4" headers="r1c1-t4">
+<p><a href="#CIACEGHI">"OCIXStreamInCommit()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r24c1-t4 r1c2-t4">
+<p>Commits the given transaction</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r25c1-t4" headers="r1c1-t4">
+<p><a href="#CIHCFDIB">"OCIXStreamInDetach()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r25c1-t4 r1c2-t4">
+<p>Detaches from the inbound server</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r26c1-t4" headers="r1c1-t4">
+<p><a href="#CIABFGBB">"OCIXStreamInErrorGet()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r26c1-t4 r1c2-t4">
+<p>Returns the first error encountered by the inbound server since the attach call</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r27c1-t4" headers="r1c1-t4">
+<p><a href="#CIHFBIAG">"OCIXStreamInFlush()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r27c1-t4 r1c2-t4">
+<p>Flushes the network while attaching to an XStream inbound server</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r28c1-t4" headers="r1c1-t4">
+<p><a href="#CIHGBCGD">"OCIXStreamInLCRCallbackSend()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r28c1-t4 r1c2-t4">
+<p>Sends the LCR stream to the attached inbound server using callbacks</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r29c1-t4" headers="r1c1-t4">
+<p><a href="#CIHGHFFB">"OCIXStreamInLCRSend()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r29c1-t4 r1c2-t4">
+<p>Sends the LCR stream to the attached inbound server using callbacks</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r30c1-t4" headers="r1c1-t4">
+<p><a href="#CIHCIEII">"OCIXStreamInProcessedLWMGet()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r30c1-t4 r1c2-t4">
+<p>Gets the local processed low position</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r31c1-t4" headers="r1c1-t4">
+<p><span class="bold">XStream Out Functions</span></p>
+</td>
+<td class="cellalignment1348" headers="r31c1-t4 r1c2-t4">
+<p>To receive an LCR stream from an XStream outbound server</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r32c1-t4" headers="r1c1-t4">
+<p><a href="#CIHIGIFE">"OCIXStreamOutAttach()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r32c1-t4 r1c2-t4">
+<p>Attaches to an outbound server</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r33c1-t4" headers="r1c1-t4">
+<p><a href="#CIHEJEHC">"OCIXStreamOutChunkReceive()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r33c1-t4 r1c2-t4">
+<p>Retrieves data of each LOB or <code>LONG</code> or <code>XMLType</code> column one chunk at a time</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r34c1-t4" headers="r1c1-t4">
+<p><a href="#CIHHGJFA">"OCIXStreamOutDetach()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r34c1-t4 r1c2-t4">
+<p>Detaches from the outbound server</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r35c1-t4" headers="r1c1-t4">
+<p><a href="#CIHFAAJG">"OCIXStreamOutLCRCallbackReceive()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r35c1-t4 r1c2-t4">
+<p>Gets the LCR stream from the outbound server using callbacks</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r36c1-t4" headers="r1c1-t4">
+<p><a href="#CIHJABFG">"OCIXStreamOutLCRReceive()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r36c1-t4 r1c2-t4">
+<p>Receives an LCR stream from an outbound server without using callbacks</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r37c1-t4" headers="r1c1-t4">
+<p><a href="#CIHGJGCF">"OCIXStreamOutProcessedLWMSet()"</a></p>
+</td>
+<td class="cellalignment1348" headers="r37c1-t4 r1c2-t4">
+<p>Updates the local copy of the processed low-water mark</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformalwide" -->
+<div id="XSTRM17720" class="refsect2"><a id="CIHIEHAF"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref465"></a>OCILCRAttributesGet()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref466"></a>Purpose</p>
+<p>Gets extra attribute information in (ROW or DDL) LCR. In addition, it gets any extra non-first class attributes that are not populated through <code>OCILCRHeaderGet()</code>, <code>OCILCRDDLInfoGet()</code>, or <code>OCILCRRowColumnInfoGet()</code>, for example, edition name.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref467"></a>Syntax</p>
+<pre>
+sword OCILCRAttributesGet (      OCISvcCtx   *svchp, 
+                                 OCIError    *errhp, 
+                                 ub2         *num_attrs,
+                                 oratext     **attr_names,
+                                 ub2         *attr_namesl,
+                                 ub2         *attr_dtyp,
+                                 void        **attr_valuesp,
+                                 OCIInd      *attr_indp,
+                                 ub2         *attr_alensp,
+                                 void        *lcrp,
+                                 ub2         array_size,
+                                 ub4         mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref468"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>num_attrs (OUT)</dt>
+<dd>
+<p>Number of extra attributes.</p>
+</dd>
+<dt>attr_names (OUT)</dt>
+<dd>
+<p>An array of extra attribute name pointers.</p>
+</dd>
+<dt>attr_namesl (OUT)</dt>
+<dd>
+<p>An array of extra attribute name lengths.</p>
+</dd>
+<dt>attr_dtyp (OUT)</dt>
+<dd>
+<p>An array of extra attribute data types. Valid data types: see Comments.</p>
+</dd>
+<dt>attr_valuesp (OUT)</dt>
+<dd>
+<p>An array of extra attribute data value pointers.</p>
+</dd>
+<dt>attr_indp (OUT)</dt>
+<dd>
+<p>An indicator array. Each returned element is an <code>OCIInd</code> value (<code>OCI_IND_NULL</code> or <code>OCI_IND_NOTNULL</code>).</p>
+</dd>
+<dt>attr_alensp (OUT)</dt>
+<dd>
+<p>An array of actual extra attribute data lengths. Each element in <code>alensp</code> is the length in bytes.</p>
+</dd>
+<dt>lcrp (IN)</dt>
+<dd>
+<p>Pointer to row or DDL LCR.</p>
+</dd>
+<dt>array_size (IN)</dt>
+<dd>
+<p>Size of the array argument in the other parameters. If <code>array_size</code> is not large enough to accommodate the number of attributes in the requested attribute list, then <code>OCI_ERROR</code> is returned. Parameter <code>num_attrs</code> returns the expected size.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Specify <code>OCI_DEFAULT</code>.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref469"></a>Comments</p>
+<p>The valid data types for <code>attr_dtyp</code> are:</p>
+<pre>
+SQLT_CHR
+SQLT_INT
+SQLT_RDD
+</pre></div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17721" class="refsect2"><a id="CIHHDACE"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref470"></a>OCILCRAttributesSet()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref471"></a>Purpose</p>
+<p>Populates extra attribute information in row or DDL LCR. In addition, it populates any extra non-first class attributes that cannot be set through <code>OCILCRHeaderSet()</code>, <code>OCILCRDDLInfoSet()</code>, or <code>OCILCRRowColumnInfoSet()</code>, for example, edition name.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref472"></a>Syntax</p>
+<pre>
+sword OCILCRAttributesSet (      OCISvcCtx   *svchp,
+                                 OCIError    *errhp,
+                                 ub2         num_attrs,
+                                 oratext     **attr_names,
+                                 ub2         *attr_names_lens,
+                                 ub2         *attr_dtyp,
+                                 void        **attr_valuesp,
+                                 OCIInd      *attr_indp,
+                                 ub2         *attr_alensp,
+                                 void        *lcrp,
+                                 ub4         mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref473"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>num_attrs (IN)</dt>
+<dd>
+<p>Number of extra attributes.</p>
+</dd>
+<dt>attr_names (IN)</dt>
+<dd>
+<p>Pointer to an array of extra attribute names. Attribute names must be canonicalized.</p>
+</dd>
+<dt>attr_names_lens (IN)</dt>
+<dd>
+<p>Pointer to an array of extra attribute name lengths.</p>
+</dd>
+<dt>attr_dtyp (IN)</dt>
+<dd>
+<p>Pointer to an array of extra attribute data types. See valid data types in Comments of <a href="#CIHFHADB">"OCILCRRowColumnInfoSet()"</a>.</p>
+</dd>
+<dt>attr_valuesp (IN)</dt>
+<dd>
+<p>Address of an array of extra attribute data values.</p>
+</dd>
+<dt>attr_indp (IN)</dt>
+<dd>
+<p>Pointer to an indicator array. For all data types, this is a pointer to an array of <code>OCIInd</code> values (<code>OCI_IND_NULL</code> or <code>OCI_IND_NOTNULL</code>).</p>
+</dd>
+<dt>attr_alensp (IN)</dt>
+<dd>
+<p>Pointer to an array of actual extra attribute data lengths. Each element in <code>attr_lensp</code> is the length in bytes.</p>
+</dd>
+<dt>lcrp (IN/OUT)</dt>
+<dd>
+<p>Pointer to a row or DDL LCR.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Specify <code>OCI_DEFAULT</code>.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref474"></a>Comments</p>
+<p>Valid attributes are:</p>
+<pre>
+#define OCI_LCR_ATTR_THREAD_NO              "THREAD#"
+#define OCI_LCR_ATTR_ROW_ID                 "ROW_ID"
+#define OCI_LCR_ATTR_SESSION_NO             "SESSION#"
+#define OCI_LCR_ATTR_SERIAL_NO              "SERIAL#"
+#define OCI_LCR_ATTR_USERNAME               "USERNAME"
+#define OCI_LCR_ATTR_TX_NAME                "TX_NAME"
+#define OCI_LCR_ATTR_EDITION_NAME           "EDITION_NAME"
+#define OCI_LCR_ATTR_MESSAGE_TRACKING_LABEL "MESSAGE_TRACKING_LABEL"
+</pre></div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17722" class="refsect2"><a id="CIHJICEF"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref475"></a>OCILCRFree()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref476"></a>Purpose</p>
+<p>Frees the LCR.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref477"></a>Syntax</p>
+<pre>
+sword OCILCRFree ( OCISvcCtx   *svchp,
+                   OCIError    *errhp, 
+                   void        *lcrp,
+                   ub4         mode ); 
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref478"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>lcrp (IN/OUT)</dt>
+<dd>
+<p>Streams LCR pointer.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Specify <code>OCI_DEFAULT</code>.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17723" class="refsect2"><a id="CIHHAIJF"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref479"></a>OCILCRDDLInfoGet()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref480"></a>Purpose</p>
+<p>Retrieves specific fields in a DDL LCR.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref481"></a>Syntax</p>
+<pre>
+sword OCILCRDDLInfoGet ( OCISvcCtx   *svchp,
+                         OCIError    *errhp,
+                         oratext     **object_type,
+                         ub2         *object_type_len,
+                         oratext     **ddl_text,
+                         ub4         *ddl_text_len, 
+                         oratext     **logon_user,
+                         ub2         *logon_user_len,
+                         oratext     **current_schema,
+                         ub2         *current_schema_len,
+                         oratext     **base_table_owner,
+                         ub2         *base_table_owner_len,
+                         oratext     **base_table_name,
+                         ub2         *base_table_name_len,
+                         oraub8      *flag,
+                         void        *ddl_lcrp,
+                         ub4         mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref482"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>object_type (OUT)</dt>
+<dd>
+<p>The type of object on which the DDL statement was executed. (See <a href="#CIHECCIH">OCILCRDDLInfoSet()</a>.) Optional. If not <code>NULL</code>, then both <code>object_type</code> and <code>object_type_len</code> arguments must not be <code>NULL</code>.</p>
+</dd>
+<dt>object_type_len (OUT)</dt>
+<dd>
+<p>Length of the <code>object_type</code> string without the <code>NULL</code> terminator.</p>
+</dd>
+<dt>ddl_text (OUT)</dt>
+<dd>
+<p>The text of the DDL statement. Optional. If not <code>NULL</code>, then both <code>ddl_text</code> and <code>ddl_text_len</code> arguments must not be <code>NULL</code>.</p>
+</dd>
+<dt>ddl_text_len (OUT)</dt>
+<dd>
+<p>DDL text length in bytes without the <code>NULL</code> terminator.</p>
+</dd>
+<dt>logon_user (OUT)</dt>
+<dd>
+<p>Canonicalized (follows a rule or procedure) name of the user whose session executed the DDL statement. Optional. If not <code>NULL</code>, then both <code>logon_user</code> and <code>logon_user_len</code> arguments must not be <code>NULL</code>.</p>
+</dd>
+<dt>logon_user_len (OUT)</dt>
+<dd>
+<p>Length of the logon_user string without the <code>NULL</code> terminator.</p>
+</dd>
+<dt>current_schema (OUT)</dt>
+<dd>
+<p>The canonicalized schema name that is used if no schema is specified explicitly for the modified database objects in <code>ddl_text</code>. Optional. If not <code>NULL</code>, then both <code>current_schema</code> and <code>current_schema_len</code> arguments must not be <code>NULL</code>.</p>
+</dd>
+<dt>current_schema_len (OUT)</dt>
+<dd>
+<p>Length of the <code>current_schema</code> string without the <code>NULL</code> terminator.</p>
+</dd>
+<dt>base_table_owner (OUT)</dt>
+<dd>
+<p>If the DDL statement is a table-related DDL (such as <code>CREATE</code> <code>TABLE</code> and <code>ALTER</code> <code>TABLE</code>), or if the DDL statement involves a table (such as creating a trigger on a table), then <code>base_table_owner</code> specifies the canonicalized owner of the table involved. Otherwise, <code>base_table_owner</code> is <code>NULL</code>. Optional. If not <code>NULL</code>, then both <code>base_table_owner</code> and <code>base_table_owner_len</code> arguments must not be <code>NULL</code>.</p>
+</dd>
+<dt>base_table_owner_len (OUT)</dt>
+<dd>
+<p>Length of the <code>base_table_owner</code> string without the <code>NULL</code> terminator.</p>
+</dd>
+<dt>base_table_name (OUT)</dt>
+<dd>
+<p>If the DDL statement is a table-related DDL (such as <code>CREATE</code> <code>TABLE</code> and <code>ALTER</code> <code>TABLE</code>), or if the DDL statement involves a table (such as creating a trigger on a table), then <code>base_table_name</code> specifies the canonicalized name of the table involved. Otherwise, <code>base_table_name</code> is <code>NULL</code>. Optional. If not <code>NULL</code>, then both <code>base_table_name</code> and <code>base_table_name_len</code> arguments must not be <code>NULL</code>.</p>
+</dd>
+<dt>base_table_name_len (OUT)</dt>
+<dd>
+<p>Length of the <code>base_table_name</code> string without the <code>NULL</code> terminator.</p>
+</dd>
+<dt>flag (OUT)</dt>
+<dd>
+<p>DDL LCR flag. Optional. Data not returned if argument is <code>NULL</code>. Future extension not used currently.</p>
+</dd>
+<dt>ddl_lcrp (IN)</dt>
+<dd>
+<p>DDL LCR. Cannot be <code>NULL</code>.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Specify <code>OCI_DEFAULT</code>.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17724" class="refsect2"><a id="CIHIAEDE"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref483"></a>OCILCRHeaderGet()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref484"></a>Purpose</p>
+<p>Returns the common header fields for row or DDL LCR. All returned pointers point directly to the corresponding LCR fields.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref485"></a>Syntax</p>
+<pre>
+sword OCILCRHeaderGet ( OCISvcCtx   *svchp, 
+                        OCIError    *errhp, 
+                        oratext     **src_db_name,
+                        ub2         *src_db_name_len,
+                        oratext     **cmd_type,
+                        ub2         *cmd_type_len,
+                        oratext     **owner,
+                        ub2         *owner_len,
+                        oratext     **oname,
+                        ub2         *oname_len,
+                        ub1         **tag,
+                        ub2         *tag_len,
+                        oratext     **txid,
+                        ub2         *txid_len, 
+                        OCIDate     *src_time,
+                        ub2         *old_columns,
+                        ub2         *new_columns,
+                        ub1         **position,
+                        ub2         *position_len,
+                        oraub8      *flag,
+                        void        *lcrp,
+                        ub4         mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref486"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>src_db_name (OUT)</dt>
+<dd>
+<p>Canonicalized source database name. Must be non-<code>NULL</code>.</p>
+</dd>
+<dt>src_db_name_len (OUT)</dt>
+<dd>
+<p>Length of the <code>src_db_name</code> string in bytes excluding the <code>NULL</code> terminator.</p>
+</dd>
+<dt>cmd_type (OUT)</dt>
+<dd>
+<p>For row LCRs: One of the following values:</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The values, <code>#define OCI_LCR_ROW_CMD_ROLLBACK</code> and <code>#define OCI_LCR_ROW_CMD_START_TX</code>, is functionality that is available starting with Oracle Database 11<span class="italic">g</span> Release 2 (11.2.0.2).</div>
+<pre>
+#define OCI_LCR_ROW_CMD_INSERT
+#define OCI_LCR_ROW_CMD_DELETE
+#define OCI_LCR_ROW_CMD_UPDATE
+#define OCI_LCR_ROW_CMD_COMMIT
+#define OCI_LCR_ROW_CMD_ROLLBACK
+#define OCI_LCR_ROW_CMD_START_TX
+#define OCI_LCR_ROW_CMD_LOB_WRITE
+#define OCI_LCR_ROW_CMD_LOB_TRIM
+#define OCI_LCR_ROW_CMD_LOB_ERASE
+</pre>
+<p>For DDL LCRs: One of the command types in <a class="olink LNOCI251" href="../../appdev.112/e10646/ociaahan.htm#LNOCI251"><span class="italic">Oracle Call Interface Programmer's Guide</span></a>.</p>
+</dd>
+<dt>cmd_type_len (OUT)</dt>
+<dd>
+<p>Length of the <code>cmd_type</code> string in bytes excluding the <code>NULL</code> terminator.</p>
+</dd>
+<dt>owner (OUT)</dt>
+<dd>
+<p>Canonicalized table owner name. Must be non-<code>NULL</code>.</p>
+</dd>
+<dt>owner_len (OUT)</dt>
+<dd>
+<p>Length of the <code>owner</code> string in bytes excluding the <code>NULL</code> terminator.</p>
+</dd>
+<dt>oname (OUT)</dt>
+<dd>
+<p>Canonicalized table name. Must be non-<code>NULL</code></p>
+</dd>
+<dt>oname_len (OUT)</dt>
+<dd>
+<p>Length of the <code>oname</code> string in bytes excluding the <code>NULL</code> terminator.</p>
+</dd>
+<dt>tag (OUT)</dt>
+<dd>
+<p>A binary tag that enables tracking of the LCR. For example, you can use this tag to determine the original source database of the DML statement if apply forwarding is used.</p>
+</dd>
+<dt>tag_len (OUT)</dt>
+<dd>
+<p>Number of bytes in the tag.</p>
+</dd>
+<dt>txid (OUT)</dt>
+<dd>
+<p>Transaction ID. Must be non-<code>NULL</code></p>
+</dd>
+<dt>txid_len (OUT)</dt>
+<dd>
+<p>Length of the string in bytes excluding the <code>NULL</code> terminator.</p>
+</dd>
+<dt>src_time (OUT)</dt>
+<dd>
+<p>The time when the change was generated in the redo log file of the source database.</p>
+</dd>
+<dt>old_columns (OUT)</dt>
+<dd>
+<p>Number of columns in the <code>OLD</code> column list. Returns 0 if the input LCR is a DDL LCR. Optional.</p>
+</dd>
+<dt>new_columns (OUT)</dt>
+<dd>
+<p>Number of columns in the <code>NEW</code> column list. Returns 0 if the input LCR is a DDL LCR. Optional.</p>
+</dd>
+<dt>position (OUT)</dt>
+<dd>
+<p>Position for LCR.</p>
+</dd>
+<dt>position_len (OUT)</dt>
+<dd>
+<p>Length of <code>position</code>.</p>
+</dd>
+<dt>flag (OUT)</dt>
+<dd>
+<p>LCR flag. Possible flags are listed in Comments.</p>
+</dd>
+<dt>lcrp (IN)</dt>
+<dd>
+<p><code>lcrp</code> cannot be <code>NULL</code>.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p><code>OCILCR_NEW_ONLY_MODE</code> - If this mode is specified, then the <code>new_columns</code> returned is the count of the columns in the <code>NEW</code> column list only. Otherwise, the <code>new_columns</code> returned is the number of distinct columns present in either the <code>NEW</code> or the <code>OLD</code> column list of the given row LCR.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref487"></a>Comments</p>
+<p>LCR flag.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+This functionality is available starting with Oracle Database 11<span class="italic">g</span> Release 2 (11.2.0.2).</div>
+<pre>
+#define OCI_ROWLCR_HAS_ID_KEY_ONLY  /* only has ID key cols */
+#define OCI_ROWLCR_SEQ_LCR          /* sequence lcr */
+</pre></div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17725" class="refsect2"><a id="CIHIBCDB"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref488"></a>OCILCRRowStmtGet()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref489"></a>Purpose</p>
+<p>Returns the generated SQL statement for the row LCR, with values in-lined. Users must preallocate the memory for <code>sql_stmt</code>, and <code>*sql_stmt_len</code> must be set to the size of the allocated buffer, when it is passed in. If *<code>sql_stmt_len</code> is not large enough to hold the generated SQL statement, then an error is raised.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref490"></a>Syntax</p>
+<pre>
+sword OCILCRRowStmtGet ( OCISvcCtx   *svchp,
+                         OCIError    *errhp,
+                         oratext     *row_stmt,
+                         ub4         *row_stmt_len,
+                         void        *row_lcrp,
+                         ub4         mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref491"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>row_stmt (IN/OUT)</dt>
+<dd>
+<p>The generated SQL statement for the row LCR.</p>
+</dd>
+<dt>row_stmt_len (IN/OUT)</dt>
+<dd>
+<p>Set to the size of the allocated buffer for <code>row_stmt</code> when passed in; returns the length of <code>row_stmt</code>.</p>
+</dd>
+<dt>row_lcrp (IN)</dt>
+<dd>
+<p>Pointer to row LCR.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Specify <code>OCI_DEFAULT</code>.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17726" class="refsect2"><a id="CIHIEDDJ"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref492"></a>OCILCRRowStmtWithBindVarGet()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref493"></a>Purpose</p>
+<p>Returns the generated SQL statement, which uses bind variables for column values. The values for the bind variables are returned separately in arrays. You must preallocate the memory for <code>sql_stmt</code> and the arrays, <code>*sql_stmt_len</code> must be set to the size of the allocated buffer, and <code>array_size</code> must be the length of the arrays. The actual column values in <code>bind_var_valuesp</code> points to the values inside the LCR, so it is a shallow copy. If <code>array_size</code> is not large enough to hold all the variables, or if <code>*sql_stmt_len</code> is not large enough to hold the generated SQL statement, then an error is raised.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref494"></a>Syntax</p>
+<pre>
+sword OCILCRRowStmtWithBindVarGet ( OCISvcCtx    *svchp,
+                                    OCIError     *errhp,
+                                    oratext      *row_stmt,
+                                    ub4          *row_stmt_len,
+                                    ub2          *num_bind_var,
+                                    ub2          *bind_var_dtyp,
+                                    void         **bind_var_valuesp,
+                                    OCIInd       *bind_var_indp,
+                                    ub2          *bind_var_alensp,
+                                    ub1          *bind_var_csetidp,
+                                    ub1          *bind_var_csetfp,
+                                    void         *row_lcrp,
+                                    oratext      **chunk_column_names,
+                                    ub2          *chunk_column_namesl,
+                                    oraub8       *chunk_column_flags,
+                                    ub2          array_size,
+                                    oratext      *bind_var_syntax,
+                                    ub4          mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref495"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>row_stmt (IN/OUT)</dt>
+<dd>
+<p>The generated SQL statement for the row LCR.</p>
+</dd>
+<dt>row_stmt_len (IN/OUT)</dt>
+<dd>
+<p>Set to the size of the allocated buffer for <code>row_stmt</code> when passed in; returns the length of <code>row_stmt</code>.</p>
+</dd>
+<dt>num_bind_var (OUT)</dt>
+<dd>
+<p>The number of bind variables.</p>
+</dd>
+<dt>bind_var_dtyp (IN/OUT)</dt>
+<dd>
+<p>Array of data types for the bind variables.</p>
+</dd>
+<dt>bind_var_valuesp (IN/OUT)</dt>
+<dd>
+<p>Array of values for the bind variables.</p>
+</dd>
+<dt>bind_var_indp (IN/OUT)</dt>
+<dd>
+<p>Array of <code>NULL</code> indicators for the bind variables.</p>
+</dd>
+<dt>bind_var_alensp (IN/OUT)</dt>
+<dd>
+<p>Array of lengths for the bind variable values.</p>
+</dd>
+<dt>bind_var_csetidp (IN/OUT)</dt>
+<dd>
+<p>Array of character set IDs for the bind variables.</p>
+</dd>
+<dt>bind_var_csetfp (IN/OUT)</dt>
+<dd>
+<p>Array of character set forms for the bind variables.</p>
+</dd>
+<dt>row_lcrp (IN)</dt>
+<dd>
+<p>Pointer to row LCR.</p>
+</dd>
+<dt>chunk_column_names (OUT)</dt>
+<dd>
+<p>Array of LOB column names in LCR.</p>
+</dd>
+<dt>chunk_column_namesl (OUT)</dt>
+<dd>
+<p>Array of LOB column name lengths.</p>
+</dd>
+<dt>chunk_column_flags (OUT)</dt>
+<dd>
+<p>Array of LOB column flags. Possible flags are listed in Comments.</p>
+</dd>
+<dt>array_size (IN)</dt>
+<dd>
+<p>Size of each of the parameter arrays.</p>
+</dd>
+<dt>bind_var_syntax (IN)</dt>
+<dd>
+<p>Either (<code>:</code>) (binds are of the form <code>:1</code>, <code>:2</code>, and so on.) or (<code>?</code>) (binds are of the form (<code>?</code>)).</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Specify <code>OCI_DEFAULT</code>.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref496"></a>Comments</p>
+<p>The following LCR column flags can be combined using bitwise <code>OR</code> operator.</p>
+<pre>
+#define OCI_LCR_COLUMN_LOB_DATA     /* column contains LOB data */
+#define OCI_LCR_COLUMN_LONG_DATA    /* column contains long data */
+#define OCI_LCR_COLUMN_EMPTY_LOB    /* column has an empty LOB  */
+#define OCI_LCR_COLUMN_LAST_CHUNK   /* last chunk of current column */
+#define OCI_LCR_COLUMN_AL16UTF16    /* column is in AL16UTF16 fmt */
+#define OCI_LCR_COLUMN_NCLOB        /* column has NCLOB data */
+#define OCI_LCR_COLUMN_XML_DATA     /* column contains xml data */
+#define OCI_LCR_COLUMN_XML_DIFF     /* column contains xmldiff data */
+#define OCI_LCR_COLUMN_ENCRYPTED    /* column is encrypted */
+#define OCI_LCR_COLUMN_UPDATED      /* col is updated */
+/* OCI_LCR_COLUMN_UPDATED is set only for the modified columns in the NEW
+ * column list of an update LCR.
+ */ 
+</pre></div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17727" class="refsect2"><a id="CIHBDEFF"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref497"></a>OCILCRNew()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref498"></a>Purpose</p>
+<p>Constructs a new Streams LCR object of the specified type (ROW or DDL) for the given duration.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref499"></a>Syntax</p>
+<pre>
+sword OCILCRNew ( OCISvcCtx     *svchp, 
+                  OCIError      *errhp, 
+                  OCIDuration   duration, 
+                  ub1           lcrtype,
+                  void          **lcrp,
+                  ub4           mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref500"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>duration (IN)</dt>
+<dd>
+<p>Memory for the LCR is allocated for this specified duration.</p>
+</dd>
+<dt>lcrtype (IN)</dt>
+<dd>
+<p>LCR type. Values are:</p>
+<pre>
+#define OCI_LCR_XROW
+#define OCI_LCR_XDDL
+</pre></dd>
+<dt>lcrp (IN/OUT)</dt>
+<dd>
+<p>If <code>*lcrp</code> is not <code>NULL</code>, an error is raised.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Specify <code>OCI_DEFAULT</code>.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref501"></a>Comments</p>
+<p>Note:</p>
+<ul>
+<li>
+<p>After creation, you are not allowed to change the type of the LCR (ROW or DDL) or duration of the memory allocation.</p>
+</li>
+<li>
+<p>Use <code>OCILCRHeaderSet()</code> to populate common header fields for row or DDL LCR.</p>
+</li>
+<li>
+<p>After the LCR header is initialized, use <code>OCILCRRowColumnInfoSet()</code> or <code>OCILCRDDLInfoSet()</code> to populate operation specific elements. Use <code>OCILCRExtraAttributesSet()</code> to populate extra attribute information.</p>
+</li>
+<li>
+<p>Use <code>OCILCRFree()</code> to free the LCR created by this function.</p>
+</li>
+</ul>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17728" class="refsect2"><a id="CIHHGIID"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref502"></a>OCILCRRowColumnInfoGet()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref503"></a>Purpose</p>
+<p>Returns the column fields in a row LCR.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref504"></a>Syntax</p>
+<pre>
+sword OCILCRRowColumnInfoGet ( OCISvcCtx   *svchp, 
+                               OCIError    *errhp, 
+                               ub2         column_value_type,
+                               ub2         *num_columns,
+                               oratext     **column_names,
+                               ub2         *column_name_lens,
+                               ub2         *column_dtyp,
+                               void        **column_valuesp,
+                               OCIInd      *column_indp,
+                               ub2         *column_alensp,
+                               ub1         *column_csetfp,
+                               oraub8      *column_flags,
+                               ub2         *column_csid,
+                               void        *row_lcrp,
+                               ub2         array_size,
+                               ub4         mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref505"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>column_value_type (IN)</dt>
+<dd>
+<p>ROW LCR column value type; either of:</p>
+<pre>
+#define OCI_LCR_ROW_COLVAL_OLD
+#define OCI_LCR_ROW_COLVAL_NEW
+</pre></dd>
+<dt>num_columns (OUT)</dt>
+<dd>
+<p>Number of columns in the specified column array.</p>
+</dd>
+<dt>column_names (OUT)</dt>
+<dd>
+<p>An array of column name pointers.</p>
+</dd>
+<dt>column_name_lens (OUT)</dt>
+<dd>
+<p>An array of column name lengths.</p>
+</dd>
+<dt>column_dtyp (OUT)</dt>
+<dd>
+<p>An array of column data types. Optional. Data is not returned if <code>column_dtyp</code> is <code>NULL</code>.</p>
+</dd>
+<dt>column_valuesp (OUT)</dt>
+<dd>
+<p>An array of column data pointers.</p>
+</dd>
+<dt>column_indp (OUT)</dt>
+<dd>
+<p>An array of indicators.</p>
+</dd>
+<dt>column_alensp (OUT)</dt>
+<dd>
+<p>An array of column lengths. Each returned element is the length in bytes.</p>
+</dd>
+<dt>column_csetfp (OUT)</dt>
+<dd>
+<p>An array of character set forms for the columns. Optional. Data is not returned if the argument is <code>NULL</code>.</p>
+</dd>
+<dt>column_flags (OUT)</dt>
+<dd>
+<p>An array of column flags. Optional. Data is not returned if the argument is <code>NULL</code>. See Comments for the values.</p>
+</dd>
+<dt>column_csid (OUT)</dt>
+<dd>
+<p>An array of character set IDs for the columns.</p>
+</dd>
+<dt>row_lcrp (IN)</dt>
+<dd>
+<p><code>row_lcrp</code> cannot be <code>NULL</code>.</p>
+</dd>
+<dt>array_size (IN)</dt>
+<dd>
+<p>Size of each of the parameter arrays. An error is returned if <code>array_size</code> is less than the number of columns in the requested column list. The actual size of the requested column list is returned through the <code>num_columns</code> parameter.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p><code>OCILCR_NEW_ONLY_MODE</code> - If this mode is specified, then the <code>new_columns</code> returned is the count of the columns in the <code>NEW</code> column list only. Otherwise, the <code>new_columns</code> returned is the number of distinct columns present in either the <code>NEW</code> or the <code>OLD</code> column list of the given row LCR.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref506"></a>Comments</p>
+<ul>
+<li>
+<p>For <code>INSERT</code>, this function must only be called to get the NEW column values.</p>
+</li>
+<li>
+<p>For <code>DELETE</code>, this function must only be called to get the OLD column values.</p>
+</li>
+<li>
+<p>For <code>UPDATE</code>, this function can be called twice, once to get the NEW column values and once to get the OLD column values.</p>
+</li>
+<li>
+<p>This function must not be called for <code>COMMIT</code> operations.</p>
+</li>
+</ul>
+<p>The following LCR column flags can be combined using bitwise <code>OR</code> operator.</p>
+<pre>
+#define OCI_LCR_COLUMN_LOB_DATA     /* column contains LOB data */
+#define OCI_LCR_COLUMN_LONG_DATA    /* column contains long data */
+#define OCI_LCR_COLUMN_EMPTY_LOB    /* column has an empty LOB  */
+#define OCI_LCR_COLUMN_LAST_CHUNK   /* last chunk of current column */
+#define OCI_LCR_COLUMN_AL16UTF16    /* column is in AL16UTF16 fmt */
+#define OCI_LCR_COLUMN_NCLOB        /* column has NCLOB data */
+#define OCI_LCR_COLUMN_XML_DATA     /* column contains xml data */
+#define OCI_LCR_COLUMN_XML_DIFF     /* column contains xmldiff data */
+#define OCI_LCR_COLUMN_ENCRYPTED    /* column is encrypted */
+#define OCI_LCR_COLUMN_UPDATED      /* col is updated */
+/* OCI_LCR_COLUMN_UPDATED is set only for the modified columns in the NEW
+ * column list of an update LCR.
+ */ 
+</pre>
+<p><a href="#BABGBCAF">Table 11-3</a> lists the currently supported table column data types. For each data type, it lists the corresponding LCR column data type, the C program variable type to cast the LCR column value, and the OCI functions that can manipulate the column values returned from <code>OCILCRRowColumnInfoGet()</code>.</p>
+<div id="XSTRM17729" class="tblformalwide">
+<p class="titleintable"><a id="sthref507"></a><a id="BABGBCAF"></a>Table 11-3 Table Column Data Types</p>
+<table class="cellalignment1351" title="Table Column Data Types" summary="Table Column Datatypes" dir="ltr">
+<thead>
+<tr class="cellalignment1342">
+<th class="cellalignment1352" id="r1c1-t7">Table Column Data Types</th>
+<th class="cellalignment1352" id="r1c2-t7">LCR Column Data Type</th>
+<th class="cellalignment1352" id="r1c3-t7">Program Variable</th>
+<th class="cellalignment1352" id="r1c4-t7">Conversion Function</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r2c1-t7" headers="r1c1-t7">
+<p><code>VARCHAR</code>, <code>NVARCHAR2</code></p>
+</td>
+<td class="cellalignment1348" headers="r2c1-t7 r1c2-t7">
+<p><code>SQLT_CHR</code></p>
+</td>
+<td class="cellalignment1348" headers="r2c1-t7 r1c3-t7">
+<p><code>char *</code></p>
+</td>
+<td class="cellalignment1348" headers="r2c1-t7 r1c4-t7">&nbsp;</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r3c1-t7" headers="r1c1-t7">
+<p><code>NUMBER</code></p>
+</td>
+<td class="cellalignment1348" headers="r3c1-t7 r1c2-t7">
+<p><code>SQLT_VNU</code></p>
+</td>
+<td class="cellalignment1348" headers="r3c1-t7 r1c3-t7">
+<p><code>OCINumber</code></p>
+</td>
+<td class="cellalignment1348" headers="r3c1-t7 r1c4-t7">
+<p><code>OCINumberToInt()</code></p>
+<p><code>OCINumberToReal()</code></p>
+<p><code>OCINumberToText()</code></p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r4c1-t7" headers="r1c1-t7">
+<p><code>DATE</code></p>
+</td>
+<td class="cellalignment1348" headers="r4c1-t7 r1c2-t7">
+<p><code>SQLT_ODT</code></p>
+</td>
+<td class="cellalignment1348" headers="r4c1-t7 r1c3-t7">
+<p><code>OCIDate</code></p>
+</td>
+<td class="cellalignment1348" headers="r4c1-t7 r1c4-t7">
+<p><code>OCIDateToText()</code></p>
+<p>Can access structure directly to get date and time fields.</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r5c1-t7" headers="r1c1-t7">
+<p><code>RAW</code></p>
+</td>
+<td class="cellalignment1348" headers="r5c1-t7 r1c2-t7">
+<p><code>SQLT_BIN</code></p>
+</td>
+<td class="cellalignment1348" headers="r5c1-t7 r1c3-t7">
+<p><code>unsigned char *</code></p>
+</td>
+<td class="cellalignment1348" headers="r5c1-t7 r1c4-t7">&nbsp;</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r6c1-t7" headers="r1c1-t7">
+<p><code>CHAR</code>, <code>NCHAR</code></p>
+</td>
+<td class="cellalignment1348" headers="r6c1-t7 r1c2-t7">
+<p>S<code>QLT_AFC</code></p>
+</td>
+<td class="cellalignment1348" headers="r6c1-t7 r1c3-t7">
+<p><code>char *</code></p>
+</td>
+<td class="cellalignment1348" headers="r6c1-t7 r1c4-t7">&nbsp;</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r7c1-t7" headers="r1c1-t7">
+<p><code>BINARY_FLOAT</code></p>
+</td>
+<td class="cellalignment1348" headers="r7c1-t7 r1c2-t7">
+<p><code>SQLT_BFLOAT</code></p>
+</td>
+<td class="cellalignment1348" headers="r7c1-t7 r1c3-t7">
+<p><code>float</code></p>
+</td>
+<td class="cellalignment1348" headers="r7c1-t7 r1c4-t7">&nbsp;</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r8c1-t7" headers="r1c1-t7">
+<p><code>BINARY_DOUBLE</code></p>
+</td>
+<td class="cellalignment1348" headers="r8c1-t7 r1c2-t7">
+<p><code>SQLT_BDOUBLE</code></p>
+</td>
+<td class="cellalignment1348" headers="r8c1-t7 r1c3-t7">
+<p><code>double</code></p>
+</td>
+<td class="cellalignment1348" headers="r8c1-t7 r1c4-t7">&nbsp;</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r9c1-t7" headers="r1c1-t7">
+<p><code>TIMESTAMP</code></p>
+</td>
+<td class="cellalignment1348" headers="r9c1-t7 r1c2-t7">
+<p><code>SQLT_TIMESTAMP</code></p>
+</td>
+<td class="cellalignment1348" headers="r9c1-t7 r1c3-t7">
+<p><code>OCIDateTime *</code></p>
+</td>
+<td class="cellalignment1348" headers="r9c1-t7 r1c4-t7">
+<p><code>OCIDateTimeGetTime()</code></p>
+<p><code>OCIDateTimeGetDate()</code></p>
+<p><code>OCIDateTimeGetTimeZoneOffset()</code></p>
+<p><code>OCIDateTimeToText()</code></p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r10c1-t7" headers="r1c1-t7">
+<p><code>TIMESTAMP WITH TIME ZONE</code></p>
+</td>
+<td class="cellalignment1348" headers="r10c1-t7 r1c2-t7">
+<p><code>SQLT_TIMESTAMP_TZ</code></p>
+</td>
+<td class="cellalignment1348" headers="r10c1-t7 r1c3-t7">
+<p><code>OCIDateTime *</code></p>
+</td>
+<td class="cellalignment1348" headers="r10c1-t7 r1c4-t7">
+<p><code>OCIDateTimeGetTime()</code></p>
+<p><code>OCIDateTimeGetDate()</code></p>
+<p><code>OCIDateTimeGetTimeZoneOffset()</code></p>
+<p><code>OCIDateTimeToText()</code></p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r11c1-t7" headers="r1c1-t7">
+<p><code>TIMESTAMP WITH LOCAL TIME ZONE</code></p>
+</td>
+<td class="cellalignment1348" headers="r11c1-t7 r1c2-t7">
+<p><code>SQLT_TIMESTAMP_LTZ</code></p>
+</td>
+<td class="cellalignment1348" headers="r11c1-t7 r1c3-t7">
+<p><code>OCIDateTime *</code></p>
+</td>
+<td class="cellalignment1348" headers="r11c1-t7 r1c4-t7">
+<p><code>OCIDateTimeGetTime()</code></p>
+<p><code>OCIDateTimeGetDate()</code></p>
+<p><code>OCIDateTimeGetTimeZoneOffset()</code></p>
+<p><code>OCIDateTimeToText()</code></p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r12c1-t7" headers="r1c1-t7">
+<p><code>INTERVAL YEAR TO MONTH</code></p>
+</td>
+<td class="cellalignment1348" headers="r12c1-t7 r1c2-t7">
+<p><code>SQLT_INTERVAL_YM</code></p>
+</td>
+<td class="cellalignment1348" headers="r12c1-t7 r1c3-t7">
+<p><code>OCIInterval *</code></p>
+</td>
+<td class="cellalignment1348" headers="r12c1-t7 r1c4-t7">
+<p><code>OCIIntervalToText()</code></p>
+<p><code>OCIIntervalGetYearMonth()</code></p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r13c1-t7" headers="r1c1-t7">
+<p><code>INTERVAL DAY TO SECOND</code></p>
+</td>
+<td class="cellalignment1348" headers="r13c1-t7 r1c2-t7">
+<p><code>SQLT_INTERVAL_DS</code></p>
+</td>
+<td class="cellalignment1348" headers="r13c1-t7 r1c3-t7">
+<p><code>OCIInterval *</code></p>
+</td>
+<td class="cellalignment1348" headers="r13c1-t7 r1c4-t7">
+<p><code>OCIIntervalToText()</code></p>
+<p><code>OCIIntervalGetDaySecond()</code></p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r14c1-t7" headers="r1c1-t7">
+<p><code>UROWID</code></p>
+</td>
+<td class="cellalignment1348" headers="r14c1-t7 r1c2-t7">
+<p><code>SQLT_RDD</code></p>
+</td>
+<td class="cellalignment1348" headers="r14c1-t7 r1c3-t7">
+<p><code>OCIRowid *</code></p>
+</td>
+<td class="cellalignment1348" headers="r14c1-t7 r1c4-t7">
+<p><code>OCIRowidToChar()</code></p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r15c1-t7" headers="r1c1-t7">
+<p><code>CLOB</code></p>
+</td>
+<td class="cellalignment1348" headers="r15c1-t7 r1c2-t7">
+<p><code>SQLT_CHR</code> or <code>SQLT_BIN</code></p>
+</td>
+<td class="cellalignment1348" headers="r15c1-t7 r1c3-t7">
+<p><code>unsigned char *</code></p>
+</td>
+<td class="cellalignment1348" headers="r15c1-t7 r1c4-t7">
+<p>*</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r16c1-t7" headers="r1c1-t7">
+<p><code>NCLOB</code></p>
+</td>
+<td class="cellalignment1348" headers="r16c1-t7 r1c2-t7">
+<p><code>SQLT_BIN</code></p>
+</td>
+<td class="cellalignment1348" headers="r16c1-t7 r1c3-t7">
+<p><code>unsigned char *</code></p>
+</td>
+<td class="cellalignment1348" headers="r16c1-t7 r1c4-t7">
+<p>*</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r17c1-t7" headers="r1c1-t7">
+<p><code>BLOB</code></p>
+</td>
+<td class="cellalignment1348" headers="r17c1-t7 r1c2-t7">
+<p><code>SQLT_BIN</code></p>
+</td>
+<td class="cellalignment1348" headers="r17c1-t7 r1c3-t7">
+<p><code>unsigned char *</code></p>
+</td>
+<td class="cellalignment1348" headers="r17c1-t7 r1c4-t7">
+<p>*</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r18c1-t7" headers="r1c1-t7">
+<p><code>LONG</code></p>
+</td>
+<td class="cellalignment1348" headers="r18c1-t7 r1c2-t7">
+<p><code>SQLT_CHR</code></p>
+</td>
+<td class="cellalignment1348" headers="r18c1-t7 r1c3-t7">
+<p><code>char *</code></p>
+</td>
+<td class="cellalignment1348" headers="r18c1-t7 r1c4-t7">
+<p>*</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r19c1-t7" headers="r1c1-t7">
+<p><code>LONG RAW</code></p>
+</td>
+<td class="cellalignment1348" headers="r19c1-t7 r1c2-t7">
+<p><code>SQLT_BIN</code></p>
+</td>
+<td class="cellalignment1348" headers="r19c1-t7 r1c3-t7">
+<p><code>unsigned char *</code></p>
+</td>
+<td class="cellalignment1348" headers="r19c1-t7 r1c4-t7">
+<p>*</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformalwide" --></div>
+<!-- class="refsubsect" -->
+<p>* Call OCIXStreamOutChunkReceive() to get column data.</p>
+</div>
+<!-- class="refsect2" -->
+<div id="XSTRM17730" class="refsect2"><a id="CIHFHADB"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref508"></a>OCILCRRowColumnInfoSet()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref509"></a>Purpose</p>
+<p>Populates column fields in a row LCR.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref510"></a>Syntax</p>
+<pre>
+sword OCILCRRowColumnInfoSet ( OCISvcCtx   *svchp, 
+                               OCIError    *errhp, 
+                               ub2         column_value_type,
+                               ub2         num_columns,
+                               oratext     **column_names,
+                               ub2         *column_name_lens,
+                               ub2         *column_dtyp,
+                               void        **column_valuesp,
+                               OCIInd      *column_indp,
+                               ub2         *column_alensp,
+                               ub1         *column_csetfp,
+                               oraub8      *column_flags,
+                               ub2         *column_csid,
+                               void        *row_lcrp,
+                               ub4         mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref511"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>column_value_type (IN)</dt>
+<dd>
+<p>ROW LCR Column value types:</p>
+<pre>
+#define OCI_LCR_ROW_COLVAL_OLD
+#define OCI_LCR_ROW_COLVAL_NEW
+</pre></dd>
+<dt>num_columns (IN)</dt>
+<dd>
+<p>Number of columns in each of the array parameters.</p>
+</dd>
+<dt>column_names (IN)</dt>
+<dd>
+<p>Pointer to an array of column names. Column names must be canonicalized. Column names must follow Oracle Database naming conventions and size limitations.</p>
+</dd>
+<dt>column_name_lens (IN)</dt>
+<dd>
+<p>Pointer to an array of column name lengths.</p>
+</dd>
+<dt>column_dtyp (IN)</dt>
+<dd>
+<p>Pointer to an array of column data types. See Comments for valid data types.</p>
+</dd>
+<dt>column_valuesp (IN)</dt>
+<dd>
+<p>Pointer to an array of column data pointers.</p>
+</dd>
+<dt>column_indp (IN)</dt>
+<dd>
+<p>Pointer to an indicator array. For all data types, this is a pointer to an array of <code>OCIInd</code> values (<code>OCI_IND_NULL</code> or <code>OCI_IND_NOTNULL</code>).</p>
+</dd>
+<dt>column_alensp (IN)</dt>
+<dd>
+<p>Pointer to an array of actual column lengths in bytes.</p>
+</dd>
+<dt>column_csetfp (IN)</dt>
+<dd>
+<p>Pointer to an array of character set forms for the columns. The default form is <code>SQLCS_IMPLICIT</code>. Setting this attribute causes the database or national character set to be used on the client side. Set this attribute to <code>SQLCS_NCHAR</code> for the national character set or <code>SQLCS_IMPLICIT</code> for the database character set. Pass 0 for non-character columns.</p>
+</dd>
+<dt>column_flags (IN)</dt>
+<dd>
+<p>Pointer to an array of column flags. (See Comments for the list of valid LCR column flags.)</p>
+</dd>
+<dt>column_csid (IN)</dt>
+<dd>
+<p>Pointer to an array of character set IDs for the columns.</p>
+</dd>
+<dt>row_lcrp (IN/OUT)</dt>
+<dd>
+<p><code>row_lcrp</code> cannot be <code>NULL</code>.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Specify <code>OCI_DEFAULT</code>.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref512"></a>Comments</p>
+<p>Note:</p>
+<ul>
+<li>
+<p>For <code>INSERT</code>, this function must only be called to specify the NEW column values.</p>
+</li>
+<li>
+<p>For <code>DELETE</code>, this function must only be called to specify the OLD column values.</p>
+</li>
+<li>
+<p>For <code>UPDATE</code>, this function can be called twice, once to specify the NEW column values and once to specify the OLD column values.</p>
+</li>
+<li>
+<p>This function must not be called for <code>COMMIT</code> operations.</p>
+</li>
+</ul>
+<p>The following LCR column flags can be combined using the bitwise <code>OR</code> operator.</p>
+<pre>
+#define OCI_LCR_COLUMN_LOB_DATA     /* column contains LOB data */
+#define OCI_LCR_COLUMN_LONG_DATA    /* column contains long data */
+#define OCI_LCR_COLUMN_EMPTY_LOB    /* column has an empty LOB  */
+#define OCI_LCR_COLUMN_LAST_CHUNK   /* last chunk of current column */
+#define OCI_LCR_COLUMN_AL16UTF16    /* column is in AL16UTF16 fmt */
+#define OCI_LCR_COLUMN_NCLOB        /* column has NCLOB data */
+#define OCI_LCR_COLUMN_XML_DATA     /* column contains xml data */
+#define OCI_LCR_COLUMN_XML_DIFF     /* column contains xmldiff data */
+#define OCI_LCR_COLUMN_ENCRYPTED    /* column is encrypted */
+#define OCI_LCR_COLUMN_UPDATED      /* col is updated */
+/* OCI_LCR_COLUMN_UPDATED is set only for the modified columns in the NEW
+ * column list of an update LCR.
+ */ 
+</pre></div>
+<!-- class="refsubsect" -->
+<p>Valid data types are:</p>
+<pre>
+SQLT_AFC           SQLT_TIMESTAMP
+SQLT_DAT           SQLT_TIMESTAMP_TZ
+SQLT_BFLOAT        SQLT_TIMESTAMP_LTZ
+SQLT_BDOUBLE       SQLT_INTERVAL_YM
+SQLT_NUM           SQLT_INTERVAL_DS
+SQLT_VCS
+SQLT_ODT
+SQLT_INT
+SQLT_BIN
+SQLT_CHR
+SQLT_RDD
+SQLT_VST
+SQLT_INT
+SQLT_FLT
+</pre></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17731" class="refsect2"><a id="CIHECCIH"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref513"></a>OCILCRDDLInfoSet()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref514"></a>Purpose</p>
+<p>Populates DDL-specific fields in a DDL LCR.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref515"></a>Syntax</p>
+<pre>
+sword OCILCRDDLInfoSet ( OCISvcCtx    *svchp,
+                         OCIError     *errhp,
+                         oratext      *object_type,
+                         ub2          object_type_len,
+                         oratext      *ddl_text,
+                         ub4          ddl_text_len, 
+                         oratext      *logon_user,
+                         ub2          logon_user_len,
+                         oratext      *current_schema,
+                         ub2          current_schema_len,
+                         oratext      *base_table_owner,
+                         ub2          base_table_owner_len,
+                         oratext      *base_table_name,
+                         ub2          base_table_name_len,
+                         oraub8       flag,
+                         void         *ddl_lcrp,
+                         ub4          mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref516"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>object_type (IN)</dt>
+<dd>
+<p>The type of object on which the DDL statement was executed. See Comments for the valid object types.</p>
+</dd>
+<dt>object_type_len (IN)</dt>
+<dd>
+<p>Length of the <code>object_type</code> string without the <code>NULL</code> terminator.</p>
+</dd>
+<dt>ddl_text (IN)</dt>
+<dd>
+<p>The text of the DDL statement. This parameter must be set to a non-<code>NULL</code> value. DDL text must be in Oracle Database DDL format.</p>
+</dd>
+<dt>ddl_text_len (IN)</dt>
+<dd>
+<p>DDL text length in bytes without the <code>NULL</code> terminator.</p>
+</dd>
+<dt>logon_user (IN)</dt>
+<dd>
+<p>Canonicalized name of the user whose session executed the DDL statement.</p>
+</dd>
+<dt>logon_user_len (IN)</dt>
+<dd>
+<p>Length of the <code>logon_user</code> string without the <code>NULL</code> terminator. Must follow Oracle Database naming conventions and size limitations.</p>
+</dd>
+<dt>current_schema (IN)</dt>
+<dd>
+<p>The canonicalized schema name that is used if no schema is specified explicitly for the modified database objects in <code>ddl_text</code>. If a schema is specified in <code>ddl_text</code> that differs from the one specified for <code>current_schema</code>, then the function uses the schema specified in <code>ddl_text</code>.</p>
+<p>This parameter must be set to a non-<code>NULL</code> value.</p>
+</dd>
+<dt>current_schema_len (IN)</dt>
+<dd>
+<p>Length of the <code>current_schema</code> string without the <code>NULL</code> terminator. Must follow Oracle Database naming conventions and size limitations.</p>
+</dd>
+<dt>base_table_owner (IN)</dt>
+<dd>
+<p>If the DDL statement is a table-related DDL (such as <code>CREATE</code> <code>TABLE</code> or <code>ALTER</code> <code>TABLE</code>), or if the DDL statement involves a table (such as creating a trigger on a table), then <code>base_table_owner</code> specifies the canonicalized owner of the table involved. Otherwise, <code>base_table_owner</code> is <code>NULL</code>.</p>
+</dd>
+<dt>base_table_owner_len (IN)</dt>
+<dd>
+<p>Length of the <code>base_table_owner</code> string without the <code>NULL</code> terminator. Must follow Oracle Database naming conventions and size limitations.</p>
+</dd>
+<dt>base_table_name (IN)</dt>
+<dd>
+<p>If the DDL statement is a table-related DDL (such as <code>CREATE</code> <code>TABLE</code> or <code>ALTER</code> <code>TABLE</code>), or if the DDL statement involves a table (such as creating a trigger on a table), then <code>base_table_name</code> specifies the canonicalized name of the table involved. Otherwise, <code>base_table_name</code> is <code>NULL</code>.</p>
+</dd>
+<dt>base_table_name_len (IN)</dt>
+<dd>
+<p>Length of the <code>base_table_name</code> without the <code>NULL</code> terminator. Must follow Oracle Database naming conventions and size limitations.</p>
+</dd>
+<dt>flag (IN)</dt>
+<dd>
+<p>DDL LCR flag. (Not currently used; used for future extension.) Specify <code>OCI_DEFAULT</code>.</p>
+</dd>
+<dt>ddl_lcrp (IN/OUT)</dt>
+<dd>
+<p><code>ddl_lcrp</code> cannot be <code>NULL</code>.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Specify <code>OCI_DEFAULT</code>.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref517"></a>Comments</p>
+<p>The following are valid object types:</p>
+<pre>
+CLUSTER
+FUNCTION
+INDEX
+OUTLINE
+PACKAGE
+PACKAGE BODY
+PROCEDURE
+SEQUENCE
+SYNONYM
+TABLE
+TRIGGER
+TYPE
+USER
+VIEW
+</pre>
+<p><code>NULL</code> is also a valid object type. Specify <code>NULL</code> for all object types not listed.</p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17732" class="refsect2"><a id="CIHBHGCF"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref518"></a>OCILCRHeaderSet()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref519"></a>Purpose</p>
+<p>Initializes the common header fields for row or DDL LCR.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref520"></a>Syntax</p>
+<pre>
+sword OCILCRHeaderSet ( OCISvcCtx  *svchp,
+                        OCIError   *errhp,
+                        oratext    *src_db_name,
+                        ub2        src_db_name_len,
+                        oratext    *cmd_type,
+                        ub2        cmd_type_len,
+                        oratext    *owner,
+                        ub2        owner_len,
+                        oratext    *oname,
+                        ub2        oname_len,
+                        ub1        *tag,
+                        ub2        tag_len,
+                        oratext    *txid,
+                        ub2        txid_len,
+                        OCIDate    *src_time,
+                        ub1        *position,
+                        ub2        position_len,
+                        oraub8     flag,
+                        void       *lcrp,
+                        ub4        mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref521"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>src_db_name (IN)</dt>
+<dd>
+<p>Canonicalized source database name. Must be non-<code>NULL</code>.</p>
+</dd>
+<dt>src_db_name_len (IN)</dt>
+<dd>
+<p>Length of the <code>src_db_name</code> string in bytes excluding the <code>NULL</code> terminator. Must follow Oracle Database naming conventions and size limitations.</p>
+</dd>
+<dt>cmd_type (IN)</dt>
+<dd>
+<p>For row LCRs: One of the following values:</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The values, <code>#define OCI_LCR_ROW_CMD_ROLLBACK</code> and <code>#define OCI_LCR_ROW_CMD_START_TX</code>, are available starting with Oracle Database 11<span class="italic">g</span> Release 2 (11.2.0.2).</div>
+<pre>
+#define OCI_LCR_ROW_CMD_INSERT
+#define OCI_LCR_ROW_CMD_DELETE
+#define OCI_LCR_ROW_CMD_UPDATE
+#define OCI_LCR_ROW_CMD_COMMIT
+#define OCI_LCR_ROW_CMD_ROLLBACK
+#define OCI_LCR_ROW_CMD_START_TX
+#define OCI_LCR_ROW_CMD_LOB_WRITE
+#define OCI_LCR_ROW_CMD_LOB_TRIM
+#define OCI_LCR_ROW_CMD_LOB_ERASE
+</pre>
+<p>For DDL LCRs: One of the command types in <a class="olink LNOCI251" href="../../appdev.112/e10646/ociaahan.htm#LNOCI251"><span class="italic">Oracle Call Interface Programmer's Guide</span></a>.</p>
+</dd>
+<dt>cmd_type_len (IN)</dt>
+<dd>
+<p>Length of <code>cmd_type</code>.</p>
+</dd>
+<dt>owner (IN)</dt>
+<dd>
+<p>Canonicalized table owner name. Owner is not required for <code>COMMIT</code> LCR.</p>
+</dd>
+<dt>owner_len (IN)</dt>
+<dd>
+<p>Length of the <code>owner</code> string in bytes excluding the <code>NULL</code> terminator. Must follow Oracle Database naming conventions and size limitations.</p>
+</dd>
+<dt>oname (IN)</dt>
+<dd>
+<p>Canonicalized table name. Owner is not required for <code>COMMIT</code> LCR.</p>
+</dd>
+<dt>oname_len (IN)</dt>
+<dd>
+<p>Length of the <code>oname</code> string in bytes excluding the <code>NULL</code> terminator. Must follow Oracle Database naming conventions and size limitations.</p>
+</dd>
+<dt>tag (IN)</dt>
+<dd>
+<p>A binary tag that enables tracking of the LCR. For example, you can use this tag to determine the original source database of the DML statement if apply forwarding is used.</p>
+</dd>
+<dt>tag_len (IN)</dt>
+<dd>
+<p>Number of bytes in the tag. Cannot exceed 2000 bytes.</p>
+</dd>
+<dt>txid (IN)</dt>
+<dd>
+<p>Transaction ID. Must be non-<code>NULL</code>.</p>
+</dd>
+<dt>txid_len (IN)</dt>
+<dd>
+<p>Length of the <code>txid</code> string in bytes, excluding the <code>NULL</code> terminator. Must follow Oracle Database naming conventions and size limitations.</p>
+</dd>
+<dt>src_time (IN)</dt>
+<dd>
+<p>The time when the change was generated in the online redo log file of the source database.</p>
+</dd>
+<dt>position (IN)</dt>
+<dd>
+<p>Position for LCR. Must be non-<code>NULL</code> and byte-comparable.</p>
+</dd>
+<dt>position_len (IN)</dt>
+<dd>
+<p>Length of position. Must be greater than zero.</p>
+</dd>
+<dt>flag (IN)</dt>
+<dd>
+<p>LCR flag. Possible flags are listed in Comments.</p>
+</dd>
+<dt>lcrp (IN/OUT)</dt>
+<dd>
+<p><code>lcrp</code> cannot be <code>NULL</code>.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Specify <code>OCI_DEFAULT</code>.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref522"></a>Comments</p>
+<p>Note:</p>
+<ul>
+<li>
+<p>This function sets all internal fields of the LCR to <code>NULL</code> including extra attributes.</p>
+</li>
+<li>
+<p>This function <span class="italic">does not</span> deep copy the passed-in values. You must ensure data is valid for the duration of the LCR.</p>
+</li>
+<li>
+<p>For <code>COMMIT</code> LCRs, <code>owner</code> and <code>oname</code> information are not required. Provide valid values for <code>src_db_name</code>, <code>cmd_type</code>, <code>tag</code>, <code>txid</code>, and <code>position</code>.</p>
+</li>
+<li>
+<p>For row LCRs, use <code>OCILCRRowColumnInfoSet()</code> to populate row LCR-specific column information.</p>
+</li>
+<li>
+<p>For DDL LCRs, use <code>OCILCRDDLInfoSet()</code> to populate DDL operation specific information.</p>
+</li>
+<li>
+<p>For row or DDL LCRs, use <code>OCILCRAttributesSet()</code> to populate extra attribute information.</p>
+</li>
+</ul>
+<p>The following are LCR flags:</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+This functionality is available starting with Oracle Database 11<span class="italic">g</span> Release 2 (11.2.0.2).</div>
+<pre>
+#define OCI_ROWLCR_HAS_ID_KEY_ONLY  /* only has ID key cols */
+#define OCI_ROWLCR_SEQ_LCR          /* sequence lcr */
+</pre></div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17733" class="refsect2"><a id="CIHHDBIJ"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref523"></a>OCILCRLobInfoGet()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref524"></a>Purpose</p>
+<p>Returns the LOB information for a piece-wise LOB LCR generated from a <code>DBMS_LOB</code> or <code>OCILob</code> procedure.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref525"></a>Syntax</p>
+<pre>
+sword OCILCRLobInfoGet ( OCISvcCtx   *svchp, 
+                         OCIError    *errhp, 
+                         oratext     **column_name,
+                         ub2         *column_name_len,
+                         ub2         *column_dty,
+                         oraub8      *column_flag,
+                         ub4         *offset,
+                         ub4         *size,
+                         void        *row_lcrp,
+                         ub4         mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref526"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>column_name (OUT)</dt>
+<dd>
+<p>LOB column name.</p>
+</dd>
+<dt>column_name_len (OUT)</dt>
+<dd>
+<p>Length of LOB column name.</p>
+</dd>
+<dt>column_dty (OUT)</dt>
+<dd>
+<p>Column data type (either <code>SQLT_CHR</code> or <code>SQLT_BIN</code>).</p>
+</dd>
+<dt>column_flag (OUT)</dt>
+<dd>
+<p>Column flag. See Comments in <a href="#CIHFHADB">"OCILCRRowColumnInfoSet()"</a>.</p>
+</dd>
+<dt>offset (OUT)</dt>
+<dd>
+<p>LOB operation offset in code points. Only returned for <code>LOB</code> <code>WRITE</code> and <code>LOB</code> <code>TRIM</code> operations. This is the same as the <code>offset</code> parameter for <code>OCILobErase()</code> or the <code>offset</code> parameter in <code>OCILobWrite()</code>.</p>
+</dd>
+<dt>size (OUT)</dt>
+<dd>
+<p>LOB operation size in code points. Only returned for <code>LOB</code> <code>TRIM</code> and <code>LOB</code> <code>ERASE</code> operations. This is the same as the <code>new_length</code> parameter in <code>OCILobTrim()</code> or the <code>amtp</code> parameter in <code>OCILobErase()</code>.</p>
+</dd>
+<dt>row_lcrp (IN)</dt>
+<dd>
+<p>Pointer to a row LCR.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Specify <code>OCI_DEFAULT</code>.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref527"></a>Comments</p>
+<p>Returns <code>OCI_SUCCESS</code> or <code>OCI_ERROR</code>.</p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17734" class="refsect2"><a id="CIHBFJJI"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref528"></a><a id="sthref529"></a>OCILCRLobInfoSet()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref530"></a>Purpose</p>
+<p>Sets the LOB information for a piece-wise LOB LCR. This call is valid when the input LCR is a <code>LOB_WRITE</code>, <code>LOB_ERASE</code>, or <code>LOB_TRIM</code>; otherwise, an error is returned.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref531"></a>Syntax</p>
+<pre>
+sword OCILCRLobInfoSet ( OCISvcCtx   *svchp, 
+                         OCIError    *errhp, 
+                         oratext     *column_name,
+                         ub2         column_name_len,
+                         ub2         column_dty,
+                         oraub8      column_flag,
+                         ub4         offset,
+                         ub4         size,
+                         void        *row_lcrp,
+                         ub4         mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref532"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>column_name (IN)</dt>
+<dd>
+<p>LOB column name.</p>
+</dd>
+<dt>column_name_len (IN)</dt>
+<dd>
+<p>Length of LOB column name.</p>
+</dd>
+<dt>column_dty (IN)</dt>
+<dd>
+<p>Column data type (either <code>SQLT_CHR</code> or <code>SQLT_BIN</code>).</p>
+</dd>
+<dt>column_flag (IN)</dt>
+<dd>
+<p>Column flag. See Comments in <a href="#CIHFHADB">"OCILCRRowColumnInfoSet()"</a>.</p>
+</dd>
+<dt>offset (IN)</dt>
+<dd>
+<p>LOB operation offset in code points. Only required for <code>LOB</code> <code>WRITE</code> and <code>LOB</code> <code>TRIM</code> operations. This is the same as the <code>soffset</code> parameter for <code>OCILobErase()</code> or the <code>offset</code> parameter in <code>OCILobWrite()</code>.</p>
+</dd>
+<dt>size (IN)</dt>
+<dd>
+<p>LOB operation size in code points. Only required for <code>LOB</code> <code>TRIM</code> and <code>LOB</code> <code>ERASE</code> operations.This is the same as the <code>new_length</code> parameter in <code>OCILobTrim()</code> or the <code>amtp</code> parameter in <code>OCILobErase()</code>.</p>
+</dd>
+<dt>row_lcrp (IN/OUT)</dt>
+<dd>
+<p>Pointer to a row LCR.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Specify <code>OCI_DEFAULT</code>.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref533"></a>Comments</p>
+<p>Returns <code>OCI_SUCCESS</code> or <code>OCI_ERROR</code>.</p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17735" class="refsect2"><a id="CIHJIGAJ"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref534"></a>OCILCRSCNsFromPosition()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref535"></a>Purpose</p>
+<p>Returns the SCN and the commit SCN from the position value. The input position must be one that is obtained from an XStream outbound server. An error is returned if the input position does not conform to the expected format.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref536"></a>Syntax</p>
+<pre>
+sword OCILCRSCNsFromPosition ( OCISvcCtx   *svchp, 
+                               OCIError    *errhp, 
+                               ub1         *position,
+                               ub2         position_len,
+                               OCINumber   *scn,
+                               OCINumber   *commit_scn,
+                               ub4         mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref537"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>position (IN)</dt>
+<dd>
+<p>LCR position value.</p>
+</dd>
+<dt>position_len (IN)</dt>
+<dd>
+<p>Length of LCR position value.</p>
+</dd>
+<dt>scn (OUT)</dt>
+<dd>
+<p>SCN number embedded in the given LCR position.</p>
+</dd>
+<dt>commit_scn (OUT)</dt>
+<dd>
+<p>The commit SCN embedded in the given position.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Mode flags used for future expansion. Specify <code>OCI_DEFAULT</code>.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM72506" class="refsect2"><a id="CIHBJJHC"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref538"></a>OCILCRSCNToPosition()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref539"></a>Purpose</p>
+<p>Converts an SCN to a position. The generated position can be passed as the <code>last_position</code> to <code>OCIXStreamOutAttach()</code> to filter the LCRs with commit SCN less than the given SCN and the LCR's SCN less than the given SCN. Therefore, the first LCR sent by the outbound server is either:</p>
+<ul>
+<li>
+<p>A commit LCR at the given SCN, or</p>
+</li>
+<li>
+<p>The first LCR of the subsequent transaction with commit SCN greater than or equal to the given SCN.</p>
+</li>
+</ul>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref540"></a>Syntax</p>
+<pre>
+sword OCILCRSCNToPosition ( OCISvcCtx  *svchp,
+                            OCIError   *errhp,
+                            ub1        *position,
+                            ub2        *position_len,
+                            OCINumber  *scn,
+                            ub4        mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref541"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>OCI service context.</p>
+</dd>
+<dt>errhp (IN)</dt>
+<dd>
+<p>OCI error handle.</p>
+</dd>
+<dt>position (OUT)</dt>
+<dd>
+<p>The resulting position. You must preallocate <code>OCI_LCR_MAX_POSITION_LEN</code> bytes.</p>
+</dd>
+<dt>position_len (OUT)</dt>
+<dd>
+<p>Length of <code>position</code>.</p>
+</dd>
+<dt>scn (IN)</dt>
+<dd>
+<p>The SCN to be stored in <code>position</code>.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Mode flags (Not currently used; used for future extension).</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref542"></a>Comments</p>
+<p>Returns <code>OCI_SUCCESS</code> if the conversion succeeds, <code>OCI_ERROR</code> otherwise.</p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17737" class="refsect2"><a id="CIHFBAJH"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref543"></a>OCILCRWhereClauseGet()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref544"></a>Purpose</p>
+<p>Gets the <code>WHERE</code> clause statement for the given row LCR.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref545"></a>Syntax</p>
+<pre>
+sword OCILCRWhereClauseGet ( OCISvcCtx  *svchp,
+                             OCIError   *errhp,
+                             oratext    *wc_stmt,
+                             ub4        *wc_stmt_len,
+                             void       *row_lcrp,
+                             ub4        mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref546"></a>Parameters</p>
+<dl>
+<dt>svchp (IN/OUT)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>wc_stmt (OUT)</dt>
+<dd>
+<p>SQL statement equivalent to the LCR.</p>
+</dd>
+<dt>wc_stmt_len (IN/OUT)</dt>
+<dd>
+<p>Length of the <code>wc_stmt</code> buffer.</p>
+</dd>
+<dt>row_lcrp (IN)</dt>
+<dd>
+<p>Row LCR to be converted to SQL.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Mode flags used for future expansion. Specify <code>OCI_DEFAULT</code>.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref547"></a>Comments</p>
+<p>The <code>WHERE</code> clause generated for an <code>INSERT</code> LCR has all the columns that are being inserted. This <code>WHERE</code> clause could be used to identify the inserted row after it is inserted, for example, like "returning <code>ROWID</code>".</p>
+<pre>
+INSERT INTO TAB(COL1) VALUES (10) -&gt; WHERE COL1=10
+</pre>
+<p>The <code>WHERE</code> clause generated for <code>UPDATE</code> has all the columns in the old column list. However, the values of the columns are that of the new value if it exists in the new column list of the <code>UPDATE</code>. If the column does not have a new value, then the old column value is used.</p>
+<pre>
+UPDATE TAB SET COL1 = 10 WHERE COL1 = 20 -&gt; WHERE COL1 = 10
+UPDATE TAB SET COL2 = 20 WHERE COL1 = 20 -&gt; WHERE COL1 = 20
+</pre>
+<p>The <code>WHERE</code> clause for DELETE uses the columns and values from the old column list.</p>
+<p>LOB piecewise operations use the new columns and values for generating the <code>WHERE</code> clause.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref548"></a>Returns</p>
+<p><code>OCI_SUCCESS</code> or <code>OCI_ERROR</code>.</p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17738" class="refsect2"><a id="CIHJHDHF"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref549"></a>OCILCRWhereClauseWithBindVarGet()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref550"></a>Purpose</p>
+<p>Gets the <code>WHERE</code> clause statement with bind variables for the given row LCR.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref551"></a>Syntax</p>
+<pre>
+sword OCILCRWhereClauseWithBindVarGet ( OCISvcCtx  *svchp,
+                                        OCIError   *errhp,
+                                        oratext    *wc_stmt,
+                                        ub4        *wc_stmt_len,
+                                        ub2        *num_bind_var,
+                                        ub2        *bind_var_dtyp,
+                                        void       **bind_var_valuesp,
+                                        OCIInd     *bind_var_indp,
+                                        ub2        *bind_var_alensp,
+                                        ub2        *bind_var_csetidp,
+                                        ub1        *bind_var_csetfp,
+                                        void       *row_lcrp,
+                                        ub2        array_size,
+                                        oratext    *bind_var_syntax,
+                                        ub4        mode ); 
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref552"></a>Parameters</p>
+<dl>
+<dt>svchp (IN/OUT)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>wc_stmt (OUT)</dt>
+<dd>
+<p>SQL statement equivalent to the LCR.</p>
+</dd>
+<dt>wc_stmt_len (IN/OUT)</dt>
+<dd>
+<p>Length of the <code>wc_stmt</code> buffer.</p>
+</dd>
+<dt>num_bind_var (OUT)</dt>
+<dd>
+<p>Number of bind variables.</p>
+</dd>
+<dt>bind_var_dtyp (OUT)</dt>
+<dd>
+<p>Array of data types of bind variables.</p>
+</dd>
+<dt>bind_var_valuesp (OUT)</dt>
+<dd>
+<p>Array of values of bind variables.</p>
+</dd>
+<dt>bind_var_indp (OUT)</dt>
+<dd>
+<p>Array of <code>NULL</code> indicators of bind variables.</p>
+</dd>
+<dt>bind_var_alensp (OUT)</dt>
+<dd>
+<p>Array of lengths of bind values.</p>
+</dd>
+<dt>bind_var_csetidp (OUT)</dt>
+<dd>
+<p>Array of char set IDs of binds.</p>
+</dd>
+<dt>bind_var_csetfp (OUT)</dt>
+<dd>
+<p>Array of char set forms of binds.</p>
+</dd>
+<dt>row_lcrp (IN)</dt>
+<dd>
+<p>Row LCR to be converted to SQL.</p>
+</dd>
+<dt>array_size (IN)</dt>
+<dd>
+<p>Size of the array of bind values.</p>
+</dd>
+<dt>bind_var_syntax (IN)</dt>
+<dd>
+<p>Native syntax to be used for binds.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Mode flags for future expansion. Specify <code>OCI_DEFAULT</code>.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref553"></a>Comments</p>
+<p>If <code>array_size</code> is not large enough to accommodate the number of columns in the requested column list, then <code>OCI_ERROR</code> is returned. The expected <code>array_size</code> is returned through the <code>num_bind_var</code> parameter.</p>
+<p><code>bind_var_syntax</code> for Oracle Database should contain (<code>:</code>). This generates positional binds such as <code>:1</code>, <code>:2</code>, <code>:3</code>, and so on. For non-Oracle databases input the string that must be used for binds.</p>
+<p>The <code>WHERE</code> clause generated for <code>INSERT</code> LCR has all the columns that are being inserted. This <code>WHERE</code> clause can identify the inserted row after it is inserted, for example, like "returning <code>ROWID</code>".</p>
+<pre>
+INSERT INTO TAB(COL1) VALUES (10) -&gt; WHERE COL1=10
+</pre>
+<p>The <code>WHERE</code> clause generated for <code>UPDATE</code> has all the columns in the old column list. However, the values of the columns are that of the new column value of the column if it exists in the new values of the <code>UPDATE</code>. If the column appears only in the old column, then the old column value is used.</p>
+<pre>
+UPDATE TAB SET COL1 = 10 WHERE COL1 = 20 -&gt; WHERE COL1 = 10
+UPDATE TAB SET COL2 = 20 WHERE COL1 = 20 -&gt; WHERE COL1 = 20
+</pre>
+<p>The <code>WHERE</code> clause for <code>DELETE</code> uses the columns and values from the old column list.</p>
+<p>LOB piecewise operations use the new columns and values for generating the <code>WHERE</code> clause.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref554"></a>Returns</p>
+<p><code>OCI_SUCCESS</code> or <code>OCI_ERROR</code>.</p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17739" class="refsect2"><a id="CIHJAIEG"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref555"></a>OCIXStreamInAttach()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref556"></a>Purpose</p>
+<p>Attaches to an inbound server. The client application must connect to the database using a dedicated connection.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref557"></a>Syntax</p>
+<pre>
+sword OCIXStreamInAttach ( OCISvcCtx  *svchp,
+                           OCIError   *errhp,
+                           oratext    *server_name,
+                           ub2        server_name_len,
+                           oratext    *source_name,
+                           ub2        source_name_len,
+                           ub1        *last_position,
+                           ub2        *last_position_len,
+                           ub4        mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref558"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>server_name (IN)</dt>
+<dd>
+<p>XStream inbound server name.</p>
+</dd>
+<dt>server_name_len (IN)</dt>
+<dd>
+<p>Length of the XStream inbound server name.</p>
+</dd>
+<dt>source_name (IN)</dt>
+<dd>
+<p>Source name to identify the data source.</p>
+</dd>
+<dt>source_name_len (IN)</dt>
+<dd>
+<p>Source name length.</p>
+</dd>
+<dt>last_position (OUT)</dt>
+<dd>
+<p>Last position received by inbound server. Optional. If specified, then you must preallocate <code>OCI_LCR_MAX_POSITION_LEN</code> bytes for the return value.</p>
+</dd>
+<dt>last_position_len (OUT)</dt>
+<dd>
+<p>Length of <code>last_position</code>. Must be non-<code>NULL</code> if <code>last_position</code> is non-<code>NULL</code>.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+This functionality is available starting with Oracle Database 11<span class="italic">g</span> Release 2 (11.2.0.2).</div>
+<p><code>OCIXSTREAM_IN_ATTACH_RESTART_INBOUND</code> - If this mode is specified, then this function can notify the server to restart the inbound server regardless of whether it is in a disabled or aborted state. If you do not pass in this mode and the inbound server is in an aborted state when this call is made, then the function returns an error.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref559"></a>Comments</p>
+<p>The name of the inbound server must be provided because multiple inbound servers can be configured in one Oracle instance. This function returns <code>OCI_ERROR</code> if any error is encountered while attaching to the inbound server. Only one client can attach to an XStream inbound server at any time. An error is returned if multiple clients attempt to attach to the same inbound server or if the same client attempts to attach to multiple inbound servers concurrently.</p>
+<p>This function returns the last position received by the inbound server. Having successfully attached to the server, the client should resume sending LCRs with positions greater than this <code>last_position</code> since the inbound server discards all LCRs with positions less than or equal to the <code>last_position</code>.</p>
+<p>Returns either <code>OCI_SUCCESS</code> or <code>OCI_ERROR</code> status code.</p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17740" class="refsect2"><a id="CIHCFDIB"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref560"></a>OCIXStreamInDetach()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref561"></a>Purpose</p>
+<p>Detaches from the inbound server.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref562"></a>Syntax</p>
+<pre>
+sword OCIXStreamInDetach ( OCISvcCtx  *svchp,
+                           OCIError   *errhp,
+                           ub1        *processed_low_position,
+                           ub2        *processed_low_position_len,
+                           ub4        mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref563"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>processed_low_position (OUT)</dt>
+<dd>
+<p>The server's processed low position.</p>
+</dd>
+<dt>processed_low_position (OUT)</dt>
+<dd>
+<p>Length of <code>processed_low_position</code>.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Specify <code>OCI_DEFAULT</code>.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref564"></a>Comments</p>
+<p>You must pass in a preallocated buffer for the position argument. The maximum length of this buffer is <code>OCI_LCR_MAX_POSITION_LEN</code>. This position is exposed in <code>DBA_XSTREAM_INBOUND_PROGRESS</code> view</p>
+<p>This call returns the server's processed low position. If this function is invoked while a <code>OCIXStreamInLCRSend()</code> call is in progress, then it immediately terminates that call before detaching from the inbound server.</p>
+<p>Returns either <code>OCI_SUCCESS</code> or <code>OCI_ERROR</code> status code.</p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17741" class="refsect2"><a id="CIHGHFFB"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref565"></a>OCIXStreamInLCRSend()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref566"></a>Purpose</p>
+<p>Sends an LCR stream from the client to the attached inbound server. To avoid a network round-trip for every <code>OCIXStreamInLCRSend()</code> call, the connection is tied to this call and terminates the call after an ACK interval since the LCR stream is initiated to the server.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref567"></a>Syntax</p>
+<pre>
+sword OCIXStreamInLCRSend ( OCISvcCtx   *svchp,
+                            OCIError    *errhp,
+                            void        *lcrp,
+                            ub1         lcrtype,
+                            oraub8      flag,
+                            ub4         mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref568"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>lcrp (IN)</dt>
+<dd>
+<p>Pointer to the new LCR to send. It cannot be <code>NULL</code>.</p>
+</dd>
+<dt>lcrtype (IN)</dt>
+<dd>
+<p>LCR type. Either of:</p>
+<pre>
+#define OCI_LCR_XROW
+#define OCI_LCR_XDDL
+</pre></dd>
+<dt>flag (IN)</dt>
+<dd>
+<p>If bit <code>OCI_XSTREAM_MORE_ROW_DATA</code> (0x01) is set, then LCR contains more chunk data. You must call <code>OCIXStreamInChunkSend()</code> before calling <code>OCIXStreamInLCRSend()</code> again.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Specify <code>OCI_DEFAULT</code>.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref569"></a>Comments</p>
+<p>Return codes are:</p>
+<ul>
+<li>
+<p><code>OCI_STILL_EXECUTING</code> means that the current call is still in progress. The connection associated with the specified service context handle is still tied to this call for streaming the LCRs to the server. An error is returned if you attempt to use the same connection to execute any OCI calls that require database round-trip, for example, <code>OCIStmtExecute()</code>, <code>OCIStmtFetch()</code>, <code>OCILobRead()</code>, and so on. <code>OCILCR*</code> calls are local calls; thus, they are valid while this call is in progress.</p>
+</li>
+<li>
+<p><code>OCI_SUCCESS</code> means the current call is completed. You can execute <code>OCIStmt*</code>, <code>OCILob*</code>, and so on from the same service context.</p>
+</li>
+<li>
+<p><code>OCI_ERROR</code> means this call encounters some errors. Use <code>OCIErrorGet()</code> to obtain information about the error.</p>
+</li>
+</ul>
+</div>
+<!-- class="refsubsect" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="xstrm_oci_intro.htm#CEGDAECC">"Server Handle Attributes"</a></div>
+</div>
+<!-- class="refsect2" -->
+<div id="XSTRM17742" class="refsect2"><a id="CIHGBCGD"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref570"></a>OCIXStreamInLCRCallbackSend()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref571"></a>Purpose</p>
+<p>Sends an LCR stream to the attached inbound server. You must specify a callback to construct each LCR for streaming. If some LCRs contain chunk data, then a second callback must be provided to create each chunk data.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref572"></a>Syntax</p>
+<pre>
+sword OCIXStreamInLCRCallbackSend ( 
+          OCISvcCtx                       *svchp, 
+          OCIError                        *errhp,
+          OCICallbackXStreamInLCRCreate   createlcr_cb, 
+          OCICallbackXStreamInChunkCreate createchunk_cb, 
+          void                            *usrctxp,
+          ub4                             mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref573"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>createlcr_cb (IN)</dt>
+<dd>
+<p>Client callback procedure to be invoked to generate an LCR for streaming. Cannot be <code>NULL</code>.</p>
+</dd>
+<dt>createchunk_cb (IN)</dt>
+<dd>
+<p>Client callback procedure to be invoked to create each chunk. Can be <code>NULL</code> if you do not need to send any LCR with LOB or <code>LONG</code> or <code>XMLType</code> columns. <code>OCI_ERROR</code> is returned if this argument is <code>NULL</code> and you attempt to send an LCR with additional chunk data.</p>
+</dd>
+<dt>usrctxp (IN)</dt>
+<dd>
+<p>User context to pass to both callback functions.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Specify <code>OCI_DEFAULT</code> fore now.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref574"></a>Comments</p>
+<p>Return code: <code>OCI_ERROR</code> or <code>OCI_SUCCESS</code>.</p>
+<p>The <code>createlcr_cb</code> argument must be of type <code>OCICallbackXStreamInLCRCreate</code>:</p>
+<pre>
+typedef sb4  (*OCICallbackXStreamInLCRCreate)
+              void  *usrctxp, void **lcrp, ub1 *lcrtyp, oraub8 *flag);
+</pre>
+<p>Parameters of <code>OCICallbackXStreamInLCRCreate()</code>:</p>
+<dl>
+<dt>usrctxp (IN/OUT)</dt>
+<dd>
+<p>Pointer to the user context.</p>
+</dd>
+<dt>lcrp (OUT)</dt>
+<dd>
+<p>Pointer to the LCR to be sent.</p>
+</dd>
+<dt>lcrtyp (OUT)</dt>
+<dd>
+<p>LCR type (<code>OCI_LCR_XROW</code> or <code>OCI_LCR_XDDL</code>).</p>
+</dd>
+<dt>flag (OUT)</dt>
+<dd>
+<p>If <code>OCI_XSTREAM_MORE_ROW_DATA</code> is set, then the current LCR has more chunk data.</p>
+</dd>
+</dl>
+<p>The input parameter to the callback is the user context. The output parameters are the new LCR, its type, and a flag. If the generated LCR contains additional chunk data, then this flag must have the <code>OCI_XSTREAM_MORE_ROW_DATA</code> (0x01) bit set. The valid return codes from the <code>OCICallbackXStreamInLCRCreate()</code> callback function are <code>OCI_CONTINUE</code> or <code>OCI_SUCCESS</code>. This callback function must return <code>OCI_CONTINUE</code> to continue processing the <code>OCIXStreamInLCRCallbackSend()</code> call. Any return code other than <code>OCI_CONTINUE</code> signals that the client wants to terminate the <code>OCIXStreamInLCRCallbackSend()</code> call immediately. In addition, a <code>NULL</code> LCR returned from the <code>OCICallbackXStreamInLCRCreate()</code> callback function signals that the client wants to terminate the current call.</p>
+<p>The <code>createchunk_cb</code> argument must be of type <code>OCICallbackXStreamInChunkCreate</code>:</p>
+<pre>
+typedef sb4 (*OCICallbackXStreamInChunkCreate)
+void     *usrctxp,
+oratext  **column_name,
+ub2      *column_name_len,
+ub2      *column_dty,
+oraub8   *column_flag,
+ub2      *column_csid,
+ub4      *chunk_bytes,
+ub1      **chunk_data,
+oraub8   *flag);
+</pre>
+<p>The input parameters of the <code>createchunk_cb()</code> procedure are the user context and the information about the chunk.</p>
+<p>Parameters of <code>OCICallbackXStreamInChunkCreate()</code>:</p>
+<dl>
+<dt>usrctxp (IN/OUT)</dt>
+<dd>
+<p>Pointer to the user context.</p>
+</dd>
+<dt>column_name (OUT)</dt>
+<dd>
+<p>Column name of the current chunk.</p>
+</dd>
+<dt>column_name_len (OUT)</dt>
+<dd>
+<p>Length of the column name.</p>
+</dd>
+<dt>column_name_dty (OUT)</dt>
+<dd>
+<p>Chunk data type (<code>SQLT_CHR</code> or <code>SQLT_BIN</code>).</p>
+</dd>
+<dt>column_flag (OUT)</dt>
+<dd>
+<p>See Comments in <a href="#CIHGFIBB">"OCIXStreamInChunkSend()"</a>.</p>
+</dd>
+<dt>column_csid (OUT)</dt>
+<dd>
+<p>Column character set ID. Relevant only if the column is an <code>XMLType</code> column (that is, <code>column_flag</code> has the <code>OCI_LCR_COLUMN_XML_DATA</code> bit set).</p>
+</dd>
+<dt>chunk_bytes (OUT)</dt>
+<dd>
+<p>Chunk data length in bytes.</p>
+</dd>
+<dt>chunk_data (OUT)</dt>
+<dd>
+<p>Chunk data pointer.</p>
+</dd>
+<dt>flag (OUT)</dt>
+<dd>
+<p>If <code>OCI_XSTREAM_MORE_ROW_DATA</code> is set, then the current LCR has more chunk data.</p>
+</dd>
+</dl>
+<p>The <code>OCIXStreamInLCRCallbackSend()</code> function invokes the <code>createlcr_cb()</code> procedure to obtain each LCR to send to the server. If the return flag from the <code>createlcr_cb()</code> procedure has the <code>OCI_XSTREAM_MORE_ROW_DATA</code> bit set, then it invokes the <code>createchunk_cb()</code> procedure to obtain each chunk. It repeatedly calls the <code>createchunk_cb()</code> procedure while the flag returned from this callback has the <code>OCI_XSTREAM_MORE_ROW_DATA</code> bit set. When this bit is not set, this function cycles back to invoke the <code>createlcr_cb()</code> procedure to get the next LCR. This cycle is repeated until the <code>createlcr_cb()</code> procedure returns a <code>NULL</code> LCR or when at the transaction boundary after an ACK interval has elapsed since the call began.</p>
+<p>The valid return codes from the <code>OCICallbackXStreamInChunkCreate()</code> callback function are <code>OCI_CONTINUE</code> or <code>OCI_SUCCESS</code>. This callback function must return <code>OCI_CONTINUE</code> to continue processing the <code>OCIXStreamInLCRCallbackSend()</code> call. Any return code other than <code>OCI_CONTINUE</code> signals that the client wants to terminate the <code>OCIXStreamInLCRCallbackSend()</code> call immediately.</p>
+<p>Because terminating the current call flushes the network and incurs another network round-trip in the next call, you must avoid returning a <code>NULL</code> LCR immediately when there is no LCR to send. Doing this can greatly reduce network throughput and affect performance. During short idle periods, you can add some delays in the callback procedure instead of returning a <code>NULL</code> LCR immediately to avoid flushing the network too frequently.</p>
+<p><a href="#CIACJDHH">Figure 11-1</a> shows the execution flow of the <code>OCIXStreamInLCRCallbackSend()</code> function.</p>
+<div id="XSTRM17743" class="figure">
+<p class="titleinfigure"><a id="CIACJDHH"></a>Figure 11-1 Execution Flow of the OCIXStreamInLCRCallbackSend() Function</p>
+<img width="621" height="302" src="img/xstrm044.gif" alt="Description of Figure 11-1 follows" /><br />
+<a id="sthref575" href="img_text/xstrm044.htm">Description of "Figure 11-1 Execution Flow of the OCIXStreamInLCRCallbackSend() Function"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>* <code>While OCI_XSTREAM_MORE_ROW_DATA</code> is set</p>
+<p>Description of <a href="#CIACJDHH">Figure 11-1</a>:</p>
+<ul>
+<li>
+<p>At 1, the user invokes the <code>OCIXStreamInLCRCallbackSend()</code> providing two callbacks. This function initiates an LCR inbound stream to the server.</p>
+</li>
+<li>
+<p>At 2, this function invokes the <code>createlcr_cb()</code> procedure to get an LCR from the callback to send to the server. If the return LCR is <code>NULL</code>, then this function exits.</p>
+</li>
+<li>
+<p>If the flag from 2 indicates the current LCR has more data (that is, the <code>OCI_XSTREAM_MORE_ROW_DATA</code> bit is set), then this function proceeds to 3; otherwise, it loops back to 2 to get the next LCR.</p>
+</li>
+<li>
+<p>At 3, this function invokes <code>createchunk_cb()</code> to get the chunk data to send to the server. If the flag from this callback has the <code>OCI_XSTREAM_MORE_ROW_DATA</code> bit set, then it repeats 3; otherwise, it loops back to 2 to get the next LCR from the user. If any callback function returns any values other than <code>OCI_CONTINUE</code>, then the <code>OCIXStreamInLCRCallbackSend()</code> call terminates.</p>
+<p>Following is a sample client pseudocode snippet for callback mode (error checking is not included for simplicity):</p>
+<pre>
+main
+{
+   /* Attach to inbound server */
+   OCIXStreamInAttach();
+ 
+   /* Get the server's processed low position to determine
+    * the position of the first LCR to generate.
+    */
+   OCIXStreamInProcessedLWMGet(&amp;lwm);
+ 
+   while (TRUE)
+   {
+      /* Initiate LCR inbound stream */
+      OCIXStreamInLCRCallbackSend(createlcr_cb, createchunk_cb);
+ 
+      OCIXStreamInProcessedLWMGet(&amp;lwm);
+ 
+      if (some terminating condition)
+         break;
+   }
+   OCIXStreamInDetach(&amp;lwm);
+}
+ 
+ 
+createlcr_cb (IN usrctx, OUT lcr, OUT flag)
+{
+   if (have more LCRs to send)
+   {
+      /* construct lcr */
+      OCILCRHeaderSet(lcr);
+      OCILCRRowColumnInfoSet(lcr);
+ 
+      if (lcr has LOB | LONG | XMLType columns)
+         Set OCI_XSTREAM_MORE_ROW_DATA flag;
+ 
+      if (lcr is LOB_ERASE | LOB_TRIM | LOB_WRITE)
+         OCILCRLobInfoSet(lcr);
+   }
+   else if (idle timeout expires)
+   {
+      lcr = null;
+   }
+}
+ 
+createchunk_cb (IN usrctx, OUT chunk, OUT flag)
+{
+   /* set col_name, col_flag, chunk data, and so on */
+   construct_chunk;
+ 
+   if (last chunk of current column)
+   {
+      set col_flag |= OCI_LCR_COLUMN_LAST_CHUNK;
+ 
+      if (last column)
+         clear OCI_XSTREAM_MORE_ROW_DATA flag;
+   }
+}
+</pre></li>
+</ul>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17744" class="refsect2"><a id="CIHCIEII"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref576"></a>OCIXStreamInProcessedLWMGet()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref577"></a>Purpose</p>
+<p>Gets the local processed low position that is cached at the client. This function can be called anytime while the client is attached to an XStream inbound server. Clients, using the callback mode to stream LCRs to the server (see <a href="#CIHGBCGD">"OCIXStreamInLCRCallbackSend()"</a>), can invoke this function while in the callback procedures.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref578"></a>Syntax</p>
+<pre>
+sword OCIXStreamInProcessedLWMGet ( OCISvcCtx  *svchp,
+                                    OCIError   *errhp,
+                                    ub1        *processed_low_position,
+                                    ub2        *processed_low_position_len,
+                                    ub4        mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref579"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>processed_low_position (OUT)</dt>
+<dd>
+<p>The processed low position maintained at the client.</p>
+</dd>
+<dt>processed_low_position_len (OUT)</dt>
+<dd>
+<p>Length of <code>processed_low_position</code>.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Specify <code>OCI_DEFAULT</code>.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref580"></a>Comments</p>
+<p>After attaching to an XStream inbound server, a local copy of the server's processed low position (see <a href="#CIHGJGCF">"OCIXStreamOutProcessedLWMSet()"</a>) is cached at the client. This local copy is refreshed with the server's low position when each of the following calls returns <code>OCI_SUCCESS</code>:</p>
+<ul>
+<li>
+<p><code>OCIXStreamInAttach()</code></p>
+</li>
+<li>
+<p><code>OCIXStreamInLCRSend()</code></p>
+</li>
+<li>
+<p><code>OCIXStreamInLCRCallbackSend()</code></p>
+</li>
+<li>
+<p><code>OCIXStreamInFlush()</code></p>
+</li>
+</ul>
+</div>
+<!-- class="refsubsect" -->
+<p>Return code: <code>OCI_ERROR</code> or <code>OCI_SUCCESS</code>.</p>
+<p>You must pass in a preallocated buffer for the position argument. The maximum length of this buffer is <code>OCI_LCR_MAX_POSITION_LEN</code>. This position is exposed in the <code>DBA_XSTREAM_INBOUND_PROGRESS</code> view.</p>
+<p>The client can use this position to periodically purge the logs used to generate the LCRs at or below this position.</p>
+</div>
+<!-- class="refsect2" -->
+<div id="XSTRM72569" class="refsect2"><a id="CIABFGBB"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref581"></a>OCIXStreamInErrorGet()</h3>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+This functionality is available starting with Oracle Database 11<span class="italic">g</span> Release 2 (11.2.0.2).</div>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref582"></a>Purpose</p>
+<p>Returns the first error encountered by the inbound server since the <code>OCIXStreamInAttach()</code> call.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref583"></a>Syntax</p>
+<pre>
+sword OCIXStreamInErrorGet ( OCISvcCtx *svchp,
+                             OCIError  *errhp,
+                             sb4       *errcodep,
+                             oratext   *msgbuf,
+                             ub2       msg_bufsize,
+                             ub2       *msg_len,
+                             oratext   *txn_id,
+                             ub2       txn_id_bufsize,
+                             ub2       *txn_id_len );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref584"></a>Parameters</p>
+<dl>
+<dt>svchp (IN/OUT)</dt>
+<dd>
+<p>OCI service handle.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>Error Handle.</p>
+</dd>
+<dt>errcodep (OUT)</dt>
+<dd>
+<p>Error code.</p>
+</dd>
+<dt>msgbuf (IN/OUT)</dt>
+<dd>
+<p>Preallocated message buffer.</p>
+</dd>
+<dt>msg_bufsize (IN)</dt>
+<dd>
+<p>Message buffer size.</p>
+</dd>
+<dt>msg_len (OUT)</dt>
+<dd>
+<p>Length of returned error message.</p>
+</dd>
+<dt>txn_id (IN/OUT)</dt>
+<dd>
+<p>Preallocated transaction ID buffer.</p>
+</dd>
+<dt>txn_id_bufsize (IN)</dt>
+<dd>
+<p>The transaction ID buffer size.</p>
+</dd>
+<dt>txn_id_len (OUT)</dt>
+<dd>
+<p>Length of the returned transaction ID.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref585"></a>Comments</p>
+<p>The maximum size for the returned transaction ID is <code>OCI_LCR_MAX_TXID_LEN</code>. If the allocated buffer for <code>txn_id</code> is too small, then this routine returns <code>ORA-29258</code>. The maximum size for the returned error msg is <code>OCI_ERROR_MAXMSG_SIZE</code>. If the allocated size for <code>msgbuf</code> is too small, then the returned message is truncated.</p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17745" class="refsect2"><a id="CIHFBIAG"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref586"></a>OCIXStreamInFlush()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref587"></a>Purpose</p>
+<p>Used to flush the network while attaching to an XStream inbound server. It terminates any in-progress <code>OCIXStreamInLCRSend()</code> call associated with the specified service context.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref588"></a>Syntax</p>
+<pre>
+sword OCIXStreamInFlush ( OCISvcCtx    *svchp, 
+                          OCIError     *errhp,
+                          ub4          mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref589"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+This functionality is available starting with Oracle Database 11<span class="italic">g</span> Release 2 (11.2.0.2).</div>
+<p><code>OCIXSTREAM_IN_FLUSH_WAIT_FOR_COMPLETE</code> - If this mode is specified, then this function flushes the network, and then waits for all complete and rollback transactions that have been sent to the inbound server to complete before returning control to the client.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref590"></a>Comments</p>
+<p>Return code: <code>OCI_ERROR</code> or <code>OCI_SUCCESS</code>.</p>
+<p>Each call incurs a database round-trip to get the server's processed low position, which you can retrieve afterward using <code>OCIXStreamInProcessedLWMGet()</code>. Call this function only when there is no LCR to send to the server and the client wants to know the progress of the attached inbound server.</p>
+<p>This call returns <code>OCI_ERROR</code> if it is invoked from the callback functions of <code>OCIXStreamInLCRCallbackSend()</code>.</p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17746" class="refsect2"><a id="CIHGFIBB"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref591"></a>OCIXStreamInChunkSend()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref592"></a>Purpose</p>
+<p>Sends a chunk to the inbound server. This function is valid during the execution of the <code>OCIXStreamInLCRSend()</code> call.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref593"></a>Syntax</p>
+<pre>
+sword OCIXStreamInChunkSend (  OCISvcCtx   *svchp,
+                               OCIError    *errhp,
+                               oratext     *column_name,
+                               ub2         column_name_len,
+                               ub2         column_dty,
+                               oraub8      column_flag,
+                               ub2         column_csid,
+                               ub4         chunk_bytes,
+                               ub1         *chunk_data,
+                               oraub8      flag,
+                               ub4         mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref594"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>column_name (IN)</dt>
+<dd>
+<p>Name of column associated with the given data. Column name must be canonicalized and must follow Oracle Database naming convention.</p>
+</dd>
+<dt>column_name_len (IN)</dt>
+<dd>
+<p>Length of column name.</p>
+</dd>
+<dt>column_dty (IN)</dt>
+<dd>
+<p>LCR chunk data type (must be <code>SQLT_CHR</code> or <code>SQLT_BIN</code>). See <a href="#CIHJEEGA">Table 11-5, "Storage of LOB or LONG Data in the LCR"</a></p>
+</dd>
+<dt>column_flag (IN)</dt>
+<dd>
+<p>Column flag. (See Comments for valid column flags.) Must specify <code>OCI_LCR_COLUMN_LAST_CHUNK</code> for the last chunk of each LOB or <code>LONG</code> or <code>XMLType</code> column.</p>
+</dd>
+<dt>column_csid (IN)</dt>
+<dd>
+<p>Column character set ID. This is required only if the <code>column_flag</code> has <code>OCI_LCR_COLUMN_XML_DATA</code> bit set.</p>
+</dd>
+<dt>chunk_bytes (IN)</dt>
+<dd>
+<p>Chunk data length in bytes.</p>
+</dd>
+<dt>chunk_data (IN)</dt>
+<dd>
+<p>Pointer to column data chunk. If the column is <code>NCLOB</code> or varying width <code>CLOB</code>, then the input chunk data must be in <code>AL16UTF16</code> format. The chunk data must be in the character set defined in <a href="#CIHJEEGA">"Storage of LOB or LONG Data in the LCR"</a>.</p>
+</dd>
+<dt>flag (IN)</dt>
+<dd>
+<p>If <code>OCI_XSTREAM_MORE_ROW_DATA</code> (0x01) bit is set, then the current row change contains more data. You must clear this bit when sending the last chunk of the current LCR.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Specify <code>OCI_DEFAULT</code>.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref595"></a>Comments</p>
+<p>The following LCR column flags can be combined using bitwise <code>OR</code> operator.</p>
+<pre>
+#define OCI_LCR_COLUMN_LOB_DATA     /* column contains LOB data */
+#define OCI_LCR_COLUMN_LONG_DATA    /* column contains long data */
+#define OCI_LCR_COLUMN_EMPTY_LOB    /* column has an empty LOB  */
+#define OCI_LCR_COLUMN_LAST_CHUNK   /* last chunk of current column */
+#define OCI_LCR_COLUMN_AL16UTF16    /* column is in AL16UTF16 fmt */
+#define OCI_LCR_COLUMN_NCLOB        /* column has NCLOB data */
+#define OCI_LCR_COLUMN_XML_DATA     /* column contains xml data */
+#define OCI_LCR_COLUMN_XML_DIFF     /* column contains xmldiff data */
+#define OCI_LCR_COLUMN_ENCRYPTED    /* column is encrypted */
+#define OCI_LCR_COLUMN_UPDATED      /* col is updated */
+</pre>
+<p>In Streams, LOB, <code>LONG</code>, or <code>XMLType</code> column data is broken up into multiple chunks. For a row change containing columns of these data types, its associated LCR only contains data for the other column types. All LOB, <code>LONG</code> or <code>XMLType</code> columns are either represented in the LCR as <code>NULL</code> or not included in the LCR as defined in <a href="#CIHDJIFI">Table 11-4, "Required Column List in the First LCR"</a>.</p>
+<p><code>OCILCRRowColumnInfoSet()</code> is provided to generate a list of scalar columns in an LCR. For LOB, <code>LONG</code>, and <code>XMLType</code> columns, <code>OCIXStreamInChunkSend()</code> is provided to set the value of each chunk in a column. For a large column, this function can be invoked consecutively multiple times with smaller chunks of data. The XStream inbound server can assemble these chunks and apply the accumulated change to the designated column.</p>
+<p>The LCR of a row change must contain all the scalar columns that can uniquely identify a row at the apply site. <a href="#CIHDJIFI">Table 11-4</a> describes the required column list in each LCR for each DML operation.</p>
+<div id="XSTRM17747" class="tblformal">
+<p class="titleintable"><a id="sthref596"></a><a id="CIHDJIFI"></a>Table 11-4 Required Column List in the First LCR</p>
+<table class="cellalignment1353" title="Required Column List in the First LCR" summary="Required column list in the first LCR." dir="ltr">
+<thead>
+<tr class="cellalignment1342">
+<th class="cellalignment1352" id="r1c1-t14">Command Type of the First LCR of a Row Change</th>
+<th class="cellalignment1352" id="r1c2-t14">Columns Required in the First LCR</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r2c1-t14" headers="r1c1-t14">
+<p><code>INSERT</code></p>
+</td>
+<td class="cellalignment1348" headers="r2c1-t14 r1c2-t14">
+<p>The <code>NEW</code> column list must contain all non-<code>NULL</code> scalar columns. All LOB, <code>XMLType</code>, and <code>LONG</code> columns with chunk data must be included in this NEW column list. Each must have <code>NULL</code> value and <code>OCI_LCR_COLUMN_EMPTY_LOB</code> flag specified.</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r3c1-t14" headers="r1c1-t14">
+<p><code>UPDATE</code></p>
+</td>
+<td class="cellalignment1348" headers="r3c1-t14 r1c2-t14">
+<p>The <code>OLD</code> column list must contain the key columns.</p>
+<p>The <code>NEW</code> column list must contain all updated scalar columns. All LOB, <code>XMLType</code>, and <code>LONG</code> columns with chunk data must be included in this NEW column list. Each must have <code>NULL</code> value and <code>OCI_LCR_COLUMN_EMPTY_LOB</code> flag specified.</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r4c1-t14" headers="r1c1-t14">
+<p><code>DELETE</code></p>
+</td>
+<td class="cellalignment1348" headers="r4c1-t14 r1c2-t14">
+<p>The <code>OLD</code> column list must contain the key columns.</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r5c1-t14" headers="r1c1-t14">
+<p><code>LOB_WRITE</code>, <code>LOB_TRIM</code>, <code>LOB_ERASE</code></p>
+</td>
+<td class="cellalignment1348" headers="r5c1-t14 r1c2-t14">
+<p>The <code>NEW</code> column list must contain the key columns and the modified LOB column.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" --></div>
+<!-- class="refsubsect" -->
+<p>After constructing each LCR, you can call <code>OCIXStreamInLCRSend()</code> to send that LCR. Afterward, <code>OCIXStreamInChunkSend()</code> can be called repeatedly to send the chunk data for each LOB or <code>LONG</code> or <code>XMLType</code> column in that LCR. Sending the chunk value for different columns cannot be interleaved. If a column contains multiple chunks, then this function must be called consecutively using the same column name before proceeding to a new column. The ordering of the columns is irrelevant.</p>
+<p>When invoking this function, you must pass <code>OCI_XSTREAM_MORE_ROW_DATA</code> as the flag argument if there is more data for the current LCR. When sending the last chunk of the current LCR, then this flag must be cleared to signal the end of the current LCR.</p>
+<p>This function is valid only for <code>INSERT</code>, <code>UPDATE</code>, and <code>LOB_WRITE</code> operations. Multiple LOB, <code>LONG</code>, or <code>XMLType</code> columns can be specified for <code>INSERT</code> and <code>UPDATE</code>, while only one LOB column is allowed for <code>LOB_WRITE</code> operation.</p>
+<p>The following is a sample client pseudocode snippet for non-callback mode (error checking is not included for simplicity):</p>
+<pre>
+main
+{
+   /* Attach to inbound server */
+   OCIXStreamInAttach();
+ 
+   /* Get the server's processed low position to determine
+    * the position of the first LCR to generate.
+    */
+   OCIXStreamInProcessedLWMGet(&amp;lwm);
+ 
+   while (TRUE)
+   {
+      flag = 0;
+      /* construct lcr */
+      OCILCRHeaderSet(lcr);
+      OCILCRRowColumnInfoSet(lcr);
+ 
+      if (lcr has LOB | LONG | XMLType columns)
+         set OCI_XSTREAM_MORE_ROW_DATA flag;
+ 
+      status = OCIXStreamInLCRSend(lcr, flag);
+ 
+      if (status == OCI_STILL_EXECUTING &amp;&amp;
+             (OCI_XSTREAM_MORE_ROW_DATA flag set))
+      {
+         for each LOB/LONG/XMLType column in row change
+         {
+            for each chunk in column
+            {
+               /* set col_name, col_flag, chunk data */
+               construct chunk;
+ 
+               if (last chunk of current column)
+                   col_flag |= OCI_LCR_COLUMN_LAST_CHUNK;
+ 
+               if (last chunk of last column)
+                  clear OCI_XSTREAM_MORE_ROW_DATA flag;
+ 
+               OCIXStreamInChunkSend(chunk, col_flag, flag);
+            }
+         }
+      }
+      else if (status == OCI_SUCCESS)
+      {
+         /* get lwm when SendLCR call ends successfully. */
+         OCIXStreamInProcessedLWMGet(&amp;lwm);
+      }
+ 
+      if (some terminating_condition)
+        break;
+   }
+ 
+   OCIXStreamInDetach();
+}
+</pre></div>
+<!-- class="refsect2" -->
+<div id="XSTRM72570" class="refsect2"><a id="CIACEGHI"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref597"></a>OCIXStreamInCommit()</h3>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+This functionality is available starting with Oracle Database 11<span class="italic">g</span> Release 2 (11.2.0.2).</div>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref598"></a>Purpose</p>
+<p>Commits the given transaction. This function lets the client notify the inbound server about a transaction that has been executed by the client rather than by the server. So that if the same transaction is retransmitted during apply restart, it is ignored by the inbound server. A commit LCR must be supplied for the inbound server to extract the transaction ID and the position of the commit.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref599"></a>Syntax</p>
+<pre>
+sword OCIXStreamInCommit ( OCISvcCtx *svchp,
+                           OCIError  *errhp,
+                           void      *lcrp,
+                           ub4       mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref600"></a>Parameters</p>
+<dl>
+<dt>svchp (IN/OUT)</dt>
+<dd>
+<p>OCI service handle.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>Error Handle to which errors should be reported.</p>
+</dd>
+<dt>lcrp (IN)</dt>
+<dd>
+<p>Pointer to the LCR to send. Must be a commit LCR.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Mode flags. Not used currently; used for future extension.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref601"></a>Comments</p>
+<p>The position of the input LCR must be higher than <code>DBA_XSTREAM_INBOUND_PROGRESS.APPLIED_HIGH_POSITION</code>, and the LCR's source database must match <code>DBA_APPLY_PROGRESS.SOURCE_DATABASE</code> of the attached inbound server.</p>
+<p>If there is any pre-commit handler defined, it is executed when this commit LCR is executed.</p>
+<p>Assume a sample use case in which a situation where the inbound server does not support certain data types, but the client can do the work directly. The client performs the transaction changes directly to the database and then invokes the <code>OCIXStreamInCommit()</code> to commit the transaction by way of the inbound server. Note that the client should not directly commit the transaction itself. Rather, the transaction changes are committed with this command (<code>OCIXStreamInCommit()</code>) so that the transaction is atomic. Thus, if the inbound server becomes disabled during the client transaction, then the entire transaction is correctly rolled back.</p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17748" class="refsect2"><a id="CIHIGIFE"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref602"></a>OCIXStreamOutAttach()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref603"></a>Purpose</p>
+<p>Attaches to an XStream outbound server. The client application must connect to the database using a dedicated connection.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref604"></a>Syntax</p>
+<pre>
+sword OCIXStreamOutAttach ( OCISvcCtx   *svchp,
+                            OCIError    *errhp,
+                            oratext     *server_name,
+                            ub2         server_name_len,
+                            ub1         *last_position,
+                            ub2         last_position_len,
+                            ub4         mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref605"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>server_name (IN)</dt>
+<dd>
+<p>XStream outbound server name.</p>
+</dd>
+<dt>server_name_len (IN)</dt>
+<dd>
+<p>Length of XStream outbound server name.</p>
+</dd>
+<dt>last_position (IN)</dt>
+<dd>
+<p>Position to the last received LCR. Can be <code>NULL</code>.</p>
+</dd>
+<dt>last_position_len (IN)</dt>
+<dd>
+<p>Length of <code>last_position</code>.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+This functionality is available starting with Oracle Database 11<span class="italic">g</span> Release 2 (11.2.0.2).</div>
+<p><code>OCIXSTREAM_OUT_ATTACH_APP_FREE_LCR</code> - If this mode is specified, then the application is in charge of freeing the LCRs from the outbound server.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref606"></a>Comments</p>
+<p>The <code>OCIEnv</code> environment handle must be created with <code>OCI_OBJECT</code> mode, and the service context must be in a connected state to issue this function. This function does not support nonblocking mode. It returns either the <code>OCI_SUCCESS</code> or <code>OCI_ERROR</code> status code.</p>
+<p>The name of the outbound server must be provided because multiple outbound servers can be configured in one Oracle Database instance. This function returns <code>OCI_ERROR</code> if it encounters any error while attaching to the outbound server. Only one client can attach to an XStream outbound server at any time. An error is returned if multiple clients attempt to attach to the same outbound server or if the same client attempts to attach to multiple outbound servers using the same service handle.</p>
+<p>The <code>last_position</code> parameter is used to establish the starting point of the stream. This call returns <code>OCI_ERROR</code> if the specified position is non-<code>NULL</code> and less than the server's processed low position (see <a href="#CIHGJGCF">"OCIXStreamOutProcessedLWMSet()"</a>); otherwise, LCRs with positions greater than the specified <code>last_position</code> are sent to the user.</p>
+<p>If the <code>last_position</code> is <code>NULL</code>, then the stream starts from the processed low position maintained in the server.</p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17749" class="refsect2"><a id="CIHHGJFA"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref607"></a>OCIXStreamOutDetach()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref608"></a>Purpose</p>
+<p>Detaches from the outbound server.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref609"></a>Syntax</p>
+<pre>
+sword OCIXStreamOutDetach ( OCISvcCtx   *svchp,
+                            OCIError    *errhp,
+                            ub4         mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref610"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle that you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Specify <code>OCI_DEFAULT</code>.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref611"></a>Comments</p>
+<p>This function sends the current local processed low position to the server before detaching from the outbound server. The outbound server automatically restarts after this call. This function returns <code>OCI_ERROR</code> if it is invoked while a <code>OCIXStreamOutReceive()</code> call is in progress.</p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17750" class="refsect2"><a id="CIHJABFG"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref612"></a>OCIXStreamOutLCRReceive()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref613"></a>Purpose</p>
+<p>Receives an LCR from an outbound stream. If an LCR is available, then this function immediately returns that LCR. The duration of each LCR is limited to the interval between two successive <code>OCIXStreamOutLCRReceive()</code> calls. When there is no LCR available in the stream, this call returns a <code>NULL</code> LCR after an idle timeout.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref614"></a>Syntax</p>
+<pre>
+sword OCIXStreamOutLCRReceive ( OCISvcCtx     *svchp, 
+                                OCIError      *errhp, 
+                                void          **lcrp,
+                                ub1           *lcrtype,
+                                oraub8        *flag,
+                                ub1           *fetch_low_position,
+                                ub2           *fetch_low_position_len,
+                                ub4           mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref615"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>lcrp (OUT)</dt>
+<dd>
+<p>Pointer to the LCR received from the stream. If there is an available LCR, then this LCR is returned with status code <code>OCI_STILL_EXECUTING</code>. When the call ends, a <code>NULL</code> LCR is returned with status code <code>OCI_SUCCESS</code>.</p>
+</dd>
+<dt>lcrtype (OUT)</dt>
+<dd>
+<p>Type of the retrieved LCR. This value is valid only when <code>lcrp</code> is not <code>NULL</code>.</p>
+</dd>
+<dt>flag (OUT)</dt>
+<dd>
+<p>Return flag. If bit <code>OCI_XSTREAM_MORE_ROW_DATA</code> (0x01) is set, then this LCR has more data. You must use <code>OCIXStreamOutReceiveChunk()</code> function to get the remaining data.</p>
+</dd>
+<dt>fetch_low_position (OUT)</dt>
+<dd>
+<p>XStream outbound server's fetch low position. This value is returned only when the return code is <code>OCI_SUCCESS</code>. Optional. If non-<code>NULL</code>, then you must preallocate <code>OCI_LCR_MAX_POSITION_LEN</code> bytes for the return value.</p>
+</dd>
+<dt>fetch_low_position_len (OUT)</dt>
+<dd>
+<p>Length of <code>fetch_low_position</code>.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Specify <code>OCI_DEFAULT</code>.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref616"></a>Comments</p>
+<p>To avoid a network round-trip for every <code>OCIXStreamOutLCRReceive()</code> call, the connection is tied to this call and allows the server to fill up the network buffer with LCRs so subsequent calls can quickly receive the LCRs from the network. The server ends each call at the transaction boundary after an ACK interval elapses since the call began. When there is no LCR in the stream, the server ends the call after the idle timeout elapses.</p>
+<p>Return codes:</p>
+<ul>
+<li>
+<p><code>OCI_STILL_EXECUTING</code> means that the current call is still in progress. The connection associated with the specified service context handle is still tied to this call for streaming the LCRs from the server. An error is returned if you attempt to use the same connection to execute any OCI calls that require database round-trip, for example, <code>OCIStmtExecute()</code>, <code>OCIStmtFetch()</code>, <code>OCILobRead()</code>, and so on. <code>OCILCR*</code> calls do not require round-trips; thus, they are valid while the call is in progress.</p>
+</li>
+<li>
+<p><code>OCI_SUCCESS</code> means that the current call is completed. You are free to execute <code>OCIStmt*</code>, <code>OCILob*</code>, and so on from the same service context.</p>
+</li>
+<li>
+<p><code>OCI_ERROR</code> means the current call encounters some errors. Use <code>OCIErrorGet()</code> to obtain information about the error.</p>
+</li>
+</ul>
+<p>This call always returns a <code>NULL</code> LCR when the return code is <code>OCI_SUCCESS</code>. In addition, it returns the fetch low position to denote that the outbound server has received all transactions with commit position lower than or equal to this value.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="xstrm_oci_intro.htm#CEGDAECC">"Server Handle Attributes"</a></p>
+</li>
+<li>
+<p><a href="#CIHEJEHC">"OCIXStreamOutChunkReceive()"</a> for non-callback pseudocode in the Comments section</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17751" class="refsect2"><a id="CIHFAAJG"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref617"></a>OCIXStreamOutLCRCallbackReceive()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref618"></a>Purpose</p>
+<p>Used to get the LCR stream from the outbound server using callbacks. You must supply a callback procedure to be invoked for each LCR received. If some LCRs in the stream may contain <code>LOB</code> or <code>LONG</code> or <code>XMLType</code> columns, then a second callback must be supplied to process each chunk (see <a href="#CIHEJEHC">"OCIXStreamOutChunkReceive()"</a>).</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref619"></a>Syntax</p>
+<pre>
+sword OCIXStreamOutLCRCallbackReceive ( 
+           OCISvcCtx                           *svchp, 
+           OCIError                            *errhp,    
+           OCICallbackXStreamOutLCRProcess     processlcr_cb,
+           OCICallbackXStreamOutChunkProcess   processchunk_cb,
+           void                                *usrctxp,
+           ub1                                 *fetch_low_position,   
+           ub2                                 *fetch_low_position_len,
+           ub4                                 mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref620"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>processlcr_cb (IN)</dt>
+<dd>
+<p>Callback function to process each LCR received by the client. Cannot be <code>NULL</code>.</p>
+</dd>
+<dt>processchunk_cb (IN)</dt>
+<dd>
+<p>Callback function to process each chunk in the received LCR. Can be <code>NULL</code> if you do not expect to receive any LCRs with additional chunk data.</p>
+</dd>
+<dt>usrctxp (IN)</dt>
+<dd>
+<p>User context to pass to both callback procedures.</p>
+</dd>
+<dt>fetch_low_position (OUT)</dt>
+<dd>
+<p>XStream outbound server's fetch low position (see <a href="#CIHJABFG">"OCIXStreamOutLCRReceive()"</a>). Optional.</p>
+</dd>
+<dt>fetch_low_position_len (OUT)</dt>
+<dd>
+<p>Length of <code>fetch_low_position</code>.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Specify <code>OCI_DEFAULT</code>.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref621"></a>Comments</p>
+<p>Return code: <code>OCI_SUCCESS</code> or <code>OCI_ERROR</code>.</p>
+<p>The <code>processlcr_cb</code> argument must be of type <code>OCICallbackXStreamOutLCRProcess</code>:</p>
+<pre>
+typedef sb4  (*OCICallbackXStreamOutLCRProcess) 
+               (void  *usrctxp, void *lcrp, ub1 lcrtyp, oraub8 flag);
+</pre>
+<p>Parameters of <code>OCICallbackXStreamOutLCRProcess()</code>:</p>
+<dl>
+<dt>usrctxp (IN/OUT)</dt>
+<dd>
+<p>Pointer to the user context.</p>
+</dd>
+<dt>lcrp (IN)</dt>
+<dd>
+<p>Pointer to the LCR just received.</p>
+</dd>
+<dt>lcrtyp (IN)</dt>
+<dd>
+<p>LCR type (<code>OCI_LCR_XROW</code> or <code>OCI_LCR_XDDL</code>).</p>
+</dd>
+<dt>flag (IN)</dt>
+<dd>
+<p>If <code>OCI_XSTREAM_MORE_ROW_DATA</code> is set, then the current LCR has more chunk data.</p>
+</dd>
+</dl>
+<p>The input parameters of the <code>processlcr_cb()</code> procedure are the user context, the LCR just received, its type, and a flag to indicate whether the LCR contains more data. If there is an LCR available, then this callback is invoked immediately. If there is no LCR in the stream, after an idle timeout, then this call ends with <code>OCI_SUCCESS</code> return code. The valid return codes from the <code>OCICallbackXStreamOutLCRProcess()</code> callback function are <code>OCI_CONTINUE</code> or <code>OCI_SUCCESS</code>. This callback function must return <code>OCI_CONTINUE</code> to continue processing the <code>OCIXStreamOutLCRCallbackReceive()</code> call. Any return code other than <code>OCI_CONTINUE</code> signals that the client wants to terminate <code>OCIXStreamOutLCRCallbackReceive()</code> immediately.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="xstrm_oci_intro.htm#CEGDAECC">"Server Handle Attributes"</a></div>
+<p>The <code>processchunk_cb</code> argument must be of type <code>OCICallbackXStreamOutChunkProcess</code>:</p>
+<pre>
+typedef sb4  (*OCICallbackXStreamOutChunkProcess)
+(void        *usrctxp, 
+oratext      *column_name,
+ub2          column_name_len,
+ub2          column_dty,
+oraub8       column_flag,
+ub2          column_csid,
+ub4          chunk_bytes,
+ub1          *chunk_data,
+oraub8       flag );
+</pre>
+<p>Parameters of <code>OCICallbackXStreamOutChunkProcess()</code>:</p>
+<dl>
+<dt>usrctxp (IN/OUT)</dt>
+<dd>
+<p>Pointer to the user context.</p>
+</dd>
+<dt>column_name (IN)</dt>
+<dd>
+<p>Column name of the current chunk.</p>
+</dd>
+<dt>column_name_len (IN)</dt>
+<dd>
+<p>Length of the column name.</p>
+</dd>
+<dt>column_name_dty (IN)</dt>
+<dd>
+<p>Chunk data type (<code>SQLT_CHR</code> or <code>SQLT_BIN</code>).</p>
+</dd>
+<dt>column_flag (IN)</dt>
+<dd>
+<p>See Comments in <a href="#CIHGFIBB">"OCIXStreamInChunkSend()"</a>.</p>
+</dd>
+<dt>column_csid (IN)</dt>
+<dd>
+<p>Column character set ID. Relevant only if the column is an <code>XMLType</code> column (that is, <code>column_flag</code> has the <code>OCI_LCR_COLUMN_XML_DATA</code> bit set).</p>
+</dd>
+<dt>chunk_bytes (IN)</dt>
+<dd>
+<p>Chunk data length in bytes.</p>
+</dd>
+<dt>chunk_data (IN)</dt>
+<dd>
+<p>Chunk data pointer.</p>
+</dd>
+<dt>flag (IN)</dt>
+<dd>
+<p>If <code>OCI_XSTREAM_MORE_ROW_DATA</code> is set, then the current LCR has more chunk data.</p>
+</dd>
+</dl>
+<p>The input parameters of the <code>processchunk_cb()</code> procedure are the user context, the information about the chunk, and a flag. When the <code>flag</code> argument has the <code>OCI_XSTREAM_MORE_ROW_DATA</code> (0x01) bit set, then there is more data for the current LCR. The valid return codes from the <code>OCICallbackXStreamOutChunkProcess()</code> callback function are <code>OCI_CONTINUE</code> or <code>OCI_SUCCESS</code>. This callback function must return <code>OCI_CONTINUE</code> to continue processing the <code>OCIXStreamOutLCRCallbackReceive()</code> call. Any return code other than <code>OCI_CONTINUE</code> signals that the client wants to terminate <code>OCIXStreamOutLCRCallbackReceive()</code> immediately.</p>
+<p>OCI calls are provided to access each field in the LCR. If the LCR contains only scalar column(s), then the duration of that LCR is limited only to the <code>processlcr_cb()</code> procedure. If the LCR contains some chunk data, then the duration of the LCR is extended until all the chunks have been processed. If you want to access the LCR data at a later time, then a copy of the LCR must be made before it is freed.</p>
+<p>As for <code>OCIXStreamOutLCRReceive()</code>, the server ends each call at the transaction boundary after each ACK interval since the call began, or after each idle timeout. The default ACK interval is 30 seconds, and the default idle timeout is one second. See <a href="xstrm_oci_intro.htm#CEGDAECC">"Server Handle Attributes"</a> to tune these values. This function also returns the fetch low position when the call ends.</p>
+<p><a href="#CIAIGDBC">Figure 11-2</a> shows the execution flow of the <code>OCIXStreamOutLCRCallbackReceive()</code> function.</p>
+<div id="XSTRM17752" class="figure">
+<p class="titleinfigure"><a id="CIAIGDBC"></a>Figure 11-2 Execution Flow of the OCIXStreamOutLCRCallbackReceive() Function</p>
+<img width="614" height="243" src="img/xstrm045.gif" alt="Description of Figure 11-2 follows" /><br />
+<a id="sthref622" href="img_text/xstrm045.htm">Description of "Figure 11-2 Execution Flow of the OCIXStreamOutLCRCallbackReceive() Function"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>* While <code>OCI_XSTREAM_MORE_ROW_DATA</code> is set.</p>
+<p>Description of <a href="#CIAIGDBC">Figure 11-2</a>:</p>
+<ul>
+<li>
+<p>At 1, the client invokes <code>OCIXStreamOutLCRCallbackReceive()</code> providing two callbacks. This function initiates an LCR outbound stream from the server.</p>
+</li>
+<li>
+<p>At 2, this function receives an LCR from the stream and invokes <code>processlcr_cb()</code> procedure with the LCR just received. It passes <code>OCI_XSTREAM_MORE_ROW_DATA</code> flag to <code>processlcr_cb()</code> if the current LCR has additional data.</p>
+</li>
+<li>
+<p>If the current LCR has no additional chunk, then this function repeats 2 for the next LCR in the stream.</p>
+</li>
+<li>
+<p>At 3, if the current LCR contains additional chunk data, then this function invokes <code>processchunk_cb()</code> for each chunk received with the <code>OCI_XSTREAM_MORE_ROW_DATA</code> flag. This flag is cleared when the callback is invoked on the last chunk of the current LCR.</p>
+</li>
+<li>
+<p>If there is more LCR in the stream, then it loops back to 2. This process continues until the end of the current call, or when there is no LCR in the stream for one second, or if a callback function returns any value other than <code>OCI_CONTINUE</code>.</p>
+</li>
+</ul>
+<p>Here is sample pseudocode for callback mode:</p>
+<pre>
+</pre>
+<pre>
+main
+{
+   /* Attach to outbound server specifying last position */
+   OCIXStreamOutAttach(last_pos);
+ 
+   /* Update the local processed low position */
+   OCIXStreamOutProcessedLWMSet(lwm);
+ 
+   while (TRUE)
+   {
+      OCIXStreamOutLCRCallbackReceive(processlcr_cb,
+                                      processchunk_cb, fwm);
+ 
+      /* Use fetch low position(fwm)
+       * to update processed lwm if applied.
+       */
+ 
+      /* Update the local lwm so it is sent to
+       * server during next call.
+       */
+      OCIXStreamOutProcessedLWMSet(lwm);
+      if (some terminating_condition)
+         break;
+   }
+   OCIXStreamOutDetach();
+}
+ 
+processlcr_cb (IN lcr, IN flag)
+{
+   /* Process the LCR just received */
+   OCILCRHeaderGet(lcr);
+   OCILCRRowColumnInfoGet(lcr);
+ 
+   if (lcr is LOB_WRITE | LOB_TRIM | LOB_ERASE)
+      OCILCRLobInfoGet(lcr);
+ 
+   if (OCI_XSTREAM_MORE_ROW_DATA flag set)
+      prepare_for_chunk_data;
+   else
+      process_end_of_row;
+}
+ 
+processchunk_cb (IN chunk, IN flag)
+{
+   process_chunk;
+ 
+   if (OCI_XSTREAM_MORE_ROW_DATA flag not set)
+      process_end_of_row;
+}
+</pre></div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17753" class="refsect2"><a id="CIHGJGCF"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref623"></a>OCIXStreamOutProcessedLWMSet()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref624"></a>Purpose</p>
+<p>Updates the local copy of the processed low position. This function can be called anytime between <code>OCIXStreamOutAttach()</code> and <code>OCIXStreamOutDetach()</code> calls. Clients using the callback mechanism to stream LCRs from the server (see <a href="#CIHFAAJG">"OCIXStreamOutLCRCallbackReceive()"</a>), can invoke this function while in the callback procedures.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref625"></a>Syntax</p>
+<pre>
+sword OCIXStreamOutProcessedLWMSet ( OCISvcCtx  *svchp, 
+                                     OCIError   *errhp, 
+                                     ub1        *processed_low_position,
+                                     ub2        processed_low_position_len,
+                                     ub4        mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref626"></a>Parameters</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>processed_low_position (IN)</dt>
+<dd>
+<p>The processed low position maintained at the client.</p>
+</dd>
+<dt>processed_low_position_len (IN)</dt>
+<dd>
+<p>Length of <code>processed_low_position</code>.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Specify <code>OCI_DEFAULT</code>.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref627"></a>Comments</p>
+<p>The processed low position denotes that all LCRs at or below it have been processed. After successfully attaching to an XStream outbound server, a local copy of the processed low position is maintained at the client. Periodically, this position is sent to the server so that archived redo log files containing already processed transactions can be purged.</p>
+<p>Return code: <code>OCI_SUCCESS</code> or <code>OCI_ERROR</code>.</p>
+<p>Clients using <code>XStreamOut</code> functions must keep track of the processed low position based on what they have processed and call this function whenever their processed low position has changed. This is done so that a more current value is sent to the server during the next update, which occurs at the beginning of the <code>OCIXStreamOutLCRCallbackReceive()</code> and <code>OCIXStreamDetach()</code> calls. For an <code>OCIXStreamOutLCRReceive()</code> call, the processed low position is sent to the server when it initiates a request to start the outbound stream. It is not sent while the stream is in progress.</p>
+<p>You can query the <code>DBA_XSTREAM_OUTBOUND_PROGRESS</code> view to confirm that the processed low position has been saved in the server.</p>
+</div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" -->
+<div id="XSTRM17754" class="refsect2"><a id="CIHEJEHC"></a>
+<hr />
+<h3 class="refsect2"><a id="sthref628"></a>OCIXStreamOutChunkReceive()</h3>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref629"></a>Purpose</p>
+<p>Allows the client to retrieve the data of each LOB or <code>LONG</code> or <code>XMLType</code> column one chunk at a time.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref630"></a>Syntax</p>
+<pre>
+sword OCIXStreamOutChunkReceive ( OCISvcCtx   *svchp, 
+                                  OCIError    *errhp,
+                                  oratext     **column_name,
+                                  ub2         *column_name_len,
+                                  ub2         *column_dty,
+                                  oraub8      *column_flag,
+                                  ub2         *column_csid,
+                                  ub4         *chunk_bytes,
+                                  ub1         **chunk_data,
+                                  oraub8      *flag,
+                                  ub4         mode );
+</pre></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref631"></a>Syntax</p>
+<dl>
+<dt>svchp (IN)</dt>
+<dd>
+<p>Service handle context.</p>
+</dd>
+<dt>errhp (IN/OUT)</dt>
+<dd>
+<p>An error handle you can pass to <code>OCIErrorGet()</code> for diagnostic information in case of an error.</p>
+</dd>
+<dt>column_name (OUT)</dt>
+<dd>
+<p>Name of the column that has data.</p>
+</dd>
+<dt>column_name_len (OUT)</dt>
+<dd>
+<p>Length of the column name.</p>
+</dd>
+<dt>column_dty (OUT)</dt>
+<dd>
+<p>Column chunk data type (either <code>SQLT_CHR</code> or <code>SQLT_BIN</code>).</p>
+</dd>
+<dt>column_flag (OUT)</dt>
+<dd>
+<p>Column flag. See Comments for valid flags.</p>
+</dd>
+<dt>column_csid (OUT)</dt>
+<dd>
+<p>Column character set ID. This is returned only for <code>XMLType</code> column, that is, <code>column_flag</code> has <code>OCI_LCR_COLUMN_XML_DATA</code> bit set.</p>
+</dd>
+<dt>chunk_bytes (OUT)</dt>
+<dd>
+<p>Number of bytes in the returned chunk.</p>
+</dd>
+<dt>chunk_data (OUT)</dt>
+<dd>
+<p>Pointer to the chunk data in the LCR. The client must not deallocate this buffer since the LCR and its contents are maintained by this function.</p>
+</dd>
+<dt>flag (OUT)</dt>
+<dd>
+<p>If <code>OCI_XSTREAM_MORE_ROW_DATA</code> (0x01) is set, then the current LCR has more chunks coming.</p>
+</dd>
+<dt>mode (IN)</dt>
+<dd>
+<p>Specify <code>OCI_DEFAULT</code>.</p>
+</dd>
+</dl>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref632"></a>Comments</p>
+<p>In Streams, LOB, <code>LONG</code>, or <code>XMLType</code> column data is broken up into multiple LCRs based on how they are stored in the online redo log files. Thus, for a row change containing these columns multiple LCRs may be constructed. The first LCR of a row change contains the column data for all the scalar columns. All LOB or <code>LONG</code> or <code>XMLType</code> columns in the first LCR are set to <code>NULL</code> because their data are sent in subsequent LCRs for that row change. These column data are stored in the LCR as either <code>RAW</code> (<code>SQLT_BIN</code>) or <code>VARCHAR2</code> (<code>SQLT_CHR</code>) chunks as shown in the table <a href="#CIHJEEGA">Table 11-5</a>.</p>
+<div id="XSTRM17755" class="tblformalwide">
+<p class="titleintable"><a id="sthref633"></a><a id="CIHJEEGA"></a>Table 11-5 Storage of LOB or LONG Data in the LCR</p>
+<table class="cellalignment1351" title="Storage of LOB or LONG Data in the LCR" summary="Storage of LOB and LONG data in the LCR" dir="ltr">
+<thead>
+<tr class="cellalignment1342">
+<th class="cellalignment1352" id="r1c1-t19">Source Column Data Type</th>
+<th class="cellalignment1352" id="r1c2-t19">Streams LCR Data Type</th>
+<th class="cellalignment1352" id="r1c3-t19">Streams LCR Character Set</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r2c1-t19" headers="r1c1-t19">
+<p><code>BLOB</code></p>
+</td>
+<td class="cellalignment1348" headers="r2c1-t19 r1c2-t19">
+<p><code>RAW</code></p>
+</td>
+<td class="cellalignment1348" headers="r2c1-t19 r1c3-t19">
+<p>N/A</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r3c1-t19" headers="r1c1-t19">
+<p>Fixed-width <code>CLOB</code></p>
+</td>
+<td class="cellalignment1348" headers="r3c1-t19 r1c2-t19">
+<p><code>VARCHAR2</code></p>
+</td>
+<td class="cellalignment1348" headers="r3c1-t19 r1c3-t19">
+<p>Client Character Set</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r4c1-t19" headers="r1c1-t19">
+<p>Varying-width <code>CLOB</code></p>
+</td>
+<td class="cellalignment1348" headers="r4c1-t19 r1c2-t19">
+<p><code>RAW</code></p>
+</td>
+<td class="cellalignment1348" headers="r4c1-t19 r1c3-t19">
+<p>AL16UTF16</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r5c1-t19" headers="r1c1-t19">
+<p><code>NCLOB</code></p>
+</td>
+<td class="cellalignment1348" headers="r5c1-t19 r1c2-t19">
+<p><code>RAW</code></p>
+</td>
+<td class="cellalignment1348" headers="r5c1-t19 r1c3-t19">
+<p>AL16UTF16</p>
+</td>
+</tr>
+<tr class="cellalignment1342">
+<td class="cellalignment1348" id="r6c1-t19" headers="r1c1-t19">
+<p><code>XMLType</code></p>
+</td>
+<td class="cellalignment1348" headers="r6c1-t19 r1c2-t19">
+<p><code>RAW</code></p>
+</td>
+<td class="cellalignment1348" headers="r6c1-t19 r1c3-t19">
+<p>column <code>csid</code> obtained from the chunk</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformalwide" -->
+<p>In Streams, LOB, <code>LONG</code>, or <code>XMLType</code> column data is broken up into multiple chunks based on how they are stored in the online redo log files. For a row change containing columns of these data types, its associated LCR only contains data for the other scalar columns. All LOB, <code>LONG</code>, or <code>XMLType</code> columns are either represented in the LCR as <code>NULL</code> or not included in the LCR. The actual data for these columns are sent following each LCR as <code>RAW</code> (<code>SQLT_BIN</code>) or <code>VARCHAR2</code> (<code>SQLT_CHR</code>) chunks as shown in <a href="#CIHJEEGA">Table 11-5, "Storage of LOB or LONG Data in the LCR"</a>.</p>
+<p>The following LCR column flags can be combined using the bitwise <code>OR</code> operator.</p>
+<pre>
+#define OCI_LCR_COLUMN_LOB_DATA     /* column contains LOB data */
+#define OCI_LCR_COLUMN_LONG_DATA    /* column contains long data */
+#define OCI_LCR_COLUMN_EMPTY_LOB    /* column has an empty LOB  */
+#define OCI_LCR_COLUMN_LAST_CHUNK   /* last chunk of current column */
+#define OCI_LCR_COLUMN_AL16UTF16    /* column is in AL16UTF16 fmt */
+#define OCI_LCR_COLUMN_NCLOB        /* column has NCLOB data */
+#define OCI_LCR_COLUMN_XML_DATA     /* column contains xml data */
+#define OCI_LCR_COLUMN_XML_DIFF     /* column contains xmldiff data */
+#define OCI_LCR_COLUMN_ENCRYPTED    /* column is encrypted */
+#define OCI_LCR_COLUMN_UPDATED      /* col is updated */
+</pre>
+<p>Return code: <code>OCI_ERROR</code> or <code>OCI_SUCCESS</code>.</p>
+<p>This call returns a <code>NULL</code> column name and <code>NULL</code> chunk data if it is invoked when the current LCR does not contain the LOB, <code>LONG</code>, or <code>XMLType</code> columns. This function is valid only when an <code>OCIXStreamOutLCRReceive()</code> call is in progress. An error is returned if it is called during other times.</p>
+<p>If the return flag from <code>OCIXStreamOutLCRReceive()</code> has <code>OCI_XSTREAM_MORE_ROW_DATA</code> bit set, then you must iteratively call <code>OCIXStreamOutChunkReceive()</code> to retrieve all the chunks belonging to that row change before getting the next row change (that is, before making the next <code>OCIXStreamOutLCRReceive()</code> call); otherwise, an error is returned.</p>
+<p>Here is sample pseudocode for non-callback mode:</p>
+<pre>
+main
+{
+   /* Attach to outbound server specifying last position */
+   OCIXStreamOutAttach(last_pos);
+ 
+   /* Update the local processed low position */
+   OCIXStreamOutProcessedLWMSet(lwm);
+ 
+   while (TRUE)
+   {
+      status = OCIXStreamOutLCRReceive(lcr, flag, fwm);
+ 
+      if (status == OCI_STILL_EXECUTING)
+      {
+         /* Process LCR just received */
+         OCILCRHeaderGet(lcr);
+         OCILCRRowColumnInfoGet(lcr);
+ 
+         while (OCI_XSTREAM_MORE_ROW_DATA flag set)
+         {
+            OCIXStreamReceiveChunk(chunk, flag, );
+ 
+            process_chunk;
+         }
+         process_end_of_row;
+      }
+      else if (status == OCI_SUCCESS)
+      {
+         /* Use fetch low position(fwm)
+          * to update processed lwm if applied.
+          */
+ 
+         /* Update the local lwm so it is sent to
+          * server during next call.
+          */
+         OCIXStreamOutProcessedLWMSet(lwm);
+ 
+          if (some terminating_condition)
+            break;
+       }
+   }
+   OCIXStreamOutDetach();
+}
+</pre></div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect2" --></div>
+<!-- class="refsect1" --></div>
+<!-- class="refentry" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1341">
+<tr>
+<td class="cellalignment1348">
+<table class="cellalignment1346">
+<tr>
+<td class="cellalignment1345"><a href="xstrm_oci_intro.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1345"><a href="xstrm_pt_views.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2009, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1350">
+<table class="cellalignment1344">
+<tr>
+<td class="cellalignment1345"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1345"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1345"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1345"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1345"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1345"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

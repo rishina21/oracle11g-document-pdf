@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Using RMAN to Back Up and Restore Files</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 748" />
+<meta name="dcterms.created" content="2014-02-25T8:43:1Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Data Guard Concepts and Administration" />
+<meta name="dcterms.identifier" content="E41134-03" />
+<meta name="dcterms.isVersionOf" content="SBYDB" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1999, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="manage_ls.htm" title="Previous" type="text/html" />
+<link rel="Next" href="rollup.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e41134.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">19/34</span> <!-- End Header -->
+<div id="SBYDB04700" class="chapter"><a id="CHDHAJFD"></a>
+<h1 class="chapter"><span class="secnum">11</span> Using RMAN to Back Up and Restore Files</h1>
+<p>This chapter describes backup strategies using <a id="sthref844"></a><a id="sthref845"></a>Oracle Recovery Manager (RMAN) with Data Guard and standby databases. RMAN can perform backups with minimal effect on the primary database and quickly recover from the loss of individual datafiles, or the entire database. RMAN and Data Guard can be used together to simplify the administration of a Data Guard configuration.</p>
+<p>This chapter contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#BAJDCCGD">About RMAN File Management in a Data Guard Configuration</a></p>
+</li>
+<li>
+<p><a href="#BAJEDHFB">About RMAN Configuration in a Data Guard Environment</a></p>
+</li>
+<li>
+<p><a href="#BAJBGEIF">Recommended RMAN and Oracle Database Configurations</a></p>
+</li>
+<li>
+<p><a href="#CHDEDICG">Backup Procedures</a></p>
+</li>
+<li>
+<p><a href="#BAJFBBBB">Registering and Unregistering Databases in a Data Guard Environment</a></p>
+</li>
+<li>
+<p><a href="#BAJFJGGB">Reporting in a Data Guard Environment</a></p>
+</li>
+<li>
+<p><a href="#BAJHDFIH">Performing Backup Maintenance in a Data Guard Environment</a></p>
+</li>
+<li>
+<p><a href="#i1024051">Recovery Scenarios in a Data Guard Environment</a></p>
+</li>
+<li>
+<p><a href="#CHDBEICE">Additional Backup Situations</a></p>
+</li>
+<li>
+<p><a href="#CIHIAADC">Using RMAN Incremental Backups to Roll Forward a Physical Standby Database</a></p>
+</li>
+</ul>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Because a logical standby database is not a block-for-block copy of the primary database, you cannot use a logical standby database to back up the primary database.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink BRADV" href="../../backup.112/e10642/toc.htm"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a> for more information about RMAN concepts and about using RMAN in a Data Guard environment</p>
+</li>
+<li>
+<p><a class="olink RCMRF" href="../../backup.112/e10643/toc.htm"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for detailed information about all RMAN commands used in this chapter</p>
+</li>
+</ul>
+</div>
+<a id="BAJDCCGD"></a>
+<div id="SBYDB4847" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">11.1</span> About RMAN File Management in a Data Guard Configuration</h2>
+<p>RMAN uses a recovery catalog to track filenames for all database files in a Data Guard environment. A recovery catalog is a database schema used by RMAN to store metadata about one or more Oracle databases. The catalog also records where the online redo logs, standby redo logs, tempfiles, archived redo logs, backup sets, and image copies are created.</p>
+<div id="SBYDB4848" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref846"></a>
+<h3 class="sect2"><span class="secnum">11.1.1</span> Interchangeability of Backups in a Data Guard Environment</h3>
+<p>RMAN commands use the recovery catalog metadata to behave transparently across different physical databases in the <a id="sthref847"></a>Data Guard environment. For example, you can back up a tablespace on a physical standby database and restore and recover it on the primary database. Similarly, you can back up a tablespace on a primary database and restore and recover it on a physical standby database.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Backups of logical standby databases are not usable at the primary database.</div>
+<p>Backups of standby control files and nonstandby control files are interchangeable. For example, you can restore a standby control file on a primary database and a primary control file on a physical standby database. This interchangeability means that you can offload control file backups to one database in a Data Guard environment. RMAN automatically updates the filenames for database files during restore and recovery at the databases.</p>
+</div>
+<!-- class="sect2" -->
+<div id="SBYDB4849" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref848"></a>
+<h3 class="sect2"><span class="secnum">11.1.2</span> Association of Backups in a Data Guard Environment</h3>
+<p><a id="sthref849"></a>The recovery catalog tracks the files in the Data Guard environment by associating every database file or backup file with a <code>DB_UNIQUE_NAME</code>. The database that creates a file is associated with the file. For example, if RMAN backs up the database with the unique name of <code>standby1</code>, then <code>standby1</code> is associated with this backup. A backup remains associated with the database that created it unless you use the <code>CHANGE</code> <code>... RESET DB_UNIQUE_NAME</code> to associate the backup with a different database.</p>
+</div>
+<!-- class="sect2" -->
+<div id="SBYDB4850" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref850"></a>
+<h3 class="sect2"><span class="secnum">11.1.3</span> Accessibility of Backups in a Data Guard Environment</h3>
+<p><a id="sthref851"></a>The accessibility of a backup is different from its association. In a Data Guard environment, the recovery catalog considers disk backups as accessible only to the database with which it is associated, whereas tape backups created on one database are accessible to all databases. If a backup file is not associated with any database, then the row describing it in the recovery catalog view shows <code>null</code> for the <code>SITE_KEY</code> column. By default, RMAN associates files whose <code>SITE_KEY</code> is <code>null</code> with the target database.</p>
+<p>RMAN commands such as <code>BACKUP</code>, <code>RESTORE</code>, and <code>CROSSCHECK</code> work on any accessible backup. For example, for a <code>RECOVER COPY</code> operation, RMAN considers only image copies that are associated with the database as eligible to be recovered. RMAN considers the incremental backups on disk and tape as eligible to recover the image copies. In a database recovery, RMAN considers only the disk backups associated with the database and all files on tape as eligible to be restored.</p>
+<p>To illustrate the differences in backup accessibility, assume that databases <code>prod</code> and <code>standby1</code> reside on different hosts. RMAN backs up datafile 1 on <code>prod</code> to <code>/prmhost/disk1/df1.dbf</code> on the production host and also to tape. RMAN backs up datafile 1 on <code>standby1</code> to <code>/sbyhost/disk2/df1.dbf</code> on the standby host and also to tape. If RMAN is connected to database <code>prod</code>, then you cannot use RMAN commands to perform operations with the <code>/sbyhost/disk2/df1.dbf</code> backup located on the standby host. However, RMAN does consider the tape backup made on <code>standby1</code> as eligible to be restored.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You can FTP a backup from a standby host to a primary host or vice versa, connect as <code>TARGET</code> to the database on this host, and then <a class="olink RCMRF109" href="../../backup.112/e10643/rcmsynta008.htm#RCMRF109"><code>CATALOG</code></a> the backup. After a file is cataloged by the target database, the file is associated with the target database.</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BAJEDHFB"></a>
+<div id="SBYDB4851" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">11.2</span> About RMAN Configuration in a Data Guard Environment</h2>
+<p>In a Data Guard configuration, the process of backing up control files, datafiles, and archived logs can be offloaded to the standby system, thereby minimizing the effect of backups on the production system. These backups can be used to recover the primary or standby database.</p>
+<p>RMAN uses the <code>DB_UNIQUE_NAME</code> initialization parameter to distinguish one database site from another database site. Thus, it is critical that the uniqueness of <code>DB_UNIQUE_NAME</code> be maintained in a Data Guard configuration.</p>
+<p>Only the primary database must be explicitly registered using the RMAN <code>REGISTER DATABASE</code> command. You do this after connecting RMAN to the recovery catalog and primary database as target.</p>
+<p>Use the RMAN <code>CONFIGURE</code> command to set the RMAN configurations. When the <code>CONFIGURE</code> command is used with the <code>FOR DB_UNIQUE_NAME</code> option, it sets the RMAN site-specific configuration for the database with the DB_UNIQUE_NAME you specify.</p>
+<p>For example, after connecting to the recovery catalog, you could use the following commands at an RMAN prompt to set the default device type to <code>SBT</code> for the <code>BOSTON</code> database that has a DBID of 1625818158. The RMAN <code>SET DBID</code> command is required only if you are not connected to a database as target.</p>
+<pre>
+SET DBID 1625818158;
+CONFIGURE DEFAULT DEVICE TYPE TO SBT FOR DB_UNIQUE_NAME BOSTON;
+</pre></div>
+<!-- class="sect1" -->
+<a id="BAJBGEIF"></a>
+<div id="SBYDB4852" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">11.3</span> Recommended RMAN and Oracle Database Configurations</h2>
+<p>This section describes the following RMAN and Oracle Database configurations, each of which can simplify backup and recovery operations:</p>
+<ul>
+<li>
+<p><a href="#BAJBBBDI">Oracle Database Configurations on Primary and Standby Databases</a></p>
+</li>
+<li>
+<p><a href="#BAJHHAEB">RMAN Configurations at the Primary Database</a></p>
+</li>
+<li>
+<p><a href="#BAJEFADI">RMAN Configurations at a Standby Database Where Backups are Performed</a></p>
+</li>
+<li>
+<p><a href="#BAJDJEBE">RMAN Configurations at a Standby Where Backups Are Not Performed</a></p>
+</li>
+</ul>
+<p class="subhead1"><a id="SBYDB5054"></a>Configuration Assumptions</p>
+<p>The configurations described in this section make the following assumptions:</p>
+<ul>
+<li>
+<p>The standby database is a physical standby database, and backups are taken only on the standby database. See <a href="#BAJBJCEA">Section 11.9.1</a> for procedural changes if backups are taken on both primary and standby databases.</p>
+</li>
+<li>
+<p>An RMAN recovery catalog is required so that backups taken on one database server can be restored to another database server. It is not sufficient to use only the control file as the RMAN repository because the primary database will have no knowledge of backups taken on the standby database.</p>
+<p>The RMAN recovery catalog organizes backup histories and other recovery-related metadata in a centralized location. The recovery catalog is configured in a database and maintains backup metadata. A recovery catalog does not have the space limitations of the control file and can store more historical data about backups.</p>
+<p>A catalog server, physically separate from the primary and standby sites, is recommended in a Data Guard configuration because a disaster at either site will not affect the ability to recover the latest backups.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink BRADV8015" href="../../backup.112/e10642/rcmcatdb.htm#BRADV8015"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a> for more information about managing a recovery catalog</div>
+</li>
+<li>
+<p>All databases in the configuration use Oracle Database 11<span class="italic">g</span> Release 1 (11.1).</p>
+</li>
+<li>
+<p>Oracle Secure Backup software or 3rd-party media management software is configured with RMAN to make backups to tape.</p>
+</li>
+</ul>
+<a id="BAJBBBDI"></a>
+<div id="SBYDB4853" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">11.3.1</span> Oracle Database Configurations on Primary and Standby Databases</h3>
+<p>The following Oracle Database configurations are recommended on every primary and standby database in the Data Guard environment:</p>
+<ul>
+<li>
+<p>Configure a fast recovery area for each database (the recovery area is local to a database).</p>
+<p>The fast recovery area is a single storage location on a file system or Oracle Automatic Storage Management (Oracle ASM) disk group where all files needed for recovery reside. These files include the control file, archived logs, online redo logs, flashback logs, and RMAN backups. As new backups and archived logs are created in the fast recovery area, older files (which are either outside of the retention period, or have been backed up to tertiary storage) are automatically deleted to make room for them. In addition, notifications can be set up to alert the DBA when space consumption in the fast recovery area is nearing its predefined limit. The DBA can then take action, such as increasing the recovery area space limit, adding disk hardware, or decreasing the retention period.</p>
+<p>Set the following initialization parameters to configure the fast recovery area:</p>
+<pre>
+DB_RECOVERY_FILE_DEST = &lt;mount point or Oracle ASM Disk Group&gt;
+DB_RECOVERY_FILE_DEST_SIZE = &lt;disk space quota&gt;
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink BRADV8183" href="../../backup.112/e10642/rcmconfb.htm#BRADV8183"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a> for more information about configuring a fast recovery area</div>
+</li>
+<li>
+<p>Use a server parameter file (SPFILE) so that it can be backed up to save instance parameters in backups.</p>
+</li>
+<li>
+<p>Enable Flashback Database on primary and standby databases.</p>
+<p>When Flashback Database is enabled, Oracle Database maintains flashback logs in the fast recovery area. These logs can be used to roll the database back to an earlier point in time, without requiring a complete restore.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink BRADV595" href="../../backup.112/e10642/flashdb.htm#BRADV595"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a> for more information about enabling Flashback Database</div>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="BAJHHAEB"></a>
+<div id="SBYDB4854" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">11.3.2</span> RMAN Configurations at the Primary Database</h3>
+<p>To simplify ongoing use of RMAN, you can set a number of persistent configuration settings for each database in the Data Guard environment. These settings control many aspects of RMAN behavior. For example, you can configure the backup retention policy, default destinations for backups to tape or disk, default backup device type, and so on. You can use the <code>CONFIGURE</code> command to set and change RMAN configurations. The following RMAN configurations are recommended at the primary database:</p>
+<ol>
+<li>
+<p>Connect RMAN to the primary database and recovery catalog.</p>
+</li>
+<li>
+<p>Configure the retention policy for the database as <code><span class="codeinlineitalic">n</span></code> days:</p>
+<pre>
+CONFIGURE RETENTION POLICY TO RECOVERY WINDOW OF &lt;n&gt; DAYS;
+</pre>
+<p>This configuration lets you keep the backups necessary to perform database recovery to any point in time within the specified number of days.</p>
+<p>Use the <code>DELETE</code> <code>OBSOLETE</code> command to delete any backups that are not required (per the retention policy in place) to perform recovery within the specified number of days.</p>
+</li>
+<li>
+<p>Specify when archived logs can be deleted with the <code>CONFIGURE ARCHIVELOG DELETION POLICY</code> command. For example, if you want to delete logs after ensuring that they <span class="italic">shipped</span> to all destinations, use the following configuration:</p>
+<pre>
+CONFIGURE ARCHIVELOG DELETION POLICY TO SHIPPED TO ALL STANDBY;
+</pre>
+<p>If you want to delete logs after ensuring that they were <span class="italic">applied</span> on all standby destinations, use the following configuration:</p>
+<pre>
+CONFIGURE ARCHIVELOG DELETION POLICY TO APPLIED ON ALL STANDBY;
+</pre></li>
+<li>
+<p>Configure the connect string for the primary database and all standby databases, so that RMAN can connect remotely and perform resynchronization when the <code>RESYNC CATALOG FROM DB_UNIQUE_NAME</code> command is used. When you connect to the target instance, you must provide a net service name. This requirement applies even if the other database instance from where the resynchronization is done is on the local host. The target and remote instances must use the same <code>SYSDBA</code> password, which means that both instances must already have password files. You can create the password file with a single password so you can start all the database instances with that password file. For example, if the TNS alias to connect to a standby in Boston is <code>boston_conn_str</code>, you can use the following command to configure the connect identifier for the <code>BOSTON</code> database site:</p>
+<pre>
+CONFIGURE DB_UNIQUE_NAME BOSTON CONNECT IDENTIFIER 'boston_conn_str';
+</pre>
+<p>Note that the <code>'boston_conn_str'</code> does not include a username and password. It contains only the Oracle Net service name that can be used from any database site to connect to the <code>BOSTON</code> database site.</p>
+<p>After connect identifiers are configured for all standby databases, you can verify the list of standbys by using the <code>LIST DB_UNIQUE_NAME OF DATABASE</code> command.</p>
+</li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink BRADV006" href="../../backup.112/e10642/rcmconfa.htm#BRADV006"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a> for more information about RMAN configurations</p>
+</li>
+<li>
+<p><a class="olink RCMRF113" href="../../backup.112/e10643/rcmsynta010.htm#RCMRF113"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for more information about the RMAN <code>CONFIGURE</code> command</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="BAJEFADI"></a>
+<div id="SBYDB4855" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">11.3.3</span> RMAN Configurations at a Standby Database Where Backups are Performed</h3>
+<p>The following RMAN configurations are recommended at a standby database where backups are done:</p>
+<ol>
+<li>
+<p>Connect RMAN to the standby database (where backups are performed) as target, and to the recovery catalog.</p>
+</li>
+<li>
+<p>Enable automatic backup of the control file and the server parameter file:</p>
+<pre>
+CONFIGURE CONTROLFILE AUTOBACKUP ON;
+</pre></li>
+<li>
+<p>Skip backing up datafiles for which there already exists a valid backup with the same checkpoint:</p>
+<pre>
+CONFIGURE BACKUP OPTIMIZATION ON;
+</pre></li>
+<li>
+<p>Configure the tape channels to create backups as required by media management software:</p>
+<pre>
+CONFIGURE CHANNEL DEVICE TYPE SBT PARMS '&lt;channel parameters&gt;';
+</pre></li>
+<li>
+<p>Specify when the archived logs can be deleted with the <code>CONFIGURE ARCHIVELOG DELETION POLICY</code> command.</p>
+<p>Because the logs are backed up at the standby site, it is recommended that you configure the <code>BACKED UP</code> option for the log deletion policy.</p>
+</li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink BRADV89439" href="../../backup.112/e10642/rcmconfb.htm#BRADV89439"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a> for more information about enabling deletion policies for archived redo logs</div>
+</div>
+<!-- class="sect2" -->
+<a id="BAJDJEBE"></a>
+<div id="SBYDB4856" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">11.3.4</span> RMAN Configurations at a Standby Where Backups Are Not Performed</h3>
+<p>The following RMAN configurations are recommended at a standby database where backups are <span class="italic">not</span> done:</p>
+<ol>
+<li>
+<p>Connect RMAN to the standby database as target, and to the recovery catalog.</p>
+</li>
+<li>
+<p>Enable automatic deletion of archived logs once they are applied at the standby database:</p>
+<pre>
+CONFIGURE ARCHIVELOG DELETION POLICY TO APPLIED ON ALL STANDBY;
+</pre></li>
+</ol>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDEDICG"></a>
+<div id="SBYDB00755" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">11.4</span> Backup Procedures</h2>
+<p>This section describes the RMAN scripts and procedures used to back up Oracle Database in a Data Guard configuration. The following topics are covered:</p>
+<ul>
+<li>
+<p><a href="#BAJFFFFJ">Using Disk as Cache for Tape Backups</a></p>
+</li>
+<li>
+<p><a href="#BAJBIDAG">Performing Backups Directly to Tape</a></p>
+</li>
+</ul>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Oracle's Maximum Availability Architecture (MAA) best practices recommend that backups be taken at both the primary and the standby databases to reduce MTTR, in case of double outages and to avoid introducing new site practices upon switchover and failover.</div>
+<p class="subhead1"><a id="SBYDB5055"></a>Backups of Server Parameter Files</p>
+<p>Prior to Oracle Database 11<span class="italic">g</span>, backups of server parameter files (SPFILEs) were assumed to be usable at any other standby database. However, in practice, it is not possible for all standby databases to use the same SPFILE. To address this problem, RMAN does not allow an SPFILE backup taken at one database site to be used at another database site. This restriction is in place only when the <code>COMPATIBLE</code> initialization parameter is set to 11.0.0.</p>
+<p>The standby database allows you to offload all backup operations to one specific standby database, except the backups of SPFILE. However, if the <code>COMPATIBLE</code> initialization parameter is set to 11.0.0, the SPFILE can be backed up to disk and cataloged manually at standby sites where backups are written to tape. The additional metadata stored in SPFILE backup sets enables RMAN to identify which database SPFILE is contained in which backup set. Thus, the appropriate SPFILE backup is chosen during restore from tape.</p>
+<a id="BAJFFFFJ"></a>
+<div id="SBYDB4857" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">11.4.1</span> Using Disk as Cache for Tape Backups</h3>
+<p>The fast recovery area on the standby database can serve as a disk cache for tape backup. Disk is used as the primary storage for backups, with tape providing long term, archival storage. Incremental tape backups are taken daily and full tape backups are taken weekly. The commands used to perform these backups are described in the following sections.</p>
+<div id="SBYDB4858" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref852"></a>
+<h4 class="sect3"><span class="secnum">11.4.1.1</span> Commands for Daily Tape Backups Using Disk as Cache</h4>
+<p>When deciding on your backup strategy, Oracle recommends that you take advantage of daily incremental backups. Datafile image copies can be rolled forward with the latest incremental backups, thereby providing up-to-date datafile image copies at all times. RMAN uses the resulting image copy for media recovery just as it would use a full image copy taken at that system change number (SCN), without the overhead of performing a full image copy of the database every day. An additional advantage is that the time-to-recover is reduced because the image copy is updated with the latest block changes and fewer redo logs are required to bring the database back to the current state.</p>
+<p>To implement daily incremental backups, a full database backup is taken on the first day, followed by an incremental backup on day two. Archived redo logs can be used to recover the database to any point in either day. For day three and onward, the previous day's incremental backup is merged with the datafile copy and a current incremental backup is taken, allowing fast recovery to any point within the last day. Redo logs can be used to recover the database to any point during the current day.</p>
+<p>The script to perform daily backups looks as follows (the last line, <code>DELETE ARCHIVELOG ALL</code> is only needed if the fast recovery area is not used to store logs):</p>
+<pre>
+RESYNC CATALOG FROM DB_UNIQUE_NAME ALL;
+RECOVER COPY OF DATABASE WITH TAG 'OSS';
+BACKUP DEVICE TYPE DISK INCREMENTAL LEVEL 1 FOR RECOVER OF COPY WITH TAG 'OSS' DATABASE;
+BACKUP DEVICE TYPE SBT ARCHIVELOG ALL;
+BACKUP BACKUPSET ALL;
+DELETE ARCHIVELOG ALL;
+</pre>
+<p>The standby control file will be automatically backed up at the conclusion of the backup operation because the control file auto backup is enabled.</p>
+<p>Explanations for what each command in the script does are as follows:</p>
+<ul>
+<li>
+<p><code>RESYNC CATALOG FROM DB_UNIQUE_NAME ALL</code></p>
+<p>Resynchronizes the information from all other database sites (primary and other standby databases) in the Data Guard setup that are known to recovery catalog. For <code>RESYNC CATALOG FROM DB_UNIQUE_NAME</code> to work, RMAN should be connected to the target using the Oracle Net service name and all databases must use the same password file.</p>
+</li>
+<li>
+<p><code>RECOVER COPY OF DATABASE WITH TAG 'OSS'</code></p>
+<p>Rolls forward level 0 copy of the database by applying the level 1 incremental backup taken the day before. In the example script just shown, the previous day's incremental level 1 was tagged <code>OSS</code>. This incremental is generated by the <code>BACKUP DEVICE TYPE DISK ... DATABASE</code> command. On the first day this command is run there will be no roll forward because there is no incremental level 1 yet. A level 0 incremental will be created by the <code>BACKUP DEVICE TYPE DISK ... DATABASE</code> command. Again on the second day there is no roll forward because there is only a level 0 incremental. A level 1 incremental tagged <code>OSS</code> will be created by the <code>BACKUP DEVICE TYPE DISK ... DATABASE</code> command. On the third and following days, the roll forward will be performed using the level 1 incremental tagged <code>OSS</code> created on the previous day.</p>
+</li>
+<li>
+<p><code>BACKUP DEVICE TYPE DISK INCREMENTAL LEVEL 1 FOR RECOVER OF COPY WITH TAG 'OSS' DATABASE</code></p>
+<p>Create a new level 1 incremental backup. On the first day this command is run, this will be a level 0 incremental. On the second and following days, this will be a level 1 incremental.</p>
+</li>
+<li>
+<p><code>BACKUP DEVICE TYPE SBT ARCHIVELOG ALL</code></p>
+<p>Backs up archived logs to tape according to the deletion policy in place.</p>
+</li>
+<li>
+<p><code>BACKUP BACKUPSET ALL</code></p>
+<p>Backs up any backup sets created as a result of incremental backup creation.</p>
+</li>
+<li>
+<p><code>DELETE ARCHIVELOG ALL</code></p>
+<p>Deletes archived logs according to the log deletion policy set by the <code>CONFIGURE ARCHIVELOG DELETION POLICY</code> command. If the archived logs are in a fast recovery area, then they are automatically deleted when more open disk space is required. Therefore, you only need to use this command if you explicitly want to delete logs each day.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<div id="SBYDB4859" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref853"></a>
+<h4 class="sect3"><span class="secnum">11.4.1.2</span> Commands for Weekly Tape Backups Using Disk as Cache</h4>
+<p>To back up all recovery-related files to tape, use the following command once a week:</p>
+<pre>
+BACKUP RECOVERY FILES;
+</pre>
+<p>This ensures that all current incremental, image copy, and archived log backups on disk are backed up to tape.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BAJBIDAG"></a>
+<div id="SBYDB4860" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">11.4.2</span> Performing Backups Directly to Tape</h3>
+<p>Oracle's Media Management Layer (MML) API lets third-party vendors build a media manager, software that works with RMAN and the vendor's hardware to allow backups to sequential media devices such as tape drives. A media manager handles loading, unloading, and labeling of sequential media such as tapes. You must install Oracle Secure Backup or third-party media management software to use RMAN with sequential media devices.</p>
+<p>Take the following steps to perform backups directly to tape, by default:</p>
+<ol>
+<li>
+<p>Connect RMAN to the standby database (as the target database) and recovery catalog.</p>
+</li>
+<li>
+<p>Execute the <code>CONFIGURE</code> command as follows:</p>
+<pre>
+CONFIGURE DEFAULT DEVICE TYPE TO SBT;
+</pre></li>
+</ol>
+<p>In this scenario, full backups are taken weekly, with incremental backups taken daily on the standby database.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink BRADV132" href="../../backup.112/e10642/rcmconfb.htm#BRADV132"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a> for more information about how to configure RMAN for use with a media manager</div>
+<div id="SBYDB4861" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref854"></a>
+<h4 class="sect3"><span class="secnum">11.4.2.1</span> Commands for Daily Backups Directly to Tape</h4>
+<p>Take the following steps to perform daily backups directly to tape:</p>
+<ol>
+<li>
+<p>Connect RMAN to the standby database (as target database) and to the recovery manager.</p>
+</li>
+<li>
+<p>Execute the following RMAN commands:</p>
+<pre>
+RESYNC CATALOG FROM DB_UNIQUE_NAME ALL;
+BACKUP AS BACKUPSET INCREMENTAL LEVEL 1 DATABASE PLUS ARCHIVELOG; 
+DELETE ARCHIVELOG ALL;
+</pre></li>
+</ol>
+<p>These commands resynchronize the information from all other databases in the Data Guard environment. They also create a level 1 incremental backup of the database, including all archived logs. On the first day this script is run, if no level 0 backups are found, then a level 0 backup is created.</p>
+<p>The <code>DELETE ARCHIVELOG ALL</code> command is necessary only if all archived log files are not in a fast recovery area.</p>
+</div>
+<!-- class="sect3" -->
+<div id="SBYDB4862" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref855"></a>
+<h4 class="sect3"><span class="secnum">11.4.2.2</span> Commands for Weekly Backups Directly to Tape</h4>
+<p>One day a week, take the following steps to perform a weekly backup directly to tape:</p>
+<ol>
+<li>
+<p>Connect RMAN to the standby database (as target database) and to the recovery catalog.</p>
+</li>
+<li>
+<p>Execute the following RMAN commands:</p>
+<pre>
+BACKUP AS BACKUPSET INCREMENTAL LEVEL 0 DATABASE PLUS ARCHIVELOG;
+DELETE ARCHIVELOG ALL;
+</pre></li>
+</ol>
+<p>These commands resynchronize the information from all other databases in the Data Guard environment, and create a level 0 database backup that includes all archived logs.</p>
+<p>The <code>DELETE ARCHIVELOG ALL</code> command is necessary only if all archived log files are not in a fast recovery area.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BAJFBBBB"></a>
+<div id="SBYDB4863" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">11.5</span> Registering and Unregistering Databases in a Data Guard Environment</h2>
+<p>Only the primary database must be explicitly registered using the <code>REGISTER DATABASE</code> command. You do this after connecting RMAN to the recovery catalog and primary database as <code>TARGET</code>.</p>
+<p>A new standby is automatically registered in the recovery catalog when you connect to a standby database or when the <code>CONFIGURE DB_UNIQUE_NAME</code> command is used to configure the connect identifier.</p>
+<p>To unregister information about a specific standby database, you can use the <code>UNREGISTER DB_UNIQUE_NAME</code> command. When a standby database is completely removed from a Data Guard environment, the database information in the recovery catalog can also be removed after you connect to another database in the same Data Guard environment. The backups that were associated with the database that was unregistered are still usable by other databases. You can associate these backups with any other existing database by using the <code>CHANGE BACKUP RESET DB_UNIQUE_NAME</code> command.</p>
+<p>When the <code>UNREGISTER DB_UNIQUE_NAME</code> command is used with the <code>INCLUDING BACKUPS</code> option, the metadata for all the backup files associated with the database being removed is also removed from the recovery catalog.</p>
+</div>
+<!-- class="sect1" -->
+<a id="BAJFJGGB"></a>
+<div id="SBYDB4864" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">11.6</span> Reporting in a Data Guard Environment</h2>
+<p>Use the RMAN <code>LIST</code>, <code>REPORT</code>, and <code>SHOW</code> commands with the <code>FOR DB_UNIQUE_NAME</code> clause to view information about a specific database.</p>
+<p>For example, after connecting to the recovery catalog, you could use the following commands to display information for a database with a DBID of 1625818158 and to list the databases in the Data Guard environment. The <code>SET DBID</code> command is required only if you are not connected to a database as <code>TARGET</code>. The last three commands list archive logs, database file names, and RMAN configuration information for a database with a <code>DB_UNIQUE_NAME</code> of <code>BOSTON</code>.</p>
+<pre>
+SET DBID 1625818158;
+LIST DB_UNIQUE_NAME OF DATABASE;
+LIST ARCHIVELOG ALL FOR DB_UNIQUE_NAME BOSTON;
+REPORT SCHEMA FOR DB_UNIQUE_NAME BOSTON;
+SHOW ALL FOR DB_UNIQUE_NAME BOSTON;
+</pre></div>
+<!-- class="sect1" -->
+<a id="BAJHDFIH"></a>
+<div id="SBYDB4865" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">11.7</span> Performing Backup Maintenance in a Data Guard Environment</h2>
+<p>The files in a Data Guard environment (datafiles, archived logs, backup pieces, image copies, and proxy copies) are associated with a database through use of the <code>DB_UNIQUE_NAME</code> parameter. Therefore, it is important that the value supplied for <code>DB_UNIQUE_NAME</code> be unique for each database in a Data Guard environment. This information, along with file-sharing attributes, is used to determine which files can be accessed during various RMAN operations.</p>
+<p>File sharing attributes state that files on disk are accessible only at the database with which they are associated, whereas all files on tape are assumed to be accessible by all databases. RMAN commands such as <code>BACKUP</code> and <code>RESTORE</code>, as well as other maintenance commands, work according to this assumption. For example, during a roll-forward operation of an image copy at a database, only image copies associated with the database are rolled forward. Likewise, all incremental backups on disk and all incremental backups on tape will be used to roll forward the image copies. Similarly, during recovery operations, only disk backups associated with the database and files on tape will be considered as sources for backups.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink RCMRF" href="../../backup.112/e10643/toc.htm"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for detailed information about RMAN commands</div>
+<a id="BAJFGAGF"></a>
+<div id="SBYDB4866" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">11.7.1</span> Changing Metadata in the Recovery Catalog</h3>
+<p>You can use the RMAN <code>CHANGE</code> command with various operands to change metadata in the recovery catalog, as described in the following sections.</p>
+<p class="subhead1"><a id="SBYDB5056"></a>Changing File Association from One Standby Database to Another</p>
+<p>Use the <code>CHANGE</code> command with the <code>RESET DB_UNIQUE_NAME</code> option to alter the association of files from one database to another within a Data Guard environment. The <code>CHANGE</code> command is useful when disk backups or archived logs are transferred from one database to another and you want to use them on the database to which they were transferred. The <code>CHANGE</code> command can also change the association of a file from one database to another database, without having to directly connect to either database using the <code>FOR DB_UNIQUE_NAME</code> and <code>RESET DB_UNIQUE_NAME TO</code> options.</p>
+<p class="subhead1"><a id="SBYDB5057"></a>Changing DB_UNIQUE_NAME for a Database</p>
+<p>If the value of the <code>DB_UNIQUE_NAME</code> initialization parameter changes for a database, the same change must be made in the Data Guard environment. The RMAN recovery catalog, after connecting to that database instance, will know both the old and new value for <code>DB_UNIQUE_NAME</code>. To merge the information for the old and new values within the recovery catalog schema, you must use the RMAN <code>CHANGE DB_UNIQUE_NAME</code> command. If RMAN is not connected to the instance with the changed <code>DB_UNIQUE_NAME</code> parameter, then the <code>CHANGE DB_UNIQUE_NAME</code> command can also be used to rename the <code>DB_UNIQUE_NAME</code> in the recovery catalog schema. For example, if the instance parameter value for a database was changed from <code>BOSTON_A</code> to <code>BOSTON_B</code>, the following command should be executed at the RMAN prompt after connecting to a target database and recovery catalog:</p>
+<pre>
+CHANGE DB_UNIQUE_NAME FROM BOSTON_A TO BOSTON_B;
+</pre>
+<p class="subhead1"><a id="SBYDB5058"></a>Making Backups Unavailable or Removing Their Metadata</p>
+<p>Use <code>CHANGE</code> command options such as <code>AVAILABLE</code>, <code>UNAVAILABLE</code>, <code>KEEP</code>, and <code>UNCATALOG</code> to make backups available or unavailable for restore and recovery purposes, and to keep or remove their metadata.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink RCMRF110" href="../../backup.112/e10643/rcmsynta009.htm#RCMRF110"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for more information about the RMAN <code>CHANGE</code> command</div>
+</div>
+<!-- class="sect2" -->
+<a id="BAJJJDCB"></a>
+<div id="SBYDB4867" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">11.7.2</span> Deleting Archived Logs or Backups</h3>
+<p>Use the <code>DELETE</code> command to delete backup sets, image copies, archived logs, or proxy copies. To delete only files that are associated with a specific database, you must use the <code>FOR DB_UNIQUE_NAME</code> option with the <code>DELETE</code> command.</p>
+<p>File metadata is deleted for all successfully deleted files associated with the current target database (or for files that are not associated with any known database). If a file could not be successfully deleted, you can use the <code>FORCE</code> option to remove the file's metadata.</p>
+<p>When a file associated with another database is deleted successfully, its metadata in the recovery catalog is also deleted. Any files that are associated with other databases, and that could not be successfully deleted, are listed at the completion of the <code>DELETE</code> command, along with instructions for you to perform the same operation at the database with which the files are associated (files are grouped by database). Note that the <code>FORCE</code> option cannot be used to override this behavior. If you are certain that deleting the metadata for the non-deletable files will not cause problems, you can use the <code>CHANGE RESET DB_UNIQUE_NAME</code> command to change the metadata for association of files with the database and use the <code>DELETE</code> command with the <code>FORCE</code> option to delete the metadata for the file.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink RCMRF121" href="../../backup.112/e10643/rcmsynta016.htm#RCMRF121"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for more information about the RMAN <code>DELETE</code> command</div>
+</div>
+<!-- class="sect2" -->
+<a id="BAJFCAHG"></a>
+<div id="SBYDB4868" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">11.7.3</span> Validating Recovery Catalog Metadata</h3>
+<p>Use the <code>CROSSCHECK</code> command to validate and update file status in the recovery catalog schema. To validate files associated with a specific database, use the <code>FOR DB_UNIQUE_NAME</code> option with the <code>CROSSCHECK</code> command.</p>
+<p>Metadata for all files associated with the current target database (or for any files that are not associated with any database), will be marked <code>AVAILABLE</code> or <code>EXPIRED</code> according to the results of the <code>CROSSCHECK</code> operation.</p>
+<p>If a file associated with another database is successfully inspected, its metadata in the recovery catalog is also changed to <code>AVAILABLE</code>. Any files that are associated with other databases, and that could not be inspected successfully, are listed at the completion of the <code>CROSSCHECK</code> command, along with instructions for you to perform the same operation at the database with which the files are associated (files are grouped by site). If you are certain of the configuration and still want to change status metadata for unavailable files, you can use the <code>CHANGE RESET DB_UNIQUE_NAME</code> command to change metadata for association of files with the database and execute the <code>CROSSCHECK</code> command to update status metadata to <code>EXPIRED</code>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink RCMRF119" href="../../backup.112/e10643/rcmsynta015.htm#RCMRF119"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for more information about the RMAN <code>CROSSCHECK</code> command</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1024051"></a>
+<div id="SBYDB00754" class="sect1">
+<h2 class="sect1"><span class="secnum">11.8</span> Recovery Scenarios in a Data Guard Environment</h2>
+<p>The examples in the following sections assume you are restoring files from tape to the same system on which the backup was created. If you need to restore files to a different system, you need to configure the channels for that system before executing restore and recover commands. You can set the configuration for a nonexistent database using the <code>SET DBID</code> command and the <code>CONFIGURE</code> command with <code>FOR DB_UNIQUE_NAME</code>. See the Media Management documentation for more information about how to access RMAN backups from different systems.</p>
+<p>The following scenarios are described in this section:</p>
+<ul>
+<li>
+<p><a href="#BAJCEFEG">Recovery from Loss of Datafiles on the Primary Database</a></p>
+</li>
+<li>
+<p><a href="#BAJDFBDD">Recovery from Loss of Datafiles on the Standby Database</a></p>
+</li>
+<li>
+<p><a href="#CHDDHACE">Recovery from Loss of a Standby Control File</a></p>
+</li>
+<li>
+<p><a href="#CHDBEGHD">Recovery from Loss of the Primary Control File</a></p>
+</li>
+<li>
+<p><a href="#BAJFDAGD">Recovery from Loss of an Online Redo Log File</a></p>
+</li>
+<li>
+<p><a href="#BAJJICIH">Incomplete Recovery of the Primary Database</a></p>
+</li>
+</ul>
+<a id="BAJCEFEG"></a>
+<div id="SBYDB4869" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">11.8.1</span> Recovery from Loss of Datafiles on the Primary Database</h3>
+<p>You can recover from loss of datafiles on the primary database by using backups or by using the files on a standby database, as described in the following sections.</p>
+<p class="subhead1"><a id="SBYDB5059"></a>Using Backups</p>
+<p>Issue the following RMAN commands to restore and recover datafiles. You must be connected to both the primary and recovery catalog databases.</p>
+<pre>
+RESTORE DATAFILE <span class="variable">n,m...</span>;
+RECOVER DATAFILE <span class="variable">n,m...</span>;
+</pre>
+<p>Issue the following RMAN commands to restore and recover tablespaces. You must be connected to both the primary and recovery catalog databases.</p>
+<pre>
+RESTORE TABLESPACE <span class="variable">tbs_name1, tbs_name2, ...</span>
+RECOVER TABLESPACE <span class="variable">tbs_name1, tbs_name2, ...</span>
+</pre>
+<p class="subhead1"><a id="SBYDB5060"></a>Using Files On a Standby Database</p>
+<p>As of Oracle 11<span class="italic">g</span>, you can use files on a standby database to recover a lost datafile. This works well if the standby is up-to-date and the network connection is sufficient enough to support the file copy between the standby and primary.</p>
+<p>Start RMAN and take the following steps to copy the datafiles from the standby to the primary:</p>
+<ol>
+<li>
+<p>Connect to the standby database as the target database:</p>
+<pre>
+CONNECT TARGET sys@standby
+</pre>
+<p>You are prompted for a password:</p>
+<pre>
+target database Password: <span class="italic">password</span>
+</pre></li>
+<li>
+<p>Connect to the primary database as the auxiliary database:</p>
+<pre>
+CONNECT AUXILIARY sys@primary
+</pre>
+<p>You are prompted for a password:</p>
+<pre>
+target database Password: <span class="italic">password</span>
+</pre></li>
+<li>
+<p>Back up the datafile on the <span class="italic">standby</span> host across the network to a location on the <span class="italic">primary</span> host. For example, suppose that <code>/disk1/df2.dbf</code> is the name of datafile 2 on the standby host. Suppose that <code>/disk8/datafile2.dbf</code> is the name of datafile 2 on the primary host. The following command would copy datafile 2 over the network to <code>/disk9/df2copy.dbf</code>:</p>
+<pre>
+BACKUP AS COPY DATAFILE 2 AUXILIARY FORMAT '/disk9/df2copy.dbf';
+</pre></li>
+<li>
+<p>Exit the RMAN client as follows:</p>
+<pre>
+EXIT;
+</pre></li>
+<li>
+<p>Start RMAN and connect to the primary database as target, and to the recovery catalog:</p>
+<pre>
+CONNECT TARGET sys@primary;
+target database Password: <span class="italic">password</span>
+
+CONNECT CATALOG rman@catdb;
+recovery catalog database Password: <span class="italic">password</span>
+</pre></li>
+<li>
+<p>Use the <code>CATALOG DATAFILECOPY</code> command to catalog this datafile copy so that RMAN can use it.:</p>
+<pre>
+CATALOG DATAFILECOPY '/disk9/df2copy.dbf';
+</pre>
+<p>Then use the <code>SWITCH DATAFILE</code> command to switch the datafile copy so that <code>/disk9/df2copy.dbf</code> becomes the current datafile:</p>
+<pre>
+RUN {
+  SET NEWNAME FOR DATAFILE 2 TO '/disk9/df2copy.dbf';
+  SWITCH DATAFILE 2;
+}
+</pre></li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="BAJDFBDD"></a>
+<div id="SBYDB4870" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">11.8.2</span> Recovery from Loss of Datafiles on the Standby Database</h3>
+<p>To recover the standby database after the loss of one or more datafiles, you must restore the lost files to the standby database from the backup using the RMAN <code>RESTORE DATAFILE</code> command. If all the archived redo log files required for recovery of damaged files are accessible on disk by the standby database, restart Redo Apply.</p>
+<p>If the archived redo log files required for recovery are not accessible on disk, use RMAN to recover the restored datafiles to an SCN/log sequence greater than the last log applied to the standby database, and then restart Redo Apply to continue the application of redo data, as follows:</p>
+<ol>
+<li>
+<p>Connect SQL*Plus to the standby database.</p>
+</li>
+<li>
+<p>Stop Redo Apply using the SQL <code>ALTER DATABASE ...</code> statement.</p>
+</li>
+<li>
+<p>In a separate terminal, start RMAN and connect to both the standby and recovery catalog databases (use the <code>TARGET</code> keyword to connect to the standby instance).</p>
+</li>
+<li>
+<p>Issue the following RMAN commands to restore and recover datafiles on the standby database:</p>
+<pre>
+RESTORE DATAFILE &lt;<span class="italic">n</span>,<span class="italic">m</span>,...&gt;;
+RECOVER DATABASE;
+</pre>
+<p>To restore a tablespace, use the RMAN <code>'RESTORE TABLESPACE</code> <code><span class="codeinlineitalic">tbs_name1, tbs_name2, ...</span></code>' command.</p>
+</li>
+<li>
+<p>At the SQL*Plus prompt, restart Redo Apply using the SQL <code><a id="sthref856"></a><a id="sthref857"></a>ALTER DATABASE ...</code> statement.</p>
+</li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="log_apply.htm#i1020855">Section 7.3</a> and <a href="log_apply.htm#i1040509">Section 7.4</a> for more information about starting and stopping Redo Apply</div>
+</div>
+<!-- class="sect2" -->
+<a id="CHDDHACE"></a>
+<div id="SBYDB4871" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">11.8.3</span> Recovery from Loss of a Standby Control File</h3>
+<p>Oracle software allows multiplexing of the standby control file. To ensure the standby control file is multiplexed, check the <code>CONTROL_FILES</code> initialization parameter, as follows:</p>
+<pre>
+SQL&gt; SHOW PARAMETER CONTROL_FILES;
+
+NAME                                 TYPE        VALUE
+ ------------------------------------ ----------- ------------------------------
+control_files                        string      &lt;<span class="italic">cfilepath1</span>&gt;,&lt;<span class="italic">cfilepath2</span>&gt;
+</pre>
+<p>If one of the multiplexed standby control files is lost or is not accessible, Oracle software stops the instance and writes the following messages to the alert log:</p>
+<pre>
+ORA-00210: cannot open the specified controlfile
+ORA-00202: controlfile: '/disk1/oracle/dbs/scf3_2.f'
+ORA-27041: unable to open file
+</pre>
+<p>You can copy an intact copy of the control file over the lost copy, then restart the standby instance using the following SQL statements:</p>
+<pre>
+SQL&gt; STARTUP MOUNT;
+SQL&gt; ALTER DATABASE RECOVER MANAGED STANDBY DATABASE DISCONNECT FROM SESSION;
+</pre>
+<p>You can restore the control file from backups by executing the <code>RESTORE CONTROLFILE</code> command and then the <code>RECOVER DATABASE</code> command. The <code>RECOVER DATABASE</code> command automatically fixes the file names in the control file to match the files existing at that database, and recovers the database to the most recently received log sequence at the database.</p>
+<p>The other alternative is to create a new control file from the primary database, copy it to all multiplexed locations, and manually rename the data file names to match files existing on disk.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CHDBEGHD"></a>
+<div id="SBYDB4872" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">11.8.4</span> Recovery from Loss of the Primary Control File</h3>
+<p>Oracle software allows multiplexing of the control file on the primary database. If one of the control files cannot be updated on the primary database, the primary database instance is shut down automatically.</p>
+<p>You can restore the control file from backups by executing the <code>RESTORE CONTROLFILE</code> command and the <code>RECOVER DATABASE</code> command. The <code>RECOVER DATABASE</code> command automatically fixes the file names in the control file to match the files existing at that database, and recovers the database.</p>
+<p>The other alternative is to create a new control file using <code>CREATE CONTROLFILE</code> SQL command. It is possible to re-create the control file provided all data files and online logs are not lost.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink BRADV" href="../../backup.112/e10642/toc.htm"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a> for detailed information about using RMAN to recover from the loss of control files</div>
+</div>
+<!-- class="sect2" -->
+<a id="BAJFDAGD"></a>
+<div id="SBYDB4873" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">11.8.5</span> Recovery from Loss of an Online Redo Log File</h3>
+<p>Oracle recommends multiplexing the online redo log files. The loss of all members of an online redo log group causes Oracle software to terminate the instance. If only some members of a log file group cannot be written, they will not be used until they become accessible. The views <code>V$LOGFILE</code> and <code>V$LOG</code> contain more information about the current status of log file members in the primary database instance.</p>
+<p>When Oracle software is unable to write to one of the online redo log file members, the following alert messages are returned:</p>
+<pre>
+ORA-00313: open failed for members of log group 1 of thread 1
+ORA-00312: online log 1 thread 1: '/disk1/oracle/dbs/t1_log1.f'
+ORA-27037: unable to obtain file status
+SVR4 Error: 2: No such file or directory
+Additional information: 3
+</pre>
+<p>If the access problem is temporary due to a hardware issue, correct the problem and processing will continue automatically. If the loss is permanent, a new member can be added and the old one dropped from the group.</p>
+<p>To add a new member to a redo log group, issue the following statement:</p>
+<pre>
+SQL&gt; ALTER DATABASE ADD LOGFILE MEMBER 'log_file_name' REUSE TO GROUP n;
+</pre>
+<p>You can issue this statement even when the database is open, without affecting database availability.</p>
+<p>If all members of an inactive group that has been archived are lost, the group can be dropped and re-created.</p>
+<p>In all other cases (loss of all online log members for the current <code>ACTIVE</code> group, or an inactive group which has not yet been archived), you must fail over to the standby database. Refer to <a href="role_management.htm#g1068999">Chapter 8</a> for the failover procedure.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BAJJICIH"></a>
+<div id="SBYDB4874" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">11.8.6</span> Incomplete Recovery of the Primary Database</h3>
+<p>Incomplete recovery of the primary database is normally done in cases such as when the database is logically corrupted (by a user or an application) or when a tablespace or datafile was accidentally dropped from database.</p>
+<p>Depending on the current database checkpoint SCN on the standby database instances, you can use one of the following procedures to perform incomplete recovery of the primary database. All the procedures are in order of preference, starting with the one that is the least time consuming.</p>
+<p><a id="SBYDB5061"></a><span class="subhead3">Using Flashback Database&nbsp;</span>Using Flashback Database is the recommended procedure when the Flashback Database feature is enabled on the primary database, none of the database files are lost, and the point-in-time recovery is greater than the oldest flashback SCN or the oldest flashback time. See <a href="scenarios.htm#i1049616">Section 13.3</a> for the procedure to use Flashback Database to do point-in-time recovery.</p>
+<p><a id="SBYDB5062"></a><span class="subhead3">Using the standby database instance&nbsp;</span>This is the recommended procedure when the standby database is behind the desired incomplete recovery time, and Flashback Database is not enabled on the primary or standby databases:</p>
+<ol>
+<li>
+<p>Recover the standby database to the desired point in time.</p>
+<pre>
+RECOVER DATABASE UNTIL TIME '<span class="italic">time</span>';
+</pre>
+<p>Alternatively, incomplete recovery time can be specified using the SCN or log sequence number:</p>
+<pre>
+RECOVER DATABASE UNTIL SCN <span class="variable">incomplete recovery SCN</span>';
+RECOVER DATABASE UNTIL LOGSEQ <span class="variable">incomplete recovery log sequence number</span> THREAD <span class="variable">thread number</span>;
+</pre></li>
+<li>
+<p>Open the standby database in read-only mode to verify the state of database.</p>
+<p>If the state is not what is desired, use the LogMiner utility to look at the archived redo log files to find the right target time or SCN for incomplete recovery. Alternatively, you can start by recovering the standby database to a point that you know is before the target time, and then open the database in read-only mode to examine the state of the data. Repeat this process until the state of the database is verified to be correct. Note that if you recover the database too far (that is, past the SCN where the error occurred) you cannot return it to an earlier SCN.</p>
+</li>
+<li>
+<p>Activate<a id="sthref858"></a> <a id="sthref859"></a>the standby database using the SQL <code>ALTER DATABASE ACTIVATE STANDBY DATABASE</code> statement. This converts the standby database to a primary database, creates a new resetlogs branch, and opens the database. See <a href="manage_ps.htm#i1026480">Section 9.4</a> to learn how the standby database reacts to the new reset logs branch.</p>
+</li>
+</ol>
+<p><a id="SBYDB5063"></a><span class="subhead3">Using the primary database instance&nbsp;</span>If all of the standby database instances have already been recovered past the desired point in time and Flashback Database is not enabled on the primary or standby database, then this is your only option.</p>
+<p>Use the following procedure to perform incomplete recovery on the primary database:</p>
+<ol>
+<li>
+<p>Use LogMiner or another means to identify the time or SCN at which all the data in the database is known to be good.</p>
+</li>
+<li>
+<p>Using the time or SCN, issue the following RMAN commands to do incomplete database recovery and open the database with the <code>RESETLOGS</code> option (after connecting to catalog database and primary instance that is in <code>MOUNT</code> state):</p>
+<pre>
+RUN 
+{
+SET UNTIL TIME '<span class="italic">time</span>';
+RESTORE DATABASE;
+RECOVER DATABASE;
+}
+ALTER DATABASE OPEN RESETLOGS;
+</pre></li>
+</ol>
+<p>After this process, all standby database instances must be reestablished in the Data Guard configuration.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDBEICE"></a>
+<div id="SBYDB00752" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">11.9</span> Additional Backup Situations</h2>
+<p>The following sections describe how to modify the backup procedures for other configurations, such as when the standby and primary databases cannot share backup files; the standby instance is only used to remotely archive redo log files; or the standby database filenames are different than the primary database.</p>
+<a id="BAJBJCEA"></a>
+<div id="SBYDB4875" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">11.9.1</span> Standby Databases Too Geographically Distant to Share Backups</h3>
+<p>If the standby databases are far apart from one another, the backups taken on them may not be easily accessible by the primary system or other standby systems. Perform a complete backup of the database on all systems to perform recovery operations. The fast recovery area can reside locally on the primary and standby systems (that is, the fast recovery area does not have to be the same for the primary and standby databases).</p>
+<p>In this scenario, you can still use the general strategies described in <a href="#i1024051">Section 11.8</a>, with the following exceptions:</p>
+<ul>
+<li>
+<p>Backup files created by RMAN must be tagged with the local system name, and with <code>RESTORE</code> operations that tag must be used to restrict RMAN from selecting backups taken on the same host. In other words, the <code>BACKUP</code> command must use the <code>TAG</code> <span class="variable">system name</span> option when creating backups; the <code>RESTORE</code> command must use the <code>FROM TAG</code> <span class="variable">system name</span> option; and the <code>RECOVER</code> command must use the <code>FROM TAG</code> <span class="variable">system name</span> <code>ARCHIVELOG TAG</code> <span class="variable">system name</span> option.</p>
+</li>
+<li>
+<p>Disaster recovery of the standby site:</p>
+<ol>
+<li>
+<p>Start the standby instance in the <code>NOMOUNT</code> state using the same parameter files with which the standby was operating earlier.</p>
+</li>
+<li>
+<p>Create a standby control file on the primary instance using the SQL <code>ALTER DATABASE CREATE STANDBY CONTROLFILE AS</code> <span class="variable">filename</span> statement, and use the created control file to mount the standby instance.</p>
+</li>
+<li>
+<p>Issue the following RMAN commands to restore and recover the database files:</p>
+<pre>
+RESTORE DATABASE FROM TAG '<span class="variable">system name</span>';
+RECOVER DATABASE FROM TAG '<span class="variable">system name</span>' ARCHIVELOG TAG '<span class="variable">system name</span>';
+</pre></li>
+<li>
+<p>Restart Redo Apply.</p>
+</li>
+</ol>
+</li>
+</ul>
+<p>The standby instance will fetch the remaining archived redo log files.</p>
+</div>
+<!-- class="sect2" -->
+<div id="SBYDB4876" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref860"></a>
+<h3 class="sect2"><span class="secnum">11.9.2</span> Standby Database Does Not Contain Datafiles, Used as a FAL Server</h3>
+<p>Use the same procedure described in <a href="#CHDEDICG">Section 11.4</a>, with the exception that the RMAN commands that back up database files cannot be run against the FAL server. The FAL server can be used as a backup source for all archived redo log files, thus off-loading backups of archived redo log files to the FAL server.</p>
+</div>
+<!-- class="sect2" -->
+<div id="SBYDB4877" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref861"></a>
+<h3 class="sect2"><span class="secnum">11.9.3</span> Standby Database File Names Are Different From Primary Database</h3>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+As of Oracle Database 11<span class="italic">g</span>, the recovery catalog can resynchronize the file names from each standby database site. However, if the file names from a standby database were never resynchronized for some reason, then you can use the procedure described in this section to do so.</div>
+<p>If the database filenames are not the same on the primary and standby databases that were never resynchronized, the <code>RESTORE</code> and <code>RECOVER</code> commands you use will be slightly different. To obtain the actual datafile names on the standby database, query the <code>V$DATAFILE</code> view and specify the <code>SET NEWNAME</code> option for all the datafiles in the database:</p>
+<pre>
+RUN 
+{
+SET NEWNAME FOR DATAFILE 1 TO '<span class="variable">existing file location for file#1</span> from V$DATAFILE';
+SET NEWNAME FOR DATAFILE 2 TO '<span class="variable">existing file location for file#2</span> from V$DATAFILE';
+&hellip;
+&hellip;
+ SET NEWNAME FOR DATAFILE <span class="variable">n</span> TO '<span class="variable">existing file location for file#n</span> from V$DATAFILE';
+ RESTORE {DATAFILE &lt;<span class="variable">n,m,&hellip;</span>&gt; | TABLESPACE <span class="variable">tbs_name_1, 2, &hellip;</span>| DATABASE;
+SWITCH DATAFILE ALL; 
+RECOVER DATABASE {NOREDO};
+}
+</pre>
+<p>Similarly, the RMAN <code>DUPLICATE</code> command should also use the <code>SET NEWNAME</code> option to specify new filenames during standby database creation. Or you could set the <code>LOG_FILE_NAME_CONVERT</code> and <code>DB_FILE_NAME_CONVERT</code> parameters.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="scenarios.htm#i1067236">Section 13.5, "Creating a Standby Database That Uses OMF or Oracle ASM"</a> for information about precedence rules when both the <code>DB_FILE_NAME_CONVERT</code> and <code>DB_CREATE_FILE_DEST</code> parameters are set on the standby</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CIHIAADC"></a>
+<div id="SBYDB00759" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">11.10</span> Using RMAN Incremental Backups to Roll Forward a Physical Standby Database</h2>
+<p>In some situations, R<a id="sthref862"></a><a id="sthref863"></a>MAN incremental backups can be used to synchronize<a id="sthref864"></a><a id="sthref865"></a><a id="sthref866"></a> a physical standby database with the primary database. You can use the <a id="sthref867"></a><a id="sthref868"></a><a id="sthref869"></a>RMAN <code>BACKUP INCREMENTAL FROM SCN</code> command to create a backup on the primary database that starts at the current SCN of the standby, which can then be used to roll the standby database forward in time.</p>
+<p>The steps described in this section apply to situations in which RMAN incremental backups may be useful because the physical standby database either:</p>
+<ul>
+<li>
+<p>Lags far behind the primary database</p>
+</li>
+<li>
+<p>Has widespread nologging changes</p>
+</li>
+<li>
+<p>Has nologging changes on a subset of datafiles</p>
+</li>
+</ul>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Oracle recommends the use of a recovery catalog when performing this operation. These steps are possible without a recovery catalog, but great care must be taken to correct the file names in the restored control file.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink BRADV" href="../../backup.112/e10642/toc.htm"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a> for more information about RMAN incremental backups</div>
+<a id="CIHEGFEG"></a>
+<div id="SBYDB4878" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">11.10.1</span> Steps for Using RMAN Incremental Backups</h3>
+<p>Except where stated otherwise, the following steps apply to all three situations just listed.</p>
+<ol>
+<li>
+<p>Stop Redo Apply on the standby database:</p>
+<pre>
+SQL&gt; ALTER DATABASE RECOVER MANAGED STANDBY DATABASE CANCEL;
+</pre></li>
+<li id="CIHCAHAC">
+<p>On the standby database, compute the <code>FROM SCN</code> for the incremental backup. This is done differently depending on the situation:</p>
+<ul>
+<li>
+<p>On a standby that lags far behind the primary database, query the <code>V$DATABASE</code> view and record the current SCN of the standby database:</p>
+<pre>
+SQL&gt; SELECT CURRENT_SCN FROM V$DATABASE;
+
+CURRENT_SCN
+-----------
+     233995
+</pre></li>
+<li>
+<p>On a standby that has widespread nologging changes, query the <code>V$DATAFILE</code> view to record the lowest <code>FIRST_NONLOGGED_SCN</code>:</p>
+<pre>
+SQL&gt; SELECT MIN(FIRST_NONLOGGED_SCN) FROM V$DATAFILE -
+&gt; WHERE FIRST_NONLOGGED_SCN&gt;0;
+
+MIN(FIRST_NONLOGGED_SCN)
+------------------------
+                  223948
+</pre></li>
+<li>
+<p>On a standby that has nologging changes on a subset of datafiles, query the <code>V$DATAFILE</code> view, as follows:</p>
+<pre>
+SQL&gt; SELECT FILE#, FIRST_NONLOGGED_SCN FROM V$DATAFILE -
+&gt; WHERE FIRST_NONLOGGED_SCN &gt; 0;
+
+FILE#      FIRST_NONLOGGED_SCN
+---------- -------------------
+         4              225979
+         5              230184
+</pre></li>
+</ul>
+</li>
+<li>
+<p>Connect to the primary database as the RMAN target and create an incremental backup from the current SCN (for a standby lagging far behind the primary) or from the lowest <code>FIRST_NONLOGGED_SCN</code> (for a standby with widespread nologging changes) of the standby database that was recorded in step <a href="#CIHCAHAC">2</a>:</p>
+<pre>
+RMAN&gt; BACKUP INCREMENTAL FROM SCN 233995 DATABASE FORMAT '/tmp/ForStandby_%U' tag 'FORSTANDBY';
+</pre>
+<p>If the standby has nologging changes on a subset of datafiles, then create an incremental backup for each datafile listed in the <code>FIRST_NONLOGGED_SCN</code> column (recorded in step 2), as follows:</p>
+<pre>
+RMAN&gt; BACKUP INCREMENTAL FROM SCN 225979 DATAFILE 4 FORMAT '/tmp/ForStandby_%U' TAG 'FORSTANDBY';
+RMAN&gt; BACKUP INCREMENTAL FROM SCN 230184 DATAFILE 5 FORMAT '/tmp/ForStandby_%U' TAG 'FORSTANDBY';
+</pre>
+<p>The <code>BACKUP</code> commands shown generate datafile backups, as well as a control file backup that will be used in step 7.</p>
+</li>
+<li>
+<p>If the backup pieces are not on shared storage, then transfer all the backup pieces created on the primary to the standby:</p>
+<pre>
+scp /tmp/ForStandby_* standby:/tmp
+</pre></li>
+<li>
+<p>If you had to copy the backup pieces in the previous step, or if you are not connected to the recovery catalog for the entire process, then you must catalog the new backup pieces on the standby (otherwise, go on to the next step):</p>
+<pre>
+RMAN&gt; CATALOG START WITH '/tmp/ForStandby';
+</pre></li>
+<li>
+<p>Connect to the standby database as the RMAN target and execute the <code>REPORT SCHEMA</code> statement to ensure that the standby database site is automatically registered and that the files names at the standby site are displayed:</p>
+<pre>
+RMAN&gt; REPORT SCHEMA;
+</pre></li>
+<li>
+<p>Connect to the standby database as the RMAN target and apply incremental backups by executing the following commands. Note that the <code>RESTORE STANDBY CONTROLFILE FROM TAG</code> command only works if you are connected to the recovery catalog for the entire process. Otherwise, you must use the <code>RESTORE STANDBY CONTROLFILE FROM '&lt;control file backup filename&gt;'</code> command.</p>
+<pre>
+RMAN&gt; STARTUP FORCE NOMOUNT;
+RMAN&gt; RESTORE STANDBY CONTROLFILE FROM TAG 'FORSTANDBY';
+RMAN&gt; ALTER DATABASE MOUNT;
+RMAN&gt; RECOVER DATABASE NOREDO;
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If a recovery catalog is used, then the RMAN <code>RECOVER</code> command will fix the path names for datafiles in the standby control file. If no recovery catalog is used, then you must manually edit the file names in your standby control file or use the RMAN <code>SET NEWNAME</code> command to assign the datafile names. See <a class="olink RCMRF153" href="../../backup.112/e10643/rcmsynta2014.htm#RCMRF153"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for more information about the RMAN <code>RECOVER</code> and <code>SET NEWNAME</code> commands.</div>
+</li>
+<li>
+<p>On standbys that have widespread nologging changes or that have nologging changes on a subset of datafiles, query the <code>V$DATAFILE</code> view to verify there are no datafiles with nologged changes. The following query should return zero rows:</p>
+<pre>
+SQL&gt; SELECT FILE#, FIRST_NONLOGGED_SCN FROM V$DATAFILE -
+&gt; WHERE FIRST_NONLOGGED_SCN &gt; 0;
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The incremental backup will become obsolete in 7 days, or you can remove it now using the RMAN <code>DELETE</code> command.</div>
+</li>
+<li>
+<p>Start Redo Apply on the physical standby database:</p>
+<pre>
+SQL&gt; ALTER DATABASE RECOVER MANAGED STANDBY DATABASE -
+&gt; USING CURRENT LOGFILE DISCONNECT FROM SESSION;
+</pre></li>
+</ol>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1813">
+<tr>
+<td class="cellalignment1820">
+<table class="cellalignment1818">
+<tr>
+<td class="cellalignment1817"><a href="manage_ls.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1817"><a href="rollup.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1999, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1822">
+<table class="cellalignment1816">
+<tr>
+<td class="cellalignment1817"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1817"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1817"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1817"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1817"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1817"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

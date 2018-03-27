@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>RECOVER</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1054" />
+<meta name="description" content="A guide to backup and recovery of Oracle databases, including RMAN backup and recovery, RMAN data transfer, Oracle Flashback Technology, and user-managed backup and recovery" />
+<meta name="dcterms.created" content="2015-05-13T7:47:43Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Backup and Recovery Reference" />
+<meta name="dcterms.identifier" content="E10643-09" />
+<meta name="dcterms.isVersionOf" content="RCMRF" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2003, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="rcmsynta2.htm" title="Previous" type="text/html" />
+<link rel="Next" href="rcmsynta2002.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10643.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">44/158</span> <!-- End Header --><a id="i84135"></a>
+<div id="RCMRF140" class="refsect1">
+<h1 class="refsect1">RECOVER<a id="ABC1073633"></a><a id="ABC1073633SRI1"></a><a id="ABC1073633SRI12"></a><a id="ABC1073633SRI123"></a><a id="ABC1073633SRI1234"></a></h1>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref1257"></a>Purpose</p>
+<p><a id="sthref1258"></a><a id="sthref1259"></a><a id="sthref1260"></a><a id="sthref1261"></a><a id="sthref1262"></a>Use the <a id="CHDCBDBD"></a><code dir="ltr">RECOVER</code> command to perform one of the following distinct tasks:</p>
+<ul>
+<li>
+<p>Perform complete recovery of the whole database or one or more restored data files</p>
+</li>
+<li>
+<p>Perform point-in-time recovery of a database (DBPITR) or tablespace (TSPITR)</p>
+</li>
+<li>
+<p>Apply incremental backups to a data file image copy (<span class="italic">not</span> a restored data file) to roll it forward in time</p>
+</li>
+<li>
+<p>Recover a corrupt data block or set of data blocks within a data file</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink BRADV8005" href="../../backup.112/e10642/rcmcomre.htm#BRADV8005"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a> to learn how to recover data files</div>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="CHDBGGGI"></a>Prerequisites</p>
+<p>All redo or incremental changes required for the recovery must exist on disk or in SBT. If RMAN needs to restore incremental backups or archived redo log files during recovery, then you must either have automatic channels configured or manually allocate channels of the same type that created these backups.</p>
+<p><a id="sthref1263"></a>If you perform media recovery on an encrypted tablespace, then the Oracle wallet must be open when performing media recovery of this tablespace. See <a class="olink ADMIN12327" href="../../server.112/e25494/tspaces.htm#ADMIN12327"><span class="italic">Oracle Database Administrator's Guide</span></a> to learn about encrypted tablespaces.</p>
+<p class="subhead2"><a id="BGBDFJFG"></a><a id="RCMRF90237"></a>Prerequisites Specific to RECOVER BLOCK</p>
+<p>The following prerequisites apply to <code dir="ltr">RECOVER BLOCK</code>:</p>
+<ul>
+<li>
+<p><a id="sthref1264"></a><a id="sthref1265"></a><a id="sthref1266"></a>The target database must run in <code dir="ltr">ARCHIVELOG</code> mode and be open or mounted with a current control file.</p>
+</li>
+<li>
+<p>RMAN can only recover blocks marked media corrupt. The <a id="sthref1267"></a><a id="sthref1268"></a><code dir="ltr">V$DATABASE_BLOCK_CORRUPTION</code> view indicates which blocks in a file were marked corrupt since the most recent <code dir="ltr">BACKUP</code> or <code dir="ltr">BACKUP ... VALIDATE</code> command was run against the file.</p>
+</li>
+<li>
+<p><a id="sthref1269"></a>The backups of the data files containing the corrupt blocks must be full backups and not proxy backups. If only proxy backups exist, then you can restore them to a nondefault location on disk, in which case RMAN considers them data file copies. You can then use the data file copies for block media recovery.</p>
+</li>
+<li>
+<p>RMAN can use only archived redo log files for recovery. Block media recovery cannot survive a missing or inaccessible log, although it can sometimes survive missing or inaccessible records (see <a class="olink BRADV118" href="../../backup.112/e10642/rcmblock.htm#BRADV118"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a>).</p>
+</li>
+<li>
+<p>For RMAN to be able to search the flashback logs for good copies of corrupt blocks, Flashback Database must be enabled on the target database.</p>
+</li>
+<li>
+<p>For RMAN to be able to search a standby database for good copies of corrupt blocks, the target database must be associated with a physical standby database in a Data Guard environment. In addition, the physical standby database must be open read-only in managed recovery.</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">Note:</p>
+An active Data Guard license is required for this operation.</div>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="CHDJBACD"></a>Usage Notes</p>
+<p>By default, RMAN performs complete recovery. For point-in-time recovery, the best practice is to enter a <code dir="ltr"><a href="rcmsynta2014.htm#i85845">SET</a></code> <code dir="ltr">UNTIL</code> command before both the <code dir="ltr"><a href="rcmsynta2008.htm#i85188">RESTORE</a></code> and <code dir="ltr">RECOVER</code> commands in a <code dir="ltr"><a href="rcmsynta2012.htm#i85731">RUN</a></code> command so that the <code dir="ltr">UNTIL</code> time applies to both commands. If you run <code dir="ltr">SET UNTIL</code> after restoring the database, then you may not be able to recover the database to the target time because the restored files may have timestamps later than the target time.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You must open the database with the <code dir="ltr">RESETLOGS</code> option after incomplete recovery or recovery with a backup control file.</div>
+<p class="subhead2"><a id="RCMRF90238"></a>Incremental Backups and Archived Redo Log Files</p>
+<p><a id="sthref1270"></a>Except for <code dir="ltr">RECOVER BLOCK</code>, RMAN can use both incremental backups and archived redo log files for recovery. RMAN uses the following search order:</p>
+<ol>
+<li>
+<p>Incremental backup sets on disk or tape</p>
+</li>
+<li>
+<p>Archived redo log files on disk</p>
+</li>
+<li>
+<p>Archived redo log backups on disk</p>
+</li>
+<li>
+<p>Archived redo log backup sets on tape</p>
+</li>
+</ol>
+<p>When RMAN chooses a destination to restore archived redo log files, it uses the following order of precedence:</p>
+<ol>
+<li>
+<p><code dir="ltr"><a href="rcmsynta2014.htm#i85845">SET</a></code> <code dir="ltr">ARCHIVELOG DESTINATION</code></p>
+</li>
+<li>
+<p>The <a id="sthref1271"></a><code dir="ltr">LOG_ARCHIVE_DEST_</code><code dir="ltr"><span class="codeinlineitalic">n</span></code> parameter whose value is set to <code dir="ltr"><a id="sthref1272"></a>LOCATION=<a id="sthref1273"></a>USE_DB_RECOVERY_FILE_DEST</code></p>
+</li>
+<li>
+<p><code dir="ltr">LOG_ARCHIVE_DEST_1</code></p>
+</li>
+</ol>
+<p>RMAN can apply incremental backups to data files that were not restored from an incremental backup. If overlapping levels of incremental backup exist, then RMAN automatically chooses the level covering the longest period of time.</p>
+<p class="subhead2"><a id="RCMRF90239"></a>Recovery Through RESETLOGS</p>
+<p>You must <code dir="ltr"><a href="rcmsynta2008.htm#i85188">RESTORE</a></code> data files before you can recover them. RMAN can recover through <code dir="ltr">RESETLOGS</code> operations transparently if the data files to be recovered are from a parent incarnation. If required, the <code dir="ltr">RECOVER</code> command can also restore and apply archived redo log files and incremental backups from previous database incarnations, even if those logs were generated in previous releases of Oracle Database.</p>
+<p>When recovering through an <code dir="ltr">OPEN RESETLOGS</code>, ensure that you have all logs needed for recovery. In a previous database incarnation, you must have the logs from the time of the backup until the SCN that is 1 less than the <code dir="ltr">RESETLOGS SCN</code>. The incarnation table must have a complete history of <code dir="ltr">RESETLOGS</code> operations from the creation time of the database backup. If the complete metadata is not found in <code dir="ltr"><a id="sthref1274"></a><a id="sthref1275"></a>V$DATABASE_INCARNATION</code>, then you can re-create this metadata by using <code dir="ltr"><a href="rcmsynta008.htm#i79811">CATALOG</a></code> for the archived redo log files from the missing incarnations.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<code dir="ltr"><a href="rcmsynta2008.htm#i85188">RESTORE</a></code> command for explanation of the default location for restoring archived redo log files. RMAN automatically specifies the <code dir="ltr">MAXSIZE</code> option when staging logs in the fast recovery area.</div>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref1276"></a>Syntax</p>
+<p class="subhead2"><a id="RCMRF90240"></a><a id="sthref1277"></a><a id="sthref1278"></a><a href="#BGBHDECB"><span class="xreftitleitalic"><span class="italic">recover</span></span></a>::=</p>
+<img width="409" height="64" src="img/recover.gif" alt="Description of recover.gif follows" /><br />
+<a id="sthref1279" href="img_text/recover.htm">Description of the illustration recover.gif</a><br />
+<br />
+<p>(<a href="rcmsubcl006.htm#BABDEJAC"><span class="xreftitleitalic"><span class="italic">deviceSpecifier</span>::=</span></a>, <a href="#CHDECJGE"><span class="xreftitleitalic"><span class="italic">recoverObject</span>::=</span></a>, <a href="#CHDIIEGB"><span class="xreftitleitalic"><span class="italic">recoverOptionList</span>::=</span></a>)</p>
+<p class="subhead2"><a id="RCMRF90241"></a><a id="sthref1280"></a><a id="sthref1281"></a><a href="#CHDBIFBF"><span class="xreftitleitalic"><span class="italic">recoverSpec</span></span></a>::=</p>
+<img width="270" height="107" src="img/recoverspec.gif" alt="Description of recoverspec.gif follows" /><br />
+<a id="sthref1282" href="img_text/recoverspec.htm">Description of the illustration recoverspec.gif</a><br />
+<br />
+<p>(<a href="#CHDECJGE"><span class="xreftitleitalic"><span class="italic">recoverObject</span>::=</span></a>, <a href="#CHDIDHBB"><span class="xreftitleitalic"><span class="italic">blockObject</span>::=</span></a>, <a href="#CHDIIEGB"><span class="xreftitleitalic"><span class="italic">recoverOptionList</span>::=</span></a>)</p>
+<p class="subhead2"><a id="CHDECJGE"></a><a id="RCMRF90242"></a><a id="sthref1283"></a><a id="sthref1284"></a><a href="#BGBIGJEH"><span class="xreftitleitalic"><span class="italic">recoverObject</span></span></a>::=</p>
+<img width="511" height="279" src="img/recoverobject.gif" alt="Description of recoverobject.gif follows" /><br />
+<a id="sthref1285" href="img_text/recoverobject.htm">Description of the illustration recoverobject.gif</a><br />
+<br />
+<p>(<a href="#CHDBEEFB"><span class="xreftitleitalic"><span class="italic">dbObject</span>::=</span></a>, <a href="#CHDIDHBB"><span class="xreftitleitalic"><span class="italic">blockObject</span>::=</span></a>, <a href="rcmsubcl019.htm#BABEDABD"><span class="xreftitleitalic"><span class="italic">untilClause</span>::=</span></a>)</p>
+<p class="subhead2"><a id="CHDBEEFB"></a><a id="RCMRF90243"></a><a id="sthref1286"></a><a id="sthref1287"></a><a href="#BGBJCJBJ"><span class="xreftitleitalic"><span class="italic">dbObject</span></span></a>::=</p>
+<img width="331" height="138" src="img/dbobject.gif" alt="Description of dbobject.gif follows" /><br />
+<a id="sthref1288" href="img_text/dbobject.htm">Description of the illustration dbobject.gif</a><br />
+<br />
+<p>(<a href="rcmsubcl005.htm#BABCCBBJ"><span class="xreftitleitalic"><span class="italic">datafileSpec</span>::=</span></a>)</p>
+<p class="subhead2"><a id="CHDIDHBB"></a><a id="RCMRF90244"></a><a id="sthref1289"></a><a id="sthref1290"></a><a href="#CHDCAGGA"><span class="xreftitleitalic"><span class="italic">blockObject</span></span></a>::=</p>
+<img width="419" height="138" src="img/blockobject.gif" alt="Description of blockobject.gif follows" /><br />
+<a id="sthref1291" href="img_text/blockobject.htm">Description of the illustration blockobject.gif</a><br />
+<br />
+<p>(<a href="rcmsubcl005.htm#BABCCBBJ"><span class="xreftitleitalic"><span class="italic">datafileSpec</span>::=</span></a>)</p>
+<p class="subhead2"><a id="CHDIIEGB"></a><a id="RCMRF90245"></a><a id="sthref1292"></a><a id="sthref1293"></a><a href="#i999383"><span class="xreftitleitalic"><span class="italic">recoverOptionList</span></span></a>::=</p>
+<img width="385" height="534" src="img/recoveroptionlist.gif" alt="Description of recoveroptionlist.gif follows" /><br />
+<a id="sthref1294" href="img_text/recoveroptionlist.htm">Description of the illustration recoveroptionlist.gif</a><br />
+<br />
+<p class="subhead2"><a id="RCMRF90246"></a><a id="sthref1295"></a><a id="sthref1296"></a>sizeSpec::=</p>
+<img width="129" height="88" src="img/sizespec.gif" alt="Description of sizespec.gif follows" /><br />
+<a id="sthref1297" href="img_text/sizespec.htm">Description of the illustration sizespec.gif</a><br />
+<br /></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref1298"></a>Semantics</p>
+<p class="subhead2"><a id="BGBHDECB"></a><a id="RCMRF90247"></a><span class="italic"><a id="sthref1299"></a><a id="sthref1300"></a>recover</span></p>
+<div class="inftblinformalwide">
+<table class="cellalignment1929" title="Semantics of RECOVER Command" summary="Describes RECOVER command parameters" dir="ltr">
+<thead>
+<tr class="cellalignment1920">
+<th class="cellalignment1930" id="r1c1-t6">Syntax Element</th>
+<th class="cellalignment1930" id="r1c2-t6">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r2c1-t6" headers="r1c1-t6"><code dir="ltr"><a id="sthref1301"></a><a id="sthref1302"></a>DEVICE&nbsp;TYPE</code> <code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl006.htm#i81605">deviceSpecifier</a></span></code></td>
+<td class="cellalignment1926" headers="r2c1-t6 r1c2-t6">Allocates automatic channels for the specified device type only. For example, if you configure automatic disk and tape channels, and if you issue <code dir="ltr">RECOVER DEVICE TYPE DISK</code>, then RMAN allocates only disk channels.
+<p>You must have configured a device type with the <code dir="ltr"><a href="rcmsynta010.htm#i80338">CONFIGURE</a></code> <code dir="ltr">DEVICE TYPE</code> command (except for <code dir="ltr">DISK</code>, which is preconfigured) before specifying the <code dir="ltr">DEVICE TYPE</code> option.</p>
+<p><span class="bold">Note:</span> You cannot manually allocate channels and then run <code dir="ltr">RECOVER DEVICE TYPE</code>.</p>
+<p><span class="bold">See Also:</span> <code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl006.htm#i81605">deviceSpecifier</a></span></code></p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r3c1-t6" headers="r1c1-t6"><code dir="ltr"><span class="codeinlineitalic"><a href="#CHDBIFBF"><span class="italic">recoverSpec</span></a></span></code></td>
+<td class="cellalignment1926" headers="r3c1-t6 r1c2-t6">Specifies the type of object being recovered.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformalwide" -->
+<p class="subhead2"><a id="CHDBIFBF"></a><a id="RCMRF90248"></a><span class="italic"><a id="sthref1303"></a><a id="sthref1304"></a>recoverSpec</span></p>
+<div class="inftblinformalwide">
+<table class="cellalignment1929" title="Semantics of RECOVER Command" summary="Describes RECOVER command recoverSpec parameters" dir="ltr">
+<thead>
+<tr class="cellalignment1920">
+<th class="cellalignment1930" id="r1c1-t7">Syntax Element</th>
+<th class="cellalignment1930" id="r1c2-t7">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r2c1-t7" headers="r1c1-t7"><code dir="ltr"><span class="codeinlineitalic"><a href="#BGBIGJEH"><span class="italic">recoverObject</span></a></span></code></td>
+<td class="cellalignment1926" headers="r2c1-t7 r1c2-t7">Specifies the type of object being recovered.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r3c1-t7" headers="r1c1-t7"><code dir="ltr"><span class="codeinlineitalic"><a href="#CHDCAGGA"><span class="italic">blockObject</span></a></span></code></td>
+<td class="cellalignment1926" headers="r3c1-t7 r1c2-t7">Specifies the blocks to be recovered with block media recovery.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r4c1-t7" headers="r1c1-t7"><code dir="ltr"><span class="codeinlineitalic"><a href="#i999383"><span class="italic">recoverOptionList</span></a></span></code></td>
+<td class="cellalignment1926" headers="r4c1-t7 r1c2-t7">Specifies recovery options.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformalwide" -->
+<p class="subhead2"><a id="BGBIGJEH"></a><a id="RCMRF90249"></a><span class="italic"><a id="sthref1305"></a><a id="sthref1306"></a>recoverObject</span></p>
+<p>This subclause specifies which files to recover. Refer to <a href="#CHDECJGE"><span class="xreftitleitalic"><span class="italic">recoverObject</span>::=</span></a> for the syntax diagram.</p>
+<div class="inftblinformalwide">
+<table class="cellalignment1929" title="Semantics of recoverObject Subclause" summary="Describes RECOVER command recoverObject parameters" dir="ltr">
+<thead>
+<tr class="cellalignment1920">
+<th class="cellalignment1930" id="r1c1-t8">Syntax Element</th>
+<th class="cellalignment1930" id="r1c2-t8">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r2c1-t8" headers="r1c1-t8"><code dir="ltr"><a id="sthref1307"></a>COPY&nbsp;OF</code> <code dir="ltr"><span class="codeinlineitalic"><a href="#BGBJCJBJ"><span class="italic">dbObject</span></a></span></code></td>
+<td class="cellalignment1926" headers="r2c1-t8 r1c2-t8">Applies incremental backups to the specified image copy to roll it forward to any time equal to or before the most recent incremental backup of the file. The existing image copy is overwritten and remains in a fuzzy state during the recovery. RMAN makes an autobackup after recovering the image copy.
+<p>This command updates a data file copy and is <span class="italic">not</span> a media recovery of a current database file. This command is meant to be used with the <code dir="ltr">BACKUP ... FOR RECOVER OF COPY</code> syntax to implement a strategy using incrementally updated backups.</p>
+<p>The following requirements must be met:</p>
+<ul>
+<li>
+<p>At least one copy of each data file that you are recovering must exist.</p>
+</li>
+<li>
+<p>Incremental backups taken after the image copy that you are recovering must exist.</p>
+</li>
+</ul>
+<p>RMAN selects one suitable copy if there are multiple possible copies to which the incremental backups can be applied to perform the operation.</p>
+<p><span class="bold">Note:</span> RMAN issues a warning (not an error) if it cannot recover to the specified time because no incremental backups are available.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r3c1-t8" headers="r1c1-t8"><code dir="ltr">&nbsp;&nbsp;&nbsp;<a id="sthref1308"></a><a id="sthref1309"></a>WITH TAG</code> <code dir="ltr"><span class="codeinlineitalic">tag_name</span></code></td>
+<td class="cellalignment1926" headers="r3c1-t8 r1c2-t8">Specifies a tag name to identify the image copy to be rolled forward.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r4c1-t8" headers="r1c1-t8"><code dir="ltr"><a id="sthref1310"></a>DATAFILECOPY</code> <code dir="ltr">'</code><code dir="ltr"><span class="codeinlineitalic">filename</span></code><code dir="ltr">'</code></td>
+<td class="cellalignment1926" headers="r4c1-t8 r1c2-t8">Applies incremental backups to the specified data file image copy (see <a href="#CHDFCFJI">Example 3-4</a>). Refer to description of <code dir="ltr">RECOVER COPY OF</code>.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r5c1-t8" headers="r1c1-t8"><code dir="ltr"><span class="codeinlineitalic"><a href="#BGBJCJBJ"><span class="italic">dbObject</span></a></span></code></td>
+<td class="cellalignment1926" headers="r5c1-t8 r1c2-t8">Specifies the data blocks that require recovery.
+<p><span class="bold">See Also:</span> <code dir="ltr"><span class="codeinlineitalic"><a href="#BGBJCJBJ"><span class="italic">dbObject</span></a></span></code></p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r6c1-t8" headers="r1c1-t8"><code dir="ltr"><a id="sthref1311"></a>SKIP</code></td>
+<td class="cellalignment1926" headers="r6c1-t8 r1c2-t8">Takes the data files in the specified tablespaces offline before starting media recovery. These files are left offline after the media recovery is complete.
+<p>This option is useful for avoiding recovery of tablespaces containing only temporary data or for postponing recovery of some tablespaces.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r7c1-t8" headers="r1c1-t8"><code dir="ltr">&nbsp;&nbsp;&nbsp;<a id="sthref1312"></a>FOREVER</code></td>
+<td class="cellalignment1926" headers="r7c1-t8 r1c2-t8">Takes the data files offline with the <code dir="ltr">DROP</code> option (see <a href="#CHDGFJAD">Example 3-3</a>). Use <code dir="ltr">SKIP FOREVER TABLESPACE</code> when you intend to drop the specified tablespaces after opening the database with the <code dir="ltr">RESETLOGS</code> option.
+<p><span class="bold">Note:</span> If you perform incomplete recovery, then <code dir="ltr">SKIP</code> requires the <code dir="ltr">FOREVER</code> option.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r8c1-t8" headers="r1c1-t8"><br />
+<code dir="ltr">&nbsp;&nbsp;&nbsp;<a id="sthref1313"></a>TABLESPACE</code><br />
+<code dir="ltr">&nbsp;&nbsp;&nbsp;</code><code dir="ltr"><span class="codeinlineitalic">tablespace_name</span></code></td>
+<td class="cellalignment1926" headers="r8c1-t8 r1c2-t8">Specifies the name of the tablespace to take offline.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r9c1-t8" headers="r1c1-t8"><br />
+<a id="sthref1314"></a><a id="sthref1315"></a><code dir="ltr">TO&nbsp;RESTORE&nbsp;POINT</code><br />
+<code dir="ltr"><span class="codeinlineitalic">restore_point_name</span></code></td>
+<td class="cellalignment1926" headers="r9c1-t8 r1c2-t8">Specifies a restore point for termination of the <code dir="ltr">RECOVER</code> command, with the SCN at which the restore point was created as the upper, inclusive limit. Because the limit is inclusive, RMAN selects only files that it can use to recover up to <span class="italic">and including</span> the SCN corresponding to the restore point.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r10c1-t8" headers="r1c1-t8"><code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl019.htm#i1000331">untilClause</a></span></code></td>
+<td class="cellalignment1926" headers="r10c1-t8 r1c2-t8">Specifies a past time, SCN, or log sequence number for termination of the <code dir="ltr">RECOVER</code> command.
+<p>When used with one or more tablespaces, the clause indicates a tablespace point-in-time recovery (TSPITR) operation for the named tablespaces. The clause cannot be used with <code dir="ltr">RECOVER DATAFILE</code>. It should not be used for <code dir="ltr">RECOVER DATABASE</code> (see <a href="#CHDJBACD">"Usage Notes"</a> for details). After database point-in-time recovery (DBPITR), you must open the database with the <code dir="ltr">RESETLOGS</code> option.</p>
+<p><span class="bold">See Also:</span> <code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl019.htm#i1000331">untilClause</a></span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformalwide" -->
+<p class="subhead2"><a id="BGBJCJBJ"></a><a id="RCMRF90250"></a><span class="italic"><a id="sthref1316"></a><a id="sthref1317"></a>dbObject</span></p>
+<p>This subclause specifies whether to recover the database or a subset of the database. Refer to <a href="#CHDBEEFB"><span class="xreftitleitalic"><span class="italic">dbObject</span>::=</span></a> for the syntax diagram.</p>
+<div class="inftblinformalwide">
+<table class="cellalignment1929" title="Semantics of dbObject Subclause" summary="Describes RECOVER command dbObject parameters" dir="ltr">
+<thead>
+<tr class="cellalignment1920">
+<th class="cellalignment1930" id="r1c1-t9">Syntax Element</th>
+<th class="cellalignment1930" id="r1c2-t9">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r2c1-t9" headers="r1c1-t9"><code dir="ltr"><a id="sthref1318"></a><a id="sthref1319"></a>DATABASE</code></td>
+<td class="cellalignment1926" headers="r2c1-t9 r1c2-t9">Specifies that the entire database is to be recovered (see <a href="#CHDGFJAD">Example 3-3</a>). The database must be mounted but not open.
+<p>By default, the <code dir="ltr">RECOVER DATABASE</code> command does not recover files that are offline normal at the point in time to which the files are being recovered. RMAN omits offline normal files with no further checking.</p>
+<p>When recovering after the loss of control files, RMAN automatically updates the control file to point to the actual location of the data files on disk (see <a href="#CHDEAEGH">Example 3-5</a>).</p>
+<p><span class="bold">Note:</span> If the RMAN encounters redo for adding a data file, then RMAN automatically creates a new data file unless the tablespace containing the added data file is skipped during recovery. This situation can arise when a backup control file is restored prior to recovery and the backup control file does not contain a record of the recently-added data file.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r3c1-t9" headers="r1c1-t9"><code dir="ltr"><a id="sthref1320"></a><a id="sthref1321"></a>DATAFILE</code> <code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl005.htm#i81255">datafileSpec</a></span></code></td>
+<td class="cellalignment1926" headers="r3c1-t9 r1c2-t9">Specifies a list of one or more data files to recover by either file name or absolute data file number. The target database must be mounted or open. If the database is open, then the data files to be recovered must be offline.
+<p>If you are not using a recovery catalog, then the file name must be the name of the data file as recorded in the control file. If you are using a recovery catalog, then the file name of the data file must be the most recent name recorded in the catalog, even if the name in the control file has been updated more recently. For example, assume that a data file was renamed in the control file, but the instance fails before you resynchronize the catalog. Specify the old name of the data file in the <code dir="ltr"><a href="#i84135">RECOVER</a></code> command because this is the name recorded in the catalog.</p>
+<p><span class="bold">Note:</span> You cannot arbitrarily recover individual data files to different points in time, although you can recover the whole database to a single point in time or recover wholly contained tablespaces to a point in time different from the rest of the database (TSPITR). For more information on TSPITR, see the procedure described in <a class="olink BRADV009" href="../../backup.112/e10642/rcmtspit.htm#BRADV009"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a>.</p>
+<p><span class="bold">See Also:</span> <code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl005.htm#i81255">datafileSpec</a></span></code></p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r4c1-t9" headers="r1c1-t9"><br />
+<code dir="ltr"><a id="sthref1322"></a><a id="sthref1323"></a>TABLESPACE</code><br />
+<code dir="ltr"><span class="codeinlineitalic">tablespace_name</span></code></td>
+<td class="cellalignment1926" headers="r4c1-t9 r1c2-t9">Specifies a list of one or more tablespaces to recover (see <a href="#CHDIHAIJ">Example 3-1</a> and <a href="#CHDHIDFH">Example 3-2</a>). The target database must be mounted or open. If the database is open, then the tablespaces to be recovered must be offline.
+<p><span class="bold">Note:</span> If the RMAN encounters redo for adding a data file, then RMAN automatically creates a new data file. This situation can arise when a backup control file is restored prior to recovery and the backup control file does not contain a record of the recently-added data file.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformalwide" -->
+<p class="subhead2"><a id="CHDCAGGA"></a><a id="RCMRF90251"></a><span class="italic"><a id="sthref1324"></a><a id="sthref1325"></a>blockObject</span></p>
+<p>This subclause specifies the data blocks that require recovery. Refer to <a href="#CHDIDHBB"><span class="xreftitleitalic"><span class="italic">blockObject</span>::=</span></a> for the syntax diagram. Refer to <a href="#BGBDFJFG">"Prerequisites Specific to RECOVER BLOCK"</a> for prerequisites specific to block media recovery.</p>
+<p>You can either use <code dir="ltr">RECOVER CORRUPTION LIST</code> to recover all blocks reported in the <code dir="ltr"><a id="sthref1326"></a>V$DATABASE_BLOCK_CORRUPTION</code> view, or specify the data file number and block number or the tablespace and data block address (DBA). RMAN can only perform complete recovery of individual blocks.</p>
+<p>By default, if Flashback Database is enabled, then RMAN searches the flashback logs for good copies of corrupt blocks. By default, if the target database exists in a Data Guard environment, then <code dir="ltr">RECOVER BLOCK</code> command can automatically retrieve blocks from a physical standby database to a primary database and vice-versa.</p>
+<div class="inftblinformalwide">
+<table class="cellalignment1929" title="Semantics of bmrBlockSpec Subclause" summary="Describes RECOVER command blockObject parameters" dir="ltr">
+<thead>
+<tr class="cellalignment1920">
+<th class="cellalignment1930" id="r1c1-t10">Syntax Element</th>
+<th class="cellalignment1930" id="r1c2-t10">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r2c1-t10" headers="r1c1-t10"><a id="sthref1327"></a><a id="sthref1328"></a><code dir="ltr">CORRUPTION&nbsp;LIST</code></td>
+<td class="cellalignment1926" headers="r2c1-t10 r1c2-t10">Recovers all physically corrupt blocks listed in the <code dir="ltr"><a id="sthref1329"></a>V$DATABASE_BLOCK_CORRUPTION</code> view. Block media recovery may not be able to repair all listed logically corrupt blocks. In these cases, alternate recovery methods, such as tablespace point-in-time recovery, or dropping and re-creating the affected objects, may repair the corruption.
+<p>The <a id="sthref1330"></a><a id="sthref1331"></a><code dir="ltr">V$DATABASE_BLOCK_CORRUPTION</code> view displays blocks marked corrupt by Oracle Database components such as RMAN commands, <code dir="ltr">ANALYZE</code>, <code dir="ltr">dbv</code>, SQL queries, and so on. In short, any process that encounters an <a id="sthref1332"></a><a id="sthref1333"></a><code dir="ltr">ORA-1578</code> error records the block corruption in this view. The following types of corruption result in rows added to this view:</p>
+<ul>
+<li>
+<p>Physical corruption (sometimes called media corruption). The database does not recognize the block at all: the checksum is invalid, the block contains all zeros, or the header and footer of the block do not match.</p>
+</li>
+<li>
+<p>Logical corruption. The block has a valid checksum, the header and footer match, and so forth, but the contents are logically inconsistent.</p>
+</li>
+</ul>
+<p>The view does not record corruptions that can be detected by validating relationships between blocks and segments, but cannot be detected by a check of an individual block.</p>
+<p><span class="bold">Note:</span> Any RMAN command that fixes or detects that a block is repaired updates <code dir="ltr">V$DATABASE_BLOCK_CORRUPTION</code>. For example, RMAN updates the repository at end of successful block media recovery. If a <code dir="ltr"><a href="rcmsynta007.htm#i78895">BACKUP</a></code>, <code dir="ltr"><a href="rcmsynta2008.htm#i85188">RESTORE</a></code>, or <code dir="ltr"><a href="rcmsynta2024.htm#i86794">VALIDATE</a></code> command detects that a block is no longer corrupted, then it removes the repaired block from the view.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r3c1-t10" headers="r1c1-t10"><code dir="ltr"><a id="sthref1334"></a><a id="sthref1335"></a>DATAFILE&nbsp;</code><code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl005.htm#i81255">datafileSpec</a></span></code><br />
+<code dir="ltr">BLOCK</code> <span class="italic">integer</span> <code dir="ltr">TO</code> <span class="italic">integer</span></td>
+<td class="cellalignment1926" headers="r3c1-t10 r1c2-t10">Recovers an individual data block or set of data blocks within a data file. It can copy blocks from either a standby or a primary database. The <code dir="ltr">TO</code> range is inclusive, so that <code dir="ltr">BLOCK 10 TO BLOCK 20</code> includes both block 10 and block 20.
+<p>Block media recovery is useful when the data loss or corruption applies to a small number of blocks rather than to an entire data file. Typically, block corruption is reported in error messages in trace files or by the <code dir="ltr"><a href="rcmsynta003.htm#CHDHBIAB">ADVISE FAILURE</a></code> command. Block-level data loss usually results from:</p>
+<ul>
+<li>
+<p>I/O errors causing minor data loss</p>
+</li>
+<li>
+<p>Memory corruptions that get written to disk</p>
+</li>
+</ul>
+<p>If you do not specify an option from <code dir="ltr"><span class="codeinlineitalic"><a href="#i999383"><span class="italic">recoverOptionList</span></a></span></code>, and if Flashback Database is enabled on the database, then <code dir="ltr">RECOVER BLOCK</code> first searches the flashback logs and then the backups for a good version of the block to restore.</p>
+<p>Blocks marked media corrupt are not accessible until recovery completes.</p>
+<p><span class="bold">Note:</span> You can only perform complete recovery of individual blocks. In other words, you cannot stop recovery before all redo has been applied to the block.</p>
+<p><span class="bold">See Also:</span> <code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl005.htm#i81255">datafileSpec</a></span></code></p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r4c1-t10" headers="r1c1-t10"><br />
+<code dir="ltr"><a id="sthref1336"></a><a id="sthref1337"></a><a id="sthref1338"></a>TABLESPACE</code> <code dir="ltr"><span class="codeinlineitalic">tablespace_name</span></code><br />
+<code dir="ltr">DBA</code> <code dir="ltr"><span class="codeinlineitalic">integer</span></code></td>
+<td class="cellalignment1926" headers="r4c1-t10 r1c2-t10">Specifies the tablespace name or number containing the corrupt blocks and the data block address (DBA) of the corrupt block. You can only perform block media recovery on corrupt blocks.
+<p><span class="bold">Note:</span> The data file header block (block 1) cannot be recovered.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformalwide" -->
+<p class="subhead2"><a id="i999383"></a><a id="RCMRF90252"></a><span class="italic"><a id="sthref1339"></a><a id="sthref1340"></a>recoverOptionList</span></p>
+<p>This subclause specifies various recovery options. Refer to <a href="#CHDIIEGB"><span class="xreftitleitalic"><span class="italic">recoverOptionList</span>::=</span></a> for the syntax diagram.</p>
+<div class="inftblinformalwide">
+<table class="cellalignment1929" title="Semantics of recoverOptionList Subclause" summary="Describes RECOVER command recoverOptionList parameters" dir="ltr">
+<thead>
+<tr class="cellalignment1920">
+<th class="cellalignment1930" id="r1c1-t11">Syntax Element</th>
+<th class="cellalignment1930" id="r1c2-t11">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r2c1-t11" headers="r1c1-t11"><code dir="ltr"><a id="sthref1341"></a><a id="sthref1342"></a><a id="sthref1343"></a>ALLOW</code> <code dir="ltr"><span class="codeinlineitalic">integer</span></code> <code dir="ltr">CORRUPTION</code></td>
+<td class="cellalignment1926" headers="r2c1-t11 r1c2-t11">Specifies the number of corrupt blocks that can be tolerated while allowing recovery to proceed.You can set this parameter in case of redo log corruption.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r3c1-t11" headers="r1c1-t11"><code dir="ltr"><a id="sthref1344"></a><a id="sthref1345"></a>ARCHIVELOG&nbsp;TAG</code> <code dir="ltr"><span class="codeinlineitalic">tag_name</span></code></td>
+<td class="cellalignment1926" headers="r3c1-t11 r1c2-t11">Specifies the tag for an archived log backup to be used during recovery. Tag names are not case sensitive and display in all uppercase. If the tagged backup does not contain all the necessary archived redo log files for recovery, then RMAN uses logs or incremental backups as needed from whatever is available.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r4c1-t11" headers="r1c1-t11"><br />
+<code dir="ltr"><a id="sthref1346"></a><a id="sthref1347"></a>AUXILIARY&nbsp;DESTINATION</code><br />
+<code dir="ltr">'</code><code dir="ltr"><span class="codeinlineitalic">location</span></code><code dir="ltr">'</code></td>
+<td class="cellalignment1926" headers="r4c1-t11 r1c2-t11">Specifies a location where auxiliary set data files, control files, and online redo logs are created during TSPITR if another location for an individual file is not explicitly specified.
+<p>If you do not specify <code dir="ltr">AUXILIARY DESTINATION</code> for a TSPITR, then you must specify the naming of individual auxiliary set data files, control files, and online redo logs before executing <code dir="ltr">RECOVER TABLESPACE</code> with the <code dir="ltr">UNTIL</code> clause. Otherwise, TSPITR fails.</p>
+<p><span class="bold">See also:</span> The chapter on TSPITR in <a class="olink BRADV009" href="../../backup.112/e10642/rcmtspit.htm#BRADV009"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a> for more details about the auxiliary destination</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r5c1-t11" headers="r1c1-t11"><code dir="ltr"><a id="sthref1348"></a><a id="sthref1349"></a><a id="sthref1350"></a>CHECK&nbsp;LOGICAL</code></td>
+<td class="cellalignment1926" headers="r5c1-t11 r1c2-t11">Tests data and index blocks that pass physical corruption checks for logical corruption, for example, corruption of a row piece or index entry. If RMAN finds logical corruption, then it logs the block in the <code dir="ltr">alert.log</code> and server session trace file.
+<p>The <code dir="ltr"><a href="rcmsynta2014.htm#i85845">SET</a></code> <code dir="ltr">MAXCORRUPT</code> setting represents the total number of physical and logical corruptions permitted on a file. By default, <code dir="ltr">MAXCORRUPT</code> is <code dir="ltr">0</code>, so that if any corrupt blocks exist, media recovery fails. If recovery including corrupt blocks is permissible, then set <code dir="ltr">MAXCORRUPT</code> to the smallest number of corrupt blocks that causes media recovery to fail. For example, to tolerate one corrupt block, set <code dir="ltr">MAXCORRUPT</code> to 1.</p>
+<p>If the total number of physical and logical corruptions detected for a file is less than its <code dir="ltr">MAXCORRUPT</code> setting, then the RMAN command completes and the database populates <code dir="ltr"><a id="sthref1351"></a><a id="sthref1352"></a>V$DATABASE_BLOCK_CORRUPTION</code> with corrupt block ranges. Otherwise, the command terminates without populating <code dir="ltr"><a id="sthref1353"></a>V$DATABASE_BLOCK_CORRUPTION</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r6c1-t11" headers="r1c1-t11"><code dir="ltr"><a id="sthref1354"></a><a id="sthref1355"></a>DELETE&nbsp;ARCHIVELOG</code></td>
+<td class="cellalignment1926" headers="r6c1-t11 r1c2-t11">Deletes archived redo log files restored from backups or copies that are no longer needed. RMAN does not delete archived redo log files that were on disk before the <code dir="ltr">RESTORE</code> command started. If you do not specify <code dir="ltr">MAXSIZE</code>, then RMAN deletes restored archived redo log files as they are applied.
+<p><span class="bold">Note:</span> If archived redo log files are restored to the fast recovery area, then the <code dir="ltr">DELETE ARCHIVELOG</code> option is enabled by default.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r7c1-t11" headers="r1c1-t11"><code dir="ltr">&nbsp;&nbsp;&nbsp;MAXSIZE</code> <code dir="ltr"><span class="codeinlineitalic">sizeSpec</span></code></td>
+<td class="cellalignment1926" headers="r7c1-t11 r1c2-t11">Does not use more than <code dir="ltr"><span class="codeinlineitalic">sizeSpec</span></code> amount of disk space for restored archived redo log files. If recovery requires the restore of a log larger than the <code dir="ltr">MAXSIZE</code> value, then RMAN reports an error indicating that you should increase the <code dir="ltr">MAXSIZE</code> value. If <code dir="ltr">MAXSIZE</code> is smaller than the backup set containing the logs, then RMAN must read the backup set more than once to extract the logs. In this situation, RMAN issues a warning that <code dir="ltr">MAXSIZE</code> must be increased.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r8c1-t11" headers="r1c1-t11"><code dir="ltr"><a id="sthref1356"></a><a id="sthref1357"></a>EXCLUDE&nbsp;FLASHBACK&nbsp;LOG</code></td>
+<td class="cellalignment1926" headers="r8c1-t11 r1c2-t11">Specifies that the flashback logs should not be searched for blocks to restore. By default, RMAN searches the flashback logs if Flashback Database is enabled.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r9c1-t11" headers="r1c1-t11"><code dir="ltr"><a id="sthref1358"></a><a id="sthref1359"></a>EXCLUDE&nbsp;STANDBY</code></td>
+<td class="cellalignment1926" headers="r9c1-t11 r1c2-t11">Specifies that a physical standby database should not be searched for blocks to restore. By default, in a Data Guard environment RMAN searches the blocks from a physical standby database.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r10c1-t11" headers="r1c1-t11"><code dir="ltr"><a id="sthref1360"></a><a id="sthref1361"></a><a id="sthref1362"></a>FROM&nbsp;BACKUPSET</code></td>
+<td class="cellalignment1926" headers="r10c1-t11 r1c2-t11">Specifies that only backup sets are restored.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r11c1-t11" headers="r1c1-t11"><code dir="ltr"><a id="sthref1363"></a><a id="sthref1364"></a><a id="sthref1365"></a><a id="sthref1366"></a>FROM&nbsp;DATAFILECOPY</code></td>
+<td class="cellalignment1926" headers="r11c1-t11 r1c2-t11">Specifies that only data file image copies are restored.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r12c1-t11" headers="r1c1-t11"><code dir="ltr"><a id="sthref1367"></a><a id="sthref1368"></a><a id="sthref1369"></a>FROM TAG</code> <code dir="ltr"><span class="codeinlineitalic">tag_name</span></code></td>
+<td class="cellalignment1926" headers="r12c1-t11 r1c2-t11">Specifies the tag for an incremental backup to be used during recovery. If the tagged backup does not contain all the necessary incrementals for recovery, then RMAN uses logs or incremental backups as needed from whatever is available. Tag names are not case sensitive and display in all uppercase.
+<p><span class="bold">See Also:</span> <code dir="ltr"><a href="rcmsynta007.htm#i78895">BACKUP</a></code> to learn how a tag can be applied to an individual copy of a duplexed backup set, and to learn about the default file name format for backup tags</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r13c1-t11" headers="r1c1-t11"><code dir="ltr"><a id="sthref1370"></a><a id="sthref1371"></a>NOPARALLEL</code></td>
+<td class="cellalignment1926" headers="r13c1-t11 r1c2-t11">Specifies that media recovery should not be performed in parallel. Parallel execution is the default for <code dir="ltr">RECOVER</code> (see the description of the <code dir="ltr">RECOVER ... PARALLEL</code> option).</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r14c1-t11" headers="r1c1-t11"><a id="CHDBFBFJ"></a><code dir="ltr"><a id="sthref1372"></a><a id="sthref1373"></a>NOREDO</code></td>
+<td class="cellalignment1926" headers="r14c1-t11 r1c2-t11">Suppresses the application of redo logs during recovery. Only incremental backups are applied.
+<p>One use of this option is to use incremental backups to update full backups of <code dir="ltr">NOARCHIVELOG</code> databases (see <a href="#CHDHFBFI">Example 3-6</a>). The <code dir="ltr">NOREDO</code> options is required if redo logs are not available. If you do not specify <code dir="ltr">NOREDO</code> when recovering a <code dir="ltr">NOARCHIVELOG</code> database, then RMAN ends recovery and issues an error.</p>
+<p><span class="bold">Note:</span> Incremental backups of <code dir="ltr">NOARCHIVELOG</code> databases can only be taken after a consistent shutdown.</p>
+<p>Another use is to update standby or duplicate databases. Incremental backups created with the <code dir="ltr">BACKUP INCREMENTAL FROM SCN</code> command can be applied at a standby or duplicate database. The standby database procedure is described in <a class="olink SBYDB04700" href="../../server.112/e41134/rman.htm#SBYDB04700"><span class="italic">Oracle Data Guard Concepts and Administration</span>.</a></p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r15c1-t11" headers="r1c1-t11"><code dir="ltr"><a id="sthref1374"></a><a id="sthref1375"></a><a id="sthref1376"></a>PARALLEL</code></td>
+<td class="cellalignment1926" headers="r15c1-t11 r1c2-t11">Specifies parallel recovery (default).
+<p>By default, the database uses parallel media recovery to improve performance of the roll forward phase of media recovery. To override the default behavior of performing parallel recovery, use the <code dir="ltr">RECOVER</code> with the <code dir="ltr">NOPARALLEL</code> option, or <code dir="ltr">RECOVER PARALLEL 0</code>.</p>
+<p>In parallel media recovery, the database uses a "division of labor" approach to allocate different processes to different data blocks while rolling forward, thereby making the operation more efficient. The number of processes is derived from the <a id="sthref1377"></a><a id="sthref1378"></a><code dir="ltr">CPU_COUNT</code> initialization parameter, which by default equals the number of CPUs on the system. For example, if parallel recovery is performed on a system where <code dir="ltr">CPU_COUNT</code> is 4, and only one data file is recovered, then four spawned processes read blocks from the data file and apply redo.</p>
+<p>Typically, recovery is I/O-bound on reads from and writes to data blocks. Parallelism at the block level may only help recovery performance if it increases total I/Os, for example, by bypassing operating system restrictions on asynchronous I/Os. Systems with efficient asynchronous I/O see little benefit from parallel media recovery.</p>
+<p><span class="bold">Note:</span> The <a id="sthref1379"></a><a id="sthref1380"></a><code dir="ltr">RECOVERY_PARALLELISM</code> initialization parameter controls instance or crash recovery only. Media recovery is not affected by the value used for <code dir="ltr">RECOVERY_PARALLELISM</code>.</p>
+<p><span class="bold">See Also:</span> The description of the <code dir="ltr">PARALLEL</code> clause in the discussion of <code dir="ltr">CREATE TABLE</code> in <a class="olink SQLRF01402" href="../../server.112/e41084/statements_7002.htm#SQLRF01402"><span class="italic">Oracle Database SQL Language Reference</span></a></p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r16c1-t11" headers="r1c1-t11"><code dir="ltr">&nbsp;&nbsp;&nbsp;</code><code dir="ltr"><span class="codeinlineitalic">integer</span></code></td>
+<td class="cellalignment1926" headers="r16c1-t11 r1c2-t11">Specifies the <code dir="ltr"><span class="codeinlineitalic">integer</span></code> degree of parallelism.
+<p>Each parallel thread may use one or two parallel execution servers. Typically, it is not necessary for you to specify the degree of parallelism.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r17c1-t11" headers="r1c1-t11"><a id="CHDGCCDG"></a><code dir="ltr"><a id="sthref1381"></a><a id="sthref1382"></a><a id="sthref1383"></a>SKIP&nbsp;READONLY</code></td>
+<td class="cellalignment1926" headers="r17c1-t11 r1c2-t11">Omits read-only files from the recovery.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r18c1-t11" headers="r1c1-t11"><code dir="ltr"><a id="sthref1384"></a><a id="sthref1385"></a>TEST</code></td>
+<td class="cellalignment1926" headers="r18c1-t11 r1c2-t11">Initiates a trial recovery.
+<p>A trial recovery is useful if a normal recovery procedure has encountered a problem. It enables the database to look ahead into the redo stream to detect possible problems. The trial recovery applies redo in a way similar to normal recovery, but it does not write changes to disk and it rolls back its changes after the trial recovery.</p>
+<p><span class="bold">Note:</span> You can use this clause only if you have restored a backup taken since the last <code dir="ltr">RESETLOGS</code> operation. Otherwise, the database returns an error.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r19c1-t11" headers="r1c1-t11"><br />
+<code dir="ltr"><a id="sthref1386"></a><a id="sthref1387"></a><a id="sthref1388"></a>UNDO&nbsp;TABLESPACE</code><br />
+<code dir="ltr"><span class="codeinlineitalic">tablespace_name</span></code></td>
+<td class="cellalignment1926" headers="r19c1-t11 r1c2-t11">Specifies a list of tablespaces with undo segments at the target time. Only for use with <code dir="ltr">RECOVER TABLESPACE</code>.
+<p>During TSPITR, RMAN needs information about which tablespaces had undo segments at the TSPITR target time. This information is usually available in the recovery catalog, if one is used.</p>
+<p>If there is no recovery catalog, or if the information is not found in the recovery catalog, then RMAN proceeds if the set of tablespaces with undo segments at the target time is the same as the set of tablespaces with undo segments at the present time. Otherwise, TSPITR fails with an error. In such a case, you can use <code dir="ltr">UNDO TABLESPACE</code>.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r20c1-t11" headers="r1c1-t11"><code dir="ltr"><a id="sthref1389"></a><a id="sthref1390"></a><a id="sthref1391"></a>VALIDATE&nbsp;HEADER</code></td>
+<td class="cellalignment1926" headers="r20c1-t11 r1c2-t11">Reports and validates&mdash;but does not restore&mdash;the backups that RMAN could use to restore files needed for the recovery.
+<p>When you run <code dir="ltr">RECOVER</code> with <code dir="ltr">VALIDATE HEADER</code>, RMAN performs the same functions as when you specify the <code dir="ltr">RESTORE ...</code> <code dir="ltr"><a href="rcmsynta2008.htm#CHDFAJFI"><code dir="ltr">PREVIEW</code></a></code> option. However, in addition to listing the files needed for restore and recovery, RMAN validates the backup file headers to determine whether the files on disk or in the media management catalog correspond to the metadata in the RMAN repository.</p>
+<p><span class="bold">See Also:</span> The description of the <code dir="ltr">RESTORE ...</code> <code dir="ltr"><a href="rcmsynta2008.htm#CHDFAJFI"><code dir="ltr">PREVIEW</code></a></code> option</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformalwide" --></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref1392"></a><a id="sthref1393"></a>Examples</p>
+<div id="RCMRF90253" class="example">
+<p class="titleinexample"><a id="CHDIHAIJ"></a>Example 3-1 Recovering a Tablespace in an Open Database</p>
+<p><a id="sthref1394"></a><a id="sthref1395"></a>Assume that the disk containing the data files for tablespace <code dir="ltr">users</code> becomes unavailable because of a hardware error, but is repaired after a few minutes. This example takes tablespace <code dir="ltr">users</code> offline, uses automatic channels to restore the data files to their default location and recover them (deleting the logs that it restored from tape), then brings the tablespace back online.</p>
+<pre dir="ltr">
+SQL "ALTER TABLESPACE users OFFLINE IMMEDIATE";
+RESTORE TABLESPACE users;
+RECOVER TABLESPACE users DELETE ARCHIVELOG MAXSIZE 2M;
+SQL "ALTER TABLESPACE users ONLINE";
+</pre></div>
+<!-- class="example" -->
+<div id="RCMRF90254" class="example">
+<p class="titleinexample"><a id="CHDHIDFH"></a>Example 3-2 Recovering Data Files Restored to New Locations</p>
+<p><a id="sthref1396"></a>This example uses the preconfigured disk channel and manually allocates one media management channel to use data file copies on disk and backups on tape, and restores a data file in tablespace <code dir="ltr">users</code> to a different location.</p>
+<pre dir="ltr">
+RUN
+{  
+  ALLOCATE CHANNEL ch1 DEVICE TYPE sbt;  
+  SQL "ALTER TABLESPACE users OFFLINE IMMEDIATE";  
+  SET NEWNAME FOR DATAFILE '/disk1/oradata/prod/users01.dbf' 
+    TO '/disk2/users01.dbf';
+  RESTORE TABLESPACE users;
+  SWITCH DATAFILE ALL;
+  RECOVER TABLESPACE users;
+  SQL "ALTER TABLESPACE users ONLINE";
+}
+</pre></div>
+<!-- class="example" -->
+<div id="RCMRF90255" class="example">
+<p class="titleinexample"><a id="CHDGFJAD"></a>Example 3-3 Performing DBPITR with a Backup Control File and Recovery Catalog</p>
+<p><a id="sthref1397"></a>Assume that all data files and control files as well as archived redo log 58 were lost due to a disk failure. Also assume that you do not have incremental backups. You must recover the database with available archived redo log files. You do not need to restore tablespace <code dir="ltr">tools</code> because it has been read-only since before the most recent backup. After connecting RMAN to the target database and recovery catalog, issue the following commands:</p>
+<pre dir="ltr">
+STARTUP FORCE NOMOUNT;
+RUN
+{  
+  SET UNTIL SEQUENCE 40 THREAD 1;  # Recover database until log sequence 40 
+  RESTORE CONTROLFILE;
+  ALTER DATABASE MOUNT;
+  RESTORE DATABASE SKIP TABLESPACE tools;
+  RECOVER DATABASE SKIP TABLESPACE tools;
+}
+ALTER DATABASE OPEN RESETLOGS;
+</pre>
+<p>RMAN automatically skips the restore and recovery of data file 8, which is the data file in the read-only tablespace. The following portion of sample output indicates the skip:</p>
+<pre dir="ltr">
+using channel ORA_DISK_1
+allocated channel: ORA_SBT_TAPE_1
+channel ORA_SBT_TAPE_1: SID=104 device type=SBT_TAPE
+channel ORA_SBT_TAPE_1: Oracle Secure Backup
+ 
+skipping datafile 8; already restored to file /disk1/oradata/prod/tools01.dbf
+channel ORA_DISK_1: starting datafile backup set restore
+.
+.
+.
+Finished restore at 19-FEB-07 
+
+Starting recover at 19-FEB-07
+using channel ORA_DISK_1
+using channel ORA_SBT_TAPE_1
+datafile 8 not processed because file is read-only
+</pre></div>
+<!-- class="example" -->
+<div id="RCMRF90256" class="example">
+<p class="titleinexample"><a id="CHDFCFJI"></a>Example 3-4 Incrementally Updating Backups</p>
+<p><a id="sthref1398"></a><a id="sthref1399"></a>By incrementally updating backups, you can avoid the overhead of making full image copy backups of data files, while also minimizing time required for media recovery of your database. This example enables you to recover to any SCN within the previous week, but enables you to avoid having to apply more than one day of redo.</p>
+<p>Assume you run the following script daily. On first execution, the script creates an image copy backup of the database on disk with the specified tag. On the second through the seventh executions, the script creates a level 1 differential backup of the database. On the eighth and all subsequent executions, RMAN applies the level 1 incremental to the data file copy made 7 days ago and then makes a new level 1 backup with the changes from the previous day.</p>
+<pre dir="ltr">
+RUN
+{
+  RECOVER COPY OF DATABASE 
+    WITH TAG 'incr_update' 
+    UNTIL TIME 'SYSDATE - 7';
+  BACKUP
+    INCREMENTAL LEVEL 1 
+    FOR RECOVER OF COPY WITH TAG 'incr_update'
+    DATABASE;
+}
+</pre></div>
+<!-- class="example" -->
+<div id="RCMRF90257" class="example">
+<p class="titleinexample"><a id="CHDEAEGH"></a>Example 3-5 Recovery from Loss of a Control File on a Standby Database</p>
+<p><a id="sthref1400"></a>Assume that the standby database <code dir="ltr">dgprod3</code> control files are lost because of a media failure. The primary and standby database share SBT storage. A backup of the primary database control file exists on tape.</p>
+<p>You start the RMAN client and connect to <code dir="ltr">dgprod3</code> as <code dir="ltr">TARGET</code> and connect to the recovery catalog. The following RMAN commands restore a control file that is usable by the standby database, update the file names to existing files on disk, and recover the standby database:</p>
+<pre dir="ltr">
+RESTORE CONTROLFILE;
+ALTER DATABASE MOUNT;
+RECOVER DATABASE;
+</pre>
+<p>You can then start redo apply on the standby database.</p>
+</div>
+<!-- class="example" -->
+<div id="RCMRF90258" class="example">
+<p class="titleinexample"><a id="CHDHFBFI"></a>Example 3-6 Recovering a NOARCHIVELOG Database</p>
+<p><a id="sthref1401"></a><a id="sthref1402"></a><a id="sthref1403"></a>You can perform limited recovery of changes to a database running in <code dir="ltr">NOARCHIVELOG</code> mode by applying incremental backups. The incremental backups must be consistent, like all backups of a database run in <code dir="ltr">NOARCHIVELOG</code> mode, so you cannot back up the database when it is open.</p>
+<p>Assume that you run database <code dir="ltr">prod</code> in <code dir="ltr">NOARCHIVELOG</code> mode with a recovery catalog. You shut down the database consistently and make a level 0 backup of database <code dir="ltr">prod</code> to tape on Sunday afternoon. You shut down the database consistently and make a level 1 differential incremental backup to tape at 3:00 a.m. on Wednesday and Friday.</p>
+<p>On Saturday, a media failure destroys half the data files and the online redo logs. Because the online logs are lost, you must specify the <code dir="ltr">NOREDO</code> option in the <code dir="ltr">RECOVER</code> command. Otherwise, RMAN searches for the redo logs after applying the Friday incremental backup and issues an error message when it does not find them.</p>
+<p>After connecting RMAN to <code dir="ltr">prod</code> and the catalog database, recover as follows:</p>
+<pre dir="ltr">
+STARTUP FORCE NOMOUNT;
+RESTORE CONTROLFILE;      # restore control file from consistent backup
+ALTER DATABASE MOUNT;
+RESTORE DATABASE;         # restore data files from consistent backup
+RECOVER DATABASE NOREDO;  # specify NOREDO because online redo logs are lost
+ALTER DATABASE OPEN RESETLOGS;
+</pre>
+<p>The recovered database reflects only changes up through the time of the Friday incremental backup. Because there are no archived redo log files, there is no way to recover changes made after the incremental backup.</p>
+</div>
+<!-- class="example" -->
+<div id="RCMRF90259" class="example">
+<p class="titleinexample"><a id="sthref1404"></a>Example 3-7 Recovering All Block Corruption in the Database</p>
+<p>This example runs a backup validation to populate the <code dir="ltr"><a id="sthref1405"></a><a id="sthref1406"></a>V$DATABASE_BLOCK_CORRUPTION</code> view, then recovers any corrupt blocks recorded in the view. Sample output is included for both commands.</p>
+<pre dir="ltr">
+RMAN&gt; <span class="bold">VALIDATE DATABASE;</span>
+ 
+Starting validate at 19-FEB-07
+using channel ORA_DISK_1
+channel ORA_DISK_1: starting validation of datafile
+channel ORA_DISK_1: specifying datafile(s) for validation
+.
+.
+.
+List of Datafiles
+=================
+File Status Marked Corrupt Empty Blocks Blocks Examined High SCN
+---- ------ -------------- ------------ --------------- ----------
+1    FAILED 0              4070         57600           555975
+  File Name: /disk1/oradata/prod/system01.dbf
+  Block Type Blocks Failing Blocks Processed
+  ---------- -------------- ----------------
+  Data       1              41550
+  Index      0              7677
+  Other      0              4303
+.
+.
+.
+RMAN&gt; <span class="bold">RECOVER CORRUPTION LIST;</span>
+ 
+Starting recover at 19-FEB-07
+using channel ORA_DISK_1
+allocated channel: ORA_SBT_TAPE_1
+channel ORA_SBT_TAPE_1: SID=104 device type=SBT_TAPE
+channel ORA_SBT_TAPE_1: Oracle Secure Backup
+searching flashback logs for block images until SCN 547548
+finished flashback log search, restored 1 blocks
+ 
+starting media recovery
+media recovery complete, elapsed time: 00:00:03
+ 
+Finished recover at 19-FEB-07
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1919">
+<tr>
+<td class="cellalignment1926">
+<table class="cellalignment1924">
+<tr>
+<td class="cellalignment1923"><a href="rcmsynta2.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1923"><a href="rcmsynta2002.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2003, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1928">
+<table class="cellalignment1922">
+<tr>
+<td class="cellalignment1923"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1923"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1923"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1923"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1923"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1923"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

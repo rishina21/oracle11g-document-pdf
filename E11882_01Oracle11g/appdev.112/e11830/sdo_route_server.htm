@@ -1,0 +1,1619 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Routing Engine</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 743" />
+<meta name="description" content="Provides usage and reference information for indexing and storing spatial data and for developing spatial applications using Oracle Spatial and Graph and Oracle Locator." />
+<meta name="dcterms.created" content="2013-11-26T3:11:45Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Spatial Developer's Guide" />
+<meta name="dcterms.identifier" content="E11830-15" />
+<meta name="dcterms.isVersionOf" content="SPATL" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1999, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="sdo_yp.htm" title="Previous" type="text/html" />
+<link rel="Next" href="sdo_openls.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e11830.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">22/51</span> <!-- End Header -->
+<div id="SPATL350" class="chapter"><a id="CCHGDJJD"></a>
+<h1 class="chapter"><span class="secnum">13</span> Routing Engine</h1>
+<p><a id="sthref793"></a>The Spatial routing engine enables you to host an XML-based Web service that provides the following features:</p>
+<ul>
+<li>
+<p>For an individual route request (a start location and an end location): route information (driving distances, estimated driving times, and directions) between the two locations</p>
+</li>
+<li>
+<p>For a batch route request (multiple routes, with the same start location but different end locations): route information (driving distance and estimated driving time) for each route</p>
+</li>
+</ul>
+<p>For any request, the start and end locations are identified by addresses, geocoded results, or longitude/latitude coordinates.</p>
+<p>A route can be single-address, consisting of the start location and the end location, or multi-address, consisting of the start location, one or more intermediate locations, and the end location.</p>
+<p>Multi-address routes are explained in <a href="#BGBHIEAH">Section 13.1</a>.</p>
+<p>The routing engine is implemented as a Java 2 Enterprise Edition (J2EE) Web application that you can deploy in an Oracle Weblogic Server, Oracle Application Server, or standalone Oracle Application Server Containers for J2EE (OC4J) environment.</p>
+<p><a href="#CHDBCCGC">Figure 13-1</a> shows the basic flow of action with the routing engine: a client locates a remote routing engine instance, sends a route request, and processes the route response returned by the routing engine instance.</p>
+<div id="SPATL871" class="figure">
+<p class="titleinfigure"><a id="CHDBCCGC"></a>Figure 13-1 Basic Flow of Action with the Spatial Routing Engine</p>
+<img width="448" height="286" src="img/basic_flow_rt.gif" alt="Description of Figure 13-1 follows" /><br />
+<a id="sthref794" href="img_text/basic_flow_rt.htm">Description of "Figure 13-1 Basic Flow of Action with the Spatial Routing Engine"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>This chapter contains the following major sections:</p>
+<ul>
+<li>
+<p><a href="#BGBHIEAH">Section 13.1, "Multi-Address Routing"</a></p>
+</li>
+<li>
+<p><a href="#CCHFCCIA">Section 13.2, "Deploying and Configuring the Routing Engine"</a></p>
+</li>
+<li>
+<p><a href="#CCHDHGHA">Section 13.3, "Routing Engine XML API"</a></p>
+</li>
+<li>
+<p><a href="#CCHGJIGD">Section 13.4, "Data Structures Used by the Routing Engine"</a></p>
+</li>
+</ul>
+<a id="BGBHIEAH"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">13.1</span> <a id="sthref795"></a><a id="sthref796"></a>Multi-Address Routing</h2>
+<p>A multi-address route contains one or more intermediate locations in addition to the start and end locations. <a id="sthref797"></a><a id="sthref798"></a>A multi-address route thus contains subroutes: each <span class="bold">subroute</span> covers the path between two locations. A route or subroute contains one or more segments: each <span class="bold">segment</span> covers the path between two points along the route or subroute.</p>
+<p>For example, assume you want to drive from your workplace to customer A, then to customer B, and then to customer C.</p>
+<ul>
+<li>
+<p>Your <span class="italic">route</span> has your workplace as the start location, customers A and B as intermediate locations, and customer C as the end location.</p>
+</li>
+<li>
+<p>Your route has three <span class="italic">subroutes</span>: (1) workplace to customer A, (2) customer A to customer B, and (3) customer B to customer C.</p>
+</li>
+<li>
+<p>Each subroute probably has multiple <span class="italic">segments</span> (each one associated with a specific driving direction step).</p>
+</li>
+</ul>
+<p>A multi-address route contains a <code>&lt;start_location&gt;</code> element, one or more <code>&lt;location&gt;</code> elements, and an <code>&lt;end_location&gt;</code> element. Several subroute-related attributes of these elements apply only to multi-address routing, for example, <code>return_subroutes</code>, <code>return_subroute_edge_ids</code>, and <code>return_subroute_geometry</code>. These elements and attributes are explained in <a href="#BGBDEEDD">Section 13.3.2</a>.</p>
+<p>In multi-address routing, the route that is returned has the locations in exactly the order specified in the request. Multi-address routing does not attempt to optimize the route for time or distance by rearranging the locations; specifically, it does not perform any TSP ("traveling salesperson problem") computations.</p>
+</div>
+<!-- class="sect1" -->
+<a id="CCHFCCIA"></a>
+<div id="SPATL872" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">13.2</span> <a id="sthref799"></a><a id="sthref800"></a>Deploying and Configuring the Routing Engine</h2>
+<p>To enable the routing engine to process routing requests and to generate responses, you must create a network (Oracle Database network data model network) on top of the routing data, and then deploy the <code>routeserver.ear</code> file using Oracle WebLogic Server, Oracle Application Server, or OC4J. This section describes the basic steps.</p>
+<p>To create the network, follow these steps:</p>
+<ol>
+<li>
+<p>If a network with the routing data already exists, drop it, to ensure that all structures are "clean" in the network to be created. To drop the existing network, execute a statement in the following form:</p>
+<pre>
+EXECUTE SDO_ROUTER_PARTITION.DELETE_ROUTER_NETWORK('<span class="italic">&lt;log_file_name&gt;</span>', '<span class="italic">&lt;network_name&gt;</span>');
+</pre>
+<p><span class="italic">&lt;log_file_name&gt;</span> is the name of the log file that was specified in the call to SDO_ROUTER_PARTITION.DELETE_ROUTER_NETWORK to create the network to be dropped.</p>
+<p><span class="italic">&lt;network_name&gt;</span> is the name of the network to be dropped.</p>
+<p>For example:</p>
+<pre>
+EXECUTE SDO_ROUTER_PARTITION.DELETE_ROUTER_NETWORK('create_sf_net.log', 'ndm_sf_net');
+</pre></li>
+<li>
+<p>Create the network for the routing data by executing a statement in the following form:</p>
+<pre>
+EXECUTE SDO_ROUTER_PARTITION.CREATE_ROUTER_NETWORK('<span class="italic">&lt;log_file_name&gt;</span>', '<span class="italic">&lt;network_name&gt;</span>');
+</pre>
+<p><span class="italic">&lt;log_file_name&gt;</span> is the name of the log file to use for this network.</p>
+<p><span class="italic">&lt;network_name&gt;</span> is the name of the network to be created.</p>
+<p>For example:</p>
+<pre>
+EXECUTE SDO_ROUTER_PARTITION.CREATE_ROUTER_NETWORK('create_sf_net.log', 'ndm_sf_net');
+</pre>
+<p>The log file initially contains messages similar to the following:</p>
+<pre>
+INFO: creating the Routeserver network: NDM_SF_NET
+     creating indexes
+     creating views
+     generating metadata
+</pre></li>
+</ol>
+<p>To deploy and configure the routing engine, follow these steps:</p>
+<ol>
+<li>
+<p>Add the following element inside the <code>&lt;web-site&gt;</code> element in your <code>http-web-site.xml</code> or <code>default-web-site.xml</code> file:</p>
+<pre>
+&lt;web-app application="routeserver" 
+          name="web" 
+          load-on-startup="true" 
+          root="/routeserver" 
+          max-inactivity-time="no shutdown" 
+          shared="false" /&gt;
+</pre></li>
+<li>
+<p>Deploy the routing engine using Oracle WebLogic Server, Oracle Application Server, or OC4J:</p>
+<ul>
+<li>
+<p><span class="bold">Using Oracle WebLogic Server</span>: Unpack the <code>routeserver.ear</code> file in your <code>$ORACLE_HOME/md/jlib</code> directory. Rename the <code>routeserver.ear</code> file and unpack its contents into a directory called <code>../routeserver.ear</code> . Rename the <code>web.war</code> file now found under the <code>$routeserver.ear/ directory</code> and unpack its contents into a subdirectory called <code>../web.war</code> . Your directory structure should therefore be <code>$routeserver.ear/web.war/</code> .</p>
+<p>After unpacking the routeserver.ear and web.war files, copy the <code>xmlparserv2.jar</code> file in your <code>$ORACLE_HOME/LIB/</code> directory into the <code>$routeserver.ear/web.war/WEB-INF/lib/</code> directory.</p>
+<p>To deploy the <code>routeserver.ear</code> file, log on to the WLS console (for example, <code>http://</code><code><span class="codeinlineitalic">&lt;hostname&gt;</span></code><code>:7001/console</code>); and from Deployments, install the <code>routeserver.ear</code> file, accepting the name <code>routeserver</code> for the deployment and choosing the option to make the deployment accessible from a specified location.</p>
+</li>
+<li>
+<p><span class="bold">Using Oracle Application Server or OC4J</span>: Deploy the <code>routeserver.ear</code> file in your <code>$ORACLE_HOME/md/jlib directory</code> using the OracleAS or the standalone OC4J Application Server Control (for example, <code>http://</code><code><span class="codeinlineitalic">&lt;hostname&gt;</span></code><code>:8888/em</code>). You can deploy the <code>routeserver.ear</code> file in an existing OC4J instance, or you can create a new OC4J instance for the routing engine. In either case, enter <code>routeserver</code> for the Application Name during deployment.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Launch the Oracle routing engine welcome page in a Web browser using the URL <code>http://</code><code><span class="codeinlineitalic">&lt;hostname&gt;:&lt;port&gt;</span></code><code>/routeserver</code> . On the welcome page, select the Administration link and enter the administrator (weblogic or oc4jadmin) user name and password.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If you are using WebLogic Server and if you are <span class="italic">not</span> using the default WebLogic administrator user name, you will need to edit the <code>weblogic.xml</code> file located in the <code>$routeserver.ear/web.war/WEB-INF/</code> directory. Replace <code>&lt;principal-name&gt;weblogic&lt;/principal-name&gt;</code> with your WebLogic Server administrator user name, for example, <code>&lt;principal-name&gt;my_weblogic_admin&lt;/principal-name&gt;</code>.</div>
+</li>
+<li>
+<p>Limit the maximum number of concurrent requests (max-http-connections) value to 10. For example, with OC4J add the following element inside the <code>&lt;application-server&gt;</code> element in the <code>server.xml</code> file:</p>
+<pre>
+&lt;max-http-connections value="10" /&gt;
+</pre>
+<p>It is important to limit the number of concurrent requests that the Oracle Route Server can process at any given time to prevent <code>java.lang.OutOfMemoryError</code> errors.</p>
+</li>
+<li>
+<p>Configure the <code>web.xml</code> file, as explained in <a href="#CCHIFIAB">Section 13.2.1</a>, and save the changes.</p>
+</li>
+<li>
+<p>If you deployed to Oracle WebLogic Server or Oracle Application Server, restart the routing engine.</p>
+<p>If the welcome page is not displayed, ensure that the newly deployed routing engine service was successfully started. It is assumed that you are running WebLogic Server 10.3.1.0 or later with an Oracle Database Release 11.2 or later <code>routeserver.ear</code> file; or that you are running Oracle AS or OC4J 10.1.3 or later with an Oracle 11<span class="italic">g</span> or later <code>routeserver.ear</code> file.</p>
+</li>
+<li>
+<p>If you deployed to an OC4J instance, start OC4J using the following command options:</p>
+<pre>
+-server 
+-Xms&lt;HEAP_SIZE&gt;
+-Xmx&lt;HEAP_SIZE&gt;
+-XX:NewSize=&lt;YOUNG_GENERATION_SIZE&gt;
+-XX:MaxNewSize=&lt;YOUNG_GENERATION_SIZE&gt;
+-Dsun.rmi.dgc.server.gcInterval=3600000 
+-Dsun.rmi.dgc.client.gcInterval=3600000
+-verbose:gc  (optional)
+</pre>
+<p><code>&lt;HEAP_SIZE&gt;</code> must be at least 512 MB, and has a recommended size of at least 1024 MB (1 GB). Make sure that this memory is physical memory and not virtual memory.</p>
+<p><code>&lt;YOUNG_GENERATION_SIZE&gt;</code> should be one-fourth (25%) of the <code>&lt;HEAP_SIZE&gt;</code> value.</p>
+<p>-verbose:gc will print all minor and major Java garbage collections. Monitoring these statistics could be useful for memory resource planning. If you find that garbage collections are occurring frequently or are lasting several seconds, you probably need to allocate more physical memory to the Java VM.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The amount of memory the Java VM will need depends mostly on two parameters: the <code>&lt;max-http-connections value="..." /&gt;</code> element in the <code>&lt;application-server&gt;</code> element in <code>server.xml</code>, and the <code>partition_cache_size_limit</code> parameter in <code>web.xml</code>.</div>
+<p>The following command is an example that starts OC4J. Note that the -config flag is an OC4J command line parameter, not a VM option.</p>
+<pre>
+c:\jdk1.5.0_06\bin\java -server 
+                        -Xms1024m 
+                        -Xmx1024m 
+                        -XX:NewSize=256m 
+                        -XX:MaxNewSize=256m 
+                        -Dsun.rmi.dgc.server.gcInterval=3600000 
+                        -Dsun.rmi.dgc.client.gcInterval=3600000
+                        -verbose:gc 
+                        -jar c:\oc4j\j2ee\home\oc4j.jar 
+                        -config c:\oc4j\j2ee\home\config\server.xml
+</pre></li>
+<li>
+<p>Verify your deployment by visiting the URL in the following format:</p>
+<pre>
+http://<span class="codeinlineitalic">&lt;hostname&gt;:&lt;port&gt;</span>/routeserver
+</pre>
+<p>You should see a welcome page. You should also see a message in the console window in which you started OC4J indicating that the Oracle Route Server was successfully initialized.</p>
+<p>If you do not see a welcome message, the route server is probably not configured properly to run in your environment. In this case, edit the <code>&lt;ROUTE_SERVER_HOME&gt;/routeserver/web/WEB-INF/web.xml</code> file to reflect your environment and your preferences. (The <code>web.xml</code> file is inside the <code>routeserver.ear</code> file, and it will not be visible until OC4J expands it into the route server directory structure under <code>&lt;ROUTE_SERVER_HOME&gt;</code>.) When you are finished editing, restart the routing engine or OC4J, and verify your deployment.</p>
+</li>
+<li>
+<p>Consult the supplied examples. The page <code>http://&lt;hostname&gt;:&lt;port&gt;/routeserver/</code> has links at the bottom in a section named Test Samples. These examples demonstrate various capabilities of the Oracle Route Server. This is the best way to learn the XML API, which is described in <a href="#CCHDHGHA">Section 13.3</a>.</p>
+</li>
+</ol>
+<a id="CCHIFIAB"></a>
+<div id="SPATL873" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">13.2.1</span> Configuring the web.xml File</h3>
+<p>You will probably need to make some changes to the default <code>web.xml</code> file that is included with Spatial, especially if you want to use settings from an older <code>web.xml</code> file or if you want to specify a language or use long ID values. You may want to edit or add some of the following parameters.</p>
+<p>The parameters and grouped and listed here in the order in which they appear in the <code>web.xml</code> file. See also the descriptive comments in the <code>web.xml</code> file.</p>
+<p>Route Server initialization parameters:</p>
+<ul>
+<li>
+<p><code>routeserver_schema_jdbc_connect_string</code>: Connect string to the database that contains routing data.</p>
+</li>
+<li>
+<p><code>routeserver_schema_username</code>: Name of the user that was created to access Oracle routing data.</p>
+</li>
+<li>
+<p><code>routeserver_schema_password</code>: Password for the user that was created to access Oracle routing data. You can obfuscate the password by preceding the password string with an exclamation point (<code>!</code>); if you do this, the password is obfuscated, and the <code>web.xml</code> file is rewritten the next time the routing engine is started.</p>
+</li>
+<li>
+<p><code>routeserver_network_name</code>: TBS??? Network name for the routing engine.</p>
+</li>
+<li>
+<p><code>routeserver_schema_connection_cache_min_limit</code>: Minimum number of database connections cached by the routing engine.</p>
+</li>
+<li>
+<p><code>routeserver_schema_connection_cache_max_limit</code>: Maximum number of database connections cached by the routing engine.</p>
+</li>
+</ul>
+<p>Geocoder parameters:</p>
+<ul>
+<li>
+<p><code>geocoder_type</code>: Type of geocoder being used: <code>httpclient</code> HTTP client; interacts with the Java servlet), <code>thinclient</code> (thin client; interacts with the Oracle Database geocoder), or <code>none</code> (no geocoder is provided).</p>
+<p>If <code>geocoder_type</code> is <code>thinclient</code> and if the geocoder and the routing engine are in the same OC4J container, the geocoder must be configured to use a data source and to avoid connection pool conflicts.</p>
+<p>Depending on the value of this parameter, examine the settings in the HTTP Client or Thin Client section of the <code>web.xml</code> file, and make any edits as appropriate. For example, if you specified <code>thinclient</code>, you can obfuscate the Oracle geocoder password in the same way as with the <code>routeserver_schema_password</code> parameter.</p>
+</li>
+<li>
+<p>Parameters used if <code>geocoder_type = httpclient</code>: <code>geocoder_http_url</code>, <code>geocoder_http_proxy_host</code>, <code>geocoder_http_proxy_port</code></p>
+</li>
+<li>
+<p>Parameters used if <code>geocoder_type = thinclient</code>: <code>geocoder_schema_host</code>, <code>geocoder_schema_port</code>, <code>geocoder_schema_sid</code>, <code>geocoder_schema_username</code>, <code>geocoder_schema_password</code>, <code>geocoder_schema_mode</code></p>
+</li>
+</ul>
+<p>Logging parameters:</p>
+<ul>
+<li>
+<p><code>log_filename</code>: Location (relative or absolute) and name of the log file.</p>
+</li>
+<li>
+<p><code>log_level</code>: Type (and amount) of information to be written to the log file. From least to most information: FATAL, ERROR, WARN, INFO, DEBUG, or FINEST (all messages).</p>
+</li>
+<li>
+<p><code>log_thread_name</code>: Whether to log the name of the thread that makes each entry.</p>
+</li>
+<li>
+<p><code>log_time</code>: Whether to include the time with each entry.</p>
+</li>
+</ul>
+<p>Road description parameters:</p>
+<ul>
+<li>
+<p><code>max_speed_limit</code>: Maximum speed limit of any road segment, in meters per second. (34 meters per second is about 122 kilometers per hour or 75 miles per hour.)</p>
+</li>
+<li>
+<p><code>local_road_threshold</code>: A number of miles (default = 25, minimum = 10). If the estimated distance in miles between source and destination nodes is less than or equal to this value, local roads are considered as an option; if the distance is greater than this value, local roads are not considered.</p>
+<p>This parameter enables optimizations for short routes. Lower values can speed the routing engine performance by decreasing the size of the solution set to be searched, but can produce non-optimal short routes by causing the routing engine not to consider viable local road routes. Higher values (above the default of 25) can generate more accurate routes using local roads, but can slow the routing engine performance by increasing the size of the solution set to be searched.</p>
+</li>
+<li>
+<p><code>highway_cost_multiplier</code>: The amount by which to make highways less attractive when computing routes with <code>route_preference</code> set to <code>local</code>.</p>
+</li>
+<li>
+<p><code>driving_side</code>: R (the default) if traffic drives on the right side of the road, or L if traffic drives on the left side of the road.</p>
+</li>
+<li>
+<p><code>language</code>: Default language to use to produce driving directions. The supported languages are English (the default), French, German, Italian, and Spanish.</p>
+</li>
+<li>
+<p><code>long_ids</code>: <code>TRUE</code> (the default) causes ID values to have their length stored as LONG and not INTEGER data; <code>FALSE</code> causes ID values to have their length stored as INTEGER and not LONG data.</p>
+<p>If you have routing data that was partitioned using an Oracle Database release before 11.1, the <code>long_ids</code> parameter value must be <code>FALSE</code> until the data is repartitioned using a current release.</p>
+</li>
+<li>
+<p><code>distance_function_type</code>: <code>geodetic</code> for geodetic coordinate systems (such as SRID 8307 for longitude/latitude) or <code>euclidean</code> for projected coordinate systems.</p>
+</li>
+</ul>
+<p>Partitioning parameters:</p>
+<ul>
+<li>
+<p><code>partition_cache_size_limit</code>: Maximum number of partitions that the network partition cache can hold. If partitions are already in the cache, the routing engine will not have to load them from the database; however, if you set this value too high, you can encounter an "out of memory" error.</p>
+</li>
+<li>
+<p><code>partition_table_name</code>: Name of the partition table that contains the network partitions. (The table is assumed to be in the schema associated with the <code>routeserver_schema_jdbc_connect_string</code>, <code>routeserver_schema_username</code>, and <code>routeserver_schema_password</code> parameters.)</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CCHDHGHA"></a>
+<div id="SPATL874" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">13.3</span> <a id="sthref801"></a><a id="sthref802"></a>Routing Engine XML API</h2>
+<p>This section explains how to submit route requests in XML format to the routing engine, and it describes the XML document type definitions (DTDs) for the route requests (input) and responses (output). XML is widely used for transmitting structured documents using the HTTP protocol. If an HTTP request (GET or POST method) is used, it is assumed the request has a parameter named <code>xml_request</code> whose value is a string containing the XML document for the request.</p>
+<p>A request to the routing engine servlet has the following format:</p>
+<pre>
+http://<span class="italic">hostname:port</span>/<span class="italic">route-server-servlet-path</span>?xml_request=<span class="italic">xml-request</span>
+</pre>
+<p>In this format:</p>
+<ul>
+<li>
+<p><span class="italic">hostname</span> is the network path of the server on which the routing engine is running.</p>
+</li>
+<li>
+<p><span class="italic">port</span> is the port on which the application server listens.</p>
+</li>
+<li>
+<p><span class="italic">route-server-servlet-path</span> is the routing engine servlet path (for example, <code>routeserver/servlet/RouteServerServlet</code>).</p>
+</li>
+<li>
+<p><span class="italic">xml-request</span> is the URL-encoded XML request submitted using the HTML GET or POST method.</p>
+</li>
+</ul>
+<p>The input XML is required for all requests. The output will be an XML document.</p>
+<p>In a simple <span class="italic">route</span> (as opposed to batch route) request, you must specify a route ID, and you can specify one or more of the following attributes:</p>
+<ul>
+<li>
+<p><code>route_preference</code>: <code>fastest</code> or <code>shortest</code> (default)</p>
+</li>
+<li>
+<p><code>road_preference</code>: <code>highway</code> (default) or <code>local</code></p>
+</li>
+<li>
+<p><code>return_driving_directions</code> (whether to return driving directions): <code>true</code> or <code>false</code> (default)</p>
+</li>
+<li>
+<p><code>return_hierarchical_directions</code> (whether to return hierarchical directions): <code>true</code> or <code>false</code> (default)</p>
+</li>
+<li>
+<p><code>return_locations</code> (return the start and end locations of the route and any subroutes): <code>true</code> (default) or <code>false</code></p>
+</li>
+<li>
+<p><code>return_subroutes</code> (whether to return subroutes): <code>true</code> (default if a multi-address route, ignored for a single-address route) or <code>false</code></p>
+</li>
+<li>
+<p><code>return_route_geometry</code> (whether to return the line string coordinates for the route): <code>true</code> or <code>false</code> (default)</p>
+</li>
+<li>
+<p><code>return_subroute_geometry</code> (whether to return the line string coordinates for each subroute): <code>true</code> or <code>false</code> (default if a multi-address route, ignored if a single-address route)</p>
+</li>
+<li>
+<p><code>return_segment_geometry</code> (whether to return the line string coordinates for each maneuver in the route): <code>true</code> or <code>false</code> (default)</p>
+</li>
+<li>
+<p><code>return_detailed_geometry</code>: <code>true</code> (default; returns detailed geometries) or <code>false</code> (returns generalized geometries)</p>
+</li>
+<li>
+<p><code>language</code>: language used to generate driving directions (<code>ENGLISH</code>, <code>FRENCH</code>, <code>GERMAN</code>, <code>ITALIAN</code>, or <code>SPANISH</code>)</p>
+</li>
+<li>
+<p><code>return_segment_edge_ids</code> (whether to return the edge ID values of the edges of each maneuver in the route): <code>true</code> or <code>false</code> (default)</p>
+</li>
+<li>
+<p><code>return_route_edge_ids</code> (whether to return the edge ID values of the edges in the route): <code>true</code> or <code>false</code> (default)</p>
+</li>
+<li>
+<p><code>return_subroute_edge_ids</code> (whether to return the edge ID values of the edges in each subroute): <code>true</code> or <code>false</code> (default if a multi-address route, ignored if a single-address route)</p>
+</li>
+<li>
+<p><code>distance_unit</code>: <code>kilometer</code>, <code>mile</code> (default), or <code>meter</code></p>
+</li>
+<li>
+<p><code>time_unit</code>: <code>hour</code>, <code>minute</code> (default), or <code>second</code></p>
+</li>
+<li>
+<p><code>pre_geocoded_locations</code> (whether the start and end locations are input locations (address specifications or points) or previously geocoded locations): <code>true</code> (previously geocoded locations) or <code>false</code> (default; input locations)</p>
+</li>
+</ul>
+<p>In a <span class="italic">batch route</span> request, you must specify a request ID, a start location, and one or more end locations. Each location must have an ID attribute. You can also specify one or more of the following attributes for the batch route request:</p>
+<ul>
+<li>
+<p><code>route_preference</code>: <code>fastest</code> or <code>shortest</code> (default)</p>
+</li>
+<li>
+<p><code>road_preference</code>: <code>highway</code> (default) or <code>local</code></p>
+</li>
+<li>
+<p><code>distance_unit</code>: <code>kilometer</code>, <code>mile</code> (default), or <code>meter</code></p>
+</li>
+<li>
+<p><code>time_unit</code>: <code>hour</code>, <code>minute</code> (default), or <code>second</code></p>
+</li>
+<li>
+<p><code>sort_by_distance</code> (whether to sort the returned routes in ascending order by distance of the end location from the start location): <code>true</code> or <code>false</code> (default)</p>
+</li>
+<li>
+<p><code>cutoff_distance</code> (returning only routes where the end location is less than or equal to a specified number of distance units from the start location): (number; default = no limit)</p>
+</li>
+<li>
+<p><code>pre_geocoded_locations</code> (whether the start and end locations are input locations (address specifications or points) or previously geocoded locations): <code>true</code> (previously geocoded locations) or <code>false</code> (default; input locations)</p>
+</li>
+</ul>
+<p>This section contains the following subsections:</p>
+<ul>
+<li>
+<p><a href="#CHDFCGBB">Section 13.3.1, "Route Request and Response Examples"</a></p>
+</li>
+<li>
+<p><a href="#BGBDEEDD">Section 13.3.2, "Route Request DTD"</a></p>
+</li>
+<li>
+<p><a href="#BCEDDAFB">Section 13.3.3, "Route Response DTD"</a></p>
+</li>
+<li>
+<p><a href="#CCHDGGIB">Section 13.3.4, "Batch Route Request and Response Examples"</a></p>
+</li>
+<li>
+<p><a href="#CCHEJCGF">Section 13.3.5, "Batch Route Request DTD"</a></p>
+</li>
+<li>
+<p><a href="#CCHHAEGA">Section 13.3.6, "Batch Route Response DTD"</a></p>
+</li>
+</ul>
+<a id="CHDFCGBB"></a>
+<div id="SPATL875" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">13.3.1</span> <a id="sthref803"></a><a id="sthref804"></a><a id="sthref805"></a>Route Request and Response Examples</h3>
+<p>This section contains XML examples of route requests and the responses generated by those requests. One request uses specified addresses, another uses points specified by longitude and latitude coordinates, and another uses previously geocoded locations. For reference information about the available elements and attributes, see <a href="#BGBDEEDD">Section 13.3.2</a> for requests and <a href="#BCEDDAFB">Section 13.3.3</a> for responses.</p>
+<p><a href="#BCEECHHH">Example 13-1</a> shows a request for the fastest route, preferably using highways, between two offices at specified addresses (in Waltham, Massachusetts and Nashua, New Hampshire), with driving directions for each segment, and using miles for distances and minutes for times.</p>
+<div id="SPATL876" class="example">
+<p class="titleinexample"><a id="BCEECHHH"></a>Example 13-1 Route Request with Specified Addresses</p>
+<pre>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;route_request 
+          id="8" 
+          route_preference="fastest"
+          road_preference="highway" 
+          return_driving_directions="true"
+          distance_unit="mile" 
+          time_unit="minute"&gt;
+  &lt;start_location&gt;
+    &lt;input_location id="1"&gt;
+      &lt;input_address&gt;
+        &lt;us_form1 
+          street="1000 Winter St" 
+          lastline="Waltham, MA" /&gt;
+      &lt;/input_address&gt;
+    &lt;/input_location&gt;&lt;/start_location&gt;
+  &lt;end_location&gt;
+    &lt;input_location id="2"&gt;
+      &lt;input_address&gt;
+        &lt;us_form1 
+          street="1 Oracle Dr" 
+          lastline="Nashua, NH" /&gt;
+      &lt;/input_address&gt;
+    &lt;/input_location&gt;
+  &lt;/end_location&gt;
+&lt;/route_request&gt;
+</pre></div>
+<!-- class="example" -->
+<p><a href="#BCEDGCHG">Example 13-2</a> shows the response generated by the request in <a href="#BCEECHHH">Example 13-1</a>. (The output is reformatted for readability.)</p>
+<div id="SPATL877" class="example">
+<p class="titleinexample"><a id="BCEDGCHG"></a>Example 13-2 Route Response with Specified Addresses</p>
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+&lt;route_response&gt;
+  &lt;route 
+    id="8" 
+    step_count="15" 
+    distance="29.855655894643636" 
+    distance_unit="mile" 
+    time="34.41252848307292" 
+    time_unit="minute"&gt;
+  &lt;segment 
+    sequence="1" 
+    instruction="Start out on WINTER ST (Going North)" 
+    distance="0.6715170911787637" time="1.1257004737854004"/&gt;
+  &lt;segment 
+    sequence="2" 
+    instruction="Turn SLIGHT RIGHT onto RAMP (Going Northwest)" 
+    distance="0.05893317343308232" 
+    time="0.09879287083943684"/&gt;
+  &lt;segment 
+    sequence="3" 
+    instruction="Turn RIGHT onto OLD COUNTY RD (Going Northeast)" 
+    distance="0.6890481152276999" 
+    time="1.6801289876302083"/&gt;
+  &lt;segment 
+    sequence="4" 
+    instruction="Turn RIGHT onto TRAPELO RD (Going Southeast)" 
+    distance="1.0062739119153126" 
+    time="1.686871592203776"/&gt;
+  &lt;segment 
+    sequence="5" 
+    instruction="Turn LEFT onto RAMP (Going North)" 
+    distance="0.3364944434303735" 
+    time="0.5640838623046875"/&gt;
+  &lt;segment 
+    sequence="6" 
+    instruction="Merge onto I-95/RT-128 (Going North)" 
+    distance="4.775246959324318" 
+    time="4.926156107584635"/&gt;
+  &lt;segment 
+    sequence="7" 
+    instruction="Continue on I-95/RT-128" 
+    distance="0.0" 
+    time="0.0"/&gt;
+  &lt;segment 
+    sequence="8" 
+    instruction="Stay STRAIGHT to go onto 32B/32A (Going East)" 
+    distance="0.27138218577176415" 
+    time="0.4549326578776042"/&gt;
+  &lt;segment 
+    sequence="9" 
+    instruction="Take EXIT 32A toward LOWELL" 
+    distance="0.043764782242279254" 
+    time="0.07336527506510417"/&gt;
+  &lt;segment 
+    sequence="10" 
+    instruction="Stay STRAIGHT to go onto RAMP (Going East)" 
+    distance="0.2770620621155161" 
+    time="0.4644541422526042"/&gt;
+  &lt;segment 
+    sequence="11" 
+    instruction="Turn LEFT onto US-3 (Going Northwest)" 
+    distance="20.664632308107564" 
+    time="21.317686971028646"/&gt;
+  &lt;segment 
+    sequence="12" 
+    instruction="Stay STRAIGHT to go onto EVERETT TPKE/US-3 (Going Northwest)" 
+    distance="0.006080380444913938" 
+    time="0.006272379557291667"/&gt;
+  &lt;segment 
+    sequence="13" 
+    instruction="Take EXIT 1 toward SO NASHUA" 
+    distance="0.550406717982974" 
+    time="0.9226765950520833"/&gt;
+  &lt;segment 
+    sequence="14" 
+    instruction="Turn LEFT onto SPIT BROOK RD (Going West)" 
+    distance="0.5031617978313553" 
+    time="1.0825419108072916"/&gt;
+  &lt;segment 
+    sequence="15" 
+    instruction="Turn RIGHT onto ORACLE DR (Going North)" 
+    distance="0.0016526518707758954" 
+    time="0.00886537532011668"/&gt;
+  &lt;/route&gt;
+&lt;/route_response&gt;
+</pre></div>
+<!-- class="example" -->
+<p><a href="#CCHGDGGH">Example 13-3</a> shows a request for the fastest route, preferably using highways, between two locations specified as longitude/latitude points, with driving directions for each segment, and using meters for distances and seconds for times. (The points are associated with two locations in San Francisco, California: the World Trade Center and 100 Flower Street.)</p>
+<div id="SPATL878" class="example">
+<p class="titleinexample"><a id="CCHGDGGH"></a>Example 13-3 Route Request with Specified Longitude/Latitude Points</p>
+<pre>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;route_request id="8" 
+               route_preference="shortest"
+               road_preference="highway" 
+               return_driving_directions="true"
+               distance_unit="meter" 
+               time_unit="second"
+               return_route_geometry="true"
+          &gt;
+  &lt;start_location&gt;
+     &lt;input_location id="1" longitude="-122.39382" latitude="37.79518" /&gt;
+  &lt;/start_location&gt;
+  &lt;end_location&gt;
+     &lt;input_location id="2" longitude="-122.4054826" latitude="37.7423566" /&gt;
+  &lt;/end_location&gt;
+&lt;/route_request&gt;
+</pre></div>
+<!-- class="example" -->
+<p><a href="#CCHCCEAC">Example 13-4</a> shows the response generated by the request in <a href="#CCHGDGGH">Example 13-3</a>. (The output is reformatted for readability.)</p>
+<div id="SPATL879" class="example">
+<p class="titleinexample"><a id="CCHCCEAC"></a>Example 13-4 Route Response with Specified Longitude/Latitude Points</p>
+<pre>
+?xml version="1.0" encoding="UTF-8" ?&gt;
+&lt;route_response&gt;
+   &lt;route id="8" step_count="11" distance="7196.72509765625" distance_unit="meter"
+     time="521.2236328125" time_unit="second"&gt;
+       &lt;route_geometry&gt;
+         &lt;LineString&gt;
+             &lt;coordinates&gt;
+-122.39382,37.79518 -122.39382,37.79518 -122.39454,37.79601 -122.39467,37.79604 
+-122.39476,37.79604 -122.39484,37.79599 -122.39486,37.79591 -122.39484,37.79579
+-122.39462,37.79539 -122.39425,37.79491 -122.39389,37.79462 -122.39338,37.79433
+-122.39326,37.79424 -122.39275,37.79384 -122.39263,37.79371 -122.39174,37.79293 
+-122.39151,37.79274 -122.39142,37.79266 -122.3913,37.7925 -122.3912,37.79233 
+-122.39102,37.79184 -122.39093,37.79161 -122.39072,37.79128 -122.39049,37.79104 
+-122.39016,37.79076 -122.38878,37.78967 -122.38861,37.7895 -122.38839,37.7892
+-122.38819,37.78877 -122.38813,37.78857 -122.38797,37.78783 -122.38796,37.78758 
+-122.38801,37.78709 -122.38819,37.78478 -122.38832,37.78477 -122.38841,37.78474 
+-122.38983,37.78361 -122.39127,37.78246 -122.39206,37.78184 -122.39261,37.78139 
+-122.39319,37.78094 -122.3943,37.7801 -122.39486,37.77968 -122.39534,37.7793 
+-122.39654,37.77833 -122.39876,37.77657 -122.39902,37.77639 -122.40033,37.77537 
+-122.40096,37.77483 -122.40151,37.7744 -122.40205,37.77396 -122.40226,37.7738
+ -122.40266,37.77349 -122.40321,37.77305 -122.40376,37.77262 -122.40543,37.77129 
+-122.40578,37.77101 -122.40599,37.77083 -122.40699,37.77006 -122.40767,37.76953 
+-122.40774,37.76947 -122.40781,37.7694 -122.40786,37.76932 -122.40788,37.76922 
+-122.40788,37.76913 -122.40786,37.76897 -122.40785,37.76883 -122.40779,37.76838 
+-122.40767,37.7671 -122.40756,37.76577 -122.40743,37.76449 -122.40734,37.76321 
+-122.40722,37.76193 -122.40709,37.76067 -122.40695,37.75937 -122.40678,37.75776 
+-122.4067,37.75684 -122.40663,37.75617 -122.40647,37.75458 -122.40644,37.75428 
+-122.40632,37.75299 -122.4062,37.75174 -122.40617,37.75138 -122.40614,37.75103 
+-122.40606,37.75066 -122.40565,37.74987 -122.40529,37.74937 -122.40518,37.74924 
+-122.40506,37.74913 -122.4045,37.74873 -122.4041,37.74845 -122.40393,37.74827 
+-122.40384,37.74815 -122.40378,37.74801 -122.40375,37.74785 -122.40381,37.74762 
+-122.40397,37.74719 -122.4043,37.74633 -122.40434,37.74618 -122.40434,37.74603 
+-122.40431,37.74594 -122.4042,37.74554 -122.40416,37.7453 -122.40417,37.74515 
+-122.40431,37.74464 -122.40445,37.74427 -122.40461,37.74393 -122.40479,37.74362 
+-122.40522,37.74304 -122.40482,37.74282 -122.40517,37.74233 
+-122.40545613036156,37.742431337836386 
+          &lt;/coordinates&gt;
+        &lt;/LineString&gt;
+      &lt;/route_geometry&gt;
+      &lt;segment sequence="1" instruction="Start out on FERRY BLDG/FERRY
+         PLZ/HERB CAEN WAY/THE EMBARCADERO (Going Northwest)"
+         distance="111.84008026123047" time="6.990005016326904"/&gt;
+      &lt;segment sequence="2" instruction="Turn LEFT onto RAMP (Going 
+        Southwest)" distance="51.30750274658203" time="4.664318561553955"/&gt;
+      &lt;segment sequence="3" instruction="Turn LEFT onto HERB CAEN 
+         WAY/THE EMBARCADERO (Going Southeast)" 
+          distance="902.3695068359375" time="56.39809036254883"/&gt;
+      &lt;segment sequence="4" instruction="Turn SLIGHT RIGHT onto THE
+         EMBARCADERO (Going Southeast)" distance="534.7628173828125"
+         time="33.42267608642578"/&gt;
+      &lt;segment sequence="5" instruction="Turn RIGHT onto BRANNAN ST 
+          (Going Southwest)" distance="2454.0565185546875"
+          time="219.57013702392578"/&gt;
+      &lt;segment sequence="6" instruction="Turn SLIGHT LEFT onto POTRERO AVE
+         (Going South)" distance="2066.54541015625" time="129.15908813476562"/&gt;
+      &lt;segment sequence="7" instruction="Turn SLIGHT LEFT onto BAY SHORE 
+          BLVD (Going Southeast)" distance="747.060546875"
+          time="46.6912841796875"/&gt;
+      &lt;segment sequence="8" instruction="Stay STRAIGHT to go onto BAY SHORE
+         BLVD/BAYSHORE BLVD (Going South)" distance="195.7578125"
+         time="12.23486328125"/&gt;
+      &lt;segment sequence="9" instruction="Turn LEFT onto OAKDALE AVE 
+         (Going Southeast)" distance="42.8857421875" time="3.898712158203125"/&gt;
+      &lt;segment sequence="10" instruction="Turn RIGHT onto PATTERSON ST 
+          (Going Southwest)" distance="62.525390625" time="5.68414306640625"/&gt;
+      &lt;segment sequence="11" instruction="Turn RIGHT onto FLOWER ST (Going
+         West)" distance="27.61372947692871" time="2.5103390216827393"/&gt;
+   &lt;/route&gt;
+&lt;/route_response&gt;
+</pre></div>
+<!-- class="example" -->
+<p><a id="sthref806"></a><a id="sthref807"></a><a href="#CHDGCGHC">Example 13-5</a> shows a request for the route, with driving directions, where the start and end locations are previously geocoded locations that are about one-half mile apart in Boston, Massachusetts.</p>
+<div id="SPATL880" class="example">
+<p class="titleinexample"><a id="CHDGCGHC"></a>Example 13-5 Route Request with Previously Geocoded Locations</p>
+<pre>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;route_request id="8" 
+               route_preference="shortest"
+               road_preference="highway" 
+               return_driving_directions="true"
+               distance_unit="mile" 
+               time_unit="minute"
+               pre_geocoded_locations="true"&gt;
+    &lt;start_location&gt;
+        &lt;pre_geocoded_location id="1"&gt;
+            &lt;edge_id&gt;22161661&lt;/edge_id&gt;
+            &lt;percent&gt;.5&lt;/percent&gt;
+            &lt;side&gt;L&lt;/side&gt;
+        &lt;/pre_geocoded_location&gt;
+    &lt;/start_location&gt;
+    &lt;end_location&gt;
+        &lt;pre_geocoded_location id="2"&gt;
+            &lt;edge_id&gt;22104391&lt;/edge_id&gt;
+            &lt;percent&gt;.5&lt;/percent&gt;
+            &lt;side&gt;R&lt;/side&gt;
+        &lt;/pre_geocoded_location&gt;
+    &lt;/end_location&gt;
+&lt;/route_request&gt;
+</pre></div>
+<!-- class="example" -->
+<p><a id="sthref808"></a><a id="sthref809"></a><a href="#CHDDDBBF">Example 13-6</a> shows the response to the request in <a href="#CHDGCGHC">Example 13-5</a>. (The output is reformatted for readability.)</p>
+<div id="SPATL881" class="example">
+<p class="titleinexample"><a id="CHDDDBBF"></a>Example 13-6 Route Response with Previously Geocoded Locations</p>
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+&lt;route_response&gt;
+  &lt;route 
+     id="8" 
+     step_count="5" 
+     distance="0.6193447379707987" 
+     distance_unit="mile" 
+     time="1.6662169138590495" 
+     time_unit="minute"&gt;
+    &lt;segment 
+       sequence="1"
+       instruction="Start out on HUNTINGTON AVE (Going Southeast)" 
+       distance="0.0059065276259536855" 
+       time="0.01440208355585734"/&gt;
+    &lt;segment 
+       sequence="2" 
+       instruction="Turn LEFT onto AVENUE OF THE ARTS/HUNTINGTON AVE/RT-9 (Going Northeast)"              distance="0.020751234891437903" 
+       time="0.050598426659901934"/&gt;
+    &lt;segment        sequence="3" 
+       instruction="Turn RIGHT onto PUBLIC ALLEY 405 (Going Southeast)" 
+       distance="0.053331456545578096" 
+       time="0.286087703704834"/&gt;
+    &lt;segment        sequence="4" 
+       instruction="Turn RIGHT onto ST BOTOLPH ST (Going Southwest)" 
+       distance="0.028921701076542888" 
+       time="0.07052075068155925"/&gt;
+    &lt;segment        sequence="5" 
+       instruction="Turn RIGHT onto MASSACHUSETTS AVE (Going Northwest)" 
+       distance="0.5104338249425094" 
+       time="1.2446078459421794"/&gt;
+  &lt;/route&gt;
+&lt;/route_response&gt;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" -->
+<a id="BGBDEEDD"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">13.3.2</span> <a id="sthref810"></a>Route Request DTD</h3>
+<p>The following is the complete DTD for a route request. The main elements and attributes of the DTD are explained in sections that follow.</p>
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!-- geocoder.dtd includes gmlfeature.dtd. These define the 
+     ELEMENTS input_address and those in Feature, FeatureMember,
+     and FeatureCollection that are used in geoFeature, 
+     geoFeatureCollection, and geoFeatureMember.
+--&gt;
+&lt;!ENTITY % GEOCODERDTD SYSTEM "geocoder.dtd"&gt;
+%GEOCODERDTD;
+ 
+&lt;!&mdash;
+   input_location: specify an input address to the geocoder
+   input_address: specify a location using a street address
+   Point: specify a location using its longitude/latitude
+ 
+   (The input_location, input_address and Point elements are defined in
+   geocoder.dtd. GeometryClasses is defined in gmlgeometry.dtd.)
+--&gt;
+&lt;!ELEMENT route_request (start_location, location*, end_location)&gt;
+&lt;!ATTLIST route_request 
+      vendor CDATA "Oracle"
+      id CDATA #REQUIRED
+      route_preference (FASTEST|SHORTEST) #IMPLIED
+      road_preference (HIGHWAY|LOCAL) #IMPLIED
+      return_driving_directions (TRUE|FALSE) #IMPLIED
+      return_hierarchival_driving_directions (TRUE|FALSE) #IMPLIED
+      return_locations (TRUE|FALSE) #IMPLIED
+      return_subroutes (TRUE|FALSE) #IMPLIED
+      return_route_geometry (TRUE|FALSE) #IMPLIED
+      return_subroute_geometry (TRUE|FALSE) #IMPLIED
+      return_segment_geometry (TRUE|FALSE) #IMPLIED
+      return_detailed_geometry (TRUE|FALSE) #IMPLIED
+      return_route_edge_ids (TRUE|FALSE) #IMPLIED
+      return_subroute_edge_ids (TRUE|FALSE) #IMPLIED
+      return_route_segment_ids (TRUE|FALSE) #IMPLIED
+      language (ENGLISH|FRENCH|GERMAN|ITALIAN|SPANISH) #IMPLIED
+      distance_unit (KM|MILE|METER) #IMPLIED
+      time_unit (HOUR|MINUTE|SECOND) #IMPLIED
+      pre_geocoded_locations (TRUE|FALSE) #IMPLIED&gt;
+      driving_directions_detail (LOW|MEDIUM|HIGH) #IMPLIED
+ 
+&lt;!-- The following are alternatives for specifying the location. Use 
+     input_location when you want to represent a location with a  
+     street address (input_address) or longitude/latitude (Point).
+     If you have already geocoded the location, 
+     you can use information from the geocoder response to 
+     construct a pre_geocoded_location element. 
+     The geocoder returns:
+         - An edge_id (integer that is the road segment identifier)
+         - A side ('L' or 'R' &ndash; left or right side)
+         - A percent (floating-point number 0.0 to 1.0 representing  
+           the fraction of the length from the start of the road 
+           segment to this location.
+--&gt;
+&lt;!ELEMENT pre_geocoded_location (edge_id, percent, side)&gt;
+&lt;!ATTLIST pre_geocoded_location id CDATA #REQUIRED&gt;
+ 
+ 
+&lt;!ELEMENT start_location (input_location|pre_geocoded_location|)&gt;
+&lt;!ELEMENT location (input_location|pre_geocoded_location|)&gt;
+&lt;!ELEMENT end_location (input_location|pre_geocoded_location|)&gt;
+</pre>
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref811"></a>
+<h4 class="sect3"><span class="secnum">13.3.2.1</span> <a id="sthref812"></a><a id="sthref813"></a>route_request Element</h4>
+<p>The <code>&lt;route_request&gt;</code> element has the following definition:</p>
+<pre>
+&lt;!ELEMENT route_request (start_location, location*, end_location)&gt;
+</pre>
+<p>The root element of a route request is always named <code>route_request</code>.</p>
+<p><a id="sthref814"></a>The <code>&lt;start_location&gt;</code> child element specifies the start location for the route, as an address specification, a geocoded address, or longitude/latitude coordinates.</p>
+<p><a id="sthref815"></a>The <code>&lt;location&gt;</code> child element specifies a location for a segment, as an address specification, a geocoded address, or longitude/latitude coordinates. If there are no <code>&lt;location&gt;</code> elements, it is a single-address route; if there are one or more <code>&lt;location&gt;</code> elements, it is a multi-address route.</p>
+<p><a id="sthref816"></a>The <code>&lt;end_location&gt;</code> child element specifies the end location for the route, as an address specification, a geocoded address, or longitude/latitude coordinates.</p>
+<p>In a route request:</p>
+<ul>
+<li>
+<p>If <code>&lt;start_location&gt;</code> is an address specification or longitude/latitude coordinates, each <code>&lt;end_location&gt;</code> and <code>&lt;location</code>&gt; element can be either an address specification or longitude/latitude coordinate; however, it cannot be a geocoded address.</p>
+</li>
+<li>
+<p>If <code>&lt;start_location&gt;</code> is a geocoded address, <code>&lt;end_location&gt;</code> and any <code>&lt;location&gt;</code> specifications must be geocoded addresses.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref817"></a>
+<h4 class="sect3"><span class="secnum">13.3.2.2</span> route_request Attributes</h4>
+<p>The root element <code>&lt;route_request&gt;</code> has a number of attributes, most of them optional. The attributes are defined as follows:</p>
+<pre>
+&lt;!ATTLIST route_request 
+      vendor CDATA "Oracle"
+      id CDATA #REQUIRED
+      route_preference (FASTEST|SHORTEST) #IMPLIED
+      road_preference (HIGHWAY|LOCAL) #IMPLIED
+      return_driving_directions (TRUE|FALSE) #IMPLIED
+      return_hierarchival_driving_directions (TRUE|FALSE) #IMPLIED
+      return_locations (TRUE|FALSE) #IMPLIED
+      return_subroutes (TRUE|FALSE) #IMPLIED
+      return_route_geometry (TRUE|FALSE) #IMPLIED
+      return_subroute_geometry (TRUE|FALSE) #IMPLIED
+      return_segment_geometry (TRUE|FALSE) #IMPLIED
+      return_detailed_geometry (TRUE|FALSE) #IMPLIED
+      return_route_edge_ids (TRUE|FALSE) #IMPLIED
+      return_subroute_edge_ids (TRUE|FALSE) #IMPLIED
+      return_route_segment_ids (TRUE|FALSE) #IMPLIED
+      language (ENGLISH|FRENCH|GERMAN|ITALIAN|SPANISH) #IMPLIED
+      distance_unit (KM|MILE|METER) #IMPLIED
+      time_unit (HOUR|MINUTE|SECOND) #IMPLIED
+      pre_geocoded_locations (TRUE|FALSE) #IMPLIED&gt;
+      driving_directions_detail (LOW|MEDIUM|HIGH) #IMPLIED
+</pre>
+<p><a id="sthref818"></a><code>vendor</code> is an optional attribute whose default value identifies the routing provider as Oracle.</p>
+<p><a id="sthref819"></a><code>id</code> is a required attribute that specifies an identification number to be associated with the request.</p>
+<p><code><a id="sthref820"></a>route_preference</code> is an optional attribute that specifies whether you want the route with the lowest estimated driving time (<code>FASTEST</code>) or the route with the shortest driving distance (<code>SHORTEST</code>, the default).</p>
+<p><code><a id="sthref821"></a>road_preference</code> is an optional attribute that specifies whether you want the route to use highways (<code>HIGHWAY</code>, the default) or local roads (<code>LOCAL</code>) when a choice is available.</p>
+<p><code><a id="sthref822"></a><a id="sthref823"></a>return_driving_directions</code> is an optional attribute that specifies whether you want driving directions for the route. <code>TRUE</code> returns driving directions; <code>FALSE</code> (the default) does not return driving directions.</p>
+<p><code><a id="sthref824"></a><a id="sthref825"></a>return_hierarchical_driving_directions</code> is an optional attribute that specifies whether you want driving directions for the route returned in an expandable and collapsible hierarchy. <code>TRUE</code> returns driving directions in an expandable and collapsible hierarchy; <code>FALSE</code> (the default) returns driving directions in a list with no hierarchy.</p>
+<p><code><a id="sthref826"></a>return_locations</code> is an optional attribute that specifies whether to return the start and end locations of the route and any subroutes. <code>TRUE</code> (the default) returns these locations; <code>FALSE</code> does not return these locations.</p>
+<p><code><a id="sthref827"></a><a id="sthref828"></a>return_subroutes</code> is an optional attribute that specifies whether to return subroutes is a multi-address route. <code>TRUE</code> (the default for multi-address routes) returns subroutes; <code>FALSE</code> does not return subroutes. (This attributed is ignored for single-address routes.)</p>
+<p><code><a id="sthref829"></a><a id="sthref830"></a>return_route_geometry</code> is an optional attribute that specifies whether you want the coordinates of each line string that represents a maneuver in the route. <code>TRUE</code> returns the coordinates; <code>FALSE</code> (the default) does not return the coordinates.</p>
+<p><code><a id="sthref831"></a><a id="sthref832"></a>return_subroute_geometry</code> is an optional attribute that specifies whether you want the coordinates of each line string that represents a maneuver in each subroute. <code>TRUE</code> returns the coordinates; <code>FALSE</code> (the default for multi-address routes) does not return the coordinates. (This attributed is ignored for single-address routes.)</p>
+<p><code><a id="sthref833"></a><a id="sthref834"></a>return_segment_geometry</code> is an optional attribute that specifies whether you want the coordinates of the line string that represents the route. <code>TRUE</code> returns the coordinates; <code>FALSE</code> (the default) does not return the coordinates. If <code>return_segment_geometry</code> is <code>TRUE</code>, driving directions for the route are returned regardless of the value of the <code>return_route_geometry</code> attribute.</p>
+<p><code><a id="sthref835"></a><a id="sthref836"></a>return_detailed_geometry</code> is an optional attribute that indicates the level of detail to be included in returned geometries. <code>TRUE</code> (the default) returns detailed geometries; <code>FALSE</code> returns generalized geometries (usually with fewer coordinates).</p>
+<p><code><a id="sthref837"></a><a id="sthref838"></a>return_route_edge_ids</code> is an optional attribute that specifies whether you want the edge ID values of the edges in the route. <code>TRUE</code> returns the edge ID values; <code>FALSE</code> (the default) does not return the edge ID values.</p>
+<p><code><a id="sthref839"></a><a id="sthref840"></a><a id="sthref841"></a>return_subroute_edge_ids</code> is an optional attribute that specifies whether you want the edge ID values of the edges in the subroutes. <code>TRUE</code> returns the edge ID values; <code>FALSE</code> (the default for multi-address routes) does not return the edge ID values. (This attributed is ignored for single-address routes.)</p>
+<p><code><a id="sthref842"></a><a id="sthref843"></a>return_segment_edge_ids</code> is an optional attribute that specifies whether you want the edge ID values of the edges of all maneuvers in the route. <code>TRUE</code> returns the edge ID values; <code>FALSE</code> (the default) does not return the edge ID values. If <code>return_segment_edge_ids</code> is <code>TRUE</code>, edge ID values are returned regardless of the value of the <code>return_route_edge_ids</code> attribute.</p>
+<p><code><a id="sthref844"></a>language</code> is an optional attribute that overrides the default language used to generate the driving directions. The default language for is set in the <code>web.xml</code> file; you can use this attribute to override the default on a per-request basis. The following attribute values are supported: <code>ENGLISH</code>, <code>FRENCH</code>, <code>GERMAN</code>, <code>ITALIAN</code>, and <code>SPANISH</code>.</p>
+<p><code><a id="sthref845"></a>distance_unit</code> is an optional attribute that specifies the unit of measure for distance values that are returned: <code>KM</code> for kilometer, <code>MILE</code> (the default) for mile, or <code>METER</code> for meter.</p>
+<p><code><a id="sthref846"></a>time_unit</code> is an optional attribute that specifies the unit for time values that are returned: <code>HOUR</code> for hour, <code>MINUTE</code> (the default) for minute, or <code>SECOND</code> for second.</p>
+<p><code><a id="sthref847"></a>pre_geocoded_locations</code> is an optional attribute that indicates how the start and end locations are specified. <code>TRUE</code> means that both are previously geocoded locations specified using the <code>&lt;pre_geocoded_location&gt;</code> element; <code>FALSE</code> (the default) means that both are addresses specified using the <code>&lt;input_location&gt;</code> element.</p>
+<p><code><a id="sthref848"></a>driving_directions_detail</code> is an optional attribute that influences the level of detail and the number of separate steps in driving instructions. The available values are <code>HIGH</code> (most details and steps), <code>MEDIUM</code> (the default), and <code>LOW</code> (fewest details and steps). For example, <code>LOW</code> might treat a segment as a single step even if it involves slight maneuvers to the right or left. The effect of a value for this attribute on the length of returned driving directions will vary, depending on the exact names of elements and maneuvers. This attribute is ignored if you do not specify <code>TRUE</code> for <code>return_driving_directions</code> or <code>return_hierarchical_driving_directions</code>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The default level of detail changed in Oracle Database release 11.1, to provide fewer details and steps than before. If you want to have the same level of detail as in a previous release that did not have the <code>driving_directions_detail</code> attribute, specify <code>HIGH</code> for the <code>driving_directions_detail</code> attribute.</div>
+</div>
+<!-- class="sect3" -->
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref849"></a>
+<h4 class="sect3"><span class="secnum">13.3.2.3</span> <a id="sthref850"></a><a id="sthref851"></a>input_location Element</h4>
+<p>The <code>&lt;input_location&gt;</code> element specifies an address in a format that satisfies the Oracle Spatial geocoding request DTD, which is described in <a href="sdo_geocode_concepts.htm#CIHCBDFA">Section 11.7.2</a>. You can specify the input location using either the <code>&lt;Point&gt;</code> element or the <code>&lt;input_address&gt;</code> element. <a href="#BCEECHHH">Example 13-1</a> in <a href="#CHDFCGBB">Section 13.3.1</a> shows the start and end addresses specified using the <code>&lt;input_location&gt;</code> element and its child element <code>&lt;input_address&gt;</code>.</p>
+<p>To use the <code>&lt;input_location&gt;</code> element, you must ensure that the value of the <code>pre_geocoded_locations</code> attribute is <code>FALSE</code> (the default) in the <code>&lt;route_request&gt;</code> element. You can use the <code>&lt;Point&gt;</code> and <code>&lt;input_address&gt;</code> elements together in a request.</p>
+</div>
+<!-- class="sect3" -->
+<div class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref852"></a>
+<h4 class="sect3"><span class="secnum">13.3.2.4</span> <a id="sthref853"></a><a id="sthref854"></a>pre_geocoded_location Element</h4>
+<p>The <code>&lt;pre_geocoded_location&gt;</code> element specifies a geocoded location in terms of how far along a street (an edge) the address is and on which side of the street. <a href="#CHDGCGHC">Example 13-5</a> in <a href="#CHDFCGBB">Section 13.3.1</a> shows the start and end addresses specified using the <code>&lt;pre_geocoded_location&gt;</code> element.</p>
+<p>To use the <code>&lt;pre_geocoded_location&gt;</code> element, you must specify <code>pre_geocoded_locations="TRUE"</code> in the <code>&lt;route_request&gt;</code> element, and you must use the <code>&lt;pre_geocoded_location&gt;</code> element to specify both the start and end locations.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BCEDDAFB"></a>
+<div id="SPATL887" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">13.3.3</span> <a id="sthref855"></a>Route Response DTD</h3>
+<p>The following is the complete DTD for a route response:</p>
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!-- route_response DTD includes the gmlgeometry DTD 
+     as an external entity reference.
+     --&gt;
+&lt;!ENTITY % GMLGEOMETRYDTD SYSTEM "gmlgeometry.dtd"&gt;
+  %GMLGEOMETRYDTD;
+ 
+&lt;!ELEMENT route_response (route | router_error)&gt;
+ 
+&lt;!ELEMENT route (route_geometry?, segment+)&gt;
+&lt;!ATTLIST route id CDATA #REQUIRED
+                step_count CDATA #IMPLIED
+                time CDATA #IMPLIED
+                distance CDATA #IMPLIED&gt;
+           
+&lt;!ELEMENT router_error EMPTY&gt;
+&lt;!ATTLIST router_error 
+                 id CDATA #REQUIRED
+                 error_code CDATA #IMPLIED 
+                 error_msg CDATA #IMPLIED&gt;
+ 
+&lt;!ELEMENT route_geometry (LineString | MultiLineString)?&gt;
+ 
+&lt;!ELEMENT route_edge_ids (EdgeIDs)?&gt;
+ 
+&lt;!ELEMENT segment segment*, (LineString | MultiLineString)?&gt;
+&lt;!ATTLIST segment sequence CDATA #REQUIRED
+                  instruction CDATA #IMPLIED
+                  time CDATA #IMPLIED
+                  distance CDATA #IMPLIED&gt;
+ 
+&lt;!ELEMENT segment_geometry (LineString | MultiLineString)?&gt;
+ 
+&lt;!ELEMENT segment_edge_ids (EdgeIDs)?&gt;
+</pre></div>
+<!-- class="sect2" -->
+<a id="CCHDGGIB"></a>
+<div id="SPATL888" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">13.3.4</span> <a id="sthref856"></a><a id="sthref857"></a><a id="sthref858"></a>Batch Route Request and Response Examples</h3>
+<p>This section contains XML examples of batch route requests and the responses generated by those requests. One request uses specified addresses, and the other request uses previously geocoded locations. For reference information about the available elements and attributes, see <a href="#CCHEJCGF">Section 13.3.5</a> for requests and <a href="#CCHHAEGA">Section 13.3.6</a> for responses.</p>
+<p><a href="#CCHDGABH">Example 13-7</a> shows a batch route request using specified addresses. The request is for the fastest routes, preferably using highways, between an office in Waltham, Massachusetts and three end locations (an Oracle office in Nashua, New Hampshire; the town offices in Concord, Massachusetts; and Boston City Hall), using miles for distances and minutes for times. The request calls for the returned routes to be sorted by distance between the start and end location, and for no routes over 35 miles to be returned.</p>
+<div id="SPATL889" class="example">
+<p class="titleinexample"><a id="CCHDGABH"></a>Example 13-7 Batch Route Request with Specified Addresses</p>
+<pre>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;batch_route_request 
+          id="8" 
+          route_preference="fastest"
+          road_preference="highway" 
+          return_driving_directions="false"
+          sort_by_distance = "true" 
+          cutoff_distance="35" 
+          distance_unit="mile" 
+          time_unit="minute"&gt;
+  &lt;start_location&gt;
+    &lt;input_location 
+          id="1"&gt;
+      &lt;input_address&gt;
+        &lt;us_form1 
+          street="1000 Winter St" 
+          lastline="Waltham, MA" /&gt;
+      &lt;/input_address&gt;
+    &lt;/input_location&gt;
+  &lt;/start_location&gt;
+  &lt;end_location&gt;
+    &lt;input_location id="10"&gt;
+      &lt;input_address&gt;
+        &lt;us_form1 
+          street="1 Oracle Dr" 
+          lastline="Nashua, NH" /&gt;
+      &lt;/input_address&gt;
+    &lt;/input_location&gt;
+  &lt;/end_location&gt;
+  &lt;end_location&gt;
+    &lt;input_location 
+          id="11"&gt;
+      &lt;input_address&gt;
+        &lt;us_form1 
+          street="22 Monument Sq" 
+          lastline="Concord, MA" /&gt;
+      &lt;/input_address&gt;
+    &lt;/input_location&gt;
+  &lt;/end_location&gt;
+  &lt;end_location&gt;
+    &lt;input_location 
+          id="12"&gt;
+      &lt;input_address&gt;
+        &lt;us_form1 
+          street="1 City Hall Plaza" 
+          lastline="Boston, MA" /&gt;
+      &lt;/input_address&gt;
+    &lt;/input_location&gt;
+  &lt;/end_location&gt;
+&lt;/batch_route_request&gt;
+</pre></div>
+<!-- class="example" -->
+<p><a href="#CCHJIECC">Example 13-8</a> shows the response generated by the request in <a href="#CCHDGABH">Example 13-7</a>. (The output is reformatted for readability.)</p>
+<div id="SPATL890" class="example">
+<p class="titleinexample"><a id="CCHJIECC"></a>Example 13-8 Batch Route Response with Specified Addresses</p>
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8" standalone="yes" ?&gt;
+&lt;batch_route_response 
+      id="8"&gt;
+  &lt;route 
+    id="11" 
+    step_count="0" 
+    distance="6.637544152543032" 
+    distance_unit="mile" 
+    time="10.53597412109375" 
+    time_unit="minute" /&gt;
+  &lt;route 
+    id="12" 
+    step_count="0" 
+    distance="17.204805418116575" 
+    distance_unit="mile"
+    time="24.47645467122396" 
+    time_unit="minute" /&gt;
+  &lt;route 
+    id="10" 
+    step_count="0" 
+    distance="29.855655894643636" 
+    distance_unit="mile" 
+    time="34.41252848307292" 
+    time_unit="minute" /&gt;
+&lt;/batch_route_response&gt;
+</pre></div>
+<!-- class="example" -->
+<p><a href="#CCHCIICE">Example 13-9</a> shows a batch route request using previously geocoded locations. The request is for the shortest routes, preferably using highways, between one location and three other locations, using miles for distances and minutes for times. The request calls for the returned routes to be sorted by distance between the start and end location, and for no routes over 50 miles to be returned.</p>
+<div id="SPATL891" class="example">
+<p class="titleinexample"><a id="CCHCIICE"></a>Example 13-9 Batch Route Request with Previously Geocoded Locations</p>
+<pre>
+&lt;?xml version="1.0" standalone="yes"?&gt;
+&lt;batch_route_request id="8" 
+                     route_preference="shortest"
+                     road_preference="highway" 
+                     return_driving_directions="false"
+                     distance_unit="mile" 
+                     time_unit="minute"
+                     pre_geocoded_locations="true"
+                     cutoff_distance="50"
+                     sort_by_distance="true"&gt;
+    &lt;start_location&gt;
+        &lt;pre_geocoded_location id="1"&gt;
+            &lt;edge_id&gt;22161661&lt;/edge_id&gt;
+            &lt;percent&gt;.5&lt;/percent&gt;
+            &lt;side&gt;L&lt;/side&gt;
+        &lt;/pre_geocoded_location&gt;
+    &lt;/start_location&gt;
+    &lt;end_location&gt;
+        &lt;pre_geocoded_location id="2"&gt;
+            &lt;edge_id&gt;22104391&lt;/edge_id&gt;
+            &lt;percent&gt;.5&lt;/percent&gt;
+            &lt;side&gt;R&lt;/side&gt;
+        &lt;/pre_geocoded_location&gt;
+    &lt;/end_location&gt;
+    &lt;end_location&gt;
+        &lt;pre_geocoded_location id="3"&gt;
+            &lt;edge_id&gt;22160808&lt;/edge_id&gt;
+            &lt;percent&gt;.5&lt;/percent&gt;
+            &lt;side&gt;L&lt;/side&gt;
+        &lt;/pre_geocoded_location&gt;
+    &lt;/end_location&gt;
+    &lt;end_location&gt;
+        &lt;pre_geocoded_location id="4"&gt;
+            &lt;edge_id&gt;22325991&lt;/edge_id&gt;
+            &lt;percent&gt;.5&lt;/percent&gt;
+            &lt;side&gt;R&lt;/side&gt;
+        &lt;/pre_geocoded_location&gt;
+    &lt;/end_location&gt;
+&lt;/batch_route_request&gt;
+</pre></div>
+<!-- class="example" -->
+<p><a href="#CCHICEAA">Example 13-10</a> shows the response to the request in <a href="#CCHCIICE">Example 13-9</a>. Only two routes are returned, because the third route is longer than the specified cutoff distance of 50 miles. (The output is reformatted for readability.)</p>
+<div id="SPATL892" class="example">
+<p class="titleinexample"><a id="CCHICEAA"></a>Example 13-10 Batch Route Response with Previously Geocoded Locations</p>
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8" standalone="yes" ?&gt;
+&lt;batch_route_response 
+      id="8"&gt;
+  &lt;route
+    id="2" 
+    step_count="0" 
+    distance="0.6193447379707987" 
+    distance_unit="mile" 
+    time="1.6662169138590495" 
+    time_unit="minute" /&gt;
+  &lt;route 
+    id="4" 
+    step_count="0" 
+    distance="41.342018851363946" 
+    distance_unit="mile" 
+    time="47.95714518229167" 
+    time_unit="minute" /&gt;
+&lt;/batch_route_response&gt;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect2" -->
+<a id="CCHEJCGF"></a>
+<div id="SPATL893" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">13.3.5</span> <a id="sthref859"></a>Batch Route Request DTD</h3>
+<p>The following is the complete DTD for a batch route request. The main elements and attributes of the DTD are explained in sections that follow.</p>
+<pre>
+&lt;!ENTITY % GEOCODERDTD SYSTEM "geocoder.dtd"&gt;
+%GEOCODERDTD;
+&lt;!-- input_location element is defined in geocoder.dtd --&gt;
+ 
+&lt;!ELEMENT batch_route_request (start_location, end_location+)&gt;
+ &lt;!ATTLIST batch_route_request
+      vendor CDATA "Oracle"
+      id CDATA #REQUIRED
+      route_preference (FASTEST | SHORTEST ) #IMPLIED
+      road_preference (HIGHWAY | LOCAL) #IMPLIED
+      distance_unit (KM | MILE | METER ) #IMPLIED
+      time_unit (HOUR | MINUTE | SECOND) #IMPLIED
+      sort_by_distance (TRUE | FALSE) #IMPLIED
+      cutoff_distance CDATA #IMPLIED&gt;
+          
+&lt;!-- The following are alternatives for specifying the location. Use 
+     input_location when you want to represent a location with a  
+     street address (input_address) or by longitude/latitude (Point).
+     If you have already geocoded the location, 
+     you can use information from the geocoder response to  
+     construct a pre_geocoded_location element. 
+     The geocoder returns:
+         - an edge_id (integer that is the road segment identifier)
+         - a side ('L' or 'R' &ndash; left or right side)
+         - a percent (floating-point number 0.0 to 1.0 representing  
+           the fraction of the length from the start of the road 
+           segment to this location.
+--&gt;
+&lt;!ELEMENT pre_geocoded_location (edge_id, percent, side)&gt;
+&lt;!ATTLIST pre_geocoded_location id CDATA #REQUIRED&gt;
+ 
+&lt;!ELEMENT start_location (input_location|pre_geocoded_location)&gt;
+&lt;!ELEMENT end_location (input_location|pre_geocoded_location)&gt;
+&lt;!-- IMPORTANT VALIDITY CONSTRAINT: each of the input_location
+     elements that are children of end_location MUST contain
+     the id attribute.  Normally, the id attribute is optional.
+     If an id is not present, an exception will result.
+     Also, each id must be unique within a batch_route_request.
+     Otherwise, the request will yield unpredictable results.
+--&gt;
+</pre>
+<div id="SPATL894" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref860"></a>
+<h4 class="sect3"><span class="secnum">13.3.5.1</span> <a id="sthref861"></a><a id="sthref862"></a>batch_route_request Element</h4>
+<p>The <code>&lt;batch_route_request&gt;</code> element has the following definition:</p>
+<pre>
+&lt;!ELEMENT batch_route_request (start_location, end_location+)&gt;
+</pre>
+<p>The root element of a route request is always named <code>batch_route_request</code>.</p>
+<p>The <code>&lt;start_location&gt;</code> child element specifies the start location for the route, as an address specification, a geocoded address, or longitude/latitude point.</p>
+<p>Each of the one or more <code>&lt;end_location&gt;</code> child elements specifies the end location for the route, as an address specification, a geocoded address, or longitude/latitude point.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CCHHFABF"></a>
+<div id="SPATL895" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">13.3.5.2</span> batch_route_request Attributes</h4>
+<p><a id="sthref863"></a><a id="sthref864"></a><a id="sthref865"></a>The root element <code>&lt;batch_route_request&gt;</code> has a number of attributes, most of them optional. The attributes are defined as follows:</p>
+<pre>
+&lt;!ATTLIST batch_route_request 
+      vendor CDATA "Oracle"
+      id CDATA #REQUIRED
+      route_preference (FASTEST|SHORTEST) #IMPLIED
+      road_preference (HIGHWAY|LOCAL) #IMPLIED
+      distance_unit (KM|MILE|METER) #IMPLIED
+      time_unit (HOUR|MINUTE|SECOND) #IMPLIED
+      sort_by_distance (TRUE | FALSE) #IMPLIED
+      cutoff_distance CDATA #IMPLIED&gt;
+      pre_geocoded_locations (TRUE|FALSE) #IMPLIED&gt;
+ 
+</pre>
+<p>Most <code>&lt;batch_route_request&gt;</code> attributes have the same meaning as their counterpart <code>&lt;route_request&gt;</code> attributes, which are explained in <a href="#CCHHFABF">Section 13.3.5.2</a>. In addition, the <code>sort_by_distance</code> and <code>cutoff_distance</code> attributes do not apply to single route requests.</p>
+<p><code><a id="sthref866"></a>sort_by_distance</code> is an optional attribute that specifies whether you want the routes returned in ascending order by distance of the end location from the start location. <code>TRUE</code> sorts the returned routes by distance; <code>FALSE</code> (the default) does not sort the returned routes by distance.</p>
+<p><code><a id="sthref867"></a>cutoff_distance</code> is an optional attribute that causes routes to be returned only where the end location is less than or equal to a specified distance from the start location. By default, all routes are returned.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If a route is within the specified <code>cutoff_distance</code> value but would generate a <code>&lt;router_error&gt;</code> element in the response (see <a href="#CCHHAEGA">Section 13.3.6</a>), the route is removed from the response and not shown.</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CCHHAEGA"></a>
+<div id="SPATL896" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">13.3.6</span> <a id="sthref868"></a>Batch Route Response DTD</h3>
+<p>The following is the complete DTD for a batch route response:</p>
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!ELEMENT batch_route_response (route | route_error)+ &gt;
+&lt;!ATTLIST batch_route_response id CDATA #REQUIRED&gt;
+&lt;!ELEMENT route EMPTY&gt;
+&lt;!ATTLIST route 
+       id CDATA #REQUIRED
+       step_count CDATA #IMPLIED
+       distance CDATA #IMPLIED
+       distance_unit CDATA #IMPLIED
+       time CDATA #IMPLIED
+       time_unit CDATA #IMPLIED&gt;
+&lt;!ELEMENT router_error EMPTY&gt;
+&lt;!ATTLIST router_error 
+       id CDATA #REQUIRED
+       error_code CDATA #IMPLIED
+       error_msg CDATA #IMPLIED&gt;
+</pre></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CCHGJIGD"></a>
+<div id="SPATL897" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">13.4</span> <a id="sthref869"></a>Data Structures Used by the Routing Engine</h2>
+<p>Each database user of the routing engine must have the following tables in its schema:</p>
+<ul>
+<li>
+<p>EDGE</p>
+</li>
+<li>
+<p>NODE</p>
+</li>
+<li>
+<p>PARTITION</p>
+</li>
+<li>
+<p>SIGN_POST</p>
+</li>
+</ul>
+<p>The EDGE and NODE tables store edge and node information about the street network used by the routing engine. To understand how edges and nodes are used to represent street segments, intersections, and other entities in a street network, you must be familiar with the Oracle Spatial network data model, which is described in <a class="olink TOPOL" href="../e11831/toc.htm"><span class="italic">Oracle Spatial Topology and Network Data Models Developer's Guide</span></a>.</p>
+<p>The following sections describe the tables used by the routing engine, in alphabetical order by table name.</p>
+<div id="SPATL898" class="sect2"><a id="sthref870"></a>
+<h3 class="sect2"><span class="secnum">13.4.1</span> <a id="sthref871"></a>EDGE Table</h3>
+<p>The EDGE table contains one row for each directed edge in a street network. Each street segment (a part of a road between two nodes) is an undirected edge that corresponds to one or more directed edges in the EDGE table. The EDGE table contains the columns shown in <a href="#CCHDJEJI">Table 13-1</a>.</p>
+<div id="SPATL899" class="tblformal">
+<p class="titleintable"><a id="sthref872"></a><a id="CCHDJEJI"></a>Table 13-1 EDGE Table</p>
+<table class="cellalignment740" title="EDGE Table" summary="EDGE table" dir="ltr">
+<thead>
+<tr class="cellalignment734">
+<th class="cellalignment741" id="r1c1-t6">Column Name</th>
+<th class="cellalignment741" id="r1c2-t6">Data Type</th>
+<th class="cellalignment741" id="r1c3-t6">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r2c1-t6" headers="r1c1-t6">
+<p>EDGE_ID</p>
+</td>
+<td class="cellalignment742" headers="r2c1-t6 r1c2-t6">
+<p>NUMBER</p>
+</td>
+<td class="cellalignment742" headers="r2c1-t6 r1c3-t6">
+<p>Edge ID number.</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r3c1-t6" headers="r1c1-t6">
+<p>START_NODE_ID</p>
+</td>
+<td class="cellalignment742" headers="r3c1-t6 r1c2-t6">
+<p>NUMBER</p>
+</td>
+<td class="cellalignment742" headers="r3c1-t6 r1c3-t6">
+<p>Node ID number of the start node of this edge.</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r4c1-t6" headers="r1c1-t6">
+<p>END_NODE_ID</p>
+</td>
+<td class="cellalignment742" headers="r4c1-t6 r1c2-t6">
+<p>NUMBER</p>
+</td>
+<td class="cellalignment742" headers="r4c1-t6 r1c3-t6">
+<p>Node ID number of the end node of this edge.</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r5c1-t6" headers="r1c1-t6">
+<p>PARTITION_ID</p>
+</td>
+<td class="cellalignment742" headers="r5c1-t6 r1c2-t6">
+<p>NUMBER</p>
+</td>
+<td class="cellalignment742" headers="r5c1-t6 r1c3-t6">
+<p>Partition ID number of the network partition that contains this edge.</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r6c1-t6" headers="r1c1-t6">
+<p>FUNC_CLASS</p>
+</td>
+<td class="cellalignment742" headers="r6c1-t6 r1c2-t6">
+<p>NUMBER</p>
+</td>
+<td class="cellalignment742" headers="r6c1-t6 r1c3-t6">
+<p>Functional road class: a number from 1 through 5, with 1 indicating a large, high-speed, high-volume road, and each successive class generally smaller in size, speed, and volume. Class 2 roads have consistent speeds and are used to get traffic to and from class 1 roads. Class 3 roads have high volume and are used to connect class 2 roads. Class 4 roads move volumes of traffic between neighborhoods (for example, a busy main road in a city). Class 5 roads are all other roads (for example, a small, low-volume street in a neighborhood).</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r7c1-t6" headers="r1c1-t6">
+<p>LENGTH</p>
+</td>
+<td class="cellalignment742" headers="r7c1-t6 r1c2-t6">
+<p>NUMBER</p>
+</td>
+<td class="cellalignment742" headers="r7c1-t6 r1c3-t6">
+<p>Length of this edge, in meters.</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r8c1-t6" headers="r1c1-t6">
+<p>SPEED_LIMIT</p>
+</td>
+<td class="cellalignment742" headers="r8c1-t6 r1c2-t6">
+<p>NUMBER</p>
+</td>
+<td class="cellalignment742" headers="r8c1-t6 r1c3-t6">
+<p>Assigned speed limit for this edge, in meters per second.</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r9c1-t6" headers="r1c1-t6">
+<p>GEOMETRY</p>
+</td>
+<td class="cellalignment742" headers="r9c1-t6 r1c2-t6">
+<p>SDO_GEOMETRY</p>
+</td>
+<td class="cellalignment742" headers="r9c1-t6 r1c3-t6">
+<p>Line string geometry representing this edge, with the coordinates ordered from the start node to the end node.</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r10c1-t6" headers="r1c1-t6">
+<p>NAME</p>
+</td>
+<td class="cellalignment742" headers="r10c1-t6 r1c2-t6">
+<p>VARCHAR2(128)</p>
+</td>
+<td class="cellalignment742" headers="r10c1-t6 r1c3-t6">
+<p>Name of this edge.</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r11c1-t6" headers="r1c1-t6">
+<p>DIVIDER</p>
+</td>
+<td class="cellalignment742" headers="r11c1-t6 r1c2-t6">
+<p>VARCHAR2(1)</p>
+</td>
+<td class="cellalignment742" headers="r11c1-t6 r1c3-t6">
+<p>A value of <code>N</code> indicates that the edge is not divided; other values indicate whether, where, and how turns are allowed on the divided edge. (The routing engine currently considers only whether the edge is divided or not.)</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" --></div>
+<!-- class="sect2" -->
+<div id="SPATL900" class="sect2"><a id="sthref873"></a>
+<h3 class="sect2"><span class="secnum">13.4.2</span> <a id="sthref874"></a>NODE Table</h3>
+<p>The NODE table contains one row for each node that is the start node or end node of one or more edges in the street network. A node often corresponds to an intersection (the intersection of two edges); however, a node can be independent of any intersection (for example, the end of a "dead end" or "no outlet" street). The NODE table contains the columns shown in <a href="#CCHGADDH">Table 13-2</a>.</p>
+<div id="SPATL901" class="tblformal">
+<p class="titleintable"><a id="sthref875"></a><a id="CCHGADDH"></a>Table 13-2 NODE Table</p>
+<table class="cellalignment740" title="NODE Table" summary="NODE table" dir="ltr">
+<thead>
+<tr class="cellalignment734">
+<th class="cellalignment741" id="r1c1-t7">Column Name</th>
+<th class="cellalignment741" id="r1c2-t7">Data Type</th>
+<th class="cellalignment741" id="r1c3-t7">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r2c1-t7" headers="r1c1-t7">
+<p>NODE_ID</p>
+</td>
+<td class="cellalignment742" headers="r2c1-t7 r1c2-t7">
+<p>NUMBER</p>
+</td>
+<td class="cellalignment742" headers="r2c1-t7 r1c3-t7">
+<p>Node ID number.</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r3c1-t7" headers="r1c1-t7">
+<p>GEOMETRY</p>
+</td>
+<td class="cellalignment742" headers="r3c1-t7 r1c2-t7">
+<p>SDO_GEOMETRY</p>
+</td>
+<td class="cellalignment742" headers="r3c1-t7 r1c3-t7">
+<p>Point geometry representing this node.</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r4c1-t7" headers="r1c1-t7">
+<p>PARTITION_ID</p>
+</td>
+<td class="cellalignment742" headers="r4c1-t7 r1c2-t7">
+<p>NUMBER</p>
+</td>
+<td class="cellalignment742" headers="r4c1-t7 r1c3-t7">
+<p>Partition ID number of the network partition that contains this node.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" --></div>
+<!-- class="sect2" -->
+<div id="SPATL902" class="sect2"><a id="sthref876"></a>
+<h3 class="sect2"><span class="secnum">13.4.3</span> <a id="sthref877"></a>PARTITION Table</h3>
+<p>The PARTITION table is generated by Oracle based on the contents of the EDGE and NODE tables. The PARTITION table contains the columns shown in <a href="#CCHCIFID">Table 13-3</a>.</p>
+<div id="SPATL903" class="tblformal">
+<p class="titleintable"><a id="sthref878"></a><a id="CCHCIFID"></a>Table 13-3 PARTITION Table</p>
+<table class="cellalignment740" title="PARTITION Table" summary="PARTITION table" dir="ltr">
+<thead>
+<tr class="cellalignment734">
+<th class="cellalignment741" id="r1c1-t8">Column Name</th>
+<th class="cellalignment741" id="r1c2-t8">Data Type</th>
+<th class="cellalignment741" id="r1c3-t8">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r2c1-t8" headers="r1c1-t8">
+<p>PARTITION_ID</p>
+</td>
+<td class="cellalignment742" headers="r2c1-t8 r1c2-t8">
+<p>NUMBER</p>
+</td>
+<td class="cellalignment742" headers="r2c1-t8 r1c3-t8">
+<p>Partition ID number.</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r3c1-t8" headers="r1c1-t8">
+<p>SUBNETWORK</p>
+</td>
+<td class="cellalignment742" headers="r3c1-t8 r1c2-t8">
+<p>BLOB</p>
+</td>
+<td class="cellalignment742" headers="r3c1-t8 r1c3-t8">
+<p>Part of the network included in this partition.</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r4c1-t8" headers="r1c1-t8">
+<p>NUM_NODES</p>
+</td>
+<td class="cellalignment742" headers="r4c1-t8 r1c2-t8">
+<p>NUMBER</p>
+</td>
+<td class="cellalignment742" headers="r4c1-t8 r1c3-t8">
+<p>Number of nodes in this partition.</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r5c1-t8" headers="r1c1-t8">
+<p>NUM_NON_BOUNDARY_EDGES</p>
+</td>
+<td class="cellalignment742" headers="r5c1-t8 r1c2-t8">
+<p>NUMBER</p>
+</td>
+<td class="cellalignment742" headers="r5c1-t8 r1c3-t8">
+<p>Number of edges in this partition that are edges that are completely contained within the partition.</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r6c1-t8" headers="r1c1-t8">
+<p>NUM_OUTGOING_BOUNDARY_EDGES</p>
+</td>
+<td class="cellalignment742" headers="r6c1-t8 r1c2-t8">
+<p>NUMBER</p>
+</td>
+<td class="cellalignment742" headers="r6c1-t8 r1c3-t8">
+<p>Number of edges in this partition that start in this partition and terminate in another partition. (An edge cannot be in more that two partitions; for example, an edge cannot start in one partition, go through a second partition, and end in a third partition.)</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r7c1-t8" headers="r1c1-t8">
+<p>NUM_INCOMING_BOUNDARY_EDGES</p>
+</td>
+<td class="cellalignment742" headers="r7c1-t8 r1c2-t8">
+<p>NUMBER</p>
+</td>
+<td class="cellalignment742" headers="r7c1-t8 r1c3-t8">
+<p>Number of edges in this partition that start in another partition and terminate in this partition. (An edge cannot be in more that two partitions; for example, an edge cannot start in one partition, go through a second partition, and end in a third partition.)</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" --></div>
+<!-- class="sect2" -->
+<div id="SPATL904" class="sect2"><a id="sthref879"></a>
+<h3 class="sect2"><span class="secnum">13.4.4</span> <a id="sthref880"></a>SIGN_POST Table</h3>
+<p>The SIGN_POST table stores sign information that is used to generate driving directions. For example, a sign might indicate that Exit 33A on US Route 3 South goes toward Winchester. A SIGN_POST row might correspond to a physical sign at an exit ramp on a highway, but it does not need to correspond to a physical sign. The SIGN_POST table contains the columns shown in <a href="#CCHFJHAJ">Table 13-4</a>.</p>
+<div id="SPATL905" class="tblformal">
+<p class="titleintable"><a id="sthref881"></a><a id="CCHFJHAJ"></a>Table 13-4 SIGN_POST Table</p>
+<table class="cellalignment740" title="SIGN_POST Table" summary="EDGE table" dir="ltr">
+<thead>
+<tr class="cellalignment734">
+<th class="cellalignment741" id="r1c1-t9">Column Name</th>
+<th class="cellalignment741" id="r1c2-t9">Data Type</th>
+<th class="cellalignment741" id="r1c3-t9">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r2c1-t9" headers="r1c1-t9">
+<p>FROM_EDGE_ID</p>
+</td>
+<td class="cellalignment742" headers="r2c1-t9 r1c2-t9">
+<p>NUMBER</p>
+</td>
+<td class="cellalignment742" headers="r2c1-t9 r1c3-t9">
+<p>Edge ID number of the edge to which this sign applies (for example, the street segment containing the exit ramp).</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r3c1-t9" headers="r1c1-t9">
+<p>TO_EDGE_ID</p>
+</td>
+<td class="cellalignment742" headers="r3c1-t9 r1c2-t9">
+<p>NUMBER</p>
+</td>
+<td class="cellalignment742" headers="r3c1-t9 r1c3-t9">
+<p>Edge ID number of the edge to which this sign points (for example, the street segment to which the exit ramp leads).</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r4c1-t9" headers="r1c1-t9">
+<p>RAMP</p>
+</td>
+<td class="cellalignment742" headers="r4c1-t9 r1c2-t9">
+<p>VARCHAR2(64)</p>
+</td>
+<td class="cellalignment742" headers="r4c1-t9 r1c3-t9">
+<p>Ramp text (for example, <code>US-3 SOUTH</code>).</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r5c1-t9" headers="r1c1-t9">
+<p>EXIT</p>
+</td>
+<td class="cellalignment742" headers="r5c1-t9 r1c2-t9">
+<p>VARCHAR2(8)</p>
+</td>
+<td class="cellalignment742" headers="r5c1-t9 r1c3-t9">
+<p>Exit number (for example, <code>33A</code>).</p>
+</td>
+</tr>
+<tr class="cellalignment734">
+<td class="cellalignment742" id="r6c1-t9" headers="r1c1-t9">
+<p>TOWARD</p>
+</td>
+<td class="cellalignment742" headers="r6c1-t9 r1c2-t9">
+<p>VARCHAR2(64)</p>
+</td>
+<td class="cellalignment742" headers="r6c1-t9 r1c3-t9">
+<p>Text indicating where the exit is heading (for example, <code>WINCHESTER</code>).</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment733">
+<tr>
+<td class="cellalignment742">
+<table class="cellalignment738">
+<tr>
+<td class="cellalignment737"><a href="sdo_yp.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment737"><a href="sdo_openls.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1999, 2013,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment744">
+<table class="cellalignment736">
+<tr>
+<td class="cellalignment737"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment737"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment737"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment737"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment737"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment737"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

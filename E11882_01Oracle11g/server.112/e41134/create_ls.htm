@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Creating a Logical Standby Database</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 748" />
+<meta name="dcterms.created" content="2014-02-25T8:43:0Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Data Guard Concepts and Administration" />
+<meta name="dcterms.identifier" content="E41134-03" />
+<meta name="dcterms.isVersionOf" content="SBYDB" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1999, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="create_ps.htm" title="Previous" type="text/html" />
+<link rel="Next" href="protection.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e41134.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">12/34</span> <!-- End Header -->
+<div id="SBYDB00300" class="chapter"><a id="g105412"></a>
+<h1 class="chapter"><span class="secnum">4</span> Creating a Logical Standby Database</h1>
+<p>This chapter steps you through the process of creating a logical standby database. It includes the following main topics:<a id="sthref278"></a><a id="sthref279"></a></p>
+<ul>
+<li>
+<p><a href="#i76646">Prerequisite Conditions for Creating a Logical Standby Database</a></p>
+</li>
+<li>
+<p><a href="#i98939">Step-by-Step Instructions for Creating a Logical Standby Database</a></p>
+</li>
+<li>
+<p><a href="#i90444">Post-Creation Steps</a></p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ADMIN" href="../e25494/toc.htm"><span class="italic">Oracle Database Administrator's Guide</span></a> for information about creating and using server parameter files</p>
+</li>
+<li>
+<p><a class="olink DGBKR" href="../e40771/toc.htm"><span class="italic">Oracle Data Guard Broker</span></a> and the Oracle Enterprise Manager online help system for information about using the graphical user interface to automatically create a logical standby database</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+<a id="i76646"></a>
+<div id="SBYDB4730" class="sect1">
+<h2 class="sect1"><span class="secnum">4.1</span> Prerequisite Conditions for Creating a <a id="sthref280"></a>Logical Standby Database</h2>
+<p>Before you create a logical standby database, you must first ensure the primary database is properly configured. <a href="#g99152">Table 4-1</a> provides a checklist of the tasks that you perform on the primary database to prepare for logical standby database creation.</p>
+<div id="SBYDB5020" class="tblformal">
+<p class="titleintable"><a id="sthref281"></a><a id="g99152"></a>Table 4-1 Preparing the Primary Database for Logical Standby Database Creation</p>
+<table class="cellalignment1825" title="Preparing the Primary Database for Logical Standby Database Creation" summary="Lists the tasks you perform to prepare the primary database for logical standby database creation. Each task is a hot link to the section that provides detailed information." dir="ltr">
+<thead>
+<tr class="cellalignment1814">
+<th class="cellalignment1824" id="r1c1-t3">Reference</th>
+<th class="cellalignment1824" id="r1c2-t3">Task</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1814">
+<td class="cellalignment1820" id="r2c1-t3" headers="r1c1-t3">
+<p><a href="#i76902">Section 4.1.1</a></p>
+</td>
+<td class="cellalignment1820" headers="r2c1-t3 r1c2-t3">
+<p><a href="#i76902">Determine Support for Data Types and Storage Attributes for Tables</a></p>
+</td>
+</tr>
+<tr class="cellalignment1814">
+<td class="cellalignment1820" id="r3c1-t3" headers="r1c1-t3">
+<p><a href="#i77026">Section 4.1.2</a></p>
+</td>
+<td class="cellalignment1820" headers="r3c1-t3 r1c2-t3">
+<p><a href="#i77026">Ensure Table Rows in the Primary Database Can Be Uniquely Identified</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<p>Note that a logical standby database uses standby redo logs (SRLs) for redo received from the primary database, and also writes to online redo logs (ORLs) as it applies changes to the standby database. Thus, logical standby databases often require additional <code>ARC</code><span class="italic">n</span> processes to simultaneously archive SRLs and ORLs. Additionally, because archiving of ORLs takes precedence over archiving of SRLs, a greater number of SRLs may be needed on a logical standby during periods of very high workload.</p>
+<a id="i76902"></a>
+<div id="SBYDB4731" class="sect2">
+<h3 class="sect2"><span class="secnum">4.1.1</span> Determine Support for Data Types and Storage Attributes for Tables</h3>
+<p>Before setting up a logical standby database, ensure the logical standby database can maintain the data types and tables in your primary database. See <a href="data_support.htm#CHDGFADJ">Appendix C</a> for a complete list of data type and storage type considerations.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i77026"></a>
+<div id="SBYDB00308" class="sect2">
+<h3 class="sect2"><span class="secnum">4.1.2</span> Ensure Table Rows in the Primary Database Can Be Uniquely Identified</h3>
+<p>The physical organization in a logical standby database is different from that of the primary database, even though the logical standby database is created from a backup copy of the primary database. Thus, ROWIDs contained in the redo records generated by the primary database cannot be used to identify the corresponding row in the logical standby database.</p>
+<p>Oracle uses primary-key or unique-constraint/index supplemental logging to logically identify a modified row in the logical standby database. When database-wide primary-key and unique-constraint/index supplemental logging is enabled, each <code>UPDATE</code> statement also writes the column values necessary in the redo log to uniquely identify the modified row in the logical standby database.</p>
+<ul>
+<li>
+<p>If a table has a primary key defined, then the primary key is logged along with the modified columns as part of the <code>UPDATE</code> statement to identify the modified row.</p>
+</li>
+<li>
+<p>If there is no primary key, then the shortest nonnull unique-constraint/index is logged along with the modified columns as part of the <code>UPDATE</code> statement to identify the modified row.</p>
+</li>
+<li>
+<p>If there is no primary key and no nonnull unique constraint/index, then all columns of bounded size are logged as part of the UPDATE statement to identify the modified row. All columns are logged except the following: LONG, LOB, LONG RAW, object type, and collections.</p>
+</li>
+<li>
+<p>A function-based index, even though it is declared as unique, cannot be used to uniquely identify a modified row. However, logical standby databases support replication of tables that have function-based indexes defined, as long as modified rows can be uniquely identified.</p>
+</li>
+</ul>
+<p>Oracle recommends that you add a primary key or a nonnull unique index to tables in the primary database, whenever possible, to ensure that SQL Apply can efficiently apply redo data updates to the logical standby database.</p>
+<p>Perform the following steps to ensure SQL Apply can uniquely identify rows of each table being replicated in the logical standby database.</p>
+<a id="i77060"></a>
+<dl>
+<dd><a id="SBYDB5157"></a><a id="sthref282"></a></dd>
+<dt class="seghead">Step 1&nbsp;&nbsp;&nbsp;Find tables without unique logical identifier in the primary database.</dt>
+<dd>
+<p>Query the <code>DBA_LOGSTDBY_NOT_UNIQUE</code> view to display a list of tables that SQL Apply may not be able to uniquely identify. For example:</p>
+<pre>
+SQL&gt; SELECT OWNER, TABLE_NAME FROM DBA_LOGSTDBY_NOT_UNIQUE
+  2&gt; WHERE (OWNER, TABLE_NAME) NOT IN 
+  3&gt; (SELECT DISTINCT OWNER, TABLE_NAME FROM DBA_LOGSTDBY_UNSUPPORTED) 
+  4&gt; AND BAD_COLUMN = 'Y';
+</pre>
+<p>This query may take a few minutes to run.</p>
+</dd>
+<dd><a id="SBYDB5158"></a><a id="sthref283"></a></dd>
+<dt class="seghead">Step 2&nbsp;&nbsp;&nbsp;Add a disabled primary-key RELY constraint.</dt>
+<dd>
+<p>If your application ensures the rows in a table are unique, you can create a disabled primary key <code>RELY</code> constraint on the table. This avoids the overhead of maintaining a primary key on the primary database.</p>
+</dd>
+</dl>
+<p><a id="i77074"></a>To create a disabled <code>RELY</code> constraint on a primary database table, <a id="sthref284"></a>use the <code>ALTER TABLE</code> statement with a <code>RELY DISABLE</code> clause. The following example creates a disabled <code>RELY</code> constraint on a table named <code>mytab</code>, for which rows can be uniquely identified using the <code>id</code> and <code>name</code> columns:</p>
+<pre>
+SQL&gt; ALTER TABLE mytab ADD PRIMARY KEY (id, name) RELY DISABLE;
+</pre>
+<p>When you specify the <code>RELY</code> constraint, the system will assume that rows are unique. Because you are telling the system to rely on the information, but are not validating it on every modification done to the table, you must be careful to select columns for the disabled <code>RELY</code> constraint that will uniquely identify each row in the table. If such uniqueness is not present, then SQL Apply will not correctly maintain the table.</p>
+<p>To improve the performance of SQL Apply, add a unique-constraint/index to the columns to identify the row on the logical standby database. Failure to do so results in full table scans during <code>UPDATE</code> or <code>DELETE</code> statements carried out on the table by SQL Apply.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink REFRN" href="../e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for information about the <code>DBA_LOGSTDBY_NOT_UNIQUE</code> view</p>
+</li>
+<li>
+<p><a class="olink SQLRF" href="../e41084/toc.htm"><span class="italic">Oracle Database SQL Language Reference</span></a> for information about the <code>ALTER TABLE</code> statement syntax and creating <code>RELY</code> constraints</p>
+</li>
+<li>
+<p><a href="manage_ls.htm#CHDCJJEG">Section 10.7.1, "Create a Primary Key RELY Constraint"</a> for information about <code>RELY</code> constraints and actions you can take to increase performance on a logical standby database</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i98939"></a>
+<div id="SBYDB00310" class="sect1">
+<h2 class="sect1"><span class="secnum">4.2</span> Step-by-Step Instructions for Cre<a id="sthref285"></a><a id="sthref286"></a>ati<a id="sthref287"></a>ng a Logical Standby Database</h2>
+<p><span class="bold"><a id="sthref288"></a></span>This section describes the tasks you perform to create a logical standby database.</p>
+<p><a href="#BEIFEFEE">Table 4-2</a> provides a checklist of the tasks that you perform to create a logical standby database and specifies on which database you perform each task. There is also a reference to the section that describes the task in more detail.</p>
+<div id="SBYDB5021" class="tblformalwide">
+<p class="titleintable"><a id="sthref289"></a><a id="BEIFEFEE"></a>Table 4-2 Creating a Logical Standby Database</p>
+<table class="cellalignment1823" title="Creating a Logical Standby Database" summary="Describes the tasks you perform to create a logical standby database. Each tasks is a hot link to the section providing detailed information." dir="ltr">
+<thead>
+<tr class="cellalignment1814">
+<th class="cellalignment1824" id="r1c1-t5">Reference</th>
+<th class="cellalignment1824" id="r1c2-t5">Task</th>
+<th class="cellalignment1824" id="r1c3-t5">Database</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1814">
+<td class="cellalignment1820" id="r2c1-t5" headers="r1c1-t5">
+<p><a href="#i91653">Section 4.2.1</a></p>
+</td>
+<td class="cellalignment1820" headers="r2c1-t5 r1c2-t5">
+<p><a href="#i91653">Create a Physical Standby Database</a></p>
+</td>
+<td class="cellalignment1820" headers="r2c1-t5 r1c3-t5">
+<p>Primary</p>
+</td>
+</tr>
+<tr class="cellalignment1814">
+<td class="cellalignment1820" id="r3c1-t5" headers="r1c1-t5">
+<p><a href="#CIHIAHHG">Section 4.2.2</a></p>
+</td>
+<td class="cellalignment1820" headers="r3c1-t5 r1c2-t5">
+<p><a href="#CIHIAHHG">Stop Redo Apply on the Physical Standby Database</a></p>
+</td>
+<td class="cellalignment1820" headers="r3c1-t5 r1c3-t5">
+<p>Standby</p>
+</td>
+</tr>
+<tr class="cellalignment1814">
+<td class="cellalignment1820" id="r4c1-t5" headers="r1c1-t5">
+<p><a href="#i91652">Section 4.2.3</a></p>
+</td>
+<td class="cellalignment1820" headers="r4c1-t5 r1c2-t5">
+<p><a href="#i91652">Prepare the Primary Database to Support a Logical Standby Database</a></p>
+</td>
+<td class="cellalignment1820" headers="r4c1-t5 r1c3-t5">
+<p>Primary</p>
+</td>
+</tr>
+<tr class="cellalignment1814">
+<td class="cellalignment1820" id="r5c1-t5" headers="r1c1-t5">
+<p><a href="#i92346">Section 4.2.4</a></p>
+</td>
+<td class="cellalignment1820" headers="r5c1-t5 r1c2-t5">
+<p><a href="#i92346">Transition to a Logical Standby Database</a></p>
+</td>
+<td class="cellalignment1820" headers="r5c1-t5 r1c3-t5">
+<p>Standby</p>
+</td>
+</tr>
+<tr class="cellalignment1814">
+<td class="cellalignment1820" id="r6c1-t5" headers="r1c1-t5">
+<p><a href="#i75998">Section 4.2.5</a></p>
+</td>
+<td class="cellalignment1820" headers="r6c1-t5 r1c2-t5">
+<p><a href="#i75998">Open the Logical Standby Database</a></p>
+</td>
+<td class="cellalignment1820" headers="r6c1-t5 r1c3-t5">
+<p>Standby</p>
+</td>
+</tr>
+<tr class="cellalignment1814">
+<td class="cellalignment1820" id="r7c1-t5" headers="r1c1-t5">
+<p><a href="#i70028">Section 4.2.6</a></p>
+</td>
+<td class="cellalignment1820" headers="r7c1-t5 r1c2-t5">
+<p><a href="#i70028">Verify the Logical Standby Database Is Performing Properly</a></p>
+</td>
+<td class="cellalignment1820" headers="r7c1-t5 r1c3-t5">
+<p>Standby</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformalwide" -->
+<a id="i91653"></a>
+<div id="SBYDB4732" class="sect2">
+<h3 class="sect2"><span class="secnum">4.2.1</span> Create a Physical Standby Database</h3>
+<p>You create a logical standby database by first creating a physical standby database and then transitioning it to a logical standby database. Follow the instructions in <a href="create_ps.htm#g88234">Chapter 3, "Creating a Physical Standby Database"</a> to create a physical standby database.</p>
+</div>
+<!-- class="sect2" -->
+<a id="CIHIAHHG"></a>
+<div id="SBYDB4733" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">4.2.2</span> Stop Redo Apply on the Physical Standby Database</h3>
+<p>You can run Redo Apply on the new physical standby database for any length of time before converting it to a logical standby database. However, before converting to a logical standby database, stop Redo Apply on the physical standby database. Stopping Redo Apply is necessary to avoid applying changes past the redo that contains the LogMiner dictionary (described in <a href="#BEIGHEIA">Section 4.2.3.2, "Build a Dictionary in the Redo Data"</a>).</p>
+<p>To stop Redo Apply, issue the following statement on the physical standby database. If the database is an Oracle RAC database comprised of multiple instances, then you must first stop all Oracle RAC instances except one before issuing this statement:</p>
+<pre>
+SQL&gt; ALTER DATABASE RECOVER MANAGED STANDBY DATABASE CANCEL;
+</pre></div>
+<!-- class="sect2" -->
+<a id="i91652"></a>
+<div id="SBYDB4734" class="sect2">
+<h3 class="sect2"><span class="secnum">4.2.3</span> Prepare the Primary Database to Support a Logical Standby Database</h3>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i93974">Prepare the Primary Database for Role Transitions</a></p>
+</li>
+<li>
+<p><a href="#BEIGHEIA">Build a Dictionary in the Redo Data</a></p>
+</li>
+</ul>
+<a id="i93974"></a>
+<div id="SBYDB4735" class="sect3">
+<h4 class="sect3"><span class="secnum">4.2.3.1</span> Prepare the Primary Database for Role Transitions</h4>
+<p>In <a href="create_ps.htm#i68626">Section 3.1.4, "Set Primary Database Initialization Parameters"</a>, you set up several standby role initialization parameters to take effect when the primary database is transitioned to the <span class="italic">physical</span> standby role.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+This step is necessary only if you plan to perform switchovers.</div>
+<p>If you plan to transition the primary database to the <span class="italic">logical</span> standby role, then you must also modify the parameters shown in bold typeface in <a href="#i91919">Example 4-1</a>, so that no parameters need to change after a role transition:</p>
+<ul>
+<li>
+<p>Change the <code>VALID_FOR</code> attribute in the original <code>LOG_ARCHIVE_DEST_1</code> destination to archive redo data only from the online redo log and not from the standby redo log.</p>
+</li>
+<li>
+<p>Include the <code>LOG_ARCHIVE_DEST_3</code> destination on the primary database. This parameter only takes effect when the primary database is transitioned to the logical standby role.</p>
+</li>
+</ul>
+<div id="SBYDB5022" class="example">
+<p class="titleinexample"><a id="i91919"></a>Example 4-1 Primary Database: Logical Standby Role Initialization Parameters</p>
+<pre>
+LOG_ARCHIVE_DEST_1=
+ 'LOCATION=/arch1/chicago/ 
+  VALID_FOR=(<span class="bold">ONLINE_LOGFILES</span>,ALL_ROLES)
+  DB_UNIQUE_NAME=chicago'
+<span class="bold">LOG_ARCHIVE_DEST_3=</span>
+ <span class="bold">'LOCATION=/arch2/chicago/</span>
+  <span class="bold">VALID_FOR=(STANDBY_LOGFILES,STANDBY_ROLE)</span> 
+  <span class="bold">DB_UNIQUE_NAME=chicago'</span>
+<span class="bold">LOG_ARCHIVE_DEST_STATE_3=ENABLE</span>
+</pre>
+<p>To dynamically set these initialization parameter, use the SQL <code>ALTER SYSTEM SET</code> statement and include the <code>SCOPE=BOTH</code> clause so that the changes take effect immediately and persist after the database is shut down and started up again.</p>
+<p>The following table describes the archival processing defined by the changed initialization parameters shown in <a href="#i91919">Example 4-1</a>.</p>
+</div>
+<!-- class="example" -->
+<div class="inftblinformalwide">
+<table class="cellalignment1823" title="Initialization Parameter Settings for Example 4-1" summary="Describes how archiving behavior for the Chicago database is controlled by LOG_ARCHIVE_DEST_n parameter when in the primary or the logical standby database role.." dir="ltr">
+<thead>
+<tr class="cellalignment1814">
+<th class="cellalignment1824" id="r1c1-t7"><br /></th>
+<th class="cellalignment1824" id="r1c2-t7">When the Chicago Database Is Running in the Primary Role</th>
+<th class="cellalignment1824" id="r1c3-t7">When the Chicago Database Is Running in the Logical Standby Role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1814">
+<td class="cellalignment1820" id="r2c1-t7" headers="r1c1-t7"><code>LOG_ARCHIVE_DEST_1</code></td>
+<td class="cellalignment1820" headers="r2c1-t7 r1c2-t7">Directs archiving of redo data generated by the primary database from the local online redo log files to the local archived redo log files in <code>/arch1/chicago/</code>.</td>
+<td class="cellalignment1820" headers="r2c1-t7 r1c3-t7">Directs archiving of redo data generated by the logical standby database from the local online redo log files to the local archived redo log files in <code>/arch1/chicago/</code>.</td>
+</tr>
+<tr class="cellalignment1814">
+<td class="cellalignment1820" id="r3c1-t7" headers="r1c1-t7"><code>LOG_ARCHIVE_DEST_3</code></td>
+<td class="cellalignment1820" headers="r3c1-t7 r1c2-t7">Is ignored; <code>LOG_ARCHIVE_DEST_3</code> is valid only when <code>chicago</code> is running in the standby role.</td>
+<td class="cellalignment1820" headers="r3c1-t7 r1c3-t7">Directs archiving of redo data from the standby redo log files to the local archived redo log files in <code>/arch2/chicago/</code>.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformalwide" --></div>
+<!-- class="sect3" -->
+<a id="BEIGHEIA"></a>
+<div id="SBYDB4736" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">4.2.3.2</span> Build a D<a id="sthref290"></a><a id="sthref291"></a><a id="sthref292"></a><a id="sthref293"></a>ictionary in the Redo Data</h4>
+<p>A LogMiner dictionary must be built into the redo data so that the LogMiner component of SQL Apply can properly interpret changes it sees in the redo. As part of building the LogMiner dictionary, <a id="sthref294"></a><a id="sthref295"></a><a id="sthref296"></a>supplemental logging is automatically set up to log primary key and unique-constraint/index columns. The supplemental logging information ensures each update contains enough information to logically identify each row that is modified by the statement.</p>
+<p>To build the LogMiner dictionary, issue the following statement:</p>
+<pre>
+SQL&gt; EXECUTE DBMS_LOGSTDBY.BUILD;
+</pre>
+<p>The <code>DBMS_LOGSTDBY.BUILD</code> procedure waits for all existing transactions to complete. Long-running transactions executed on the primary database will affect the timeliness of this command.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+In databases created using Oracle Database 11<span class="italic">g</span> release 2 (11.2) or later, supplemental logging information is automatically propagated to any existing physical standby databases. However, for databases in earlier releases, or if the database was created using an earlier release and then upgraded to 11.2, you must check whether supplemental logging is enabled at the physical standby(s) if it is also enabled at the primary database. If it is not enabled at the physical standby(s), then before performing a switchover or failover, you must enable supplemental logging on all existing physical standby databases. To do so, issue the following SQL command on each physical standby:
+<pre>
+SQL&gt;  ALTER DATABASE ADD SUPPLEMENTAL LOG DATA (PRIMARY KEY, UNIQUE INDEX) COLUMNS;
+</pre>
+<p>If you do not do this, then any logical standby that is also in the same Data Guard configuration will be unusable if a switchover or failover is performed to one of the physical standby databases. If a switchover or failover has already occurred and supplemental logging was not enabled, then you must recreate all logical standby databases.</p>
+</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p>The <code>DBMS_LOGSTDBY.BUILD</code> PL/SQL package in <a class="olink ARPLS" href="../../appdev.112/e40758/toc.htm"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a></p>
+</li>
+<li>
+<p>The <code>UNDO_RETENTION</code> initialization parameter in <a class="olink REFRN" href="../e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i92346"></a>
+<div id="SBYDB4737" class="sect2">
+<h3 class="sect2"><span class="secnum">4.2.4</span> Transition to a Logical Standby Database</h3>
+<p>This section describes how to prepare the physical standby database to transition to a logical standby database. It contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#BEIGJCAC">Convert to a Logical Standby Database</a></p>
+</li>
+<li>
+<p><a href="#BEIDIBAG">Adjust Initialization Parameters for the Logical Standby Database</a></p>
+</li>
+</ul>
+<a id="BEIGJCAC"></a>
+<div id="SBYDB4738" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">4.2.4.1</span> Convert to a Logical Standby Database</h4>
+<p>The redo logs contain the information necessary to <a id="sthref297"></a><a id="sthref298"></a><a id="sthref299"></a>convert your physical standby database to a logical standby database.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If you have an Oracle RAC physical standby database, shut down all but one instance, set <code>CLUSTER_DATABASE</code> to <code>FALSE</code>, and start the standby database as a single instance in <code>MOUNT EXCLUSIVE</code> mode, as follows:
+<pre>
+SQL&gt; ALTER SYSTEM SET CLUSTER_DATABASE=FALSE SCOPE=SPFILE;
+SQL&gt; SHUTDOWN ABORT;
+SQL&gt; STARTUP MOUNT EXCLUSIVE; 
+</pre></div>
+<p>To continue applying redo data to the physical standby database until it is ready to convert to a logical standby database, issue the following SQL statement:</p>
+<pre>
+SQL&gt; <a id="sthref300"></a>ALTER DATABASE RECOVER TO LOGICAL STANDBY <span class="italic">db_name</span>;
+</pre>
+<p>For <code><span class="codeinlineitalic">db_name</span></code>, specify a database name that is different from the primary database to identify the new logical standby database. If you are using a server parameter file (spfile) at the time you issue this statement, then the database will update the file with appropriate information about the new logical standby database. If you are not using an spfile, then the database issues a message reminding you to set the name of the <code>DB_NAME</code> parameter after shutting down the database.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If you are creating a logical standby database in the context of performing a rolling upgrade<a id="sthref301"></a> of Oracle software with a physical standby database, you should issue the following command instead:
+<pre>
+SQL&gt; ALTER DATABASE RECOVER TO LOGICAL STANDBY KEEP IDENTITY;
+</pre>
+<p>A logical standby database created with the <code>KEEP IDENTITY</code> clause<a id="sthref302"></a> retains the same <code>DB_NAME</code> and <code>DBID</code> as that of its primary database. Such a logical standby database can only participate in one switchover operation, and thus should only be created in the context of a rolling upgrade with a physical standby database.</p>
+<p>Note that the <code>KEEP IDENTITY</code> clause is available only if the database being upgraded is running Oracle Database release 11.1 or later.</p>
+</div>
+<p>The statement waits, applying redo data until the LogMine<a id="sthref303"></a><a id="sthref304"></a>r dictionary is found in the log files. This may take several minutes, depending on how long it takes redo generated in <a href="#BEIGHEIA">Section 4.2.3.2, "Build a Dictionary in the Redo Data"</a> to be transmitted to the standby database, and how much redo data needs to be applied. If a dictionary build is not successfully performed on the primary database, this command will never complete. You can cancel the SQL statement by issuing the <a id="sthref305"></a><a id="sthref306"></a><code>ALTER DATABASE RECOVER MANAGED STANDBY DATABASE CANCEL</code> statement from another SQL session.</p>
+<div class="infobox-note">
+<p class="notep1">Caution:</p>
+In releases prior to Oracle Database 11<span class="italic">g</span>, you needed to create a new password file before you opened the logical standby database. This is no longer needed. Creating a new password file at the logical standby database will cause redo transport services to not work properly.</div>
+</div>
+<!-- class="sect3" -->
+<a id="BEIDIBAG"></a>
+<div id="SBYDB4739" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">4.2.4.2</span> Adjust Initialization Parameters for the Logical Standby Database<a id="sthref307"></a></h4>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If you started with an Oracle RAC physical standby database, set <code>CLUSTER_DATABASE</code> back to <code>TRUE</code>, as follows:
+<pre>
+SQL&gt; ALTER SYSTEM SET CLUSTER_DATABASE=TRUE SCOPE=SPFILE; 
+</pre></div>
+<p>On the logical standby database, shutdown the instance and issue the <code>STARTUP MOUNT</code> statement to start and mount the database. Do not open the database; it should remain closed to user access until later in the creation process. For example:</p>
+<pre>
+SQL&gt; SHUTDOWN;
+SQL&gt; STARTUP MOUNT;
+</pre>
+<p>You need to modify the <code>LOG_ARCHIVE_DEST_</code><code><span class="codeinlineitalic">n</span></code> parameters because, unlike physical standby databases, logical standby databases are open databases that generate redo data and have multiple log files (online redo log files, archived redo log files, and standby redo log files). It is good practice to specify separate local destinations for:</p>
+<ul>
+<li>
+<p>Archived redo log files that store redo data generated by the logical standby database. In <a href="#i87417">Example 4-2</a>, this is configured as the <code>LOG_ARCHIVE_DEST_1=LOCATION=/arch1/boston</code> destination.</p>
+</li>
+<li>
+<p>Archived redo log files that store redo data received from the primary database. In <a href="#i87417">Example 4-2</a>, this is configured as the <code>LOG_ARCHIVE_DEST_3=LOCATION=/arch2/boston</code> destination.</p>
+</li>
+</ul>
+<p><a href="#i87417">Example 4-2</a> shows the initialization parameters that were modified for the logical standby database. The parameters shown are valid for the Boston logical standby database when it is running in either the primary or standby database role.</p>
+<div id="SBYDB5023" class="example">
+<p class="titleinexample"><a id="i87417"></a>Example 4-2 Modifying Initialization Parameters for a Logical Standby Database</p>
+<pre>
+LOG_ARCHIVE_DEST_1=
+  'LOCATION=/arch1/boston/
+   VALID_FOR=(ONLINE_LOGFILES,ALL_ROLES)
+   DB_UNIQUE_NAME=boston'
+LOG_ARCHIVE_DEST_2=
+  'SERVICE=chicago ASYNC
+   VALID_FOR=(ONLINE_LOGFILES,PRIMARY_ROLE)
+   DB_UNIQUE_NAME=chicago'
+LOG_ARCHIVE_DEST_3=
+  'LOCATION=/arch2/boston/
+   VALID_FOR=(STANDBY_LOGFILES,STANDBY_ROLE)
+   DB_UNIQUE_NAME=boston'
+LOG_ARCHIVE_DEST_STATE_1=ENABLE
+LOG_ARCHIVE_DEST_STATE_2=ENABLE
+LOG_ARCHIVE_DEST_STATE_3=ENABLE
+</pre></div>
+<!-- class="example" -->
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If database compatibility is set to 11.1 or later, you can use the fast recovery area to store remote archived logs. To do this, you need to set only the following parameters (assuming you have already set the <code>DB_RECOVERY_FILE_DEST</code> and <code>DB_RECOVERY_FILE_DEST_SIZE</code> parameters):
+<pre>
+LOG_ARCHIVE_DEST_1=
+  'LOCATION=USE_DB_RECOVERY_FILE_DEST
+   DB_UNIQUE_NAME=boston'
+</pre>
+<p>Note that because you are using the fast recovery area, it is not necessary to specify the <code>VALID_FOR</code> parameter. Its default value is (<code>ALL_LOGFILES,ALL_ROLES</code>) and that is the desired behavior in this case. <code>LOG_ARCHIVE_DEST_1</code> will be used for all log files, both online (primary) and standby.</p>
+</div>
+<p>The following table describes the archival processing defined by the initialization parameters shown in <a href="#i87417">Example 4-2</a>.</p>
+<div class="inftblinformalwide">
+<table class="cellalignment1823" title="Initialization Parameter Settings for Example 4-2" summary="Describes archival processing when the Boston database is in the primary and in the logical standby database role." dir="ltr">
+<thead>
+<tr class="cellalignment1814">
+<th class="cellalignment1824" id="r1c1-t15"><br /></th>
+<th class="cellalignment1824" id="r1c2-t15">When the Boston Database Is Running in the Primary Role</th>
+<th class="cellalignment1824" id="r1c3-t15">When the Boston Database Is Running in the Logical Standby Role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1814">
+<td class="cellalignment1820" id="r2c1-t15" headers="r1c1-t15"><code>LOG_ARCHIVE_DEST_1</code></td>
+<td class="cellalignment1820" headers="r2c1-t15 r1c2-t15">Directs archival of redo data generated by the primary database from the local online redo log files to the local archived redo log files in <code>/arch1/boston/</code>.</td>
+<td class="cellalignment1820" headers="r2c1-t15 r1c3-t15">Directs archival of redo data generated by the logical standby database from the local online redo log files to the local archived redo log files in <code>/arch1/boston/</code>.</td>
+</tr>
+<tr class="cellalignment1814">
+<td class="cellalignment1820" id="r3c1-t15" headers="r1c1-t15"><code>LOG_ARCHIVE_DEST_2</code></td>
+<td class="cellalignment1820" headers="r3c1-t15 r1c2-t15">Directs transmission of redo data to the remote logical standby database <code>chicago</code>.</td>
+<td class="cellalignment1820" headers="r3c1-t15 r1c3-t15">Is ignored; <code>LOG_ARCHIVE_DEST_2</code> is valid only when <code>boston</code> is running in the primary role.</td>
+</tr>
+<tr class="cellalignment1814">
+<td class="cellalignment1820" id="r4c1-t15" headers="r1c1-t15"><code>LOG_ARCHIVE_DEST_3</code></td>
+<td class="cellalignment1820" headers="r4c1-t15 r1c2-t15">Is ignored; <code>LOG_ARCHIVE_DEST_3</code> is valid only when <code>boston</code> is running in the standby role.</td>
+<td class="cellalignment1820" headers="r4c1-t15 r1c3-t15">Directs archival of redo data received from the primary database to the local archived redo log files in <code>/arch2/boston/</code>.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformalwide" -->
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The <code>DB_FILE_NAME_CONVERT</code> initialization parameter is not honored once a physical standby database is converted to a logical standby database. If necessary, you should register a skip handler and provide SQL Apply with a replacement DDL string to execute by converting the path names of the primary database datafiles to the standby datafile path names. See the <a class="olink ARPLS363" href="../../appdev.112/e40758/d_lsbydb.htm#ARPLS363"><code>DBMS_LOGSTDBY</code></a> package in <a class="olink ARPLS" href="../../appdev.112/e40758/toc.htm"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a>. for information about the <code>SKIP</code> procedure.</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i75998"></a>
+<div id="SBYDB4740" class="sect2">
+<h3 class="sect2"><span class="secnum">4.2.5</span> Open t<a id="sthref308"></a>he Logical Standby Database</h3>
+<p>To open the new logical standby database, you must open it with the <code>RESETLOGS</code> option by issuing the following statement:</p>
+<pre>
+SQL&gt; ALTER DATABASE OPEN RESETLOGS;
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If you started with an Oracle RAC physical standby database, you can start up all other standby instances at this point.</div>
+<div class="infobox-note">
+<p class="notep1">Caution:</p>
+If you are co-locating the logical standby database on the same computer system as the primary database, you must issue the following SQL statement before starting SQL Apply for the first time, so that SQL Apply skips the file operations performed at the primary database. The reason this is necessary is that SQL Apply has access to the same directory structure as the primary database, and datafiles that belong to the primary database could possibly be damaged if SQL Apply attempted to re-execute certain file-specific operations.
+<pre>
+SQL&gt; EXECUTE DBMS_LOGSTDBY.SKIP('ALTER TABLESPACE');
+</pre>
+<p>The <code>DB_FILENAME_CONVERT</code> parameter that you set up while co-locating the physical standby database on the same system as the primary database, is ignored by SQL Apply. See <a class="olink ARPLS363" href="../../appdev.112/e40758/d_lsbydb.htm#ARPLS363"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for information about <code>DBMS_LOGSTDBY.SKIP</code> and equivalent behavior in the context of a logical standby database.</p>
+</div>
+<p>Because this is the first time the database is being opened, the database's global name is adjusted automatically to match the new <code>DB_NAME</code> initialization parameter.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If you are creating the logical standby database in order to perform a rolling upgrade of the Oracle Database software, then before you start SQL Apply for the first time, Oracle recommends that you use the <code>DBMS_LOGSTDBY</code> PL/SQL procedure at the logical standby database to capture information about transactions running on the primary database that will not be supported by a logical standby database. Run the following procedures to capture and record the information as events in the <code>DBA_LOGSTDBY_EVENTS</code> table:
+<pre>
+EXEC DBMS_LOGSTDBY.APPLY_SET('MAX_EVENTS_RECORDED',
+DBMS_LOGSTDBY.MAX_EVENTS);
+
+EXEC DBMS_LOGSTDBY.APPLY_SET('RECORD_UNSUPPORTED_OPERATIONS', 'TRUE');
+</pre>
+<p><span class="bold">See Also:</span></p>
+<ul>
+<li>
+<p><a href="manage_ls.htm#CHDEEEDD">Section 10.5.1, "Customizing Logging of Events in the DBA_LOGSTDBY_EVENTS View"</a> for more information about the <code>DBA_LOGSTDBY_EVENTS</code> view</p>
+</li>
+<li>
+<p><a class="olink ARPLS363" href="../../appdev.112/e40758/d_lsbydb.htm#ARPLS363"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> for complete information about the <code>DBMS_LOGSTDBY</code> package</p>
+</li>
+</ul>
+</div>
+<p>Issue the following statement to begin applying redo data to the logical standby database: <a id="sthref309"></a><a id="sthref310"></a></p>
+<pre>
+SQL&gt;  <a id="sthref311"></a><a id="sthref312"></a><a id="sthref313"></a>ALTER DATABASE START LOGICAL STANDBY APPLY IMMEDIATE;
+</pre></div>
+<!-- class="sect2" -->
+<a id="i70028"></a>
+<div id="SBYDB4741" class="sect2">
+<h3 class="sect2"><span class="secnum">4.2.6</span> V<a id="sthref314"></a>erify the Logical Standby Database Is Performing Properly</h3>
+<p>See the following sections for help verifying that the logical standby database is performing properly:</p>
+<ul>
+<li>
+<p><a href="log_transport.htm#g1296022">Chapter 6, "Redo Transport Services"</a></p>
+</li>
+<li>
+<p><a href="manage_ls.htm#g1057004">Chapter 10, "Managing a Logical Standby Database"</a></p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i90444"></a>
+<div id="SBYDB4742" class="sect1">
+<h2 class="sect1"><span class="secnum">4.3</span> Post-Creation Steps</h2>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The conversion of the physical standby database to a logical standby database happens in two phases:
+<ol>
+<li>
+<p>As part of the <code>ALTER DATABASE RECOVER TO LOGICAL STANDBY</code> statement (unless you have specified the <code>KEEP IDENTITY</code> clause), the DBID of the database is changed.</p>
+</li>
+<li>
+<p>As part of the first successful invocation of <code>ALTER DATABASE START LOGICAL STANDBY APPLY</code> statement, the control file is updated to make it consistent with that of the newly created logical standby database.</p>
+<p>Once you have successfully invoked the <code>ALTER DATABASE START LOGICAL STANDBY APPLY</code> statement, you should take a full backup of the logical standby database, because the backups taken from the primary database cannot be used to restore the logical standby database.</p>
+</li>
+</ol>
+</div>
+<p>At this point, the logical standby database is running and can provide the maximum performance level of data protection. The following list describes additional preparations you can take on the logical standby database:</p>
+<ul>
+<li>
+<p>Upgrade the data protection mode</p>
+<p>The Data Guard configuration is initially set up in the maximum performance mode (the default).</p>
+</li>
+<li>
+<p>Enable Flashback Database</p>
+<p>Flashback Database removes the need to re-create the primary database after a failover. Flashback Database enables you to return a database to its state at a time in the recent past much faster than traditional point-in-time recovery, because it does not require restoring datafiles from backup nor the extensive application of redo data. You can enable Flashback Database on the primary database, the standby database, or both. See <a href="scenarios.htm#i1049997">Section 13.2, "Converting a Failed Primary Into a Standby Database Using Flashback Database"</a> and <a href="scenarios.htm#i1049616">Section 13.3, "Using Flashback Database After Issuing an Open Resetlogs Statement"</a> for scenarios showing how to use Flashback Database in a Data Guard environment. Also, see <a class="olink BRADV" href="../../backup.112/e10642/toc.htm"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a> for more information about Flashback Database.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1813">
+<tr>
+<td class="cellalignment1820">
+<table class="cellalignment1818">
+<tr>
+<td class="cellalignment1817"><a href="create_ps.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1817"><a href="protection.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1999, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1822">
+<table class="cellalignment1816">
+<tr>
+<td class="cellalignment1817"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1817"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1817"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1817"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1817"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1817"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

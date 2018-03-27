@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Creating a Post-Change SQL Trial</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 740" />
+<meta name="dcterms.created" content="2014-06-16T16:24:48Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Real Application Testing User's Guide" />
+<meta name="dcterms.identifier" content="E41481-03" />
+<meta name="dcterms.isVersionOf" content="RATUG" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2008, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="spa_pre_change.htm" title="Previous" type="text/html" />
+<link rel="Next" href="spa_analyze.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e41481.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">9/23</span> <!-- End Header -->
+<div id="RATUG183" class="chapter"><a id="CDEFIJBB"></a>
+<h1 class="chapter"><span class="secnum">5</span> Creating a Post-Change SQL Trial</h1>
+<p>After computing the pre-change SQL performance data, you can perform the <a id="sthref54"></a>system change on the test system. Before making the system change, ensure that you have executed the SQL workload in the initial environment to generate the pre-change performance data. For example, if you are testing how changing a database initialization parameter will affect SQL performance, execute the SQL workload once before changing the database initialization parameter to a new value. Depending on the type of change you are making, it may be necessary to reconfigure the environment on the test system to match the new environment for which you want to perform SQL performance analysis. For more information, see <a href="spa_intro.htm#CHDBABFE">"Making a System Change"</a>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You can optionally run SQL trials on a remote system by providing access to a public database link. When conducting remote SQL trials, the database version of the remote database where the SQL statements are executed must be less than or equal to the database version of the database to which it connects. Starting with Oracle Database release 11.2.0.2, the remote database can be a read-only database, such as an Oracle Active Data Guard instance.</div>
+<p><a id="sthref55"></a><a href="rat_intro.htm#CHDDDHBF">"SQL Performance Analyzer"</a> lists examples of possible system changes that can be analyzed using SQL Performance Analyzer. For example, you may want to determine how a database initialization parameter change or database upgrade will affect SQL performance. You may also decide to change the system based on recommendations from an advisor such as Automatic Database Diagnostic Monitor (ADDM), SQL Tuning Advisor, or SQL Access Advisor.</p>
+<p>After you have made the system change, you can build the <a id="sthref56"></a>post-change version of performance data by executing the SQL workload again. SQL Performance Analyzer will store the results from executing the SQL statements in a post-change SQL trial. For more information, see <a href="spa_intro.htm#CHDBACHF">"Measuring the Post-Change SQL Performance"</a>.</p>
+<p>This section described how to create the post-change SQL trial and contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#CDEJFEDJ">Creating a Post-Change SQL Trial Using Oracle Enterprise Manager</a></p>
+</li>
+<li>
+<p><a href="#CHDFHGBA">Creating a Post-Change SQL Trial Using APIs</a></p>
+</li>
+</ul>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The primary interface for creating a post-change SQL trial is Oracle Enterprise Manager. If for some reason Oracle Enterprise Manager is unavailable, you can create a post-change SQL trial using the <code>DBMS_SQLPA</code> PL/SQL package.</div>
+<div class="infoboxnotealso">
+<p class="notep1">Tip:</p>
+Before making the system change creating a post-change SQL trial, you need to create a pre-change SQL trial, as described in <a href="spa_pre_change.htm#CACFCGDC">Chapter 4, "Creating a Pre-Change SQL Trial"</a>.</div>
+<a id="CDEJFEDJ"></a>
+<div id="RATUG184" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">5.1</span> Creating a Post-Change SQL Trial Using Oracle Enterprise Manager</h2>
+<p>This section describes how to collect the <a id="sthref57"></a>post-change SQL performance data using Oracle Enterprise Manager.</p>
+<p class="subhead2"><a id="RATUG277"></a>To create a post-change SQL trial using Enterprise Manager:</p>
+<ol>
+<li>
+<p>On the Guided Workflow page, click the <span class="bold">Execute</span> icon for the Create SQL Trial in Changed Environment step.</p>
+<p>The Create SQL Trial page appears.</p>
+</li>
+<li>
+<p>In the SQL Trial Name field, enter the name of the SQL trial.</p>
+</li>
+<li>
+<p>In the SQL Trial Description field, enter a description of the SQL trial.</p>
+</li>
+<li>
+<p>In the Creation Method list, determine how the SQL trial is created and what contents are generated by performing one of the following actions:</p>
+<ul>
+<li>
+<p>Select <span class="bold">Execute SQLs Locally</span>.</p>
+<p>The SQL trial generates both execution plans and statistics for each SQL statement in the SQL tuning set by actually running the SQL statements locally on the test system.</p>
+</li>
+<li>
+<p>Select <span class="bold">Execute SQLs Remotely</span>.</p>
+<p>The SQL trial generates both execution plans and statistics for each SQL statement in the SQL tuning set by actually running the SQL statements remotely on another test system over a public database link.</p>
+</li>
+<li>
+<p>Select <span class="bold">Generate Plans Locally</span>.</p>
+<p>The SQL trial invokes the optimizer to create execution plans locally on the test system without actually running the SQL statements.</p>
+</li>
+<li>
+<p>Select <span class="bold">Generate Plans Remotely</span>.</p>
+<p>The SQL trial invokes the optimizer to create execution plans remotely on another test system over a public database link without actually running the SQL statements.</p>
+</li>
+</ul>
+<p>For each of these creation methods, the application schema and data should already exist on the local or remote test system.</p>
+</li>
+<li>
+<p>In the Per-SQL Time Limit list, determine the time limit for SQL execution during the trial by performing one of the following actions:</p>
+<ul>
+<li>
+<p>Select <span class="bold">5 minutes</span>.</p>
+<p>The execution will run each SQL statement in the SQL tuning set up to 5 minutes and gather performance data.</p>
+</li>
+<li>
+<p>Select <span class="bold">Unlimited</span>.</p>
+<p>The execution will run each SQL statement in the SQL tuning set to completion and gather performance data. Collecting execution statistics provides greater accuracy in the performance analysis but takes a longer time. Using this setting is not recommended because the task may be stalled by one SQL statement for a prolonged time period.</p>
+</li>
+<li>
+<p>Select <span class="bold">Customize</span> and enter the specified number of seconds, minutes, or hours.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Ensure that the system change you are testing has been performed on the test system, and select <span class="bold">Trial environment established</span>.</p>
+</li>
+<li>
+<p>In the Schedule section:</p>
+<ol>
+<li>
+<p>In the Time Zone list, select your time zone code.</p>
+</li>
+<li>
+<p>Select <span class="bold">Immediately</span> to start the task now, or <span class="bold">Later</span> to schedule the task to start at a time specified using the Date and Time fields.</p>
+</li>
+</ol>
+</li>
+<li>
+<p>Click <span class="bold">Submit</span>.</p>
+<p>The Guided Workflow page appears when the execution begins.</p>
+<p>The status icon of this step changes to a clock while the execution is in progress. To refresh the status icon, click <span class="bold">Refresh</span>. Depending on the options selected and the size of the SQL workload, the execution may take a long time to complete. After the execution is completed, the Status icon will change to a check mark and the Execute icon for the next step is enabled.</p>
+</li>
+<li>
+<p>Once the post-change performance data is built, you can compare the pre-change SQL trial to the post-change SQL trial by running a comparison analysis, as described in <a href="spa_analyze.htm#CACCDGAG">Chapter 6, "Comparing SQL Trials"</a>.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect1" -->
+<a id="CHDFHGBA"></a>
+<div id="RATUG278" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">5.2</span> Creating a Post-Change SQL Trial Using APIs</h2>
+<p>This section describes how to collect the <a id="sthref58"></a>post-change SQL performance data using the <code>DBMS_SQLPA.EXECUTE_ANALYSIS_TASK</code> procedure.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If you are running the SQL statements remotely on another test system over a database link, the remote user calling this procedure needs to have the <code>EXECUTE</code> privilege for the <code>DBMS_SQLPA</code> package.</div>
+<p>Call the <a id="sthref59"></a><code>EXECUTE_ANALYSIS_TASK</code> procedure using the parameters described in <a href="spa_pre_change.htm#CACCIHDA">"Creating a Pre-Change SQL Trial Using APIs"</a>. Be sure to specify a different value for the <code>execution_name</code> parameter. It is also highly recommended that you create the post-change SQL trial using the same method as the pre-change SQL trial by using the same value for the <code>execution_type</code> parameter.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If you want to run an Oracle Exadata simulation, you should first set the <code>CELL_SIMULATION_ENABLED</code> task parameter to <code>TRUE</code>. For more information, see <a href="spa_task.htm#CIHIFFCH">"Running the Exadata Simulation Using APIs"</a>.</div>
+<p>The following example illustrates a function call made after a system change:</p>
+<pre>
+EXEC DBMS_SQLPA.EXECUTE_ANALYSIS_TASK(task_name =&gt; 'my_spa_task', -
+       execution_type =&gt; 'TEST EXECUTE', - 
+       execution_name =&gt; 'my_exec_AFTER_change');
+</pre>
+<p>Once the post-change performance data is built, you can compare the pre-change SQL trial to the post-change SQL trial by running a comparison analysis, as described in <a href="spa_analyze.htm#CACCDGAG">Chapter 6, "Comparing SQL Trials"</a>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ARPLS229" href="../../appdev.112/e40758/d_sqlpa.htm#ARPLS229"><span class="italic">Oracle Database PL/SQL Packages and Types Reference</span></a> to learn about the <code>DBMS_SQLPA.EXECUTE_ANALYSIS_TASK</code> function</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1798">
+<tr>
+<td class="cellalignment1805">
+<table class="cellalignment1803">
+<tr>
+<td class="cellalignment1802"><a href="spa_pre_change.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1802"><a href="spa_analyze.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2008, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1807">
+<table class="cellalignment1801">
+<tr>
+<td class="cellalignment1802"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1802"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1802"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1802"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1802"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1802"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

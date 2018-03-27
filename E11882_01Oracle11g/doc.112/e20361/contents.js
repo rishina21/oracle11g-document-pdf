@@ -1,0 +1,16 @@
+var chapters = [
+  { topic: "chapter", section: "1", title: "Introducing Oracle Retail Data Model", anchor: "RBIRF110", file: "intro_rdm.htm" },
+  { topic: "chapter", section: "2", title: "Logical Data Model of Oracle Retail Data Model", anchor: "RBIRF118", file: "logical_rdm.htm" },
+  { topic: "chapter", section: "3", title: "Physical Data Model of Oracle Retail Data Model", anchor: "RBIRF479", file: "physical_rdm.htm" },
+  { topic: "chapter", section: "4", title: "Logical to Physical Mappings in the Oracle Retail Data Model", anchor: "RBIRF532", file: "logical_to_physical_rdm.htm" },
+  { topic: "chapter", section: "5", title: "Oracle Retail Data Model Partitioning", anchor: "RBIRF535", file: "physical_partitions_rdm.htm" },
+  { topic: "chapter", section: "6", title: "ETL for the Oracle Retail Data Model", anchor: "RBIRF539", file: "intra_etl_rdm.htm" },
+  { topic: "chapter", section: "7", title: "Oracle Retail Data Model OLAP ETL", anchor: "RBIRF1897", file: "olap_etl_rdm.htm" },
+  { topic: "chapter", section: "8", title: "Oracle Retail Data Model OLAP Dimensions", anchor: "RBIRF870", file: "olap_rdm.htm" },
+  { topic: "chapter", section: "9", title: "Oracle Retail Data Model OLAP Cubes", anchor: "RBIRF880", file: "olap_cubes_rdm.htm" },
+  { topic: "chapter", section: "10", title: "Data Mining Models in Oracle Retail Data Model", anchor: "RBIRF893", file: "data_mining_rdm.htm" },
+  { topic: "chapter", section: "11", title: "Oracle Retail Data Model Utility Scripts", anchor: "RBIRF993", file: "utility_scripts_rdm.htm" },
+  { topic: "chapter", section: "12", title: "Oracle Retail Data Model Sample Reports", anchor: "RBIRF1000", file: "sample_reports_rdm.htm" },
+  { topic: "chapter", section: "13", title: "Oracle Retail Data Model Sample Reports Continued", anchor: "RBIRF1615", file: "sample_report2_rdm.htm" },
+  { topic: "appendix", section: "A", title: "Control Tables", anchor: "RBIRF1002", file: "control_rdm.htm" },
+  { } ];

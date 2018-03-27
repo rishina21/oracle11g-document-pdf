@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Defining ETL Logic</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.1 Build 005" />
+<meta name="dcterms.created" content="2012-02-07T20:3:11Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database 2 Day + Data Warehousing Guide" />
+<meta name="dcterms.identifier" content="E25555-03" />
+<meta name="dcterms.isVersionOf" content="TDPDW" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2007, 2012,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="part2.htm" title="Previous" type="text/html" />
+<link rel="Next" href="tdpdw_owb_deploy.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e25555.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">10/20</span> <!-- End Header --><a id="CIHGDHFE"></a><a id="TDPDW00273"></a>
+<h1 class="chapter"><span class="secnum">5</span> <a id="TDPDW11110"></a>Defining ETL Logic</h1>
+<p><a id="sthref112"></a><a id="sthref113"></a><a id="sthref114"></a><a id="sthref115"></a>After you create and import data object definitions in Oracle Warehouse Builder, you can design extraction, transformation, and loading (ETL) operations that move data from sources to targets. In Warehouse Builder, you design these operations in a mapping.</p>
+<p>This chapter contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1166197">About Mappings and Operators</a></p>
+</li>
+<li>
+<p><a href="#BEIEGFDA">Summary of Steps for Defining Mappings</a></p>
+</li>
+<li>
+<p><a href="#i1170011">Creating a Mapping</a></p>
+</li>
+<li>
+<p><a href="#i1171414">Adding Operators</a></p>
+</li>
+<li>
+<p><a href="#i1159210">Editing Operators</a></p>
+</li>
+<li>
+<p><a href="#i1126489">Connecting Operators, Groups, and Attributes</a></p>
+</li>
+<li>
+<p><a href="#i1129779">Setting Operator, Group, and Attribute Properties</a></p>
+</li>
+<li>
+<p><a href="#i1139074">Synchronizing Operators and Workspace Objects</a></p>
+</li>
+</ul>
+<a id="i1166197"></a>
+<div class="sect1">
+<h2 class="sect1"><a id="TDPDW04260"></a>About Mappings and Operators</h2>
+<p><a id="sthref116"></a><a id="sthref117"></a><a id="sthref118"></a>Mappings describe a series of operations that extract data from sources, transform it, and load it into targets. Mappings provide a visual representation of the flow of the data and the operations performed on the data. When you design a mapping in Warehouse Builder, you use the Mapping Editor interface.</p>
+<p>The basic design element for a mapping is the operator. Use operators to represent sources and targets in the data flow. Also use operators to define how to transform the data from source to target. The operators you select as sources have an impact on how you design the mapping. Based on the operators you select, Warehouse Builder assigns the mapping to one of the following Mapping Generation Languages:</p>
+<ul>
+<li>
+<p>PL/SQL</p>
+</li>
+<li>
+<p>SQL*Loader</p>
+</li>
+<li>
+<p>ABAP</p>
+</li>
+</ul>
+<p>Each of these code languages require you to adhere to certain rules when designing a mapping.</p>
+<p>This guide illustrates how to define a PL/SQL mapping. To define the other types of mappings, see <a class="olink WBETL" href="../../owb.112/e10935/toc.htm"><span class="italic">Oracle Warehouse Builder Data Modeling, ETL, and Data Quality Guide</span></a>. A basic rule for defining a PL/SQL mapping is that PL/SQL mappings can contain any type of source operator other a Flat File operator or a SAP/R3 source.</p>
+</div>
+<!-- class="sect1" -->
+<a id="BEIEGFDA"></a>
+<div class="sect1">
+<h2 class="sect1"><a id="TDPDW04261"></a>Summary of Steps for Defining Mappings</h2>
+<p class="subhead2"><a id="sthref119"></a>To define a mapping, refer to the following sections:</p>
+<ol>
+<li>
+<p><a href="#i1170011">Creating a Mapping</a></p>
+</li>
+<li>
+<p><a href="#i1171414">Adding Operators</a></p>
+</li>
+<li>
+<p><a href="#i1159210">Editing Operators</a></p>
+</li>
+<li>
+<p><a href="#i1126489">Connecting Operators, Groups, and Attributes</a></p>
+</li>
+<li>
+<p><a href="#i1129779">Setting Operator, Group, and Attribute Properties</a></p>
+</li>
+<li>
+<p>Configuring Mappings Reference in the <span class="italic">Warehouse Builder Online Help</span></p>
+</li>
+<li>
+<p>When you are satisfied with the mapping design, generate the code by selecting the Generate icon in the toolbar.</p>
+</li>
+</ol>
+<p class="subhead2"><a id="sthref120"></a>Subsequent Steps</p>
+<p>After you design a mapping and generate its code, you can next create a process flow or proceed directly with deployment followed by execution.</p>
+<p>Use process flows to interrelate mappings. For example, you can design a process flow such that the completion of one mapping triggers an email notification and launches another mapping.</p>
+<p>Deploy the mapping, and any associated process flows you created, and then execute the mapping.</p>
+</div>
+<!-- class="sect1" -->
+<a id="i1170011"></a>
+<div class="sect1">
+<h2 class="sect1"><a id="TDPDW12030"></a>Creating a Mapping</h2>
+<p class="subhead2"><a id="sthref121"></a>To create a mapping:</p>
+<ol>
+<li>
+<p>Go to the <span class="bold">Mappings</span> node in the Projects Navigator. This node is located under a warehouse target module, under the Databases folder, under the Oracle folder.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CIHFIBAC"></a>Figure 5-1 Mappings Node on the Projects Navigator</p>
+<img width="231" height="338" src="img/map_in_tree.gif" alt="This illustration is described in the surrounding text." title="This illustration is described in the surrounding text." /><br />
+<a id="sthref122" href="img_text/map_in_tree.htm">Description of "Figure 5-1 Mappings Node on the Projects Navigator"</a><br />
+<br /></div>
+<!-- class="figure" --></li>
+<li>
+<p>Right-click Mappings and then select <span class="bold">New Mapping.</span></p>
+<p>Warehouse Builder opens the Create Mapping dialog box.</p>
+</li>
+<li>
+<p>Enter a name and an optional description for the new mapping.</p>
+<p>Select <span class="bold">Help</span> to review the rules on naming and describing mappings.</p>
+</li>
+<li>
+<p>Click <span class="bold">OK.</span></p>
+<p>Warehouse Builder stores the definition for the mapping and inserts its name in the Projects Navigator. Warehouse Builder opens a mapping editor for the mapping and displays the name of the mapping in the title bar.</p>
+</li>
+</ol>
+<p class="subhead2"><a id="sthref123"></a>To open a previously created mapping:</p>
+<ol>
+<li>
+<p>From the Projects Navigator, locate a warehouse target module under the Databases folder and then under the Oracle Database folder.</p>
+</li>
+<li>
+<p>Expand the Mappings node.</p>
+</li>
+<li>
+<p>Open the Mapping Editor in one of the following ways:</p>
+<ul>
+<li>
+<p>Double-click a mapping.</p>
+</li>
+<li>
+<p>Select a mapping and then from the <span class="bold">File</span> menu, select <span class="bold">Open.</span></p>
+</li>
+<li>
+<p>Select a mapping and press <span class="bold">Ctrl + O</span>.</p>
+</li>
+<li>
+<p><a id="i1142815"></a>Right-click a mapping and select <span class="bold">Open.</span></p>
+</li>
+</ul>
+<p>Warehouse Builder displays the Mapping Editor.</p>
+</li>
+</ol>
+<a id="i1127634"></a>
+<div class="sect2">
+<h3 class="sect2"><a id="TDPDW12031"></a>Types of Operators</h3>
+<p><a id="sthref124"></a><a id="sthref125"></a>As you design a mapping, you select operators from the Mapping Editor palette and drag them onto the canvas.</p>
+<ul>
+<li>
+<p><span class="bold">Oracle source and target operators:</span> Use these operators to represent Oracle Database objects such as Oracle tables, views, materialized views.</p>
+</li>
+<li>
+<p><span class="bold">Remote and non-Oracle source and target Operators:</span> The use of these operator have special requirements.</p>
+</li>
+<li>
+<p><span class="bold">Data flow operators:</span> Use data flow operators to transform data.</p>
+</li>
+<li>
+<p><span class="bold">Pre/Post Processing operators:</span> Use these operators to perform processing before or after executing a mapping. The Mapping parameter operator is used to provide values to and from a mapping.</p>
+</li>
+<li>
+<p><span class="bold">Pluggable mapping operators:</span> A pluggable mapping is a reusable grouping of mapping operators that acts as a single operator.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1171414"></a>
+<div class="sect1">
+<h2 class="sect1"><a id="TDPDW12032"></a>Adding Operators</h2>
+<p><a id="sthref126"></a><a id="sthref127"></a><a id="sthref128"></a>The steps you take to add an operator to a mapping depend on the type of operator you select. This is because some operators are bound to workspace objects while others are not. As a general rule, when you add a data source or target operator, Warehouse Builder creates and maintains a version of that object in the Warehouse Builder workspace and a separate version for the Mapping Editor. For example, when you add a table operator to a mapping, Warehouse Builder maintains a separate copy of the table in the workspace. The separate versions are said to be <span class="italic">bound</span> together. That is, the version in the mapping is bound to the version in the workspace.</p>
+<p>To distinguish between the two versions, this section refers to objects in the workspace either generically as <span class="italic">workspace objects</span> or specifically as <span class="italic">workspace tables,</span> <span class="italic">workspace views,</span> and so on. And this section refers to operators in the mapping as <span class="italic">table</span> <span class="italic">operators, view operators,</span> and so on. Therefore, when you add a dimension to a mapping, refer to the dimension in the mapping as the <span class="italic">dimension operator</span> and refer to the dimension in the workspace as the <span class="italic">workspace dimension.</span></p>
+<p><a id="i1170648"></a>Warehouse Builder maintains separate workspace objects for some operators so that you can synchronize changing definitions of these objects. For example, when you re-import a new metadata definition for the workspace table, you may want to propagate those changes to the table operator in the mapping. Conversely, as you make changes to a table operator in a mapping, you may want to propagate those changes back to its associated workspace table. You can accomplish these tasks by a process known as synchronizing. In Warehouse Builder, you can synchronize automatically. Alternatively, synchronize manually from within the Mapping Editor.</p>
+<p class="subhead2"><a id="sthref129"></a>To add an operator to a mapping:</p>
+<ol>
+<li>
+<p>Open the Mapping Editor.</p>
+</li>
+<li>
+<p>From the <span class="bold">Graph</span> menu, select <span class="bold">Add</span> and select an operator. Alternatively, you can drag an operator icon from the Component Palette and drop it onto the Mapping Editor canvas.</p>
+<p>If you select an operator that you can bind to a workspace object, the Mapping Editor displays the <span class="bold">Add Mapping</span> <span class="bolditalic">operator_name</span> dialog box. For information about how to use this dialog box, click <span class="bold">Help.</span></p>
+<p>If you select an operator that you cannot bind to a workspace object, Warehouse Builder may display a wizard or dialog box to assist you in creating the operator.</p>
+</li>
+<li>
+<p>Follow any prompts Warehouse Builder displays and click <span class="bold">OK.</span></p>
+<p>The Mapping Editor displays the operator maximized on the canvas. The operator name appears in the upper left corner. You can view each attribute name and data type.</p>
+<p>If you want to minimize the operator, click the arrow in the upper right corner and the Mapping Editor displays the operator as an icon on the canvas.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="i1170748"></a>Figure 5-2 Mapping Editor Showing a Table Operator Source</p>
+<img width="769" height="600" src="img/map_editor_with_table.gif" alt="This illustration is described in the surrounding text." title="This illustration is described in the surrounding text." /><br />
+<a id="sthref130" href="img_text/map_editor_with_table.htm">Description of "Figure 5-2 Mapping Editor Showing a Table Operator Source"</a><br />
+<br /></div>
+<!-- class="figure" --></li>
+</ol>
+<a id="i1140192"></a>
+<div class="sect2">
+<h3 class="sect2"><a id="TDPDW12033"></a>Adding Operators that Bind to Workspace Objects</h3>
+<p>When you add an operator that you can bind to a workspace object, the Mapping Editor displays the <span class="bold">Add Mapping</span> <span class="bolditalic">operator_name</span> dialog box. Select one of the following options:</p>
+<ul>
+<li>
+<p><a href="#i1170985">Create Unbound Operator with No Attributes</a></p>
+</li>
+<li>
+<p><a href="#i1171012">Select from Existing Workspace Object and Bind</a></p>
+</li>
+</ul>
+<a id="i1170985"></a>
+<div class="sect3">
+<h4 class="sect3"><a id="TDPDW12034"></a>Create Unbound Operator with No Attributes</h4>
+<p>Use this option when you want to use the Mapping Editor to define a new workspace object such as a new staging area table or a new target table.</p>
+<p>After you select <span class="bold">Create Unbound Operator with No Attributes,</span> type a name for the new object. Warehouse Builder displays the operator on the canvas without any attributes.</p>
+<p>You can now add and define attributes for the operator as described in <a href="#i1159210">"Editing Operators"</a>. Next, to create the new workspace object in a target module, right-click the operator and select <span class="bold">Create and Bind</span>.</p>
+<p>For an example about how to use this option in a mapping design, see <a href="#i1158750">"Example: Using the Mapping Editor to Create Staging Area Tables"</a>.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i1171012"></a>
+<div class="sect3">
+<h4 class="sect3"><a id="TDPDW12035"></a>Select from Existing Workspace Object and Bind</h4>
+<p>Use this option when you want to add an operator based on an object you previously defined or imported into the workspace.</p>
+<p>Either type the prefix to search for the object or select from the displayed list of objects within the selected module.</p>
+<p>To select multiple items, press the Control key as you click each item. To select a group of items located in a series, click the first object in your selection range, press the Shift key, and then click the last object.</p>
+<p>You can add operators based on workspace objects within the same module as the mapping or from other modules. If you select a workspace object from another module, the Mapping Editor creates a connector if one does not already exist. The connector establishes a path for moving data between the mapping location and the location of the workspace object.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1159210"></a>
+<div class="sect1">
+<h2 class="sect1"><a id="TDPDW12036"></a>Editing Operators</h2>
+<p><a id="sthref131"></a><a id="sthref132"></a><a id="sthref133"></a>Each operator has an editor associated with it. Use the operator editor to specify general and structural information for operators, groups, and attributes. In the operator editor you can add, remove, or rename groups and attributes. You can also rename an operator.</p>
+<p>Editing operators is different from assigning loading properties and conditional behaviors. To specify loading properties and conditional behaviors, use the properties windows as described in <a href="#i1129779">"Setting Operator, Group, and Attribute Properties"</a>.</p>
+<p class="subhead2"><a id="sthref134"></a>To edit an operator, group, or attribute:</p>
+<ol>
+<li>
+<p>Select an operator from the Mapping Editor canvas or select any group or attribute within an operator.</p>
+</li>
+<li>
+<p>Right-click and select <span class="bold">Open Details.</span></p>
+<p>The Mapping Editor displays the operator editor with the Name Tab, Groups Tab, and Input and Output Tabs for each type of group in the operator.</p>
+<p>Some operators include additional tabs. For example, the Match Merge operator includes tabs for defining Match rules and Merge rules.</p>
+</li>
+<li>
+<p>Follow the prompts on each tab and click <span class="bold">OK</span> when you are finished.</p>
+<p>Select <span class="bold">Help</span> if you need additional information for completing a tab.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect1" -->
+<a id="i1126489"></a>
+<div class="sect1">
+<h2 class="sect1"><a id="TDPDW12037"></a>Connecting Operators, Groups, and Attributes</h2>
+<p><a id="sthref135"></a><a id="sthref136"></a><a id="sthref137"></a><a id="sthref138"></a>After you select mapping source operators, operators that transform data, and target operators, you are ready to connect them. Data flow connections graphically represent how the data flows from a source, through operators, and to a target.</p>
+<p>You can connect operators by one of the following methods:</p>
+<ul>
+<li>
+<p><a href="#BABJHAJI"><span class="xreftitlebold">Connecting Operators</span></a>: Define criteria for connecting groups between two operators.</p>
+</li>
+<li>
+<p><a href="#i1138050"><span class="xreftitlebold">Connecting Groups</span></a>: Define criteria for connecting all the attributes between two groups.</p>
+</li>
+<li>
+<p><a href="#i1147144"><span class="xreftitlebold">Connecting Attributes</span></a>: Connect individual operator attributes to each other one at a time.</p>
+</li>
+<li>
+<p><span class="bold">Using an Operator Wizard:</span> For operators such as the Pivot operator and Name-Address operator, you can use the wizard to define data flow connections.</p>
+</li>
+</ul>
+<a id="BABJHAJI"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Connecting Operators</h3>
+<p>You can connect one operator to another if there are no existing connection between the operators. Both of the operators that you want to connect must be displayed in their icon form. You can also connect from a group to an operator. Hold down the left-mouse button on the group, drag and then drop on the title of the operator.</p>
+<p class="subhead2"><a id="sthref139"></a>To connect one operator to another:</p>
+<ol>
+<li>
+<p>Select the operator from which you want to establish a connection.</p>
+</li>
+<li>
+<p>Click and hold down the left mouse button while the pointer is positioned over the operator icon.</p>
+</li>
+<li>
+<p>Drag the mouse away from the operator and toward the operator icon to which you want to establish a connection.</p>
+</li>
+<li>
+<p>Release the mouse button over the target operator.</p>
+<p>The Mapping Connection dialog box is displayed.</p>
+</li>
+<li>
+<p>In the Attribute Group to Connect section, select values for the following:</p>
+<p><span class="bold">Source Group:</span> Select the group, from the source operator, which must be connected to the target operator.</p>
+<p><span class="bold">Target Group:</span> Select the group, from the target operator, to which the source group must be mapped.</p>
+</li>
+<li>
+<p>In the Connection Options section, select the method to be used to connect the source attributes to the target attributes and click <span class="bold">Preview</span>.</p>
+</li>
+<li>
+<p>Click <span class="bold">OK</span> to close the Mapping Connection Dialog box.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="i1138050"></a>
+<div class="sect2">
+<h3 class="sect2"><a id="TDPDW12039"></a>Connecting Groups</h3>
+<p><a id="sthref140"></a><a id="sthref141"></a>When you connect groups, the Mapping Editor assists you by either automatically copying the attributes or displaying the Mapping Connection Dialog box.</p>
+<p class="subhead2"><a id="sthref142"></a>To connect one group to another:</p>
+<ol>
+<li>
+<p>Select the group from which you want to establish a connection.</p>
+</li>
+<li>
+<p>Click and hold down the left mouse button while the pointer is positioned over the group.</p>
+</li>
+<li>
+<p>Drag the mouse away from the group and towards the group to which you want to establish a connection.</p>
+</li>
+<li>
+<p>Release the mouse button over the target group.</p>
+<p>If you connect from an operator group to a target group containing attributes, the Mapping Connection Dialog Box is displayed.</p>
+</li>
+<li>
+<p>In the Connection Options section, select the method used to connect the source attributes to the target attributes and click <span class="bold">Preview</span>.</p>
+</li>
+<li>
+<p>Click <span class="bold">OK</span> to close the Mapping Connection Dialog box.</p>
+</li>
+</ol>
+<p>If you connect from one operator group to a target group with no existing attributes, the Mapping Editor automatically copies the attributes and connects the attributes. This is useful for designing mappings such shown in <a href="#i1158750">"Example: Using the Mapping Editor to Create Staging Area Tables"</a>.</p>
+<a id="i1158750"></a>
+<div class="sect3">
+<h4 class="sect3"><a id="TDPDW12040"></a>Example: Using the Mapping Editor to Create Staging Area Tables</h4>
+<p>You can use the Mapping Editor with an unbound table operator to quickly create staging area tables.</p>
+<p>The following instructions describe how to create a staging table based on an existing source table. You can also use these instructions to create views, materialized views, flat files, and transformations.</p>
+<p class="subhead2"><a id="sthref143"></a>To map a source table to a staging table:</p>
+<ol>
+<li>
+<p>In the Mapping Editor, add a source table.</p>
+<p>From the menu bar, select <span class="bold">Mapping</span>, select <span class="bold">Add</span>, then select <span class="bold">Data Sources/Targets</span>. In the <span class="bold">Data Sources/Targets</span> menu, select <span class="bold">Table Operator.</span></p>
+</li>
+<li>
+<p>Use the <span class="bold">Add Table Operator</span> dialog box to select and bind the source table operator in the mapping. From the Add Table Operator dialog box, select <span class="bold">Create unbound operator with no attributes.</span></p>
+<div class="figure">
+<p class="titleinfigure"><a id="i1159778"></a>Figure 5-3 Unbound Staging Table without Attributes and Source Table</p>
+<img width="518" height="408" src="img/automap_s_table.gif" alt="This illustration is described in the surrounding text." title="This illustration is described in the surrounding text." /><br />
+<a id="sthref144" href="img_text/automap_s_table.htm">Description of "Figure 5-3 Unbound Staging Table without Attributes and Source Table"</a><br />
+<br /></div>
+<!-- class="figure" --></li>
+<li>
+<p>With the mouse button positioned over the group in the source operator, click and hold down the mouse button.</p>
+</li>
+<li>
+<p>Drag the mouse to the staging area table group.</p>
+<p>Warehouse Builder copies the source attributes to the staging area table and connects the two operators.</p>
+</li>
+<li>
+<p>In the Mapping Editor, select the unbound table you added to the mapping. Right-click and select <span class="bold">Create and Bind.</span></p>
+<div class="figure">
+<p class="titleinfigure"><a id="i1159081"></a>Figure 5-4 Create and Bind Dialog Box</p>
+<img width="450" height="220" src="img/create_and_bind.gif" alt="This illustration is described in the surrounding text." title="This illustration is described in the surrounding text." /><br />
+<a id="sthref145" href="img_text/create_and_bind.htm">Description of "Figure 5-4 Create and Bind Dialog Box"</a><br />
+<br /></div>
+<!-- class="figure" --></li>
+<li>
+<p>In <span class="bold">Create in,</span> specify the target module in which to create the table.</p>
+<p>Warehouse Builder creates the new table in the target module you specify.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1147144"></a>
+<div class="sect2">
+<h3 class="sect2"><a id="TDPDW12038"></a>Connecting Attributes</h3>
+<p><a id="sthref146"></a><a id="sthref147"></a><a id="sthref148"></a>You can draw a line from a single output attribute of one operator to a single input attribute of another operator.</p>
+<p class="subhead2"><a id="sthref149"></a>To connect attributes:</p>
+<ol>
+<li>
+<p><a id="BABIHBHH"></a>Click and hold down the mouse button while the pointer is positioned over an output attribute.</p>
+</li>
+<li>
+<p>Drag the mouse away from the output attribute and toward the input attribute to which you want data to flow.</p>
+<p>As you drag the mouse, a line appears on the Mapping Editor canvas to indicate a connection.</p>
+</li>
+<li>
+<p><a id="BABJHHBH"></a>Release the mouse over the input attribute.</p>
+</li>
+<li>
+<p>Repeat steps <a href="#BABIHBHH">1</a> through <a href="#BABJHHBH">3</a> until you create all the required data flow connections.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="i1182733"></a>Figure 5-5 Connected Operators in a Mapping</p>
+<img width="613" height="412" src="img/map_editor_with_connections.gif" alt="This illustration is described in the surrounding text." title="This illustration is described in the surrounding text." /><br />
+<a id="sthref150" href="img_text/map_editor_with_connections.htm">Description of "Figure 5-5 Connected Operators in a Mapping"</a><br />
+<br /></div>
+<!-- class="figure" --></li>
+</ol>
+<p>When connecting attributes, keep the following rules in mind:</p>
+<ul>
+<li>
+<p>You cannot connect to the same input attribute twice.</p>
+</li>
+<li>
+<p>You cannot connect attributes within the same operator.</p>
+</li>
+<li>
+<p>You cannot connect out of an input only attribute nor can you connect into an output only attribute.</p>
+</li>
+<li>
+<p>You cannot connect operators in such a way as to contradict an established cardinality. Instead, use a Joiner operator.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1129779"></a>
+<div class="sect1">
+<h2 class="sect1"><a id="TDPDW12044"></a>Setting Operator, Group, and Attribute Properties</h2>
+<p><a id="sthref151"></a><a id="sthref152"></a><a id="sthref153"></a><a id="sthref154"></a><a id="sthref155"></a><a id="sthref156"></a><a id="sthref157"></a>When you select an object on the canvas, the editor displays its associated properties in the property inspector along the left side.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CHDCDEHF"></a>Figure 5-6 Property Inspector for a Table Operator</p>
+<img width="221" height="329" src="img/op_props_sourcetarget.gif" alt="This illustration is described in the surrounding text." title="This illustration is described in the surrounding text." /><br />
+<a id="sthref158" href="img_text/op_props_sourcetarget.htm">Description of "Figure 5-6 Property Inspector for a Table Operator"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>You can view and set the following types of properties:</p>
+<ul>
+<li>
+<p><span class="bold">Operator properties:</span> Properties that affect the entire operator. The properties you can set depend upon the operator type.</p>
+</li>
+<li>
+<p><span class="bold">Group properties:</span> Properties that affect a group of attributes. Most operators do not have properties for their groups. Examples of operators that do have group properties include the splitter operator and the deduplicator.</p>
+</li>
+<li>
+<p><span class="bold">Attribute properties:</span> Properties that pertain to attributes in source and target operators. Examples of attribute properties are data type, precision, and scale.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect1" -->
+<a id="i1139074"></a>
+<div class="sect1">
+<h2 class="sect1"><a id="TDPDW12045"></a>Synchronizing Operators and Workspace Objects</h2>
+<p><a id="sthref159"></a><a id="sthref160"></a><a id="sthref161"></a>Many of the operators you use in a mapping have corresponding definitions in the Warehouse Builder workspace. This is true of source and target operators such as table and view operators. This is also true of other operators such as sequence and transformation operators whose definitions you may want to use across multiple mappings. As you make changes to these operators, you may want to propagate those changes back to the workspace object.</p>
+<p>You have the following choices in deciding the direction in which you propagate changes:</p>
+<p><a href="#CHDBBJCH"><span class="xreftitlebold">Synchronizing from a Workspace Object to an Operator</span></a><span class="bold">:</span> After you begin using mappings in a production environment, there may be changes to the sources or targets that impact your ETL designs. Typically, the best way to manage these changes is through the Warehouse Builder Dependency Manager described in the <span class="italic">Warehouse Builder Online Help</span>. Use the Dependency Manager to automatically evaluate the impact of changes and to synchronize all effected mappings at one time. Alternatively, in the Mapping Editor, you can manually synchronize objects as described in <a href="#CHDBBJCH">"Synchronizing from a Workspace Object to an Operator"</a>.</p>
+<p><a href="#i1146545"><span class="xreftitlebold">Synchronizing from an Operator to a Workspace Object</span></a><span class="bold">:</span> When you make changes to an operator in a mapping, you may want to propagate those changes to its corresponding workspace definition. For example, the sources you imported and used in a mapping may have complex physical names for its attributes.</p>
+<p>Note that synchronizing is different from refreshing. The refresh command ensures that you are up-to-date with changes made by other users in a multiuser environment. Synchronizing matches operators with their corresponding workspace objects.</p>
+<a id="i1138367"></a>
+<div class="sect2">
+<h3 class="sect2"><a id="TDPDW12046"></a>Synchronizing an Operator</h3>
+<p>To synchronize, select a single operator and synchronize it with the definition of a specified workspace object.</p>
+<p class="subhead2"><a id="sthref162"></a>To synchronize an operator:</p>
+<ol>
+<li>
+<p>Select an operator on the Mapping Editor canvas.</p>
+</li>
+<li>
+<p>From the <span class="bold">Edit</span> menu, select <span class="bold">Synchronize</span> or right-click the header of the operator, and select <span class="bold">Synchronize.</span></p>
+<div class="figure">
+<p class="titleinfigure"><a id="i1151132"></a>Figure 5-7 Synchronizing an Operator</p>
+<img width="450" height="250" src="img/synch_op.gif" alt="This illustration is described in the surrounding text." title="This illustration is described in the surrounding text." /><br />
+<a id="sthref163" href="img_text/synch_op.htm">Description of "Figure 5-7 Synchronizing an Operator"</a><br />
+<br /></div>
+<!-- class="figure" --></li>
+<li>
+<p>By default, Warehouse Builder selects the option for you to synchronize your selected operator with its associated object in the workspace. You can accept the default or select another workspace object from the list box.</p>
+<p>In this step you also specify either <a href="#CHDBBJCH">Synchronizing from a Workspace Object to an Operator</a> or select the option for <a href="#i1146545">Synchronizing from an Operator to a Workspace Object</a>.</p>
+</li>
+<li>
+<p>As an optional step, click <span class="bold">Advanced</span> to set the Matching Strategies.</p>
+<p>Select <span class="bold">Help</span> for instruction on how to use the Matching Strategies.</p>
+</li>
+<li>
+<p>Click <span class="bold">OK.</span></p>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="CHDBBJCH"></a>
+<div class="sect2">
+<h3 class="sect2"><a id="TDPDW12047"></a>Synchronizing from a Workspace Object to an Operator</h3>
+<p>In the Mapping Editor, you can synchronize from a workspace object for any of the following reasons:</p>
+<ul>
+<li>
+<p><span class="bold">Manually propagate changes:</span> Propagate changes you made in a workspace object to its associated operator. Changes to the workspace object can include structural changes, attribute name changes, attribute data type changes. To automatically propagate changes in a workspace object across multiple mappings, see in the <span class="italic">Warehouse Builder Online Help</span>.</p>
+</li>
+<li>
+<p><span class="bold">Synchronize an operator with a new workspace object:</span> You can associate an operator with a new workspace object if, for example, you migrate mappings from one version of a data warehouse to a later version and maintain different object definitions for each version.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CHDBCEBC"></a>Figure 5-8 Synchronizing from a Different Workspace Object</p>
+<img width="450" height="250" src="img/synch_op_select_other_obj.gif" alt="This illustration is described in the surrounding text." title="This illustration is described in the surrounding text." /><br />
+<a id="sthref164" href="img_text/synch_op_select_other_obj.htm">Description of "Figure 5-8 Synchronizing from a Different Workspace Object"</a><br />
+<br /></div>
+<!-- class="figure" --></li>
+<li>
+<p><span class="bold">Prototype mappings using tables:</span> When working in the design environment, you could choose to design the ETL logic using tables. However, for production, you may want to the mappings to source other workspace object types such as views, materialized views, or cubes.</p>
+</li>
+</ul>
+<a id="CHDGABAJ"></a>
+<div class="sect3">
+<h4 class="sect3"><a id="TDPDW12048"></a>Synchronizing Operators Based on Workspace Objects</h4>
+<p><a href="#g1206051">Table 5-1</a> lists operators and the types of workspace objects from which you can synchronize.</p>
+<div class="tblformal">
+<p class="titleintable"><a id="sthref165"></a><a id="g1206051"></a>Table 5-1 Operators Synchronized with Workspace Objects</p>
+<table class="cellalignment1443" title="Operators Synchronized with Workspace Objects " summary="Lists the operator objects and the corresponding repository objects that are available for inbound reconciliation." dir="ltr">
+<thead>
+<tr class="cellalignment1434">
+<th class="cellalignment1444" id="r1c1-t2">To: Operator</th>
+<th class="cellalignment1444" id="r1c2-t2">From: Workspace Object Type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1434">
+<td class="cellalignment1440" id="r2c1-t2" headers="r1c1-t2">
+<p>Cube</p>
+</td>
+<td class="cellalignment1440" headers="r2c1-t2 r1c2-t2">
+<p>Tables, Views, Materialized Views, Flat Files, Dimensions and Cubes</p>
+</td>
+</tr>
+<tr class="cellalignment1434">
+<td class="cellalignment1440" id="r3c1-t2" headers="r1c1-t2">
+<p>Dimension</p>
+</td>
+<td class="cellalignment1440" headers="r3c1-t2 r1c2-t2">
+<p>Tables, External Tables, Views, Materialized Views, Flat Files, Dimensions and Cubes</p>
+</td>
+</tr>
+<tr class="cellalignment1434">
+<td class="cellalignment1440" id="r4c1-t2" headers="r1c1-t2">
+<p>External Table</p>
+</td>
+<td class="cellalignment1440" headers="r4c1-t2 r1c2-t2">
+<p>Tables, External Tables, Views, Materialized Views, Flat Files, Dimensions and Cubes</p>
+</td>
+</tr>
+<tr class="cellalignment1434">
+<td class="cellalignment1440" id="r5c1-t2" headers="r1c1-t2">
+<p>Flat File</p>
+</td>
+<td class="cellalignment1440" headers="r5c1-t2 r1c2-t2">
+<p>Tables, External Tables, Views, Materialized Views, Flat Files, Dimensions and Cubes</p>
+</td>
+</tr>
+<tr class="cellalignment1434">
+<td class="cellalignment1440" id="r6c1-t2" headers="r1c1-t2">
+<p>Key Lookup</p>
+</td>
+<td class="cellalignment1440" headers="r6c1-t2 r1c2-t2">
+<p>Tables only</p>
+</td>
+</tr>
+<tr class="cellalignment1434">
+<td class="cellalignment1440" id="r7c1-t2" headers="r1c1-t2">
+<p>Materialized View</p>
+</td>
+<td class="cellalignment1440" headers="r7c1-t2 r1c2-t2">
+<p>Tables, External Tables, Views, Materialized Views, Files, Dimensions and Cubes</p>
+</td>
+</tr>
+<tr class="cellalignment1434">
+<td class="cellalignment1440" id="r8c1-t2" headers="r1c1-t2">
+<p>Post Mapping Process</p>
+</td>
+<td class="cellalignment1440" headers="r8c1-t2 r1c2-t2">
+<p>Transformations only</p>
+</td>
+</tr>
+<tr class="cellalignment1434">
+<td class="cellalignment1440" id="r9c1-t2" headers="r1c1-t2">
+<p>Pre Mapping Process</p>
+</td>
+<td class="cellalignment1440" headers="r9c1-t2 r1c2-t2">
+<p>Transformations only</p>
+</td>
+</tr>
+<tr class="cellalignment1434">
+<td class="cellalignment1440" id="r10c1-t2" headers="r1c1-t2">
+<p>Sequence</p>
+</td>
+<td class="cellalignment1440" headers="r10c1-t2 r1c2-t2">
+<p>Sequences only</p>
+</td>
+</tr>
+<tr class="cellalignment1434">
+<td class="cellalignment1440" id="r11c1-t2" headers="r1c1-t2">
+<p>Table</p>
+</td>
+<td class="cellalignment1440" headers="r11c1-t2 r1c2-t2">
+<p>Tables, External Tables, Views, Materialized Views, Flat Files, Dimensions and Cubes</p>
+</td>
+</tr>
+<tr class="cellalignment1434">
+<td class="cellalignment1440" id="r12c1-t2" headers="r1c1-t2">
+<p>Transformation</p>
+</td>
+<td class="cellalignment1440" headers="r12c1-t2 r1c2-t2">
+<p>Transformations only</p>
+</td>
+</tr>
+<tr class="cellalignment1434">
+<td class="cellalignment1440" id="r13c1-t2" headers="r1c1-t2">
+<p>View</p>
+</td>
+<td class="cellalignment1440" headers="r13c1-t2 r1c2-t2">
+<p>Tables, External Tables, Views, Materialized Views, Files, Dimensions and Cubes</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" -->
+<p>Note that when you synchronize from an external table operator, Warehouse Builder updates the operator based on the workspace external table only and not its associated flat file.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1146545"></a>
+<div class="sect2">
+<h3 class="sect2"><a id="TDPDW12049"></a>Synchronizing from an Operator to a Workspace Object</h3>
+<p>As you make changes to operators in a mapping, you may want to propagate those changes back to a workspace object. By synchronizing, you can propagate changes from the following operators: tables, views, materialized views, transformations, and flat file operators.</p>
+<p>Synchronize from the operator to a workspace object for any of the following reasons:</p>
+<ul>
+<li>
+<p><span class="bold">Propagate changes:</span> Propagate changes you made in an operator to its associated workspace object. When you rename the business name for an operator or attribute, Warehouse Builder propagates the first 30 characters of the business name as the bound name.</p>
+</li>
+<li>
+<p><span class="bold">Replace workspace objects:</span> Synchronize to replace an existing workspace object.</p>
+</li>
+</ul>
+<p>Synchronizing from an operator has no impact on the dependent relationship between other operators and the workspace objects.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1433">
+<tr>
+<td class="cellalignment1440">
+<table class="cellalignment1438">
+<tr>
+<td class="cellalignment1437"><a href="part2.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1437"><a href="tdpdw_owb_deploy.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2007, 2012,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1442">
+<table class="cellalignment1436">
+<tr>
+<td class="cellalignment1437"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1437"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1437"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1437"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1437"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1437"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

@@ -1,0 +1,2055 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Distributed Database Concepts</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1055" />
+<meta name="dcterms.created" content="2015-05-05T8:27:38Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Administrator's Guide" />
+<meta name="dcterms.identifier" content="E25494-07" />
+<meta name="dcterms.isVersionOf" content="ADMIN" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2001, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="part7.htm" title="Previous" type="text/html" />
+<link rel="Next" href="ds_admin.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e25494.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">42/49</span> <!-- End Header -->
+<div id="ADMIN028" class="chapter"><a id="g1022384"></a> <a id="i1007500"></a>
+<h1 class="chapter"><span class="secnum">31</span> Distributed Database Concepts</h1>
+<p>In this chapter:</p>
+<ul>
+<li>
+<p><a href="#i1007534">Distributed Database Architecture</a></p>
+</li>
+<li>
+<p><a href="#i1007669">Database Links</a></p>
+</li>
+<li>
+<p><a href="#i1008249">Distributed Database Administration</a></p>
+</li>
+<li>
+<p><a href="#i1008603">Transaction Processing in a Distributed System</a></p>
+</li>
+<li>
+<p><a href="#i1009058">Distributed Database Application Development</a></p>
+</li>
+<li>
+<p><a href="#i1009167">Character Set Support for Distributed Environments</a></p>
+</li>
+</ul>
+<a id="i1007534"></a>
+<div id="ADMIN12074" class="sect1">
+<h2 class="sect1">Distributed Database Architecture</h2>
+<p>A <span class="bold">distributed database system</span> allows applications to access data from local and remote databases. In a <span class="bold">homogenous distributed database system</span>, each database is an Oracle Database. In a <span class="bold">heterogeneous distributed database system</span>, at least one of the databases is not an Oracle Database. Distributed databases use a <span class="bold">client/server</span> architecture to process information requests.</p>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1007551">Homogenous Distributed Database Systems</a></p>
+</li>
+<li>
+<p><a href="#i1007606">Heterogeneous Distributed Database Systems</a></p>
+</li>
+<li>
+<p><a href="#i1007639">Client/Server Database Architecture</a></p>
+</li>
+</ul>
+<a id="i1007551"></a>
+<div id="ADMIN12075" class="sect2">
+<h3 class="sect2">Homogenous Distributed Database Systems</h3>
+<p><a id="sthref3245"></a><a id="sthref3246"></a>A homogenous distributed database system is a network of two or more Oracle Databases that reside on one or more systems. <a href="#CHDBIFGJ">Figure 31-1</a> illustrates a distributed system that connects three databases: <code dir="ltr">hq</code>, <code dir="ltr">mfg</code>, and <code dir="ltr">sales</code>. An application can simultaneously access or modify the data in several databases in a single distributed environment. For example, a single query from a Manufacturing client on local database <code dir="ltr">mfg</code> can retrieve joined data from the <code dir="ltr">products</code> table on the local database and the <code dir="ltr">dept</code> table on the remote <code dir="ltr">hq</code> database.</p>
+<p>For a client application, the location and platform of the databases are transparent. You can also create <span class="bold">synonyms</span> for remote objects in the distributed system so that users can access them with the same syntax as local objects. For example, if you are connected to database <code dir="ltr">mfg</code> but want to access data on database <code dir="ltr">hq</code>, creating a synonym on <code dir="ltr">mfg</code> for the remote <code dir="ltr">dept</code> table enables you to issue this query:</p>
+<pre dir="ltr">
+SELECT * FROM dept;
+</pre>
+<p>In this way, a distributed system gives the appearance of native data access. Users on <code dir="ltr">mfg</code> do not have to know that the data they access resides on remote databases.</p>
+<div id="ADMIN13132" class="figure">
+<p class="titleinfigure"><a id="CHDBIFGJ"></a>Figure 31-1 Homogeneous Distributed Database</p>
+<img width="599" height="477" src="img/admin046.png" alt="Description of Figure 31-1 follows" /><br />
+<a id="sthref3247" href="img_text/admin046.htm">Description of "Figure 31-1 Homogeneous Distributed Database"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>An Oracle Database distributed database system can incorporate Oracle Databases of different versions. All supported releases of Oracle Database can participate in a distributed database system. Nevertheless, the applications that work with the distributed database must understand the functionality that is available at each node in the system. A distributed database application cannot expect an Oracle7 database to understand the SQL extensions that are only available with Oracle Database.</p>
+<div id="ADMIN12076" class="sect3"><a id="sthref3248"></a>
+<h4 class="sect3">Distributed Databases Versus Distributed Processing</h4>
+<p><a id="sthref3249"></a><a id="sthref3250"></a>The terms <span class="bold">distributed database</span> and <span class="bold">distributed processing</span> are closely related, yet have distinct meanings. There definitions are as follows:</p>
+<ul>
+<li>
+<p>Distributed database</p>
+<p>A set of databases in a distributed system that can appear to applications as a single data source.</p>
+</li>
+<li>
+<p>Distributed processing</p>
+<p>The operations that occurs when an application distributes its tasks among different computers in a network. For example, a database application typically distributes front-end presentation tasks to client computers and allows a back-end database server to manage shared access to a database. Consequently, a distributed database application processing system is more commonly referred to as a client/server database application system.</p>
+</li>
+</ul>
+<p>Distributed database systems employ a distributed processing architecture. For example, an Oracle Database server acts as a client when it requests data that another Oracle Database server manages.</p>
+</div>
+<!-- class="sect3" -->
+<div id="ADMIN12077" class="sect3"><a id="sthref3251"></a>
+<h4 class="sect3">Distributed Databases Versus Replicated Databases</h4>
+<p><a id="sthref3252"></a>The terms distributed database system and <span class="bold">database replication</span> are related, yet distinct. In a <span class="bold">pure</span> (that is, not replicated) distributed database, the system manages a single copy of all data and supporting database objects. Typically, distributed database applications use distributed transactions to access both local and remote data and modify the global database in real-time.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+This book discusses only pure distributed databases.</div>
+<p>The term <span class="bold">replication</span> refers to the operation of copying and maintaining database objects in multiple databases belonging to a distributed system. While replication relies on distributed database technology, database replication offers applications benefits that are not possible within a pure distributed database environment.</p>
+<p>Most commonly, replication is used to improve local database performance and protect the availability of applications because alternate data access options exist. For example, an application may normally access a local database rather than a remote server to minimize network traffic and achieve maximum performance. Furthermore, the application can continue to function if the local server experiences a failure, but other servers with replicated data remain accessible.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink REPLN" href="../e10706/toc.htm"><span class="italic">Oracle Database Advanced Replication</span></a> for more information about Oracle Database replication features</p>
+</li>
+<li>
+<p><a class="olink STRMS" href="../e17069/toc.htm"><span class="italic">Oracle Streams Concepts and Administration</span></a> for information about Oracle Streams, another method of sharing information between databases</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1007606"></a>
+<div id="ADMIN12078" class="sect2">
+<h3 class="sect2">Heterogeneous Distributed Database Systems</h3>
+<p><a id="sthref3253"></a>In a <a id="sthref3254"></a>heterogeneous distributed database system, at least one of the databases is a non-Oracle Database system. To the application, the heterogeneous distributed database system appears as a single, local, Oracle Database. The local Oracle Database server hides the distribution and heterogeneity of the data.</p>
+<p>The Oracle Database server accesses the non-Oracle Database system using Oracle Heterogeneous Services with an <a id="sthref3255"></a><span class="bold">agent</span>. If you access the non-Oracle Database data store using an Oracle Transparent Gateway, then the agent is a system-specific application. For example, if you include a Sybase database in an Oracle Database distributed system, then you must obtain a Sybase-specific transparent gateway so that the Oracle Database in the system can communicate with it.</p>
+<p>Alternatively, you can use <span class="bold">generic connectivity</span> to access non-Oracle Database data stores so long as the non-Oracle Database system supports the ODBC or OLE DB protocols.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Other than the introductory material presented in this chapter, this book does not discuss Oracle Heterogeneous Services. See <a class="olink HETER" href="../../server.112/e11050/toc.htm"><span class="italic">Oracle Database Heterogeneous Connectivity User's Guide</span></a> for more detailed information about Heterogeneous Services.</div>
+<div id="ADMIN12079" class="sect3"><a id="sthref3256"></a>
+<h4 class="sect3">Heterogeneous Services</h4>
+<p>Heterogeneous Services (HS) is an integrated component within the Oracle Database server and the enabling technology for the current suite of Oracle Transparent Gateway products. HS provides the common architecture and administration mechanisms for Oracle Database gateway products and other heterogeneous access facilities. Also, it provides upwardly compatible functionality for users of most of the earlier Oracle Transparent Gateway releases.</p>
+</div>
+<!-- class="sect3" -->
+<div id="ADMIN12080" class="sect3"><a id="sthref3257"></a>
+<h4 class="sect3">Transparent Gateway Agents</h4>
+<p>For each non-Oracle Database system that you access, Heterogeneous Services can use a transparent gateway agent to interface with the specified non-Oracle Database system. The agent is specific to the non-Oracle Database system, so each type of system requires a different agent.</p>
+<p>The transparent gateway agent facilitates communication between Oracle Database and non-Oracle Database systems and uses the Heterogeneous Services component in the Oracle Database server. The agent executes SQL and transactional requests at the non-Oracle Database system on behalf of the Oracle Database server.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+Your Oracle-supplied gateway-specific documentation for information about transparent gateways</div>
+</div>
+<!-- class="sect3" -->
+<div id="ADMIN12081" class="sect3"><a id="sthref3258"></a>
+<h4 class="sect3">Generic Connectivity</h4>
+<p><a id="sthref3259"></a>Generic connectivity enables you to connect to non-Oracle Database data stores by using either a Heterogeneous Services ODBC agent or a Heterogeneous Services OLE DB agent. Both are included with your Oracle product as a standard feature. Any data source compatible with the ODBC or OLE DB standards can be accessed using a generic connectivity agent.</p>
+<p>The advantage to generic connectivity is that it may not be required for you to purchase and configure a separate system-specific agent. You use an ODBC or OLE DB driver that can interface with the agent. However, some data access features are only available with transparent gateway agents.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1007639"></a>
+<div id="ADMIN12082" class="sect2">
+<h3 class="sect2">Client/Server Database Architecture</h3>
+<p><a id="sthref3260"></a><a id="sthref3261"></a><a id="sthref3262"></a><a id="sthref3263"></a>A database server is the Oracle software managing a database, and a client is an application that requests information from a server. Each computer in a network is a node that can host one or more databases. Each node in a distributed database system can act as a client, a server, or both, depending on the situation.</p>
+<p>In <a href="#i1007648">Figure 31-2</a>, the host for the <code dir="ltr">hq</code> database is acting as a database server when a statement is issued against its local data (for example, the second statement in each transaction issues a statement against the local <code dir="ltr">dept</code> table), but is acting as a client when it issues a statement against remote data (for example, the first statement in each transaction is issued against the remote table <code dir="ltr">emp</code> in the <code dir="ltr">sales</code> database).</p>
+<div id="ADMIN13133" class="figure">
+<p class="titleinfigure"><a id="i1007648"></a>Figure 31-2 An Oracle Database Distributed Database System</p>
+<img width="428" height="462" src="img/admin040.gif" alt="Description of Figure 31-2 follows" /><br />
+<a id="sthref3264" href="img_text/admin040.htm">Description of "Figure 31-2 An Oracle Database Distributed Database System"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p><a id="sthref3265"></a>A client can connect <span class="bold">directly</span> or <span class="bold">indirectly</span> to a database server. A direct connection occurs when a client connects to a server and accesses information from a database contained on that server. For example, if you connect to the <code dir="ltr">hq</code> database and access the <code dir="ltr">dept</code> table on this database as in <a href="#i1007648">Figure 31-2</a>, you can issue the following:</p>
+<pre dir="ltr">
+SELECT * FROM dept;
+</pre>
+<p>This query is direct because you are not accessing an object on a remote database.</p>
+<p>In contrast, an indirect connection occurs when a client connects to a server and then accesses information contained in a database on a different server. For example, if you connect to the <code dir="ltr">hq</code> database but access the <code dir="ltr">emp</code> table on the remote <code dir="ltr">sales</code> database as in <a href="#i1007648">Figure 31-2</a>, you can issue the following:</p>
+<pre dir="ltr">
+SELECT * FROM emp@sales;
+</pre>
+<p>This query is indirect because the object you are accessing is not on the database to which you are directly connected.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1007669"></a>
+<div id="ADMIN12083" class="sect1">
+<h2 class="sect1">Database Links</h2>
+<p>The central concept in distributed database systems is a <span class="bold">database link</span>. A database link is a connection between two physical database servers that allows a client to access them as one logical database.</p>
+<p>This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1007709">What Are Database Links?</a></p>
+</li>
+<li>
+<p><a href="#i1007804">Why Use Database Links?</a></p>
+</li>
+<li>
+<p><a href="#i1007827">Global Database Names in Database Links</a></p>
+</li>
+<li>
+<p><a href="#i1007857">Names for Database Links</a></p>
+</li>
+<li>
+<p><a href="#i1007888">Types of Database Links</a></p>
+</li>
+<li>
+<p><a href="#i1007964">Users of Database Links</a></p>
+</li>
+<li>
+<p><a href="#i1008096">Creation of Database Links: Examples</a></p>
+</li>
+<li>
+<p><a href="#i1008172">Schema Objects and Database Links</a></p>
+</li>
+<li>
+<p><a href="#i1108232">Database Link Restrictions</a></p>
+</li>
+</ul>
+<a id="i1007709"></a>
+<div id="ADMIN12084" class="sect2">
+<h3 class="sect2">What Are Database Links?</h3>
+<p><a id="sthref3266"></a>A database link is a pointer that defines a one-way communication path from an Oracle Database server to another database server. The link pointer is actually defined as an entry in a data dictionary table. To access the link, you must be connected to the local database that contains the data dictionary entry.</p>
+<p>A database link connection is one-way in the sense that a client connected to local database A can use a link stored in database A to access information in remote database B, but users connected to database B cannot use the same link to access data in database A. If local users on database B want to access data on database A, then they must define a link that is stored in the data dictionary of database B.</p>
+<p>A database link connection allows local users to access data on a remote database. For this connection to occur, each database in the distributed system must have a unique <span class="bold">global database name</span> in the network domain. The global database name uniquely identifies a database server in a distributed system.</p>
+<p><a href="#i1007719">Figure 31-3</a> shows an example of user <code dir="ltr">scott</code> accessing the <code dir="ltr">emp</code> table on the remote database with the global name <code dir="ltr">hq.example.com</code>:</p>
+<div id="ADMIN13134" class="figure">
+<p class="titleinfigure"><a id="i1007719"></a>Figure 31-3 Database Link</p>
+<img width="270" height="378" src="img/admin045.png" alt="Description of Figure 31-3 follows" /><br />
+<a id="sthref3267" href="img_text/admin045.htm">Description of "Figure 31-3 Database Link"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>Database links are either private or public. If they are private, then only the user who created the link has access; if they are public, then all database users have access.</p>
+<p>One principal difference among database links is the way that connections to a remote database occur. Users access a remote database through the following types of links:</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="Types of Database Links" summary="Column 1 lists the types of links used to access a remote database. Column 2 describes the characteristics associated with of each type of link." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t6">Type of Link</th>
+<th class="cellalignment1334" id="r1c2-t6">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t6" headers="r1c1-t6"><span class="bold">Connected user link</span></td>
+<td class="cellalignment1335" headers="r2c1-t6 r1c2-t6">Users connect as themselves, which means that they must have an account on the remote database with the same user name and password as their account on the local database.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t6" headers="r1c1-t6"><span class="bold">Fixed user link</span></td>
+<td class="cellalignment1335" headers="r3c1-t6 r1c2-t6">Users connect using the user name and password referenced in the link. For example, if Jane uses a fixed user link that connects to the <code dir="ltr">hq</code> database with the user name and password <code dir="ltr">scott/</code>password, then she connects as <code dir="ltr">scott</code>, Jane has all the privileges in <code dir="ltr">hq</code> granted to <code dir="ltr">scott</code> directly, and all the default roles that <code dir="ltr">scott</code> has been granted in the <code dir="ltr">hq</code> database.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t6" headers="r1c1-t6"><span class="bold">Current user link</span></td>
+<td class="cellalignment1335" headers="r4c1-t6 r1c2-t6">A user connects as a global user. A local user can connect as a global user in the context of a stored procedure, without storing the global user's password in a link definition. For example, Jane can access a procedure that Scott wrote, accessing Scott's account and Scott's schema on the <code dir="ltr">hq</code> database. Current user links are an aspect of Oracle Advanced Security.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" -->
+<p>Create database links using the <code dir="ltr">CREATE DATABASE LINK</code> statement. After a link is created, you can use it to specify schema objects in SQL statements.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink SQLRF01204" href="../../server.112/e41084/statements_5004.htm#SQLRF01204"><span class="italic">Oracle Database SQL Language Reference</span></a> for syntax of the <code dir="ltr">CREATE DATABASE</code> statement</p>
+</li>
+<li>
+<p><a class="olink ASOAG" href="../../network.112/e40393/toc.htm"><span class="italic">Oracle Database Advanced Security Administrator's Guide</span></a> for information about Oracle Advanced Security</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1007763"></a>
+<div id="ADMIN12085" class="sect2">
+<h3 class="sect2">What Are Shared Database Links?</h3>
+<p><a id="sthref3268"></a>A shared database link is a link between a local server process and the remote database. The link is shared because multiple client processes can use the same link simultaneously.</p>
+<p>When a local database is connected to a remote database through a database link, either database can run in dedicated or shared server mode. The following table illustrates the possibilities:</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="Dedicated and Shared Server Modes" summary="Column 1 lists the local database modes, column 2 lists the valid remote datatbase modes." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t8">Local Database Mode</th>
+<th class="cellalignment1334" id="r1c2-t8">Remote Database Mode</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t8" headers="r1c1-t8">Dedicated</td>
+<td class="cellalignment1335" headers="r2c1-t8 r1c2-t8">Dedicated</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t8" headers="r1c1-t8">Dedicated</td>
+<td class="cellalignment1335" headers="r3c1-t8 r1c2-t8">Shared server</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t8" headers="r1c1-t8">Shared server</td>
+<td class="cellalignment1335" headers="r4c1-t8 r1c2-t8">Dedicated</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r5c1-t8" headers="r1c1-t8">Shared server</td>
+<td class="cellalignment1335" headers="r5c1-t8 r1c2-t8">Shared server</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" -->
+<p>A shared database link can exist in any of these four configurations. Shared links differ from standard database links in the following ways:</p>
+<ul>
+<li>
+<p>Different users accessing the same schema object through a database link can share a network connection.</p>
+</li>
+<li>
+<p>When a user must establish a connection to a remote server from a particular server process, the process can reuse connections already established to the remote server. The reuse of the connection can occur if the connection was established on the same server process with the same database link, possibly in a different session. In a non-shared database link, a connection is not shared across multiple sessions.</p>
+</li>
+<li>
+<p>When you use a shared database link in a shared server configuration, a network connection is established directly out of the shared server process in the local server. For a non-shared database link on a local shared server, this connection would have been established through the local dispatcher, requiring context switches for the local dispatcher, and requiring data to go through the dispatcher.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink NETAG001" href="../../network.112/e41945/intro.htm#NETAG001"><span class="italic">Oracle Database Net Services Administrator's Guide</span></a> for information about shared server</div>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="i1007804"></a>
+<div id="ADMIN12086" class="sect2">
+<h3 class="sect2">Why Use Database Links?</h3>
+<p><a id="sthref3269"></a>The great advantage of database links is that they allow users to access another user's objects in a remote database so that they are bounded by the privilege set of the object owner. In other words, a local user can access a link to a remote database without having to be a user on the remote database.</p>
+<p>For example, assume that employees submit expense reports to Accounts Payable (A/P), and further suppose that a user using an A/P application must retrieve information about employees from the <code dir="ltr">hq</code> database. The A/P users should be able to connect to the <code dir="ltr">hq</code> database and execute a stored procedure in the remote <code dir="ltr">hq</code> database that retrieves the desired information. The A/P users should not need to be <code dir="ltr">hq</code> database users to do their jobs; they should only be able to access <code dir="ltr">hq</code> information in a controlled way as limited by the procedure.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#i1007964">"Users of Database Links"</a> for an explanation of database link users</p>
+</li>
+<li>
+<p><a href="ds_admin.htm#i1008333">"Viewing Information About Database Links"</a> for an explanation of how to hide passwords from non-administrative users</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1007827"></a>
+<div id="ADMIN12087" class="sect2">
+<h3 class="sect2">Global Database Names in Database Links</h3>
+<p><a id="sthref3270"></a><a id="sthref3271"></a>To understand how a database link works, you must first understand what a global database name is. Each database in a distributed database is uniquely identified by its global database name. The database forms a global database name by prefixing the database network domain, specified by the <code dir="ltr">DB_DOMAIN</code> initialization parameter at database creation, with the individual database name, specified by the <code dir="ltr">DB_NAME</code> initialization parameter.</p>
+<p>For example, <a href="#CHDGGDEA">Figure 31-4</a> illustrates a representative hierarchical arrangement of databases throughout a network.</p>
+<div id="ADMIN13135" class="figure">
+<p class="titleinfigure"><a id="CHDGGDEA"></a>Figure 31-4 Hierarchical Arrangement of Networked Databases</p>
+<img width="666" height="447" src="img/admin041.png" alt="Description of Figure 31-4 follows" /><br />
+<a id="sthref3272" href="img_text/admin041.htm">Description of "Figure 31-4 Hierarchical Arrangement of Networked Databases"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>The name of a database is formed by starting at the leaf of the tree and following a path to the root. For example, the <code dir="ltr">mfg</code> database is in <code dir="ltr">division3</code> of the <code dir="ltr">example_tools</code> branch of the <code dir="ltr">com</code> domain. The global database name for <code dir="ltr">mfg</code> is created by concatenating the nodes in the tree as follows:</p>
+<ul>
+<li>
+<p><code dir="ltr">mfg.division3.example_tools.com</code></p>
+</li>
+</ul>
+<p>While several databases can share an individual name, each database must have a unique global database name. For example, the network domains <code dir="ltr">us.americas.example_auto.com</code> and <code dir="ltr">uk.europe.example_auto.com</code> each contain a <code dir="ltr">sales</code> database. The global database naming system distinguishes the <code dir="ltr">sales</code> database in the <code dir="ltr">americas</code> division from the <code dir="ltr">sales</code> database in the <code dir="ltr">europe</code> division as follows:</p>
+<ul>
+<li>
+<p><code dir="ltr">sales.us.americas.example_auto.com</code></p>
+</li>
+<li>
+<p><code dir="ltr">sales.uk.europe.example_auto.com</code></p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="ds_admin.htm#i1007567">"Managing Global Names in a Distributed System"</a> to learn how to specify and change global database names</div>
+</li>
+</ul>
+<div id="ADMIN13493" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref3273"></a>
+<h4 class="sect3">Global Name as a Loopback Database Link<a id="sthref3274"></a><a id="sthref3275"></a><a id="sthref3276"></a></h4>
+<p>You can use the global name of a database as a loopback database link without explicitly creating a database link. When the database link in a SQL statement matches the global name of the current database, the database link is effectively ignored.</p>
+<p>For example, assume the global name of a database is <code dir="ltr">db1.example.com</code>. You can run the following SQL statement on this database:</p>
+<pre dir="ltr">
+SELECT * FROM hr.employees@db1.example.com;
+</pre>
+<p>In this case, the <code dir="ltr">@db1.example.com</code> portion of the SQL statement is effectively ignored.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1007857"></a>
+<div id="ADMIN12088" class="sect2">
+<h3 class="sect2">Names for Database Links</h3>
+<p><a id="sthref3277"></a>Typically, a database link has the same name as the global database name of the remote database that it references. For example, if the global database name of a database is <code dir="ltr">sales.us.example.com</code>, then the database link is also called <code dir="ltr">sales.us.example.com</code>.</p>
+<p>When you set the initialization parameter <a id="sthref3278"></a><a id="sthref3279"></a><code dir="ltr">GLOBAL_NAMES</code> to <code dir="ltr">TRUE</code>, the database ensures that the name of the database link is the same as the global database name of the remote database. For example, if the global database name for <code dir="ltr">hq</code> is <code dir="ltr">hq.example.com</code>, and <code dir="ltr">GLOBAL_NAMES</code> is <code dir="ltr">TRUE</code>, then the link name must be called <code dir="ltr">hq.example.com</code>. Note that the database checks the domain part of the global database name as stored in the data dictionary, <span class="italic">not</span> the <code dir="ltr">DB_DOMAIN</code> setting in the initialization parameter file (see <a href="ds_admin.htm#i1007695">"Changing the Domain in a Global Database Name"</a>).</p>
+<p>If you set the initialization parameter <code dir="ltr">GLOBAL_NAMES</code> to <code dir="ltr">FALSE</code>, then you are not required to use global naming. You can then name the database link whatever you want. For example, you can name a database link to <code dir="ltr">hq.example.com</code> as <code dir="ltr">foo</code>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Oracle recommends that you use global naming because many useful features, including Replication, require global naming.</div>
+<p>After you have enabled <a id="sthref3280"></a>global naming, database links are essentially transparent to users of a distributed database because the name of a database link is the same as the global name of the database to which the link points. For example, the following statement creates a database link in the local database to remote database <code dir="ltr">sales</code>:</p>
+<pre dir="ltr">
+CREATE PUBLIC DATABASE LINK sales.division3.example.com USING 'sales1';
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink REFRN" href="../e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> for more information about specifying the initialization parameter <code dir="ltr">GLOBAL_NAMES</code></div>
+</div>
+<!-- class="sect2" -->
+<a id="i1007888"></a>
+<div id="ADMIN02801" class="sect2">
+<h3 class="sect2">Types of Database Links</h3>
+<p><a id="sthref3281"></a>Oracle Database lets you create <span class="bold">private</span>, <span class="bold">public</span>, and <span class="bold">global</span> database links. These basic link types differ according to which users are allowed access to the remote database:</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="Database Links and Database Users" summary="Column 1 lists the type of database link; column 2 lists the assocated owner; column 3 contains a description of the link." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t14">Type</th>
+<th class="cellalignment1334" id="r1c2-t14">Owner</th>
+<th class="cellalignment1334" id="r1c3-t14">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t14" headers="r1c1-t14"><a id="sthref3282"></a><a id="sthref3283"></a>Private</td>
+<td class="cellalignment1335" headers="r2c1-t14 r1c2-t14">User who created the link. View ownership data through:
+<ul>
+<li>
+<p><code dir="ltr">DBA_DB_LINKS</code></p>
+</li>
+<li>
+<p><code dir="ltr">ALL_DB_LINKS</code></p>
+</li>
+<li>
+<p><code dir="ltr">USER_DB_LINKS</code></p>
+</li>
+</ul>
+</td>
+<td class="cellalignment1335" headers="r2c1-t14 r1c3-t14">Creates link in a specific schema of the local database. Only the owner of a private database link or PL/SQL subprograms in the schema can use this link to access database objects in the corresponding remote database.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t14" headers="r1c1-t14"><a id="sthref3284"></a><a id="sthref3285"></a>Public</td>
+<td class="cellalignment1335" headers="r3c1-t14 r1c2-t14">User called PUBLIC. View ownership data through views shown for private database links.</td>
+<td class="cellalignment1335" headers="r3c1-t14 r1c3-t14">Creates a database-wide link. All users and PL/SQL subprograms in the database can use the link to access database objects in the corresponding remote database.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t14" headers="r1c1-t14"><a id="sthref3286"></a><a id="sthref3287"></a>Global</td>
+<td class="cellalignment1335" headers="r4c1-t14 r1c2-t14">User called PUBLIC. View ownership data through views shown for private database links.</td>
+<td class="cellalignment1335" headers="r4c1-t14 r1c3-t14">Creates a network-wide link. When an Oracle network uses a directory server, the directory server automatically create and manages global database links (as net service names) for every Oracle Database in the network. Users and PL/SQL subprograms in any database can use a global link to access objects in the corresponding remote database.
+<p><span class="bold">Note</span>: In earlier releases of Oracle Database, a global database link referred to a database link that was registered with an Oracle Names server. The use of an Oracle Names server has been deprecated. In this document, global database links refer to the use of net service names from the directory server.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" -->
+<p>Determining the type of database links to employ in a distributed database depends on the specific requirements of the applications using the system. Consider these features when making your choice:</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="Database Links and Application Features" summary="Column 1 contains the type of database link, column 2 describes the features of the link." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t15">Type of Link</th>
+<th class="cellalignment1334" id="r1c2-t15">Features</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t15" headers="r1c1-t15">Private database link</td>
+<td class="cellalignment1335" headers="r2c1-t15 r1c2-t15">This link is more secure than a public or global link, because only the owner of the private link, or subprograms within the same schema, can use the link to access the remote database.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t15" headers="r1c1-t15">Public database link</td>
+<td class="cellalignment1335" headers="r3c1-t15 r1c2-t15">When many users require an access path to a remote Oracle Database, you can create a single public database link for all users in a database.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t15" headers="r1c1-t15">Global database link</td>
+<td class="cellalignment1335" headers="r4c1-t15 r1c2-t15">When an Oracle network uses a directory server, an administrator can conveniently manage global database links for all databases in the system. Database link management is centralized and simple.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="ds_admin.htm#i1007884">"Specifying Link Types"</a> to learn how to create different types of database links</p>
+</li>
+<li>
+<p><a href="ds_admin.htm#i1008333">"Viewing Information About Database Links"</a> to learn how to access information about links</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1007964"></a>
+<div id="ADMIN02802" class="sect2">
+<h3 class="sect2">Users of Database Links</h3>
+<p><a id="sthref3288"></a>When creating the link, you determine which user should connect to the remote database to access the data. The following table explains the differences among the categories of users involved in database links:</p>
+<div class="inftblruleinformalwide">
+<table class="cellalignment1333" title="Categories of Users and Database Links" summary="Column 1 lists the type of user; column 2 describes user characteristics; column 3 displays a sample link creation syntax." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t17">User Type</th>
+<th class="cellalignment1334" id="r1c2-t17">Description</th>
+<th class="cellalignment1334" id="r1c3-t17">Sample Link Creation Syntax</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t17" headers="r1c1-t17"><a id="sthref3289"></a><a id="sthref3290"></a>Connected user</td>
+<td class="cellalignment1335" headers="r2c1-t17 r1c2-t17">A local user accessing a database link in which no fixed username and password have been specified. If <code dir="ltr">SYSTEM</code> accesses a public link in a query, then the connected user is <code dir="ltr">SYSTEM</code>, and the database connects to the <code dir="ltr">SYSTEM</code> schema in the remote database.
+<p><span class="bold">Note:</span> A connected user does not have to be the user who created the link, but is any user who is accessing the link.</p>
+</td>
+<td class="cellalignment1335" headers="r2c1-t17 r1c3-t17"><code dir="ltr">CREATE PUBLIC DATABASE LINK hq USING 'hq';</code></td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t17" headers="r1c1-t17"><a id="sthref3291"></a><a id="sthref3292"></a>Current user</td>
+<td class="cellalignment1335" headers="r3c1-t17 r1c2-t17">A global user in a <code dir="ltr">CURRENT_USER</code> database link. The global user must be authenticated by an X.509 certificate (an SSL-authenticated enterprise user) or a password (a password-authenticated enterprise user), and be a user on both databases involved in the link. Current user links are an aspect of the Oracle Advanced Security option.
+<p>See <a class="olink ASOAG" href="../../network.112/e40393/toc.htm"><span class="italic">Oracle Database Advanced Security Administrator's Guide</span></a> for information about global security</p>
+</td>
+<td class="cellalignment1335" headers="r3c1-t17 r1c3-t17"><code dir="ltr">CREATE PUBLIC DATABASE LINK hq CONNECT TO CURRENT_USER using 'hq';</code></td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t17" headers="r1c1-t17"><a id="sthref3293"></a><a id="sthref3294"></a>Fixed user</td>
+<td class="cellalignment1335" headers="r4c1-t17 r1c2-t17">A user whose username/password is part of the link definition. If a link includes a fixed user, the fixed user's username and password are used to connect to the remote database.</td>
+<td class="cellalignment1335" headers="r4c1-t17 r1c3-t17"><code dir="ltr">CREATE PUBLIC DATABASE LINK hq CONNECT TO jane IDENTIFIED BY</code> <code dir="ltr"><span class="codeinlineitalic">password</span></code> <code dir="ltr">USING 'hq';</code></td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformalwide" -->
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The following users cannot be target users of database links: <code dir="ltr">SYS</code> and <code dir="ltr">PUBLIC</code>.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="ds_admin.htm#i1007995">"Specifying Link Users"</a> to learn how to specify users when creating links</div>
+<div id="ADMIN12089" class="sect3"><a id="sthref3295"></a>
+<h4 class="sect3">Connected User Database Links</h4>
+<p><a id="sthref3296"></a><a id="sthref3297"></a>Connected user links have no connect string associated with them. The advantage of a connected user link is that a user referencing the link connects to the remote database as the same user, and credentials do not have to be stored in the link definition in the data dictionary.</p>
+<p>Connected user links have some disadvantages. Because these links require users to have accounts and privileges on the remote databases to which they are attempting to connect, they require more privilege administration for administrators. Also, giving users more privileges than they need violates the fundamental security concept of least privilege: users should only be given the privileges they need to perform their jobs.</p>
+<p>The ability to use a connected user database link depends on several factors, chief among them whether the user is authenticated by the database using a password, or externally authenticated by the operating system or a network authentication service. If the user is externally authenticated, then the ability to use a connected user link also depends on whether the remote database accepts remote authentication of users, which is set by the <code dir="ltr">REMOTE_OS_AUTHENT</code> initialization parameter.</p>
+<p>The <a id="sthref3298"></a><a id="sthref3299"></a><a id="sthref3300"></a><code dir="ltr">REMOTE_OS_AUTHENT</code> parameter operates as follows:</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="The REMOTE_OS_AUTHENT Initialization Parameter" summary="Column 1 lists the settings of the REMOTE_OS_AUTHENT initialization parameter and column 2 lists the consequences of the setting." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t20">REMOTE_OS_AUTHENT Value</th>
+<th class="cellalignment1334" id="r1c2-t20">Consequences</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t20" headers="r1c1-t20"><code dir="ltr">TRUE</code> for the remote database</td>
+<td class="cellalignment1335" headers="r2c1-t20 r1c2-t20">An externally-authenticated user can connect to the remote database using a connected user database link.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t20" headers="r1c1-t20"><code dir="ltr">FALSE</code> for the remote database</td>
+<td class="cellalignment1335" headers="r3c1-t20 r1c2-t20">An externally-authenticated user cannot connect to the remote database using a connected user database link unless a secure protocol or a network authentication service supported by the Oracle Advanced Security option is used.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" -->
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The <code dir="ltr">REMOTE_OS_AUTHENT</code> initialization parameter is deprecated. It is retained for backward compatibility only.</div>
+</div>
+<!-- class="sect3" -->
+<a id="BABHJFFD"></a>
+<div id="ADMIN12090" class="sect3">
+<h4 class="sect3">Fixed User Database Links</h4>
+<p><a id="sthref3301"></a><a id="sthref3302"></a>A benefit of a fixed user link is that it connects a user in a primary database to a remote database with the security context of the user specified in the connect string. For example, local user <code dir="ltr">joe</code> can create a public database link in <code dir="ltr">joe</code>'s schema that specifies the fixed user <code dir="ltr">scott</code> with password <code dir="ltr"><span class="codeinlineitalic">password</span></code>. If <code dir="ltr">jane</code> uses the fixed user link in a query, then <code dir="ltr">jane</code> is the user on the local database, but she connects to the remote database as <code dir="ltr">scott/</code><code dir="ltr"><span class="codeinlineitalic">password</span></code>.</p>
+<p>Fixed user links have a user name and password associated with the connect string. The user name and password are stored with other link information in data dictionary tables.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i1008062"></a>
+<div id="ADMIN12091" class="sect3">
+<h4 class="sect3">Current User Database Links</h4>
+<p><a id="sthref3303"></a><a id="sthref3304"></a>Current user database links make use of a global user. A global user must be authenticated by an X.509 certificate or a password, and be a user on both databases involved in the link.</p>
+<p>The user invoking the <code dir="ltr">CURRENT_USER</code> link does not have to be a global user. For example, if <code dir="ltr">jane</code> is authenticated (not as a global user) by password to the Accounts Payable database, she can access a stored procedure to retrieve data from the <code dir="ltr">hq</code> database. The procedure uses a current user database link, which connects her to <code dir="ltr">hq</code> as global user <code dir="ltr">scott.</code> User <code dir="ltr">scott</code> is a global user and authenticated through a certificate over SSL, but <code dir="ltr">jane</code> is not.</p>
+<p>Note that current user database links have these consequences:</p>
+<ul>
+<li>
+<p>If the current user database link is <span class="italic">not</span> accessed from within a stored object, then the current user is the same as the connected user accessing the link. For example, if <code dir="ltr">scott</code> issues a <code dir="ltr">SELECT</code> statement through a current user link, then the current user is <code dir="ltr">scott</code>.</p>
+</li>
+<li>
+<p>When executing a stored object such as a procedure, view, or trigger that accesses a database link, the current user is the user that <span class="italic">owns</span> the stored object, and not the user that <span class="italic">calls</span> the object. For example, if <code dir="ltr">jane</code> calls procedure <code dir="ltr">scott.p</code> (created by <code dir="ltr">scott</code>), and a current user link appears <span class="italic">within</span> the called procedure, then <code dir="ltr">scott</code> is the current user of the link.</p>
+</li>
+<li>
+<p>If the stored object is an invoker's rights function, procedure, or package, then the invoker's authorization ID is used to connect as a remote user. For example, if user <code dir="ltr">jane</code> calls procedure <code dir="ltr">scott.p</code> (an invoker's rights procedure created by <code dir="ltr">scott</code>), and the link appears inside procedure <code dir="ltr">scott.p</code>, then <code dir="ltr">jane</code> is the current user.</p>
+</li>
+<li>
+<p>You cannot connect to a database as an enterprise user and then use a current user link in a stored procedure that exists in a shared, global schema. For example, if user <code dir="ltr">jane</code> accesses a stored procedure in the shared schema <code dir="ltr">guest</code> on database <code dir="ltr">hq</code>, she cannot use a current user link in this schema to log on to a remote database.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#i1008298">"Distributed Database Security"</a> for more information about security issues relating to database links</p>
+</li>
+<li>
+<p><a class="olink ASOAG" href="../../network.112/e40393/toc.htm"><span class="italic">Oracle Database Advanced Security Administrator's Guide</span></a></p>
+</li>
+<li>
+<p><a class="olink LNPLS008" href="../../appdev.112/e25519/subprograms.htm#LNPLS008"><span class="italic">Oracle Database PL/SQL Language Reference</span></a> for more information about invoker's rights functions, procedures, or packages.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1008096"></a>
+<div id="ADMIN12092" class="sect2">
+<h3 class="sect2">Creation of Database Links: Examples</h3>
+<p><a id="sthref3305"></a><a id="sthref3306"></a>Create database links using the <code dir="ltr">CREATE DATABASE LINK</code> statement. The table gives examples of SQL statements that create database links in a local database to the remote <code dir="ltr">sales.us.americas.example_auto.com</code> database:</p>
+<div class="inftblruleinformalwide">
+<table class="cellalignment1333" title="The CREATE DATABASE LINK Statement" summary="Column 1 contains the sample SQL statements; column 2 lists the database to which this connection applies; column 3 displays how the user is connected as; column 4 displays the type of link." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t23">SQL Statement</th>
+<th class="cellalignment1334" id="r1c2-t23">Connects To Database</th>
+<th class="cellalignment1334" id="r1c3-t23">Connects As</th>
+<th class="cellalignment1334" id="r1c4-t23">Link Type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t23" headers="r1c1-t23"><code dir="ltr"><a id="sthref3307"></a>CREATE DATABASE LINK sales.us.americas.example_auto.com USING 'sales_us';</code></td>
+<td class="cellalignment1335" headers="r2c1-t23 r1c2-t23"><code dir="ltr">sales</code> using net service name <code dir="ltr">sales_us</code></td>
+<td class="cellalignment1335" headers="r2c1-t23 r1c3-t23">Connected user</td>
+<td class="cellalignment1335" headers="r2c1-t23 r1c4-t23">Private connected user</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t23" headers="r1c1-t23"><code dir="ltr"><a id="sthref3308"></a>CREATE DATABASE LINK foo CONNECT TO CURRENT_USER USING 'am_sls';</code></td>
+<td class="cellalignment1335" headers="r3c1-t23 r1c2-t23"><code dir="ltr">sales</code> using service name <code dir="ltr">am_sls</code></td>
+<td class="cellalignment1335" headers="r3c1-t23 r1c3-t23">Current global user</td>
+<td class="cellalignment1335" headers="r3c1-t23 r1c4-t23">Private current user</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t23" headers="r1c1-t23"><code dir="ltr"><a id="sthref3309"></a>CREATE DATABASE LINK sales.us.americas.example_auto.com CONNECT TO scott IDENTIFIED BY</code> <code dir="ltr"><span class="codeinlineitalic">password</span></code> <code dir="ltr">USING 'sales_us';</code></td>
+<td class="cellalignment1335" headers="r4c1-t23 r1c2-t23"><code dir="ltr">sales</code> using net service name <code dir="ltr">sales_us</code></td>
+<td class="cellalignment1335" headers="r4c1-t23 r1c3-t23"><code dir="ltr">scott</code> using password <code dir="ltr"><span class="codeinlineitalic">password</span></code></td>
+<td class="cellalignment1335" headers="r4c1-t23 r1c4-t23">Private fixed user</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r5c1-t23" headers="r1c1-t23"><code dir="ltr">CREATE PUBLIC DATABASE LINK sales CONNECT TO scott IDENTIFIED BY</code> <code dir="ltr"><span class="codeinlineitalic">password</span></code> <code dir="ltr">USING 'rev';</code></td>
+<td class="cellalignment1335" headers="r5c1-t23 r1c2-t23"><code dir="ltr">sales</code> using net service name <code dir="ltr">rev</code></td>
+<td class="cellalignment1335" headers="r5c1-t23 r1c3-t23"><code dir="ltr">scott</code> using password <code dir="ltr"><span class="codeinlineitalic">password</span></code></td>
+<td class="cellalignment1335" headers="r5c1-t23 r1c4-t23">Public fixed user</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r6c1-t23" headers="r1c1-t23"><a id="sthref3310"></a><code dir="ltr">CREATE SHARED PUBLIC DATABASE LINK sales.us.americas.example_auto.com CONNECT TO scott IDENTIFIED BY</code> <code dir="ltr"><span class="codeinlineitalic">password</span></code> <code dir="ltr">AUTHENTICATED BY anupam IDENTIFIED BY</code> <code dir="ltr"><span class="codeinlineitalic">password1</span></code> <code dir="ltr">USING 'sales';</code></td>
+<td class="cellalignment1335" headers="r6c1-t23 r1c2-t23"><code dir="ltr">sales</code> using net service name <code dir="ltr">sales</code></td>
+<td class="cellalignment1335" headers="r6c1-t23 r1c3-t23"><code dir="ltr">scott</code> using password <code dir="ltr"><span class="codeinlineitalic">password</span></code>, authenticated as <code dir="ltr">anupam</code> using password <code dir="ltr"><span class="codeinlineitalic">password1</span></code></td>
+<td class="cellalignment1335" headers="r6c1-t23 r1c4-t23">Shared public fixed user</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformalwide" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="ds_admin.htm#i1007820">"Creating Database Links"</a> to learn how to create link</p>
+</li>
+<li>
+<p><a class="olink SQLRF01205" href="../../server.112/e41084/statements_5005.htm#SQLRF01205"><span class="italic">Oracle Database SQL Language Reference</span></a> for information about the <code dir="ltr">CREATE DATABASE LINK</code> statement syntax</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1008172"></a>
+<div id="ADMIN02803" class="sect2">
+<h3 class="sect2">Schema Objects and Database Links</h3>
+<p><a id="sthref3311"></a>After you have created a database link, you can execute SQL statements that access objects on the remote database. For example, to access remote object <code dir="ltr">emp</code> using database link <code dir="ltr">foo</code>, you can issue:</p>
+<pre dir="ltr">
+SELECT * FROM emp@foo;
+</pre>
+<p>You must also be authorized in the remote database to access specific remote objects.</p>
+<p>Constructing properly formed object names using database links is an essential aspect of data manipulation in distributed systems.</p>
+<div id="ADMIN12093" class="sect3"><a id="sthref3312"></a>
+<h4 class="sect3">Naming of Schema Objects Using Database Links</h4>
+<p>Oracle Database uses the global database name to name the schema objects globally using the following scheme:</p>
+<p><code dir="ltr"><span class="codeinlineitalic">schema.schema_object</span></code>@<code dir="ltr"><span class="codeinlineitalic">global_database_name</span></code></p>
+<p>where:</p>
+<ul>
+<li>
+<p><code dir="ltr"><span class="codeinlineitalic">schema</span></code> is a collection of logical structures of data, or schema objects. A schema is owned by a database user and has the same name as that user. Each user owns a single schema.</p>
+</li>
+<li>
+<p><code dir="ltr"><span class="codeinlineitalic">schema_object</span></code> is a logical data structure like a table, index, view, synonym, procedure, package, or a database link.</p>
+</li>
+<li>
+<p><code dir="ltr"><span class="codeinlineitalic">global_database_name</span></code> is the name that uniquely identifies a remote database. This name must be the same as the concatenation of the remote database initialization parameters <code dir="ltr">DB_NAME</code> and <code dir="ltr">DB_DOMAIN</code>, unless the parameter <code dir="ltr">GLOBAL_NAMES</code> is set to <code dir="ltr">FALSE</code>, in which case any name is acceptable.</p>
+</li>
+</ul>
+<p>For example, using a database link to database <code dir="ltr">sales.division3.example.com</code>, a user or application can reference remote data as follows:</p>
+<pre dir="ltr">
+SELECT * FROM scott.emp@sales.division3.example.com;  # emp table in scott's schema
+SELECT loc FROM scott.dept@sales.division3.example.com;
+</pre>
+<p>If <code dir="ltr">GLOBAL_NAMES</code> is set to <code dir="ltr">FALSE</code>, then you can use any name for the link to <code dir="ltr">sales.division3.example.com</code>. For example, you can call the link <code dir="ltr">foo</code>. Then, you can access the remote database as follows:</p>
+<pre dir="ltr">
+SELECT name FROM scott.emp@foo;  # link name different from global name
+</pre></div>
+<!-- class="sect3" -->
+<div id="ADMIN12094" class="sect3"><a id="sthref3313"></a>
+<h4 class="sect3">Authorization for Accessing Remote Schema Objects</h4>
+<p>To access a remote schema object, you must be granted access to the remote object in the remote database. Further, to perform any updates, inserts, or deletes on the remote object, you must be granted the <code dir="ltr">SELECT</code> privilege on the object, along with the <code dir="ltr">UPDATE</code>, <code dir="ltr">INSERT</code>, or <code dir="ltr">DELETE</code> privilege. Unlike when accessing a local object, the <code dir="ltr">SELECT</code> privilege is necessary for accessing a remote object because the database has no remote describe capability. The database must do a <code dir="ltr">SELECT *</code> on the remote object in order to determine its structure.</p>
+</div>
+<!-- class="sect3" -->
+<div id="ADMIN12095" class="sect3"><a id="sthref3314"></a>
+<h4 class="sect3">Synonyms for Schema Objects</h4>
+<p><a id="sthref3315"></a>Oracle Database lets you create synonyms so that you can hide the database link name from the user. A synonym allows access to a table on a remote database using the same syntax that you would use to access a table on a local database. For example, assume you issue the following query against a table in a remote database:</p>
+<pre dir="ltr">
+SELECT * FROM emp@hq.example.com;
+</pre>
+<p>You can create the synonym <code dir="ltr">emp</code> for <code dir="ltr">emp@hq.example.com</code> so that you can issue the following query instead to access the same data:</p>
+<pre dir="ltr">
+SELECT * FROM emp;
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="ds_admin.htm#i1008664">"Using Synonyms to Create Location Transparency"</a> to learn how to create synonyms for objects specified using database links</div>
+</div>
+<!-- class="sect3" -->
+<a id="i1008213"></a>
+<div id="ADMIN12096" class="sect3">
+<h4 class="sect3">Schema Object Name Resolution</h4>
+<p><a id="sthref3316"></a><a id="sthref3317"></a>To resolve application references to schema objects (a process called <span class="bold">name resolution</span>), the database forms object names hierarchically. For example, the database guarantees that each schema within a database has a unique name, and that within a schema each object has a unique name. As a result, a schema object name is always unique within the database. Furthermore, the database resolves application references to the local name of the object.</p>
+<p>In a distributed database, a schema object such as a table is accessible to all applications in the system. <a id="sthref3318"></a><a id="sthref3319"></a><a id="sthref3320"></a>The database extends the hierarchical naming model with global database names to effectively create <span class="bold">global object names</span> and resolve references to the schema objects in a distributed database system. For example, a query can reference a remote table by specifying its fully qualified name, including the database in which it resides.</p>
+<p>For example, assume that you connect to the local database as user <code dir="ltr">SYSTEM</code>:</p>
+<pre dir="ltr">
+CONNECT SYSTEM@sales1
+</pre>
+<p>You then issue the following statements using database link <code dir="ltr">hq.example.com</code> to access objects in the <code dir="ltr">scott</code> and <code dir="ltr">jane</code> schemas on remote database <code dir="ltr">hq</code>:</p>
+<pre dir="ltr">
+SELECT * FROM scott.emp@hq.example.com;
+INSERT INTO jane.accounts@hq.example.com (acc_no, acc_name, balance)
+  VALUES (5001, 'BOWER', 2000);
+UPDATE jane.accounts@hq.example.com
+  SET balance = balance + 500;
+DELETE FROM jane.accounts@hq.example.com
+  WHERE acc_name = 'BOWER';
+</pre></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1108232"></a>
+<div id="ADMIN12097" class="sect2">
+<h3 class="sect2">Database Link Restrictions</h3>
+<p><a id="sthref3321"></a>You <span class="italic">cannot</span> perform the following operations using database links:</p>
+<ul>
+<li>
+<p>Grant privileges on remote objects</p>
+</li>
+<li>
+<p>Execute <code dir="ltr">DESCRIBE</code> operations on some remote objects. The following remote objects, however, do support <code dir="ltr">DESCRIBE</code> operations:</p>
+<ul>
+<li>
+<p>Tables</p>
+</li>
+<li>
+<p>Views</p>
+</li>
+<li>
+<p>Procedures</p>
+</li>
+<li>
+<p>Functions</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Analyze remote objects</p>
+</li>
+<li>
+<p>Define or enforce referential integrity</p>
+</li>
+<li>
+<p><a id="sthref3322"></a><a id="sthref3323"></a>Grant roles to users in a remote database</p>
+</li>
+<li>
+<p>Obtain nondefault roles on a remote database. For example, if <code dir="ltr">jane</code> connects to the local database and executes a stored procedure that uses a fixed user link connecting as <code dir="ltr">scott</code>, <code dir="ltr">jane</code> receives <code dir="ltr">scott</code>'s default roles on the remote database. Jane cannot issue <code dir="ltr">SET ROLE</code> to obtain a nondefault role.</p>
+</li>
+<li>
+<p>Use a current user link without authentication through SSL, password, or NT native authentication</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1008249"></a>
+<div id="ADMIN12098" class="sect1">
+<h2 class="sect1">Distributed Database Administration</h2>
+<p><a id="sthref3324"></a>The following sections explain some of the topics relating to database management in an Oracle Database distributed database system:</p>
+<ul>
+<li>
+<p><a href="#i1008284">Site Autonomy</a></p>
+</li>
+<li>
+<p><a href="#i1008298">Distributed Database Security</a></p>
+</li>
+<li>
+<p><a href="#i1008540">Auditing Database Links</a></p>
+</li>
+<li>
+<p><a href="#i1008554">Administration Tools</a></p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="ds_admin.htm#g1019605">Chapter 32, "Managing a Distributed Database"</a> to learn how to administer homogenous systems</p>
+</li>
+<li>
+<p><a class="olink HETER" href="../../server.112/e11050/toc.htm"><span class="italic">Oracle Database Heterogeneous Connectivity User's Guide</span></a> to learn about heterogeneous services concepts</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+<a id="i1008284"></a>
+<div id="ADMIN12099" class="sect2">
+<h3 class="sect2">Site Autonomy</h3>
+<p><a id="sthref3325"></a><a id="sthref3326"></a><span class="bold">Site autonomy</span> means that each server participating in a distributed database is administered independently from all other databases. Although several databases can work together, each database is a separate repository of data that is managed individually. Some of the benefits of site autonomy in an Oracle Database distributed database include:</p>
+<ul>
+<li>
+<p>Nodes of the system can mirror the logical organization of companies or groups that need to maintain independence.</p>
+</li>
+<li>
+<p>Local administrators control corresponding local data. Therefore, each database administrator's domain of responsibility is smaller and more manageable.</p>
+</li>
+<li>
+<p>Independent failures are less likely to disrupt other nodes of the distributed database. No single database failure need halt all distributed operations or be a performance bottleneck.</p>
+</li>
+<li>
+<p>Administrators can recover from isolated system failures independently from other nodes in the system.</p>
+</li>
+<li>
+<p>A data dictionary exists for each local database. A global catalog is not necessary to access local data.</p>
+</li>
+<li>
+<p>Nodes can upgrade software independently.</p>
+</li>
+</ul>
+<p>Although Oracle Database permits you to manage each database in a distributed database system independently, you should not ignore the global requirements of the system. For example, you may need to:</p>
+<ul>
+<li>
+<p>Create additional user accounts in each database to support the links that you create to facilitate server-to-server connections.</p>
+</li>
+<li>
+<p>Set additional initialization parameters such as <code dir="ltr">COMMIT_POINT_STRENGTH</code>, and <code dir="ltr">OPEN_LINKS</code>.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect2" -->
+<a id="i1008298"></a>
+<div id="ADMIN12100" class="sect2">
+<h3 class="sect2">Distributed Database Security</h3>
+<p><a id="sthref3327"></a><a id="sthref3328"></a>The database supports all of the security features that are available with a non-distributed database environment for distributed database systems, including:</p>
+<ul>
+<li>
+<p>Password authentication for users and roles</p>
+</li>
+<li>
+<p>Some types of external authentication for users and roles including Kerberos version 5 for connected user links.</p>
+</li>
+<li>
+<p>Login packet encryption for client-to-server and server-to-server connections</p>
+</li>
+</ul>
+<p>The following sections explain some additional topics to consider when configuring an Oracle Database distributed database system:</p>
+<ul>
+<li>
+<p><a href="#i1008338">Authentication Through Database Links</a></p>
+</li>
+<li>
+<p><a href="#i1008383">Authentication Without Passwords</a></p>
+</li>
+<li>
+<p><a href="#i1008387">Supporting User Accounts and Roles</a></p>
+</li>
+<li>
+<p><a href="#i1008405">Centralized User and Privilege Management</a></p>
+</li>
+<li>
+<p><a href="#i1008525">Data Encryption</a></p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ASOAG" href="../../network.112/e40393/toc.htm"><span class="italic">Oracle Database Advanced Security Administrator's Guide</span></a> for more information about external authentication</div>
+</li>
+</ul>
+<a id="i1008338"></a>
+<div id="ADMIN12101" class="sect3">
+<h4 class="sect3">Authentication Through Database Links</h4>
+<p><a id="sthref3329"></a><a id="sthref3330"></a>Database links are either private or public, <span class="bold">authenticated</span> or <span class="bold">non-authenticated</span>. You create public links by specifying the <code dir="ltr">PUBLIC</code> keyword in the link creation statement. For example, you can issue:</p>
+<pre dir="ltr">
+CREATE PUBLIC DATABASE LINK foo USING 'sales';
+</pre>
+<p>You create authenticated links by specifying the <code dir="ltr">CONNECT TO</code> clause, <code dir="ltr">AUTHENTICATED BY</code> clause, or both clauses together in the database link creation statement. For example, you can issue:</p>
+<pre dir="ltr">
+CREATE DATABASE LINK sales CONNECT TO scott IDENTIFIED BY <span class="italic">password</span> USING 'sales';
+CREATE SHARED PUBLIC DATABASE LINK sales CONNECT TO nick IDENTIFIED BY <span class="italic">password1</span> 
+     AUTHENTICATED BY david IDENTIFIED BY <span class="italic">password2</span> USING 'sales';
+</pre>
+<p>This table describes how users access the remote database through the link:</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="User Access to a Remote Database" summary="Column 1 lists the link type; column 2 notes if the link is authenticated; column 3 describes the security aspects of the link." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t28">Link Type</th>
+<th class="cellalignment1334" id="r1c2-t28">Authenticated</th>
+<th class="cellalignment1334" id="r1c3-t28">Security Access</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t28" headers="r1c1-t28">Private</td>
+<td class="cellalignment1335" headers="r2c1-t28 r1c2-t28">No</td>
+<td class="cellalignment1335" headers="r2c1-t28 r1c3-t28">When connecting to the remote database, the database uses security information (userid/password) taken from the local session. Hence, the link is a connected user database link. Passwords must be synchronized between the two databases.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t28" headers="r1c1-t28">Private</td>
+<td class="cellalignment1335" headers="r3c1-t28 r1c2-t28">Yes</td>
+<td class="cellalignment1335" headers="r3c1-t28 r1c3-t28">The userid/password is taken from the link definition rather than from the local session context. Hence, the link is a fixed user database link.
+<p>This configuration allows passwords to be different on the two databases, but the local database link password must match the remote database password.</p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t28" headers="r1c1-t28">Public</td>
+<td class="cellalignment1335" headers="r4c1-t28 r1c2-t28">No</td>
+<td class="cellalignment1335" headers="r4c1-t28 r1c3-t28">Works the same as a private nonauthenticated link, except that all users can reference this pointer to the remote database.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r5c1-t28" headers="r1c1-t28">Public</td>
+<td class="cellalignment1335" headers="r5c1-t28 r1c2-t28">Yes</td>
+<td class="cellalignment1335" headers="r5c1-t28 r1c3-t28">All users on the local database can access the remote database and all use the same userid/password to make the connection.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" --></div>
+<!-- class="sect3" -->
+<a id="i1008383"></a>
+<div id="ADMIN12102" class="sect3">
+<h4 class="sect3">Authentication Without Passwords</h4>
+<p><a id="sthref3331"></a>When using a connected user or current user database link, you can use an external authentication source such as Kerberos to obtain <span class="bold">end-to-end security</span>. In end-to-end authentication, credentials are passed from server to server and can be authenticated by a database server belonging to the same domain. For example, if <code dir="ltr">jane</code> is authenticated externally on a local database, and wants to use a connected user link to connect as herself to a remote database, the local server passes the security ticket to the remote database.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i1008387"></a>
+<div id="ADMIN12103" class="sect3">
+<h4 class="sect3">Supporting User Accounts and Roles</h4>
+<p>In a distributed database system, you must carefully plan the user accounts and roles that are necessary to support applications using the system. Note that:</p>
+<ul>
+<li>
+<p>The user accounts necessary to establish server-to-server connections must be available in all databases of the distributed database system.</p>
+</li>
+<li>
+<p>The roles necessary to make available application privileges to distributed database application users must be present in all databases of the distributed database system.</p>
+</li>
+</ul>
+<p>As you create the database links for the nodes in a distributed database system, determine which user accounts and roles each site must support server-to-server connections that use the links.</p>
+<p>In a distributed environment, users typically require access to many network services. When you must configure separate authentications for each user to access each network service, security administration can become unwieldy, especially for large systems.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="ds_admin.htm#i1007820">"Creating Database Links"</a> for more information about the user accounts that must be available to support different types of database links in the system</div>
+</div>
+<!-- class="sect3" -->
+<a id="i1008405"></a>
+<div id="ADMIN12104" class="sect3">
+<h4 class="sect3">Centralized User and Privilege Management</h4>
+<p><a id="sthref3332"></a><a id="sthref3333"></a>The database provides different ways for you to manage the users and privileges involved in a distributed system. For example, you have these options:</p>
+<ul>
+<li>
+<p>Enterprise user management. You can create global users who are authenticated through SSL or by using passwords, then manage these users and their privileges in a directory through an independent enterprise directory service.</p>
+</li>
+<li>
+<p>Network authentication service. This common technique simplifies security management for distributed environments. You can use the Oracle Advanced Security option to enhance Oracle Net and the security of an Oracle Database distributed database system. Windows NT native authentication is an example of a non-Oracle authentication solution.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ASOAG" href="../../network.112/e40393/toc.htm"><span class="italic">Oracle Database Advanced Security Administrator's Guide</span></a></p>
+</li>
+<li>
+<p><a class="olink DBIMI" href="../../network.112/e10744/toc.htm"><span class="italic">Oracle Database Enterprise User Security Administrator's Guide</span></a></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+<div id="ADMIN12105" class="sect4"><a id="sthref3334"></a>
+<h5 class="sect4">Schema-Dependent Global Users</h5>
+<p><a id="sthref3335"></a><a id="sthref3336"></a>One option for centralizing user and privilege management is to create the following:</p>
+<ul>
+<li>
+<p>A global user in a centralized directory</p>
+</li>
+<li>
+<p>A user in every database that the global user must connect to</p>
+</li>
+</ul>
+<p>For example, you can create a global user called <code dir="ltr">fred</code> with the following SQL statement:</p>
+<pre dir="ltr">
+CREATE USER fred IDENTIFIED GLOBALLY AS 'CN=fred adams,O=Oracle,C=England';
+</pre>
+<p>This solution allows a single global user to be authenticated by a centralized directory.</p>
+<p>The schema-dependent global user solution has the consequence that you must create a user called <code dir="ltr">fred</code> on every database that this user must access. Because most users need permission to access an application schema but do not need their own schemas, the creation of a separate account in each database for every global user creates significant overhead. Because of this problem, the database also supports schema-independent users, which are global users that an access a single, generic schema in every database.</p>
+</div>
+<!-- class="sect4" -->
+<div id="ADMIN12106" class="sect4"><a id="sthref3337"></a>
+<h5 class="sect4">Schema-Independent Global Users</h5>
+<p><a id="sthref3338"></a><a id="sthref3339"></a>The database supports functionality that allows a global user to be centrally managed by an enterprise directory service. Users who are managed in the directory are called <a id="sthref3340"></a><a id="sthref3341"></a><a id="sthref3342"></a><span class="bold">enterprise users</span>. This directory contains information about:</p>
+<ul>
+<li>
+<p>Which databases in a distributed system an enterprise user can access</p>
+</li>
+<li>
+<p>Which role on each database an enterprise user can use</p>
+</li>
+<li>
+<p>Which schema on each database an enterprise user can connect to</p>
+</li>
+</ul>
+<p>The administrator of each database is not required to create a global user account for each enterprise user on each database to which the enterprise user must connect. Instead, multiple enterprise users can connect to the same database schema, called a <span class="bold">shared schema</span>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You cannot access a <a id="sthref3343"></a>current user database link in a shared schema.</div>
+<p>For example, suppose <code dir="ltr">jane</code>, <code dir="ltr">bill</code>, and <code dir="ltr">scott</code> all use a human resources application. The <code dir="ltr">hq</code> application objects are all contained in the <code dir="ltr">guest</code> schema on the <code dir="ltr">hq</code> database. In this case, you can create a local global user account to be used as a shared schema. This global username, that is, shared schema name, is <code dir="ltr">guest</code>. <code dir="ltr">jane</code>, <code dir="ltr">bill</code>, and <code dir="ltr">scott</code> are all created as enterprise users in the directory service. They are also mapped to the <code dir="ltr">guest</code> schema in the directory, and can be assigned different authorizations in the <code dir="ltr">hq</code> application.</p>
+<p><a href="#i1108450">Figure 31-5</a> illustrates an example of global user security using the enterprise directory service:</p>
+<div id="ADMIN13136" class="figure">
+<p class="titleinfigure"><a id="i1108450"></a>Figure 31-5 Global User Security</p>
+<img width="341" height="259" src="img/admin047.gif" alt="Description of Figure 31-5 follows" /><br />
+<a id="sthref3344" href="img_text/admin047.htm">Description of "Figure 31-5 Global User Security"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>Assume that the enterprise directory service contains the following information on enterprise users for <code dir="ltr">hq</code> and <code dir="ltr">sales</code>:</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="Enterprise Directory Service Example" summary="Column 1 contains the database name; column 2 contains the role name; column 3 contains the schema name; column 4 lists the enterprise users." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t32">Database</th>
+<th class="cellalignment1334" id="r1c2-t32">Role</th>
+<th class="cellalignment1334" id="r1c3-t32">Schema</th>
+<th class="cellalignment1334" id="r1c4-t32">Enterprise Users</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t32" headers="r1c1-t32"><code dir="ltr">hq</code></td>
+<td class="cellalignment1335" headers="r2c1-t32 r1c2-t32"><code dir="ltr">clerk1</code></td>
+<td class="cellalignment1335" headers="r2c1-t32 r1c3-t32"><code dir="ltr">guest</code></td>
+<td class="cellalignment1335" headers="r2c1-t32 r1c4-t32"><code dir="ltr">bill</code>
+<p><code dir="ltr">scott</code></p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t32" headers="r1c1-t32"><code dir="ltr">sales</code></td>
+<td class="cellalignment1335" headers="r3c1-t32 r1c2-t32"><code dir="ltr">clerk2</code></td>
+<td class="cellalignment1335" headers="r3c1-t32 r1c3-t32"><code dir="ltr">guest</code></td>
+<td class="cellalignment1335" headers="r3c1-t32 r1c4-t32"><code dir="ltr">jane</code>
+<p><code dir="ltr">scott</code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" -->
+<p>Also, assume that the local administrators for <code dir="ltr">hq</code> and <code dir="ltr">sales</code> have issued statements as follows:</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="Enterprise Directory Service Example (continued)" summary="Column list the databae name and column 2 lists the statements that were used to create the environment." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t33">Database</th>
+<th class="cellalignment1334" id="r1c2-t33">CREATE Statements</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t33" headers="r1c1-t33"><code dir="ltr">hq</code></td>
+<td class="cellalignment1335" headers="r2c1-t33 r1c2-t33">
+<pre dir="ltr">
+CREATE USER guest IDENTIFIED GLOBALLY AS '';
+CREATE ROLE clerk1 GRANT select ON emp;
+CREATE PUBLIC DATABASE LINK sales_link CONNECT AS CURRENT_USER USING 'sales';
+</pre></td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t33" headers="r1c1-t33"><code dir="ltr">sales</code></td>
+<td class="cellalignment1335" headers="r3c1-t33 r1c2-t33">
+<pre dir="ltr">
+CREATE USER guest IDENTIFIED GLOBALLY AS '';
+CREATE ROLE clerk2 GRANT select ON dept;
+</pre></td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" -->
+<p>Assume that enterprise user <code dir="ltr">scott</code> requests a connection to local database <code dir="ltr">hq</code> in order to execute a distributed transaction involving <code dir="ltr">sales</code>. The following steps occur (not necessarily in this exact order):</p>
+<ol>
+<li>
+<p>Enterprise user <code dir="ltr">scott</code> is authenticated using SSL or a password.</p>
+</li>
+<li>
+<p>User <code dir="ltr">scott</code> issues the following statement:</p>
+<pre dir="ltr">
+SELECT e.ename, d.loc 
+FROM emp e, dept@sales_link d
+WHERE e.deptno=d.deptno;
+</pre></li>
+<li>
+<p>Databases <code dir="ltr">hq</code> and <code dir="ltr">sales</code> mutually authenticate one another using SSL.</p>
+</li>
+<li>
+<p><code dir="ltr">Database</code> <code dir="ltr">hq</code> queries the enterprise directory service to determine whether enterprise user <code dir="ltr">scott</code> has access to <code dir="ltr">hq</code>, and discovers <code dir="ltr">scott</code> can access local schema <code dir="ltr">guest</code> using role <code dir="ltr">clerk1</code>.</p>
+</li>
+<li>
+<p>Database <code dir="ltr">sales</code> queries the enterprise directory service to determine whether enterprise user <code dir="ltr">scott</code> has access to <code dir="ltr">sales</code>, and discovers <code dir="ltr">scott</code> can access local schema <code dir="ltr">guest</code> using role <code dir="ltr">clerk2</code>.</p>
+</li>
+<li>
+<p>Enterprise user <code dir="ltr">scott</code> logs into <code dir="ltr">sales</code> to schema <code dir="ltr">guest</code> with role <code dir="ltr">clerk2</code> and issues a <code dir="ltr">SELECT</code> to obtain the required information and transfer it to <code dir="ltr">hq</code>.</p>
+</li>
+<li>
+<p>Database <code dir="ltr">hq</code> receives the requested data from <code dir="ltr">sales</code> and returns it to the client <code dir="ltr">scott</code>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink DBIMI" href="../../network.112/e10744/toc.htm"><span class="italic">Oracle Database Enterprise User Security Administrator's Guide</span></a> for more information about enterprise user security</div>
+</li>
+</ol>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<a id="i1008525"></a>
+<div id="ADMIN12107" class="sect3">
+<h4 class="sect3">Data Encryption</h4>
+<p><a id="sthref3345"></a><a id="sthref3346"></a>The Oracle Advanced Security option also enables Oracle Net and related products to use network data encryption and checksumming so that data cannot be read or altered. It protects data from unauthorized viewing by using the RSA Data Security RC4 or the Data Encryption Standard (DES) encryption algorithm.</p>
+<p>To ensure that data has not been modified, deleted, or replayed during transmission, the security services of the Oracle Advanced Security option can generate a cryptographically secure message digest and include it with each packet sent across the network.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink DBSEG020" href="http://www.oracle.com/pls/topic/lookup?ctx=db112&amp;id=DBSEG020"><span class="italic">Oracle Database Security Guide</span></a> for more information about these and other features of the Oracle Advanced Security option</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1008540"></a>
+<div id="ADMIN12108" class="sect2">
+<h3 class="sect2">Auditing Database Links</h3>
+<p><a id="sthref3347"></a><a id="sthref3348"></a>You must always perform auditing operations locally. That is, if a user acts in a local database and accesses a remote database through a database link, the local actions are audited in the local database, and the remote actions are audited in the remote database, provided appropriate audit options are set in the respective databases.</p>
+<p>The remote database cannot determine whether a successful connect request and subsequent SQL statements come from another server or from a locally connected client. For example, assume the following:</p>
+<ul>
+<li>
+<p>Fixed user link <code dir="ltr">hq.example.com</code> connects local user <code dir="ltr">jane</code> to the remote <code dir="ltr">hq</code> database as remote user <code dir="ltr">scott.</code></p>
+</li>
+<li>
+<p>User <code dir="ltr">scott</code> is audited on the remote database.</p>
+</li>
+</ul>
+<p>Actions performed during the remote database session are audited as if <code dir="ltr">scott</code> were connected locally to <code dir="ltr">hq</code> and performing the same actions there. You must set audit options in the remote database to capture the actions of the username--in this case, <code dir="ltr">scott</code> on the <code dir="ltr">hq</code> database--embedded in the link if the desired effect is to audit what <code dir="ltr">jane</code> is doing in the remote database.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You can audit the global username for global users.</div>
+<p>You cannot set local auditing options on remote objects. Therefore, you cannot audit use of a database link, although access to remote objects can be audited on the remote database.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1008554"></a>
+<div id="ADMIN12109" class="sect2">
+<h3 class="sect2">Administration Tools</h3>
+<p><a id="sthref3349"></a>The database administrator has several choices for tools to use when managing an Oracle Database distributed database system:</p>
+<ul>
+<li>
+<p><a href="#i1008570">Enterprise Manager</a></p>
+</li>
+<li>
+<p><a href="#i1008578">Third-Party Administration Tools</a></p>
+</li>
+<li>
+<p><a href="#i1008581">SNMP Support</a></p>
+</li>
+</ul>
+<a id="i1008570"></a>
+<div id="ADMIN12110" class="sect3">
+<h4 class="sect3">Enterprise Manager</h4>
+<p>Enterprise Manager is the Oracle Database administration tool that provides a graphical user interface (GUI). Enterprise Manager provides administrative functionality for distributed databases through an easy-to-use interface. You can use Enterprise Manager to:</p>
+<ul>
+<li>
+<p>Administer multiple databases. You can use Enterprise Manager to administer a single database or to simultaneously administer multiple databases.</p>
+</li>
+<li>
+<p>Centralize database administration tasks. You can administer both local and remote databases running on any Oracle Database platform in any location worldwide. In addition, these Oracle Database platforms can be connected by any network protocols supported by Oracle Net.</p>
+</li>
+<li>
+<p>Dynamically execute SQL, PL/SQL, and Enterprise Manager commands. You can use Enterprise Manager to enter, edit, and execute statements. Enterprise Manager also maintains a history of statements executed.</p>
+<p>Thus, you can reexecute statements without retyping them, a particularly useful feature if you must execute lengthy statements repeatedly in a distributed database system.</p>
+</li>
+<li>
+<p>Manage security features such as global users, global roles, and the enterprise directory service.</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" -->
+<a id="i1008578"></a>
+<div id="ADMIN12111" class="sect3">
+<h4 class="sect3">Third-Party Administration Tools</h4>
+<p>Currently more than 60 companies produce more than 150 products that help manage Oracle Databases and networks, providing a truly open environment.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i1008581"></a>
+<div id="ADMIN12112" class="sect3">
+<h4 class="sect3">SNMP Support</h4>
+<p>Besides its network administration capabilities, Oracle <span class="bold">Simple Network Management Protocol</span> (<span class="italic">SNMP</span>) support allows an Oracle Database server to be located and queried by any SNMP-based network management system. SNMP is the accepted standard underlying many popular network management systems such as: <a id="sthref3350"></a></p>
+<ul>
+<li>
+<p><a id="sthref3351"></a>HP OpenView</p>
+</li>
+<li>
+<p><a id="sthref3352"></a>Digital POLYCENTER Manager on NetView</p>
+</li>
+<li>
+<p><a id="sthref3353"></a>IBM NetView/6000</p>
+</li>
+<li>
+<p><a id="sthref3354"></a>Novell NetWare Management System</p>
+</li>
+<li>
+<p><a id="sthref3355"></a>SunSoft SunNet Manager</p>
+</li>
+</ul>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1008603"></a>
+<div id="ADMIN12113" class="sect1">
+<h2 class="sect1">Transaction Processing in a Distributed System</h2>
+<p><a id="sthref3356"></a><a id="sthref3357"></a>A transaction is a logical unit of work constituted by one or more SQL statements executed by a single user. A transaction begins with the user's first executable SQL statement and ends when it is committed or rolled back by that user.</p>
+<p>A <span class="bold">remote transaction</span> contains only statements that access a single remote node. A <span class="bold">distributed transaction</span> contains statements that access multiple nodes.</p>
+<p>The following sections define important concepts in transaction processing and explain how transactions access data in a distributed database:</p>
+<ul>
+<li>
+<p><a href="#i1008641">Remote SQL Statements</a></p>
+</li>
+<li>
+<p><a href="#i1008661">Distributed SQL Statements</a></p>
+</li>
+<li>
+<p><a href="#i1008684">Shared SQL for Remote and Distributed Statements</a></p>
+</li>
+<li>
+<p><a href="#i1008698">Remote Transactions</a></p>
+</li>
+<li>
+<p><a href="#i1008710">Distributed Transactions</a></p>
+</li>
+<li>
+<p><a href="#i1008726">Two-Phase Commit Mechanism</a></p>
+</li>
+<li>
+<p><a href="#i1008747">Database Link Name Resolution</a></p>
+</li>
+<li>
+<p><a href="#i1008848">Schema Object Name Resolution</a></p>
+</li>
+</ul>
+<a id="i1008641"></a>
+<div id="ADMIN12114" class="sect2">
+<h3 class="sect2">Remote SQL Statements</h3>
+<p><a id="sthref3358"></a><a id="sthref3359"></a><a id="sthref3360"></a><a id="sthref3361"></a><a id="sthref3362"></a>A <span class="bold">remote query</span> statement is a query that selects information from one or more remote tables, all of which reside at the same remote node. For example, the following query accesses data from the <code dir="ltr">dept</code> table in the <code dir="ltr">scott</code> schema of the remote <code dir="ltr">sales</code> database:</p>
+<pre dir="ltr">
+SELECT * FROM scott.dept@sales.us.americas.example_auto.com;
+</pre>
+<p><a id="sthref3363"></a>A <span class="bold">remote update</span> statement is an update that modifies data in one or more tables, all of which are located at the same remote node. For example, the following query updates the <code dir="ltr">dept</code> table in the <code dir="ltr">scott</code> schema of the remote <code dir="ltr">sales</code> database:</p>
+<pre dir="ltr">
+UPDATE scott.dept@mktng.us.americas.example_auto.com
+  SET loc = 'NEW YORK'
+  WHERE deptno = 10;
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+<a id="sthref3364"></a>A remote update can include a subquery that retrieves data from one or more remote nodes, but because the update happens at only a single remote node, the statement is classified as a remote update.</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1008661"></a>
+<div id="ADMIN12115" class="sect2">
+<h3 class="sect2">Distributed SQL Statements</h3>
+<p><a id="sthref3365"></a><a id="sthref3366"></a><a id="sthref3367"></a><a id="sthref3368"></a><a id="sthref3369"></a>A <span class="bold">distributed query</span> statement retrieves information from two or more nodes. For example, the following query accesses data from the local database as well as the remote <code dir="ltr">sales</code> database:</p>
+<pre dir="ltr">
+SELECT ename, dname
+  FROM scott.emp e, scott.dept@sales.us.americas.example_auto.com d
+  WHERE e.deptno = d.deptno;
+</pre>
+<p><a id="sthref3370"></a><a id="sthref3371"></a>A <span class="bold">distributed update</span> statement modifies data on two or more nodes. A distributed update is possible using a PL/SQL subprogram unit such as a procedure or trigger that includes two or more remote updates that access data on different nodes. For example, the following PL/SQL program unit updates tables on the local database and the remote <code dir="ltr">sales</code> database:</p>
+<pre dir="ltr">
+BEGIN
+  UPDATE scott.dept@sales.us.americas.example_auto.com
+    SET loc = 'NEW YORK'
+    WHERE deptno = 10;
+  UPDATE scott.emp
+    SET deptno = 11
+    WHERE deptno = 10;
+END;
+COMMIT;
+</pre>
+<p>The database sends statements in the program to the remote nodes, and their execution succeeds or fails as a unit.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1008684"></a>
+<div id="ADMIN12116" class="sect2">
+<h3 class="sect2">Shared SQL for Remote and Distributed Statements</h3>
+<p><a id="sthref3372"></a><a id="sthref3373"></a>The mechanics of a remote or distributed statement using shared SQL are essentially the same as those of a local statement. The SQL text must match, and the referenced objects must match. If available, shared SQL areas can be used for the local and remote handling of any statement or decomposed query.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink CNCPT" href="../e40540/toc.htm"><span class="italic">Oracle Database Concepts</span></a> for more information about shared SQL</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1008698"></a>
+<div id="ADMIN12117" class="sect2">
+<h3 class="sect2">Remote Transactions</h3>
+<p><a id="sthref3374"></a><a id="sthref3375"></a><a id="sthref3376"></a><a id="sthref3377"></a>A remote transaction contains one or more remote statements, all of which reference a single remote node. For example, the following transaction contains two statements, each of which accesses the remote <code dir="ltr">sales</code> database:</p>
+<pre dir="ltr">
+UPDATE scott.dept@sales.us.americas.example_auto.com
+  SET loc = 'NEW YORK'
+  WHERE deptno = 10;
+UPDATE scott.emp@sales.us.americas.example_auto.com
+  SET deptno = 11
+  WHERE deptno = 10;
+COMMIT;
+</pre></div>
+<!-- class="sect2" -->
+<a id="i1008710"></a>
+<div id="ADMIN12118" class="sect2">
+<h3 class="sect2">Distributed Transactions</h3>
+<p><a id="sthref3378"></a><a id="sthref3379"></a>A distributed transaction is a transaction that includes one or more statements that, individually or as a group, update data on two or more distinct nodes of a distributed database. For example, this transaction updates the local database and the remote <code dir="ltr">sales</code> database:</p>
+<pre dir="ltr">
+UPDATE scott.dept@sales.us.americas.example_auto.com
+  SET loc = 'NEW YORK'
+  WHERE deptno = 10;
+UPDATE scott.emp
+  SET deptno = 11
+  WHERE deptno = 10;
+COMMIT;
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If all statements of a transaction reference only a single remote node, the transaction is remote, not distributed.</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1008726"></a>
+<div id="ADMIN12119" class="sect2">
+<h3 class="sect2">Two-Phase Commit Mechanism</h3>
+<p><a id="sthref3380"></a>A database must guarantee that all statements in a transaction, distributed or non-distributed, either commit or roll back as a unit. The effects of an ongoing transaction should be invisible to all other transactions at all nodes; this transparency should be true for transactions that include any type of operation, including queries, updates, or remote procedure calls.</p>
+<p>The general mechanisms of transaction control in a non-distributed database are discussed in the <a class="olink CNCPT016" href="../../server.112/e40540/transact.htm#CNCPT016"><span class="italic">Oracle Database Concepts</span></a>. In a distributed database, the database must coordinate transaction control with the same characteristics over a network and maintain data consistency, even if a network or system failure occurs.</p>
+<p><a id="sthref3381"></a><a id="sthref3382"></a>The database <span class="bold">two-phase commit</span> mechanism guarantees that <span class="italic">all</span> database servers participating in a distributed transaction either all commit or all roll back the statements in the transaction. A two-phase commit mechanism also protects implicit DML operations performed by integrity constraints, remote procedure calls, and triggers.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="ds_txns.htm#g1013136">Chapter 34, "Distributed Transactions Concepts"</a> for more information about the Oracle Database two-phase commit mechanism</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1008747"></a>
+<div id="ADMIN12120" class="sect2">
+<h3 class="sect2">Database Link Name Resolution<a id="sthref3383"></a><a id="sthref3384"></a></h3>
+<p><a id="sthref3385"></a><a id="sthref3386"></a>A <span class="bold">global object name</span> is an object specified using a database<a id="sthref3387"></a> link. The essential components of a global object name are:</p>
+<ul>
+<li>
+<p>Object name</p>
+</li>
+<li>
+<p>Database name</p>
+</li>
+<li>
+<p>Domain</p>
+</li>
+</ul>
+<p>The following table shows the components of an explicitly specified global database object name:</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="Explicitly Specified Global Database Objects Names" summary="Column1 lists the statement, columns 2-4 list the object, database, and domain componentf of the statement, respectively." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t41">Statement</th>
+<th class="cellalignment1334" id="r1c2-t41">Object</th>
+<th class="cellalignment1334" id="r1c3-t41">Database</th>
+<th class="cellalignment1334" id="r1c4-t41">Domain</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t41" headers="r1c1-t41"><code dir="ltr">SELECT * FROM joan.dept@sales.example.com</code></td>
+<td class="cellalignment1335" headers="r2c1-t41 r1c2-t41"><code dir="ltr">dept</code></td>
+<td class="cellalignment1335" headers="r2c1-t41 r1c3-t41"><code dir="ltr">sales</code></td>
+<td class="cellalignment1335" headers="r2c1-t41 r1c4-t41"><code dir="ltr">example.com</code></td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t41" headers="r1c1-t41"><code dir="ltr">SELECT * FROM emp@mktg.us.example.com</code></td>
+<td class="cellalignment1335" headers="r3c1-t41 r1c2-t41"><code dir="ltr">emp</code></td>
+<td class="cellalignment1335" headers="r3c1-t41 r1c3-t41"><code dir="ltr">mktg</code></td>
+<td class="cellalignment1335" headers="r3c1-t41 r1c4-t41"><code dir="ltr">us.example.com</code></td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" -->
+<p>Whenever a SQL statement includes a reference to a global object name, the database searches for a database link with a name that matches the database name specified in the global object name. For example, if you issue the following statement:</p>
+<pre dir="ltr">
+SELECT * FROM scott.emp@orders.us.example.com;
+</pre>
+<p>The database searches for a database link called <code dir="ltr">orders.us.example.com</code>. The database performs this operation to determine the path to the specified remote database.</p>
+<p>The database always searches for matching database links in the following order:</p>
+<ol>
+<li>
+<p>Private database links in the schema of the user who issued the SQL statement.</p>
+</li>
+<li>
+<p>Public database links in the local database.</p>
+</li>
+<li>
+<p>Global database links (only if a directory server is available).</p>
+</li>
+</ol>
+<div id="ADMIN12121" class="sect3"><a id="sthref3388"></a>
+<h4 class="sect3">Name Resolution When the Global Database Name Is Complete</h4>
+<p><a id="sthref3389"></a>Assume that you issue the following SQL statement, which specifies a complete global database name:</p>
+<pre dir="ltr">
+SELECT * FROM emp@prod1.us.example.com;
+</pre>
+<p>In this case, both the database name (<code dir="ltr">prod1</code>) and domain components (<code dir="ltr">us.example.com</code>) are specified, so the database searches for private, public, and global database links. The database searches only for links that match the specified global database name.</p>
+</div>
+<!-- class="sect3" -->
+<div id="ADMIN12122" class="sect3"><a id="sthref3390"></a>
+<h4 class="sect3">Name Resolution When the Global Database Name Is Partial</h4>
+<p><a id="sthref3391"></a>If any part of the domain is specified, the database assumes that a complete global database name is specified. If a SQL statement specifies a partial global database name (that is, only the database component is specified), the database appends the value in the <code dir="ltr">DB_DOMAIN</code> initialization parameter to the value in the <code dir="ltr">DB_NAME</code> initialization parameter to construct a complete name. For example, assume you issue the following statements:</p>
+<pre dir="ltr">
+CONNECT scott@locdb
+SELECT * FROM scott.emp@orders;
+</pre>
+<p>If the network domain for <code dir="ltr">locdb</code> is <code dir="ltr">us.example.com</code>, then the database appends this domain to <code dir="ltr">orders</code> to construct the complete global database name of <code dir="ltr">orders.us.example.com</code>. The database searches for database links that match only the constructed global name. If a matching link is not found, the database returns an error and the SQL statement cannot execute.</p>
+</div>
+<!-- class="sect3" -->
+<div id="ADMIN12123" class="sect3"><a id="sthref3392"></a>
+<h4 class="sect3">Name Resolution When No Global Database Name Is Specified</h4>
+<p><a id="sthref3393"></a>If a global object name references an object in the local database and a database link name is <span class="italic">not</span> specified using the @ symbol, then the database automatically detects that the object is local and does not search for or use database links to resolve the object reference. For example, assume that you issue the following statements:</p>
+<pre dir="ltr">
+CONNECT scott@locdb
+SELECT * from scott.emp;
+</pre>
+<p>Because the second statement does not specify a global database name using a database link connect string, the database does not search for database links.</p>
+</div>
+<!-- class="sect3" -->
+<div id="ADMIN12124" class="sect3"><a id="sthref3394"></a>
+<h4 class="sect3">Terminating the Search for Name Resolution</h4>
+<p>The database does not necessarily stop searching for matching database links when it finds the first match. The database must search for matching private, public, and network database links until it determines a complete path to the remote database (both a remote account and service name).</p>
+<p>The first match determines the remote schema as illustrated in the following table:</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="Database Link Name Resolution" summary="Column 1 lists the user operation, column2 lists the database response, and column 3 contains an example." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t42">User Operation</th>
+<th class="cellalignment1334" id="r1c2-t42">Database Response</th>
+<th class="cellalignment1334" id="r1c3-t42">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t42" headers="r1c1-t42">Do <span class="italic">not</span> specify the <code dir="ltr">CONNECT</code> clause</td>
+<td class="cellalignment1335" headers="r2c1-t42 r1c2-t42">Uses a connected user database link</td>
+<td class="cellalignment1335" headers="r2c1-t42 r1c3-t42"><code dir="ltr">CREATE DATABASE LINK k1 USING 'prod'</code></td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t42" headers="r1c1-t42"><span class="italic">Do</span> specify the <code dir="ltr">CONNECT TO ... IDENTIFIED BY</code> clause</td>
+<td class="cellalignment1335" headers="r3c1-t42 r1c2-t42">Uses a fixed user database link</td>
+<td class="cellalignment1335" headers="r3c1-t42 r1c3-t42"><code dir="ltr">CREATE DATABASE LINK k2 CONNECT TO scott IDENTIFIED BY</code> <code dir="ltr"><span class="codeinlineitalic">password</span></code> <code dir="ltr">USING 'prod'</code></td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t42" headers="r1c1-t42">Specify the <code dir="ltr">CONNECT TO CURRENT_USER</code> clause</td>
+<td class="cellalignment1335" headers="r4c1-t42 r1c2-t42">Uses a current user database link</td>
+<td class="cellalignment1335" headers="r4c1-t42 r1c3-t42"><code dir="ltr">CREATE DATABASE LINK k3 CONNECT TO CURRENT_USER USING 'prod'</code></td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r5c1-t42" headers="r1c1-t42">Do <span class="italic">not</span> specify the <code dir="ltr">USING</code> clause</td>
+<td class="cellalignment1335" headers="r5c1-t42 r1c2-t42">Searches until it finds a link specifying a database string. If matching database links are found and a string is never identified, the database returns an error.</td>
+<td class="cellalignment1335" headers="r5c1-t42 r1c3-t42"><code dir="ltr">CREATE DATABASE LINK k4 CONNECT TO CURRENT_USER</code></td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" -->
+<p>After the database determines a complete path, it creates a remote session, assuming that an identical connection is not already open on behalf of the same local session. If a session already exists, the database reuses it.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1008848"></a>
+<div id="ADMIN12125" class="sect2">
+<h3 class="sect2">Schema Object Name Resolution<a id="sthref3395"></a></h3>
+<p><a id="sthref3396"></a><a id="sthref3397"></a>After the local Oracle Database connects to the specified remote database on behalf of the local user that issued the SQL statement, object resolution continues as if the remote user had issued the associated SQL statement. The first match determines the remote schema according to the following rules:</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="Schema Object Name Resolution" summary="Column 1 specifies the type of link and column 2 notes the associated location of object resolution." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t43">Type of Link Specified</th>
+<th class="cellalignment1334" id="r1c2-t43">Location of Object Resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t43" headers="r1c1-t43">A fixed user database link</td>
+<td class="cellalignment1335" headers="r2c1-t43 r1c2-t43">Schema specified in the link creation statement</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t43" headers="r1c1-t43">A connected user database link</td>
+<td class="cellalignment1335" headers="r3c1-t43 r1c2-t43">Connected user's remote schema</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t43" headers="r1c1-t43">A current user database link</td>
+<td class="cellalignment1335" headers="r4c1-t43 r1c2-t43">Current user's schema</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" -->
+<p>If the database cannot find the object, then it checks public objects of the remote database. If it cannot resolve the object, then the established remote session remains but the SQL statement cannot execute and returns an error.</p>
+<p>The following are examples of global object name resolution in a distributed database system. For all the following examples, assume that:</p>
+<a id="i1008873"></a>
+<div id="ADMIN12126" class="sect3">
+<h4 class="sect3">Example of Global Object Name Resolution: Complete Object Name</h4>
+<p>This example illustrates how the database resolves a complete global object name and determines the appropriate path to the remote database using both a private and public database link. For this example, assume the following:</p>
+<ul>
+<li>
+<p>The remote database is named <code dir="ltr">sales.division3.example.com</code>.</p>
+</li>
+<li>
+<p>The local database is named <code dir="ltr">hq.division3.example.com</code>.</p>
+</li>
+<li>
+<p>A directory server (and therefore, global database links) is not available.</p>
+</li>
+<li>
+<p>A remote table <code dir="ltr">emp</code> is contained in the schema <code dir="ltr">tsmith</code>.</p>
+</li>
+</ul>
+<p>Consider the following statements issued by <code dir="ltr">scott</code> at the local database:</p>
+<pre dir="ltr">
+CONNECT scott@hq
+
+CREATE PUBLIC DATABASE LINK sales.division3.example.com 
+CONNECT TO guest IDENTIFIED BY network 
+  USING 'dbstring'; 
+</pre>
+<p>Later, <code dir="ltr">JWARD</code> connects and issues the following statements:</p>
+<pre dir="ltr">
+CONNECT jward@hq
+
+CREATE DATABASE LINK sales.division3.example.com 
+  CONNECT TO tsmith IDENTIFIED BY radio; 
+
+UPDATE tsmith.emp@sales.division3.example.com 
+  SET deptno = 40 
+  WHERE deptno = 10; 
+</pre>
+<p>The database processes the final statement as follows:</p>
+<ol>
+<li>
+<p>The database determines that a complete global object name is referenced in <code dir="ltr">jward</code>'s <code dir="ltr">UPDATE</code> statement. Therefore, the system begins searching in the local database for a database link with a matching name.</p>
+</li>
+<li>
+<p>The database finds a matching private database link in the schema <code dir="ltr">jward</code>. Nevertheless, the private database link <code dir="ltr">jward.sales.division3.example.com</code> does not indicate a complete path to the remote <code dir="ltr">sales</code> database, only a remote account. Therefore, the database now searches for a matching public database link.</p>
+</li>
+<li>
+<p>The database finds the public database link in <code dir="ltr">scott</code>'s schema. From this public database link, the database takes the service name <code dir="ltr">dbstring</code>.</p>
+</li>
+<li>
+<p>Combined with the remote account taken from the matching private fixed user database link, the database determines a complete path and proceeds to establish a connection to the remote <code dir="ltr">sales</code> database as user <code dir="ltr">tsmith/radio</code>.</p>
+</li>
+<li>
+<p>The remote database can now resolve the object reference to the <code dir="ltr">emp</code> table. The database searches in the <code dir="ltr">tsmith</code> schema and finds the referenced <code dir="ltr">emp</code> table.</p>
+</li>
+<li>
+<p>The remote database completes the execution of the statement and returns the results to the local database.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<div id="ADMIN12127" class="sect3"><a id="sthref3398"></a>
+<h4 class="sect3">Example of Global Object Name Resolution: Partial Object Name</h4>
+<p>This example illustrates how the database resolves a partial global object name and determines the appropriate path to the remote database using both a private and public database link.</p>
+<p>For this example, assume that:</p>
+<ul>
+<li>
+<p>The remote database is named <code dir="ltr">sales.division3.example.com</code>.</p>
+</li>
+<li>
+<p>The local database is named <code dir="ltr">hq.division3.example.com</code>.</p>
+</li>
+<li>
+<p>A directory server (and therefore, global database links) is not available.</p>
+</li>
+<li>
+<p>A table <code dir="ltr">emp</code> on the remote database <code dir="ltr">sales</code> is contained in the schema <code dir="ltr">tsmith</code>, but not in schema <code dir="ltr">scott</code>.</p>
+</li>
+<li>
+<p>A public synonym named <code dir="ltr">emp</code> resides at remote database <code dir="ltr">sales</code> and points to <code dir="ltr">tsmith.emp</code> in the remote database <code dir="ltr">sales</code>.</p>
+</li>
+<li>
+<p>The public database link in <a href="#i1008873">"Example of Global Object Name Resolution: Complete Object Name"</a> is already created on local database <code dir="ltr">hq</code>:</p>
+<pre dir="ltr">
+CREATE PUBLIC DATABASE LINK sales.division3.example.com 
+  CONNECT TO guest IDENTIFIED BY network 
+  USING 'dbstring'; 
+</pre></li>
+</ul>
+<p>Consider the following statements issued at local database <code dir="ltr">hq</code>:</p>
+<pre dir="ltr">
+CONNECT scott@hq
+
+CREATE DATABASE LINK sales.division3.example.com;
+
+DELETE FROM emp@sales 
+  WHERE empno = 4299; 
+</pre>
+<p>The database processes the final <code dir="ltr">DELETE</code> statement as follows:</p>
+<ol>
+<li>
+<p>The database notices that a partial global object name is referenced in <code dir="ltr">scott</code>'s <code dir="ltr">DELETE</code> statement. It expands it to a complete global object name using the domain of the local database as follows:</p>
+<pre dir="ltr">
+DELETE FROM emp@sales.division3.example.com 
+  WHERE empno = 4299; 
+</pre></li>
+<li>
+<p>The database searches the local database for a database link with a matching name.</p>
+</li>
+<li>
+<p>The database finds a matching <span class="italic">private</span> connected user link in the schema <code dir="ltr">scott</code>, but the private database link indicates no path at all. The database uses the connected username/password as the remote account portion of the path and then searches for and finds a matching <span class="italic">public</span> database link:</p>
+<pre dir="ltr">
+CREATE PUBLIC DATABASE LINK sales.division3.example.com 
+  CONNECT TO guest IDENTIFIED BY network 
+  USING 'dbstring'; 
+</pre></li>
+<li>
+<p>The database takes the database net service name <code dir="ltr">dbstring</code> from the public database link. At this point, the database has determined a complete path.</p>
+</li>
+<li>
+<p>The database connects to the remote database as <code dir="ltr">scott/</code><code dir="ltr"><span class="codeinlineitalic">password</span></code> and searches for and does not find an object named <code dir="ltr">emp</code> in the schema <code dir="ltr">scott</code>.</p>
+</li>
+<li>
+<p>The remote database searches for a public synonym named <code dir="ltr">emp</code> and finds it.</p>
+</li>
+<li>
+<p>The remote database executes the statement and returns the results to the local database.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1008946"></a>
+<div id="ADMIN12128" class="sect2">
+<h3 class="sect2">Global Name Resolution in Views, Synonyms, and Procedures<a id="sthref3399"></a><a id="sthref3400"></a><a id="sthref3401"></a></h3>
+<p><a id="sthref3402"></a><a id="sthref3403"></a><a id="sthref3404"></a>A view, synonym, or PL/SQL program unit (for example, a procedure, function, or trigger) can reference a remote schema object by its global object name. If the global object name is complete, then the database stores the definition of the object without expanding the global object name. If the name is partial, however, the database expands the name using the domain of the local database name.</p>
+<p>The following table explains when the database completes the expansion of a partial global object name for views, synonyms, and program units:</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="Expansion of the Partial Global Object Name" summary="Column 1 displays the user operation and column 2 displays the associated database response." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t44">User Operation</th>
+<th class="cellalignment1334" id="r1c2-t44">Database Response</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t44" headers="r1c1-t44">Create a view</td>
+<td class="cellalignment1335" headers="r2c1-t44 r1c2-t44">Does <span class="italic">not</span> expand partial global names. The data dictionary stores the exact text of the defining query. Instead, the database expands a partial global object name each time a statement that uses the view is parsed.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t44" headers="r1c1-t44">Create a synonym</td>
+<td class="cellalignment1335" headers="r3c1-t44 r1c2-t44">Expands partial global names. The definition of the synonym stored in the data dictionary includes the expanded global object name.</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t44" headers="r1c1-t44">Compile a program unit</td>
+<td class="cellalignment1335" headers="r4c1-t44 r1c2-t44">Expands partial global names.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" -->
+<div id="ADMIN12129" class="sect3"><a id="sthref3405"></a>
+<h4 class="sect3">What Happens When Global Names Change</h4>
+<p><a id="sthref3406"></a><a id="sthref3407"></a>Global name changes can affect views, synonyms, and procedures that reference remote data using partial global object names. If the global name of the referenced database changes, views and procedures may try to reference a nonexistent or incorrect database. However, synonyms do not expand database link names at run time, so they do not change.</p>
+</div>
+<!-- class="sect3" -->
+<div id="ADMIN12130" class="sect3"><a id="sthref3408"></a>
+<h4 class="sect3">Scenarios for Global Name Changes</h4>
+<p>For example, consider two databases named <code dir="ltr">sales.uk.example.com</code> and <code dir="ltr">hq.uk.example.com</code>. Also, assume that the <code dir="ltr">sales</code> database contains the following view and synonym:</p>
+<pre dir="ltr">
+CREATE VIEW employee_names AS 
+        SELECT ename FROM scott.emp@hr; 
+
+CREATE SYNONYM employee FOR scott.emp@hr; 
+</pre>
+<p>The database expands the <code dir="ltr">employee</code> synonym definition and stores it as:</p>
+<p><code dir="ltr">scott.emp@hr.uk.example.com</code></p>
+<div id="ADMIN12131" class="sect4"><a id="sthref3409"></a>
+<h5 class="sect4">Scenario 1: Both Databases Change Names</h5>
+<p>First, consider the situation where both the Sales and Human Resources departments are relocated to the United States. Consequently, the corresponding global database names are both changed as follows:</p>
+<ul>
+<li>
+<p><code dir="ltr">sales.uk.example.com</code> becomes <code dir="ltr">sales.us.example.com</code></p>
+</li>
+<li>
+<p><code dir="ltr">hq.uk.example.com</code> becomes <code dir="ltr">hq.us.example.com</code></p>
+</li>
+</ul>
+<p>The following table describes query expansion before and after the change in global names:</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="Query Expansion after Global Name Change" summary="For scenario 1, column 1 displays the query; column 2 shows the expansion before the global database name change; column 3 shows the query expansion after the global name change." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t45">Query on <code dir="ltr">sales</code></th>
+<th class="cellalignment1334" id="r1c2-t45">Expansion Before Change</th>
+<th class="cellalignment1334" id="r1c3-t45">Expansion After Change</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t45" headers="r1c1-t45"><code dir="ltr">SELECT * FROM employee_names</code></td>
+<td class="cellalignment1335" headers="r2c1-t45 r1c2-t45"><code dir="ltr">SELECT * FROM scott.emp@hr.uk.example.com</code></td>
+<td class="cellalignment1335" headers="r2c1-t45 r1c3-t45"><code dir="ltr">SELECT * FROM scott.emp@hr.us.example.com</code></td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t45" headers="r1c1-t45"><code dir="ltr">SELECT * FROM employee</code></td>
+<td class="cellalignment1335" headers="r3c1-t45 r1c2-t45"><code dir="ltr">SELECT * FROM scott.emp@hr.uk.example.com</code></td>
+<td class="cellalignment1335" headers="r3c1-t45 r1c3-t45"><code dir="ltr">SELECT * FROM scott.emp@hr.uk.example.com</code></td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" --></div>
+<!-- class="sect4" -->
+<div id="ADMIN12132" class="sect4"><a id="sthref3410"></a>
+<h5 class="sect4">Scenario 2: One Database Changes Names</h5>
+<p>Now consider that only the Sales department is moved to the United States; Human Resources remains in the UK. Consequently, the corresponding global database names are both changed as follows:</p>
+<ul>
+<li>
+<p><code dir="ltr">sales.uk.example.com</code> becomes <code dir="ltr">sales.us.example.com</code></p>
+</li>
+<li>
+<p><code dir="ltr">hq.uk.example.com</code> is not changed</p>
+</li>
+</ul>
+<p>The following table describes query expansion before and after the change in global names:</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="Query Expansion Before and After Global Name Change" summary="For scenario 2, column 1 displays the query; column 2 shows the expansion before the global database name change; column 3 shows the query expansion after the global name change." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t46">Query on <code dir="ltr">sales</code></th>
+<th class="cellalignment1334" id="r1c2-t46">Expansion Before Change</th>
+<th class="cellalignment1334" id="r1c3-t46">Expansion After Change</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t46" headers="r1c1-t46"><code dir="ltr">SELECT * FROM employee_names</code></td>
+<td class="cellalignment1335" headers="r2c1-t46 r1c2-t46"><code dir="ltr">SELECT * FROM scott.emp@hr.uk.example.com</code></td>
+<td class="cellalignment1335" headers="r2c1-t46 r1c3-t46"><code dir="ltr">SELECT * FROM scott.emp@hr.us.example.com</code></td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t46" headers="r1c1-t46"><code dir="ltr">SELECT * FROM employee</code></td>
+<td class="cellalignment1335" headers="r3c1-t46 r1c2-t46"><code dir="ltr">SELECT * FROM scott.emp@hr.uk.example.com</code></td>
+<td class="cellalignment1335" headers="r3c1-t46 r1c3-t46"><code dir="ltr">SELECT * FROM scott.emp@hr.uk.example.com</code></td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" -->
+<p>In this case, the defining query of the <code dir="ltr">employee_names</code> view expands to a nonexistent global database name. However, the <code dir="ltr">employee</code> synonym continues to reference the correct database, <code dir="ltr">hq.uk.example.com</code>.</p>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1009058"></a>
+<div id="ADMIN12133" class="sect1">
+<h2 class="sect1">Distributed Database Application Development</h2>
+<p><a id="sthref3411"></a><a id="sthref3412"></a>Application development in a distributed system raises issues that are not applicable in a non-distributed system. This section contains the following topics relevant for distributed application development:</p>
+<ul>
+<li>
+<p><a href="#i1009082">Transparency in a Distributed Database System</a></p>
+</li>
+<li>
+<p><a href="#i1009129">Remote Procedure Calls (RPCs)</a></p>
+</li>
+<li>
+<p><a href="#i1009144">Distributed Query Optimization</a></p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="ds_appdev.htm#g1011074">Chapter 33, "Developing Applications for a Distributed Database System"</a> to learn how to develop applications for distributed systems</div>
+</li>
+</ul>
+<a id="i1009082"></a>
+<div id="ADMIN12134" class="sect2">
+<h3 class="sect2">Transparency in a Distributed Database System</h3>
+<p><a id="sthref3413"></a>With minimal effort, you can develop applications that make an Oracle Database distributed database system transparent to users that work with the system. The goal of transparency is to make a distributed database system appear as though it is a single Oracle Database. Consequently, the system does not burden developers and users of the system with complexities that would otherwise make distributed database application development challenging and detract from user productivity.</p>
+<p>The following sections explain more about transparency in a distributed database system.</p>
+<div id="ADMIN12135" class="sect3"><a id="sthref3414"></a>
+<h4 class="sect3">Location Transparency</h4>
+<p><a id="sthref3415"></a>An Oracle Database distributed database system has features that allow application developers and administrators to hide the physical location of database objects from applications and users. <span class="bold">Location transparency</span> exists when a user can universally refer to a database object such as a table, regardless of the node to which an application connects. Location transparency has several benefits, including:</p>
+<ul>
+<li>
+<p>Access to remote data is simple, because database users do not need to know the physical location of database objects.</p>
+</li>
+<li>
+<p>Administrators can move database objects with no impact on end-users or existing database applications.</p>
+</li>
+</ul>
+<p>Typically, administrators and developers use synonyms to establish location transparency for the tables and supporting objects in an application schema. For example, the following statements create synonyms in a database for tables in another, remote database.</p>
+<pre dir="ltr">
+CREATE PUBLIC SYNONYM emp
+  FOR scott.emp@sales.us.americas.example_auto.com;
+CREATE PUBLIC SYNONYM dept
+  FOR scott.dept@sales.us.americas.example_auto.com;
+</pre>
+<p>Now, rather than access the remote tables with a query such as:</p>
+<pre dir="ltr">
+SELECT ename, dname
+  FROM scott.emp@sales.us.americas.example_auto.com e,
+       scott.dept@sales.us.americas.example_auto.com d
+  WHERE e.deptno = d.deptno;
+</pre>
+<p>An application can issue a much simpler query that does not have to account for the location of the remote tables.</p>
+<pre dir="ltr">
+SELECT ename, dname
+  FROM emp e, dept d
+  WHERE e.deptno = d.deptno;
+</pre>
+<p>In addition to synonyms, developers can also use views and stored procedures to establish location transparency for applications that work in a distributed database system.</p>
+</div>
+<!-- class="sect3" -->
+<div id="ADMIN12136" class="sect3"><a id="sthref3416"></a>
+<h4 class="sect3">SQL and COMMIT Transparency</h4>
+<p><a id="sthref3417"></a><a id="sthref3418"></a><a id="sthref3419"></a>The Oracle Database distributed database architecture also provides query, update, and transaction transparency. For example, standard SQL statements such as <code dir="ltr">SELECT</code>, <code dir="ltr">INSERT</code>, <code dir="ltr">UPDATE</code>, and <code dir="ltr">DELETE</code> work just as they do in a non-distributed database environment. Additionally, applications control transactions using the standard SQL statements <code dir="ltr">COMMIT</code>, <code dir="ltr">SAVEPOINT</code>, and <code dir="ltr">ROLLBACK</code>. There is no requirement for complex programming or other special operations to provide distributed transaction control.</p>
+<ul>
+<li>
+<p>The statements in a single transaction can reference any number of local or remote tables.</p>
+</li>
+<li>
+<p>The database guarantees that all nodes involved in a distributed transaction take the same action: they either all commit or all roll back the transaction.</p>
+</li>
+<li>
+<p>If a network or system failure occurs during the commit of a distributed transaction, the transaction is automatically and transparently resolved globally. Specifically, when the network or system is restored, the nodes either all commit or all roll back the transaction.</p>
+</li>
+</ul>
+<p>Internal to the database, each committed transaction has an associated <span class="bold">system change number</span> (<span class="bold">SCN</span>) to uniquely identify the changes made by the statements within that transaction. In a distributed database, the SCNs of communicating nodes are coordinated when:</p>
+<ul>
+<li>
+<p>A connection is established using the path described by one or more database links.</p>
+</li>
+<li>
+<p>A distributed SQL statement is executed.</p>
+</li>
+<li>
+<p>A distributed transaction is committed.</p>
+</li>
+</ul>
+<p>Among other benefits, the coordination of SCNs among the nodes of a distributed database system allows global distributed read-consistency at both the statement and transaction level. If necessary, global distributed time-based recovery can also be completed.</p>
+</div>
+<!-- class="sect3" -->
+<div id="ADMIN12137" class="sect3"><a id="sthref3420"></a>
+<h4 class="sect3">Replication Transparency</h4>
+<p>The database also provide many features to transparently replicate data among the nodes of the system. For more information about Oracle Database replication features, see <a class="olink REPLN" href="../e10706/toc.htm"><span class="italic">Oracle Database Advanced Replication</span></a>.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1009129"></a>
+<div id="ADMIN12138" class="sect2">
+<h3 class="sect2">Remote Procedure Calls (RPCs)</h3>
+<p><a id="sthref3421"></a>Developers can code PL/SQL packages and procedures to support applications that work with a distributed database. Applications can make local procedure calls to perform work at the local database and <span class="bold">remote procedure calls</span> (<span class="bold">RPCs</span>) to perform work at a remote database.</p>
+<p>When a program calls a remote procedure, the local server passes all procedure parameters to the remote server in the call.<a id="sthref3422"></a><a id="sthref3423"></a><a id="sthref3424"></a> <a id="sthref3425"></a>For example, the following PL/SQL program unit calls the packaged procedure <code dir="ltr">del_emp</code> located at the remote <code dir="ltr">sales</code> database and passes it the parameter 1257:</p>
+<pre dir="ltr">
+BEGIN
+ emp_mgmt.del_emp@sales.us.americas.example_auto.com(1257);
+END;
+</pre>
+<p>In order for the RPC to succeed, the called procedure must exist at the remote site, and the user being connected to must have the proper privileges to execute the procedure.</p>
+<p>When developing packages and procedures for distributed database systems, developers must code with an understanding of what program units should do at remote locations, and how to return the results to a calling application.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1009144"></a>
+<div id="ADMIN12139" class="sect2">
+<h3 class="sect2">Distributed Query Optimization</h3>
+<p><span class="bold"><a id="sthref3426"></a>Distributed query optimization</span> is an Oracle Database feature that reduces the amount of data transfer required between sites when a transaction retrieves data from remote tables referenced in a distributed SQL statement.</p>
+<p>Distributed query optimization uses <a id="sthref3427"></a><a id="sthref3428"></a>cost-based optimization to find or generate SQL expressions that extract only the necessary data from remote tables, process that data at a remote site or sometimes at the local site, and send the results to the local site for final processing. This operation reduces the amount of required data transfer when compared to the time it takes to transfer all the table data to the local site for processing.</p>
+<p>Using various cost-based optimizer hints such as <code dir="ltr">DRIVING_SITE</code>, <code dir="ltr">NO_MERGE</code>, and <code dir="ltr">INDEX</code>, you can control where Oracle Database processes the data and how it accesses the data.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="ds_appdev.htm#i1007699">"Using Cost-Based Optimization"</a> for more information about cost-based optimization</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1009167"></a>
+<div id="ADMIN12140" class="sect1">
+<h2 class="sect1">Character Set Support for Distributed Environments</h2>
+<p><a id="sthref3429"></a><a id="sthref3430"></a>Oracle Database supports environments in which clients, Oracle Database servers, and non-Oracle Database servers use different character sets. <code dir="ltr">NCHAR</code> support is provided for heterogeneous environments. You can set a variety of National Language Support (NLS) and Heterogeneous Services (HS) environment variables and initialization parameters to control data conversion between different character sets.</p>
+<p>Character settings are defined by the following NLS and HS parameters:</p>
+<div class="inftblruleinformal">
+<table class="cellalignment1333" title="Character Settings and NLS/HS Parameters" summary="Column 1 lists the NLS or HS parameter; column 2 displays the environment; column 3 displays the environment for which the character set is defined." dir="ltr">
+<thead>
+<tr class="cellalignment1327">
+<th class="cellalignment1334" id="r1c1-t49">Parameters</th>
+<th class="cellalignment1334" id="r1c2-t49">Environment</th>
+<th class="cellalignment1334" id="r1c3-t49">Defined For</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r2c1-t49" headers="r1c1-t49"><code dir="ltr">NLS_LANG</code> (environment variable)</td>
+<td class="cellalignment1335" headers="r2c1-t49 r1c2-t49">Client/Server</td>
+<td class="cellalignment1335" headers="r2c1-t49 r1c3-t49">Client</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r3c1-t49" headers="r1c1-t49"><code dir="ltr">NLS_LANGUAGE</code>
+<p><code dir="ltr">NLS_CHARACTERSET</code></p>
+<p><code dir="ltr">NLS_TERRITORY</code></p>
+</td>
+<td class="cellalignment1335" headers="r3c1-t49 r1c2-t49">Client/Server
+<p>Not Heterogeneous Distributed</p>
+<p>Heterogeneous Distributed</p>
+</td>
+<td class="cellalignment1335" headers="r3c1-t49 r1c3-t49">Oracle Database server</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r4c1-t49" headers="r1c1-t49"><code dir="ltr">HS_LANGUAGE</code></td>
+<td class="cellalignment1335" headers="r4c1-t49 r1c2-t49">Heterogeneous Distributed</td>
+<td class="cellalignment1335" headers="r4c1-t49 r1c3-t49">Non-Oracle Database server
+<p>Transparent gateway</p>
+</td>
+</tr>
+<tr class="cellalignment1327">
+<td class="cellalignment1335" id="r5c1-t49" headers="r1c1-t49"><code dir="ltr">NLS_NCHAR</code> (environment variable)
+<p><code dir="ltr">HS_NLS_NCHAR</code></p>
+</td>
+<td class="cellalignment1335" headers="r5c1-t49 r1c2-t49">Heterogeneous Distributed</td>
+<td class="cellalignment1335" headers="r5c1-t49 r1c3-t49">Oracle Database server
+<p>Transparent gateway</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblruleinformal" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink NLSPG" href="../e10729/toc.htm"><span class="italic">Oracle Database Globalization Support Guide</span></a> for information about NLS parameters</p>
+</li>
+<li>
+<p><a class="olink HETER" href="../../server.112/e11050/toc.htm"><span class="italic">Oracle Database Heterogeneous Connectivity User's Guide</span></a> for information about HS parameters</p>
+</li>
+</ul>
+</div>
+<div id="ADMIN12141" class="sect2"><a id="sthref3431"></a>
+<h3 class="sect2">Client/Server Environment</h3>
+<p><a id="sthref3432"></a><a id="sthref3433"></a>In a client/server environment, set the client character set to be the same as or a subset of the Oracle Database server character set, as illustrated in <a href="#i1009234">Figure 31-6</a>.</p>
+<div id="ADMIN13137" class="figure">
+<p class="titleinfigure"><a id="i1009234"></a>Figure 31-6 NLS Parameter Settings in a Client/Server Environment</p>
+<img width="237" height="217" src="img/admin043.gif" alt="Description of Figure 31-6 follows" /><br />
+<a id="sthref3434" href="img_text/admin043.htm">Description of "Figure 31-6 NLS Parameter Settings in a Client/Server Environment"</a><br />
+<br /></div>
+<!-- class="figure" --></div>
+<!-- class="sect2" -->
+<div id="ADMIN12142" class="sect2"><a id="sthref3435"></a>
+<h3 class="sect2">Homogeneous Distributed Environment</h3>
+<p>In a non-heterogeneous environment, the client and server character sets should be either the same as or subsets of the main server character set, as illustrated in <a href="#i1009245">Figure 31-7</a>:</p>
+<div id="ADMIN13138" class="figure">
+<p class="titleinfigure"><a id="i1009245"></a>Figure 31-7 NLS Parameter Settings in a Homogeneous Environment</p>
+<img width="369" height="256" src="img/admin044.gif" alt="Description of Figure 31-7 follows" /><br />
+<a id="sthref3436" href="img_text/admin044.htm">Description of "Figure 31-7 NLS Parameter Settings in a Homogeneous Environment"</a><br />
+<br /></div>
+<!-- class="figure" --></div>
+<!-- class="sect2" -->
+<div id="ADMIN12143" class="sect2"><a id="sthref3437"></a>
+<h3 class="sect2">Heterogeneous Distributed Environment</h3>
+<p>In a heterogeneous environment, the globalization support parameter settings of the client, the transparent gateway, and the non-Oracle Database data source should be either the same or a subset of the database server character set as illustrated in <a href="#i1009256">Figure 31-8</a>. Transparent gateways have full globalization support.</p>
+<div id="ADMIN13139" class="figure">
+<p class="titleinfigure"><a id="i1009256"></a>Figure 31-8 NLS Parameter Settings in a Heterogeneous Environment</p>
+<img width="456" height="413" src="img/admin042.gif" alt="Description of Figure 31-8 follows" /><br />
+<a id="sthref3438" href="img_text/admin042.htm">Description of "Figure 31-8 NLS Parameter Settings in a Heterogeneous Environment"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>In a heterogeneous environment, only transparent gateways built with HS technology support complete <code dir="ltr">NCHAR</code> capabilities. Whether a specific transparent gateway supports <code dir="ltr">NCHAR</code> depends on the non-Oracle Database data source it is targeting. For information on how a particular transparent gateway handles <code dir="ltr">NCHAR</code> support, consult the system-specific transparent gateway documentation.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink HETER" href="../../server.112/e11050/toc.htm"><span class="italic">Oracle Database Heterogeneous Connectivity User's Guide</span></a> for more detailed information about Heterogeneous Services</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1326">
+<tr>
+<td class="cellalignment1335">
+<table class="cellalignment1331">
+<tr>
+<td class="cellalignment1330"><a href="part7.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1330"><a href="ds_admin.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2001, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1337">
+<table class="cellalignment1329">
+<tr>
+<td class="cellalignment1330"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1330"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1330"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1330"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1330"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1330"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

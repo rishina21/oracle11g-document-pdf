@@ -1,0 +1,17 @@
+var chapters = [
+  { topic: "chapter", section: "1", title: "Introduction to Oracle Clusterware", anchor: "CWADD1111", file: "intro.htm" },
+  { topic: "chapter", section: "2", title: "Administering Oracle Clusterware", anchor: "CWADD838", file: "admin.htm" },
+  { topic: "chapter", section: "3", title: "Managing Oracle Cluster Registry and Voting Disks", anchor: "CWADD92368", file: "votocr.htm" },
+  { topic: "chapter", section: "4", title: "Adding and Deleting Cluster Nodes", anchor: "CWADD1167", file: "adddelclusterware.htm" },
+  { topic: "chapter", section: "5", title: "Cloning Oracle Clusterware", anchor: "CWADD03202", file: "clonecluster.htm" },
+  { topic: "chapter", section: "6", title: "Making Applications Highly Available Using Oracle Clusterware", anchor: "CWADD91277", file: "crschp.htm" },
+  { topic: "appendix", section: "A", title: "Cluster Verification Utility Reference", anchor: "CWADD1100", file: "cvu.htm" },
+  { topic: "appendix", section: "B", title: "Oracle Clusterware Resource Reference", anchor: "CWADD91383", file: "resatt.htm" },
+  { topic: "appendix", section: "C", title: "OLSNODES Command Reference", anchor: "CWADD1212", file: "olsnodes.htm" },
+  { topic: "appendix", section: "D", title: "Oracle Interface Configuration Tool (OIFCFG) Command Reference", anchor: "CWADD828", file: "oifcfg.htm" },
+  { topic: "appendix", section: "E", title: "CRSCTL Utility Reference", anchor: "CWADD91142", file: "crsref.htm" },
+  { topic: "appendix", section: "F", title: "Oracle Clusterware C Application Program Interfaces", anchor: "CWADD6000", file: "crs_api.htm" },
+  { topic: "appendix", section: "G", title: "Oracle Cluster Registry Utility Reference", anchor: "CWADD92022", file: "ocrsyntax.htm" },
+  { topic: "appendix", section: "H", title: "Troubleshooting Oracle Clusterware", anchor: "CWADD025", file: "troubleshoot.htm" },
+  { topic: "glossary", section: "", title: "Glossary", anchor: "CWADD91440", file: "glossary.htm" },
+  { } ];

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Introduction to SQL Performance Analyzer</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 740" />
+<meta name="dcterms.created" content="2014-06-16T16:24:48Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Real Application Testing User's Guide" />
+<meta name="dcterms.identifier" content="E41481-03" />
+<meta name="dcterms.isVersionOf" content="RATUG" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2008, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="part1.htm" title="Previous" type="text/html" />
+<link rel="Next" href="spa_task.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e41481.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">6/23</span> <!-- End Header -->
+<div id="RATUG166" class="chapter"><a id="CHDGEIIA"></a>
+<h1 class="chapter"><span class="secnum">2</span> Introduction to SQL Performance Analyzer</h1>
+<p>You can run <a id="sthref11"></a>SQL Performance Analyzer on a production system or a test system that closely resembles the production system. Testing a system change on a production system will impact the system's throughput because SQL Performance Analyzer must execute the SQL statements that you are testing. Any global changes made on the system to test the performance effect may also affect other users of the system. If the system change does not impact many sessions or SQL statements, then running SQL Performance Analyzer on the production system may be acceptable. However, for systemwide changes&mdash;such as a database upgrade&mdash;using a production system is not recommended. Instead, consider running SQL Performance Analyzer on a separate test system so that you can test the effects of the system change without affecting the production system. Using a test system also ensures that other workloads running on the production system will not affect the analysis performed by SQL Performance Analyzer. Running SQL Performance Analyzer on a test system is the recommended approach and the methodology described here. If you choose to run the SQL Performance Analyzer on the production system, then substitute the production system for the test system where applicable.</p>
+<p>Analyzing the SQL performance effect of system changes using <a id="sthref12"></a><a id="sthref13"></a>SQL Performance Analyzer involves the following steps, as illustrated in <a href="#CHDJADEJ">Figure 2-1</a>:</p>
+<div id="RATUG240" class="figure">
+<p class="titleinfigure"><a id="CHDJADEJ"></a>Figure 2-1 SQL Performance Analyzer Workflow</p>
+<img width="669" height="617" src="img/ratug002.gif" alt="Description of Figure 2-1 follows" /><br />
+<a id="sthref14" href="img_text/ratug002.htm">Description of "Figure 2-1 SQL Performance Analyzer Workflow"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<ol>
+<li>
+<p>Capture the SQL workload that you intend to analyze and store it in a SQL tuning set, as described in <a href="#CHDFCBDC">"Capturing the SQL Workload"</a>.</p>
+</li>
+<li>
+<p>If you plan to use a test system separate from your production system, then perform the following steps:</p>
+<ol>
+<li>
+<p>Set up the test system to match the production environment as closely as possible.</p>
+</li>
+<li>
+<p>Transport the SQL tuning set to the test system.</p>
+</li>
+</ol>
+<p>For more information, see <a href="#CHDCADGG">"Setting Up the Test System"</a>.</p>
+</li>
+<li id="BHCIFFDF">
+<p>On the test system, create a SQL Performance Analyzer task, as described in <a href="#CHDGHFGI">"Creating a SQL Performance Analyzer Task"</a>.</p>
+</li>
+<li>
+<p>Build the pre-change SQL trial by test executing or generating execution plans for the SQL statements stored in the SQL tuning set, as described in <a href="#CHDBDHJF">"Measuring the Pre-Change SQL Performance"</a></p>
+</li>
+<li>
+<p>Perform the system change, as described in <a href="#CHDBABFE">"Making a System Change"</a></p>
+</li>
+<li id="CHDBJBIC">
+<p>Build the post-change SQL trial by re-executing the SQL statements in the SQL tuning set on the post-change test system, as described in <a href="#CHDBACHF">"Measuring the Post-Change SQL Performance"</a></p>
+</li>
+<li>
+<p>Compare and analyze the pre-change and post-change versions of performance data, and generate a report to identify the SQL statements that have improved, remained unchanged, or regressed after the system change, as described in <a href="#CHDFFEBH">"Comparing Performance Measurements"</a></p>
+</li>
+<li id="CHDEGIFG">
+<p>Tune any regressed SQL statements that are identified, as described in <a href="#CHDFJJHD">"Fixing Regressed SQL Statements"</a>.</p>
+</li>
+<li id="BHCGDEFB">
+<p>Ensure that the performance of the tuned SQL statements is acceptable by repeating steps <a href="#CHDBJBIC">6</a> through <a href="#CHDEGIFG">8</a> until your performance goals are met.</p>
+<p>For each comparison, you can use any previous SQL trial as the pre-change SQL trial and the current SQL trial as the post-change SQL trial. For example, you may want to compare the first SQL trial to the current SQL trial to assess the total change, or you can compare the most recent SQL trial to the current SQL trial to assess just the most recent change.</p>
+</li>
+</ol>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Oracle Enterprise Manager provides automated workflows for steps <a href="#BHCIFFDF">3</a> through <a href="#BHCGDEFB">9</a> to simplify this process.</div>
+<a id="CHDFCBDC"></a>
+<div id="RATUG167" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">2.1</span> Capturing the SQL Workload</h2>
+<p>Before running <a id="sthref15"></a>SQL Performance Analyzer, capture a set of SQL statements on the production system that represents the SQL workload which you intend to analyze.</p>
+<p>The captured SQL statements should include the following information:</p>
+<ul>
+<li>
+<p>SQL text</p>
+</li>
+<li>
+<p>Execution environment</p>
+<ul>
+<li>
+<p>SQL binds, which are bind values needed to execute a SQL statement and generate accurate execution statistics</p>
+</li>
+<li>
+<p>Parsing schema under which a SQL statement can be compiled</p>
+</li>
+<li>
+<p>Compilation environment, including initialization parameters under which a SQL statement is executed</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Number of times a SQL statement was executed</p>
+</li>
+</ul>
+<p>Capturing a SQL workload has a negligible performance impact on your production system and should not affect throughput. A SQL workload that contains more SQL statements will better represent the state of the application or database. This will enable SQL Performance Analyzer to more accurately forecast the potential impact of system changes on the SQL workload. Therefore, you should capture as many SQL statements as possible. Ideally, you should capture all SQL statements that are either called by the application or are running on the database.</p>
+<p>You can store captured SQL statements in a SQL tuning set and use it as an input source for SQL Performance Analyzer. A SQL tuning set<a id="sthref16"></a> is a database object that includes one or more SQL statements, along with their execution statistics and execution context. SQL statements can be loaded into a SQL tuning set from different sources, including the cursor cache, Automatic Workload Repository (AWR), and existing SQL tuning sets. Capturing a SQL workload using a SQL tuning set enables you to:</p>
+<ul>
+<li>
+<p>Store the SQL text and any necessary auxiliary information in a single, persistent database object</p>
+</li>
+<li>
+<p>Populate, update, delete, and select captured SQL statements in the SQL tuning set</p>
+</li>
+<li>
+<p>Load and merge content from various data sources, such as the Automatic Workload Repository (AWR) or the cursor cache</p>
+</li>
+<li>
+<p>Export the SQL tuning set from the system where the SQL workload is captured and import it into another system</p>
+</li>
+<li>
+<p>Reuse the SQL workload as an input source for other advisors, such as the SQL Tuning Advisor and the SQL Access Advisor</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink TDPPT162" href="../../server.112/e10822/tdppt_sqltune.htm#TDPPT162"><span class="italic">Oracle Database 2 Day + Performance Tuning Guide</span></a> for information about creating SQL tuning sets using Oracle Enterprise Manager</p>
+</li>
+<li>
+<p><a class="olink PFGRF02604" href="../../server.112/e41573/sql_tune.htm#PFGRF02604"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for information about creating SQL tuning sets using APIs</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="CHDCADGG"></a>
+<div id="RATUG168" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">2.2</span> Setting Up the Test System</h2>
+<p>After you have captured the <a id="sthref17"></a>SQL workload into a SQL tuning set on the production system, you can conduct SQL Performance Analyzer analysis on the same database where the workload was captured or on a different database. Because the analysis is resource-intensive, it is recommended that you capture the workload on a production database and transport it to a separate test database where the analysis can be performed. To do so, export the SQL tuning set from the production system and import it into a separate system where the system change will be tested.</p>
+<p><a id="sthref18"></a>There are many ways to create a test database. For example, you can use the <code>DUPLICATE</code> command of Recovery Manager (RMAN), Oracle Data Pump, or transportable tablespaces. Oracle recommends using RMAN because it can create the test database from pre-existing backups or from the active production datafiles. The production and test databases can reside on the same host or on different hosts.</p>
+<p>You should configure the test database environment to match the database environment of the production system as closely as possible. In this way, SQL Performance Analyzer can more accurately forecast the effect of the system change on SQL performance.</p>
+<p>After the test system is properly configured, export the SQL tuning set from the production system to a staging table, then import it from the staging table into the test system.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink BRADV010" href="../../backup.112/e10642/rcmdupdb.htm#BRADV010"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a> for information about duplicating a database with RMAN</p>
+</li>
+<li>
+<p><a class="olink TDPPT159" href="../../server.112/e10822/tdppt_sqltune.htm#TDPPT159"><span class="italic">Oracle Database 2 Day + Performance Tuning Guide</span></a> for information about transporting SQL tuning sets using Oracle Enterprise Manager</p>
+</li>
+<li>
+<p><a class="olink PFGRF02604" href="../../server.112/e41573/sql_tune.htm#PFGRF02604"><span class="italic">Oracle Database Performance Tuning Guide</span></a> for information about transporting SQL tuning sets using APIs</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="CHDGHFGI"></a>
+<div id="RATUG169" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">2.3</span> Creating a SQL Performance Analyzer Task</h2>
+<p>After the SQL workload is captured and transported to the test system, and the initial database environment is properly configured, you can run SQL Performance Analyzer to analyze the effects of a system change on SQL performance.</p>
+<p>To run SQL Performance Analyzer, you must first create a SQL Performance Analyzer task. A task is a container that encapsulates all of the data about a complete SQL Performance Analyzer analysis. A SQL Performance Analyzer analysis comprises of at least two SQL trials and a comparison. A <a id="sthref19"></a>SQL trial encapsulates the execution performance of a SQL tuning set under specific environmental conditions. When creating a SQL Performance Analyzer task, you will need to select a <a id="sthref20"></a>SQL tuning set as its input source. When building SQL trials using the test execute or explain plan methods, the SQL tuning set will be used as the source for SQL statements. The SQL Performance Analyzer analysis will show the impact of the environmental differences between the two trials.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="spa_task.htm#BABGCABH">Chapter 3, "Creating an Analysis Task"</a> for information about how to create a SQL Performance Analyzer task</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="CHDBDHJF"></a>
+<div id="RATUG170" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">2.4</span> Measuring the Pre-Change SQL Performance</h2>
+<p><a id="sthref21"></a>Create a pre-change SQL trial before making the system change. You can use the following methods to generate the performance data needed for a SQL trial with SQL Performance Analyzer:</p>
+<ul>
+<li>
+<p>Test execute</p>
+<p>This method test executes SQL statements through SQL Performance Analyzer. This can be done on the database running SPA Performance Analyzer or on a remote database.</p>
+</li>
+<li>
+<p>Explain plan</p>
+<p>This method generates execution plans only for SQL statements through SQL Performance Analyzer. This can be done on the database running SPA Performance Analyzer or on a remote database. Unlike the <code>EXPLAIN PLAN</code> statement, SQL trials using the explain plan method take bind values into account and generate the actual execution plan.</p>
+</li>
+<li>
+<p>Convert SQL tuning set</p>
+<p>This method converts the execution statistics and plans stored in a SQL tuning set. This is only supported for APIs.</p>
+</li>
+</ul>
+<p>The test execute method runs each of the SQL statements contained in the workload to completion. During execution, SQL Performance Analyzer generates execution plans and computes execution statistics for each SQL statement in the workload. Each SQL statement in the SQL tuning set is executed separately from other SQL statements, without preserving their initial order of execution or concurrency. This is done at least twice for each SQL statement, for as many times as possible until the execution times out (up to a maximum of 10 times). The first execution is used to warm the buffer cache. All subsequent executions are then used to calculate the run-time execution statistics for the SQL statement based on their averages. The actual number of times that the SQL statement is executed depends on how long it takes to execute the SQL statement. Long-running SQL statement will only be executed a second time, and the execution statistics from this execution will be used. Other (faster-running) SQL statements are executed multiple times, and their execution statistics are averaged over these executions (statistics from the first execution are not used in the calculation). By averaging statistics over multiple executions, SQL Performance Analyzer can calculate more accurate execution statistics for each SQL statement. To avoid a potential impact to the database, DDLs are not supported. By default, only the query portion of DMLs is executed. Using APIs, you can execute the full DML by using the <code>EXECUTE_FULLDML</code> task parameter. Parallel DMLs are not supported and the query portion is not executed unless the parallel hints are removed.</p>
+<p>Depending on its size, executing a SQL workload can be time and resource intensive. With the explain plan method, you can choose to generate execution plans only, without collecting execution statistics. This technique shortens the time to run the trial and lessens the effect on system resources, but a comprehensive performance analysis is not possible because only the execution plans will be available during the analysis. However, unlike generating a plan with the <code>EXPLAIN PLAN</code> command, SQL Performance Analyzer provides bind values to the optimizer when generating execution plans, which provides a more reliable prediction of what the plan will be when the SQL statement is executed.</p>
+<p>In both cases, you can execute the SQL workload remotely on a separate database using a database link. SQL Performance Analyzer will establish a connection to the remote database using the database link, execute the SQL statements on that database, collect the execution plans and run-time statistics for each SQL statement, and store the results in a SQL trial on the local database that can be used for later analysis. This method is useful in cases where you want to:</p>
+<ul>
+<li>
+<p>Test a database upgrade</p>
+</li>
+<li>
+<p>Execute the SQL workload on a system running another version of Oracle Database</p>
+</li>
+<li>
+<p>Store the results from the SQL Performance Analyzer analysis on a separate test system</p>
+</li>
+<li>
+<p>Perform testing on multiple systems with different hardware configurations</p>
+</li>
+<li>
+<p>Use the newest features in SQL Performance Analyzer even if you are using an older version of Oracle Database on your production system</p>
+</li>
+</ul>
+<p>Once the SQL workload is executed, the resulting execution plans and run-time statistics are stored in a <a id="sthref22"></a>SQL trial.</p>
+<p>You can also build a SQL trial using the execution statistics and plan stored in a SQL tuning set. While this method is only supported for APIs, it may be useful in cases where you have another method to run your workload (such as Database Replay or another application testing tool), and you do not need SQL Performance Analyzer to drive the workload on the test system. In such cases, if you capture a SQL tuning set during your test runs, you can build SQL trials from these SQL tuning sets using SQL Performance Analyzer to view a more comprehensive analysis report. Unlike a standard SQL Performance Analyzer report&mdash;which has only one execution plan in each trial and one set of execution statistics generated by executing the SQL statement with one set of binds&mdash;you can generate a report that compares SQL trials built from SQL tuning sets that show all execution plans from both trials with potentially many different sets of binds across multiple executions.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="spa_pre_change.htm#CACFCGDC">Chapter 4, "Creating a Pre-Change SQL Trial"</a> for information about how to measure the pre-change performance</p>
+</li>
+<li>
+<p><a href="spa_upgrade.htm#CIADFIDI">Chapter 7, "Testing a Database Upgrade"</a> for information about executing a SQL workload on a remote system to test a database upgrade</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="CHDBABFE"></a>
+<div id="RATUG171" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">2.5</span> Making a System Change</h2>
+<p>Make the change whose effect on SQL performance you intend to measure. SQL Performance Analyzer can analyze the effect of many types of system changes. For example, you can test a database upgrade, new index creation, initialization parameter changes, or optimizer statistics refresh. If you are running SQL Performance Analyzer on the production system, then consider making a change using a private session to avoid affecting the rest of the system.</p>
+</div>
+<!-- class="sect1" -->
+<a id="CHDBACHF"></a>
+<div id="RATUG172" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">2.6</span> Measuring the Post-Change SQL Performance</h2>
+<p><a id="sthref23"></a>After performing the system change, create a post-change SQL trial. It is highly recommended that you create the post-change SQL trial using the same method as the pre-change SQL trial. Once built, the post-change SQL trial represents a new set of performance data that can be used to compare to the pre-change version. The results are stored in a new, or post-change, SQL trial.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="spa_post_change.htm#CDEFIJBB">Chapter 5, "Creating a Post-Change SQL Trial"</a> for information about how to measure the post-change performance</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="CHDFFEBH"></a>
+<div id="RATUG173" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">2.7</span> Comparing Performance Measurements</h2>
+<p>SQL Performance Analyzer compares the performance of SQL statements before and after the change and produces a report identifying any changes in execution plans or performance of the SQL statements.</p>
+<p>SQL Performance Analyzer measures the impact of system changes both on the overall execution time of the SQL workload and on the response time of every individual SQL statement in the workload. By default, SQL Performance Analyzer uses elapsed time as a metric for comparison. Alternatively, you can choose the metric for comparison from a variety of available SQL run-time statistics, including:</p>
+<ul>
+<li>
+<p>CPU time</p>
+</li>
+<li>
+<p>User I/O time</p>
+</li>
+<li>
+<p>Buffer gets</p>
+</li>
+<li>
+<p>Physical I/O</p>
+</li>
+<li>
+<p>Optimizer cost</p>
+</li>
+<li>
+<p>I/O interconnect bytes</p>
+</li>
+<li>
+<p>Any combination of these metrics in the form of an expression</p>
+</li>
+</ul>
+<p>If you chose to generate explain plans only in the SQL trials, then SQL Performance Analyzer will use the optimizer cost stored in the SQL execution plans.</p>
+<p>Once the comparison is complete, the resulting data is generated into a SQL Performance Analyzer <a id="sthref24"></a>report that compares the pre-change and post-change SQL performance. The SQL Performance Analyzer report can be viewed as an HTML, text, or active report. Active reports provides in-depth reporting using an interactive user interface that enables you to perform detailed analysis even when disconnected from the database or Oracle Enterprise Manager.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="spa_analyze.htm#CACCDGAG">Chapter 6, "Comparing SQL Trials"</a> for information about comparing performance measurements and reporting</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="CHDFJJHD"></a>
+<div id="RATUG174" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">2.8</span> Fixing Regressed SQL Statements</h2>
+<p>If the performance analysis performed by SQL Performance Analyzer reveals regressed <a id="sthref25"></a>SQL statements, then you can make changes to remedy the problem. For example, you can fix regressed SQL by running SQL Tuning Advisor or using SQL plan baselines. You can then repeat the process of executing the SQL statements and comparing its performance to the first execution. Repeat these steps until you are satisfied with the outcome of the analysis.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="spa_analyze.htm#CACCDGAG">Chapter 6, "Comparing SQL Trials"</a> for information about fixing regressed SQL statements</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1798">
+<tr>
+<td class="cellalignment1805">
+<table class="cellalignment1803">
+<tr>
+<td class="cellalignment1802"><a href="part1.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1802"><a href="spa_task.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2008, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1807">
+<table class="cellalignment1801">
+<tr>
+<td class="cellalignment1802"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1802"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1802"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1802"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1802"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1802"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

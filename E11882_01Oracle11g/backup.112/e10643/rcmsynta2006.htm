@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>REPORT</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1054" />
+<meta name="description" content="A guide to backup and recovery of Oracle databases, including RMAN backup and recovery, RMAN data transfer, Oracle Flashback Technology, and user-managed backup and recovery" />
+<meta name="dcterms.created" content="2015-05-13T7:47:44Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Backup and Recovery Reference" />
+<meta name="dcterms.identifier" content="E10643-09" />
+<meta name="dcterms.isVersionOf" content="RCMRF" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2003, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="rcmsynta2005.htm" title="Previous" type="text/html" />
+<link rel="Next" href="rcmsynta2007.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10643.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">49/158</span> <!-- End Header --><a id="i84684"></a>
+<div id="RCMRF147" class="refsect1">
+<h1 class="refsect1">REPORT<a id="ABC1075735"></a><a id="ABC1075735SRI1"></a><a id="ABC1075735SRI12"></a></h1>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref1465"></a>Purpose</p>
+<p>Use the <a id="CHDDIBGF"></a><code dir="ltr">REPORT</code> command to perform detailed analyses of the RMAN repository. RMAN writes the report to standard output or the message log file.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink BRADV8137" href="../../backup.112/e10642/rcmreprt.htm#BRADV8137"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a> to learn how to create RMAN reports</div>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref1466"></a>Prerequisites</p>
+<p>Execute this command only at the RMAN prompt. Either of the following conditions must be met:</p>
+<ul>
+<li>
+<p>RMAN must be connected to a target database.</p>
+</li>
+<li>
+<p>RMAN must be connected to a recovery catalog and <code dir="ltr"><a href="rcmsynta2014.htm#i85845">SET</a></code> <code dir="ltr">DBID</code> must have been run.</p>
+</li>
+</ul>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref1467"></a>Syntax</p>
+<p class="subhead2"><a id="RCMRF90274"></a><a id="sthref1468"></a><a id="sthref1469"></a><a href="#i1017379"><span class="xreftitleitalic"><span class="italic">report</span></span></a>::=</p>
+<img width="675" height="168" src="img/report.gif" alt="Description of report.gif follows" /><br />
+<a id="sthref1470" href="img_text/report.htm">Description of the illustration report.gif</a><br />
+<br />
+<p>(<a href="#CHDIGIFJ"><span class="xreftitleitalic"><span class="italic">needBackupOption</span>::=</span></a>, <a href="#CHDCBHFF"><span class="xreftitleitalic"><span class="italic">atClause</span>::=</span></a>, <a href="#CHDBDFFD"><span class="xreftitleitalic"><span class="italic">reportObject</span>::=</span></a>, <a href="rcmsubcl015.htm#BABFCBDE"><span class="xreftitleitalic"><span class="italic">obsOperandList</span>::=</span></a>, <a href="rcmsubcl006.htm#BABDEJAC"><span class="xreftitleitalic"><span class="italic">deviceSpecifier</span>::=</span></a>)</p>
+<p class="subhead2"><a id="CHDIGIFJ"></a><a id="RCMRF90275"></a><a id="sthref1471"></a><a id="sthref1472"></a><a href="#CHDFDDED"><span class="xreftitleitalic"><span class="italic">needBackupOption</span></span></a>::=</p>
+<img width="478" height="114" src="img/needbackupoption.gif" alt="Description of needbackupoption.gif follows" /><br />
+<a id="sthref1473" href="img_text/needbackupoption.htm">Description of the illustration needbackupoption.gif</a><br />
+<br />
+<p>(<a href="#CHDBDFFD"><span class="xreftitleitalic"><span class="italic">reportObject</span>::=</span></a>)</p>
+<p class="subhead2"><a id="CHDBDFFD"></a><a id="RCMRF90276"></a><a id="sthref1474"></a><a id="sthref1475"></a><a href="#i999382"><span class="xreftitleitalic"><span class="italic">reportObject</span></span></a>::=</p>
+<img width="487" height="201" src="img/reportobject.gif" alt="Description of reportobject.gif follows" /><br />
+<a id="sthref1476" href="img_text/reportobject.htm">Description of the illustration reportobject.gif</a><br />
+<br />
+<p>(<a href="rcmsubcl005.htm#BABCCBBJ"><span class="xreftitleitalic"><span class="italic">datafileSpec</span>::=</span></a>)</p>
+<p class="subhead2"><a id="CHDCBHFF"></a><a id="RCMRF90277"></a><a id="sthref1477"></a><a id="sthref1478"></a><a href="#i108853"><span class="xreftitleitalic"><span class="italic">atClause</span></span></a>::=</p>
+<img width="315" height="88" src="img/atclause.gif" alt="Description of atclause.gif follows" /><br />
+<a id="sthref1479" href="img_text/atclause.htm">Description of the illustration atclause.gif</a><br />
+<br /></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref1480"></a>Semantics</p>
+<p class="subhead2"><a id="i1017379"></a><a id="RCMRF90278"></a><span class="italic"><a id="sthref1481"></a><a id="sthref1482"></a>report</span></p>
+<p>This clause specifies the type of report.</p>
+<div class="inftblinformalwide">
+<table class="cellalignment1929" title="Semantics for REPORT Command" summary="Describes REPORT command parameters" dir="ltr">
+<thead>
+<tr class="cellalignment1920">
+<th class="cellalignment1930" id="r1c1-t20">Syntax Element</th>
+<th class="cellalignment1930" id="r1c2-t20">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r2c1-t20" headers="r1c1-t20"><code dir="ltr"><span class="codeinlineitalic"><a href="#CHDFDDED"><span class="italic">needBackupOption</span></a></span></code></td>
+<td class="cellalignment1926" headers="r2c1-t20 r1c2-t20"><a id="sthref1483"></a>Lists files that require backups.
+<p><span class="bold">See Also:</span> <code dir="ltr"><span class="codeinlineitalic"><a href="#CHDFDDED"><span class="italic">needBackupOption</span></a></span></code></p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r3c1-t20" headers="r1c1-t20"><code dir="ltr"><a id="sthref1484"></a>OBSOLETE</code> <code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl015.htm#i83923">obsOperandList</a></span></code></td>
+<td class="cellalignment1926" headers="r3c1-t20 r1c2-t20"><a id="sthref1485"></a><a id="sthref1486"></a><a id="sthref1487"></a>Lists full backups, data file copies, and archived redo log files recorded in the RMAN repository that can be deleted because they are no longer needed. See <a href="#BGBGAIAH">Table 3-6</a> for description of output. The command works in two steps:
+<ol>
+<li>
+<p>For each data file that has been backed up, RMAN identifies the oldest full backup, level 0 backup, or image copy that is not obsolete under the retention policy. Any backup of the data file older than the one identified in this step is considered obsolete.</p>
+</li>
+<li>
+<p>Any archived redo log files and level 1 incremental backups that are older than the oldest nonobsolete full backup are considered obsolete. These files are obsolete because no full or level 0 backup exists to which they can be applied. Incremental level 1 backups or archived redo log files are not considered obsolete if they can be applied to nonobsolete level 0 or full backups.</p>
+</li>
+</ol>
+<p>The subclause <code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl015.htm#i83923">obsOperandList</a></span></code> describes the criteria that RMAN uses to determine what is obsolete. If you do not specify parameters in <code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl015.htm#i83923">obsOperandList</a></span></code>, then RMAN uses the options specified in <code dir="ltr"><a href="rcmsynta010.htm#i80338">CONFIGURE</a></code> <code dir="ltr">RETENTION POLICY</code> (see <a href="#CHDEEJGH">Example 3-16</a>). If you use this option with <code dir="ltr">DEVICE TYPE</code>, then RMAN only considers backups and copies created on the specified device. If the retention policy is disabled, then RMAN does not consider any backups as obsolete. Thus, RMAN issues an error when you run <code dir="ltr">REPORT OBSOLETE</code> with no other options and the retention policy is <code dir="ltr">NONE</code>.</p>
+<p><span class="bold">Note:</span> A backup made with the <code dir="ltr">KEEP UNTIL TIME</code> clause is obsolete after the <code dir="ltr">KEEP</code> time passes, regardless of the configured retention policy settings.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r4c1-t20" headers="r1c1-t20"><code dir="ltr"><a id="sthref1488"></a><a id="sthref1489"></a><a id="sthref1490"></a>SCHEMA</code></td>
+<td class="cellalignment1926" headers="r4c1-t20 r1c2-t20">Lists the names of all data files (permanent and temporary) and tablespaces for the target database at the specified point in time. See <a href="#BGBDDECG">Table 3-1</a> for description of output.
+<p>For <code dir="ltr">REPORT SCHEMA</code> without <a href="rcmsubcl008.htm#BABEACAI">forDbUniqueNameOption</a>, a target database connection is required, but a recovery catalog connection is optional.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r5c1-t20" headers="r1c1-t20"><code dir="ltr">&nbsp;&nbsp;&nbsp;</code><code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl008.htm#BABEACAI">forDbUniqueNameOption</a></span></code></td>
+<td class="cellalignment1926" headers="r5c1-t20 r1c2-t20">Reports the names of all data files and tablespaces for the database specified by its <code dir="ltr">DB_UNIQUE_NAME</code>.
+<p>You can specify a database with <code dir="ltr"><span class="codeinlineitalic">db_unique_name</span></code> or use <code dir="ltr">ALL</code> for all uniquely named databases recorded in the catalog for a particular DBID. A database is uniquely identified in the recovery catalog by a DBID and the value of the <code dir="ltr">DB_UNIQUE_NAME</code> initialization parameter.</p>
+<p>RMAN must be connected to a recovery catalog. RMAN must be connected to a target database or <code dir="ltr"><a href="rcmsynta2014.htm#i85845">SET</a></code> <code dir="ltr">DBID</code> must have been run.</p>
+<p><span class="bold">See Also:</span> <code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl008.htm#BABEACAI">forDbUniqueNameOption</a></span></code> for descriptions of the options in this clause</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r6c1-t20" headers="r1c1-t20"><code dir="ltr">&nbsp;&nbsp;&nbsp;</code><code dir="ltr"><span class="codeinlineitalic"><a href="#i108853"><span class="italic">atClause</span></a></span></code></td>
+<td class="cellalignment1926" headers="r6c1-t20 r1c2-t20">Specifies an SCN, log sequence number, or time.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r7c1-t20" headers="r1c1-t20"><code dir="ltr"><a id="sthref1491"></a><a id="sthref1492"></a>UNRECOVERABLE</code> <code dir="ltr"><span class="codeinlineitalic"><a href="#i999382"><span class="italic">reportObject</span></a></span></code></td>
+<td class="cellalignment1926" headers="r7c1-t20 r1c2-t20">Lists all unrecoverable data files. See <a href="#BGBHCCGH">Table 3-7</a> for description of output.
+<p>A data file is considered unrecoverable if an unrecoverable operation has been performed against an object residing in the data file since the last backup of the data file. In an unrecoverable operation, redo is not generated. Examples are direct load of table data and updates with the <code dir="ltr">NOLOGGING</code> option.</p>
+<p><span class="bold">Note:</span> The nonexistence of any backup of a data file is not sufficient reason to consider it unrecoverable. Such data files can be recovered through the use of the <code dir="ltr">CREATE DATAFILE</code> command, if redo logs starting from when the file was created still exist.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r8c1-t20" headers="r1c1-t20"><br />
+<code dir="ltr">&nbsp;&nbsp;&nbsp;<a id="sthref1493"></a>DEVICE TYPE</code><br />
+<code dir="ltr">&nbsp;&nbsp;&nbsp;</code><code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl006.htm#i81605">deviceSpecifier</a></span></code></td>
+<td class="cellalignment1926" headers="r8c1-t20 r1c2-t20">Specifies the type of storage device. RMAN only considers backups and copies available on the specified device for its report.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformalwide" -->
+<p class="subhead2"><a id="CHDFDDED"></a><a id="RCMRF90279"></a><span class="italic"><a id="sthref1494"></a><a id="sthref1495"></a>needBackupOption</span></p>
+<p>This clause reports only on files that need backups.</p>
+<div class="inftblinformalwide">
+<table class="cellalignment1929" title="Semantics for REPORT Command" summary="Describes REPORT command needBackupOption parameters" dir="ltr">
+<thead>
+<tr class="cellalignment1920">
+<th class="cellalignment1930" id="r1c1-t21">Syntax Element</th>
+<th class="cellalignment1930" id="r1c2-t21">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r2c1-t21" headers="r1c1-t21"><code dir="ltr"><a id="sthref1496"></a><a id="sthref1497"></a><a id="sthref1498"></a>NEED BACKUP</code></td>
+<td class="cellalignment1926" headers="r2c1-t21 r1c2-t21">Lists all data files in the specified <code dir="ltr"><span class="codeinlineitalic"><a href="#i999382"><span class="italic">reportObject</span></a></span></code> that require a new backup.
+<p>The report assumes that you will restore the most recent backup. If you do not specify any option, then RMAN uses the current retention policy configuration. If the retention policy is disabled (<code dir="ltr"><a href="rcmsynta010.htm#i80338">CONFIGURE</a></code> <code dir="ltr">RETENTION</code> <code dir="ltr">POLICY</code> <code dir="ltr">TO</code> <code dir="ltr">NONE</code>), then RMAN generates an error.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r3c1-t21" headers="r1c1-t21"><code dir="ltr">&nbsp;&nbsp;&nbsp;<a id="sthref1499"></a><a id="sthref1500"></a><a id="sthref1501"></a>DAYS&nbsp;</code><code dir="ltr"><span class="codeinlineitalic">integer</span></code></td>
+<td class="cellalignment1926" headers="r3c1-t21 r1c2-t21">Lists all data files requiring more than the specified number of days' worth of archived redo log files for complete recovery. For example, <code dir="ltr">REPORT NEED BACKUP DAYS 7 DATABASE</code> shows the data files whose recovery requires more than seven days' worth of archived redo log files. See <a href="#BGBFICFH">Table 3-2</a> for description of output.
+<p>If the target database control file is mounted and current, then RMAN makes the following optimizations to this report:</p>
+<ul>
+<li>
+<p>Files that are offline and whose most recent backup contains all changes to the file are not included.</p>
+</li>
+<li>
+<p>Files that were offline and are now online, and whose most recent backup contains all changes up to the offline time, are only reported if they have been online for more than the specified number of days.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r4c1-t21" headers="r1c1-t21"><code dir="ltr">&nbsp;&nbsp;&nbsp;<a id="sthref1502"></a><a id="sthref1503"></a>INCREMENTAL</code><code dir="ltr">&nbsp;</code><code dir="ltr"><span class="codeinlineitalic">integer</span></code></td>
+<td class="cellalignment1926" headers="r4c1-t21 r1c2-t21">Specifies a threshold number of incremental backups required for recovery (see <a href="#CHDFHJBH">Example 3-15</a>). If complete recovery of a data file requires more than <code dir="ltr"><span class="codeinlineitalic">integer</span></code> incremental backups, then the data file requires a new full backup. See <a href="#BGBJAEDJ">Table 3-3</a> for description of output.
+<p><span class="bold">Note:</span> Files for which no backups exist do not appear in this list. Issue the <code dir="ltr">REPORT NEED BACKUP REDUNDANCY</code> command to display them.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r5c1-t21" headers="r1c1-t21"><br />
+<code dir="ltr">&nbsp;&nbsp;&nbsp;<a id="sthref1504"></a><a id="sthref1505"></a>RECOVERY&nbsp;WINDOW</code><br />
+<code dir="ltr">&nbsp;&nbsp;&nbsp;</code><code dir="ltr">OF</code> <code dir="ltr"><span class="codeinlineitalic">integer</span></code>&nbsp;<code dir="ltr">DAYS</code></td>
+<td class="cellalignment1926" headers="r5c1-t21 r1c2-t21">Reports data files for which there are not sufficient backups to satisfy a recovery window-based retention policy for the specified number of days, that is, data files without sufficient backups for point-in-time recovery to any point back to the time <code dir="ltr">SYSDATE -</code> <code dir="ltr"><span class="codeinlineitalic">integer</span></code>. See <a href="#CHDBBFJJ">Table 3-4</a> for description of output.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r6c1-t21" headers="r1c1-t21"><code dir="ltr">&nbsp;&nbsp;&nbsp;<a id="sthref1506"></a><a id="sthref1507"></a><a id="sthref1508"></a><a id="sthref1509"></a>REDUNDANCY</code> <code dir="ltr"><span class="codeinlineitalic">integer</span></code></td>
+<td class="cellalignment1926" headers="r6c1-t21 r1c2-t21">Specifies the minimum number of backups or copies that must exist for a data file to be considered <span class="italic">not</span> in need of a backup. In other words, a data file needs a backup if there are fewer than <code dir="ltr"><span class="codeinlineitalic">integer</span></code> backups or copies of this file. For example, <code dir="ltr">REDUNDANCY 2</code> means that if there are fewer than two copies or backups of a data file, then it needs a new backup. See <a href="#BGBDCFDI">Table 3-5</a> for description of output.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r7c1-t21" headers="r1c1-t21"><code dir="ltr"><span class="codeinlineitalic"><a href="#i999382"><span class="italic">reportObject</span></a></span></code></td>
+<td class="cellalignment1926" headers="r7c1-t21 r1c2-t21">Specifies the object for which you are generating the report.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformalwide" -->
+<p class="subhead2"><a id="i999382"></a><a id="RCMRF90280"></a><span class="italic"><a id="sthref1510"></a><a id="sthref1511"></a>reportObject</span></p>
+<p>This subclause specifies the data files to be included in the report. The report can include the entire database (optionally skipping certain tablespaces), a list of tablespaces, or a list of data files. RMAN includes objects from prior incarnations.</p>
+<div class="inftblinformalwide">
+<table class="cellalignment1929" title="Semantics for reportObject Subclause" summary="Describes REPORT command reportObject parameters" dir="ltr">
+<thead>
+<tr class="cellalignment1920">
+<th class="cellalignment1930" id="r1c1-t22">Syntax Element</th>
+<th class="cellalignment1930" id="r1c2-t22">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r2c1-t22" headers="r1c1-t22"><code dir="ltr"><a id="sthref1512"></a><a id="sthref1513"></a><a id="sthref1514"></a>DATABASE</code></td>
+<td class="cellalignment1926" headers="r2c1-t22 r1c2-t22">Lists backups or data file copies of all files in the database.
+<p><span class="bold">Note:</span> Specify <code dir="ltr">SKIP TABLESPACE</code> <code dir="ltr"><span class="codeinlineitalic">tablespace_name</span></code> to exclude the specified tablespace from the <code dir="ltr">DATABASE</code> specification.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r3c1-t22" headers="r1c1-t22"><code dir="ltr"><a id="sthref1515"></a>DATAFILE&nbsp;</code><code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl005.htm#i81255">datafileSpec</a></span></code></td>
+<td class="cellalignment1926" headers="r3c1-t22 r1c2-t22">Lists the specified data files. RMAN reports on backups or data file copies that contain at least one specified data file.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r4c1-t22" headers="r1c1-t22"><code dir="ltr"><a id="sthref1516"></a><a id="sthref1517"></a><a id="sthref1518"></a>TABLESPACE</code> <code dir="ltr"><span class="codeinlineitalic">tablespace_name</span></code></td>
+<td class="cellalignment1926" headers="r4c1-t22 r1c2-t22">Lists data files in the specified tablespace. RMAN reports on backups or data file copies that include at least one data file from a specified tablespace.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformalwide" -->
+<p class="subhead2"><a id="i108853"></a><a id="RCMRF90281"></a><span class="italic"><a id="sthref1519"></a><a id="sthref1520"></a>atClause</span></p>
+<p>This subclause specifies a point in time as a time, SCN, or log sequence number. You must be connected to a recovery catalog when issuing a <code dir="ltr">REPORT SCHEMA</code> command with an <code dir="ltr">AT</code> clause.</p>
+<div class="inftblinformalwide">
+<table class="cellalignment1929" title="Semantics for atClause Subclause" summary="Describes REPORT command atClause parameters" dir="ltr">
+<thead>
+<tr class="cellalignment1920">
+<th class="cellalignment1930" id="r1c1-t23">Syntax Element</th>
+<th class="cellalignment1930" id="r1c2-t23">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r2c1-t23" headers="r1c1-t23"><code dir="ltr"><a id="sthref1521"></a><a id="sthref1522"></a>AT&nbsp;SCN</code> <code dir="ltr"><span class="codeinlineitalic">integer</span></code></td>
+<td class="cellalignment1926" headers="r2c1-t23 r1c2-t23">Specifies an SCN.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r3c1-t23" headers="r1c1-t23"><code dir="ltr"><a id="sthref1523"></a><a id="sthref1524"></a>AT&nbsp;SEQUENCE</code> <code dir="ltr"><span class="codeinlineitalic">integer</span></code></td>
+<td class="cellalignment1926" headers="r3c1-t23 r1c2-t23">Specifies a log sequence number. The integer indicates the time when the specified log was first opened.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r4c1-t23" headers="r1c1-t23"><code dir="ltr">&nbsp;&nbsp;&nbsp;<a id="sthref1525"></a>THREAD</code> <code dir="ltr"><span class="codeinlineitalic">integer</span></code></td>
+<td class="cellalignment1926" headers="r4c1-t23 r1c2-t23">Specifies a redo <code dir="ltr">THREAD</code> number. The integer indicates the time when the thread was first opened.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r5c1-t23" headers="r1c1-t23"><code dir="ltr"><a id="sthref1526"></a><a id="sthref1527"></a>AT&nbsp;TIME</code> <code dir="ltr">'</code><code dir="ltr"><span class="codeinlineitalic">date_string</span></code><code dir="ltr">'</code></td>
+<td class="cellalignment1926" headers="r5c1-t23 r1c2-t23">Specifies a date (see <a href="#CHDJEFGA">Example 3-14</a>). The <a id="sthref1528"></a><a id="sthref1529"></a><a id="sthref1530"></a><a id="sthref1531"></a><code dir="ltr">NLS_LANG</code> and <code dir="ltr">NLS_DATE_FORMAT</code> environment variables specify the format for the time.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformalwide" --></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="i106502"></a>Report Output</p>
+<p>The information that appears in the output is described in the following tables:</p>
+<ul>
+<li>
+<p><a href="#BGBDDECG">Table 3-1, "Report of Database Schema"</a></p>
+</li>
+<li>
+<p><a href="#BGBFICFH">Table 3-2, "Report of Files Whose Recovery Needs More Than n Days of Archived Logs"</a></p>
+</li>
+<li>
+<p><a href="#BGBJAEDJ">Table 3-3, "Report of Files That Need More than n Incrementals During Recovery"</a></p>
+</li>
+<li>
+<p><a href="#CHDBBFJJ">Table 3-4, "Report of Files That Must Be Backed Up to Satisfy n Days Recovery Window"</a></p>
+</li>
+<li>
+<p><a href="#BGBDCFDI">Table 3-5, "Report of Files with Fewer Than n Redundant Backups"</a></p>
+</li>
+<li>
+<p><a href="#BGBGAIAH">Table 3-6, "Report of Obsolete Backups and Copies"</a></p>
+</li>
+<li>
+<p><a href="#BGBHCCGH">Table 3-7, "Report of Files that Need Backup Due to Unrecoverable Operations"</a></p>
+</li>
+</ul>
+<div id="RCMRF90282" class="tblruleformal">
+<p class="titleintable"><a id="sthref1532"></a><a id="BGBDDECG"></a>Table 3-1 <a id="sthref1533"></a>Report of Database Schema</p>
+<table class="cellalignment1929" title="Report of Database Schema" summary="Describes REPORT output for datafiles and tempfiles" dir="ltr">
+<thead>
+<tr class="cellalignment1920">
+<th class="cellalignment1930" id="r1c1-t24">Column</th>
+<th class="cellalignment1930" id="r1c2-t24">Indicates</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r2c1-t24" headers="r1c1-t24">
+<p><code dir="ltr">File</code></p>
+</td>
+<td class="cellalignment1926" headers="r2c1-t24 r1c2-t24">
+<p>The absolute data file number.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r3c1-t24" headers="r1c1-t24">
+<p><code dir="ltr">Size(MB)</code></p>
+</td>
+<td class="cellalignment1926" headers="r3c1-t24 r1c2-t24">
+<p>The size of the file in megabytes.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r4c1-t24" headers="r1c1-t24">
+<p><code dir="ltr">Tablespace</code></p>
+</td>
+<td class="cellalignment1926" headers="r4c1-t24 r1c2-t24">
+<p>The tablespace name.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r5c1-t24" headers="r1c1-t24">
+<p><code dir="ltr">RB segs</code></p>
+</td>
+<td class="cellalignment1926" headers="r5c1-t24 r1c2-t24">
+<p>For data files only. <code dir="ltr">YES</code> if rollback segments exist in the tablespace and <code dir="ltr">NO</code> if they do not (only if connected to the recovery catalog). If RMAN is not connected to the catalog, then <code dir="ltr">***</code> is displayed.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r6c1-t24" headers="r1c1-t24">
+<p><code dir="ltr">Datafile Name</code></p>
+</td>
+<td class="cellalignment1926" headers="r6c1-t24 r1c2-t24">
+<p>For permanent data files only. The file name of the data file.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r7c1-t24" headers="r1c1-t24">
+<p><code dir="ltr">Maxsize(MB)</code></p>
+</td>
+<td class="cellalignment1926" headers="r7c1-t24 r1c2-t24">
+<p>For temp files only. The maximum size of the temp file.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r8c1-t24" headers="r1c1-t24">
+<p><code dir="ltr">Tempfile Name</code></p>
+</td>
+<td class="cellalignment1926" headers="r8c1-t24 r1c2-t24">
+<p>For temp files only. The file name of the temp file.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformal" -->
+<div id="RCMRF90283" class="tblruleformal">
+<p class="titleintable"><a id="sthref1534"></a><a id="BGBFICFH"></a>Table 3-2 <a id="sthref1535"></a><a id="sthref1536"></a>Report of Files Whose Recovery Needs More Than n Days of Archived Logs</p>
+<table class="cellalignment1929" title="Report of Files Whose Recovery Needs More Than n Days of Archived Logs " summary="Describes REPORT output for datafiles needing archived redo logs" dir="ltr">
+<thead>
+<tr class="cellalignment1920">
+<th class="cellalignment1930" id="r1c1-t25">Column</th>
+<th class="cellalignment1930" id="r1c2-t25">Indicates</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r2c1-t25" headers="r1c1-t25">
+<p><code dir="ltr">File</code></p>
+</td>
+<td class="cellalignment1926" headers="r2c1-t25 r1c2-t25">
+<p>The absolute file number of a data file that requires more than <span class="italic">n</span> days of archived redo log files for recovery.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r3c1-t25" headers="r1c1-t25">
+<p><code dir="ltr">Days</code></p>
+</td>
+<td class="cellalignment1926" headers="r3c1-t25 r1c2-t25">
+<p>The number of days of archived redo data required for recovery.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r4c1-t25" headers="r1c1-t25">
+<p><code dir="ltr">Name</code></p>
+</td>
+<td class="cellalignment1926" headers="r4c1-t25 r1c2-t25">
+<p>The name of the data file.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformal" -->
+<div id="RCMRF90284" class="tblruleformal">
+<p class="titleintable"><a id="sthref1537"></a><a id="BGBJAEDJ"></a>Table 3-3 <a id="sthref1538"></a><a id="sthref1539"></a>Report of Files That Need More than n Incrementals During Recovery</p>
+<table class="cellalignment1929" title="Report of Files That Need More than n Incrementals During Recovery" summary="Describes REPORT output for datafiles needing incremental backups" dir="ltr">
+<thead>
+<tr class="cellalignment1920">
+<th class="cellalignment1930" id="r1c1-t26">Column</th>
+<th class="cellalignment1930" id="r1c2-t26">Indicates</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r2c1-t26" headers="r1c1-t26">
+<p><code dir="ltr">File</code></p>
+</td>
+<td class="cellalignment1926" headers="r2c1-t26 r1c2-t26">
+<p>The absolute file number of a data file that requires more than <span class="italic">n</span> incrementals for complete recovery.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r3c1-t26" headers="r1c1-t26">
+<p><code dir="ltr">Incrementals</code></p>
+</td>
+<td class="cellalignment1926" headers="r3c1-t26 r1c2-t26">
+<p>The number of incremental backups required for complete recovery.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r4c1-t26" headers="r1c1-t26">
+<p><code dir="ltr">Name</code></p>
+</td>
+<td class="cellalignment1926" headers="r4c1-t26 r1c2-t26">
+<p>The name of the data file.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformal" -->
+<div id="RCMRF90285" class="tblruleformal">
+<p class="titleintable"><a id="sthref1540"></a><a id="CHDBBFJJ"></a>Table 3-4 <a id="sthref1541"></a><a id="sthref1542"></a>Report<a id="sthref1543"></a><a id="sthref1544"></a> of Files That Must Be Backed Up to Satisfy n Days Recovery Window</p>
+<table class="cellalignment1929" title="Report of Files That Must Be Backed Up to Satisfy n Days Recovery Window" summary="Describes REPORT output for datafiles needing backup" dir="ltr">
+<thead>
+<tr class="cellalignment1920">
+<th class="cellalignment1930" id="r1c1-t27">Column</th>
+<th class="cellalignment1930" id="r1c2-t27">Indicates</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r2c1-t27" headers="r1c1-t27">
+<p><code dir="ltr">File</code></p>
+</td>
+<td class="cellalignment1926" headers="r2c1-t27 r1c2-t27">
+<p>The absolute file number of a data file that must be backed up to satisfy a recovery window of <span class="italic">n</span> days.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r3c1-t27" headers="r1c1-t27">
+<p><code dir="ltr">Days</code></p>
+</td>
+<td class="cellalignment1926" headers="r3c1-t27 r1c2-t27">
+<p>The number of days required for complete recovery.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r4c1-t27" headers="r1c1-t27">
+<p><code dir="ltr">Name</code></p>
+</td>
+<td class="cellalignment1926" headers="r4c1-t27 r1c2-t27">
+<p>The name of the data file that requires backup.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformal" -->
+<div id="RCMRF90286" class="tblruleformal">
+<p class="titleintable"><a id="sthref1545"></a><a id="BGBDCFDI"></a>Table 3-5 <a id="sthref1546"></a><a id="sthref1547"></a><a id="sthref1548"></a>Report of Files with Fewer Than n Redundant Backups</p>
+<table class="cellalignment1929" title="Report of Files with Fewer Than n Redundant Backups " summary="Describes REPORT output for datafiles needing redundant backups" dir="ltr">
+<thead>
+<tr class="cellalignment1920">
+<th class="cellalignment1930" id="r1c1-t28">Column</th>
+<th class="cellalignment1930" id="r1c2-t28">Indicates</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r2c1-t28" headers="r1c1-t28">
+<p><code dir="ltr">File</code></p>
+</td>
+<td class="cellalignment1926" headers="r2c1-t28 r1c2-t28">
+<p>The absolute data file number of a data file with less than <span class="italic">n</span> redundant backups.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r3c1-t28" headers="r1c1-t28">
+<p><code dir="ltr">#bkps</code></p>
+</td>
+<td class="cellalignment1926" headers="r3c1-t28 r1c2-t28">
+<p>The number of backups that exist for this file.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r4c1-t28" headers="r1c1-t28">
+<p><code dir="ltr">Name</code></p>
+</td>
+<td class="cellalignment1926" headers="r4c1-t28 r1c2-t28">
+<p>The name of the file.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformal" -->
+<div id="RCMRF90287" class="tblruleformal">
+<p class="titleintable"><a id="sthref1549"></a><a id="BGBGAIAH"></a>Table 3-6 <a id="sthref1550"></a><a id="sthref1551"></a><a id="sthref1552"></a><a id="sthref1553"></a><a id="i84904"></a>Report of Obsolete Backups and Copies</p>
+<table class="cellalignment1929" title="Report of Obsolete Backups and Copies" summary="Report of which backups are obsolete based on current retention policy" dir="ltr">
+<thead>
+<tr class="cellalignment1920">
+<th class="cellalignment1930" id="r1c1-t29">Column</th>
+<th class="cellalignment1930" id="r1c2-t29">Indicates</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r2c1-t29" headers="r1c1-t29">
+<p><code dir="ltr">Type</code></p>
+</td>
+<td class="cellalignment1926" headers="r2c1-t29 r1c2-t29">
+<p>Whether the object is a backup set, backup piece, proxy copy, or data file copy.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r3c1-t29" headers="r1c1-t29">
+<p><code dir="ltr">Key</code></p>
+</td>
+<td class="cellalignment1926" headers="r3c1-t29 r1c2-t29">
+<p>A unique key that identifies this backup in the target database control file.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r4c1-t29" headers="r1c1-t29">
+<p><code dir="ltr">Completion Time</code></p>
+</td>
+<td class="cellalignment1926" headers="r4c1-t29 r1c2-t29">
+<p>The time that the backup or copy completed.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r5c1-t29" headers="r1c1-t29">
+<p><code dir="ltr">Filename/handle</code></p>
+</td>
+<td class="cellalignment1926" headers="r5c1-t29 r1c2-t29">
+<p>The file name or media handle of the backup or data file copy.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformal" -->
+<div id="RCMRF90288" class="tblruleformal">
+<p class="titleintable"><a id="sthref1554"></a><a id="BGBHCCGH"></a>Table 3-7 <a id="sthref1555"></a><a id="sthref1556"></a>Report of Files that Need Backup Due to Unrecoverable Operations</p>
+<table class="cellalignment1929" title="Report of Files that Need Backup Due to Unrecoverable Operations" summary="Describes REPORT output for datafiles needing backup" dir="ltr">
+<thead>
+<tr class="cellalignment1920">
+<th class="cellalignment1930" id="r1c1-t30">Column</th>
+<th class="cellalignment1930" id="r1c2-t30">Indicates</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r2c1-t30" headers="r1c1-t30">
+<p><code dir="ltr">File</code></p>
+</td>
+<td class="cellalignment1926" headers="r2c1-t30 r1c2-t30">
+<p>The absolute number of the data file that needs a new backup due to unrecoverable operations.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r3c1-t30" headers="r1c1-t30">
+<p><code dir="ltr">Type Of Backup Required</code></p>
+</td>
+<td class="cellalignment1926" headers="r3c1-t30 r1c2-t30">
+<p><code dir="ltr">FULL</code> or <code dir="ltr">INCREMENTAL</code>, depending on which type of backup is necessary to ensure the recoverability of all of the data in this file. If <code dir="ltr">FULL</code>, then create a full backup, level 0 backup, or a data file copy. If <code dir="ltr">INCREMENTAL</code>, then a full backup or an incremental backup also suffices.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r4c1-t30" headers="r1c1-t30">
+<p><code dir="ltr">Name</code></p>
+</td>
+<td class="cellalignment1926" headers="r4c1-t30 r1c2-t30">
+<p>The name of the data file.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformal" --></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref1557"></a><a id="sthref1558"></a>Examples</p>
+<div id="RCMRF90289" class="example">
+<p class="titleinexample"><a id="CHDJEFGA"></a>Example 3-14 Reporting a Database Schema</p>
+<p>This example, which requires a recovery catalog, reports the names of all data files and tablespaces 20 minutes ago.</p>
+<pre dir="ltr">
+RMAN&gt; REPORT SCHEMA AT TIME 'sysdate-20/1440';
+
+Report of database schema for database with db_unique_name PROD
+ 
+List of Permanent Datafiles
+===========================
+File Size(MB) Tablespace           RB segs Datafile Name
+---- -------- -------------------- ------- ------------------------
+1    450      SYSTEM               YES     /disk1/oradata/prod/system01.dbf
+2    197      SYSAUX               YES     /disk1/oradata/prod/sysaux01.dbf
+3    20       UNDOTBS              YES     /disk1/oradata/prod/undotbs01.dbf
+4    10       CWMLITE              YES     /disk1/oradata/prod/cwmlite01.dbf
+5    10       DRSYS                YES     /disk1/oradata/prod/drsys01.dbf
+6    10       EXAMPLE              YES     /disk1/oradata/prod/example01.dbf
+7    10       INDX                 YES     /disk1/oradata/prod/indx01.dbf
+8    10       TOOLS                YES     /disk1/oradata/prod/tools01.dbf
+9    10       USERS                YES     /disk1/oradata/prod/users01.dbf
+ 
+List of Temporary Files
+=======================
+File Size(MB) Tablespace           Maxsize(MB) Tempfile Name
+---- -------- -------------------- ----------- --------------------
+1    40       TEMP                 32767       /disk1/oradata/prod/temp01.dbf
+</pre></div>
+<!-- class="example" -->
+<div id="RCMRF90290" class="example">
+<p class="titleinexample"><a id="CHDFHJBH"></a>Example 3-15 Reporting Data Files Needing Incremental Backups</p>
+<p>This example reports all data files in the database that require the application of one or more incremental backups to be recovered to their current state:</p>
+<pre dir="ltr">
+RMAN&gt; REPORT NEED BACKUP INCREMENTAL 1;
+ 
+Report of files that need more than 1 incrementals during recovery
+File Incrementals Name
+---- ------------ ----------------------------------------------
+1    2            /disk1/oradata/prod/system01.dbf
+2    2            /disk1/oradata/prod/sysaux01.dbf
+3    2            /disk1/oradata/prod/undotbs01.dbf
+4    2            /disk1/oradata/prod/cwmlite01.dbf
+5    2            /disk1/oradata/prod/drsys01.dbf
+6    2            /disk1/oradata/prod/example01.dbf
+7    2            /disk1/oradata/prod/indx01.dbf
+9    2            /disk1/oradata/prod/users01.dbf
+</pre></div>
+<!-- class="example" -->
+<div id="RCMRF90291" class="example">
+<p class="titleinexample"><a id="CHDEEJGH"></a>Example 3-16 Reporting Obsolete Backups and Copies</p>
+<p>The following example reports obsolete backups and copies that are redundant according to the current retention policy. The retention policy is set to redundancy 1.</p>
+<pre dir="ltr">
+RMAN&gt; REPORT OBSOLETE;
+
+RMAN retention policy will be applied to the command
+RMAN retention policy is set to redundancy 1
+Report of obsolete backups and copies
+Type                 Key    Completion Time    Filename/Handle
+-------------------- ------ ------------------ --------------------
+Archive Log          1022   19-FEB-07          /disk1/prod/arch/archive1_59_614712405.dbf
+Archive Log          1023   19-FEB-07          /disk1/prod/arch/archive1_61_614712405.dbf
+Archive Log          1024   19-FEB-07          /disk1/prod/arch/archive1_60_614712405.dbf
+Archive Log          1025   19-FEB-07          /disk1/prod/arch/archive1_55_614712405.dbf
+Backup Set           1032   19-FEB-07
+  Backup Piece       1050   19-FEB-07         
+ /disk2/PROD/backupset/2007_02_19/o1_mf_nnndf_TAG20070216T173839_2xnpmp0l_.bkp
+Datafile Copy        1073   19-FEB-07         
+ /disk2/PROD/datafile/o1_mf_system_2xmz5l5m_.dbf
+Backup Set           1035   19-FEB-07
+  Backup Piece       1053   19-FEB-07         
+ /disk2/PROD/backupset/2007_02_19/o1_mf_nnndf_TAG20070219T111434_2xnpozym_.bkp
+Datafile Copy        1074   19-FEB-07         
+ /disk2/PROD/datafile/o1_mf_sysaux_2xmz6zdg_.dbf
+Datafile Copy        1075   19-FEB-07         
+ /disk2/PROD/datafile/o1_mf_undotbs_2xmz7rof_.dbf
+Datafile Copy        1076   19-FEB-07         
+ /disk2/PROD/datafile/o1_mf_cwmlite_2xmz7vrg_.dbf
+Datafile Copy        1077   19-FEB-07          /disk2/PROD/datafile/o1_mf_drsys_2xmz7wyc_.dbf
+Datafile Copy        1078   19-FEB-07         
+ /disk2/PROD/datafile/o1_mf_example_2xmz7y5s_.dbf
+Datafile Copy        1079   19-FEB-07          /disk2/PROD/datafile/o1_mf_indx_2xmz81jg_.dbf
+Datafile Copy        1081   19-FEB-07          /disk2/PROD/datafile/o1_mf_users_2xmz85vo_.dbf
+Datafile Copy        1777   20-FEB-07          /disk2/users01.dbf
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1919">
+<tr>
+<td class="cellalignment1926">
+<table class="cellalignment1924">
+<tr>
+<td class="cellalignment1923"><a href="rcmsynta2005.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1923"><a href="rcmsynta2007.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2003, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1928">
+<table class="cellalignment1922">
+<tr>
+<td class="cellalignment1923"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1923"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1923"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1923"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1923"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1923"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

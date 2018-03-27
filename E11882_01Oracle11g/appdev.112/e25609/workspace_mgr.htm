@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Workspace Manager Support for RDF Data</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 743" />
+<meta name="description" content="Provides usage and reference information about Oracle Database support for semantic technologies, including storage, inference, and query capabilities for data and ontologies based on Resource Description Framework (RDF), RDF Schema (RDFS), and Web Ontology Language (OWL)." />
+<meta name="dcterms.created" content="2014-01-26T18:14:11Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Semantic Technologies Developer's Guide" />
+<meta name="dcterms.identifier" content="E25609-06" />
+<meta name="dcterms.isVersionOf" content="RDFRM" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2005, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="sem_glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="fine_grained_acc.htm" title="Previous" type="text/html" />
+<link rel="Next" href="sem_jena.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e25609.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">14/26</span> <!-- End Header -->
+<div id="RDFRM99965" class="chapter"><a id="CJGJECDI"></a>
+<h1 class="chapter"><span class="secnum">6</span> Workspace Manager Support for RDF Data</h1>
+<p>RDF data stored in the Oracle Database semantic data store can be version-enabled using Oracle Database 11<span class="italic">g</span> Workspace Manager. Using Workspace Manager, you can create new versions of RDF data through data modification operations while maintaining a copy of the old data. For detailed usage and reference information about Workspace Manager, see <a class="olink ADWSM" href="../e11826/toc.htm"><span class="italic">Oracle Database Workspace Manager Developer's Guide</span></a>.</p>
+<p>The unit of versioning for the semantic data store is a model, which is in turn associated with an application table that resides in a user schema. Traditional Workspace Manager interfaces are used to manage a version-enabled RDF model. (However, you cannot use version-enabling on a model that participates in a virtual model. Virtual models are described in <a href="sdo_rdf_concepts.htm#CIHGEAHG">Section 1.3.8</a>)</p>
+<p>Creating the first version-enabled RDF model in a database re-creates an index on the underlying triple store that holds data for all RDF models. Thus, the time needed to create the first version-enabled RDF model depends on the amount of existing data in these models.</p>
+<p>This chapter discuss the key characteristics of a version-enabled RDF model and provides some examples. It contains the following major sections:</p>
+<ul>
+<li>
+<p><a href="#CJGJJEJG">Section 6.1, "Enabling Workspace Manager Support for RDF Data"</a></p>
+</li>
+<li>
+<p><a href="#CJGIBJBH">Section 6.2, "Version-Enabling an RDF Model"</a></p>
+</li>
+<li>
+<p><a href="#CJGEJJCA">Section 6.3, "Inferring from Version-Enabled RDF Models"</a></p>
+</li>
+<li>
+<p><a href="#CJGGAHCD">Section 6.4, "Merging and Refreshing Workspaces in Version-Enabled RDF Models"</a></p>
+</li>
+<li>
+<p><a href="#CFAGEFEI">Section 6.5, "Special Considerations When Using Workspace Manager Support for RDF Data"</a></p>
+</li>
+<li>
+<p><a href="#CFADJAHI">Section 6.6, "Usage Flow Example: Versioning Semantic Models"</a></p>
+</li>
+</ul>
+<a id="CJGJJEJG"></a>
+<div id="RDFRM99966" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">6.1</span> <a id="sthref327"></a><a id="sthref328"></a>Enabling Workspace Manager Support for RDF Data</h2>
+<p>Workspace Manager support for RDF data is not installed in the database by default. Instead, you must run a script named <code>sdordfwm.sql</code> <span class="italic">after</span> you enable semantic technologies support in the database (explained in <a href="sem_enable.htm#CHDHEABD">Section A.1, "Enabling Semantic Technologies Support"</a>). You only need to run <code>sdordfwm.sql</code> once for the database. To run this script, connect to the database as SYSDBA and enter the following statement as appropriate for your operating system:</p>
+<ul>
+<li>
+<p>Linux: <code>SQL&gt; @$ORACLE_HOME/md/admin/sdordfwm.sql</code></p>
+</li>
+<li>
+<p>Windows: <code>SQL&gt; @%ORACLE_HOME%\md\admin\sdordfwm.sql</code></p>
+</li>
+</ul>
+<p>If you want to check whether Workspace Manager support is enabled for RDF data, enter the following query and see if the value returned is <code>INSTALLED</code>:</p>
+<pre>
+SELECT value FROM mdsys.rdf_parameter 
+  WHERE namespace = 'COMPONENT' and attribute = 'RDFOWM';
+</pre>
+<a id="CJGHDBAI"></a>
+<div id="RDFRM99967" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2"><span class="secnum">6.1.1</span> <a id="sthref329"></a>Removing Workspace Manager Support for RDF Data</h3>
+<p>After you have enabled Workspace Manager support for RDF data, you might need to remove that support in certain circumstances. For example, before you downgrade or remove semantic technologies support in the database, you must remove the Workspace Manager support for RDF data. (For information about downgrading and removing semantic technologies support, see <a href="sem_enable.htm#CHDBFEFI">Appendix A, "Enabling, Downgrading, or Removing Semantic Technologies Support"</a>.)</p>
+<p>To remove Workspace Manager support for RDF data, perform the following steps:</p>
+<ol>
+<li>
+<p>Connect to the database as the SYS user with SYSDBA privileges (SYS AS SYSDBA, and enter the SYS account password when prompted).</p>
+</li>
+<li>
+<p><a id="sthref330"></a>Start SQL*Plus, and enter the following statement:</p>
+<ul>
+<li>
+<p>Linux: <code>@$ORACLE_HOME/md/admin/sdordfwm_rm.sql</code></p>
+</li>
+<li>
+<p>Windows: <code>@%ORACLE_HOME%\md\admin\sdordfwm_rm.sql</code></p>
+</li>
+</ul>
+</li>
+</ol>
+<p>After the <code>sdordfwm_rm.sql</code> script completes successfully, you can downgrade or remove semantic technologies support in the database.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CJGIBJBH"></a>
+<div id="RDFRM99968" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">6.2</span> <a id="sthref331"></a><a id="sthref332"></a>Version-Enabling an RDF Model</h2>
+<p>To version-enable an RDF model, you must create any necessary entailments (rules indexes) on it (using the <a href="sem_apis_ref.htm#CHEHDGBD">SEM_APIS.CREATE_ENTAILMENT</a> procedure), and then version-enable its associated application table. For example, if an RDF model named <code>contracts</code> is associated with an application table named CONTRACTS_RDF_DATA, you can perform the version enabling as shown in the following example:</p>
+<pre>
+begin
+  dbms_wm.enableVersioning (table_name =&gt; 'contracts_rdf_data'); 
+end;
+/
+</pre>
+<p>The application table must have a primary key, and you cannot specify the HISTORY or VALID TIME options.</p>
+<p>The data stored in the application table and the corresponding RDF data in the semantic data store are versioned logically. The standard data manipulation operations (insert, update, delete) on a version-enabled application table maintain the version information for both the affected application table rows and the corresponding RDF triples in the semantic data store. Queries accessing the RDF data using the SEM_MATCH operator take the state of the active workspace and the relevant versions of data into account when constructing the result set.</p>
+<p>You cannot use continually refreshed workspaces and multiparent workspaces when working with RDF data. However, other workspace operations (such as creating new workspaces, creating savepoints, setting access modes, and refreshing and merging workspaces) proceed as you would expect.</p>
+<p>You can use Workspace Manager locks on the application table rows to avoid conflicting data manipulation operations in concurrent workspaces. The conflicts in such cases are detected based on the primary keys for the locked rows, and they may not directly translate to any meaningful locks on the RDF data, such as a lock on a sub-graph or a node. (See <a href="#CJGGAHCD">Section 6.4</a> for best practices involving version-enabled RDF data.)</p>
+</div>
+<!-- class="sect1" -->
+<a id="CJGEJJCA"></a>
+<div id="RDFRM99969" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">6.3</span> <a id="sthref333"></a>Inferring from Version-Enabled RDF Models</h2>
+<p>You can use an RDF model to create one or more entailments through inference using system-defined and user-defined rulebases. When such a model is version-enabled, the associated entailments that store the inferred data are also version-enabled.</p>
+<p>However, unlike the RDF models, which are versioned logically, the entailments are versioned physically. Thus, a workspace with some unmerged changes to an RDF model may maintain a private version of the entailment, which duplicates all the inferred triples that may already exist in the entailment corresponding to the parent workspace. <a href="#CJGIDFFJ">Figure 6-1</a> shows a physically versioned entailment where private copies of the index are maintained for workspaces W1 and W2, which are child workspaces of the LIVE workspace.</p>
+<div id="RDFRM99970" class="figure">
+<p class="titleinfigure"><a id="CJGIDFFJ"></a>Figure 6-1 Physical Versioning of Entailment (Rules Index)</p>
+<img width="338" height="192" src="img/wm_rdf_rules_index.gif" alt="Description of Figure 6-1 follows" /><br />
+<a id="sthref334" href="img_text/wm_rdf_rules_index.htm">Description of "Figure 6-1 Physical Versioning of Entailment (Rules Index)"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>A workspace created from a parent workspace with a valid entailment will share the entailment with its parent until some workspace-specific data manipulation operations occur on the corresponding models. The first data manipulation operation within a workspace creates a private copy of the entailment and marks it INVALID. Workspace-private versions of inference data can be rebuilt using the <a href="sem_apis_ref.htm#CHEHDGBD">SEM_APIS.CREATE_ENTAILMENT</a> procedure, as shown in the following example:</p>
+<pre>
+begin
+  sem_apis.create_entailment(
+            index_name_in   =&gt; 'contracts_rdfs',
+            models_in       =&gt; SDO_RDF_Models('contracts'),
+            rulebases_in    =&gt; SDO_RDF_Rulebases('RDFS')); 
+end;
+/
+</pre>
+<p>Any subsequent additions to the RDF model within the workspace will mark the entailment as INCOMPLETE, although you can return it to a VALID status using the <a href="sem_apis_ref.htm#CHEHDGBD">SEM_APIS.CREATE_ENTAILMENT</a> procedure. When a workspace is merged, the workspace-private entailment is dropped, and the corresponding index in the parent workspace is marked INVALID.</p>
+</div>
+<!-- class="sect1" -->
+<a id="CJGGAHCD"></a>
+<div id="RDFRM99971" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">6.4</span> <a id="sthref335"></a><a id="sthref336"></a><a id="sthref337"></a>Merging and Refreshing Workspaces in Version-Enabled RDF Models</h2>
+<p>A workspace modifying data stored in a version-enabled RDF model may contain additional changes to other RDF models or relational tables. The semantics for the merging or refreshing relational data modified in a workspace remain unchanged. Similarly, the merging or refreshing of the application table is subject to conflict analysis based on the primary key defined in the application table. Triples added and deleted in concurrent workspaces are not flagged as conflicts unless they are associated with the same primary key in the application table. For example, a parent and a child workspace may assert the same triple with different primary keys, and during a workspace merge both the triples are accepted. You can avoid such conflicts by generating the application table primary keys from the triple components.</p>
+<p>When you work with RDF data, the types of conflicts that must be flagged vary depending on the application requirements. The conflicts include physical conflicts that exist between two triples, and logical conflicts that exist in a graph to which the triples belong. For example, two concurrent workspaces asserting a triple that captures the value of a specific contract physically conflict with each other. Similarly, a workspace that assigned a new project to a department (with an appropriate triple) may logically conflict with other workspace that reduced the budget for the department.</p>
+<p>You can avoid these conflicts by acquiring appropriate Workspace Manager locks on the application table rows using the DBMS_WM.lockRows subprogram. For example, while adding a new triple that describes a specific resource, the application logic may acquire row locks for all application table rows that describe the same resource; in this case, failure to acquire the lock indicates a conflict.</p>
+<p>If business conflicts between concurrent workspaces can be manually detected and reconciled, you can use the <span class="italic">&lt;application table name&gt;</span>_DIFF Workspace Manager view to obtain a summary of all the changes in two workspaces. For a version-enabled application table named <code>contracts_rdf_data</code>, the query in following example fetches the triples for all the rows that are modified either in <code>W2</code> workspace or the <code>LIVE</code> workspace:</p>
+<pre>
+begin
+  dbms_wm.SetDiffVersions(workspace1 =&gt; 'W2',
+                          workspace2 =&gt; 'LIVE');
+end;
+/
+ 
+SELECT appt.apptable_pkey, appt.triple.get_triple() triple, 
+       wm_diffver, wm_code FROM contracts_rdf_data_diff appt;
+</pre>
+<p>For an explanation of the possible values for the WM_DIFFVER and WM_CODE columns, see the section about <span class="italic">xxx</span>_DIFF views in <a class="olink ADWSM99425" href="../../appdev.112/e11826/long_views.htm#ADWSM99425"><span class="italic">Oracle Database Workspace Manager Developer's Guide</span></a>.</p>
+<p>For any conflicts detected using this technique, you can resolve them by executing compensating data manipulation operations for the conflicting data modifications.</p>
+</div>
+<!-- class="sect1" -->
+<a id="CFAGEFEI"></a>
+<div id="RDFRM472" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">6.5</span> <a id="sthref338"></a>Special Considerations When Using Workspace Manager Support for RDF Data</h2>
+<p>Certain Semantic Technologies features are not compatible with Workspace Manager for RDF data.</p>
+<p>The following network-level features are not supported on semantic networks containing version-enabled RDF models:</p>
+<ul>
+<li>
+<p>Oracle Label Security (OLS) for RDF data</p>
+</li>
+<li>
+<p>Virtual Private Database (VPD) for RDF data</p>
+</li>
+<li>
+<p>Semantic indexing for documents</p>
+</li>
+<li>
+<p><a href="sem_apis_ref.htm#BABBDJBB">SEM_APIS.DROP_SEM_NETWORK</a> with the <code>cascade</code> option</p>
+</li>
+</ul>
+<p>The following model-level features are not supported on version-enabled RDF models:</p>
+<ul>
+<li>
+<p>Participation in virtual models</p>
+</li>
+<li>
+<p>Incremental inference</p>
+</li>
+<li>
+<p><a href="sem_apis_ref.htm#CACHBCBG">SEM_APIS.ALTER_MODEL</a></p>
+</li>
+<li>
+<p><a href="sem_apis_ref.htm#CHEBACHD">SEM_APIS.MERGE_MODELS</a></p>
+</li>
+<li>
+<p><a href="sem_apis_ref.htm#CHEEHJAJ">SEM_APIS.REMOVE_DUPLICATES</a></p>
+</li>
+<li>
+<p><a href="sem_apis_ref.htm#CACHCFHJ">SEM_APIS.RENAME_ENTAILMENT</a></p>
+</li>
+<li>
+<p><a href="sem_apis_ref.htm#CHEGGJHH">SEM_APIS.RENAME_MODEL</a></p>
+</li>
+<li>
+<p><a href="sem_apis_ref.htm#CHEBFECD">SEM_APIS.SWAP_NAMES</a></p>
+</li>
+</ul>
+</div>
+<!-- class="sect1" -->
+<a id="CFADJAHI"></a>
+<div id="RDFRM473" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1"><span class="secnum">6.6</span> <a id="sthref339"></a><a id="sthref340"></a>Usage Flow Example: Versioning Semantic Models</h2>
+<p><a href="#CFAIEFIF">Example 6-1</a> shows how entailments can be handled in different workspaces. Comments within the example explain the individual operations.</p>
+<p>Note the following restrictions and considerations for version-enabled RDF models, which are reflected in <a href="#CFAIEFIF">Example 6-1</a>:</p>
+<ul>
+<li>
+<p>Incremental inference is not supported for entailments involving version-enabled RDF models.</p>
+</li>
+<li>
+<p>Although an already created entailment can be made VALID by calling <a href="sem_apis_ref.htm#CHEHDGBD">SEM_APIS.CREATE_ENTAILMENT</a>, a new entailment cannot be created once the application table corresponding to an RDF model has been version-enabled.</p>
+</li>
+<li>
+<p>The pattern argument for SEM_MATCH needs to use the old (non-curly-brace) syntax.</p>
+</li>
+<li>
+<p>The following option must be used in the <a href="sem_apis_ref.htm#CHEHDGBD">SEM_APIS.CREATE_ENTAILMENT</a> invocation involving version-enabled models: <code>'EPT=1</code>' (or <code>options =&gt; 'USER_RULES=T,EPT=1</code>' when user-defined rules are used) .</p>
+</li>
+</ul>
+<div id="RDFRM474" class="example">
+<p class="titleinexample"><a id="CFAIEFIF"></a>Example 6-1 Versioning a Semantic Model</p>
+<pre>
+set pagesize 10000
+ 
+-- 1. Enabling Workspace Manager Support for RDF Data
+conn / as sysdba
+@?/md/admin/sdordfwm.sql
+ 
+set echo on
+column x format a10
+column y format a10
+ 
+column owner format a10
+column index_name format a12
+column index_view_name format a18
+column status format a10
+ 
+-- create sem network and a test user
+exec sem_apis.create_sem_network('SYSAUX');
+grant connect,resource,unlimited tablespace to rdfuser identified by rdfuser;
+ 
+-- 2. Create table and model: then Insert triples (that will lead to some inferred triples, when entailed)
+ 
+conn rdfuser/rdfuser
+ 
+CREATE TABLE emp_rdf_data(id number,triple sdo_rdf_triple_s);
+ALTER TABLE emp_rdf_data add CONSTRAINT emp_rdf_data_PK PRIMARY KEY (ID);
+ 
+EXEC SEM_APIS.CREATE_SEM_MODEL('emp0','emp_rdf_data','triple');
+ 
+insert into emp_rdf_data values (0.1, sdo_rdf_triple_s('emp0','&lt;Man&gt;','rdfs:subClassOf','&lt;Person&gt;'));
+insert into emp_rdf_data values (0.2, sdo_rdf_triple_s('emp0','&lt;Woman&gt;','rdfs:subClassOf','&lt;Person&gt;'));
+insert into emp_rdf_data values (1, sdo_rdf_triple_s('emp0','&lt;John&gt;','rdf:type','&lt;Man&gt;'));
+ 
+-- 3. Create entailments: one with user-def rules only and the other with OWL
+ 
+exec sdo_rdf_inference.create_rulebase('family_rb');
+ 
+insert into mdsys.rdfr_family_rb values (
+'R1',
+'(?x rdf:type &lt;Man&gt;)',
+NULL,
+'(?x rdf:type &lt;Male&gt;)',
+NULL);
+ 
+insert into mdsys.rdfr_family_rb values (
+'R2',
+'(?x rdf:type &lt;Woman&gt;)',
+NULL,
+'(?x rdf:type &lt;Female&gt;)',
+NULL);
+ 
+begin
+sem_apis.create_entailment(
+index_name_in =&gt; 'emp0_u_idx',
+models_in =&gt; SDO_RDF_Models('emp0'),
+rulebases_in =&gt; SDO_RDF_Rulebases('family_rb'),
+options =&gt; 'USER_RULES=T,EPT=1');
+end;
+/
+ 
+begin
+sem_apis.create_entailment(
+index_name_in =&gt; 'emp0_idx',
+models_in =&gt; SDO_RDF_Models('emp0'),
+rulebases_in =&gt; SDO_RDF_Rulebases('owlprime'),
+options =&gt; 'EPT=1');
+end;
+/
+ 
+select * from mdsys.rdf_rules_index_info;
+select count(*) from mdsys.rdfi_emp0_u_idx;
+select x,y from TABLE(SEM_MATCH('(?x rdf:type ?y)',sem_models('emp0'),sem_rulebases('family_rb'),null,null)) order by 1,2;
+select count(*) from mdsys.rdfi_emp0_idx;
+select x from TABLE(SEM_MATCH('(?x rdf:type &lt;Person&gt;)',sem_models('emp0'),sem_rulebases('OWLPRIME'),null,null)) order by 1;
+ 
+-- 4. Activate versioning and re-try the queries
+ 
+EXEC dbms_wm.enableVersioning (table_name =&gt; 'emp_rdf_data');
+ 
+select * from mdsys.rdf_rules_index_info;
+select count(*) from mdsys.rdfi_emp0_u_idx;
+select x,y from TABLE(SEM_MATCH('(?x rdf:type ?y)',sem_models('emp0'),sem_rulebases('family_rb'),null,null)) order by 1,2;
+select count(*) from mdsys.rdfi_emp0_idx;
+select x from TABLE(SEM_MATCH('(?x rdf:type &lt;Person&gt;)',sem_models('emp0'),sem_rulebases('OWLPRIME'),null,null)) order by 1;
+ 
+ 
+-- 4a. [fail] try to create a post-versioning entailment for testing
+ 
+begin
+sem_apis.create_entailment(
+index_name_in =&gt; 'emp0_idx_2',
+models_in =&gt; SDO_RDF_Models('emp0'),
+rulebases_in =&gt; SDO_RDF_Rulebases('owl2rl'),
+options =&gt; 'EPT=1');
+end;
+/
+ 
+ 
+-- 5. Create Workspace and move into that workspace
+ 
+exec dbms_wm.createworkspace('W1');
+exec dbms_wm.gotoWorkspace('W1');
+ 
+-- 5a. [fail] in this workspace, try to create a post-versioning entailment for testing
+ 
+begin
+sem_apis.create_entailment(
+index_name_in =&gt; 'emp0_idx_3',
+models_in =&gt; SDO_RDF_Models('emp0'),
+rulebases_in =&gt; SDO_RDF_Rulebases('rdfs'),
+options =&gt; 'EPT=1');
+end;
+/
+ 
+-- 6. Workspace inherits the entailment from LIVE workspace (no physical copy yet)
+ 
+select * from mdsys.rdf_rules_index_info;
+select count(*) from mdsys.rdfi_emp0_u_idx;
+select x,y from TABLE(SEM_MATCH('(?x rdf:type ?y)',sem_models('emp0'),sem_rulebases('family_rb'),null,null)) order by 1,2;
+select count(*) from mdsys.rdfi_emp0_idx;
+select x from TABLE(SEM_MATCH('(?x rdf:type &lt;Person&gt;)',sem_models('emp0'),sem_rulebases('OWLPRIME'),null,null)) order by 1;
+ 
+-- 7. Insert some triples =&gt; causes LIVE entailments to be copied to this workspace and marked INVALID here
+insert into emp_rdf_data values (2.1, sdo_rdf_triple_s('emp0','&lt;Mary&gt;','rdf:type','&lt;Woman&gt;'));
+commit;
+ 
+select * from mdsys.rdf_rules_index_info;
+select count(*) from mdsys.rdfi_emp0_u_idx;
+select x,y from TABLE(SEM_MATCH('(?x rdf:type ?y)',sem_models('emp0'),sem_rulebases('family_rb'),null,null)) order by 1,2;
+select count(*) from mdsys.rdfi_emp0_idx;
+select x from TABLE(SEM_MATCH('(?x rdf:type &lt;Person&gt;)',sem_models('emp0'),sem_rulebases('OWLPRIME'),null,null)) order by 1;
+ 
+-- 8. Go back to LIVE workspace to confirm that the LIVE entailments are still VALID
+ 
+disconnect
+connect rdfuser/rdfuser
+select * from mdsys.rdf_rules_index_info;
+select count(*) from mdsys.rdfi_emp0_u_idx;
+select x,y from TABLE(SEM_MATCH('(?x rdf:type ?y)',sem_models('emp0'),sem_rulebases('family_rb'),null,null)) order by 1,2;
+select count(*) from mdsys.rdfi_emp0_idx;
+select x from TABLE(SEM_MATCH('(?x rdf:type &lt;Person&gt;)',sem_models('emp0'),sem_rulebases('OWLPRIME'),null,null)) order by 1;
+ 
+-- 9. Back to new workspace: make its entailments VALID
+ 
+exec dbms_wm.gotoWorkspace('W1');
+ 
+begin
+sem_apis.create_entailment(
+index_name_in =&gt; 'emp0_u_idx',
+models_in =&gt; SDO_RDF_Models('emp0'),
+rulebases_in =&gt; SDO_RDF_Rulebases('family_rb'),
+options =&gt; 'USER_RULES=T,EPT=1');
+end;
+/
+ 
+begin
+sem_apis.create_entailment(
+index_name_in =&gt; 'emp0_idx',
+models_in =&gt; SDO_RDF_Models('emp0'),
+rulebases_in =&gt; SDO_RDF_Rulebases('owlprime'),
+options =&gt; 'EPT=1');
+end;
+/
+ 
+select * from mdsys.rdf_rules_index_info;
+select count(*) from mdsys.rdfi_emp0_u_idx;
+select x,y from TABLE(SEM_MATCH('(?x rdf:type ?y)',sem_models('emp0'),sem_rulebases('family_rb'),null,null)) order by 1,2;
+select count(*) from mdsys.rdfi_emp0_idx;
+select x from TABLE(SEM_MATCH('(?x rdf:type &lt;Person&gt;)',sem_models('emp0'),sem_rulebases('OWLPRIME'),null,null)) order by 1;
+ 
+-- 10. Go back to LIVE workspace to confirm that the entailments there are still VALID
+ 
+disconnect
+connect rdfuser/rdfuser
+select * from mdsys.rdf_rules_index_info;
+select count(*) from mdsys.rdfi_emp0_u_idx;
+select x,y from TABLE(SEM_MATCH('(?x rdf:type ?y)',sem_models('emp0'),sem_rulebases('family_rb'),null,null)) order by 1,2;
+select count(*) from mdsys.rdfi_emp0_idx;
+select x from TABLE(SEM_MATCH('(?x rdf:type &lt;Person&gt;)',sem_models('emp0'),sem_rulebases('OWLPRIME'),null,null)) order by 1;
+ 
+-- 11. Insert a new row into LIVE model =&gt; causes LIVE entailments to become INVALID
+ 
+insert into emp_rdf_data values (3, sdo_rdf_triple_s('emp0','&lt;Gary&gt;','rdf:type','&lt;Man&gt;'));
+commit;
+ 
+select * from mdsys.rdf_rules_index_info;
+select count(*) from mdsys.rdfi_emp0_u_idx;
+select x,y from TABLE(SEM_MATCH('(?x rdf:type ?y)',sem_models('emp0'),sem_rulebases('family_rb'),null,null)) order by 1,2;
+select count(*) from mdsys.rdfi_emp0_idx;
+select x from TABLE(SEM_MATCH('(?x rdf:type &lt;Person&gt;)',sem_models('emp0'),sem_rulebases('OWLPRIME'),null,null)) order by 1;
+ 
+-- 12. Back to new workspace: confirm that its entailment is still VALID
+ 
+exec dbms_wm.gotoWorkspace('W1');
+ 
+select * from mdsys.rdf_rules_index_info;
+select count(*) from mdsys.rdfi_emp0_u_idx;
+select x,y from TABLE(SEM_MATCH('(?x rdf:type ?y)',sem_models('emp0'),sem_rulebases('family_rb'),null,null)) order by 1,2;
+select count(*) from mdsys.rdfi_emp0_idx;
+select x from TABLE(SEM_MATCH('(?x rdf:type &lt;Person&gt;)',sem_models('emp0'),sem_rulebases('OWLPRIME'),null,null)) order by 1;
+ 
+-- 13. Back to LIVE workspace: make the entailments VALID again
+ 
+disconnect
+connect rdfuser/rdfuser
+ 
+begin
+sem_apis.create_entailment(
+index_name_in =&gt; 'emp0_u_idx',
+models_in =&gt; SDO_RDF_Models('emp0'),
+rulebases_in =&gt; SDO_RDF_Rulebases('family_rb'),
+options =&gt; 'USER_RULES=T,EPT=1');
+end;
+/
+ 
+begin
+sem_apis.create_entailment(
+index_name_in =&gt; 'emp0_idx',
+models_in =&gt; SDO_RDF_Models('emp0'),
+rulebases_in =&gt; SDO_RDF_Rulebases('owlprime'),
+options =&gt; 'EPT=1');
+end;
+/
+ 
+select * from mdsys.rdf_rules_index_info;
+select count(*) from mdsys.rdfi_emp0_u_idx;
+select x,y from TABLE(SEM_MATCH('(?x rdf:type ?y)',sem_models('emp0'),sem_rulebases('family_rb'),null,null)) order by 1,2;
+select count(*) from mdsys.rdfi_emp0_idx;
+select x from TABLE(SEM_MATCH('(?x rdf:type &lt;Person&gt;)',sem_models('emp0'),sem_rulebases('OWLPRIME'),null,null)) order by 1;
+ 
+-- 14. Insert a new row into LIVE model =&gt; causes LIVE entailments to become INCOMPLETE
+ 
+insert into emp_rdf_data values (4, sdo_rdf_triple_s('emp0','&lt;Lory&gt;','rdf:type','&lt;Man&gt;'));
+commit;
+ 
+select * from mdsys.rdf_rules_index_info;
+select count(*) from mdsys.rdfi_emp0_u_idx;
+select x,y from TABLE(SEM_MATCH('(?x rdf:type ?y)',sem_models('emp0'),sem_rulebases('family_rb'),null,null)) order by 1,2;
+select count(*) from mdsys.rdfi_emp0_idx;
+select x from TABLE(SEM_MATCH('(?x rdf:type &lt;Person&gt;)',sem_models('emp0'),sem_rulebases('OWLPRIME'),null,null)) order by 1;
+ 
+-- 15. make the entailments in LIVE workspace VALID again
+ 
+begin
+sem_apis.create_entailment(
+index_name_in =&gt; 'emp0_u_idx',
+models_in =&gt; SDO_RDF_Models('emp0'),
+rulebases_in =&gt; SDO_RDF_Rulebases('family_rb'),
+options =&gt; 'USER_RULES=T,EPT=1');
+end;
+/
+ 
+begin
+sem_apis.create_entailment(
+index_name_in =&gt; 'emp0_idx',
+models_in =&gt; SDO_RDF_Models('emp0'),
+rulebases_in =&gt; SDO_RDF_Rulebases('owlprime'),
+options =&gt; 'EPT=1');
+end;
+/
+ 
+select * from mdsys.rdf_rules_index_info;
+select count(*) from mdsys.rdfi_emp0_u_idx;
+select x,y from TABLE(SEM_MATCH('(?x rdf:type ?y)',sem_models('emp0'),sem_rulebases('family_rb'),null,null)) order by 1,2;
+select count(*) from mdsys.rdfi_emp0_idx;
+select x from TABLE(SEM_MATCH('(?x rdf:type &lt;Person&gt;)',sem_models('emp0'),sem_rulebases('OWLPRIME'),null,null)) order by 1;
+ 
+-- 16. merge workspace: this should make the LIVE entailments INVALID
+conn rdfuser/rdfuser
+exec dbms_wm.mergeWorkspace('W1');
+ 
+select * from mdsys.rdf_rules_index_info;
+select count(*) from mdsys.rdfi_emp0_u_idx;
+select x,y from TABLE(SEM_MATCH('(?x rdf:type ?y)',sem_models('emp0'),sem_rulebases('family_rb'),null,null)) order by 1,2;
+select count(*) from mdsys.rdfi_emp0_idx;
+select x from TABLE(SEM_MATCH('(?x rdf:type &lt;Person&gt;)',sem_models('emp0'),sem_rulebases('OWLPRIME'),null,null)) order by 1;
+ 
+-- 17. remove workspace
+exec dbms_wm.removeWorkspace('W1');
+ 
+-- 18. disable versioning, refresh the INVALID entailments to make them VALID, and then query
+exec dbms_wm.disableVersioning('emp_rdf_data');
+ 
+select * from mdsys.rdf_rules_index_info;
+select count(*) from mdsys.rdfi_emp0_u_idx;
+select x,y from TABLE(SEM_MATCH('(?x rdf:type ?y)',sem_models('emp0'),sem_rulebases('family_rb'),null,null)) order by 1,2;
+select count(*) from mdsys.rdfi_emp0_idx;
+select x from TABLE(SEM_MATCH('(?x rdf:type &lt;Person&gt;)',sem_models('emp0'),sem_rulebases('OWLPRIME'),null,null)) order by 1;
+ 
+begin
+sem_apis.create_entailment(
+index_name_in =&gt; 'emp0_u_idx',
+models_in =&gt; SDO_RDF_Models('emp0'),
+rulebases_in =&gt; SDO_RDF_Rulebases('family_rb'),
+options =&gt; 'USER_RULES=T,EPT=1');
+end;
+/
+ 
+begin
+sem_apis.create_entailment(
+index_name_in =&gt; 'emp0_idx',
+models_in =&gt; SDO_RDF_Models('emp0'),
+rulebases_in =&gt; SDO_RDF_Rulebases('owlprime'),
+options =&gt; 'EPT=1');
+end;
+/
+ 
+select * from mdsys.rdf_rules_index_info;
+select count(*) from mdsys.rdfi_emp0_u_idx;
+select x,y from TABLE(SEM_MATCH('(?x rdf:type ?y)',sem_models('emp0'),sem_rulebases('family_rb'),null,null)) order by 1,2;
+select count(*) from mdsys.rdfi_emp0_idx;
+select x from TABLE(SEM_MATCH('(?x rdf:type &lt;Person&gt;)',sem_models('emp0'),sem_rulebases('OWLPRIME'),null,null)) order by 1;
+ 
+-- cleanup
+exec sem_apis.drop_entailment('EMP0_IDX');
+exec sem_apis.drop_entailment('EMP0_U_IDX');
+exec sem_apis.drop_sem_model('EMP0');
+exec sem_apis.drop_rulebase('FAMILY_RB');
+drop table emp_rdf_data;
+conn / as sysdba
+drop user rdfuser cascade;
+</pre></div>
+<!-- class="example" --></div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment973">
+<tr>
+<td class="cellalignment982">
+<table class="cellalignment978">
+<tr>
+<td class="cellalignment977"><a href="fine_grained_acc.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment977"><a href="sem_jena.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2005, 2014,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment984">
+<table class="cellalignment976">
+<tr>
+<td class="cellalignment977"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment977"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment977"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment977"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment977"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment977"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

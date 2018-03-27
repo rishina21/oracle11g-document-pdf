@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Configuring RADIUS Authentication</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1079" />
+<meta name="dcterms.created" content="2016-03-03T15:46:22Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Advanced Security Administrator's Guide" />
+<meta name="dcterms.identifier" content="E40393-10" />
+<meta name="dcterms.isVersionOf" content="ASOAG" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;1996, 2016,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="asogls.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="asopart3.htm" title="Previous" type="text/html" />
+<link rel="Next" href="asokerb.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e40393.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">22/35</span> <!-- End Header -->
+<div id="ASOAG040" class="chapter"><a id="g1012892"></a> <a id="i1007239"></a>
+<h1 class="chapter"><span class="secnum">11</span> Configuring RADIUS Authentication</h1>
+<p>This chapter describes how to configure an Oracle Database server for use with RADIUS (Remote Authentication Dial-In User Service). It contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#i1006122">About RADIUS</a></p>
+</li>
+<li>
+<p><a href="#i1006193">RADIUS Authentication Modes</a></p>
+</li>
+<li>
+<p><a href="#i1006289">Enabling RADIUS Authentication, Authorization, and Accounting</a></p>
+</li>
+<li>
+<p><a href="#i1006861">Using RADIUS to Log In to a Database</a></p>
+</li>
+<li>
+<p><a href="#i1006876">RSA ACE/Server Configuration Checklist</a></p>
+<div class="infobox-note">
+<p class="notep1"><span class="bold">Note</span>:</p>
+SecurID, an authentication product of RSA Security, Inc., though not directly supported by Oracle Advanced Security, has been certified as RADIUS-compliant. You can therefore, run SecurID under RADIUS.
+<p>Refer to the RSA Security SecurID documentation for further information.</p>
+</div>
+</li>
+</ul>
+<a id="i1006122"></a>
+<div id="ASOAG9614" class="sect1">
+<h2 class="sect1"><span class="secnum">11.1</span> About RADIUS</h2>
+<p>RADIUS is a client/server security protocol widely used to enable remote authentication and access. Oracle Advanced Security uses this industry standard in a client/server network environment.</p>
+<p>You can enable the network to use any authentication method that supports the RADIUS standard, including token cards and smart cards, by installing and configuring the RADIUS protocol. Moreover, when you use RADIUS, you can change the authentication method without modifying either the Oracle client or the Oracle database server.</p>
+<p>From the user's perspective, the entire authentication process is transparent. When the user seeks access to an Oracle database server, the Oracle database server, acting as the RADIUS client, notifies the RADIUS server. The RADIUS server:</p>
+<ul>
+<li>
+<p>Looks up the user's security information</p>
+</li>
+<li>
+<p>Passes authentication and authorization information between the appropriate authentication server or servers and the Oracle database server</p>
+</li>
+<li>
+<p>Grants the user access to the Oracle database server</p>
+</li>
+<li>
+<p>Logs session information, including when, how often, and for how long the user was connected to the Oracle database server</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+<a id="sthref448"></a>Oracle Advanced Security <a id="sthref449"></a>does not support RADIUS authentication over database links.</div>
+</li>
+</ul>
+<p><a id="i1006134"></a>The Oracle/RADIUS environment is displayed in <a href="#i1006139">Figure 11-1</a>:</p>
+<div id="ASOAG10183" class="figure">
+<p class="titleinfigure"><a id="i1006139"></a>Figure 11-1 RADIUS in an Oracle Environment</p>
+<img width="330" height="173" src="img/asoag003.gif" alt="Description of Figure 11-1 follows" /><br />
+<a id="sthref450" href="img_text/asoag003.htm">Description of ''Figure 11-1 RADIUS in an Oracle Environment''</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>The Oracle database server acts as the RADIUS client, passing information between the Oracle client and the RADIUS server. Similarly, the RADIUS server passes information between the Oracle database server and the appropriate authentication servers. The authentication components are listed in <a href="#BABFHGBI">Table 11-1</a>:</p>
+<div id="ASOAG10184" class="tblruleformal">
+<p class="titleintable"><a id="sthref451"></a><a id="BABFHGBI"></a>Table 11-1 RADIUS Authentication Components</p>
+<table class="cellalignment2234" title="RADIUS Authentication Components" summary="This table lists RADIUS authentication components and describes what information is stored in each component." dir="ltr">
+<thead>
+<tr class="cellalignment2228">
+<th class="cellalignment2235" id="r1c1-t4">Component</th>
+<th class="cellalignment2235" id="r1c2-t4">Stored Information</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2228">
+<td class="cellalignment2236" id="r2c1-t4" headers="r1c1-t4">
+<p>Oracle client</p>
+</td>
+<td class="cellalignment2236" headers="r2c1-t4 r1c2-t4">
+<p>Configuration setting for communicating through RADIUS.</p>
+</td>
+</tr>
+<tr class="cellalignment2228">
+<td class="cellalignment2236" id="r3c1-t4" headers="r1c1-t4">
+<p>Oracle database server/RADIUS client</p>
+</td>
+<td class="cellalignment2236" headers="r3c1-t4 r1c2-t4">
+<p>Configuration settings for passing information between the Oracle client&nbsp;and the RADIUS server.</p>
+<p>The secret key file.</p>
+</td>
+</tr>
+<tr class="cellalignment2228">
+<td class="cellalignment2236" id="r4c1-t4" headers="r1c1-t4">
+<p>RADIUS server</p>
+</td>
+<td class="cellalignment2236" headers="r4c1-t4 r1c2-t4">
+<p>Authentication and authorization information for all users.</p>
+<p>Each client's name or IP address.</p>
+<p>Each client's shared secret.</p>
+<p>Unlimited number of menu files enabling users already authenticated to select different login options without reconnecting.</p>
+</td>
+</tr>
+<tr class="cellalignment2228">
+<td class="cellalignment2236" id="r5c1-t4" headers="r1c1-t4">
+<p>Authentication server or servers</p>
+</td>
+<td class="cellalignment2236" headers="r5c1-t4 r1c2-t4">
+<p>User authentication information such as pass codes and PINs, depending&nbsp;on the authentication method in use.</p>
+<p><span class="bold">Note:</span> The RADIUS server can also be the authentication server.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformal" -->
+<p>A RADIUS server vendor is often the authentication server vendor as well. In this case authentication can be processed on the RADIUS server. For example, the RSA ACE/Server is both a RADIUS server and an authentication server. It thus authenticates the user's pass code.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink NETAG" href="../e41945/toc.htm"><span class="italic">Oracle Database Net Services Administrator's Guide,</span></a> for information about the <code dir="ltr">sqlnet.ora</code> file</div>
+</div>
+<!-- class="sect1" -->
+<a id="i1006193"></a>
+<div id="ASOAG9615" class="sect1">
+<h2 class="sect1"><span class="secnum">11.2</span> RADIUS Authentication Modes</h2>
+<p>User <a id="sthref452"></a><a id="sthref453"></a>authentication can take place in the following ways:</p>
+<ul>
+<li>
+<p><a href="#i1006206">Synchronous Authentication Mode</a></p>
+</li>
+<li>
+<p><a href="#BABJCBFD">Challenge-Response (Asynchronous) Authentication Mode</a></p>
+</li>
+</ul>
+<a id="i1006206"></a>
+<div id="ASOAG9616" class="sect2">
+<h3 class="sect2"><span class="secnum">11.2.1</span> <a id="sthref454"></a><a id="sthref455"></a>Synchronous Authentication Mode</h3>
+<p>In the synchronous mode, RADIUS lets you use various authentication methods, including passwords and SecurID token cards. <a href="#i1006212">Figure 11-2</a> shows the sequence in which synchronous authentication occurs:</p>
+<div id="ASOAG10185" class="figure">
+<p class="titleinfigure"><a id="i1006212"></a>Figure 11-2 Synchronous Authentication Sequence</p>
+<img width="453" height="582" src="img/asoag010.gif" alt="Description of Figure 11-2 follows" /><br />
+<a id="sthref456" href="img_text/asoag010.htm">Description of ''Figure 11-2 Synchronous Authentication Sequence''</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>The following steps describe the Synchronous Authentication Sequence:</p>
+<ol>
+<li>
+<p>A user logs in by entering a connect string, pass code, or other value. The client system passes this data to the Oracle database server.</p>
+</li>
+<li>
+<p>The Oracle database server, acting as the RADIUS client, passes the data from the Oracle client to the RADIUS server.</p>
+</li>
+<li>
+<p>The RADIUS server passes the data to the appropriate authentication server, such as Smart Card or SecurID ACE for validation.</p>
+</li>
+<li>
+<p>The authentication server sends either an Access Accept or an Access Reject message back to the RADIUS server.</p>
+</li>
+<li>
+<p>The RADIUS server passes this response to the Oracle database server/RADIUS client.</p>
+</li>
+<li>
+<p>The Oracle database server/RADIUS client passes the response back to the Oracle client.</p>
+</li>
+</ol>
+<p class="subhead1"><a id="ASOAG10186"></a>Example: Synchronous Authentication with SecurID Token Cards</p>
+<p>With <a id="sthref457"></a><a id="sthref458"></a>SecurID authentication, each user has a token card that displays a dynamic number that changes every sixty seconds. To gain access to the Oracle database server/RADIUS client, the user enters a valid pass code that includes both a personal identification number (PIN) and the dynamic number currently displayed on the user's SecurID card. The Oracle database server passes this authentication information from the Oracle client to the RADIUS server, which in this case is the authentication server for validation. Once the authentication server (RSA ACE/Server) validates the user, it sends an <span class="italic">accept</span> packet to the Oracle database server, which, in turn, passes it to the Oracle client. The user is now authenticated and able to access the appropriate tables and applications.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="asointro.htm#g1011524">Chapter 1, "Introduction to Oracle Advanced Security"</a></p>
+</li>
+<li>
+<p><a href="asointro.htm#i1007994">"<span class="bold">Token Cards</span>"</a></p>
+</li>
+<li>
+<p>Documentation provided by RSA Security, Inc.</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="BABJCBFD"></a>
+<div id="ASOAG9617" class="sect2">
+<h3 class="sect2"><span class="secnum">11.2.2</span> <a id="sthref459"></a><a id="sthref460"></a><a id="sthref461"></a><a id="sthref462"></a>Challenge-Response (Asynchronous) Authentication Mode</h3>
+<p>When the system uses the asynchronous mode, the user does not need to enter a user name and password at the SQL*Plus CONNECT string. Instead, a graphical user interface asks the user for this information later in the process.</p>
+<p><a href="#i1006264">Figure 11-3</a> shows the sequence in which challenge-response (asynchronous) authentication occurs.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If the RADIUS server is the authentication server, Steps 3, 4, and 5, and Steps 9, 10, and 11 in <a href="#i1006264">Figure 11-3</a> are combined.</div>
+<div id="ASOAG10187" class="figure">
+<p class="titleinfigure"><a id="i1006264"></a>Figure 11-3 Asynchronous Authentication Sequence</p>
+<img width="447" height="852" src="img/asoag011.gif" alt="Description of Figure 11-3 follows" /><br />
+<a id="sthref463" href="img_text/asoag011.htm">Description of ''Figure 11-3 Asynchronous Authentication Sequence''</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>The following steps describe the Asynchronous Authentication Sequence:</p>
+<ol>
+<li>
+<p>A user initiates a connection to an Oracle database server. The client system passes the data to the Oracle database server.</p>
+</li>
+<li>
+<p>The Oracle database server, acting as the RADIUS client, passes the data from the Oracle client to the RADIUS server.</p>
+</li>
+<li>
+<p>The RADIUS server passes the data to the appropriate authentication server, such as a Smart Card, SecurID ACE, or token card server.</p>
+</li>
+<li>
+<p>The authentication server sends a challenge, such as a random number, to the RADIUS server.</p>
+</li>
+<li>
+<p>The RADIUS server passes the challenge to the Oracle database server/RADIUS client.</p>
+</li>
+<li>
+<p>The Oracle database server/RADIUS client, in turn, passes it to the Oracle client. A graphical user interface presents the challenge to the user.</p>
+</li>
+<li>
+<p>The user provides a response to the challenge. To formulate a response, the user can, for example, enter the received challenge into the token card. The token card provides a dynamic password that is entered into the graphical user interface. The Oracle client passes the user's response to the Oracle database server/RADIUS client.</p>
+</li>
+<li>
+<p>The Oracle database server/RADIUS client sends the user's response to the RADIUS server.</p>
+</li>
+<li>
+<p>The RADIUS server passes the user's response to the appropriate authentication server for validation.</p>
+</li>
+<li>
+<p>The authentication server sends either an Access Accept or an Access Reject message back to the RADIUS server.</p>
+</li>
+<li>
+<p>The RADIUS server passes the response to the Oracle database server/RADIUS client.</p>
+</li>
+<li>
+<p>The Oracle database server/RADIUS client passes the response to the Oracle client.</p>
+</li>
+</ol>
+<p class="subhead1"><a id="ASOAG10188"></a>Example: Asynchronous Authentication with <a id="sthref464"></a><a id="sthref465"></a>Smart Cards</p>
+<p>With smart card authentication, the user logs in by inserting the smart card into a smart card reader that reads the smart card. The smart card is a plastic card, like a credit card, with an embedded integrated circuit for storing information.</p>
+<p>The Oracle client sends the login information contained in the smart card to the authentication server by way of the Oracle database server/RADIUS client and the RADIUS server. The authentication server sends back a challenge to the Oracle client, by way of the RADIUS server and the Oracle database server, prompting the user for authentication information. The information could be, for example, a PIN as well as additional authentication information contained on the smart card.</p>
+<p>The Oracle client sends the user's response to the authentication server by way of the Oracle database server and the RADIUS server. If the user has entered a valid number, the authentication server sends an <span class="italic">accept</span> packet back to the Oracle client by way of the RADIUS server and the Oracle database server. The user is now authenticated and authorized to access the appropriate tables and applications. If the user has entered incorrect information, the authentication server sends back a message rejecting user's access.</p>
+<p class="subhead1"><a id="ASOAG10189"></a>Example: Asynchronous Authentication with ActivCard Tokens</p>
+<p>One particular ActivCard token is a hand-held device with a keypad and which displays a dynamic password. When the user seeks access to an Oracle database server by entering a password, the information is passed to the appropriate authentication server by way of the Oracle database server/RADIUS client and the RADIUS server. The authentication server sends back a challenge to the client, by way of the RADIUS server and the Oracle database server. The user types that challenge into the token, and the token displays a number for the user to send in response.</p>
+<p>The Oracle client then sends the user's response to the authentication server by way of the Oracle database server and the RADIUS server. If the user has typed a valid number, the authentication server sends an <span class="italic">accept</span> packet back to the Oracle client by way of the RADIUS server and the Oracle database server. The user is now authenticated and authorized to access the appropriate tables and applications. If the user has entered an incorrect response, the authentication server sends back a message rejecting the user's access.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006289"></a>
+<div id="ASOAG9618" class="sect1">
+<h2 class="sect1"><span class="secnum">11.3</span> Enabling RADIUS Authentication, Authorization, and Accounting</h2>
+<p>This section contains:</p>
+<ul>
+<li>
+<p><a href="#i1006328">Step 1: Install RADIUS on the Oracle Database Server and on the Oracle Client</a></p>
+</li>
+<li>
+<p><a href="#i1006345">Step 2: Configure RADIUS Authentication</a></p>
+</li>
+<li>
+<p><a href="#i1006637">Step 3: Create a User and Grant Access</a></p>
+</li>
+<li>
+<p><a href="#BABEAFFJ">Step 4: Configure External RADIUS Authorization (optional)</a></p>
+</li>
+<li>
+<p><a href="#i1006739">Step 5: Configure RADIUS Accounting</a></p>
+</li>
+<li>
+<p><a href="#BABCHEIG">Step 6: Add the RADIUS Client Name to the RADIUS Server Database</a></p>
+</li>
+<li>
+<p><a href="#i1006790">Step 7: Configure the Authentication Server for Use with RADIUS</a>.</p>
+</li>
+<li>
+<p><a href="#i1006804">Step 8: Configure the RADIUS Server for Use with the Authentication Server</a></p>
+</li>
+<li>
+<p><a href="#i1006807">Step 9: Configure Mapping Roles</a></p>
+</li>
+</ul>
+<a id="i1006328"></a>
+<div id="ASOAG9619" class="sect2">
+<h3 class="sect2"><span class="secnum">11.3.1</span> Step 1: Install RADIUS on the Oracle Database Server and on the Oracle Client</h3>
+<p>RADIUS is installed with Oracle Advanced Security during a typical installation of Oracle Database.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+Oracle Database operating system-specific installation documentation, for information about installing Oracle Advanced Security and the RADIUS adapter</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1006345"></a>
+<div id="ASOAG9620" class="sect2">
+<h3 class="sect2"><span class="secnum">11.3.2</span> Step 2: Configure RADIUS Authentication</h3>
+<p>This section contains: <a id="sthref466"></a><a id="sthref467"></a></p>
+<ul>
+<li>
+<p><a href="#i1006362">Step 2A: Configure RADIUS on the Oracle Client</a></p>
+</li>
+<li>
+<p><a href="#i1006392">Step 2B: Configure RADIUS on the Oracle Database Server</a></p>
+</li>
+<li>
+<p><a href="#i1006486">Step 2C: Configure Additional RADIUS Features</a></p>
+</li>
+</ul>
+<a id="i1006362"></a>
+<div id="ASOAG9621" class="sect3">
+<h4 class="sect3"><span class="secnum">11.3.2.1</span> Step 2A: Configure RADIUS on the Oracle Client</h4>
+<ol>
+<li>
+<p>Start Oracle Net Manager.</p>
+<ul>
+<li>
+<p>(UNIX) From <code dir="ltr"><span class="codeinlineitalic">$ORACLE_HOME</span></code><code dir="ltr">/bin</code>, enter the following command at the command line:</p>
+<pre dir="ltr">
+netmgr
+</pre></li>
+<li>
+<p>(Windows) Select <span class="bold">Start</span>, <span class="bold">Programs</span>, <span class="bold">Oracle - HOME_NAME</span>, <span class="bold">Configuration and Migration Tools</span>, then <span class="bold">Net Manager</span>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Expand <span class="bold">Oracle Net Configuration</span>, and from <span class="bold">Local</span>, select <span class="bold">Profile</span>.</p>
+</li>
+<li>
+<p>From the <span class="bold">Naming</span> list, select <span class="bold">Network Security</span>.</p>
+<p>The Network Security tabbed window appears.</p>
+</li>
+<li>
+<p>Select the <span class="bold">Authentication</span> tab. (It should be selected by default.) <img width="348" height="388" src="img/radu0001.gif" alt="Description of radu0001.gif follows" /><br />
+<a id="sthref468" href="img_text/radu0001.htm">Description of the illustration ''radu0001.gif''</a><br />
+<br /></p>
+</li>
+<li>
+<p>From the Available Methods list, select <span class="bold">RADIUS</span>.</p>
+</li>
+<li>
+<p>Select the right-arrow (<span class="bold">&gt;</span>) to move RADIUS to the <span class="bold">Selected Methods</span> list. Move any other methods you want to use in the same way.</p>
+</li>
+<li>
+<p>Arrange the selected methods in order of required usage by selecting a method in the Selected Methods list, and clicking <span class="bold">Promote</span> or <span class="bold">Demote</span> to position it in the list.</p>
+<p>For example, put RADIUS at the top of the list for it to be the first service used.</p>
+</li>
+<li>
+<p>From the <span class="bold">File</span> menu, select <span class="bold">Save Network Configuration</span>.</p>
+<p>The <code dir="ltr">sqlnet.ora</code> file is updated with the following entry:</p>
+<pre dir="ltr">
+<a id="sthref469"></a>SQLNET.AUTHENTICATION_SERVICES=(RADIUS)
+</pre></li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<a id="i1006392"></a>
+<div id="ASOAG9622" class="sect3">
+<h4 class="sect3"><span class="secnum">11.3.2.2</span> Step 2B: Configure RADIUS on the Oracle Database Server</h4>
+<p>This section contains:</p>
+<ul>
+<li>
+<p><a href="#BABHJFIE">Step 2B(1): Create the RADIUS Secret Key File on the Oracle Database Server</a></p>
+</li>
+<li>
+<p><a href="#i1006418">Step 2B(2): Configure RADIUS Parameters on the Server (sqlnet.ora File)</a></p>
+</li>
+<li>
+<p><a href="#i1006453">Step 2B(3): Set Oracle Database Server Initialization Parameters</a></p>
+</li>
+</ul>
+<p class="subhead2"><a id="BABHJFIE"></a><a id="ASOAG10191"></a>Step 2B(1): Create the RADIUS Secret Key File on the Oracle Database Server</p>
+<ol>
+<li>
+<p>Obtain the RADIUS secret key from the RADIUS server.</p>
+<p>For each RADIUS client, the administrator of the RADIUS server creates a shared secret key, which must be less than or equal to 16 characters.</p>
+</li>
+<li id="CIHDGEJE">
+<p>On the Oracle database server, create a directory:</p>
+<ul>
+<li>
+<p>(UNIX) <code dir="ltr"><span class="codeinlineitalic">$ORACLE_HOME</span></code><code dir="ltr">/network/security</code></p>
+</li>
+<li>
+<p>(Windows) <code dir="ltr"><span class="codeinlineitalic">ORACLE_BASE</span></code><code dir="ltr">\</code><code dir="ltr"><span class="codeinlineitalic">ORACLE_HOME</span></code><code dir="ltr">\network\security</code></p>
+</li>
+</ul>
+</li>
+<li>
+<p>Create the file <code dir="ltr">radius.key</code> to hold the shared secret copied from the RADIUS server. Place the file in the directory you created in Step <a href="#CIHDGEJE">2</a>.</p>
+</li>
+<li>
+<p>Copy the shared secret key and paste it (and nothing else) into the <code dir="ltr">radius.key</code> file created on the Oracle database server.</p>
+</li>
+<li>
+<p>For security purposes, change the file permission of <code dir="ltr">radius.key</code> to read only, accessible only by the Oracle owner.</p>
+<p>Oracle relies on the file system to keep this file secret.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+The RADIUS server administration documentation, for information about obtaining the secret key</div>
+</li>
+</ol>
+<p class="subhead2"><a id="i1006418"></a><a id="ASOAG10192"></a>Step 2B(2): Configure RADIUS Parameters on the Server (sqlnet.ora File)</p>
+<ol>
+<li>
+<p>Start Oracle Net Manager.</p>
+<ul>
+<li>
+<p>(UNIX) From <code dir="ltr"><span class="codeinlineitalic">$ORACLE_HOME</span></code><code dir="ltr">/bin</code>, enter the following command at the command line:</p>
+<pre dir="ltr">
+netmgr
+</pre></li>
+<li>
+<p>(Windows) Select <span class="bold">Start</span>, <span class="bold">Programs</span>, <span class="bold">Oracle - HOME_NAME</span>, <span class="bold">Configuration and Migration Tools</span>, then <span class="bold">Net Manager</span>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Expand <span class="bold">Oracle Net Configuration</span>, and from <span class="bold">Local</span>, select <span class="bold">Profile</span>.</p>
+</li>
+<li>
+<p>From the <span class="bold">Naming</span> list, select <span class="bold">Network Security</span>.</p>
+<p>The Network Security tabbed window appears.</p>
+</li>
+<li>
+<p>Select the <span class="bold">Authentication</span> tab.</p>
+</li>
+<li>
+<p>From the Available Methods list, select <span class="bold">RADIUS</span>.</p>
+</li>
+<li>
+<p>Move RADIUS to the <span class="bold">Selected Methods</span> list by choosing the right-arrow (<span class="bold">&gt;</span>).</p>
+</li>
+<li>
+<p>To arrange the selected methods in order of desired use, select a method in the Selected Methods list, and select <span class="bold">Promote</span> or <span class="bold">Demote</span> to position it in the list.</p>
+<p>For example, if you want RADIUS to be the first service used, put it at the top of the list.</p>
+</li>
+<li>
+<p>Select the <span class="bold">Other Params</span> tab.</p>
+</li>
+<li>
+<p>From the <span class="bold">Authentication Service</span> list, select <span class="bold">RADIUS</span>.</p>
+</li>
+<li>
+<p>In the <span class="bold">Host Name</span> field, accept the <span class="bold">localhost</span> as the default primary RADIUS server, or enter another host name.</p>
+<img width="401" height="415" src="img/radu0002.gif" alt="Description of radu0002.gif follows" /><br />
+<a id="sthref470" href="img_text/radu0002.htm">Description of the illustration ''radu0002.gif''</a><br />
+<br /></li>
+<li>
+<p>Ensure that the default value of the <span class="bold">Secret File</span> field is valid.</p>
+</li>
+<li>
+<p>From the <span class="bold">File</span> menu, select <span class="bold">Save Network Configuration</span>.</p>
+<p>The <code dir="ltr">sqlnet.ora</code> file is updated with the following entries:</p>
+<pre dir="ltr">
+SQLNET.AUTHENTICATION_SERVICES=RADIUS
+SQLNET.RADIUS_AUTHENTICATION=RADIUS_server_{hostname|IP_address}
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The <code dir="ltr">IP_address</code> can either be an Internet Protocol Version 4 (IPv4) or Internet Protocol Version 6 (IPv6) address. The RADIUS adapter supports both IPv4 and IPv6 based servers.</div>
+</li>
+</ol>
+<p class="subhead2"><a id="i1006453"></a><a id="ASOAG10194"></a>Step 2B(3): Set Oracle Database Server Initialization Parameters</p>
+<ol>
+<li>
+<p>Add the following setting to the <code dir="ltr">init.ora</code> initialization file.</p>
+<pre dir="ltr">
+OS_AUTHENT_PREFIX=""
+</pre>
+<p>By default, the <code dir="ltr">init.ora</code> file is located in the <code dir="ltr"><span class="codeinlineitalic">ORACLE_HOME</span></code><code dir="ltr">/dbs</code> directory (or the same location of the data files) on Linux and UNIX systems, and in the <code dir="ltr"><span class="codeinlineitalic">ORACLE_HOME</span></code><code dir="ltr">\database</code> directory on Windows.</p>
+</li>
+<li>
+<p>Restart the database.</p>
+<p>For example:</p>
+<pre dir="ltr">
+SQL&gt; SHUTDOWN
+SQL&gt; STARTUP
+</pre></li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink REFRN" href="../../server.112/e40402/toc.htm"><span class="italic">Oracle Database Reference</span></a> and the <a class="olink ADMIN" href="../../server.112/e25494/toc.htm"><span class="italic">Oracle Database Administrator's Guide</span></a> for information about setting initialization parameters on an Oracle Database server</div>
+</div>
+<!-- class="sect3" -->
+<a id="i1006486"></a>
+<div id="ASOAG9623" class="sect3">
+<h4 class="sect3"><span class="secnum">11.3.2.3</span> Step 2C: Configure Additional RADIUS Features</h4>
+<p>This section contains:</p>
+<ul>
+<li>
+<p><a href="#i1006500">Step 2C(1): Change Default Settings</a></p>
+</li>
+<li>
+<p><a href="#i1006562">Step 2C(2): Configure Challenge-Response</a></p>
+</li>
+<li>
+<p><a href="#i1006626">Step 2C(3): Set Parameters for an Alternate RADIUS Server</a></p>
+</li>
+</ul>
+<p class="subhead2"><a id="i1006500"></a><a id="ASOAG10195"></a>Step 2C(1): Change Default Settings</p>
+<ol>
+<li>
+<p>Start Oracle Net Manager.</p>
+<ul>
+<li>
+<p>(UNIX) From <code dir="ltr"><span class="codeinlineitalic">$ORACLE_HOME</span></code><code dir="ltr">/bin</code>, enter the following command at the command line:</p>
+<pre dir="ltr">
+netmgr
+</pre></li>
+<li>
+<p>(Windows) Select <span class="bold">Start</span>, <span class="bold">Programs</span>, <span class="bold">Oracle - HOME_NAME</span>, <span class="bold">Configuration and Migration Tools</span>, then <span class="bold">Net Manager</span>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Expand <span class="bold">Oracle Net Configuration</span>, and from <span class="bold">Local</span>, select <span class="bold">Profile</span>.</p>
+</li>
+<li>
+<p>From the <span class="bold">Naming</span> list, select <span class="bold">Network Security</span>.</p>
+<p>The Network Security tabbed window appears.</p>
+</li>
+<li>
+<p>Click the <span class="bold">Other Params</span> tab.</p>
+</li>
+<li>
+<p>From the Authentication Service list, select <span class="bold">RADIUS</span>.</p>
+</li>
+<li>
+<p>Change the default setting for any of the following fields:</p>
+<ul>
+<li>
+<p><span class="bold">Port Number:</span> Specifies the listening port of the primary RADIUS server. The default value is 1645.</p>
+</li>
+<li>
+<p><span class="bold">Timeout (seconds):</span> Specifies the time the Oracle database server waits for a response from the primary RADIUS server. The default is 15 seconds.</p>
+</li>
+<li>
+<p><span class="bold">Number of Retries:</span> Specifies the number of times the Oracle database server resends messages to the primary RADIUS server. The default is three retries. For instructions on configuring RADIUS accounting, see <a href="#i1006739">Step 5: Configure RADIUS Accounting</a>.</p>
+</li>
+<li>
+<p><span class="bold">Secret File:</span> Specifies the location of the secret key on the Oracle database server. The field specifies the location of the secret key file, not the secret key itself. For information about specifying the secret key, see <a href="#BABHJFIE">Step 2B(1): Create the RADIUS Secret Key File on the Oracle Database Server</a>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>From the <span class="bold">File</span> menu, select <span class="bold">Save Network Configuration</span>.<span class="bold"><a id="sthref471"></a><a id="sthref472"></a></span></p>
+<p>The <code dir="ltr">sqlnet.ora</code> file is updated with the following entries:</p>
+<pre dir="ltr">
+SQLNET.RADIUS_AUTHENTICATION_PORT=(PORT)
+SQLNET.RADIUS_AUTHENTICATION_TIMEOUT=
+(NUMBER OF SECONDS TO WAIT FOR response)
+SQLNET.RADIUS_AUTHENTICATION_RETRIES=
+(NUMBER OF TIMES TO RE-SEND TO RADIUS server)
+SQLNET.RADIUS_SECRET=(path/radius.key)
+</pre></li>
+</ol>
+<p class="subhead2"><a id="i1006562"></a><a id="ASOAG10196"></a>Step 2C(2): Configure Challenge-Response</p>
+<p>The challenge-response (asynchronous) mode presents the user with a graphical interface requesting first a password, then additional information (for example, a dynamic password that the user obtains from a token card). With the RADIUS adapter, this interface is Java-based to provide optimal platform independence.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Third party vendors of authentication devices must customize this graphical user interface to fit their particular device. For example, a <a id="sthref473"></a><a id="sthref474"></a>smart card vendor would customize the Java interface so that the Oracle client reads data, such as a dynamic password, from the smart card. When the smart card receives a challenge, it responds by prompting the user for more information, such as a PIN.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="asoappc.htm#g635120">Appendix C, "Integrating Authentication Devices Using&nbsp;RADIUS"</a>, for information about how to customize the challenge-response user interface</div>
+<p>To configure challenge-response:</p>
+<ol>
+<li>
+<p>If you are using JDK 1.1.7 or JRE 1.1.7, then set the <code dir="ltr">JAVA_HOME</code> environment variable to the JRE or JDK location on the system where the Oracle client is run:</p>
+<ul>
+<li>
+<p>On UNIX, enter this command at the prompt:</p>
+<pre dir="ltr">
+% setenv JAVA_HOME /usr/local/packages/jre1.1.7B
+</pre></li>
+<li>
+<p>On Windows, select <span class="bold">Start</span>, <span class="bold">Settings</span>, <span class="bold">Control Panel</span>, <span class="bold">System</span>, <span class="bold">Environment</span>, and set the <code dir="ltr">JAVA_HOME</code> variable as follows:</p>
+<pre dir="ltr">
+c:\java\jre1.1.7B
+</pre></li>
+</ul>
+<p>This step is not required for any other JDK/JRE version.</p>
+</li>
+<li>
+<p>Start Oracle Net Manager.</p>
+<ul>
+<li>
+<p>(UNIX) From <code dir="ltr"><span class="codeinlineitalic">$ORACLE_HOME</span></code><code dir="ltr">/bin</code>, enter the following command at the command line:</p>
+<pre dir="ltr">
+netmgr
+</pre></li>
+<li>
+<p>(Windows) Select <span class="bold">Start</span>, <span class="bold">Programs</span>, <span class="bold">Oracle - HOME_NAME</span>, <span class="bold">Configuration and Migration Tools</span>, then <span class="bold">Net Manager</span>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Expand <span class="bold">Oracle Net Configuration</span>, and from <span class="bold">Local</span>, select <span class="bold">Profile</span>.</p>
+</li>
+<li>
+<p>From the <span class="bold">Naming</span> list, select <span class="bold">Network Security</span>.</p>
+<p>The Network Security tabbed window appears.</p>
+</li>
+<li>
+<p>From the Authentication Service list, select <span class="bold">RADIUS</span>.</p>
+</li>
+<li>
+<p>In the <span class="bold">Challenge Response</span> field, enter <span class="bold">ON</span> to enable challenge-response.</p>
+</li>
+<li>
+<p>In the <span class="bold">Default Keyword</span> field, accept the default value of the challenge or enter a keyword for requesting a challenge from the RADIUS server.</p>
+<p>The keyword feature is provided by Oracle and supported by some, but not all, RADIUS servers. You can use this feature only if your RADIUS server supports it.</p>
+<p>By setting a keyword, you let the user avoid using a password to verify identity. If the user does <span class="italic">not</span> enter a password, the keyword you set here is passed to the RADIUS server which responds with a challenge requesting, for example, a driver's license number or birth date. If the user <span class="italic">does</span> enter a password, the RADIUS server may or may not respond with a challenge, depending upon the configuration of the RADIUS server.</p>
+</li>
+<li>
+<p>In the <span class="bold">Interface Class Name</span> field, accept the default value of <span class="bold">DefaultRadiusInterface</span> or enter the name of the class you have created to handle the challenge-response conversation.</p>
+<p>If other than the default RADIUS interface is used, then you also must edit the <code dir="ltr">sqlnet.ora</code> file to enter <code dir="ltr">SQLNET.RADIUS_CLASSPATH=(location)</code>, where <code dir="ltr">location</code> is the complete path name of the jar file. It defaults to<br />
+<code dir="ltr"><span class="codeinlineitalic">$</span></code><code dir="ltr">ORACLE_HOME/network/jlib/netradius.jar:</code> <code dir="ltr"><span class="codeinlineitalic">$</span></code><code dir="ltr">ORACLE_HOME/JRE/lib/vt.jar</code></p>
+</li>
+<li>
+<p>From the <span class="bold">File</span> menu, select <span class="bold">Save Network Configuration</span>.</p>
+<p>The <code dir="ltr">sqlnet.ora</code> file is updated with the following entries:</p>
+<pre dir="ltr">
+SQLNET.RADIUS_CHALLENGE_RESPONSE=([ON | OFF])
+SQLNET.RADIUS_CHALLENGE_KEYWORD=(KEYWORD)
+SQLNET.RADIUS_AUTHENTICATION_INTERFACE=(name of interface including the package name delimited by "/" for ".")
+</pre></li>
+</ol>
+<p class="subhead2"><a id="i1006626"></a><a id="ASOAG10197"></a>Step 2C(3): Set Parameters for an Alternate RADIUS Server</p>
+<p>If you are using an alternate RADIUS server, set these parameters in the <code dir="ltr">sqlnet.ora</code> file using any text editor.</p>
+<pre dir="ltr">
+<a id="sthref475"></a>SQLNET.RADIUS_ALTERNATE=(hostname or ip address of alternate radius server)
+<a id="sthref476"></a>SQLNET.RADIUS_ALTERNATE_PORT=(1812)
+<a id="sthref477"></a>SQLNET.RADIUS_ALTERNATE_TIMEOUT=(number of seconds to wait for response)
+<a id="sthref478"></a>SQLNET.RADIUS_ALTERNATE_RETRIES=(number of times to re-send to radius server)
+</pre></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1006637"></a>
+<div id="ASOAG9624" class="sect2">
+<h3 class="sect2"><span class="secnum">11.3.3</span> Step 3: Create a User and Grant Access</h3>
+<ol>
+<li>
+<p>Start SQL*Plus and execute these commands to create and grant access to a user identified externally on the Oracle database server.</p>
+<pre dir="ltr">
+SQL&gt; CONNECT system@database_name;
+SQL&gt; Enter password: 
+SQL&gt; CREATE USER <span class="italic">username</span> IDENTIFIED EXTERNALLY;
+SQL&gt; GRANT CREATE SESSION TO USER <span class="italic">username</span>;
+SQL&gt; EXIT
+</pre>
+<p>If you are using Windows, then you can use the Security Manager tool in Oracle Enterprise Manager.</p>
+</li>
+<li>
+<p>Enter the same <code dir="ltr"><span class="codeinlineitalic">username</span></code> in the RADIUS server's users file.</p>
+</li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink ADMIN" href="../../server.112/e25494/toc.htm"><span class="italic">Oracle Database Administrator's Guide</span></a></p>
+</li>
+<li>
+<p><a class="olink HETER" href="../../server.112/e11050/toc.htm"><span class="italic">Oracle Database Heterogeneous Connectivity User's Guide</span></a></p>
+</li>
+<li>
+<p>Administration documentation for the RADIUS server</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="BABEAFFJ"></a>
+<div id="ASOAG9625" class="sect2">
+<h3 class="sect2"><span class="secnum">11.3.4</span> Step 4: Configure External RADIUS Authorization (optional)</h3>
+<p>If you require external RADIUS authorization for RADIUS users who connect to an Oracle database, then you must perform the following steps to configure the Oracle server, the Oracle client, and the RADIUS server:</p>
+<ul>
+<li>
+<p><a href="#CIHIIDJI">Step 4A: Configure the Oracle Server (RADIUS Client)</a></p>
+</li>
+<li>
+<p><a href="#CIHIFGBD">Step 4B: Configure the Oracle Client Where Users Log In</a></p>
+</li>
+<li>
+<p><a href="#CIHICIAG">Step 4C: Configure the RADIUS Server</a></p>
+</li>
+</ul>
+<a id="CIHIIDJI"></a>
+<div id="ASOAG10198" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">11.3.4.1</span> Step 4A: Configure the Oracle Server (RADIUS Client)</h4>
+<ol>
+<li>
+<p>Add the <code dir="ltr">OS_ROLE</code> parameter to the <code dir="ltr">init.ora</code> file and set this parameter to <code dir="ltr">TRUE</code> as follows:</p>
+<pre dir="ltr">
+OS_ROLE=TRUE
+</pre></li>
+<li>
+<p>Restart the database so that the system can read the change to the <code dir="ltr">init.ora</code> file.</p>
+<p>For example:</p>
+<pre dir="ltr">
+SQL&gt; SHUTDOWN 
+SQL&gt; STARTUP
+</pre></li>
+<li>
+<p>Set the RADIUS challenge-response mode to <code dir="ltr">ON</code> for the server if you have not already done so by following the steps listed in <a href="#i1006562">"Step 2C(2): Configure Challenge-Response"</a>.</p>
+</li>
+<li>
+<p>Add externally identified users and roles.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<a id="CIHIFGBD"></a>
+<div id="ASOAG10199" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">11.3.4.2</span> Step 4B: Configure the Oracle Client Where Users Log In</h4>
+<p>Set the RADIUS challenge-response mode to <code dir="ltr">ON</code> for the client if you have not already done so by following the steps listed in <a href="#i1006562">"Step 2C(2): Configure Challenge-Response"</a>.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CIHICIAG"></a>
+<div id="ASOAG10200" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3"><span class="secnum">11.3.4.3</span> Step 4C: Configure the RADIUS Server</h4>
+<ol>
+<li>
+<p>Add the following attributes to the RADIUS server attribute configuration file:</p>
+<div class="inftblinformal">
+<table class="cellalignment2234" title="RADIUS Server Attributes" summary="This table lists the attribute name, code, and type that you must add to the RADIUS server attribute configuration file." dir="ltr">
+<thead>
+<tr class="cellalignment2228">
+<th class="cellalignment2235" id="r1c1-t15">ATTRIBUTE NAME</th>
+<th class="cellalignment2235" id="r1c2-t15">CODE</th>
+<th class="cellalignment2235" id="r1c3-t15">TYPE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2228">
+<td class="cellalignment2236" id="r2c1-t15" headers="r1c1-t15"><code dir="ltr">VENDOR_SPECIFIC</code></td>
+<td class="cellalignment2236" headers="r2c1-t15 r1c2-t15">26</td>
+<td class="cellalignment2236" headers="r2c1-t15 r1c3-t15">Integer</td>
+</tr>
+<tr class="cellalignment2228">
+<td class="cellalignment2236" id="r3c1-t15" headers="r1c1-t15"><code dir="ltr">ORACLE_ROLE</code></td>
+<td class="cellalignment2236" headers="r3c1-t15 r1c2-t15">1</td>
+<td class="cellalignment2236" headers="r3c1-t15 r1c3-t15">String</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformal" --></li>
+<li>
+<p>Assign a Vendor ID for Oracle in the RADIUS server attribute configuration file that includes the SMI Network Management Private Enterprise Code of <code dir="ltr">111</code>.</p>
+<p>For example, enter the following in the RADIUS server attribute configuration file:</p>
+<p><code dir="ltr">VALUE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;VENDOR_SPECIFIC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ORACLE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;111</code></p>
+</li>
+<li>
+<p>Using the following syntax, add the <code dir="ltr">ORACLE_ROLE</code> attribute to the user profile of the users who will use external RADIUS authorization:</p>
+<p><code dir="ltr">ORA_</code><code dir="ltr"><span class="codeinlineitalic">databaseSID</span></code><code dir="ltr">_</code><code dir="ltr"><span class="codeinlineitalic">rolename</span></code><code dir="ltr">[_[A]|[D]]</code></p>
+<p>where:</p>
+<ul>
+<li>
+<p><code dir="ltr">ORA</code> designates that this role is used for Oracle purposes</p>
+</li>
+<li>
+<p><code dir="ltr">databaseSID</code> is the Oracle system identifier that is configured in the database server's <code dir="ltr">init.ora</code> file</p>
+</li>
+<li>
+<p><code dir="ltr">rolename</code> is the name of role as it is defined in the data dictionary.</p>
+</li>
+<li>
+<p><code dir="ltr">A</code> is an optional character that indicates the user has administrator's privileges for this role</p>
+</li>
+<li>
+<p><code dir="ltr">D</code> is an optional character that indicates this role is to be enabled by default</p>
+</li>
+</ul>
+<p>Ensure that RADIUS groups which map to Oracle roles adhere to the <code dir="ltr">ORACLE_ROLE</code> syntax.</p>
+<p>For example:</p>
+<pre dir="ltr">
+USERNAME     USERPASSWD="user_password",
+             SERVICE_TYPE=login_user,
+             VENDOR_SPECIFIC=ORACLE,
+             ORACLE_ROLE=ORA_ora920_sysdba
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+The RADIUS server administration documentation for information about configuring the server.</div>
+</li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1006739"></a>
+<div id="ASOAG9626" class="sect2">
+<h3 class="sect2"><span class="secnum">11.3.5</span> Step 5: Configure RADIUS Accounting</h3>
+<p>RADIUS <a id="sthref479"></a><a id="sthref480"></a>accounting logs information about access to the Oracle database server and stores it in a file on the RADIUS accounting server. Use this feature only if both the RADIUS server and authentication server support it.</p>
+<p>This section contains:</p>
+<ul>
+<li>
+<p><a href="#CIHFGGGA">Step 5A: Set RADIUS Accounting on the Oracle Database Server</a></p>
+</li>
+<li>
+<p><a href="#i1006766">Step 5B: Configure the RADIUS Accounting Server</a></p>
+</li>
+</ul>
+<a id="CIHFGGGA"></a>
+<div id="ASOAG9627" class="sect3">
+<h4 class="sect3"><span class="secnum">11.3.5.1</span> Step 5A: Set RADIUS Accounting on the Oracle Database Server</h4>
+<ol>
+<li>
+<p>Start Oracle Net Manager.</p>
+<ul>
+<li>
+<p>(UNIX) From <code dir="ltr"><span class="codeinlineitalic">$ORACLE_HOME</span></code><code dir="ltr">/bin</code>, enter the following command at the command line:</p>
+<pre dir="ltr">
+netmgr
+</pre></li>
+<li>
+<p>(Windows) Select <span class="bold">Start</span>, <span class="bold">Programs</span>, <span class="bold">Oracle - HOME_NAME</span>, <span class="bold">Configuration and Migration Tools</span>, then <span class="bold">Net Manager</span>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Expand <span class="bold">Oracle Net Configuration</span>, and from <span class="bold">Local</span>, select <span class="bold">Profile</span>.</p>
+</li>
+<li>
+<p>From the <span class="bold">Naming</span> list, select <span class="bold">Network Security</span>.</p>
+<p>The Network Security tabbed window appears.</p>
+</li>
+<li>
+<p>Select the <span class="bold">Other Params</span> tab.</p>
+</li>
+<li>
+<p>From the Authentication Service list, select <span class="bold">RADIUS</span>.</p>
+</li>
+<li>
+<p>In the <span class="bold">Send Accounting</span> field, enter <span class="bold">ON</span> to enable accounting or <span class="bold">OFF</span> to disable accounting.</p>
+</li>
+<li>
+<p>From the <span class="bold">File</span> menu, select <span class="bold">Save Network Configuration</span>.</p>
+<p>The <code dir="ltr">sqlnet.ora</code> file is updated with the following entry:</p>
+<pre dir="ltr">
+<a id="sthref481"></a>SQLNET.RADIUS_SEND_ACCOUNTING= ON
+</pre></li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<a id="i1006766"></a>
+<div id="ASOAG9628" class="sect3">
+<h4 class="sect3"><span class="secnum">11.3.5.2</span> Step 5B: Configure the RADIUS Accounting Server</h4>
+<p>RADIUS Accounting Server consists of an accounting server residing on either the same host as the RADIUS authentication server or on a separate host.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+Administration documentation for the RADIUS server, for information about configuring RADIUS accounting</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BABCHEIG"></a>
+<div id="ASOAG9629" class="sect2">
+<h3 class="sect2"><span class="secnum">11.3.6</span> Step 6: Add the RADIUS Client Name to the RADIUS Server Database</h3>
+<p>You can use virtually any RADIUS server that complies with the standards in the Internet Engineering Task Force (IETF) RFC #2138, <span class="italic">Remote Authentication Dial In User Service (RADIUS)</span> and RFC #2139 <span class="italic">RADIUS Accounting</span>. Because RADIUS servers vary, consult the documentation for your particular RADIUS server for any unique interoperability requirements.</p>
+<p>To add the RADIUS client name to a Livingston RADIUS server:</p>
+<ol>
+<li>
+<p>Open the clients file, which can be found at <code dir="ltr">/etc/raddb/clients</code>. The following text and table appear:</p>
+<pre dir="ltr">
+@ (#) clients 1.1 2/21/96 Copyright 1991 Livingston Enterprises Inc
+This file contains a list of clients which are allowed to make authentication requests and their encryption key. The first field is a valid hostname. The second field (separated by blanks or tabs) is the encryption key.
+Client Name                     Key
+</pre></li>
+<li>
+<p>In the <code dir="ltr">CLIENT NAME</code> column, enter the host name or IP address of the host on which the Oracle database server is running. In the <code dir="ltr">KEY</code> column, type the shared secret.</p>
+<p>The value you enter in the <code dir="ltr">CLIENT NAME</code> column, whether it is the client's name or IP address, depends on the RADIUS server.</p>
+</li>
+<li>
+<p>Save and close the clients file.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+Administration documentation for the RADIUS server</div>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="i1006790"></a>
+<div id="ASOAG9630" class="sect2">
+<h3 class="sect2"><span class="secnum">11.3.7</span> Step 7: Configure the Authentication Server for Use with RADIUS</h3>
+<p>Refer to the authentication server documentation for instructions about configuring the authentication servers.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="preface.htm#i970177">"Related Documentation"</a>, which contains a list of possible resources.</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1006804"></a>
+<div id="ASOAG9631" class="sect2">
+<h3 class="sect2"><span class="secnum">11.3.8</span> Step 8: Configure the RADIUS Server for Use with the Authentication Server</h3>
+<p>Refer to the RADIUS server documentation for instructions about configuring the RADIUS server for use with the authentication server.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1006807"></a>
+<div id="ASOAG9632" class="sect2">
+<h3 class="sect2"><span class="secnum">11.3.9</span> Step 9: Configure Mapping Roles</h3>
+<p>If the<a id="sthref482"></a><a id="sthref483"></a> RADIUS server supports vendor type attributes, you can manage roles by storing them in the RADIUS server. The Oracle database server downloads the roles when there is a <code dir="ltr">CONNECT</code> request using RADIUS.</p>
+<p>To use this feature, configure roles on both the Oracle database server and the RADIUS server.</p>
+<p>To configure roles on the Oracle database server:</p>
+<ol>
+<li>
+<p>Use a text editor to set the <code dir="ltr">OS_ROLES</code> parameter in the initialization parameters file on the Oracle database server.</p>
+<p>By default, the <code dir="ltr">init.ora</code> file is located in the <code dir="ltr"><span class="codeinlineitalic">ORACLE_HOME</span></code><code dir="ltr">/dbs</code> directory (or the same location of the data files) on Linux and UNIX systems, and in the <code dir="ltr"><span class="codeinlineitalic">ORACLE_HOME</span></code><code dir="ltr">\database</code> directory on Windows.</p>
+</li>
+<li>
+<p>Stop and restart the Oracle database server.</p>
+<p>For example:</p>
+<pre dir="ltr">
+SQL&gt; SHUTDOWN
+SQL&gt; STARTUP
+</pre></li>
+<li>
+<p>Create each role that the RADIUS server will manage on the Oracle database server with the value <code dir="ltr">IDENTIFIED EXTERNALLY</code>.</p>
+<p>To configure roles on the RADIUS server, use the following syntax:</p>
+<pre dir="ltr">
+ORA_DatabaseName.DatabaseDomainName_RoleName
+</pre>
+<p>In this specification:</p>
+<ul>
+<li>
+<p><code dir="ltr">DatabaseName</code> is the name of the Oracle database server for which the role is being created. This is the same as the value of the DB_NAME initialization parameter.</p>
+</li>
+<li>
+<p><code dir="ltr">DatabaseDomainName</code> is the name of the domain to which the Oracle database server belongs. The value is the same as the value of the <code dir="ltr">DB_DOMAIN</code> initialization parameter.</p>
+</li>
+<li>
+<p><code dir="ltr">RoleName</code> is name of the role created in the Oracle database server.</p>
+</li>
+</ul>
+<p>For example:</p>
+<pre dir="ltr">
+ORA_USERDB.US.EXAMPLE.COM_MANAGER
+</pre></li>
+<li>
+<p>Configure RADIUS challenge-response mode.</p>
+</li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#BABJCBFD">Challenge-Response (Asynchronous) Authentication Mode</a></p>
+</li>
+<li>
+<p><a href="#i1006562">Step 2C(2): Configure Challenge-Response</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006861"></a>
+<div id="ASOAG9633" class="sect1">
+<h2 class="sect1"><span class="secnum">11.4</span> Using RADIUS to Log In to a Database</h2>
+<p>If you are using the synchronous authentication mode, launch SQL*Plus and enter the following command at the prompt:</p>
+<pre dir="ltr">
+CONNECT username@database_alias
+Enter password: <span class="italic">password</span>
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You can log in with this command only when challenge-response is not turned to <code dir="ltr">ON</code>.</div>
+<p>If you are using the challenge-response mode, launch SQL*Plus and, at the prompt, enter the command that follows:</p>
+<pre dir="ltr">
+CONNECT /@database_alias
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+<ul>
+<li>
+<p>You can log in with this command only when challenge-response is turned to <code dir="ltr">ON</code>.</p>
+</li>
+<li>
+<p>The challenge-response mode can be configured for all login cases.</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="i1006876"></a>
+<div id="ASOAG9634" class="sect1">
+<h2 class="sect1"><span class="secnum">11.5</span> RSA ACE/Server Configuration Checklist</h2>
+<p>If you are using an RSA ACE/Server as a RADIUS server, check the following items before making your initial connection:</p>
+<ul>
+<li>
+<p>Ensure that the host agent in the RSA ACE/Server is set up to send a node secret. In version 5.0, this is done by leaving the SENT Node secret box unchecked. If the RSA ACE/Server fails to send a node secret to the agent, then a node verification failure message will be written to the RSA ACE/Server log.</p>
+</li>
+<li>
+<p>If you are using RSA SecurID tokens, then ensure that the token is synchronized with the RSA ACE/Server.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+RSA ACE/Server documentation for specific information about troubleshooting.</div>
+</li>
+</ul>
+</div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment2227">
+<tr>
+<td class="cellalignment2236">
+<table class="cellalignment2232">
+<tr>
+<td class="cellalignment2231"><a href="asopart3.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment2231"><a href="asokerb.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;1996, 2016,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment2238">
+<table class="cellalignment2230">
+<tr>
+<td class="cellalignment2231"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment2231"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment2231"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment2231"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment2231"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment2231"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Scheduling ETL Jobs</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 037" />
+<meta name="dcterms.created" content="2011-09-21T18:21:34Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Warehouse Builder Data Modeling, ETL, and Data Quality Guide" />
+<meta name="dcterms.identifier" content="E10935-05" />
+<meta name="dcterms.isVersionOf" content="WBETL" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2000, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="etl_performance.htm" title="Previous" type="text/html" />
+<link rel="Next" href="deploy.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10935.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">16/37</span> <!-- End Header --><a id="CHDGEGJF"></a><a id="WBETL11000"></a>
+<h1 class="chapter"><span class="secnum">11</span> Scheduling ETL Jobs</h1>
+<p><a id="sthref1395"></a><a id="sthref1396"></a>This chapter contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#CHDHGGFG">"Overview of Schedules"</a></p>
+</li>
+<li>
+<p><a href="#BIHDCJCD">"Defining Schedules"</a></p>
+</li>
+<li>
+<p><a href="#CIHJCJEI">"Applying Schedules to ETL Objects"</a></p>
+</li>
+<li>
+<p><a href="#CIHGJAHH">"Scheduling ETL Jobs in Oracle Enterprise Manager"</a></p>
+</li>
+</ul>
+<a id="CHDHGGFG"></a><a id="WBETL11001"></a>
+<div class="sect1">
+<h2 class="sect1">Overview of Schedules</h2>
+<p><a id="sthref1397"></a>Use schedules to plan when and how often to run operations that you designed within Oracle Warehouse Builder. You can apply schedules to mappings and process flows to run in Oracle Database 10<span class="italic">g</span> or later.</p>
+<p>You can define schedules to run repeatedly based on an interval you define in the user interface. For each schedule you define, Oracle Warehouse Builder generates codes that follows the iCal calendaring standards, which can be deployed to a scheduler such as Oracle Scheduler or Oracle Concurrent Manager.</p>
+<p>When you are in the development phase of using Oracle Warehouse Builder, you may not want to schedule mappings and process flows but rather start and stop them immediately from a Control Center as described in <a href="deploy.htm#i1088602">"Deploying Objects"</a>.</p>
+<p class="subhead2"><a id="sthref1398"></a>Overview of Defining Schedules</p>
+<p>Schedules are defined in projects and contained in Calendar modules under the Schedules node on the Projects Navigator. Calendar modules are used to group a set of related schedules that are deployed to the same location.</p>
+<p>A schedule definition contains details about when and how often operations you define using Oracle Warehouse Builder are run. When you define a schedule, specify the following details:</p>
+<ul>
+<li>
+<p>Start date and time</p>
+<p>The date and time when the schedule begins to run</p>
+</li>
+<li>
+<p>Schedule frequency</p>
+<p>The frequency at which the schedule is run (for example, daily, weekly, and so on)</p>
+</li>
+<li>
+<p>Repeat interval</p>
+<p>The time intervals at which the schedule is repeated when it is active. The repeat interval determines how often the schedule repeats. For example, you define a schedule whose frequency is weekly. For the repeat interval of this schedule, you specify that this schedule should repeat every two weeks, on Tuesday.</p>
+</li>
+<li>
+<p>End date and time</p>
+<p>The date and time at which the schedule stops execution</p>
+</li>
+</ul>
+<p class="subhead2"><a id="sthref1399"></a>Overview of Using Schedules</p>
+<p>Once you define a schedule, you can associate it with ETL objects so that the objects are run according to the details defined in the schedule. You can associate schedules with mappings, Code Template (CT) mappings, process flows, and data auditors.</p>
+<p>For example, you create a schedule that starts on 12-mar-08 and that ends on 11-mar-09. You define the schedule frequency as weekly and the repeat interval as every week on Friday. You then associate this schedule with a mapping. Your mapping is run according to the details specified in the schedule. The mapping runs every Friday between 12-mar-08 and 11-mar-09.</p>
+<p class="subhead2"><a id="CIHBBCID"></a>Overview of Deploying Schedules</p>
+<p>The location to which you deploy schedules depends on the ETL objects with which the schedule is associated. Scheduled jobs must be deployed to an Oracle Database location. Process flow packages must be deployed either to an Oracle Workflow location or to a Concurrent Manager location.</p>
+<p>Scheduled jobs may reference an executable object, such as a process flow or a mapping. If a job references a process flow, then you must deploy the process flow to Oracle Workflow and deploy the scheduled job to either a database location or a Concurrent Manager location.</p>
+</div>
+<!-- class="sect1" -->
+<a id="BIHDCJCD"></a><a id="WBETL11002"></a>
+<div class="sect1">
+<h2 class="sect1">Defining <a id="sthref1400"></a><a id="sthref1401"></a><a id="sthref1402"></a><a id="sthref1403"></a>Schedules</h2>
+<p>Use the following steps to define a schedule.</p>
+<ol>
+<li>
+<p>Expand the project node under which you want to create your schedule.</p>
+</li>
+<li>
+<p>If you have not done so, create a Calendar module to contain your schedule.</p>
+<p>To create a Calendar module, right-click the Schedules node and select <span class="bold">New Calendar module</span>. The Create Module Wizard is displayed. Use this wizard to create the Calendar module. Ensure that the location associated with this module is the location to which you want your schedules to be deployed.</p>
+</li>
+<li>
+<p>Right-click the Calendar module in which you want to create your schedule, and select <span class="bold">New Calendar</span>.</p>
+<p>The Create Schedule Wizard is displayed.</p>
+</li>
+<li>
+<p>On the Welcome page, click <span class="bold">Next</span>.</p>
+</li>
+<li>
+<p>On the Name and Description page, provide a name and an optional description for the schedule and click <span class="bold">Next</span>.</p>
+<p>Ensure that the schedule name is unique within the Calendar module in which it is displayed. See <a href="orcl_data_objx.htm#CHDEAEAD">"Naming Conventions for Data Objects"</a> for more information.</p>
+</li>
+<li>
+<p>On the Choose Start and End Time page, select the time zone, start time, and end time for the schedule. Click <span class="bold">Next</span>.</p>
+<p>For more information about setting these values, see <a href="#CIHGCIBH">"Start and End Dates and Times"</a>.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+The Create Schedule Wizard does not contain all the available scheduling capabilities. To access the full range of scheduling capabilities, after you define a schedule using the wizard, use the Schedule Editor to specify additional scheduling capabilities.</div>
+</li>
+<li>
+<p>On the Choose the Frequency and Repeat Interval page, specify the frequency and repeat interval for the schedule. Click <span class="bold">Next</span>.</p>
+<p>For more information about setting the frequency and repeat interval, see <a href="#CIHDHBAE">"Defining Schedules To Repeat"</a>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#BABCFEDI">"Example Schedules"</a> for examples of schedules.</div>
+</li>
+<li>
+<p>On the Summary page, review the options that you selected for the schedule. Click <span class="bold">Finish</span> to define the schedule.</p>
+<p>The schedule is created and added to the Projects Navigator under the Calendar module.</p>
+</li>
+</ol>
+<p>Defining a schedule creates the metadata for the schedule in the workspace. Before you can use this schedule to run ETL jobs at the times defined in the schedule, you must deploy the schedule. When you deploy a schedule to an Oracle Database location, the schedule is created in the database scheduler.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="deploy.htm#BIHEHEAI">"About Deploying Schedules"</a></p>
+</li>
+<li>
+<p><a href="deploy.htm#i1088602">"Deploying Objects"</a></p>
+</li>
+</ul>
+</div>
+<div class="sect2"><a id="sthref1404"></a>
+<h3 class="sect2">Editing Schedules</h3>
+<p>Use the Schedule Editor to edit schedules.</p>
+<p><a href="#CIHFHAEE">Figure 11-1</a> shows<a id="sthref1405"></a><a id="sthref1406"></a> the Schedule Editor with the <a href="#CIHGCIBH">"Start and End Dates and Times"</a> at the top of the editor.</p>
+<p>The repeat expression appears in the lower-left panel of the editor. Use the repeat expression to specify the <a href="#CIHHBICH">"Frequency Unit"</a>, <a href="#CIHDGDEF">"Repeat Every"</a>, and one or more <a href="#CIHIGEII">"By Clauses"</a>.</p>
+<p>The schedule preview appears in the lower-right panel. The preview refreshes each time you press the Enter key or navigate to a new cell on the Schedule Editor. If you specify an invalid schedule, then the preview displays an error message.</p>
+<p>For examples of schedules that you can define, see <a href="#BABCFEDI">"Example Schedules"</a>.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CIHFHAEE"></a>Figure 11-1 The Schedule Editor</p>
+<img width="618" height="624" src="img/sched_det.gif" alt="Description of Figure 11-1 follows" /><br />
+<a id="sthref1407" href="img_text/sched_det.htm">Description of "Figure 11-1 The Schedule Editor"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<a id="CIHGCIBH"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Start and End Dates and Times</h4>
+<p>The start and end dates and times define the duration <a id="sthref1408"></a>for which the schedule is valid.</p>
+<p>Begin by specifying the time zone. You can accept the default start date or specify a time in the future. Be sure to change the default end date, which equals the default start date.</p>
+<p>When working in the wizard, click <span class="bold">Next</span> to view the next page.</p>
+<p>When working in the Schedule Editor, the start date and time become the defaults for the By Clauses in the Repeat Expression. The execution time in Schedule Preview corresponds to the Start Time.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CIHDHBAE"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Defining Schedules To Repeat</h4>
+<p><a id="sthref1409"></a><a id="sthref1410"></a>The repeat expression determines how often the schedule is run. Define the repeat expression by specifying the Frequency Unit, the Repeat Every value, and one or more By Clauses values.</p>
+<p>When you are working in the wizard, By Clauses are not available. After you complete the wizard, you can open the schedule and set the By Clauses using the Schedule Editor.</p>
+<p class="subhead2"><a id="CIHHBICH"></a>Frequency Unit</p>
+<p>The Frequency Unit determines the type of recurrence. The possible values are YEARLY, MONTHLY, WEEKLY, DAILY, HOURLY, MINUTELY, and SECONDLY.</p>
+<p>Also, you can define schedules to run One Time.</p>
+<p class="subhead2"><a id="CIHDGDEF"></a>Repeat Every</p>
+<p>The Repeat Every value specifies how often the recurrence repeats. The default value is 1 and the maximum value is 999. If you select YEARLY for the Frequency Unit and leave the Repeat Every value at 1, then the schedule is evaluated for every year included in the date range that you specify in <a href="#CIHGCIBH">"Start and End Dates and Times"</a>. For the same schedule, if you change Repeat Every to 2, the schedule is evaluated only every other year within the specified date range.</p>
+<p class="subhead2"><a id="CIHIGEII"></a>By Clauses</p>
+<p>By Clauses enable you to define repeat expressions for complex schedules, such as a schedule to run the first Friday of any month that contains 5 weeks. For each clause, you can either enter values or click the Ellipsis button to view a selector dialog box. If your goal is to know how to quickly type in values, then first use the selector dialog box to learn what values are valid, and then see <a href="#BABCFEDI">"Example Schedules"</a>.</p>
+<p><a href="#CIHGIBBA">Figure 11-2</a> displays the selector dialog box to pick months in a year.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CIHGIBBA"></a>Figure 11-2 Selector dialog box for Picking Months in a Year</p>
+<img width="270" height="150" src="img/sched_month_picker.gif" alt="This illustration is described in the surrounding text." /><br />
+<a id="sthref1411" href="img_text/sched_month_picker.htm">Description of "Figure 11-2 Selector dialog box for Picking Months in a Year"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>When you use the selector dialog box and click <span class="bold">OK,</span> the results are displayed in the Schedule Editor. In this way, you can use the selector dialog box to learn what values are valid.</p>
+<p><a href="#CIHJFDDJ">Figure 11-3</a> displays the Schedule Editor with the results.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CIHJFDDJ"></a>Figure 11-3 Month Clause for January and June</p>
+<img width="291" height="326" src="img/sched_month_clause.gif" alt="This illustration is described in the surrounding text." /><br />
+<a id="sthref1412" href="img_text/sched_month_clause.htm">Description of "Figure 11-3 Month Clause for January and June"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>You can define the following by clauses:</p>
+<ul>
+<li>
+<p><a href="#CIHGDDCG">"By Month"</a></p>
+</li>
+<li>
+<p><a href="#CIHHBIBF">"By Week Number"</a></p>
+</li>
+<li>
+<p><a href="#CIHDCDJC">"By Year Day"</a></p>
+</li>
+<li>
+<p><a href="#CIHBHHIF">"By Month Day"</a></p>
+</li>
+<li>
+<p><a href="#CIHFCGEF">"By Day"</a></p>
+</li>
+<li>
+<p><a href="#CIHEHDEG">"By Hour"</a></p>
+</li>
+<li>
+<p><a href="#CIHBEJDJ">"By Minute"</a></p>
+</li>
+<li>
+<p><a href="#CIHFJEJB">"By Second"</a></p>
+</li>
+<li>
+<p><a href="#CIHCDFAG">"By Set Position"</a></p>
+</li>
+</ul>
+<a id="CIHGDDCG"></a>
+<div class="sect4">
+<h5 class="sect4">By Month</h5>
+<p>This specifies in which month or months the schedule is valid. If you type in values, then use numbers such as 1 for January and 3 for March, or use three-letter abbreviations such as FEB for February and JUL for July.</p>
+</div>
+<!-- class="sect4" -->
+<a id="CIHHBIBF"></a>
+<div class="sect4">
+<h5 class="sect4">By Week Number</h5>
+<p>Only when you select Yearly for the <a href="#CIHHBICH">"Frequency Unit"</a> can you schedule by the week number in the year.</p>
+<p>You can either type in values or click the Ellipsis button to view the selector dialog box. If you type in values, then valid values include positive and negative integers from 1 to 52 or 53, depending on the year. For example, to set a schedule to run on the second to last week of the year, you can either type -2 or fill in the selector dialog box.</p>
+<p><a href="#CIHFCJAB">Figure 11-4</a> displays the Selector dialog box with the schedule that runs on the second to last week of every year.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="CIHFCJAB"></a>Figure 11-4 By Week Number Clause Set to Second To Last Week of the Year</p>
+<img width="344" height="270" src="img/sched_byweek_clause.gif" alt="This illustration is described in the surrounding text." /><br />
+<a id="sthref1413" href="img_text/sched_byweek_clause.htm">Description of "Figure 11-4 By Week Number Clause Set to Second To Last Week of the Year"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>The By Week Number clause follows the ISO-8601 standard, which defines the week as starting with Monday and ending with Sunday. Also, the first week of a year is defined as the week containing the first Thursday of the Gregorian year and containing January 4th.</p>
+<p>Using this standard, a calendar year can have 52 or 53 weeks. Part of week 1 may be in the previous calendar year. Part of week 52 may be in the following calendar year. If a year has a week 53, then part of it must be in the following calendar year.</p>
+<p>As an example, in the year 1998, week 1 began on Monday, December 29th, 1997. The last week, week 53, ended on Sunday, January 3rd, 1999. Therefore, December 29th, 1997, is in the first week of 1998 and January 1st, 1999, is in the 53rd week of 1998.</p>
+</div>
+<!-- class="sect4" -->
+<a id="CIHDCDJC"></a>
+<div class="sect4">
+<h5 class="sect4">By Year Day</h5>
+<p>Use this clause to specify the day of the year as a number. A value of 1 equates to January 1st and 35 is February 4th. Valid values are 1 to 366 and -366 to -1.</p>
+<p>The negative values are useful for identifying the same dates year after year despite the occurrence of leap years. For example, the 60th day of the year is March 1st except for leap years when it is February 29th. To calculate the appropriate negative value, count backward from the last day of the year. Therefore, the By Year Day for December 31st is -1. December 30th is -2. To define a schedule for every March 1st, despite leap years, set By Year Day to -306.</p>
+</div>
+<!-- class="sect4" -->
+<a id="CIHBHHIF"></a>
+<div class="sect4">
+<h5 class="sect4">By Month Day</h5>
+<p>This clause specifies the day of the month as a number. Valid values are 1 to 31 and -1 to -31. An example is 10, which means the 10th day of the selected month. Use the minus sign (-) to count backward from the last day. For example, if you set the By Month Day clause to -1, the schedule runs on the last day of every month. A value of -2 runs the schedule on the next to last day of every month.</p>
+</div>
+<!-- class="sect4" -->
+<a id="CIHFCGEF"></a>
+<div class="sect4">
+<h5 class="sect4">By Day</h5>
+<p>This clause specifies the day of the week from Monday to Sunday in the form MON, TUE, and so on.</p>
+<p>You can prefix the By Day values with positive and negative numbers. The numeric prefix that you can use depends on the value that you select for the <a href="#CIHHBICH">"Frequency Unit"</a>.</p>
+<p>If you select Yearly as the frequency, you can prefix By Day with values that represent the weeks in a year, 1 to 53 and -53 to -1. Therefore, By Day set to 26Fri equates to the 26th Friday of the year. An entry of -1Mon when the frequency equals Yearly, equates to the last Monday of the year.</p>
+<p>If you select Monthly as the frequency, you can prefix By Day with values that represent the weeks in a month, 1 to 5 and -5 to -1. In this case, an entry of -1Mon with frequency set to Monthly results in the last Monday of every month.</p>
+</div>
+<!-- class="sect4" -->
+<a id="CIHEHDEG"></a>
+<div class="sect4">
+<h5 class="sect4">By Hour</h5>
+<p>This clause enables you to schedule by the hour. Valid values are 0 to 23 where 0 is midnight, 5 is 5 a.m., 13 is 1 p.m., and 23 is 11 p.m.</p>
+</div>
+<!-- class="sect4" -->
+<a id="CIHBEJDJ"></a>
+<div class="sect4">
+<h5 class="sect4">By Minute</h5>
+<p>Use this clause to schedule by the minute. Valid values are 0 to 59. As an example, 45 means 45 minutes past the hour.</p>
+</div>
+<!-- class="sect4" -->
+<a id="CIHFJEJB"></a>
+<div class="sect4">
+<h5 class="sect4">By Second</h5>
+<p>Use this clause to schedule by the second. Valid values are 0 to 59. As an example, 30 means 30 seconds past the minute.</p>
+</div>
+<!-- class="sect4" -->
+<a id="CIHCDFAG"></a>
+<div class="sect4"><!-- infolevel="all" infotype="General" -->
+<h5 class="sect4">By Set Position</h5>
+<p>If your Oracle Database version is 10<span class="italic">g</span> Release 2 or later, you can use this clause to schedule based on the position of items in a previously evaluated list of timestamps. Use other By clauses to return a list of timestamps. Then add the By Set Position clause to select one or more items from that list. This clause is useful for requirements such as running a job on the last workday of the month. Valid values are 1 through 9999. A negative number selects an item from the end of the list (-1 is the last item, -2 is the next to last item, and so on) and a positive number selects from the front of the list. The clause is always evaluated last and only once per frequency. The supported frequencies are MONTHLY and YEARLY.</p>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BABCFEDI"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Example <a id="sthref1414"></a>Schedules</h3>
+<p>Use <a href="#CHDEGCII">Table 11-1</a> as a guide for defining schedules.</p>
+<div class="tblformal">
+<p class="titleintable"><a id="sthref1415"></a><a id="CHDEGCII"></a>Table 11-1 Example Repeat Expressions for Schedules</p>
+<table class="cellalignment2975" title="Example Repeat Expressions for Schedules" summary="Lists and describes each source and target operator alphabetically. The first column contains an image of the icon." dir="ltr">
+<thead>
+<tr class="cellalignment2969">
+<th class="cellalignment2976" id="r1c1-t5">Schedule Description</th>
+<th class="cellalignment2976" id="r1c2-t5">Frequency Units</th>
+<th class="cellalignment2976" id="r1c3-t5">Repeat Every</th>
+<th class="cellalignment2976" id="r1c4-t5">By Clause</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r2c1-t5" headers="r1c1-t5">
+<p>Every Friday</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t5 r1c2-t5">
+<p>weekly</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t5 r1c3-t5">
+<p>1 week</p>
+</td>
+<td class="cellalignment2977" headers="r2c1-t5 r1c4-t5">
+<p>By Day = FRI</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r3c1-t5" headers="r1c1-t5">
+<p>Every other Friday</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t5 r1c2-t5">
+<p>weekly</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t5 r1c3-t5">
+<p>2 weeks</p>
+</td>
+<td class="cellalignment2977" headers="r3c1-t5 r1c4-t5">
+<p>By Day = FRI</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r4c1-t5" headers="r1c1-t5">
+<p>Last day of every month.</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t5 r1c2-t5">
+<p>monthly</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t5 r1c3-t5">
+<p>1 month</p>
+</td>
+<td class="cellalignment2977" headers="r4c1-t5 r1c4-t5">
+<p>By Month Day = -1</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r5c1-t5" headers="r1c1-t5">
+<p>Second-to-last day of every month</p>
+</td>
+<td class="cellalignment2977" headers="r5c1-t5 r1c2-t5">
+<p>monthly</p>
+</td>
+<td class="cellalignment2977" headers="r5c1-t5 r1c3-t5">
+<p>1 month</p>
+</td>
+<td class="cellalignment2977" headers="r5c1-t5 r1c4-t5">
+<p>By Month Day = -2</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r6c1-t5" headers="r1c1-t5">
+<p>First Friday of any month containing 5 weeks</p>
+</td>
+<td class="cellalignment2977" headers="r6c1-t5 r1c2-t5">
+<p>monthly</p>
+</td>
+<td class="cellalignment2977" headers="r6c1-t5 r1c3-t5">
+<p>1 month</p>
+</td>
+<td class="cellalignment2977" headers="r6c1-t5 r1c4-t5">
+<p>By Day = -5FRI</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r7c1-t5" headers="r1c1-t5">
+<p>Last workday of every month</p>
+</td>
+<td class="cellalignment2977" headers="r7c1-t5 r1c2-t5">
+<p>monthly</p>
+</td>
+<td class="cellalignment2977" headers="r7c1-t5 r1c3-t5">
+<p>1 month</p>
+</td>
+<td class="cellalignment2977" headers="r7c1-t5 r1c4-t5">
+<p>By Day = MON,TUE,WED,THU,FRI;</p>
+<p>By Set Pos = -1</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r8c1-t5" headers="r1c1-t5">
+<p>On March 10th</p>
+</td>
+<td class="cellalignment2977" headers="r8c1-t5 r1c2-t5">
+<p>yearly</p>
+</td>
+<td class="cellalignment2977" headers="r8c1-t5 r1c3-t5">
+<p>1 year</p>
+</td>
+<td class="cellalignment2977" headers="r8c1-t5 r1c4-t5">
+<p>By Month = MAR</p>
+<p>By Month Day = 10</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r9c1-t5" headers="r1c1-t5">
+<p>Every 12 days</p>
+</td>
+<td class="cellalignment2977" headers="r9c1-t5 r1c2-t5">
+<p>daily</p>
+</td>
+<td class="cellalignment2977" headers="r9c1-t5 r1c3-t5">
+<p>12 days</p>
+</td>
+<td class="cellalignment2977" headers="r9c1-t5 r1c4-t5">
+<p>Not applicable</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r10c1-t5" headers="r1c1-t5">
+<p>Every day at 8 a.m. and 5 p.m.</p>
+</td>
+<td class="cellalignment2977" headers="r10c1-t5 r1c2-t5">
+<p>daily</p>
+</td>
+<td class="cellalignment2977" headers="r10c1-t5 r1c3-t5">
+<p>1 day</p>
+</td>
+<td class="cellalignment2977" headers="r10c1-t5 r1c4-t5">
+<p>By Hour = 8,17</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r11c1-t5" headers="r1c1-t5">
+<p>On the second Wednesday of every month</p>
+</td>
+<td class="cellalignment2977" headers="r11c1-t5 r1c2-t5">
+<p>monthly</p>
+</td>
+<td class="cellalignment2977" headers="r11c1-t5 r1c3-t5">
+<p>1 month</p>
+</td>
+<td class="cellalignment2977" headers="r11c1-t5 r1c4-t5">
+<p>By Day = 2 WED</p>
+</td>
+</tr>
+<tr class="cellalignment2969">
+<td class="cellalignment2977" id="r12c1-t5" headers="r1c1-t5">
+<p>Every hour for the first 3 days of every month</p>
+</td>
+<td class="cellalignment2977" headers="r12c1-t5 r1c2-t5">
+<p>hourly</p>
+</td>
+<td class="cellalignment2977" headers="r12c1-t5 r1c3-t5">
+<p>1 hour</p>
+</td>
+<td class="cellalignment2977" headers="r12c1-t5 r1c4-t5">
+<p>By Month Day = 1,2,3</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblformal" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CIHJCJEI"></a><a id="WBETL11003"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Applying Schedules to ETL Objects</h2>
+<p>After you define a schedule, you associate the schedule with an ETL object. It enables you to run the ETL object at the times specified in the schedule. You can associate schedules with mappings, Code Template (CT) mappings, process flows, and data auditors.</p>
+<p class="subhead2"><a id="sthref1416"></a>Steps to Apply Schedules to ETL Objects</p>
+<ol>
+<li>
+<p>In the Projects Navigator, right-click the ETL object to which you want to apply a schedule, and select <span class="bold">Configure.</span></p>
+<p>A Configuration tab containing the configuration parameters for the selected object is displayed in the Document window.</p>
+</li>
+<li>
+<p>Click the Ellipsis button on the Referred Calendar field.</p>
+<p>The Referred Calendar dialog box containing the list of available schedules is displayed.</p>
+<p>For any mapping or process flow to schedule, the physical name must be 25 characters or fewer and the business name must be 1995 characters or fewer. This restriction enables Oracle Warehouse Builder to append to the mapping name the suffix <span class="italic">_job</span> and other internal characters required for deployment and execution.</p>
+</li>
+<li>
+<p>Select the schedule to apply to the selected object and click <span class="bold">OK</span>.</p>
+</li>
+<li>
+<p>Deploy the schedule and any associated schedules.</p>
+<p>When properly deployed with its associated objects, the target schema runs the ETL object based on the schedule that you created.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect1" -->
+<a id="CIHGJAHH"></a><a id="WBETL11004"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Scheduling ETL Jobs in Oracle Enterprise Manager</h2>
+<p>After you successfully deployed a mapping or a process flow, you can schedule it to run in Oracle Enterprise Manager.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+For more information about creating jobs and schedules, refer to the <a class="olink OEMCN" href="http://www.oracle.com/pls/topic/lookup?ctx=db112&amp;id=OEMCN"><span class="italic">Oracle Enterprise Manager Concepts</span></a> and the Oracle Enterprise Manager Help system.</div>
+<p><span class="bold">To schedule a mapping or process flow in Oracle Enterprise Manager:</span></p>
+<ol>
+<li>
+<p>Successfully deploy the mapping or process flow in Oracle Warehouse Builder.</p>
+</li>
+<li>
+<p>Connect to Enterprise Manager as an Oracle Warehouse Builder repository owner or repository user.</p>
+</li>
+<li>
+<p>Create a scheduler job that uses the <code>WB_RT_API_EXEC.RUN_TASK</code> function in a PL/SQL block.</p>
+<p>For more information about this function, see <a href="#CIHJBCCA">"The WB_RT_API_EXEC.RUN_TASK Function"</a>.</p>
+</li>
+<li>
+<p>Create a schedule for running the job.</p>
+</li>
+</ol>
+<a id="CIHFADAE"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">The SQLPLUS_EXEC_TEMPLATE SQL Script</h3>
+<p>This script enables you to start the ETL process from SQL*Plus, and to use scheduling tools such as cron, AT, Autosys, and Tivoli.</p>
+<p>The <code>sqlplus_exec_template.sql</code> script is located in the following directory: <code><span class="codeinlineitalic">OWB_HOME</span></code><code>/owb/rtp/sql</code>.</p>
+<p class="subhead2"><a id="sthref1417"></a>Return Values</p>
+<br />
+1 = Success<br />
+2 = Warning<br />
+3 = Error
+<p class="subhead2"><a id="sthref1418"></a>Syntax</p>
+<pre>
+SQLPLUS_EXEC_TEMPLATE rt_owner location task_type task_name
+       system_params custom_params
+</pre>
+<p class="subhead2"><a id="sthref1419"></a>Arguments</p>
+<p>Provide a value for each of the following arguments.</p>
+<ul>
+<li>
+<p><span class="bold">rt_owner:</span> The repository owner.</p>
+</li>
+<li>
+<p><span class="bold">location:</span> For PL/SQL mappings and process flows, specify the location you used for deployment.</p>
+<p>For SQL*Loader and SAP mappings, set this parameter to <code>PlatformSchema</code>. This is a case-sensitive variable.</p>
+</li>
+<li>
+<p><span class="bold">task_type:</span> Enter the appropriate task type for the mapping or the process flow.</p>
+<ul>
+<li>
+<p><code>PLSQLMAP</code>: PL/SQL mapping</p>
+</li>
+<li>
+<p><code>SQLLOADERCONTROLFILE</code>: SQL*Loader mapping</p>
+</li>
+<li>
+<p><code>PROCESSFLOW</code>: Process flow</p>
+</li>
+<li>
+<p><code>ABAPFILE</code>: SAP mapping</p>
+</li>
+<li>
+<p><code>DATAAUDITOR</code>: Data Auditor mapping</p>
+</li>
+<li>
+<p><code>SCHEDULEDJOB</code>: Oracle Warehouse Builder scheduled job</p>
+</li>
+</ul>
+</li>
+<li>
+<p><span class="bold">task_name:</span> The physical name of the mapping or the process flow</p>
+</li>
+<li>
+<p><span class="bold">system_params:</span> Values of system parameters for this task type. These values override the default values. Enter the parameters in the form name=value. Separate multiple parameters with commas, and enclose the entire string in double quotes. A backslash (\) is the escape character, when you must include commas or double quotes as literal text.</p>
+<p>The following examples are correct:</p>
+<pre>
+","
+"this_param=true"
+"this_param=true, that_param=2"
+</pre></li>
+<li>
+<p><span class="bold">custom_params:</span> Values of a custom parameter defined for this task. Refer to system_params for the syntax.</p>
+</li>
+</ul>
+<p class="subhead2"><a id="sthref1420"></a>Examples</p>
+<p>In each of the following examples, you must provide the path to sqlplus.exe and to <code>sqplus_exec_template.sql</code>.</p>
+<pre>
+sqlplus user/password@tns_name @sqlplus_exec_template MY_RUNTIME MY_WAREHOUSE PLSQL MY_MAPPING "," ","
+
+sqlplus user/password@tns_name @sqlplus_exec_template MY_RUNTIME PlatformSchema SQL_LOADER MY_LOAD "," ","
+
+sqlplus user/password@tns_name @sqlplus_exec_template MY_RUNTIME MY_WORKFLOW PROCESS MY_PROCESS "," ","
+
+sqlplus user/password@tns_name @sqlplus_exec_template MY_RUNTIME PlatformSchema ABAP MY_SAP "," ","
+
+</pre></div>
+<!-- class="sect2" -->
+<a id="CIHJBCCA"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">The WB_RT_API_EXEC.RUN_TASK Function</h3>
+<p>The <code>RUN_TASK</code> function of the <code>WB_RT_API_EXEC</code> PL/SQL package enables you to schedule and run the ETL process from Oracle Warehouse Builder.</p>
+<p class="subhead2"><a id="sthref1421"></a>Return Value</p>
+<p>The return value is affected by the parameters of the function.</p>
+<p>When <code>background=0</code> and <code>oem_friendly=0</code>:</p>
+<br />
+1 = Success<br />
+2 = Warning<br />
+3 = Error<br />
+<p>When <code>background=0</code> and <code>oem_friendly=1</code>:</p>
+<br />
+0 = Success or Warning<br />
+3 = Error<br />
+<p>When <code>background</code><code>=1</code>:</p>
+<br />
+0 = Task successfully submitted for execution<br />
+1 = Task not successfully submitted<br />
+<p class="subhead2"><a id="sthref1422"></a>Syntax</p>
+<pre>
+RUN_TASK
+     ( location        IN   VARCHAR2,
+       task_type       IN   VARCHAR2,
+       task_name       IN   VARCHAR2,
+       custom_params   IN   VARCHAR2   DEFAULT NULL,
+       system_params   IN   VARCHAR2   DEFAULT NULL,
+       oem_friendly    IN   NUMBER     DEFAULT 0,
+       background      IN   NUMBER     DEFAULT 0
+     ) 
+     RETURN NUMBER;
+</pre>
+<p>Provide a value for each of the following parameters:</p>
+<ul>
+<li>
+<p><span class="bold">location:</span> For PL/SQL mappings and process flows, specify the location you used for deployment.</p>
+<p>For SQL*Loader and SAP mappings, set this parameter to PlatformSchema. This is a case-sensitive variable.</p>
+</li>
+<li>
+<p><span class="bold">task_type:</span> Enter the appropriate task type for the mapping or the process flow.</p>
+<ul>
+<li>
+<p><code>PLSQLMAP</code> or <code>PLSQL</code>: PL/SQL mapping</p>
+</li>
+<li>
+<p><code>SQLLoader</code> or <code>SQLLoaderControlFile</code> or <code>SQLLoaderMap</code>: SQL*Loader mapping</p>
+</li>
+<li>
+<p><code>Process</code> or <code>ProcessFlow</code>: Process flow</p>
+</li>
+<li>
+<p><code>ABAPFile</code> or <code>SAPMap</code> or SAP: SAP mapping</p>
+</li>
+<li>
+<p><code>DataAuditor</code>: Data auditor mapping</p>
+</li>
+<li>
+<p><code>ScheduledJob</code>: Oracle Warehouse Builder schedule object</p>
+</li>
+<li>
+<p><code>AppsCMScheduler</code>: Concurrent Manager schedule job</p>
+</li>
+<li>
+<p><code>DBMSScheduler</code>: Database schedule job</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Previously, you could specify <code>task_type</code> using both, a numeric value and a literal value. For example, you could use 3 to specify <code>ProcessFlow</code>, or 4 to specify <code>SAP</code> and so on. But starting with 11g Release 2 (11.2), numeric values are no longer valid. It is mandatory to use the literal value. The value can be in uppercase, lowercase, or in mixed case. For example, <code>PROCESSFLOW</code>, <code>ProcessFlow</code>, and <code>processflow</code> are all valid.</div>
+</li>
+</ul>
+</li>
+<li>
+<p><span class="bold">task_name:</span> The name of the mapping or the process flow.</p>
+</li>
+<li>
+<p><span class="bold">custom_params:</span> Values of a custom parameter defined for this task. Refer to system_params for the syntax.</p>
+</li>
+<li>
+<p><span class="bold">system_params:</span> Values of system parameters for this task type. These values override the default values. Enter the parameters in the form name=value.</p>
+<p>Separate multiple parameters with commas, and enclose the entire string in double quotes. A backslash (\) is the escape character, when you must include commas or double quotes as literal text.</p>
+<p>The following examples are correct:</p>
+<pre>
+","
+"this_param=true"
+"this_param=true, that_param=2"
+</pre></li>
+<li>
+<p><span class="bold">oem_friendly:</span> Controls the return values. Set to 1 for execution in Enterprise Manager, or set to 0 for other environments.</p>
+</li>
+<li>
+<p><span class="bold">background:</span> Controls execution of the task. Set to 1 for background, or set to 0 for foreground.</p>
+</li>
+</ul>
+<p class="subhead2"><a id="sthref1423"></a>Example</p>
+<p>The following example displays the return value of the function, which runs a mapping named CUSTOMER_MAP in SALES_TARGET_LOCATION.</p>
+<pre>
+BEGIN
+DBMS_OUTPUT.PUT_LINE('Result: ' || TO_CHAR(gccrep.wb_rt_api_exec.run_task(
+'SALES_TARGET_LOCATION','PLSQLMAP','CUSTOMER_MAP', null, null, 1)));
+END;
+</pre></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment2968">
+<tr>
+<td class="cellalignment2977">
+<table class="cellalignment2973">
+<tr>
+<td class="cellalignment2972"><a href="etl_performance.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment2972"><a href="deploy.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2000, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment2980">
+<table class="cellalignment2971">
+<tr>
+<td class="cellalignment2972"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment2972"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment2972"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment2972"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment2972"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment2972"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

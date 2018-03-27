@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>CONVERT</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1054" />
+<meta name="description" content="A guide to backup and recovery of Oracle databases, including RMAN backup and recovery, RMAN data transfer, Oracle Flashback Technology, and user-managed backup and recovery" />
+<meta name="dcterms.created" content="2015-05-13T7:47:40Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Backup and Recovery Reference" />
+<meta name="dcterms.identifier" content="E10643-09" />
+<meta name="dcterms.isVersionOf" content="RCMRF" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2003, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="rcmsynta011.htm" title="Previous" type="text/html" />
+<link rel="Next" href="rcmsynta013.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10643.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">25/158</span> <!-- End Header --><a id="i88628"></a>
+<div id="RCMRF192" class="refsect1">
+<h1 class="refsect1">CONVERT</h1>
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref665"></a>Purpose</p>
+<p><code dir="ltr"><span class="codeinlineitalic"><a id="ABC27858558"></a><a id="ABC27858558SRI1"></a><a id="ABC27858558SRI12"></a><a id="ABC27858558SRI123"></a><a id="ABC27858558SRI1234"></a><a id="ABC27858558SRI12345"></a></span></code>Use the <a id="CHDHJHCH"></a><code dir="ltr">CONVERT</code> command to convert a tablespace, data file, or database to the format of a destination platform in preparation for transport across different platforms.</p>
+<p>In Oracle Database 10<span class="italic">g</span> and later releases, <code dir="ltr">CONVERT DATAFILE</code> or <code dir="ltr">CONVERT TABLESPACE</code> is required in the following scenarios:</p>
+<ul>
+<li>
+<p>Transporting data files between platforms for which the value in <a id="sthref666"></a><a id="sthref667"></a><code dir="ltr">V$TRANSPORTABLE_PLATFORM.ENDIAN_FORMAT</code> differs.</p>
+</li>
+<li>
+<p><a id="sthref668"></a><a id="sthref669"></a><a id="sthref670"></a>Transporting tablespaces with undo segments (typically <code dir="ltr">SYSTEM</code> and <code dir="ltr">UNDO</code> tablespaces, but also tablespaces using rollback segments) between platforms, regardless of whether the <code dir="ltr">ENDIAN_FORMAT</code> is the same or different. Typically, the <code dir="ltr">SYSTEM</code> and <code dir="ltr">UNDO</code> tablespaces are converted only when converting the entire database.</p>
+</li>
+<li>
+<p>Other platform specific data files, (like when converting to or from the hp Tru64 operating system), require additional data file conversion .</p>
+</li>
+</ul>
+<p>One use of <code dir="ltr">CONVERT</code> is to transport a tablespace into a database stored in ASM. Native operating system commands such as Linux <code dir="ltr">cp</code> and Windows <code dir="ltr">COPY</code> cannot read from or write to ASM disk groups.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink BRADV05432" href="../../backup.112/e10642/rcmxplat.htm#BRADV05432"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a> for a complete discussion of the use of <code dir="ltr">CONVERT DATAFILE</code>, <code dir="ltr">CONVERT TABLESPACE</code>, and <code dir="ltr">CONVERT DATABASE</code></div>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref671"></a>Prerequisites</p>
+<p>The platforms must be supported by the <code dir="ltr">CONVERT</code> command. Query <code dir="ltr">V$TRANSPORTABLE_PLATFORM</code> to determine the supported platforms. Cross-platform tablespace transport is only supported when both the source and destination platforms are contained in this view.</p>
+<p>Both source and destination databases must be running with initialization parameter <code dir="ltr">COMPATIBLE</code> set to 10.0.0 or higher. Note the following compatibility prerequisites:</p>
+<ul>
+<li>
+<p>If <code dir="ltr">COMPATIBLE</code> is less than 11.0.0, then read-only tablespaces or existing transported tablespaces must have been made read/write at least once before they can be transported to a different platform. You can open a tablespace read/write and then immediately make it read-only again.</p>
+</li>
+<li>
+<p>If <code dir="ltr">COMPATIBLE</code> is 11.0.0 or higher, then the preceding read/write tablespace restriction does not apply. However, any <span class="italic">existing</span> transported tablespaces must have the 10.0 format, that is, they were made read/write with <code dir="ltr">COMPATIBLE</code> set to 10.0 before they were transported.</p>
+</li>
+</ul>
+<p class="subhead2"><a id="RCMRF90100"></a>CONVERT TABLESPACE Prerequisites</p>
+<p>You can only use <code dir="ltr">CONVERT TABLESPACE</code> when connected as <code dir="ltr">TARGET</code> to the <span class="italic">source</span> database and converting tablespaces on the source platform.</p>
+<p>The source database must be mounted or open. The tablespaces to be converted must be read-only at the time of the conversion. The state of the destination database is irrelevant when converting tablespaces on the source database.</p>
+<p class="subhead2"><a id="RCMRF90101"></a>CONVERT DATAFILE Prerequisites</p>
+<p>You can only use <code dir="ltr">CONVERT DATAFILE</code> when connected as <code dir="ltr">TARGET</code> to the <span class="italic">destination</span> database and converting data file copies on the destination platform.</p>
+<p>If you run a <code dir="ltr">CONVERT DATAFILE</code> script generated by <code dir="ltr">CONVERT DATABASE ON DESTINATION</code>, then the destination database instance must be started with the <code dir="ltr">NOMOUNT</code> option. If you are <span class="italic">not</span> running a <code dir="ltr">CONVERT DATAFILE</code> script generated by <code dir="ltr">CONVERT DATABASE ON DESTINATION</code>, then the destination database can be started, mounted, or open.</p>
+<p>The state of the source database is irrelevant when converting data file copies on the destination database. However, if you run a <code dir="ltr">CONVERT DATAFILE</code> script as part of a database conversion on the destination database, and if the script is directly accessing the data files on the source database (for example, through an NFS mount), then the source database must be open read-only.</p>
+<p>When converting a tablespace on the destination host, you must use <code dir="ltr">CONVERT DATAFILE</code> rather than <code dir="ltr">CONVERT TABLESPACE</code> because the target database cannot associate the data files with tablespaces during the conversion. After you have converted the data files required for a tablespace, you can transport them into the destination database.</p>
+<p class="subhead2"><a id="RCMRF90102"></a>CONVERT DATABASE Prerequisites</p>
+<p>You can only use <code dir="ltr">CONVERT DATABASE</code> when connected as <code dir="ltr">TARGET</code> to the <span class="italic">source</span> database, which must be opened read-only. The state of the destination database is irrelevant when executing <code dir="ltr">CONVERT DATABASE</code>, even if you run <code dir="ltr">CONVERT DATABASE ON DESTINATION</code>.</p>
+<p>Because <code dir="ltr">CONVERT DATABASE</code> uses the same mechanism as <code dir="ltr">CONVERT TABLESPACE</code> and <code dir="ltr">CONVERT DATAFILE</code> to convert the data files, the usage notes and restrictions for tablespaces and data files also apply.</p>
+<p>The primary additional prerequisite for <code dir="ltr">CONVERT DATABASE</code> is that the source and target platforms must share the same endian format. For example, you can transport a database from Microsoft Windows to Linux for x86 (both little-endian), or from HP-UX to AIX (both big-endian), but not from Solaris to Linux x86. You can create a new database on a target platform manually, however, and transport individual tablespaces from the source database with <code dir="ltr">CONVERT TABLESPACE</code> or <code dir="ltr">CONVERT DATAFILE</code>.</p>
+<p>Even if the endian formats for the source and destination platform are the same, the data files for a transportable database must undergo a conversion on either the source or destination host. Unlike transporting tablespaces across platforms, where conversion is not necessary if the endian formats are the same, transporting an entire database requires that certain types of blocks, such as blocks in undo segments, be converted to ensure compatibility with the destination platform.</p>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref672"></a>Usage Notes</p>
+<p>Input files are not altered by <code dir="ltr">CONVERT</code> because the conversion is not performed in place. Instead, RMAN writes converted files to a specified output destination.</p>
+<p class="subhead2"><a id="RCMRF90103"></a>Data Type Restrictions</p>
+<p><a id="sthref673"></a><a id="sthref674"></a><a id="sthref675"></a><a id="sthref676"></a><a id="sthref677"></a><a id="sthref678"></a><a id="sthref679"></a><a id="sthref680"></a><code dir="ltr">CONVERT</code> <a id="sthref681"></a><a id="sthref682"></a>does not process user data types that require endian conversions. To transport objects between databases that are built on underlying types that store data in a platform-specific format, use the Data Pump Import and Export utilities.</p>
+<p>Before Oracle Database 10<span class="italic">g</span>, CLOBs in a variable-width character set such as <code dir="ltr">UTF8</code> were stored in an endian-dependent fixed width format. The <code dir="ltr">CONVERT</code> command does not perform conversions on these CLOBs. Instead, RMAN captures the endian format of each LOB column and propagates it to the target database. Subsequent reads of this data by the SQL layer interpret the data correctly based on either endian format and write it out in an endian-independent way if the tablespace is writeable. CLOBs created in Oracle Database 10<span class="italic">g</span> and later releases are stored in character set <code dir="ltr">AL16UTF16</code>, which is platform-independent.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink ADMIN01101" href="../../server.112/e25494/tspaces.htm#ADMIN01101"><span class="italic">Oracle Database Administrator's Guide</span></a> to learn how to transport tablespaces</div>
+</div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref683"></a>Syntax</p>
+<p class="subhead2"><a id="RCMRF90104"></a><a id="sthref684"></a><a id="sthref685"></a><a href="#BGBBGAJG"><span class="xreftitleitalic"><span class="italic">convert</span></span></a>::=</p>
+<img width="553" height="157" src="img/convert.gif" alt="Description of convert.gif follows" /><br />
+<a id="sthref686" href="img_text/convert.htm">Description of the illustration convert.gif</a><br />
+<br />
+<p>(<a href="#CHDCFHAC"><span class="xreftitleitalic"><span class="italic">transportOptionList</span>::=</span></a>, <a href="#CHDJDGCE"><span class="xreftitleitalic"><span class="italic">convertOptionList</span>::=</span></a>)</p>
+<p class="subhead2"><a id="CHDCFHAC"></a><a id="RCMRF90105"></a><a id="sthref687"></a><a id="sthref688"></a><a href="#CHDJCHFA"><span class="xreftitleitalic"><span class="italic">transportOptionList</span></span></a>::=</p>
+<img width="532" height="192" src="img/transportoptionlist.gif" alt="Description of transportoptionlist.gif follows" /><br />
+<a id="sthref689" href="img_text/transportoptionlist.htm">Description of the illustration transportoptionlist.gif</a><br />
+<br />
+<p>(<a href="#CHDBBDAI"><span class="xreftitleitalic"><span class="italic">skipSpec</span>::=</span></a>)</p>
+<p class="subhead2"><a id="CHDBBDAI"></a><a id="RCMRF90106"></a><a id="sthref690"></a><a id="sthref691"></a><a href="#CHDFGJEB"><span class="xreftitleitalic"><span class="italic">skipSpec</span></span></a>::=</p>
+<img width="169" height="74" src="img/skipspec.gif" alt="Description of skipspec.gif follows" /><br />
+<a id="sthref692" href="img_text/skipspec.htm">Description of the illustration skipspec.gif</a><br />
+<br />
+<p class="subhead2"><a id="CHDJDGCE"></a><a id="RCMRF90107"></a><a id="sthref693"></a><a id="sthref694"></a><a href="#BGBBAIAJ"><span class="xreftitleitalic"><span class="italic">convertOptionList</span></span></a>::=</p>
+<img width="253" height="133" src="img/convertoptionlist.gif" alt="Description of convertoptionlist.gif follows" /><br />
+<a id="sthref695" href="img_text/convertoptionlist.htm">Description of the illustration convertoptionlist.gif</a><br />
+<br />
+<p>(<a href="rcmsubcl007.htm#BABBJGBH"><span class="xreftitleitalic"><span class="italic">fileNameConversionSpec</span>::=</span></a>, <a href="#CHDJEHIB"><span class="xreftitleitalic"><span class="italic">formatSpec</span>::=</span></a>)</p>
+<p class="subhead2"><a id="CHDJEHIB"></a><a id="RCMRF90108"></a><a id="sthref696"></a><a id="sthref697"></a><a href="rcmsubcl010.htm#BABIIDGD"><span class="xreftitleitalic"><span class="italic">formatSpec</span></span></a>::=</p>
+<img width="129" height="24" src="img/formatspec.gif" alt="Description of formatspec.gif follows" /><br />
+<a id="sthref698" href="img_text/formatspec.htm">Description of the illustration formatspec.gif</a><br />
+<br /></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref699"></a>Semantics</p>
+<p class="subhead2"><a id="BGBBGAJG"></a><a id="RCMRF90109"></a><a id="sthref700"></a><a id="sthref701"></a><span class="italic">convert</span></p>
+<p>This clause specifies the objects to be converted: data files, tablespaces, or database.</p>
+<div class="inftblinformalwide">
+<table class="cellalignment1929" title="Semantics of CONVERT Command" summary="Describes CONVERT command parameters" dir="ltr">
+<thead>
+<tr class="cellalignment1920">
+<th class="cellalignment1930" id="r1c1-t54">Syntax Element</th>
+<th class="cellalignment1930" id="r1c2-t54">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r2c1-t54" headers="r1c1-t54"><code dir="ltr">DATABASE</code></td>
+<td class="cellalignment1926" headers="r2c1-t54 r1c2-t54">Converts the data files to the format of the destination platform and ensures the creation of other required database files.
+<p>You use <code dir="ltr">CONVERT DATABASE</code> to transport an entire database from a source platform to a destination platform. The source and destination platforms must have the same endian format.</p>
+<p><a id="sthref702"></a>Depending on the situation, you can use <code dir="ltr">CONVERT DATABASE</code> on either the source or destination platform (see <a href="#CHDICFCE">Example 2-56</a>). The following parts of the database are not transported directly:</p>
+<ul>
+<li>
+<p>Redo logs and control files from the source database are not transported. RMAN creates new control files and redo logs for the target database during the transport and performs an <code dir="ltr">OPEN RESETLOGS</code> after the new database is created. The control file for the converted database does not contain the RMAN repository from the source database. Backups from the source database are not usable with the converted database.</p>
+</li>
+<li>
+<p>BFILEs are not transported. The <code dir="ltr">CONVERT DATABASE</code> output provides a list of objects that use the BFILE data type, but you must copy the BFILEs manually and fix their locations on the target platform.</p>
+</li>
+<li>
+<p>Data files for locally managed temporary tablespaces are not transported. The temporary tablespaces are re-created at the target platform by running the transport script.</p>
+</li>
+<li>
+<p>External tables and directories are not transported. The <code dir="ltr">CONVERT DATABASE</code> output shows a list of affected objects, but you must redefine these objects on the target platform. See <a class="olink ADMIN01507" href="../../server.112/e25494/tables.htm#ADMIN01507"><span class="italic">Oracle Database Administrator's Guide</span></a> for more information on managing external tables and directories.</p>
+</li>
+<li>
+<p>Password files are not transported. If a password file was used with the source database, then the output of <code dir="ltr">CONVERT DATABASE</code> includes a list of all user names and their associated privileges. Create a new password file on the target database with this information. See <a class="olink ADMIN10241" href="../../server.112/e25494/dba.htm#ADMIN10241"><span class="italic">Oracle Database Administrator's Guide</span></a> for more information on managing password files.</p>
+</li>
+</ul>
+<p>When using <code dir="ltr">CONVERT DATABASE</code>, RMAN detects the following problems and does not proceed until they are fixed:</p>
+<ul>
+<li>
+<p>The database has active or in-doubt transactions.</p>
+</li>
+<li>
+<p>The database has save undo segments.</p>
+</li>
+<li>
+<p>The database <code dir="ltr">COMPATIBILITY</code> setting is below 10.</p>
+</li>
+<li>
+<p>Some tablespaces have not been open read/write when the database <code dir="ltr">COMPATIBILITY</code> setting is 10 or higher.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r3c1-t54" headers="r1c1-t54"><code dir="ltr">&nbsp;&nbsp;&nbsp;</code><code dir="ltr"><span class="codeinlineitalic"><a href="#CHDJCHFA"><span class="italic">transportOptionList</span></a></span></code></td>
+<td class="cellalignment1926" headers="r3c1-t54 r1c2-t54">Specifies options that control the transport.
+<p><span class="bold">See Also:</span> <code dir="ltr"><span class="codeinlineitalic"><a href="#CHDJCHFA"><span class="italic">transportOptionList</span></a></span></code></p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r4c1-t54" headers="r1c1-t54"><br />
+<code dir="ltr">[</code><code dir="ltr"><span class="codeinlineitalic"><a href="#BGBBAIAJ"><span class="italic">convertOptionList</span></a></span></code><code dir="ltr">]</code><br />
+<code dir="ltr"><a id="sthref703"></a>DATAFILE&nbsp;'</code><code dir="ltr"><span class="codeinlineitalic">filename</span></code><code dir="ltr">'</code><br />
+<code dir="ltr"><span class="codeinlineitalic"><a href="#BGBBAIAJ"><span class="italic">convertOptionList</span></a></span></code></td>
+<td class="cellalignment1926" headers="r4c1-t54 r1c2-t54">Specifies the name of a data file to be transported into a destination database (see <a href="#CHDIIEAB">Example 2-54</a>).
+<p>The <code dir="ltr">CONVERT DATAFILE</code> command is only one part of a multiple-step procedure for transporting data files across platforms. You can transport data files using your live data files with the procedure described in <a class="olink ADMIN01101" href="../../server.112/e25494/tspaces.htm#ADMIN01101"><span class="italic">Oracle Database Administrator's Guide</span></a> or from backups using the procedure described in <a class="olink BRADV05141" href="../../backup.112/e10642/rcmttbsb.htm#BRADV05141"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a>. Refer to that document before attempting to transport a tablespace across platforms.</p>
+<p>Use <code dir="ltr">FROM PLATFORM</code> in <code dir="ltr"><span class="codeinlineitalic"><a href="#BGBBAIAJ"><span class="italic">convertOptionList</span></a></span></code> to identify the source platform of the data files to be converted. If you do not specify <code dir="ltr">FROM PLATFORM</code>, then the value defaults to the platform of the destination database, that is, the database to which RMAN is connected as <code dir="ltr">TARGET</code>. The destination platform is, implicitly, the platform of the destination host.</p>
+<p>You can use <code dir="ltr">CONVERT DATAFILE</code> without <code dir="ltr">FROM PLATFORM</code> or <code dir="ltr">TO PLATFORM</code> to move data files into and out of ASM (see <a href="#CHDGHJJG">Example 2-55</a>). In this case, <code dir="ltr">CONVERT DATAFILE</code> creates data files copies that do not belong to the target database. Thus, a <code dir="ltr"><a href="rcmsynta027.htm#i82460">LIST</a></code> <code dir="ltr">DATAFILECOPY</code> command does not display them. The following SQL query shows all converted data files that do not belong to the database:</p>
+<pre dir="ltr">
+SELECT NAME 
+FROM   V$DATAFILE_COPY
+WHERE  CONVERTED_FILE='YES';
+</pre>
+<p>The <code dir="ltr">CONVERT DATAFILE</code> syntax supports multiple format names, so that each data file can have a separate format. The <code dir="ltr">DATAFILE</code> syntax supports <code dir="ltr"><span class="codeinlineitalic"><a href="#BGBBAIAJ"><span class="italic">convertOptionList</span></a></span></code> both immediately following the <code dir="ltr">CONVERT</code> keyword and after each <code dir="ltr">DATAFILE</code> <code dir="ltr">'</code><code dir="ltr"><span class="codeinlineitalic">filename</span></code><code dir="ltr">'</code> clause. However, RMAN generates an error in the following situations:</p>
+<ul>
+<li>
+<p>Any option in <code dir="ltr"><span class="codeinlineitalic"><a href="#BGBBAIAJ"><span class="italic">convertOptionList</span></a></span></code> except <code dir="ltr">FORMAT</code> is specified more than once</p>
+</li>
+<li>
+<p>Any option in <code dir="ltr"><span class="codeinlineitalic"><a href="#BGBBAIAJ"><span class="italic">convertOptionList</span></a></span></code> except <code dir="ltr">FORMAT</code> is specified in the <code dir="ltr">DATAFILE</code> options list when multiple <code dir="ltr">DATAFILE</code> clauses are specified</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r5c1-t54" headers="r1c1-t54"><br />
+<code dir="ltr"><a id="sthref704"></a>TABLESPACE</code><br />
+<code dir="ltr"><span class="codeinlineitalic">tablespace_name</span></code><br />
+<code dir="ltr"><span class="codeinlineitalic"><a href="#BGBBAIAJ"><span class="italic">convertOptionList</span></a></span></code></td>
+<td class="cellalignment1926" headers="r5c1-t54 r1c2-t54">Specifies the name of a tablespace in the source database that you intend to transport into the destination database on a different platform (see <a href="#CHDFCGCD">Example 2-53</a>).
+<p>Specify this option to produce data files for the specified tablespaces in the format of a different destination platform. You can then transport the converted files to the destination platform.</p>
+<p>You can only use <code dir="ltr">CONVERT TABLESPACE</code> when connected as <code dir="ltr">TARGET</code> to the source database and converting on the source platform. The tablespaces to be converted must be read-only at the time of the conversion. You use <code dir="ltr">CONVERT TABLESPACE</code> when the data files that you intend to convert are known to the database.</p>
+<p>Use <code dir="ltr">TO PLATFORM</code> to identify the destination platform of the tablespaces to be converted. If you do not specify <code dir="ltr">TO PLATFORM</code>, then the value defaults to the platform of the database to which RMAN is connected as <code dir="ltr">TARGET</code>. The source platform is, implicitly, the platform of the source host.</p>
+<p>The <code dir="ltr">CONVERT TABLESPACE</code> command is only one part of a multiple-step process for transporting tablespaces across platforms. You can transport tablespaces using your live data files with the procedure described in <a class="olink ADMIN01101" href="../../server.112/e25494/tspaces.htm#ADMIN01101"><span class="italic">Oracle Database Administrator's Guide</span></a> or from backups using the procedure described in <a class="olink BRADV05141" href="../../backup.112/e10642/rcmttbsb.htm#BRADV05141"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a>. Refer to that document before attempting to transport a tablespace across platforms.</p>
+<p><span class="bold">Note:</span> To convert the data files of a tablespace on the source host, use <code dir="ltr">CONVERT TABLESPACE ... TO</code> and identify the tablespace to be converted and the destination platform. You should not convert individual data files on the source platform with <code dir="ltr">CONVERT DATAFILE</code> because RMAN does not verify that data files belong to a read-only tablespace, which means you might convert active data files.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r6c1-t54" headers="r1c1-t54"><code dir="ltr"><span class="codeinlineitalic"><a href="#BGBBAIAJ"><span class="italic">convertOptionList</span></a></span></code></td>
+<td class="cellalignment1926" headers="r6c1-t54 r1c2-t54">Specifies options that control the conversion.
+<p><span class="bold">See Also:</span> <code dir="ltr"><span class="codeinlineitalic"><a href="#BGBBAIAJ"><span class="italic">convertOptionList</span></a></span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformalwide" -->
+<p class="subhead2"><a id="CHDJCHFA"></a><a id="RCMRF90110"></a><span class="italic"><a id="sthref705"></a><a id="sthref706"></a>transportOptionList</span></p>
+<p>This clause specifies options for the data files, tablespaces, or database to be transported.</p>
+<div class="inftblinformalwide">
+<table class="cellalignment1929" title="Semantics of CONVERT Command" summary="Describes CONVERT command transportOptionList parameters" dir="ltr">
+<thead>
+<tr class="cellalignment1920">
+<th class="cellalignment1930" id="r1c1-t55">Syntax Element</th>
+<th class="cellalignment1930" id="r1c2-t55">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r2c1-t55" headers="r1c1-t55"><br />
+<code dir="ltr"><a id="sthref707"></a>NEW&nbsp;DATABASE</code><br />
+<code dir="ltr"><span class="codeinlineitalic">database_name</span></code></td>
+<td class="cellalignment1926" headers="r2c1-t55 r1c2-t55">Specifies the <code dir="ltr">DB_NAME</code> for the new database produced by the <code dir="ltr">CONVERT</code> <code dir="ltr">DATABASE</code> command.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r3c1-t55" headers="r1c1-t55"><code dir="ltr"><a id="sthref708"></a>ON&nbsp;DESTINATION&nbsp;PLATFORM</code></td>
+<td class="cellalignment1926" headers="r3c1-t55 r1c2-t55"><a id="sthref709"></a>Generates a convert script of <code dir="ltr">CONVERT DATAFILE</code> commands (see <code dir="ltr">CONVERT SCRIPT</code> parameter) that you can run on the destination host to create the database.
+<p><span class="bold">Note:</span> When this option is specified, <code dir="ltr">CONVERT</code> generates a script but does not generate converted data file copies.</p>
+<p>This option is useful for avoiding the overhead of the conversion on the source platform, or in cases in which you do not know the destination platform. For example, you may want to publish a transportable tablespace to be used by recipients with many different target platforms.</p>
+<p>When you run <code dir="ltr">CONVERT</code> with the <code dir="ltr">ON DESTINATION PLATFORM</code> option, the source database must be open read-only. However, the script generated by <code dir="ltr">CONVERT ON DESTINATION PLATFORM</code> must be run on a database instance that is started <code dir="ltr">NOMOUNT</code>. If the convert script reads data files from the source database during execution of the <code dir="ltr">CONVERT DATAFILE</code> commands, then the source database must not be open read/write during the execution.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r4c1-t55" headers="r1c1-t55"><br />
+<code dir="ltr">&nbsp;&nbsp;&nbsp;CONVERT&nbsp;SCRIPT</code><br />
+<code dir="ltr">&nbsp;&nbsp;&nbsp;</code><code dir="ltr"><span class="codeinlineitalic">script_name</span></code></td>
+<td class="cellalignment1926" headers="r4c1-t55 r1c2-t55">Specifies the location of the file to contain the convert script generated by <code dir="ltr">CONVERT DATABASE ... ON TARGET PLATFORM</code>.
+<p>If not specified, the convert script is not generated.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r5c1-t55" headers="r1c1-t55"><code dir="ltr"><span class="codeinlineitalic"><a href="#CHDFGJEB"><span class="italic">skipSpec</span></a></span></code></td>
+<td class="cellalignment1926" headers="r5c1-t55 r1c2-t55">Specifies that <code dir="ltr">CONVERT DATABASE</code> should skip inaccessible, offline, or read-only data files during the conversion process.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r6c1-t55" headers="r1c1-t55"><code dir="ltr">SKIP UNNECESSARY DATAFILES</code></td>
+<td class="cellalignment1926" headers="r6c1-t55 r1c2-t55">Specifies that only data files with undo segments are converted by the command. If converting at the destination platform then the generated CONVERT script only includes data files with undo segments. Data files without undo segments do not need to be converted and can be copied directly from the source database to the destination database. If the command is converting from or to hp Tru64, data files with ASSM segment headers must also be converted.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r7c1-t55" headers="r1c1-t55"><br />
+<code dir="ltr"><a id="sthref710"></a>TRANSPORT&nbsp;SCRIPT</code><br />
+<code dir="ltr"><span class="codeinlineitalic">script_name</span></code></td>
+<td class="cellalignment1926" headers="r7c1-t55 r1c2-t55">Specifies the location of the file to contain the transport script generated by <code dir="ltr">CONVERT DATABASE</code>. If omitted, the transport script is not generated.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformalwide" -->
+<p class="subhead2"><a id="CHDFGJEB"></a><a id="RCMRF90111"></a><span class="italic"><a id="sthref711"></a><a id="sthref712"></a>skipSpec</span></p>
+<p>This subclause specifies which files are excluded from the conversion.</p>
+<div class="inftblinformalwide">
+<table class="cellalignment1929" title="Semantics of skipSpec Command" summary="Describes CONVERT command skipSpec parameters" dir="ltr">
+<thead>
+<tr class="cellalignment1920">
+<th class="cellalignment1930" id="r1c1-t56">Syntax Element</th>
+<th class="cellalignment1930" id="r1c2-t56">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r2c1-t56" headers="r1c1-t56"><code dir="ltr"><a id="sthref713"></a>SKIP</code></td>
+<td class="cellalignment1926" headers="r2c1-t56 r1c2-t56"><a id="sthref714"></a>Excludes data files from the conversion according to the criteria specified by the following keywords.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r3c1-t56" headers="r1c1-t56"><code dir="ltr"><a id="sthref715"></a>INACCESSIBLE</code></td>
+<td class="cellalignment1926" headers="r3c1-t56 r1c2-t56">Specifies that data files that cannot be read due to I/O errors are excluded from the conversion.
+<p>A data file is only considered inaccessible if it cannot be read. Some offline data files can still be read because they still exist on disk. Others have been deleted or moved and so cannot be read, making them inaccessible.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r4c1-t56" headers="r1c1-t56"><code dir="ltr"><a id="sthref716"></a>OFFLINE</code></td>
+<td class="cellalignment1926" headers="r4c1-t56 r1c2-t56">Specifies that offline data files are excluded from the conversion.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r5c1-t56" headers="r1c1-t56"><code dir="ltr"><a id="sthref717"></a>READONLY</code></td>
+<td class="cellalignment1926" headers="r5c1-t56 r1c2-t56">Specifies that read-only data files are excluded from the conversion.</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformalwide" -->
+<p class="subhead2"><a id="BGBBAIAJ"></a><a id="RCMRF90112"></a><span class="italic"><a id="sthref718"></a><a id="sthref719"></a>convertOptionList</span></p>
+<p>This subclause specifies input and output options for the conversion.</p>
+<p>You can use either the <code dir="ltr">FORMAT</code> or <code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl007.htm#i101650">fileNameConversionSpec</a></span></code> arguments to control the names of the output files generated by the <code dir="ltr">CONVERT</code> command. If you do not specify either, then the rules governing the location of the output files are the same as those governing the output files from a <code dir="ltr"><a href="rcmsynta007.htm#i78895">BACKUP</a></code> <code dir="ltr">AS COPY</code> operation. These rules are described in the <code dir="ltr"><span class="codeinlineitalic"><a href="rcmsynta007.htm#i1015382"><span class="italic">backupTypeSpec</span></a></span></code> entry.</p>
+<div class="inftblinformalwide">
+<table class="cellalignment1929" title="Semantics of convertOptionList Command" summary="Describes CONVERT command convertOptionList parameters" dir="ltr">
+<thead>
+<tr class="cellalignment1920">
+<th class="cellalignment1930" id="r1c1-t57">Syntax Element</th>
+<th class="cellalignment1930" id="r1c2-t57">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r2c1-t57" headers="r1c1-t57"><code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl007.htm#i101650">fileNameConversionSpec</a></span></code></td>
+<td class="cellalignment1926" headers="r2c1-t57 r1c2-t57"><a id="sthref720"></a>A set of string pairs. Whenever any of the input file names contains one of the first halves of a pair, anywhere in the file name, it is replaced with the second half of the same pair. You can use as many pairs of replacement strings as required. You can use single or double quotation marks.
+<p><span class="bold">See Also:</span> <a href="rcmsynta020.htm#CHDECBFJ">"Duplication with Oracle Managed Files"</a> to learn about restrictions related to ASM and Oracle Managed Files</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r3c1-t57" headers="r1c1-t57"><code dir="ltr"><a id="sthref721"></a>FORMAT</code> <code dir="ltr"><span class="codeinlineitalic"><a href="rcmsubcl010.htm#i82206">formatSpec</a></span></code></td>
+<td class="cellalignment1926" headers="r3c1-t57 r1c2-t57">Specifies the name template for the output files. See the <code dir="ltr"><a href="rcmsynta007.htm#i78895">BACKUP</a></code> <code dir="ltr">AS COPY</code> command for the format values that are valid here.
+<p>If the database to which RMAN is connected as <code dir="ltr">TARGET</code> uses a recovery area, then you must specify the <code dir="ltr">FORMAT</code> clause.</p>
+<p>You can use <code dir="ltr">CONVERT ... FORMAT</code> without specifying <code dir="ltr">FROM PLATFORM</code> or <code dir="ltr">TO PLATFORM</code>. If you do not specify platforms, then running <code dir="ltr">CONVERT TABLESPACE</code> on the source database generates data file copies that are not cataloged. If you run <code dir="ltr">CONVERT DATAFILE</code> on the destination database, and if the data file copy uses the same endianess, then the command generates another data file copy.</p>
+<p><a id="sthref722"></a>As shown in <a href="#CHDGHJJG">Example 2-55</a>, you can use <code dir="ltr">CONVERT DATAFILE ... FORMAT</code> to convert a data file into ASM format. For very large data files, copying data files between hosts consumes a large amount of space. Consider using NFS or disk sharing. You can create a backup on the source host, mount the disk containing the backups on the destination host, and then convert the data file into ASM.</p>
+</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r4c1-t57" headers="r1c1-t57"><code dir="ltr">FROM&nbsp;<a id="sthref723"></a>PLATFORM</code> <code dir="ltr">'</code><code dir="ltr"><span class="codeinlineitalic">platform</span></code><code dir="ltr">'</code></td>
+<td class="cellalignment1926" headers="r4c1-t57 r1c2-t57">Specifies the name of the source platform. If not specified, the default is the platform of the database to which RMAN is connected as <code dir="ltr">TARGET</code>.
+<p>The specified platform must be listed in the <code dir="ltr">PLATFORM_NAME</code> column of <code dir="ltr">V$TRANSPORTABLE_PLATFORM</code>. You must use the exact name of the source or target platform as a parameter to the <code dir="ltr">CONVERT</code> command. The following SQL statement queries supported Linux platforms:</p>
+<pre dir="ltr">
+SELECT PLATFORM_NAME, ENDIAN_FORMAT
+FROM   V$TRANSPORTABLE_PLATFORM 
+WHERE  UPPER(PLATFORM_NAME) LIKE 'LINUX%';
+</pre></td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r5c1-t57" headers="r1c1-t57"><code dir="ltr"><a id="sthref724"></a>PARALLELISM&nbsp;</code><code dir="ltr"><span class="codeinlineitalic">integer</span></code></td>
+<td class="cellalignment1926" headers="r5c1-t57 r1c2-t57">Specifies the number of channels to be used to perform the operation. If not used, then channels allocated or configured for disk determine the number of channels.</td>
+</tr>
+<tr class="cellalignment1920">
+<td class="cellalignment1926" id="r6c1-t57" headers="r1c1-t57"><code dir="ltr">TO&nbsp;PLATFORM</code> <code dir="ltr">'</code><code dir="ltr"><span class="codeinlineitalic">platform</span></code><code dir="ltr">'</code></td>
+<td class="cellalignment1926" headers="r6c1-t57 r1c2-t57">Specifies the name of the destination platform. If not specified, the default is the platform of the database to which RMAN is connected as <code dir="ltr">TARGET</code>.
+<p>The specified platform must be listed in the <code dir="ltr">PLATFORM_NAME</code> column of <code dir="ltr">V$TRANSPORTABLE_PLATFORM</code>. You must use the exact name of the source or target platform as a parameter to the <code dir="ltr">CONVERT</code> command. The following SQL statement queries supported Linux platforms:</p>
+<pre dir="ltr">
+SELECT PLATFORM_NAME, ENDIAN_FORMAT
+FROM   V$TRANSPORTABLE_PLATFORM 
+WHERE  UPPER(PLATFORM_NAME) LIKE 'LINUX%';
+</pre></td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="inftblinformalwide" --></div>
+<!-- class="refsubsect" -->
+<div class="refsubsect">
+<p class="titleinrefsubsect"><a id="sthref725"></a><a id="sthref726"></a>Examples</p>
+<div id="RCMRF90113" class="example">
+<p class="titleinexample"><a id="CHDFCGCD"></a>Example 2-53 Converting Tablespaces on the Source Platform</p>
+<p>Suppose you must convert tablespaces <code dir="ltr">finance</code> and <code dir="ltr">hr</code> in source database <code dir="ltr">prodlin</code> to the platform format of destination database <code dir="ltr">prodsun</code>. The <code dir="ltr">finance</code> tablespace includes data files <code dir="ltr">/disk2/orahome/fin/fin01.dbf</code> and <code dir="ltr">/disk2/orahome/fin/fin02.dbf</code>. The <code dir="ltr">hr</code> tablespace includes data files <code dir="ltr">/disk2/orahome/fin/hr01.dbf</code> and <code dir="ltr">/disk2/orahome/fin/hr02.dbf</code>.</p>
+<p>The <code dir="ltr">prodlin</code> database runs on Linux host <code dir="ltr">lin01</code>. You query <code dir="ltr">V$DATABASE</code> and discover that platform name is <code dir="ltr">Linux IA (32-bit)</code> and uses a little-endian format. The <code dir="ltr">prodsun</code> database runs on Solaris host <code dir="ltr">sun01</code>. You query <code dir="ltr">V$TRANSPORTABLE_PLATFORM</code> and discover that the <code dir="ltr">PLATFORM_NAME</code> for the Solaris host is <code dir="ltr">Solaris[tm] OE (64-bit)</code>, which uses a big-endian format.</p>
+<p>You plan to convert the tablespaces on the source host and store the converted data files in <code dir="ltr">/tmp/transport_to_solaris/</code> on host <code dir="ltr">lin01</code>. The example assumes that you have set <code dir="ltr">COMPATIBLE</code> is to 10.0 or greater on the source database.</p>
+<p>On source host <code dir="ltr">lin01</code>, you start the RMAN client and run the following commands:</p>
+<pre dir="ltr">
+CONNECT TARGET SYS@prodlin
+
+target database Password: <span class="italic">password</span>
+connected to target database: PRODLIN (DBID=39525561)
+
+SQL 'ALTER TABLESPACE finance READ ONLY';
+SQL 'ALTER TABLESPACE hr READ ONLY';
+CONVERT TABLESPACE finance, hr
+  TO PLATFORM 'Solaris[tm] OE (64-bit)'
+  FORMAT '/tmp/transport_to_solaris/%U';
+</pre>
+<p>The result is a set of converted data files in the <code dir="ltr">/tmp/transport_to_solaris/</code> directory, with data in the right endian-order for the Solaris 64-bit platform.</p>
+<p>From this point, you can follow the rest of the general outline for tablespace transport. Use the Data Pump Export utility to create the file of structural information, move the structural information file and the converted data files from <code dir="ltr">/tmp/transport_to_solaris/</code> to the desired directories on the destination host, and plug the tablespace into the new database with the Data Pump Import utility.</p>
+</div>
+<!-- class="example" -->
+<div id="RCMRF90114" class="example">
+<p class="titleinexample"><a id="CHDIIEAB"></a>Example 2-54 Converting Data Files on the Destination Platform</p>
+<p>This example assumes that you want to convert the <code dir="ltr">finance</code> and <code dir="ltr">hr</code> tablespaces from database <code dir="ltr">prodsun</code> on host <code dir="ltr">sun01</code> into a format usable by database <code dir="ltr">prodlin</code> on destination host <code dir="ltr">lin01</code>. You temporarily store the unconverted data files in directory <code dir="ltr">/tmp/transport_from_solaris/</code> on destination host <code dir="ltr">lin01</code> and perform the conversion with <code dir="ltr">CONVERT DATAFILE</code>. When you transport the data files into the destination database, they are stored in <code dir="ltr">/disk2/orahome/dbs</code>.</p>
+<p>The example assumes that you did the following steps in preparation for the tablespace transport:</p>
+<ul>
+<li>
+<p>You used the Data Pump Export utility to create the structural information file (named, in our example, <code dir="ltr">expdat.dmp</code>).</p>
+</li>
+<li>
+<p>You made the <code dir="ltr">finance</code> and <code dir="ltr">hr</code> tablespaces read-only on the source database.</p>
+</li>
+<li>
+<p>You used an operating system utility to copy <code dir="ltr">expdat.dmp</code> and the unconverted data files to be transported to the destination host <code dir="ltr">lin01</code> in the <code dir="ltr">/tmp/transport_from_solaris</code> directory. The data files are stored as:</p>
+<ul>
+<li>
+<p><code dir="ltr">/tmp/transport_from_solaris/fin/fin01.dbf</code></p>
+</li>
+<li>
+<p><code dir="ltr">/tmp/transport_from_solaris/fin/fin02.dbf</code></p>
+</li>
+<li>
+<p><code dir="ltr">/tmp/transport_from_solaris/hr/hr01.dbf</code></p>
+</li>
+<li>
+<p><code dir="ltr">/tmp/transport_from_solaris/hr/hr02.dbf</code></p>
+</li>
+</ul>
+</li>
+<li>
+<p>You queried the name for the source platform in <code dir="ltr">V$TRANSPORTABLE_PLATFORM</code> and discovered that the <code dir="ltr">PLATFORM_NAME</code> is <code dir="ltr">Solaris[tm] OE (64-bit)</code>.</p>
+</li>
+</ul>
+<p>Note the following considerations when performing the conversion:</p>
+<ul>
+<li>
+<p>Identify the data files by file name, not by tablespace name. Until the data files are plugged in, the local instance has no way of knowing the intended tablespace names.</p>
+</li>
+<li>
+<p>The <code dir="ltr">FORMAT</code> argument controls the name and location of the converted data files.</p>
+</li>
+<li>
+<p>When converting on the destination host, you must specify the source platform with the <code dir="ltr">FROM</code> argument. Otherwise, RMAN assumes that the source platform is the same as the platform of the host performing the conversion.</p>
+</li>
+</ul>
+<p>You start the RMAN client and connect to the destination database <code dir="ltr">prodlin</code> as <code dir="ltr">TARGET</code>. The following <code dir="ltr">CONVERT</code> command converts the data files to be transported to the destination host format and deposits the results in <code dir="ltr">/disk2/orahome/dbs</code>:</p>
+<pre dir="ltr">
+CONNECT TARGET SYS@prodlin
+
+target database Password: <span class="italic">password</span>
+connected to target database: PRODLIN (DBID=39525561)
+
+CONVERT DATAFILE
+   '/tmp/transport_from_solaris/fin/fin01.dbf',
+   '/tmp/transport_from_solaris/fin/fin02.dbf',
+   '/tmp/transport_from_solaris/hr/hr01.dbf',
+   '/tmp/transport_from_solaris/hr/hr02.dbf'
+   DB_FILE_NAME_CONVERT
+        '/tmp/transport_from_solaris/fin','/disk2/orahome/dbs/fin',
+        '/tmp/transport_from_solaris/hr','/disk2/orahome/dbs/hr'
+   FROM PLATFORM 'Solaris[tm] OE (64-bit)';
+</pre>
+<p>The result is that the following data files have been converted to the Linux format:</p>
+<ul>
+<li>
+<p><code dir="ltr">/disk2/orahome/dbs/fin/fin01.dbf</code></p>
+</li>
+<li>
+<p><code dir="ltr">/disk2/orahome/dbs/fin/fin02.dbf</code></p>
+</li>
+<li>
+<p><code dir="ltr">/disk2/orahome/dbs/hr/hr01.dbf</code></p>
+</li>
+<li>
+<p><code dir="ltr">/disk2/orahome/dbs/hr/hr02.dbf</code></p>
+</li>
+</ul>
+<p>From this point, follow the rest of the general outline for tablespace transport. Use Data Pump Import to plug the converted tablespaces into the new database, and make the tablespaces read/write if applicable.</p>
+</div>
+<!-- class="example" -->
+<div id="RCMRF90115" class="example">
+<p class="titleinexample"><a id="CHDGHJJG"></a>Example 2-55 Copying Data Files to and from ASM with CONVERT DATAFILE</p>
+<p><a id="sthref727"></a>This example illustrates copying data files into ASM from normal storage. The generated files are not considered data file copies that belong to the target database, so <code dir="ltr">LIST DATAFILECOPY</code> does not display them.</p>
+<p>Use <code dir="ltr">CONVERT DATAFILE</code> without specifying a source or destination platform. Specify ASM disk group <code dir="ltr">+DATAFILE</code> for the output location, as shown here:</p>
+<pre dir="ltr">
+RMAN&gt; CONVERT DATAFILE '/disk1/oracle/dbs/my_tbs_f1.df', 
+   '/disk1/oracle/dbs/t_ax1.f'
+   FORMAT '+DATAFILE';
+ 
+Starting conversion at 29-MAY-05
+using channel ORA_DISK_1
+channel ORA_DISK_1: starting datafile conversion
+input filename=/disk1/oracle/dbs/t_ax1.f
+converted datafile=+DATAFILE/asmv/datafile/sysaux.280.559534477
+channel ORA_DISK_1: datafile conversion complete, elapsed time: 00:00:16
+channel ORA_DISK_1: starting datafile conversion
+input filename=/disk1/oracle/dbs/my_tbs_f1.df
+converted datafile=+DATAFILE/asmv/datafile/my_tbs.281.559534493
+channel ORA_DISK_1: datafile conversion complete, elapsed time: 00:00:04
+Finished conversion at 29-MAY-05
+ 
+</pre>
+<p>The following example illustrates copying the data files of a tablespace out of ASM storage to directory <code dir="ltr">/tmp</code>, with uniquely generated file names.</p>
+<pre dir="ltr">
+RMAN&gt; CONVERT TABLESPACE tbs_2 FORMAT '/tmp/tbs_2_%U.df';
+ 
+Starting conversion at 03-JUN-05
+using target database control file instead of recovery catalog
+allocated channel: ORA_DISK_1
+channel ORA_DISK_1: sid=20 devtype=DISK
+channel ORA_DISK_1: starting datafile conversion
+input datafile fno=00006 name=+DATAFILE/tbs_21.f
+converted datafile=/tmp/tbs_2_data_D-L2_I-2786301554_TS-TBS_2_FNO-6_11gm2fq9.df
+channel ORA_DISK_1: datafile conversion complete, elapsed time: 00:00:01
+channel ORA_DISK_1: starting datafile conversion
+input datafile fno=00007 name=+DATAFILE/tbs_22.f
+converted datafile=/tmp/tbs_2_data_D-L2_I-2786301554_TS-TBS_2_FNO-7_12gm2fqa.df
+channel ORA_DISK_1: datafile conversion complete, elapsed time: 00:00:01
+channel ORA_DISK_1: starting datafile conversion
+input datafile fno=00019 name=+DATAFILE/tbs_25.f
+converted datafile=/tmp/tbs_2_data_D-L2_I-2786301554_TS-TBS_2_FNO-19_13gm2fqb.df
+channel ORA_DISK_1: datafile conversion complete, elapsed time: 00:00:01
+channel ORA_DISK_1: starting datafile conversion
+input datafile fno=00009 name=+DATAFILE/tbs_23.f
+converted datafile=/tmp/tbs_2_data_D-L2_I-2786301554_TS-TBS_2_FNO-9_14gm2fqc.df
+channel ORA_DISK_1: datafile conversion complete, elapsed time: 00:00:01
+channel ORA_DISK_1: starting datafile conversion
+input datafile fno=00010 name=+DATAFILE/tbs_24.f
+converted datafile=/tmp/tbs_2_data_D-L2_I-2786301554_TS-TBS_2_FNO-10_15gm2fqd.df
+channel ORA_DISK_1: datafile conversion complete, elapsed time: 00:00:01
+Finished conversion at 03-JUN-05
+</pre></div>
+<!-- class="example" -->
+<div id="RCMRF90116" class="example">
+<p class="titleinexample"><a id="CHDICFCE"></a>Example 2-56 Transporting a Database to a Different Platform</p>
+<p>The arguments to <code dir="ltr">CONVERT DATABASE</code> vary depending on whether you plan to convert the data files on the source or destination platform. For a description of the conversion process on source and destination platforms and extended examples, refer to <a class="olink BRADV05432" href="../../backup.112/e10642/rcmxplat.htm#BRADV05432"><span class="italic">Oracle Database Backup and Recovery User's Guide</span></a>. Read that discussion in its entirely before attempting a database conversion.</p>
+<p><a id="sthref728"></a>Assume that you want to transport database <code dir="ltr">prod</code> on a Linux host to a Windows host. You decide to convert the data files on the source host rather than on the destination host. The following example connects RMAN to the <code dir="ltr">prod</code> database on the Linux host and uses <code dir="ltr">CONVERT DATABASE NEW DATABASE</code> to convert the data files and generate the transport script:</p>
+<pre dir="ltr">
+CONNECT TARGET SYS@lin01
+
+target database Password: <span class="italic">password</span>
+connected to target database: PROD (DBID=39525561)
+
+CONVERT DATABASE
+  NEW DATABASE 'prodwin'
+  TRANSPORT SCRIPT '/tmp/convertdb/transportscript'
+  TO PLATFORM 'Microsoft Windows IA (32-bit)'
+    DB_FILE_NAME_CONVERT '/disk1/oracle/dbs','/tmp/convertdb';
+</pre>
+<p>In the following variation, you want to transport a database running on a Linux host to a Windows host, but you want to convert the data files on the destination host rather than the source host. The following example connects RMAN to the <code dir="ltr">prod</code> database on the Linux host and executes <code dir="ltr">CONVERT DATABASE ON DESTINATION PLATFORM</code>:</p>
+<pre dir="ltr">
+CONNECT TARGET SYS@lin01
+
+target database Password: <span class="italic">password</span>
+connected to target database: PROD (DBID=39525561)
+
+CONVERT DATABASE
+  ON DESTINATION PLATFORM
+  CONVERT SCRIPT '/tmp/convertdb/convertscript.rman'
+  TRANSPORT SCRIPT '/tmp/convertdb/transportscript.sql'
+  NEW DATABASE 'prodwin'
+  FORMAT '/tmp/convertdb/%U';
+</pre>
+<p>The <code dir="ltr">CONVERT DATABASE ON DESTINATION PLATFORM</code> command, which is executed on a Linux database, generates a convert script that can be run on the Windows host to convert the data files to the Windows format. The <code dir="ltr">CONVERT DATABASE</code> command also generates a transport script.</p>
+</div>
+<!-- class="example" -->
+<div id="RCMRF90117" class="example">
+<p class="titleinexample"><a id="sthref729"></a>Example 2-57 Transporting a Database to a Different Platform and Storage Type</p>
+<p>In this scenario, you have a database <code dir="ltr">prod</code> on a Solaris host named <code dir="ltr">sun01</code> that you want to move to an AIX host named <code dir="ltr">aix01</code>. The Solaris data files are stored in a non-ASM file system, but you want to store the data files in ASM on the AIX host.</p>
+<p>The following example connects to <code dir="ltr">sun01</code> and runs <code dir="ltr">CONVERT DATABASE</code> to generate the necessary scripts:</p>
+<pre dir="ltr">
+CONNECT TARGET SYS@sun01
+
+target database Password: <span class="italic">password</span>
+connected to target database: PROD (DBID=39525561)
+
+CONVERT DATABASE
+  ON DESTINATION PLATFORM
+  CONVERT SCRIPT '/tmp/convert_newdb.rman'
+  TRANSPORT SCRIPT '/tmp/transport_newdb.sql'
+  NEW DATABASE 'prodaix'
+  DB_FILE_NAME_CONVERT '/u01/oradata/DBUA/datafile','+DATA';
+</pre>
+<p>The convert script contains statements of the following form, where <span class="italic">your_source_platform</span> stands for your source platform:</p>
+<pre dir="ltr">
+CONVERT DATAFILE '/u01/oradata/DBUA/datafile/o1_mf_system_2lg3905p_.dbf'
+  FROM PLATFORM '<span class="italic">your_source_platform</span>'
+  FORMAT '+DATA/o1_mf_system_2lg3905p_.dbf';
+</pre>
+<p>To reduce downtime for the conversion, you can use NFS rather than copying data files over the network or restoring a backup. For example, you could mount the Solaris files system on the AIX host as <code dir="ltr">/net/solaris/oradata</code>. In this case, you would edit the convert script to reference the NFS-mounted directory as the location of the source data files to convert, putting the commands into the following form:</p>
+<pre dir="ltr">
+CONVERT DATAFILE '/net/solaris/oradata/DBUA/datafile/o1_mf_system_2lg3905p_.dbf'
+  FROM PLATFORM '<span class="italic">your_source_platform</span>'
+  FORMAT '+DATA/o1_mf_system_2lg3905p_.dbf';
+</pre>
+<p>You then connect RMAN to the destination database instance, in this case the instance on host <code dir="ltr">aix01</code>, and convert the data files (during the conversion the database at host sun01 should remain in open read only mode). Afterward, you connect SQL*Plus to the database instance on <code dir="ltr">aix01</code> and run the transport script to create the database.</p>
+</div>
+<!-- class="example" --></div>
+<!-- class="refsubsect" --></div>
+<!-- class="refsect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1919">
+<tr>
+<td class="cellalignment1926">
+<table class="cellalignment1924">
+<tr>
+<td class="cellalignment1923"><a href="rcmsynta011.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1923"><a href="rcmsynta013.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2003, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1928">
+<table class="cellalignment1922">
+<tr>
+<td class="cellalignment1923"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1923"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1923"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1923"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1923"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1923"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

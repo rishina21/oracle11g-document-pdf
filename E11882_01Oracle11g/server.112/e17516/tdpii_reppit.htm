@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Replicating Data Using Materialized Views</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 033" />
+<meta name="dcterms.created" content="2011-07-28T22:40:18Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database 2 Day + Data Replication and Integration Guide" />
+<meta name="dcterms.identifier" content="E17516-08" />
+<meta name="dcterms.isVersionOf" content="TDPII" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2007, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="tdpii_repextend.htm" title="Previous" type="text/html" />
+<link rel="Next" href="tdpii_adpit.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e17516.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">10/14</span> <!-- End Header --><a id="BEHHGGIB"></a><a id="TDPII048"></a>
+<h1 class="chapter"><span class="secnum">7</span> Replicating Data Using Materialized Views</h1>
+<p><a id="sthref430"></a><a id="sthref431"></a>This chapter contains conceptual information about replicating data using materialized views. It also describes how to synchronize the replicated data periodically to a transactionally consistent point in time.</p>
+<p>This chapter contains the following sections:</p>
+<ul>
+<li>
+<p><a href="#BEHHAHHA">About Materialized View Replication</a></p>
+</li>
+<li>
+<p><a href="#CHDIHIFJ">Preparing for Materialized View Replication</a></p>
+</li>
+<li>
+<p><a href="#CHDBCGBG">Configuring Materialized View Sites</a></p>
+</li>
+<li>
+<p><a href="#CHDCDIAG">Configuring Materialized View Logs at the Master Site</a></p>
+</li>
+<li>
+<p><a href="#BEHDACAG">Replicating Read-Only Data Using Materialized Views</a></p>
+</li>
+<li>
+<p><a href="#BEHCEFGC">Replicating Read/Write Data Using Materialized Views</a></p>
+</li>
+<li>
+<p><a href="#CHDJEFDH">Configuring a Refresh Group</a></p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="tdpii_adpit.htm#BABFHCBC">Chapter 8, "Administering a Materialized View Replication Environment"</a></p>
+</li>
+<li>
+<p><a href="tdpii_repcont.htm#BABEFAFI">Chapter 4, "Replicating Data Using Oracle Streams"</a></p>
+</li>
+<li>
+<p><a href="tdpii_intro2ii.htm#CFHHDHIJ">Chapter 1, "Introduction to Data Replication and Integration"</a></p>
+</li>
+</ul>
+</div>
+<a id="BEHHAHHA"></a><a id="TDPII049"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">About Materialized View Replication<a id="sthref432"></a><a id="sthref433"></a><a id="sthref434"></a><a id="sthref435"></a><a id="sthref436"></a><a id="sthref437"></a><a id="sthref438"></a></h2>
+<p><span class="bold">Replication</span> is the process of sharing database objects and data at multiple databases. To maintain replicated database objects and data at multiple databases, a change to one of these database objects at a database is shared with the other databases. In this way, the database objects and data are kept synchronized at all of the databases in the replication environment.</p>
+<p>In many environments, such as field sales, databases are not connected to the network for periods of time. In these environments, replicas must synchronize data on demand, or at regularly scheduled intervals, such as nightly. These databases can synchronize with other databases that share the same data when they are reconnected to the network.</p>
+<p>To address these needs, Oracle Database offers a replication type called <span class="bold">materialized view</span> replication. A materialized view contains a complete or partial copy of a table from a single point in time. Materialized views can be either read-only or updatable:</p>
+<ul>
+<li>
+<p><span class="bold">Read-only materialized views</span> provide read-only access to the table copy. Using read-only materialized views, applications and users can access local copies of tables that reside at remote locations. Read-only materialized views provide local access to data and reduce the resources required at any single location by allowing queries on the same data at multiple locations. For example, read-only materialized views are typically used for reporting purposes.</p>
+</li>
+<li>
+<p><span class="bold">Updatable materialized views</span> provide read/write access to the table copy. Using updatable materialized views, applications and users can change both the table and the copy of the table, and these changes can be synchronized at a point in time. For example, updatable materialized views are typically used to periodically disseminate a product catalog to regional offices and to enable the sales force to place orders from customer sites.</p>
+</li>
+</ul>
+<p>Because of their support for easy mass deployment and disconnected computing, both read-only and updatable materialized views are especially suited to mobile computing applications.</p>
+<p>The following topics provide more information about materialized view replication:</p>
+<ul>
+<li>
+<p><a href="#BEHFGHIE">About Master Sites, Master Tables, and Materialized View Sites</a></p>
+</li>
+<li>
+<p><a href="#BEHBEBJA">About Materialized View Refresh</a></p>
+</li>
+<li>
+<p><a href="#BEHBGDFD">About Refresh Groups</a></p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="tdpii_intro2ii.htm#CFHBIEHG">"When to Replicate Data with Materialized Views"</a></p>
+</li>
+<li>
+<p><a href="#BEHDACAG">"Replicating Read-Only Data Using Materialized Views"</a></p>
+</li>
+<li>
+<p><a href="#BEHCEFGC">"Replicating Read/Write Data Using Materialized Views"</a></p>
+</li>
+</ul>
+</div>
+<a id="BEHFGHIE"></a><a id="TDPII050"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">About Master Sites, Master Tables, and Materialized View Sites<a id="sthref439"></a><a id="sthref440"></a><a id="sthref441"></a><a id="sthref442"></a><a id="sthref443"></a><a id="sthref444"></a></h3>
+<p>In a replication environment, a materialized view shares data with a table in a different database called a <span class="bold">master site</span>. The table associated with the materialized view at the master site is called the <span class="bold">master table</span>. A materialized view contains a complete or partial copy of a master table from a single point in time. The database in which the materialized view resides is called the <span class="bold">materialized view site</span>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#CHDBCGBG">"Configuring Materialized View Sites"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="BEHBEBJA"></a><a id="TDPII051"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">About Materialized View Refresh<a id="sthref445"></a><a id="sthref446"></a><a id="sthref447"></a><a id="sthref448"></a><a id="sthref449"></a><a id="sthref450"></a><a id="sthref451"></a><a id="sthref452"></a></h3>
+<p>Refreshing a materialized view synchronizes data in the materialized view with data in its master table. The materialized view controls when the refresh is performed, either on a fixed schedule or on demand. During a refresh, row data from the master table is pulled down and applied at the materialized view site. Oracle Database provides the following refresh methods:</p>
+<ul>
+<li>
+<p><span class="bold">Fast refresh</span> pulls down only the rows that have changed since the last refresh.</p>
+</li>
+<li>
+<p><span class="bold">Complete refresh</span> updates the entire materialized view.</p>
+</li>
+<li>
+<p><span class="bold">Force refresh</span> performs a fast refresh when possible. When a fast refresh is not possible, force refresh performs a complete refresh.</p>
+</li>
+</ul>
+<p>A fast refresh is more efficient than a complete refresh. A fast refresh of a materialized view is possible only if the master table has a <span class="bold">materialized view log</span>. A materialized view log is a table at the master site that records all of the insert, update, and delete operations performed on the master table.</p>
+<p>A materialized view log is associated with a single master table, and each master table has only one materialized view log, regardless of how many materialized views refresh from the master table. When a fast refresh is performed on a materialized view, entries in the materialized view log that have appeared since the materialized view was last refreshed are applied to the materialized view.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="tdpii_adpit.htm#BABEDJGH">"Refreshing Materialized Views"</a></p>
+</li>
+<li>
+<p><a href="#BEHBGDFD">"About Refresh Groups"</a></p>
+</li>
+<li>
+<p><a href="tdpii_adpit.htm#BABBBICG">"Determining Which Materialized Views Are Currently Refreshing"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" -->
+<a id="BEHBGDFD"></a><a id="TDPII052"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">About Refresh Groups<a id="sthref453"></a><a id="sthref454"></a></h3>
+<p>When it is important for two or more materialized views to be transactionally consistent with each other, you can organize them into <span class="bold">refresh groups</span>. By refreshing a refresh group, you can ensure that the data in all of the materialized views in the refresh group correspond to the same transactionally consistent point in time. A materialized view in a refresh group still can be refreshed individually. However, doing so nullifies the benefits of the refresh group because refreshing the materialized view individually does not refresh the other materialized views in the refresh group.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#BEHBEBJA">"About Materialized View Refresh"</a></p>
+</li>
+<li>
+<p><a href="tdpii_adpit.htm#BABGBBIJ">"Refreshing a Refresh Group"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDIHIFJ"></a><a id="TDPII102"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Preparing for Materialized View Replication<a id="sthref455"></a><a id="sthref456"></a><a id="sthref457"></a><a id="sthref458"></a><a id="sthref459"></a><a id="sthref460"></a><a id="sthref461"></a><a id="sthref462"></a></h2>
+<p>Before configuring materialized view replication, prepare the databases that will participate in the replication environment.</p>
+<p class="orderedlisttitle">To prepare for materialized view replication:&nbsp;</p>
+<ol>
+<li>
+<p>If possible, then ensure that each replicated table has a primary key. Where a primary key is not possible, each replicated table must have a column or set of columns that can be used as a unique identifier for each row of the table. If the tables that you plan to use in your replication environment do not have a primary key or a set of unique columns, then alter these tables accordingly.</p>
+</li>
+<li>
+<p>Set initialization parameters properly at each database in your replication environment before you configure materialized view replication:</p>
+<ul>
+<li>
+<p><span class="bold">Global names:</span> Set the <code>GLOBAL_NAMES</code> initialization parameter to <code>TRUE</code> at each database that will participate in the replication environment. See <a href="tdpii_common_ii.htm#BGBEEDCD">"Setting the GLOBAL_NAMES Initialization Parameter to TRUE"</a>.</p>
+</li>
+<li>
+<p><span class="bold">System Global Area (SGA) and the shared pool:</span> Ensure that the shared pool is large enough to accommodate the components created for the replication environment. The shared pool is part of the SGA. You can manage the shared pool by setting the <a class="olink REFRN10285" href="../../server.112/e40402/initparams143.htm#REFRN10285"><code>MEMORY_TARGET</code></a> initialization parameter (Automatic Memory Management), the <a class="olink REFRN10256" href="../../server.112/e40402/initparams236.htm#REFRN10256"><code>SGA_TARGET</code></a> initialization parameter (Automatic Shared Memory Management), or the <a class="olink REFRN10202" href="../../server.112/e40402/initparams240.htm#REFRN10202"><code>SHARED_POOL_SIZE</code></a> initialization parameter. Typically, the shared pool should be larger for an Oracle database in a replication environment than in a nonreplication environment.</p>
+</li>
+</ul>
+<p>See <a class="olink ADMQS053" href="../../server.112/e10897/instance.htm#ADMQS053"><span class="italic">Oracle Database 2 Day DBA</span></a> for information about modifying initialization parameters.</p>
+</li>
+<li>
+<p>Configure network connectivity so that the databases in the replication environment can communicate with each other. See <a class="olink ADMQS004" href="../../server.112/e10897/network.htm#ADMQS004"><span class="italic">Oracle Database 2 Day DBA</span></a> for information about configuring network connectivity between databases.</p>
+</li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#BEHDACAG">"Replicating Read-Only Data Using Materialized Views"</a></p>
+</li>
+<li>
+<p><a href="#BEHCEFGC">"Replicating Read/Write Data Using Materialized Views"</a></p>
+</li>
+<li>
+<p><a class="olink REPLN104" href="../../server.112/e10706/repplan.htm#REPLN104"><span class="italic">Oracle Database Advanced Replication</span></a> for more information about initialization parameters in a replication environment</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="CHDBCGBG"></a><a id="TDPII105"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Configuring Materialized View Sites<a id="sthref464"></a><a id="sthref465"></a><a id="sthref466"></a></h2>
+<p>Before you configure materialized views, you must configure the databases that will function as materialized view sites in your replication environment. Completing the steps in this topic will configure the necessary users and database links required by the materialized view environment. In addition, if you plan to configure updatable materialized views, then these steps also configure scheduled links and scheduled purges for changes made to updatable materialized views.</p>
+<p class="orderedlisttitle">To configure materialized view sites with Enterprise Manager:&nbsp;</p>
+<ol>
+<li>
+<p><a id="CHDCBHID"></a>Complete the actions described in <a href="#CHDIHIFJ">"Preparing for Materialized View Replication"</a>.</p>
+</li>
+<li>
+<p><a id="CHDJDECC"></a>In Oracle Enterprise Manager, log in to the materialized view site as an administrative user, such as <code>SYSTEM</code>.</p>
+</li>
+<li>
+<p>Go to the Database Home page.</p>
+</li>
+<li>
+<p>Click <span class="bold">Data Movement</span> to open the Data Movement subpage.</p>
+</li>
+<li>
+<p><a id="CHDDIBHA"></a>Click <span class="bold">Setup</span> in the Advanced Replication section.</p>
+</li>
+<li>
+<p>On the Advanced Replication: Setup page, expand <span class="bold">Updateable Materialized View Replication</span>.</p>
+</li>
+<li>
+<p>Select <span class="bold">Configure Materialized View Sites for Replication</span>.</p>
+</li>
+<li>
+<p><a id="CHDHJHDD"></a>Click <span class="bold">Continue</span> to open the Configure Materialized View Sites for Replication Wizard.</p>
+<img width="806" height="510" src="img/tdpii_add_rep_sites.gif" alt="Description of tdpii_add_rep_sites.gif follows" /><br />
+<a id="sthref468" href="img_text/tdpii_add_rep_sites.htm">Description of the illustration tdpii_add_rep_sites.gif</a><br />
+<br />
+<p>Complete the pages in the wizard to configure the materialized view sites. On the Create Users page, enter an appropriate password for the materialized view administrator. See <a class="olink TDPSG20022" href="../../server.112/e10575/tdpsg_user_accounts.htm#TDPSG20022"><span class="italic">Oracle Database 2 Day + Security Guide</span></a> for information about choosing passwords.</p>
+<div class="infoboxnotealso">
+<p class="notep1">Tip:</p>
+On the Create Schemas page of the wizard, make sure you select the schemas that contain the database objects to replicate.</div>
+<p>When you finish the wizard, an Enterprise Manager job is scheduled to configure the materialized view sites. After the job runs successfully, the materialized view sites are configured, and each one has a materialized view administrator. By default, the user name of the materialized view administrator is <code>mvadmin</code>. You specified the password for this user when you completed the wizard. Also, each materialized view site contains each schema that you specified on the Create Schemas page of the wizard.</p>
+</li>
+<li>
+<p><a id="sthref469"></a>At each materialized view site, create the required database links for the replicated schemas.</p>
+<p>To create materialized views in a schema at the materialized view site, the schema must be able to connect to the corresponding schema at the master site through a database link.</p>
+<p>To create the database links:</p>
+<ol>
+<li>
+<p><a id="CHDCFDHF"></a>On a command line, open SQL*Plus and connect to the materialized view database as the owner of the replicated schema.</p>
+<p>For example, if you plan to create materialized views in the <code>hr</code> schema at the <code>ii2.example.com</code> database, then enter the following:</p>
+<pre>
+sqlplus hr@ii2.example.com
+Enter password: <span class="italic">password</span>
+</pre>
+<p>See <a class="olink ADMQS0361" href="../../server.112/e10897/em_manage.htm#ADMQS0361"><span class="italic">Oracle Database 2 Day DBA</span></a> for more information about starting SQL*Plus.</p>
+</li>
+<li>
+<p><a id="CHDIHBAF"></a>Create a database link that connects to the corresponding replicated schema at the master database.</p>
+<p>For example, to create a database link that connects to the <code>hr</code> schema at the <code>ii1.example.com</code> database, enter the following:</p>
+<pre>
+CREATE DATABASE LINK ii1.example.com CONNECT TO hr 
+   IDENTIFIED BY <span class="italic">password</span> USING 'ii1.example.com';
+</pre></li>
+<li>
+<p><a id="CHDGDICJ"></a>Repeat Steps <a href="#CHDCFDHF">a</a> through <a href="#CHDIHBAF">b</a> for each replicated schema at the materialized view database.</p>
+</li>
+<li>
+<p>Repeat Steps <a href="#CHDCFDHF">a</a> through <a href="#CHDGDICJ">c</a> for each materialized view database.</p>
+</li>
+</ol>
+</li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="tdpii_intro2ii.htm#CFHBIEHG">"When to Replicate Data with Materialized Views"</a></p>
+</li>
+<li>
+<p><a href="#BEHFGHIE">"About Master Sites, Master Tables, and Materialized View Sites"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="CHDCDIAG"></a><a id="TDPII106"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Configuring Materialized View Logs at the Master Site<a id="sthref470"></a><a id="sthref471"></a></h2>
+<p>To enable fast refresh of a materialized view, configure a materialized view log for its master table at the master site. A fast refresh is more efficient than a complete refresh, because it updates only rows that have changed since the last refresh. See <a href="#BEHBEBJA">"About Materialized View Refresh"</a> for more information.</p>
+<p class="orderedlisttitle">To configure materialized view logs:&nbsp;</p>
+<ol>
+<li>
+<p>In Oracle Enterprise Manager, log in to the master site as an administrative user, such as <code>SYSTEM</code>.</p>
+</li>
+<li>
+<p><a id="CHDJJJEJ"></a>Go to the Database Home page.</p>
+</li>
+<li>
+<p>Click <span class="bold">Data Movement</span> to open the Data Movement subpage.</p>
+</li>
+<li>
+<p>Click <span class="bold">Setup</span> in the Advanced Replication section.</p>
+</li>
+<li>
+<p><a id="CHDCGICA"></a>On the Advanced Replication: Setup page, expand <span class="bold">Updateable Materialized View Replication</span>.</p>
+</li>
+<li>
+<p>Select <span class="bold">Create Materialized View log on source database tables for fast refresh</span>.</p>
+</li>
+<li>
+<p>Click <span class="bold">Continue</span> to open the Create Materialized View Log page.</p>
+<img width="754" height="524" src="img/tdpii_create_mv_log.gif" alt="Description of tdpii_create_mv_log.gif follows" /><br />
+<a id="sthref473" href="img_text/tdpii_create_mv_log.htm">Description of the illustration tdpii_create_mv_log.gif</a><br />
+<br /></li>
+<li>
+<p><a id="CHDJAGDB"></a>Enter the schema name and table name for the master table in the form <code><span class="codeinlineitalic">schema.table</span></code> in the Schema.Table field, or click the flashlight icon to find the table.</p>
+</li>
+<li>
+<p>Click <span class="bold">Populate Columns</span>.</p>
+</li>
+<li>
+<p>If you have a specific tablespace for the materialized view log you are creating, then enter the tablespace name in the Tablespace field. Otherwise, leave <code>&lt;Default&gt;</code> in the field.</p>
+</li>
+<li>
+<p>Ensure that <span class="bold">Primary Key</span> is selected in Refresh Types.</p>
+</li>
+<li>
+<p><a id="CHDCABJG"></a>Click <span class="bold">OK</span> to create the materialized view log.</p>
+</li>
+<li>
+<p>Repeat Steps <a href="#CHDCGICA">5</a> through <a href="#CHDCABJG">12</a> for each master table.</p>
+</li>
+</ol>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You can also use the <a class="olink SQLRF01303" href="../../server.112/e41084/statements_6003.htm#SQLRF01303"><code>CREATE</code> <code>MATERIALIZED</code> <code>VIEW</code> <code>LOG</code></a> SQL statement to create a materialized view log.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#BEHBEBJA">"About Materialized View Refresh"</a></p>
+</li>
+<li>
+<p><a href="tdpii_adpit.htm#BABEDAHG">"Viewing Materialized View Logs at a Master Site"</a></p>
+</li>
+<li>
+<p><a href="tdpii_adpit.htm#BABCGIBA">"Preventing Materialized View Logs From Becoming Too Large"</a></p>
+</li>
+<li>
+<p><a href="tdpii_adpit.htm#BABHFCEE">"Tutorial: Cleaning Up Materialized View Support at a Master Site"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="BEHDACAG"></a><a id="TDPII053"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Replicating Read-Only Data Using Materialized Views<a id="sthref474"></a></h2>
+<p>A read-only replica of a table is appropriate for databases that provide access to the replicated data without allowing applications to modify the replicated data.</p>
+<p>The following topics describe replicating read-only data using materialized views:</p>
+<ul>
+<li>
+<p><a href="#BEHIFAIG">About Replicating Read-Only Data Using Materialized Views</a></p>
+</li>
+<li>
+<p><a href="#BEHEBFJH">Tutorial: Configuring Read-Only Data Replication Using Materialized Views</a></p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="tdpii_intro2ii.htm#CFHBIEHG">"When to Replicate Data with Materialized Views"</a></p>
+</li>
+<li>
+<p><a href="#BEHCEFGC">"Replicating Read/Write Data Using Materialized Views"</a></p>
+</li>
+<li>
+<p><a href="tdpii_adpit.htm#BABFHCBC">"Administering a Materialized View Replication Environment"</a></p>
+</li>
+</ul>
+</div>
+<a id="BEHIFAIG"></a><a id="TDPII054"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">About Replicating Read-Only Data Using Materialized Views<a id="sthref475"></a><a id="sthref476"></a></h3>
+<p><span class="bold">Read-only materialized views</span> provide read-only access to the table data that originates from a master site. Applications can query data from read-only materialized views to avoid network access to the master site, regardless of network availability. However, applications throughout the system must access data at the master site to perform insert, update, and delete operations.</p>
+<p><a href="#BEHIHIGH">Figure 7-1</a> shows how a read-only materialized view works.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="BEHIHIGH"></a><a id="TDPII282"></a>Figure 7-1 Read-Only Materialized View</p>
+<img width="600" height="344" src="img/tdpii053.gif" alt="Description of Figure 7-1 follows" /><br />
+<a id="sthref477" href="img_text/tdpii053.htm">Description of "Figure 7-1 Read-Only Materialized View"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p><a href="#BEHIHIGH">Figure 7-1</a> shows that client applications can perform local queries on a read-only materialized view at the materialized view site. These applications can update data at the remote master. The materialized view is updated with the changes at the master when the materialized view refreshes over the network.</p>
+</div>
+<!-- class="sect2" -->
+<a id="BEHEBFJH"></a><a id="TDPII055"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Tutorial: Configuring Read-Only Data Replication Using Materialized Views<a id="sthref478"></a><a id="sthref479"></a></h3>
+<p>The example in this topic configures read-only data replication using materialized views. Specifically, this example creates the following read-only materialized views at a materialized view site:</p>
+<ul>
+<li>
+<p>The <code>mvadmin.employees_mvr</code> materialized view based on the <code>hr.employees</code> table at the master site.</p>
+</li>
+<li>
+<p>The <code>mvadmin.departments_mvr</code> materialized view based on the <code>hr.departments</code> table at the master site.</p>
+</li>
+</ul>
+<p class="orderedlisttitle">To configure these read-only materialized views:&nbsp;</p>
+<ol>
+<li>
+<p>Complete the actions described in the following topics:</p>
+<ul>
+<li>
+<p><a href="#CHDIHIFJ">"Preparing for Materialized View Replication"</a></p>
+</li>
+<li>
+<p><a href="#CHDBCGBG">"Configuring Materialized View Sites"</a></p>
+</li>
+<li>
+<p><a href="#CHDCDIAG">"Configuring Materialized View Logs at the Master Site"</a> if you want to perform a fast refresh of the materialized views. For this example, create a materialized view log for each of the following tables: <code>hr.departments</code> and <code>hr.employees</code>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>In Enterprise Manager, log in to the materialized view site as the materialized view administrator. The materialized view site is the database in which you want to create materialized views. The default user name for the materialized view administrator is <code>mvadmin</code>.</p>
+</li>
+<li>
+<p>Go to the Database Home page.</p>
+</li>
+<li>
+<p>Click <span class="bold">Data Movement</span> to open the Data Movement subpage.</p>
+</li>
+<li>
+<p>Click <span class="bold">Setup</span> in the Advanced Replication section.</p>
+</li>
+<li>
+<p>On the Advanced Replication: Setup page, expand <span class="bold">Read-only Materialized Views</span>.</p>
+</li>
+<li>
+<p>Select <span class="bold">Create Materialized View</span>.</p>
+</li>
+<li>
+<p>Click <span class="bold">Continue</span> to open the Create Materialized View page.</p>
+<img width="754" height="567" src="img/tdpii_create_mv.gif" alt="Description of tdpii_create_mv.gif follows" /><br />
+<a id="sthref481" href="img_text/tdpii_create_mv.htm">Description of the illustration tdpii_create_mv.gif</a><br />
+<br /></li>
+<li>
+<p>Complete the following actions to create the <code>hr.employees_mvr</code> materialized view:</p>
+<ol>
+<li>
+<p>Enter <code>employees_mvr</code> in the Name field.</p>
+</li>
+<li>
+<p>Enter <code>hr</code> in the Schema field.</p>
+</li>
+<li>
+<p>If you have a specific tablespace for the materialized view you are creating, then enter the tablespace name in the Tablespace field. Otherwise, leave <code>&lt;Default&gt;</code> in the field.</p>
+</li>
+<li>
+<p>Deselect <span class="bold">Enable the materialized view for query rewrite</span>.</p>
+</li>
+<li>
+<p>Ensure that the following are not selected:</p>
+<ul>
+<li>
+<p><span class="bold">Make the materialized view updatable</span></p>
+</li>
+<li>
+<p><span class="bold">Build From Existing Table</span></p>
+</li>
+</ul>
+</li>
+<li>
+<p>Enter the following in the Materialized View Query field:</p>
+<pre>
+SELECT employee_id, 
+        first_name, 
+        last_name, 
+        email, 
+        phone_number, 
+        hire_date, 
+        job_id,
+        salary, 
+        commission_pct, 
+        manager_id, 
+        department_id
+FROM hr.employees@<span class="italic">master_site</span>
+</pre>
+<p>Replace <code><span class="codeinlineitalic">master_site</span></code> with the global name of the master site that contains the master table.</p>
+</li>
+<li>
+<p>Deselect <span class="bold">Analyze the materialized view after it is created</span>.</p>
+</li>
+<li>
+<p>If necessary, then set options for the materialized view on the other subpages.</p>
+</li>
+<li>
+<p>Click <span class="bold">OK</span> to create the materialized view.</p>
+</li>
+</ol>
+<p>The <code>hr.employees_mvr</code> materialized view is a complete copy of the master <code>hr.employees</code> table. To create a materialized view that contains a subset of the data, you can include a <code>WHERE</code> clause in your <code>SELECT</code> statement.</p>
+</li>
+<li>
+<p>On the Advanced Replication: Setup page, expand <span class="bold">Read-only Materialized Views</span>.</p>
+</li>
+<li>
+<p>Select <span class="bold">Create Materialized View</span>.</p>
+</li>
+<li>
+<p>Click <span class="bold">Continue</span> to open the Create Materialized View page.</p>
+</li>
+<li>
+<p>Complete the following actions to create the <code>hr.departments_mvr</code> materialized view:</p>
+<ol>
+<li>
+<p>Enter <code>departments_mvr</code> in the Name field.</p>
+</li>
+<li>
+<p>Enter <code>hr</code> in the Schema field.</p>
+</li>
+<li>
+<p>If you have a specific tablespace for the materialized view you are creating, then enter the tablespace name in the Tablespace field. Otherwise, leave <code>&lt;Default&gt;</code> in the field.</p>
+</li>
+<li>
+<p>Deselect <span class="bold">Enable the materialized view for query rewrite</span>.</p>
+</li>
+<li>
+<p>Ensure that the following are not selected:</p>
+<ul>
+<li>
+<p><span class="bold">Make the materialized view updatable</span></p>
+</li>
+<li>
+<p><span class="bold">Build From Existing Table</span></p>
+</li>
+</ul>
+</li>
+<li>
+<p>Enter the following in the Materialized View Query field:</p>
+<pre>
+SELECT department_id, 
+        department_name, 
+        manager_id, 
+        location_id 
+FROM hr.departments@<span class="italic">master_site</span>
+</pre>
+<p>Replace <code><span class="codeinlineitalic">master_site</span></code> with the master site that contains the master table.</p>
+</li>
+<li>
+<p>Deselect <span class="bold">Analyze the materialized view after it is created</span>.</p>
+</li>
+<li>
+<p>If necessary, then set options for the materialized view on the other subpages.</p>
+</li>
+<li>
+<p>Click <span class="bold">OK</span> to create the materialized view.</p>
+</li>
+</ol>
+</li>
+<li>
+<p>Create a refresh group and add the materialized views to it so that they are consistent with a single point in time when they are refreshed. In this example, add the <code>hr.employees_mvr</code> and <code>hr.departments_mvr</code> materialized views to the refresh group. See <a href="#CHDJEFDH">"Configuring a Refresh Group"</a>.</p>
+</li>
+</ol>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You can also use the <a class="olink SQLRF01302" href="../../server.112/e41084/statements_6002.htm#SQLRF01302"><code>CREATE</code> <code>MATERIALIZED</code> <code>VIEW</code></a> SQL statement to create a materialized view.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="tdpii_intro2ii.htm#CFHBIEHG">"When to Replicate Data with Materialized Views"</a></p>
+</li>
+<li>
+<p><a href="#BEHIFAIG">"About Replicating Read-Only Data Using Materialized Views"</a></p>
+</li>
+<li>
+<p><a href="tdpii_adpit.htm#BABFHCBC">"Administering a Materialized View Replication Environment"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="BEHCEFGC"></a><a id="TDPII056"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Replicating Read/Write Data Using Materialized Views<a id="sthref482"></a></h2>
+<p>A read/write replica of a table is appropriate for databases that allow applications to modify the replicated data.</p>
+<p>The following topics describe replicating read/write data using materialized views:</p>
+<ul>
+<li>
+<p><a href="#BEHCEEHJ">About Replicating Read/Write Data Using Materialized Views</a></p>
+</li>
+<li>
+<p><a href="#BEHBDEHH">Configuring Replication of Read/Write Data Using Materialized Views</a></p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="tdpii_intro2ii.htm#CFHBIEHG">"When to Replicate Data with Materialized Views"</a></p>
+</li>
+<li>
+<p><a href="#BEHDACAG">"Replicating Read-Only Data Using Materialized Views"</a></p>
+</li>
+<li>
+<p><a href="tdpii_adpit.htm#BABFHCBC">Chapter 8, "Administering a Materialized View Replication Environment"</a></p>
+</li>
+</ul>
+</div>
+<a id="BEHCEEHJ"></a><a id="TDPII057"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">About Replicating Read/Write Data Using Materialized Views<a id="sthref483"></a><a id="sthref484"></a></h3>
+<p><span class="bold">Updatable materialized views</span> enable users to insert, update, and delete rows in the materialized views. When an updatable materialized view is refreshed, these changes are pushed to the master site and applied to the master table.</p>
+<p><a href="#BEHFADHF">Figure 7-2</a> shows how an updatable materialized view works.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="BEHFADHF"></a><a id="TDPII284"></a>Figure 7-2 Updatable Materialized View</p>
+<img width="600" height="343" src="img/tdpii083.gif" alt="Description of Figure 7-2 follows" /><br />
+<a id="sthref485" href="img_text/tdpii083.htm">Description of "Figure 7-2 Updatable Materialized View"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p><a href="#BEHFADHF">Figure 7-2</a> shows that client applications can query and update an updatable materialized view at the materialized view site. These applications can also update data at the remote master site. When the materialized view initializes a refresh over the network, the refresh includes two key phases. First, transactions that have been performed on the materialized view are pushed to the master site and applied as appropriate. Next, after resolving any conflicting updates, the materialized view pulls the changed row data from the master site and applies it.</p>
+<p>The following topics provide more information about replicating read/write data using materialized views:</p>
+<ul>
+<li>
+<p><a href="#BEHIGFCF">About Replication Groups and Updatable Materialized Views</a></p>
+</li>
+<li>
+<p><a href="#CHDEJIJC">About Scheduled Links and Deferred Transactions</a></p>
+</li>
+<li>
+<p><a href="#CHDJHGAD">About Conflicts and Updatable Materialized Views</a></p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#BEHBDEHH">"Configuring Replication of Read/Write Data Using Materialized Views"</a></p>
+</li>
+<li>
+<p><a href="tdpii_adpit.htm#BABFHCBC">Chapter 8, "Administering a Materialized View Replication Environment"</a></p>
+</li>
+</ul>
+</div>
+<a id="BEHIGFCF"></a><a id="TDPII058"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">About Replication Groups and Updatable Materialized Views<a id="sthref486"></a><a id="sthref487"></a><a id="sthref488"></a><a id="sthref489"></a><a id="sthref490"></a></h4>
+<p>A <span class="bold">replication group</span> is a collection of replication objects that are logically related. Organizing related database objects within a replication group makes it easier to administer many objects together. At a master site, a replication group is called a <span class="bold">master group</span>. At a materialized view site, a replication group is called a <span class="bold">materialized view group</span>.</p>
+<p>For changes made to an updatable materialized view to be pushed to the master during refresh, the following conditions must be met:</p>
+<ul>
+<li>
+<p>The updatable materialized view must belong to a materialized view group.</p>
+</li>
+<li>
+<p>The materialized view group must be based on a master group at the master site.</p>
+</li>
+</ul>
+<p>The materialized view group can contain materialized views for all of the tables in the master group or for a subset of the tables.</p>
+<p><a href="#BEHBCAEC">Figure 7-3</a> shows two materialized view groups. Materialized view group A contains materialized views that correspond to a subset of the tables in the master group, while materialized view group B contains a materialized view for each table in the master group.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="BEHBCAEC"></a><a id="TDPII285"></a>Figure 7-3 Materialized View Groups Correspond with Master Groups</p>
+<img width="600" height="336" src="img/tdpii074.gif" alt="Description of Figure 7-3 follows" /><br />
+<a id="sthref491" href="img_text/tdpii074.htm">Description of "Figure 7-3 Materialized View Groups Correspond with Master Groups"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p><a id="sthref492"></a><a id="sthref493"></a><a id="sthref494"></a><a id="sthref495"></a>If you are using materialized view groups and refresh groups at the same site, then a single refresh group can contain multiple materialized view groups. A materialized view group is different from a refresh group, although it can contain the same materialized views.</p>
+<p><a href="#BEHGGIDF">Figure 7-4</a> shows a refresh group that contains two materialized view groups.</p>
+<div class="figure">
+<p class="titleinfigure"><a id="BEHGGIDF"></a><a id="TDPII286"></a>Figure 7-4 Refresh Groups Can Contain Objects from Multiple Materialized View Groups</p>
+<img width="600" height="320" src="img/tdpii075.gif" alt="Description of Figure 7-4 follows" /><br />
+<a id="sthref496" href="img_text/tdpii075.htm">Description of "Figure 7-4 Refresh Groups Can Contain Objects from Multiple Materialized View Groups"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#BEHBGDFD">"About Refresh Groups"</a></p>
+</li>
+<li>
+<p><a href="#BEHBDEHH">"Configuring Replication of Read/Write Data Using Materialized Views"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect3" -->
+<a id="CHDEJIJC"></a><a id="TDPII130"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">About Scheduled Links and Deferred Transactions<a id="sthref497"></a><a id="sthref498"></a><a id="sthref499"></a><a id="sthref500"></a><a id="sthref501"></a><a id="sthref502"></a><a id="sthref503"></a></h4>
+<p>At a materialized view site, <span class="bold">deferred transactions</span> include changes to updatable materialized views. The deferred transactions are stored at the materialized view site so that they can be sent to the master site and applied to master tables.</p>
+<p>A refresh of an updatable materialized view first pushes the deferred transactions at the materialized view site to its master site. Then, the data at the master site is pulled down and applied to the materialized view.</p>
+<p>Optionally, you can choose to push the deferred transactions at a regular interval independent of refresh. A <span class="bold">scheduled link</span> is a database link with a user-defined schedule to push deferred transactions. A scheduled link determines how a materialized view site sends its deferred transaction queue to its master site. When you create a scheduled link, Oracle Database creates a job in the local job queue to push the deferred transaction queue to the master site.</p>
+<p>If the materialized view site has a constant connection to its master site, then you optionally can use a scheduled link to push the deferred transactions to the master site at regular intervals. If the materialized view site is disconnected from its master site for extended periods of time, then it is typically better not to push deferred transactions on a schedule. In this case, it is best to refresh on demand, which also pushes changes to the master site.</p>
+<p>After changes made to updatable materialized views are pushed to the master site, they no longer need to be stored at the materialized view site. To keep the size of the deferred transaction queue in check, you should purge successfully completed deferred transactions. These deferred transactions can be purged at regular intervals according to a <span class="bold">purge schedule</span>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#BEHCEEHJ">"About Replicating Read/Write Data Using Materialized Views"</a></p>
+</li>
+<li>
+<p><a href="#BEHFGHIE">"About Master Sites, Master Tables, and Materialized View Sites"</a></p>
+</li>
+<li>
+<p><a href="#BEHBEBJA">"About Materialized View Refresh"</a></p>
+</li>
+<li>
+<p><a href="#CHDBCGBG">"Configuring Materialized View Sites"</a></p>
+</li>
+<li>
+<p><a href="tdpii_adpit.htm#BABGFIFJ">"Viewing Information About Deferred Transactions for Updatable Materialized Views"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect3" -->
+<a id="CHDJHGAD"></a><a id="TDPII059"></a>
+<div class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">About Conflicts and Updatable Materialized Views<a id="sthref504"></a><a id="sthref505"></a><a id="sthref506"></a></h4>
+<p>When you use updatable materialized views, <span class="bold">conflicts</span> are possible. A conflict occurs when a change is made to the same row in the master table and materialized view at nearly the same time. During refresh, the master site detects a conflict when the same row was changed at the master table and its corresponding materialized view since the last refresh.</p>
+<p>By default, Oracle Database always detects and logs conflicting updates. You can use <span class="bold">conflict resolution</span> to ensure that each conflict is resolved in accordance with your business rules and to ensure that the data converges correctly at all sites. Oracle Database provides built-in conflict resolution methods that you can configure at the master site.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#BEHBDEHH">"Configuring Replication of Read/Write Data Using Materialized Views"</a></p>
+</li>
+<li>
+<p><a class="olink REPLN005" href="../../server.112/e10706/repconflicts.htm#REPLN005"><span class="italic">Oracle Database Advanced Replication</span></a></p>
+</li>
+<li>
+<p><a href="#BEHCEEHJ">"About Replicating Read/Write Data Using Materialized Views"</a></p>
+</li>
+<li>
+<p><a href="#BEHIGFCF">"About Replication Groups and Updatable Materialized Views"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="BEHBDEHH"></a><a id="TDPII060"></a>
+<div class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Configuring Replication of Read/Write Data Using Materialized Views<a id="sthref507"></a><a id="sthref508"></a><a id="sthref509"></a><a id="sthref510"></a></h3>
+<p>This topic provides instructions for configuring read/write data replication using materialized views. Specifically, this example configures:</p>
+<ul>
+<li>
+<p>A master group at a master site that contains master tables. See <a href="#BEHIGFCF">"About Replication Groups and Updatable Materialized Views"</a>.</p>
+</li>
+<li>
+<p>A materialized view group at a materialized view site that contains updatable materialized views that are based on the master tables at the master site. For materialized views to be updatable, they must be in a materialized view group at the materialized view site, and the materialized view group must correspond with a master group at the master site. See <a href="#BEHIGFCF">"About Replication Groups and Updatable Materialized Views"</a>.</p>
+</li>
+<li>
+<p>Latest timestamp conflict resolution at the master site for the master tables. Conflict resolution ensures that the master tables and materialized views remain consistent if changes are made to the same rows in the master table and its corresponding updatable materialized view at nearly the same time. See <a href="#CHDJHGAD">"About Conflicts and Updatable Materialized Views"</a>.</p>
+<p>When a conflict occurs, latest timestamp conflict resolution means that the most recent change is retained and the older change is discarded. So, if a row is updated in a materialized view at one point in time, and then the row is updated in the master table at a later time, then the row in the master table replaces the row in the materialized view automatically when the materialized view is refreshed. If the row in the materialized view was updated more recently than the row in the master table, then the row in the materialized view replaces the row in the master table during refresh.</p>
+</li>
+</ul>
+<p class="orderedlisttitle">To configure updatable materialized views:&nbsp;</p>
+<ol>
+<li>
+<p>Complete the actions described in the following topics:</p>
+<ul>
+<li>
+<p><a href="#CHDIHIFJ">"Preparing for Materialized View Replication"</a></p>
+</li>
+<li>
+<p><a href="#CHDBCGBG">"Configuring Materialized View Sites"</a></p>
+</li>
+<li>
+<p><a href="#CHDCDIAG">"Configuring Materialized View Logs at the Master Site"</a> if you want to perform a fast refresh of the materialized views. Configure a materialized view log for each table that will be a master table.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><a id="CHDFAIDH"></a><a id="sthref512"></a><a id="sthref513"></a>Configure the master site. The master site contains the master tables on which the updatable materialized views are based.</p>
+<ol>
+<li>
+<p>In Oracle Enterprise Manager, log in to the database that will be the master site as an administrative user, such as <code>SYSTEM</code>.</p>
+</li>
+<li>
+<p>Go to the Database Home page.</p>
+</li>
+<li>
+<p>Click <span class="bold">Data Movement</span> to open the Data Movement subpage.</p>
+</li>
+<li>
+<p>Click <span class="bold">Setup</span> in the Advanced Replication section.</p>
+</li>
+<li>
+<p>On the Advanced Replication: Setup page, expand <span class="bold">Updateable Materialized View Replication</span>.</p>
+</li>
+<li>
+<p>Select <span class="bold">Configure Master Sites for Replication</span>.</p>
+</li>
+<li>
+<p>Click <span class="bold">Continue</span> to open the Configure Master Sites for Replication Wizard.</p>
+<img width="745" height="345" src="img/tdpii_setup_master_sites.gif" alt="Description of tdpii_setup_master_sites.gif follows" /><br />
+<a id="sthref514" href="img_text/tdpii_setup_master_sites.htm">Description of the illustration tdpii_setup_master_sites.gif</a><br />
+<br />
+<p>Complete the pages in the wizard to configure the master site.</p>
+<p>When you finish the wizard, an Enterprise Manager job is scheduled to configure the master site. After the job runs successfully, the master site is configured, and it has a replication administrator. By default, the user name of the replication administrator is <code>repadmin</code>. You specified the password for this user when you completed the wizard.</p>
+</li>
+</ol>
+</li>
+<li>
+<p><a id="CHDEDIJI"></a><a id="sthref515"></a><a id="sthref516"></a>Add a <code>time</code> column to each master table for latest timestamp conflict resolution.</p>
+<ol>
+<li>
+<p>In SQL*Plus, connect to the database as an administrative user, such as <code>SYSTEM</code>. Alternatively, you can connect as the user who owns the table to which the time column will be added.</p>
+<p>See <a class="olink ADMQS0361" href="../../server.112/e10897/em_manage.htm#ADMQS0361"><span class="italic">Oracle Database 2 Day DBA</span></a> for more information about starting SQL*Plus.</p>
+</li>
+<li>
+<p><a id="CIHJDEBB"></a>Use the <a class="olink SQLRF01001" href="../../server.112/e41084/statements_3001.htm#SQLRF01001"><code>ALTER</code> <code>TABLE</code></a> SQL statement to add the <code>time</code> column to the table. For example, the following SQL statement adds the <code>time</code> column to the <code>hr.departments</code> table.</p>
+<pre>
+ALTER TABLE hr.departments ADD (time TIMESTAMP WITH TIME ZONE);
+</pre></li>
+</ol>
+</li>
+<li>
+<p><a id="CHDDJJDH"></a><a id="sthref517"></a><a id="sthref518"></a>Create a trigger to update the <code>time</code> column in each master table with the current time when a change occurs.</p>
+<div class="infoboxnotealso">
+<p class="notep1">Tip:</p>
+Instead of using a trigger to update the <code>time</code> column, an application can populate the <code>time</code> column each time it modifies or inserts a row into a table.</div>
+<ol>
+<li>
+<p><a id="CHDCDACI"></a>In Oracle Enterprise Manager, log in to the database that contains the master tables as an administrative user, such as <code>SYSTEM</code>.</p>
+<p>If you did not log out of Enterprise Manager after completing Step <a href="#CHDEDIJI">3</a>, then you can remain logged in to the master site as an administrative user.</p>
+</li>
+<li>
+<p><a id="CHDDGEAC"></a>Go to the Database Home page.</p>
+</li>
+<li>
+<p>Click <span class="bold">Schema</span> to open the Schema subpage.</p>
+</li>
+<li>
+<p>Click <span class="bold">Triggers</span> in the Programs section.</p>
+</li>
+<li>
+<p><a id="CHDEICCC"></a>On the Triggers page, click <span class="bold">Create</span>.</p>
+<p>The Create Trigger page appears, showing the General subpage.</p>
+<img width="739" height="346" src="img/tdpii_create_trigger_system.gif" alt="Description of tdpii_create_trigger_system.gif follows" /><br />
+<a id="sthref519" href="img_text/tdpii_create_trigger_system.htm">Description of the illustration tdpii_create_trigger_system.gif</a><br />
+<br /></li>
+<li>
+<p>Enter the name of the trigger in the Name field.</p>
+</li>
+<li>
+<p>Retain the administrative user name in the Schema field.</p>
+</li>
+<li>
+<p>Enter the following in the Trigger Body field:</p>
+<pre>
+BEGIN
+   -- The IF/THEN statement ensures that the trigger does not fire during
+   -- materialized view refresh.
+   IF (DBMS_REPUTIL.FROM_REMOTE = FALSE AND
+       DBMS_SNAPSHOT.I_AM_A_REFRESH = FALSE) 
+   THEN
+      :NEW.TIME := SYSTIMESTAMP;
+   END IF;
+END;
+</pre></li>
+<li>
+<p>Click <span class="bold">Event</span> to open the Event subpage.</p>
+</li>
+<li>
+<p>Ensure that <span class="bold">Table</span> is selected in the Trigger On list.</p>
+</li>
+<li>
+<p>Enter the table name in the form <code><span class="codeinlineitalic">schema.table</span></code> in the Table (Schema.Table) field, or use the flashlight icon to find the database object.</p>
+</li>
+<li>
+<p>Ensure that <span class="bold">Before</span> is selected for Fire Trigger.</p>
+</li>
+<li>
+<p>Select <span class="bold">Insert</span> and <span class="bold">Update of Columns</span> for Event.</p>
+<p>The columns in the table appear.</p>
+</li>
+<li>
+<p>Select every column in the table except for the new <code>time</code> column.</p>
+</li>
+<li>
+<p>Click <span class="bold">Advanced</span>.</p>
+</li>
+<li>
+<p>Select <span class="bold">Trigger for each row</span>.</p>
+</li>
+<li>
+<p><a id="CHDFDJFH"></a>Click <span class="bold">OK</span> to create the trigger.</p>
+</li>
+<li>
+<p>Repeat Steps <a href="#CHDEICCC">e</a> through <a href="#CHDFDJFH">q</a> to create a trigger for each master table.</p>
+</li>
+<li>
+<p>Log out of Enterprise Manager.</p>
+</li>
+</ol>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You can also use the <a class="olink SQLRF01405" href="../../server.112/e41084/statements_7004.htm#SQLRF01405"><code>CREATE</code> <code>TRIGGER</code></a> SQL statement to create a trigger.</div>
+</li>
+<li>
+<p><a id="sthref520"></a><a id="sthref521"></a>Create the master group.</p>
+<ol>
+<li>
+<p>In Enterprise Manager, log in to the master site as the replication administrator. By default, the user name of the replication administrator is <code>repadmin</code>.</p>
+</li>
+<li>
+<p>Go to the Database Home page.</p>
+</li>
+<li>
+<p>Click <span class="bold">Data Movement</span> to open the Data Movement subpage.</p>
+</li>
+<li>
+<p>Click <span class="bold">Setup</span> in the Advanced Replication section.</p>
+<p>The Advanced Replication: Setup page appears.</p>
+</li>
+<li>
+<p>Expand <span class="bold">Multi-master Replication</span>.</p>
+</li>
+<li>
+<p>Select <span class="bold">Create Master Group</span>.</p>
+</li>
+<li>
+<p>Click <span class="bold">Continue</span> to open the Create Master Group Wizard.</p>
+<img width="649" height="353" src="img/tdpii_create_mg_gen.gif" alt="Description of tdpii_create_mg_gen.gif follows" /><br />
+<a id="sthref522" href="img_text/tdpii_create_mg_gen.htm">Description of the illustration tdpii_create_mg_gen.gif</a><br />
+<br />
+<p>Complete the pages in the wizard to configure the master group.</p>
+<div class="infoboxnotealso">
+<p class="notep1">Tip:</p>
+<ul>
+<li>
+<p>On the Add Objects page, add the tables that will be master tables for the materialized views.</p>
+</li>
+<li>
+<p>On the Add Master Sites page, do not add any additional master sites.</p>
+</li>
+</ul>
+</div>
+<p>When you finish the wizard, an Enterprise Manager job is scheduled to configure the master group.</p>
+</li>
+</ol>
+</li>
+<li>
+<p><a id="CHDBBDHI"></a><a id="sthref523"></a><a id="sthref524"></a>Configure conflict resolution for each master table:</p>
+<ol>
+<li>
+<p><a id="CHDGFCHI"></a><a id="sthref525"></a><a id="sthref526"></a>While still logged in as the replication administrator at the master site, go to the Database Home page of the database that contains the new master group.</p>
+</li>
+<li>
+<p><a id="CHDIJAGD"></a>Click <span class="bold">Data Movement</span> to open the Data Movement subpage.</p>
+</li>
+<li>
+<p>Click <span class="bold">Manage</span> in the Advanced Replication section.</p>
+<p>The Advanced Replication: Administration page appears, showing the Overview subpage.</p>
+</li>
+<li>
+<p>Click the number associated with Master Groups in the Multimaster Replication section.</p>
+</li>
+<li>
+<p>On the Master Groups page, if the master group status is <code>NORMAL</code>, then click <span class="bold">Quiesce</span>. If the status is <code>QUIESCED</code>, then move on to the next step.</p>
+</li>
+<li>
+<p>On a command line, open SQL*Plus and connect to the master site as the replication administrator.</p>
+<p>For example, if the replication administrator is <code>repadmin</code> and the master site is <code>ii1.example.com</code>, then enter the following:</p>
+<pre>
+sqlplus repadmin@ii1.example.com
+Enter password: <span class="italic">password</span>
+</pre>
+<p>See <a class="olink ADMQS0361" href="../../server.112/e10897/em_manage.htm#ADMQS0361"><span class="italic">Oracle Database 2 Day DBA</span></a> for more information about starting SQL*Plus.</p>
+</li>
+<li>
+<p><a id="CHDGDDCC"></a><a id="sthref527"></a><a id="sthref528"></a>In SQL*Plus, run the <code>MAKE_COLUMN_GROUP</code> procedure in the <code>DBMS_REPCAT</code> package to create a column group for a replicated table.</p>
+<p>For example, to create a column group for the <code>hr.departments</code> table, run the following procedure:</p>
+<pre>
+BEGIN
+   DBMS_REPCAT.MAKE_COLUMN_GROUP(
+      sname                =&gt; 'hr',
+      oname                =&gt; 'departments',
+      column_group         =&gt; 'dep_time_cg',
+      list_of_column_names =&gt; 'department_id,
+                               department_name,
+                               manager_id,
+                               location_id,
+                               time');
+END;
+/
+</pre>
+<p>Include all of the table columns in the <code>list_of_columns</code> parameter.</p>
+<p>See <a class="olink REPMA019" href="../../server.112/e10707/rarrcatpac.htm#REPMA019"><span class="italic">Oracle Database Advanced Replication Management API Reference</span></a> for more information about the <code>MAKE_COLUMN_GROUP</code> procedure.</p>
+</li>
+<li>
+<p><a id="CHDIBICI"></a><a id="sthref529"></a><a id="sthref530"></a>In SQL*Plus, run the <code>ADD_UPDATE_RESOLUTION</code> procedure in the <code>DBMS_REPCAT</code> package to specify <code>LATEST</code> <code>TIME</code> conflict resolution for the table.</p>
+<p>For example, to specify <code>LATEST</code> <code>TIME</code> conflict resolution using the column group you created in Step <a href="#CHDGDDCC">g</a> for the <code>hr.departments</code> table, run the following procedure:</p>
+<pre>
+BEGIN
+   DBMS_REPCAT.ADD_UPDATE_RESOLUTION (
+      sname                 =&gt; 'hr',
+      oname                 =&gt; 'departments',
+      column_group          =&gt; 'dep_time_cg',
+      sequence_no           =&gt; 1,
+      method                =&gt; 'LATEST TIMESTAMP',
+      parameter_column_name =&gt; 'time');
+END;
+/
+</pre>
+<p>Specify the column group you created in Step <a href="#CHDGDDCC">g</a> for the <code>column_group</code> parameter, and specify the time column for the <code>parameter_column_name</code> column.</p>
+<p>See <a class="olink REPMA019" href="../../server.112/e10707/rarrcatpac.htm#REPMA019"><span class="italic">Oracle Database Advanced Replication Management API Reference</span></a> for more information about the <code>ADD_UPDATE_RESOLUTION</code> procedure.</p>
+</li>
+<li>
+<p>Repeat Steps <a href="#CHDGDDCC">g</a> through <a href="#CHDIBICI">h</a> for each table in the master group.</p>
+</li>
+<li>
+<p>In Enterprise Manager, log in to the master site as the replication administrator. By default, the user name of the replication administrator is <code>repadmin</code>.</p>
+</li>
+<li>
+<p><a id="sthref531"></a><a id="sthref532"></a><a id="sthref533"></a>Go to the Database Home page.</p>
+</li>
+<li>
+<p>Click <span class="bold">Data Movement</span> to open the Data Movement subpage.</p>
+</li>
+<li>
+<p>Click <span class="bold">Manage</span> in the Advanced Replication section.</p>
+<p>The Advanced Replication: Administration page appears, showing the Overview subpage.</p>
+</li>
+<li>
+<p>Click the number associated with Master Groups in the Multimaster Replication section.</p>
+</li>
+<li>
+<p>On the Master Groups page, select the master group.</p>
+</li>
+<li>
+<p>Click <span class="bold">Edit</span> to open the General subpage of the Edit Master Group page.</p>
+</li>
+<li>
+<p>Click <span class="bold">Objects</span> to open the Objects subpage.</p>
+</li>
+<li>
+<p>Ensure that <span class="bold">Generate Replication Support</span> is selected for each object to which you added conflict resolution.</p>
+</li>
+<li>
+<p><a id="CHDIGHEB"></a>Click <span class="bold">Apply</span> to save your changes.</p>
+</li>
+<li>
+<p>Click <span class="bold">Master Groups</span> at the top of the page to return to the Master groups page.</p>
+</li>
+<li>
+<p>Click <span class="bold">Resume</span> for the master group.</p>
+</li>
+</ol>
+</li>
+<li>
+<p><a id="sthref534"></a><a id="sthref535"></a>Create the materialized view group.</p>
+<ol>
+<li>
+<p>In Enterprise Manager, log in to the materialized view site as the materialized view administrator. The materialized view site is the database in which you want to create materialized views. The default user name for the materialized view administrator is <code>mvadmin</code>.</p>
+</li>
+<li>
+<p>Go to the Database Home page.</p>
+</li>
+<li>
+<p>Click <span class="bold">Data Movement</span> to open the Data Movement subpage.</p>
+</li>
+<li>
+<p>Click <span class="bold">Setup</span> in the Advanced Replication section.</p>
+</li>
+<li>
+<p>On the Advanced Replication: Setup page, expand <span class="bold">Updateable Materialized View Replication</span>.</p>
+</li>
+<li>
+<p>Select <span class="bold">Create Materialized View Group</span>.</p>
+</li>
+<li>
+<p>Click <span class="bold">Continue</span> to open the Create Materialized View Group Wizard.</p>
+<img width="647" height="220" src="img/tdpii_create_mvg_gen.gif" alt="Description of tdpii_create_mvg_gen.gif follows" /><br />
+<a id="sthref536" href="img_text/tdpii_create_mvg_gen.htm">Description of the illustration tdpii_create_mvg_gen.gif</a><br />
+<br />
+<p>Complete the pages in the wizard to configure the materialized group.</p>
+<div class="infoboxnotealso">
+<p class="notep1">Tip:</p>
+For each materialized view on the Customize Materialized Views page:
+<ul>
+<li>
+<p>Select <span class="bold">Min. Communications</span> for each table that uses conflict resolution at the master site. This option reduces the amount of data required to support conflict resolution mechanisms.</p>
+</li>
+<li>
+<p>Select <span class="bold">Updatable</span> for each materialized view that you want to be updatable.</p>
+</li>
+<li>
+<p>Select <span class="bold">Fast Refresh</span> for each materialized view on which you want to perform fast refreshes.</p>
+</li>
+</ul>
+</div>
+<p>When you finish the wizard, an Enterprise Manager job is scheduled to configure the materialized view group.</p>
+</li>
+</ol>
+</li>
+<li>
+<p>Create a trigger to update the <code>time</code> column in each materialized view with the current time when a change occurs. The trigger is required for latest timestamp conflict resolution.</p>
+<ol>
+<li>
+<p>In Enterprise Manager, log in to the materialized view site as the materialized view administrator. The materialized view site is the database in which you want to create materialized views. The default user name for the materialized view administrator is <code>mvadmin</code>.</p>
+</li>
+<li>
+<p>Complete Steps <a href="#CHDDJJDH">4</a><a href="#CHDDGEAC">b</a> through <a href="#CHDDJJDH">4</a><a href="#CHDFDJFH">q</a> for each materialized view.</p>
+</li>
+</ol>
+</li>
+<li>
+<p>If you did not specify an existing refresh group during materialized view group configuration, then create a refresh group and add the materialized views to it so that they are consistent to a single point in time when they are refreshed. See <a href="#CHDJEFDH">"Configuring a Refresh Group"</a>.</p>
+</li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="tdpii_intro2ii.htm#CFHBIEHG">"When to Replicate Data with Materialized Views"</a></p>
+</li>
+<li>
+<p><a href="#BEHCEEHJ">"About Replicating Read/Write Data Using Materialized Views"</a></p>
+</li>
+<li>
+<p><a href="#BEHIGFCF">"About Replication Groups and Updatable Materialized Views"</a></p>
+</li>
+<li>
+<p><a href="#CHDJHGAD">"About Conflicts and Updatable Materialized Views"</a></p>
+</li>
+<li>
+<p><a href="tdpii_adpit.htm#BABFHCBC">Chapter 8, "Administering a Materialized View Replication Environment"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDJEFDH"></a><a id="TDPII111"></a>
+<div class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Configuring a Refresh Group<a id="sthref537"></a><a id="sthref538"></a></h2>
+<p>When two or more materialized views must be consistent to a point in time, the materialized views should belong to the same refresh group.</p>
+<p class="orderedlisttitle">To create a refresh group and add materialized views to it:&nbsp;</p>
+<ol>
+<li>
+<p>In Enterprise Manager, log in to the materialized view site as the materialized view administrator. The default user name for the materialized view administrator is <code>mvadmin</code>.</p>
+</li>
+<li>
+<p>Go to the Database Home page.</p>
+</li>
+<li>
+<p>Click <span class="bold">Data Movement</span> to open the Data Movement subpage.</p>
+</li>
+<li>
+<p>Click <span class="bold">Manage</span> in the Advanced Replication section.</p>
+<p>The Advanced Replication: Administration page appears, showing the Overview subpage.</p>
+</li>
+<li>
+<p>Click the number associated with Refresh Groups in the Materialized View Site section.</p>
+</li>
+<li>
+<p>On the Refresh Groups page, click <span class="bold">Create</span>.</p>
+<p>The Create Refresh Group page appears, showing the General subpage.</p>
+<img width="643" height="417" src="img/tdpii_create_ref_grp.gif" alt="Description of tdpii_create_ref_grp.gif follows" /><br />
+<a id="sthref540" href="img_text/tdpii_create_ref_grp.htm">Description of the illustration tdpii_create_ref_grp.gif</a><br />
+<br /></li>
+<li>
+<p>Complete the following actions:</p>
+<ul>
+<li>
+<p>Enter a name for the refresh group in the Name field.</p>
+</li>
+<li>
+<p>Enter the owner of the refresh group in the Schema field. Typically, the materialized view administrator owns refresh groups.</p>
+</li>
+<li>
+<p>If necessary, then adjust the Next Date and Interval settings. The Next Date setting determines when the next refresh of the refresh group will occur. The Interval setting determines how often the refresh group is refreshed automatically. You can click <span class="bold">Change</span> to open a new page that adjusts each setting.</p>
+<p>If you have limited connectivity between the materialized view site and the master site, then you might want to refresh on demand. In this case, clear the Interval field.</p>
+</li>
+<li>
+<p>Select <span class="bold">Push changes from materialized views to master before refresh</span>. This option specifies that, during refresh, the materialized view site pushes changes made to updatable materialized views to the master tables before refreshing the materialized views.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Click <span class="bold">Materialized Views</span> to open the Materialized Views subpage.</p>
+<img width="653" height="168" src="img/tdpii_create_ref_grp_mvs.gif" alt="Description of tdpii_create_ref_grp_mvs.gif follows" /><br />
+<a id="sthref541" href="img_text/tdpii_create_ref_grp_mvs.htm">Description of the illustration tdpii_create_ref_grp_mvs.gif</a><br />
+<br /></li>
+<li>
+<p>Click <span class="bold">Add</span> to open the Search and Select: Materialized View page.</p>
+</li>
+<li>
+<p>Use the search tool to list the materialized views to add to the refresh group.</p>
+</li>
+<li>
+<p>Select the materialized views to add to the refresh group.</p>
+</li>
+<li>
+<p>Click <span class="bold">OK</span> to return to the Materialized Views subpage. The selected materialized views should be listed in the refresh group.</p>
+</li>
+<li>
+<p>Click <span class="bold">OK</span> to create the refresh group.</p>
+</li>
+</ol>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+You can also use the following procedures in the <a class="olink REPMA018" href="../../server.112/e10707/rarrefreshpac.htm#REPMA018"><code>DBMS_REFRESH</code></a> package to create a refresh group and add objects to it:
+<ul>
+<li>
+<p><code>MAKE</code></p>
+</li>
+<li>
+<p><code>ADD</code></p>
+</li>
+</ul>
+</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#BEHBGDFD">"About Refresh Groups"</a></p>
+</li>
+<li>
+<p><a href="tdpii_adpit.htm#BABGBBIJ">"Refreshing a Refresh Group"</a></p>
+</li>
+<li>
+<p><a href="tdpii_adpit.htm#BABGEEHA">"Adding Materialized Views to a Refresh Group"</a></p>
+</li>
+<li>
+<p><a href="tdpii_adpit.htm#BABBJIBF">"Viewing Information About Refresh Groups"</a></p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1402">
+<tr>
+<td class="cellalignment1409">
+<table class="cellalignment1407">
+<tr>
+<td class="cellalignment1406"><a href="tdpii_repextend.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1406"><a href="tdpii_adpit.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2007, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1411">
+<table class="cellalignment1405">
+<tr>
+<td class="cellalignment1406"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1406"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1406"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1406"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1406"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1406"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Managing Expressions Defined on One or More Database Tables</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Version 5.1.2 Build 033" />
+<meta name="dcterms.created" content="2011-08-16T11:52:4Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Rules Manager and Expression Filter Developer's Guide" />
+<meta name="dcterms.identifier" content="E14919-04" />
+<meta name="dcterms.isVersionOf" content="EXPRN" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2003, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Prev" href="exprn_views.htm" title="Previous" type="text/html" />
+<link rel="Next" href="exprn_app_b.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e14919.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">29/36</span> <!-- End Header --><a id="BGBDFBEG"></a><a id="EXPRN111"></a>
+<h1 class="appendix"><span class="secnum">A</span> Managing Expressions <a id="sthref379"></a>Defined on One or More Database Tables</h1>
+<p>An Expression column can store expressions defined on one or more database tables. These expressions use special elementary attributes called <a id="sthref380"></a>table aliases. The elementary attributes are created using the <code>EXF$TABLE_ALIAS</code> type, and the name of the attribute is treated as the alias to the table specified through the <code>EXF$TABLE_ALIAS</code> type.</p>
+<p>For example, there is a set of expressions defined on a transient variable <code>HRMGR</code> and two database tables, <code>SCOTT.EMP</code> and <code>SCOTT.DEPT</code>.</p>
+<pre>
+hrmgr='Greg' and emp.job='SALESMAN' and emp.deptno = dept.deptno and
+    dept.loc = 'CHICAGO'
+</pre>
+<p>Create the attribute set for this type of expression as shown in the following example:</p>
+<pre>
+BEGIN
+  -- Create the empty Attribute Set --
+  DBMS_EXPFIL.CREATE_ATTRIBUTE_SET('hrdb');
+  
+  -- Add elementary attributes to the Attribute Set --
+  DBMS_EXPFIL.ADD_ELEMENTARY_ATTRIBUTE('hrdb','hrmgr','VARCHAR2(20)');
+ 
+  -- Define elementary attributes of EXF$TABLE_ALIAS type --
+  DBMS_EXPFIL.ADD_ELEMENTARY_ATTRIBUTE('hrdb','emp',
+                                        EXF$TABLE_ALIAS('scott.emp'));
+  DBMS_EXPFIL.ADD_ELEMENTARY_ATTRIBUTE('hrdb','dept',
+                                        EXF$TABLE_ALIAS('scott.dept'));
+END;
+/
+ 
+</pre>
+<p>The table <code>HRInterest</code> stores the expressions defined for this application. Configure the Expression column in this table as shown in the following example:</p>
+<pre>
+CREATE TABLE HRInterest (SubId number, Interest VARCHAR2(100));
+ 
+BEGIN
+  DBMS_EXPFIL.ASSIGN_ATTRIBUTE_SET('hrdb','HRInterest','Interest');
+END;
+/
+-- insert the rows with expressions into the HRInterest table --
+</pre>
+<p>You can index the expressions that use one or more table alias attributes similar to those not using the table alias attributes. For example, the following <code>CREATE INDEX</code> statement configures stored and indexed attributes for the index defined on the Expression column:</p>
+<pre>
+CREATE INDEX HRIndex ON HRInterest (Interest) INDEXTYPE IS EXFSYS.EXPFILTER
+  PARAMETERS ('STOREATTRS (emp.job, dept.loc, hrmgr)
+               INDEXATTRS (emp.job, hrmgr)');
+</pre>
+<p>When you evaluate the expression, the values for the attributes defined as table aliases are passed by assigning the ROWIDs from the corresponding tables. You can evaluate the expressions stored in the <code>HRInterest</code> table for the data (rows) stored in <code>EMP</code> and <code>DEPT</code> tables (and a value of <code>HRMGR</code>) with the following query:</p>
+<pre>
+SELECT empno, job, sal, loc, SubId, Interest
+   FROM emp, dept, HRInterest 
+   WHERE emp.deptno = dept.deptno AND 
+    EVALUATE(Interest, hrdb.getVarchar('Greg',emp.rowid,dept.rowid)) = 1;
+</pre>
+<p>You can add additional predicates to the previous query if the expressions are evaluated only for a subset of rows in the <code>EMP</code> and <code>DEPT</code> tables:</p>
+<pre>
+SELECT empno, job, sal, loc, SubId, Interest
+   FROM emp, dept, HRInterest 
+   WHERE emp.deptno = dept.deptno AND 
+         emp.sal &gt; 1400 AND 
+       EVALUATE(Interest, hrdb.getVarchar('Greg',emp.rowid,dept.rowid)) = 1;
+</pre></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment988">
+<tr>
+<td class="cellalignment995">
+<table class="cellalignment993">
+<tr>
+<td class="cellalignment992"><a href="exprn_views.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment992"><a href="exprn_app_b.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2003, 2011,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment997">
+<table class="cellalignment991">
+<tr>
+<td class="cellalignment992"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment992"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment992"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment992"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment992"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment992"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>

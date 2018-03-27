@@ -1,0 +1,1777 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta charset="utf-8">
+<title>Managing a Recovery Catalog</title>
+<meta name="generator" content="Oracle DARB XHTML Converter (Mode = document) - Merged Version 1054" />
+<meta name="description" content="A guide to backup and recovery of Oracle databases, including RMAN backup and recovery, RMAN data transfer, Oracle Flashback Technology, and user-managed backup and recovery" />
+<meta name="dcterms.created" content="2015-05-13T14:1:11Z" />
+<meta name="robots" content="all" />
+<meta name="dcterms.title" content="Database Backup and Recovery User's Guide" />
+<meta name="dcterms.identifier" content="E10642-08" />
+<meta name="dcterms.isVersionOf" content="BRADV" />
+<meta name="dcterms.rights" content="Copyright&nbsp;&copy;&nbsp;2003, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved." />
+<link rel="Start" href="../../index.htm" title="Home" type="text/html" />
+<link rel="Copyright" href="../../dcommon/html/cpyr.htm" title="Copyright" type="text/html" />
+
+<script type="application/javascript"  src="../../dcommon/js/headfoot.js"></script>
+<script type="application/javascript"  src="../../nav/js/doccd.js"></script>
+<link rel="Contents" href="toc.htm" title="Contents" type="text/html" />
+<link rel="Index" href="index.htm" title="Index" type="text/html" />
+<link rel="Glossary" href="glossary.htm" title="Glossary" type="text/html" />
+<link rel="Prev" href="rcmmaint.htm" title="Previous" type="text/html" />
+<link rel="Next" href="part_dia.htm" title="Next" type="text/html" />
+<link rel="alternate" href="../e10642.pdf" title="PDF version" type="application/pdf" />
+<link rel="schema.dcterms" href="http://purl.org/dc/terms/" />
+<link rel="stylesheet" href="../../dcommon/css/fusiondoc.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/header.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/footer.css">
+<link rel="stylesheet" type="text/css"  href="../../dcommon/css/fonts.css">
+<link rel="stylesheet" href="../../dcommon/css/foundation.css">
+<link rel="stylesheet" href="../../dcommon/css/codemirror.css">
+<link rel="stylesheet" type="text/css" title="Default" href="../../nav/css/html5.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-480-tablet.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-768-laptop.css">
+<link rel="stylesheet" href="../../dcommon/css/respond-1140-deskop.css">
+<script type="application/javascript" src="../../dcommon/js/modernizr.js"></script>
+<script type="application/javascript" src="../../dcommon/js/codemirror.js"></script>
+<script type="application/javascript" src="../../dcommon/js/jquery.js"></script>
+<script type="application/javascript" src="../../dcommon/js/foundation.min.js"></script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552992c80ef99c8d" async="async"></script>
+<script type="application/javascript" src="../../dcommon/js/jqfns.js"></script>
+<script type="application/javascript" src="../../dcommon/js/ohc-inline-videos.js"></script>
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../../dcommon/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+<!-- Optionally add helpers - button, thumbnail and/or media -->
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.css?v=1.0.5"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-media.js?v=1.0.6"></script>
+<link rel="stylesheet"  href="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.css?v=1.0.7"  type="text/css" media="screen" />
+<script type="text/javascript" src="../../dcommon/fancybox/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+</head>
+<body>
+<a href="#BEGIN" class="accessibility-top skipto" tabindex="0">Go to main content</a><header><!--
+<div class="zz-skip-header"><a id="top" href="#BEGIN">Go to main content</a>--></header>
+<div class="row" id="CONTENT">
+<div class="IND large-9 medium-8 columns" dir="ltr">
+<a id="BEGIN" name="BEGIN"></a>
+<span id="PAGE" style="display:none;">24/47</span> <!-- End Header -->
+<div id="BRADV8015" class="chapter"><a id="CIHBGHEA"></a> <a id="i1011365"></a>
+<h1 class="chapter"><span class="secnum">13</span> Managing a Recovery Catalog</h1>
+<p><a id="sthref1193"></a>This <a id="sthref1194"></a>chapter explains how to manage an RMAN recovery catalog. The catalog is a database schema that contains the RMAN repository data for one or more target databases. This chapter contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#CHDFCIFF">Overview of the Recovery Catalog</a></p>
+</li>
+<li>
+<p><a href="#i1013599">Creating a Recovery Catalog</a></p>
+</li>
+<li>
+<p><a href="#CIHECCEF">Registering a Database in the Recovery Catalog</a></p>
+</li>
+<li>
+<p><a href="#CHDGAEJI">Cataloging Backups in the Recovery Catalog</a></p>
+</li>
+<li>
+<p><a href="#CHDHIFHB">Creating and Managing Virtual Private Catalogs</a></p>
+</li>
+<li>
+<p><a href="#CHDEBDJG">Protecting the Recovery Catalog</a></p>
+</li>
+<li>
+<p><a href="#i1006678">Managing Stored Scripts</a></p>
+</li>
+<li>
+<p><a href="#CHDDGDHF">Maintaining a Recovery Catalog</a></p>
+</li>
+<li>
+<p><a href="#i1007186">Dropping a Recovery Catalog</a></p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="rcmmaint.htm#h1016888">Chapter 12, "Maintaining RMAN Backups and Repository&nbsp;Records"</a>to learn how to manage the RMAN repository as stored in the control file, without a recovery catalog</p>
+</li>
+<li>
+<p>The compatibility matrix in <a class="olink RCMRF005" href="../../backup.112/e10643/compat001.htm#RCMRF005"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for descriptions of supported interoperability scenarios</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+<a id="CHDFCIFF"></a>
+<div id="BRADV89642" class="sect1">
+<h2 class="sect1">Overview of the Recovery Catalog<a id="sthref1195"></a><a id="sthref1196"></a></h2>
+<p>This section explains the basic concepts related to managing a recovery catalog.</p>
+<div id="BRADV89643" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1197"></a>
+<h3 class="sect2">Purpose of the Recovery Catalog</h3>
+<p><a id="sthref1198"></a>A <a href="glossary.htm#i433280"><span class="xrefglossterm">recovery catalog</span></a> is a database schema used by RMAN to store metadata about one or more Oracle databases. Typically, you store the catalog in a dedicated database. A recovery catalog provides the following benefits:</p>
+<ul>
+<li>
+<p>A recovery catalog creates redundancy for the RMAN repository stored in the control file of each <a href="glossary.htm#i433583"><span class="xrefglossterm">target database</span></a>. The recovery catalog serves as a secondary metadata repository. If the target control file and all backups are lost, then the RMAN metadata still exists in the recovery catalog.</p>
+</li>
+<li>
+<p>A recovery catalog centralizes metadata for all your target databases. Storing the metadata in a single place makes reporting and administration tasks easier to perform.</p>
+</li>
+<li>
+<p>A recovery catalog can store metadata history much longer than the control file. This capability is useful if you must do a recovery that goes further back in time than the history in the control file. The added complexity of managing a recovery catalog database can be offset by the convenience of having the extended backup history available.</p>
+</li>
+</ul>
+<p>Some RMAN features function only when you use a recovery catalog. For example, you can store RMAN scripts in a recovery catalog. The chief advantage of a <a href="glossary.htm#i433542"><span class="xrefglossterm">stored script</span></a> is that it is available to any RMAN client that can connect to the target database and recovery catalog. Command files are only available if the RMAN client has access to the file system on which they are stored.</p>
+<p>A recovery catalog is required when you use RMAN in a Data Guard environment. By storing backup metadata for all primary and standby databases, the catalog enables you to offload backup tasks to one standby database while enabling you to restore backups on other databases in the environment.</p>
+</div>
+<!-- class="sect2" -->
+<div id="BRADV89644" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1199"></a>
+<h3 class="sect2">Basic Concepts for the Recovery Catalog</h3>
+<p>The recovery catalog contains metadata about RMAN operations for each registered target database. When RMAN is connected to a recovery catalog, RMAN obtains its metadata exclusively from the catalog. The catalog includes the following types of metadata:</p>
+<ul>
+<li>
+<p>Data file and archived redo log backup sets and backup pieces</p>
+</li>
+<li>
+<p>Data file copies</p>
+</li>
+<li>
+<p>Archived redo logs and their copies</p>
+</li>
+<li>
+<p>Database structure (tablespaces and datafiles)</p>
+</li>
+<li>
+<p>Stored scripts, which are named user-created sequences of RMAN commands</p>
+</li>
+<li>
+<p>Persistent RMAN configuration settings</p>
+</li>
+</ul>
+<div id="BRADV90081" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1200"></a>
+<h4 class="sect3">Database Registration</h4>
+<p><a id="sthref1201"></a><a id="sthref1202"></a>The process of enrolling of a database in a recovery catalog for RMAN use is called <a href="glossary.htm#i433393"><span class="xrefglossterm">registration</span></a>. The recommended practice is to register every <a href="glossary.htm#i433583"><span class="xrefglossterm">target database</span></a> in your environment in a single recovery catalog. <a id="sthref1203"></a><a id="sthref1204"></a>For example, you can register databases <code dir="ltr">prod1</code>, <code dir="ltr">prod2</code>, and <code dir="ltr">prod3</code> in a single catalog owned by <code dir="ltr">catowner</code> in the database <code dir="ltr">catdb</code>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#CIHECCEF">"Registering a Database in the Recovery Catalog"</a></div>
+</div>
+<!-- class="sect3" -->
+<div id="BRADV90082" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1205"></a>
+<h4 class="sect3">Centralization of Metadata in a Base Recovery Catalog</h4>
+<p><a id="sthref1206"></a>The owner of a centralized recovery catalog, which is also called the <a href="glossary.htm#CHDGBFBF"><span class="xrefglossterm">base recovery catalog</span></a>, can grant or revoke restricted access to the catalog to other database users. Each restricted user has full read/write access to his own metadata, which is called a <a href="glossary.htm#CHDBECHC"><span class="xrefglossterm">virtual private catalog</span></a>. The RMAN metadata is stored in the schema of the virtual private catalog owner. The owner of the base recovery catalog determines which objects each virtual private catalog user can access.</p>
+<p>You can use a recovery catalog in an environment in which you use or have used different versions of Oracle Database. As a result, your environment can have different versions of the RMAN client, recovery catalog database, recovery catalog schema, and target database. <a href="#CHDGEHCG">"Importing and Moving a Recovery Catalog"</a> explains how to merge multiple recovery catalog schemas into one.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#CHDHIFHB">"Creating and Managing Virtual Private Catalogs"</a></div>
+</div>
+<!-- class="sect3" -->
+<div id="BRADV90083" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1207"></a>
+<h4 class="sect3">Recovery Catalog Resynchronization</h4>
+<p>For RMAN operations such as backup, restore, and crosscheck, RMAN always first updates the control file and then propagates the metadata to the recovery catalog. This flow of metadata from the mounted control file to the recovery catalog, which is known as recovery catalog <a href="glossary.htm#i433443"><span class="xrefglossterm">resynchronization</span></a>, ensures that the metadata that RMAN obtains from the control file is current.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#i1006518">"Resynchronizing the Recovery Catalog"</a></div>
+</div>
+<!-- class="sect3" -->
+<div id="BRADV90084" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1208"></a>
+<h4 class="sect3">Stored Scripts</h4>
+<p>You can use a <a href="glossary.htm#i433542"><span class="xrefglossterm">stored script</span></a> as an alternative to a command file for managing frequently used sequences of RMAN commands.<a id="sthref1209"></a><a id="sthref1210"></a> The script is stored in the recovery catalog rather than on the file system.</p>
+<p>A local stored script is associated with the target database to which RMAN is connected when the script is created, and can only be executed when you are connected to this target database. A global stored script can be run against any database registered in the recovery catalog. A virtual private catalog user has read-only access to global scripts. Creating or updating global scripts must be done while connected to the base recovery catalog.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="#i1006678">"Managing Stored Scripts"</a></div>
+</div>
+<!-- class="sect3" -->
+<a id="CHDEEBFJ"></a>
+<div id="BRADV89645" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Recovery Catalog in a Data Guard Environment</h4>
+<p>As explained in <a href="rcmarchi.htm#CHDIFGFH">"RMAN in a Data Guard Environment"</a>, you must use a recovery catalog to manage RMAN metadata for all physical databases, both primary and standby databases, in the Data Guard environment. RMAN uses the recovery catalog as the single source of truth for the Data Guard environment.</p>
+<p>RMAN can use the recovery catalog to update a primary or standby control file in a <a href="glossary.htm#CHDGJHBB"><span class="xrefglossterm">reverse resynchronization</span></a>. In this case, the metadata flows from the catalog to the control file rather than the other way around. RMAN automatically performs resynchronizations in most situations in which they are needed. Thus, you should not need to use the <code dir="ltr">RESYNC</code> command to manually resynchronize very often.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SBYDB04700" href="../../server.112/e41134/rman.htm#SBYDB04700"><span class="italic">Oracle Data Guard Concepts and Administration</span></a> to learn how to configure the RMAN environment for use with a standby database</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<div id="BRADV89646" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1211"></a>
+<h3 class="sect2">Basic Steps of Managing a Recovery Catalog</h3>
+<p>The basic steps for setting up a recovery catalog for use by RMAN are as follows:</p>
+<ol>
+<li>
+<p>Create the recovery catalog.</p>
+<p><a href="#i1013599">"Creating a Recovery Catalog"</a> explains how to perform this task.</p>
+</li>
+<li>
+<p>Register your target databases in the recovery catalog.</p>
+<p>This step enables RMAN to store metadata for the target databases in the recovery catalog. <a href="#CIHECCEF">"Registering a Database in the Recovery Catalog"</a> explains this task.</p>
+</li>
+<li>
+<p>If needed, catalog any older backups whose records are no longer stored in the target control file.</p>
+<p><a href="#CHDGAEJI">"Cataloging Backups in the Recovery Catalog"</a> explains how to perform this task.</p>
+</li>
+<li>
+<p>If needed, create virtual private catalogs for specific users and determine the metadata to which they are permitted access.</p>
+<p><a href="#CHDHIFHB">"Creating and Managing Virtual Private Catalogs"</a> explains how to perform this task.</p>
+</li>
+<li>
+<p>Protect the recovery catalog by including it in your backup and recovery strategy.</p>
+<p><a href="#CHDEBDJG">"Protecting the Recovery Catalog"</a> explains how to back up and recover the catalog and increase its availability.</p>
+</li>
+</ol>
+<p>The remainder of the chapter explains how to manage the recovery catalog after it is operational. You can perform the following tasks:</p>
+<ul>
+<li>
+<p><a href="#i1006678">"Managing Stored Scripts"</a> explains how to store RMAN scripts in the recovery catalog and manage them.</p>
+</li>
+<li>
+<p><a href="rcmreprt.htm#CHDDBJHC">Chapter 11, "Reporting on RMAN Operations"</a> explains how to report on RMAN operations. You can use the <code dir="ltr">LIST</code> and <code dir="ltr">REPORT</code> commands with or without a recovery catalog. <a href="rcmreprt.htm#CHDIJDEF">"Querying Recovery Catalog Views"</a> explains how to report on RMAN operations with fixed views in the recovery catalog.</p>
+</li>
+<li>
+<p><a href="#CHDDGDHF">"Maintaining a Recovery Catalog"</a> explains a variety of tasks for ongoing recovery catalog maintenance, including how to import one recovery catalog into another recovery catalog.</p>
+</li>
+</ul>
+<p>If you no longer want to maintain a recovery catalog, then see <a href="#i1007186">"Dropping a Recovery Catalog"</a>.</p>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1013599"></a>
+<div id="BRADV179" class="sect1">
+<h2 class="sect1">Creating a Recovery Catalog</h2>
+<p>This section explains the phases of recovery catalog creation. This section contains the following topics:<a id="sthref1212"></a></p>
+<ul>
+<li>
+<p><a href="#CHDECBEH">Configuring the Recovery Catalog Database</a></p>
+</li>
+<li>
+<p><a href="#i1006231">Creating the Recovery Catalog Schema Owner</a></p>
+</li>
+<li>
+<p><a href="#i1006260">Executing the CREATE CATALOG Command</a></p>
+</li>
+</ul>
+<a id="CHDECBEH"></a>
+<div id="BRADV89647" class="sect2">
+<h3 class="sect2">Configuring the Recovery Catalog Database</h3>
+<p>When you use a recovery catalog, RMAN requires that you maintain a recovery catalog schema. The recovery catalog is stored in the default tablespace of the schema. The <code dir="ltr">SYS</code> user cannot be the owner of the recovery catalog.</p>
+<p>Decide which database you will use to install the recovery catalog schema, and also how you will back up this database. Also, decide whether to operate the catalog database in <code dir="ltr">ARCHIVELOG</code> mode, which is recommended.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Do not use the target database to be backed up as the database for the recovery catalog. The recovery catalog must be protected if the target database is lost.</div>
+<div id="BRADV89648" class="sect3"><a id="sthref1213"></a>
+<h4 class="sect3">Planning the Size of the Recovery Catalog Schema</h4>
+<p>You must allocate space to be used by the catalog schema. The size of the recovery catalog schema depends upon the number of databases monitored by the catalog. The schema also grows as the number of archived redo log files and backups for each database increases. Finally, if you use RMAN stored scripts stored in the catalog, some space must be allocated for those scripts.</p>
+<p>For example, assume that the <code dir="ltr">trgt</code> database has 100 files, and that you back up the database once a day, producing 50 backup sets containing 1 backup piece each. If you assume that each row in the backup piece table uses the maximum amount of space, then one daily backup consumes less than 170 kilobytes in the recovery catalog. So, if you back up once a day for a year, then the total storage in this period is about 62 megabytes. Assume approximately the same amount for archived logs. Thus, the worst case is about 120 megabytes for a year for metadata storage. For a more typical case in which only a portion of the backup piece row space is used, 15 MB for each year is realistic.</p>
+<p>If you plan to register multiple databases in your recovery catalog, then remember to add up the space required for each one based on the previous calculation to arrive at a total size for the default tablespace of the recovery catalog schema.</p>
+</div>
+<!-- class="sect3" -->
+<div id="BRADV89649" class="sect3"><a id="sthref1214"></a>
+<h4 class="sect3">Allocating Disk Space for the Recovery Catalog Database</h4>
+<p>If you are creating your recovery catalog in an existing database, then add enough room to hold the default tablespace for the recovery catalog schema. If you are creating a new database to hold your recovery catalog, then in addition to the space for the recovery catalog schema itself, allow space for other files in the recovery catalog database:</p>
+<ul>
+<li>
+<p><code dir="ltr">SYSTEM</code> and <code dir="ltr">SYSAUX</code> tablespaces</p>
+</li>
+<li>
+<p>Temporary tablespaces</p>
+</li>
+<li>
+<p>Undo tablespaces</p>
+</li>
+<li>
+<p>Online redo log files</p>
+</li>
+</ul>
+<p><a id="sthref1215"></a>Most of the space used in the recovery catalog database is devoted to supporting tablespaces, for example, the <code dir="ltr">SYSTEM</code>, temporary, and undo tablespaces. <a href="#BGBDIJAJ">Table 13-1</a> describes typical space requirements.</p>
+<div id="BRADV302" class="tblruleformal">
+<p class="titleintable"><a id="sthref1216"></a><a id="BGBDIJAJ"></a>Table 13-1 Typical Recovery Catalog Space Requirements for 1 Year</p>
+<table class="cellalignment1945" title="Typical Recovery Catalog Space Requirements for 1 Year" summary="This table describes typical recovery catalog space requirements for one year." dir="ltr">
+<thead>
+<tr class="cellalignment1934">
+<th class="cellalignment1941" id="r1c1-t9">Type of Space</th>
+<th class="cellalignment1941" id="r1c2-t9">Space Requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r2c1-t9" headers="r1c1-t9">
+<p><code dir="ltr">SYSTEM</code> tablespace</p>
+</td>
+<td class="cellalignment1942" headers="r2c1-t9 r1c2-t9">
+<p>90 MB</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r3c1-t9" headers="r1c1-t9">
+<p>Temp tablespace</p>
+</td>
+<td class="cellalignment1942" headers="r3c1-t9 r1c2-t9">
+<p>5 MB</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r4c1-t9" headers="r1c1-t9">
+<p>Rollback or undo tablespace</p>
+</td>
+<td class="cellalignment1942" headers="r4c1-t9 r1c2-t9">
+<p>5 MB</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r5c1-t9" headers="r1c1-t9">
+<p>Recovery catalog tablespace</p>
+</td>
+<td class="cellalignment1942" headers="r5c1-t9 r1c2-t9">
+<p>15 MB for each database registered in the recovery catalog</p>
+</td>
+</tr>
+<tr class="cellalignment1934">
+<td class="cellalignment1942" id="r6c1-t9" headers="r1c1-t9">
+<p>Online redo logs</p>
+</td>
+<td class="cellalignment1942" headers="r6c1-t9 r1c2-t9">
+<p>1 MB each (three groups, each with two members)</p>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<!-- class="tblruleformal" -->
+<div class="infoboxnotewarn">
+<p class="notep1">Caution:</p>
+Ensure that the recovery catalog and target databases do <span class="italic">not</span> reside on the same disk. If both your recovery catalog and your target database suffer hard disk failure, then your recovery process is much more difficult. If possible, take other measures as well to eliminate common points of failure between your recovery catalog database and the databases that you are backing up.</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1006231"></a>
+<div id="BRADV89650" class="sect2">
+<h3 class="sect2">Creating the Recovery Catalog Schema Owner</h3>
+<p>After choosing the recovery catalog database and creating the necessary space, you are ready to create the owner of the recovery catalog and grant this user necessary privileges. Assume the following background information for the instructions in the following sections:</p>
+<ul>
+<li>
+<p>User <code dir="ltr">SYS</code> has <code dir="ltr">SYSDBA</code> privileges on the recovery catalog database <code dir="ltr">catdb</code>.</p>
+</li>
+<li>
+<p>A tablespace called <code dir="ltr">tools</code> in the recovery catalog database <code dir="ltr">catdb</code> stores the recovery catalog. If you use an RMAN reserved word as a tablespace name, you must enclose it in quotes and put it in uppercase. (See <a class="olink RCMRF909" href="../../backup.112/e10643/rcmcomma004.htm#RCMRF909"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for a list of RMAN reserved words.)</p>
+</li>
+<li>
+<p>A tablespace called <code dir="ltr">temp</code> exists in the recovery catalog database.</p>
+</li>
+</ul>
+<p class="subhead2"><a id="BRADV303"></a>To create the recovery catalog schema in the recovery catalog database:</p>
+<ol>
+<li>
+<p>Start SQL*Plus and connect with administrator privileges to the database containing the recovery catalog. In this example, the database is <code dir="ltr">catdb</code>.</p>
+</li>
+<li>
+<p>Create a user and schema for the recovery catalog. For example, you could enter the following SQL statement (replacing <span class="italic">password</span> with a user-defined password):</p>
+<pre dir="ltr">
+CREATE USER rman IDENTIFIED BY <span class="italic">password</span>
+  TEMPORARY TABLESPACE temp 
+  DEFAULT TABLESPACE tools 
+  QUOTA UNLIMITED ON tools;
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Create a password that is secure. See <a class="olink DBSEG33223" href="../../network.112/e36292/authentication.htm#DBSEG33223"><span class="italic">Oracle Database Security Guide</span></a> for more information.</div>
+</li>
+<li>
+<p>Grant the <code dir="ltr">RECOVERY_CATALOG_OWNER</code> role to the schema owner. This role provides the user with all privileges required to maintain and query the recovery catalog.</p>
+<pre dir="ltr">
+GRANT RECOVERY_CATALOG_OWNER TO rman;
+</pre></li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="i1006260"></a>
+<div id="BRADV89651" class="sect2">
+<h3 class="sect2">Executing the CREATE CATALOG Command</h3>
+<p><a id="sthref1217"></a><a id="sthref1218"></a>After creating the catalog owner, create the catalog tables with the RMAN <code dir="ltr">CREATE</code> <code dir="ltr">CATALOG</code> command. The command creates the catalog in the default tablespace of the catalog owner.</p>
+<p class="subhead2"><a id="BRADV304"></a>To create the recovery catalog:</p>
+<a id="i1006264"></a>
+<ol>
+<li>
+<p>Start RMAN and connect to the database that will contain the catalog. Connect to the database as the recovery catalog owner.</p>
+</li>
+<li>
+<p>Run the <code dir="ltr">CREATE</code> <code dir="ltr">CATALOG</code> command to create the catalog. The creation of the catalog can take several minutes. If the catalog tablespace is this user's default tablespace, then you can run the following command:</p>
+<pre dir="ltr">
+RMAN&gt; CREATE CATALOG;
+</pre>
+<p>You can specify the tablespace name for the catalog in the <code dir="ltr">CREATE</code> <code dir="ltr">CATALOG</code> command. For example:</p>
+<pre dir="ltr">
+RMAN&gt; CREATE CATALOG TABLESPACE cat_tbs;
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+If the tablespace name that you want to use for the recovery catalog is an RMAN reserved word, then it <span class="italic">must</span> be uppercase and enclosed in quotes. For example:
+<pre dir="ltr">
+CREATE CATALOG TABLESPACE 'CATALOG';
+</pre></div>
+</li>
+<li>
+<p>You can check the results by using SQL*Plus to query the recovery catalog to see which tables were created:</p>
+<pre dir="ltr">
+SQL&gt; SELECT TABLE_NAME FROM USER_TABLES;
+</pre></li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SQLRF" href="../../server.112/e41084/toc.htm"><span class="italic">Oracle Database SQL Language Reference</span></a> for the SQL syntax for the <code dir="ltr">GRANT</code> and <code dir="ltr">CREATE</code> <code dir="ltr">USER</code> statements, and <a class="olink RCMRF117" href="../../backup.112/e10643/rcmsynta013.htm#RCMRF117"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for <code dir="ltr">CREATE</code> <code dir="ltr">CATALOG</code> command syntax</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CIHECCEF"></a>
+<div id="BRADV11001" class="sect1">
+<h2 class="sect1">Registering a Database in the Recovery Catalog</h2>
+<p>This section describes how to maintain target database records in the recovery catalog. It contains the following sections:</p>
+<ul>
+<li>
+<p><a href="#i1008159">About Registration of a Database in the Recovery Catalog</a></p>
+</li>
+<li>
+<p><a href="#i1006311">Registering a Database with the REGISTER DATABASE Command</a></p>
+</li>
+</ul>
+<a id="i1008159"></a>
+<div id="BRADV89652" class="sect2">
+<h3 class="sect2">About Registration of a Database in the Recovery Catalog</h3>
+<p><a id="sthref1219"></a><a id="sthref1220"></a>The process of enrolling of a <a href="glossary.htm#i433583"><span class="xrefglossterm">target database</span></a> in a recovery catalog is called <a href="glossary.htm#i433393"><span class="xrefglossterm">registration</span></a>. If a target database is not registered in the recovery catalog, then RMAN cannot use the catalog to store metadata for operations on this database. You can still perform RMAN operations on an unregistered database: RMAN always stores its metadata in the control file of the target database.</p>
+<p>If you are <span class="italic">not</span> using the recovery catalog in a Data Guard environment, then use the <code dir="ltr">REGISTER</code> command to register each database. Each database must have a unique <a href="glossary.htm#i432583"><span class="xrefglossterm">DBID</span></a>. If you use the RMAN <code dir="ltr">DUPLICATE</code> command or the <code dir="ltr">CREATE DATABASE</code> statement in SQL, then the database is assigned a unique DBID automatically. If you create a database by other means, then the copied database may have the same DBID as its source database. You can change the DBID with the <code dir="ltr"><a id="sthref1221"></a><a id="sthref1222"></a>DBNEWID</code> utility so that you can register the source and copy databases in the same catalog.</p>
+<p>You can use the <code dir="ltr">UNREGISTER</code> command to unregister a database from the recovery catalog.</p>
+<div id="BRADV89653" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1223"></a>
+<h4 class="sect3">About Standby Database Registration</h4>
+<p>In a Data Guard environment, the primary and standby databases share the same DBID and database name. To be eligible for registration in the recovery catalog, each database in the Data Guard environment must have different <code dir="ltr">DB_UNIQUE_NAME</code> values. The <code dir="ltr">DB_UNIQUE_NAME</code> parameter for a database is set in its initialization parameter file.</p>
+<p>If you use RMAN in a Data Guard environment, then you can use the <code dir="ltr">REGISTER DATABASE</code> command only for the primary database. You can use the following techniques to register a standby database in the recovery catalog:</p>
+<ul>
+<li>
+<p>When you connect to a standby database as <code dir="ltr">TARGET</code>, RMAN automatically registers the database in the recovery catalog.</p>
+</li>
+<li>
+<p>When you run the <code dir="ltr">CONFIGURE DB_UNIQUE_NAME</code> command for a standby database that is not known to the recovery catalog, RMAN automatically registers this standby database if its primary database is registered.</p>
+</li>
+</ul>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a href="#i1006420">"Unregistering a Target Database from the Recovery Catalog"</a></p>
+</li>
+<li>
+<p><a class="olink RCMRF126" href="../../backup.112/e10643/rcmsynta020.htm#RCMRF126"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for <code dir="ltr">DUPLICATE</code> command syntax</p>
+</li>
+<li>
+<p><a class="olink SUTIL014" href="../../server.112/e22490/dbnewid.htm#SUTIL014"><span class="italic">Oracle Database Utilities</span></a> to learn how to use the <code dir="ltr">DBNEWID</code> utility to change the DBID</p>
+</li>
+<li>
+<p><a class="olink SBYDB04700" href="../../server.112/e41134/rman.htm#SBYDB04700"><span class="italic">Oracle Data Guard Concepts and Administration</span></a> to learn about using RMAN in a Data Guard environment</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1006311"></a>
+<div id="BRADV89654" class="sect2">
+<h3 class="sect2">Registering a Database with the REGISTER DATABASE Command</h3>
+<p><a id="sthref1224"></a><a id="sthref1225"></a>The first step in using a recovery catalog with a target database is registering the target database in the recovery catalog. If you use the catalog in a Data Guard environment, then you can only register the primary database in this way.</p>
+<p>Use the following procedure:</p>
+<ol>
+<li>
+<p>Start RMAN and connect to a target database and recovery catalog. The recovery catalog database must be open.</p>
+<p>For example, issue the following command to connect to the catalog database with the net service name <code dir="ltr">catdb</code> as user <code dir="ltr">rman</code> (who owns the catalog schema):</p>
+<pre dir="ltr">
+% rman TARGET / CATALOG rman@catdb 
+</pre></li>
+<li>
+<p>If the target database is not mounted, then mount or open it:</p>
+<pre dir="ltr">
+STARTUP MOUNT;
+</pre></li>
+<li>
+<p><a id="sthref1226"></a><a id="sthref1227"></a><a id="sthref1228"></a><a id="sthref1229"></a>Register the target database in the connected recovery catalog:</p>
+<pre dir="ltr">
+REGISTER DATABASE;
+</pre>
+<p>RMAN creates rows in the catalog tables to contain information about the target database, then copies all pertinent data about the target database from the control file into the catalog, synchronizing the catalog with the control file.</p>
+</li>
+<li>
+<p>Verify that the registration was successful by running <code dir="ltr">REPORT</code> <code dir="ltr">SCHEMA</code>:</p>
+<pre dir="ltr">
+REPORT SCHEMA;
+
+Report of database schema
+File Size(MB)   Tablespace       RB segs Datafile Name
+---- ---------- ---------------- ------- -------------------
+1        307200 SYSTEM             NO    /oracle/oradata/trgt/system01.dbf
+2         20480 UNDOTBS            YES   /oracle/oradata/trgt/undotbs01.dbf
+3         10240 CWMLITE            NO    /oracle/oradata/trgt/cwmlite01.dbf
+4         10240 DRSYS              NO    /oracle/oradata/trgt/drsys01.dbf
+5         10240 EXAMPLE            NO    /oracle/oradata/trgt/example01.dbf
+6         10240 INDX               NO    /oracle/oradata/trgt/indx01.dbf
+7         10240 TOOLS              NO    /oracle/oradata/trgt/tools01.dbf
+8         10240 USERS              NO    /oracle/oradata/trgt/users01.dbf
+</pre></li>
+</ol>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDGAEJI"></a>
+<div id="BRADV89655" class="sect1">
+<h2 class="sect1">Cataloging Backups in the Recovery Catalog</h2>
+<p><a id="sthref1230"></a>If you have data file copies, backup pieces, or archived logs on disk, then you can catalog them in the recovery catalog with the <code dir="ltr">CATALOG</code> command. When using a recovery catalog, cataloging older backups that have aged out of the control file lets RMAN use the older backups during restore operations. The following commands illustrate this technique:</p>
+<pre dir="ltr">
+CATALOG DATAFILECOPY '/disk1/old_datafiles/01_01_2003/users01.dbf';
+CATALOG ARCHIVELOG '/disk1/arch_logs/archive1_731.dbf', 
+                   '/disk1/arch_logs/archive1_732.dbf';
+CATALOG BACKUPPIECE '/disk1/backups/backup_820.bkp';
+</pre>
+<pre dir="ltr">
+</pre>
+<p><a id="sthref1231"></a>You can also catalog multiple backup files in a directory at once by using the <code dir="ltr">CATALOG START WITH</code> command, as shown in the following example:</p>
+<pre dir="ltr">
+CATALOG START WITH '/disk1/backups/';
+</pre>
+<p>RMAN lists the files to be added to the RMAN repository and prompts for confirmation before adding the backups. Be careful when creating your prefix with <code dir="ltr">CATALOG START WITH</code>. RMAN scans all paths for all files on disk that begin with the specified prefix. The prefix is not just a directory name. Using the wrong prefix can cause the cataloging of the wrong set of files.</p>
+<p>For example, assume that a group of directories <code dir="ltr">/disk1/backups</code>, <code dir="ltr">/disk1/backups-year2003</code>, <code dir="ltr">/disk1/backupsets</code>, and <code dir="ltr">/disk1/backupsets/test</code> and so on, all contain backup files. The following command catalogs all files in all of these directories, because <code dir="ltr">/disk1/backups</code> is a prefix for the paths for all of these directories:</p>
+<pre dir="ltr">
+CATALOG START WITH '/disk1/backups';
+</pre>
+<p>To catalog only backups in the <code dir="ltr">/disk1/backups</code> directory, the correct command would be as follows:</p>
+<pre dir="ltr">
+CATALOG START WITH '/disk1/backups/';
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink RCMRF141" href="../../backup.112/e10643/rcmsynta2002.htm#RCMRF141"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for <code dir="ltr">REGISTER</code> syntax</p>
+</li>
+<li>
+<p><a class="olink UPGRD" href="../../server.112/e23633/toc.htm"><span class="italic">Oracle Database Upgrade Guide</span></a> for issues relating to database migration</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect1" -->
+<a id="CHDHIFHB"></a>
+<div id="BRADV89656" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Creating and Managing Virtual Private Catalogs</h2>
+<div id="BRADV89657" class="sect2"><!-- infolevel="all" infotype="General" --><a id="sthref1232"></a>
+<h3 class="sect2">About Virtual Private Catalogs</h3>
+<p>By default, all of the users of an RMAN recovery catalog have full privileges to insert, update, and delete any metadata in the catalog. For example, if the administrators of two unrelated databases share the same recovery catalog, each administrator could, whether inadvertently or maliciously, destroy catalog data for the other's database. In many enterprises, this situation is tolerated because the same people manage many different databases and also manage the recovery catalog. But in other enterprises where clear separation of duty exists between administrators of various databases, and between the DBA and the administrator of the recovery catalog, you may desire to restrict each database administrator to modify only backup metadata belonging to those databases that they are responsible for, while still keeping the benefits of a single, centrally-managed, RMAN recovery catalog. This goal can be achieved by implementing <a href="glossary.htm#CHDBECHC"><span class="xrefglossterm">virtual private catalog</span></a>s.</p>
+<p>Every 11<span class="italic">g</span> recovery catalog supports virtual private catalogs, but they are not used unless explicitly created. There is no restriction to the number of virtual private catalogs that can created beneath one recovery catalog. Each virtual private catalog is owned by a database schema user which is different than the user who owns the recovery catalog.</p>
+<p>After creating one or more virtual private catalogs, using the directions that follow, the administrator for the recovery catalog grants each virtual private catalog the privilege to use that catalog for one or more databases that are currently registered in the recovery catalog. The administrator of the recovery catalog can also grant the privilege to register new databases while using a virtual private catalog.</p>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Every virtual private catalog has access to all global stored scripts and those non-global stored scripts that belong to those databases for which this virtual private catalog has privileges. Virtual private catalogs cannot access non-global stored scripts that belong to databases that they do not have privileges for, and they cannot create global stored scripts.</div>
+<p>The basic steps for creating a virtual private catalog are as follows:</p>
+<ol>
+<li>
+<p>Create the database user who will own the virtual private catalog (if this user does not exist) and grant this user access privileges.</p>
+<p>This task is described in <a href="#CHDFFCHD">"Creating and Granting Privileges to a Virtual Private Catalog Owner"</a>.</p>
+</li>
+<li>
+<p>Create the virtual private catalog.</p>
+<p>This task is described in <a href="#CHDGGEDD">"Creating a Virtual Private Catalog"</a>.</p>
+</li>
+</ol>
+<p>After the virtual private catalog is created, you can revoke catalog access privileges as necessary. This task is described in <a href="#CHDCCAAJ">"Revoking Privileges from a Virtual Private Catalog Owner"</a>. <a href="#CHDHDFHF">"Dropping a Virtual Private Catalog"</a> explains how to drop a virtual private catalog.</p>
+<p>If the recovery catalog is a virtual private catalog, then the RMAN client connecting to it must be at patch level 10.1.0.6 or 10.2.0.3. Oracle9<span class="italic">i</span> RMAN clients cannot connect to a virtual private catalog. This version restriction does not affect RMAN client connections to an Oracle Database 11<span class="italic">g</span> base recovery catalog, even if it has some virtual private catalog users.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink RCMRF908" href="../../backup.112/e10643/compat.htm#RCMRF908"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for details about RMAN version compatibility</div>
+</div>
+<!-- class="sect2" -->
+<a id="CHDFFCHD"></a>
+<div id="BRADV89658" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Creating and Granting Privileges to a Virtual Private Catalog Owner</h3>
+<p>This section assumes that you created the base recovery catalog.</p>
+<p>Assume that the following databases are registered in the base recovery catalog: <code dir="ltr">prod1</code>, <code dir="ltr">prod2</code>, and <code dir="ltr">prod3</code>. The database user who owns the base recovery catalog is <code dir="ltr">catowner</code>. You want to create database user <code dir="ltr">vpc1</code> and grant this user access privileges only to <code dir="ltr">prod1</code> and <code dir="ltr">prod2</code>. By default, a virtual private catalog owner has no access to the base recovery catalog.</p>
+<p class="subhead2"><a id="BRADV305"></a>To create and grant privileges to a virtual private catalog owner:</p>
+<ol>
+<li>
+<p>Start SQL*Plus and connect to the recovery catalog database with administrator privileges.</p>
+</li>
+<li>
+<p>If the user that will own the virtual private catalog does not exist, then create the user.</p>
+<p>For example, if you want to create database user <code dir="ltr">vpc1</code> to own the catalog, then you could execute the following command (replacing <span class="italic">password</span> with a user-defined password):</p>
+<pre dir="ltr">
+SQL&gt; CREATE USER vpc1 IDENTIFIED BY <span class="italic">password</span>
+  2  DEFAULT TABLESPACE vpcusers
+  3  QUOTA UNLIMITED ON vpcusers;
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Create a password that is secure. See <a class="olink DBSEG33223" href="../../network.112/e36292/authentication.htm#DBSEG33223"><span class="italic">Oracle Database Security Guide</span></a> for more information.</div>
+</li>
+<li>
+<p>Grant the <a id="sthref1233"></a><code dir="ltr">RECOVERY_CATALOG_OWNER</code> role to the database user that will own the virtual private catalog, and then exit SQL*Plus.</p>
+<p>The following example grants the role to user <code dir="ltr">vpc1</code>:</p>
+<pre dir="ltr">
+SQL&gt; GRANT recovery_catalog_owner TO vpc1;
+SQL&gt; EXIT;
+</pre></li>
+<li>
+<p>Start RMAN and connect to the recovery catalog database as the base recovery catalog owner (<span class="italic">not</span> the virtual private catalog owner).</p>
+<p>The following example connects to the base recovery catalog as <code dir="ltr">catowner</code>:</p>
+<pre dir="ltr">
+% rman
+RMAN&gt; CONNECT CATALOG catowner@catdb;
+
+recovery catalog database Password: <span class="italic">password</span>
+connected to recovery catalog database
+</pre></li>
+<li>
+<p>Grant desired privileges to the virtual private catalog owner.</p>
+<p><a id="sthref1234"></a><a id="sthref1235"></a>The following example gives user <code dir="ltr">vpc1</code> access to the metadata for <code dir="ltr">prod1</code> and <code dir="ltr">prod2</code> (but not <code dir="ltr">prod3</code>):</p>
+<pre dir="ltr">
+RMAN&gt; GRANT CATALOG FOR DATABASE prod1 TO vpc1;
+RMAN&gt; GRANT CATALOG FOR DATABASE prod2 TO vpc1;
+</pre>
+<p>You can also use a DBID rather than a database name. The virtual private catalog user does not have access to the metadata for any other databases registered in the recovery catalog.</p>
+<p>You can also grant the user the ability to register new target databases in the recovery catalog. For example:</p>
+<pre dir="ltr">
+RMAN&gt; GRANT REGISTER DATABASE TO vpc1;
+</pre></li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="CHDGGEDD"></a>
+<div id="BRADV89659" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Creating a Virtual Private Catalog</h3>
+<p>This section assumes that the virtual private catalog owner has been given the <code dir="ltr">RECOVERY_CATALOG_OWNER</code> database role. Also, the base recovery catalog owner used the <code dir="ltr">GRANT</code> command to give the virtual private catalog owner access to metadata in the base recovery catalog.</p>
+<p class="subhead2"><a id="BRADV306"></a>To create a virtual private catalog:</p>
+<ol>
+<li>
+<p>Start RMAN and connect to the recovery catalog database as the virtual private catalog owner (<span class="italic">not</span> the base recovery catalog owner).</p>
+<p>The following example connects to the recovery catalog as <code dir="ltr">vpc1</code>:</p>
+<pre dir="ltr">
+% rman
+RMAN&gt; CONNECT CATALOG vpc1@catdb;
+</pre></li>
+<li>
+<p>Create the virtual private catalog.</p>
+<p><a id="sthref1236"></a><a id="sthref1237"></a>The following command creates the virtual private catalog:</p>
+<pre dir="ltr">
+RMAN&gt; CREATE VIRTUAL CATALOG;
+</pre></li>
+<li>
+<p>If you intend to use a 10.2 or earlier release of RMAN with this virtual private catalog, then execute the following PL/SQL procedure (where <span class="italic">base_catalog_owner</span> is the database user who owns the base recovery catalog):</p>
+<pre dir="ltr">
+SQL&gt; EXECUTE <span class="italic">base_catalog_owner</span>.DBMS_RCVCAT.CREATE_VIRTUAL_CATALOG;
+</pre></li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="CHDCCAAJ"></a>
+<div id="BRADV89660" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Revoking Privileges from a Virtual Private Catalog Owner</h3>
+<p>This section assumes that you have created a virtual private catalog.</p>
+<p>Assume that two databases are registered in the base recovery catalog: <code dir="ltr">prod1</code> and <code dir="ltr">prod2</code>. As owner of the base recovery catalog, you have granted the <code dir="ltr">vpc1</code> user access privileges to <code dir="ltr">prod1</code>. You have also granted this user the right to register databases in his virtual private catalog. Now you want to revoke privileges from <code dir="ltr">vpc1</code>.</p>
+<p class="subhead2"><a id="BRADV307"></a>To revoke privileges from a virtual private catalog owner:</p>
+<ol>
+<li>
+<p>Start RMAN and connect to the recovery catalog database as the recovery catalog owner (<span class="italic">not</span> the virtual private catalog owner).</p>
+<p>The following example connects to the recovery catalog as <code dir="ltr">catowner</code>:</p>
+<pre dir="ltr">
+% rman
+RMAN&gt; CONNECT CATALOG catowner@catdb;
+</pre></li>
+<li>
+<p><a id="sthref1238"></a><a id="sthref1239"></a>Revoke specified privileges from the virtual private catalog owner.</p>
+<p>The following command revokes access to the metadata for <code dir="ltr">prod1</code> from virtual private catalog owner <code dir="ltr">vpc1</code>:</p>
+<pre dir="ltr">
+REVOKE CATALOG FOR DATABASE prod1 FROM vpc1;
+</pre>
+<p>You can also specify a DBID rather than a database name. The catalog <code dir="ltr">vpc1</code> retains all other granted catalog privileges.</p>
+<p>You can also revoke the privilege to register new target databases in the recovery catalog. For example:</p>
+<pre dir="ltr">
+REVOKE REGISTER DATABASE FROM vpc1;
+</pre></li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="CHDHDFHF"></a>
+<div id="BRADV89661" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Dropping a Virtual Private Catalog</h3>
+<p><a id="sthref1240"></a>This section assumes that you have created a virtual private catalog and now want to drop it. When you drop a virtual private catalog, you do not remove the base recovery catalog itself, but only drop the synonyms and views that refer to the base recovery catalog.</p>
+<p class="subhead2"><a id="BRADV308"></a>To drop a virtual private catalog:</p>
+<ol>
+<li>
+<p>Start RMAN and connect to the recovery catalog database as the virtual private catalog owner (<span class="italic">not</span> the base recovery catalog owner).</p>
+<p>The following example connects to the recovery catalog as user <code dir="ltr">vpc1</code>:</p>
+<pre dir="ltr">
+% rman
+RMAN&gt; CONNECT CATALOG vpc1@catdb;
+</pre></li>
+<li>
+<p>Drop the catalog.</p>
+<p>If you are using an Oracle Database 11<span class="italic">g</span> or later RMAN executable, then drop the virtual private catalog with the <code dir="ltr">DROP CATALOG</code> command:</p>
+<pre dir="ltr">
+RMAN&gt; DROP CATALOG;
+</pre>
+<p>If you are using an Oracle Database 10<span class="italic">g</span> or earlier RMAN executable, then you cannot use the <code dir="ltr">DROP CATALOG</code> command. Instead, connect SQL*Plus to the catalog database as the virtual private catalog user, then execute the following PL/SQL procedure (where <span class="italic">base_catalog_owner</span> is the database user who owns the base recovery catalog):</p>
+<pre dir="ltr">
+SQL&gt; EXECUTE <span class="italic">base_catalog_owner</span>.DBMS_RCVCAT.DELETE_VIRTUAL_CATALOG;
+</pre></li>
+</ol>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDEBDJG"></a>
+<div id="BRADV89662" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Protecting the Recovery Catalog</h2>
+<p>Include the recovery catalog database in your backup and recovery strategy. If you do not back up the recovery catalog and a disk failure occurs that destroys the recovery catalog database, then you may lose the metadata in the catalog. Without the recovery catalog contents, recovery of your other databases is likely to be more difficult.</p>
+<a id="i1006875"></a>
+<div id="BRADV89663" class="sect2">
+<h3 class="sect2">Backing Up the Recovery Catalog</h3>
+<p><a id="sthref1241"></a><a id="sthref1242"></a><a id="sthref1243"></a>A single recovery catalog can store metadata for multiple target databases. Consequently, loss of the recovery catalog can be disastrous. You should back up the recovery catalog frequently. <a id="sthref1244"></a><a id="sthref1245"></a><a id="sthref1246"></a>This section provides general guidelines for developing a strategy for protecting the recovery catalog.</p>
+<a id="i1010950"></a>
+<div id="BRADV89664" class="sect3">
+<h4 class="sect3">Backing Up the Recovery Catalog Frequently</h4>
+<p>The recovery catalog database is a database like any other, and is also a key part of your backup and recovery strategy. Protect the recovery catalog as you would protect any other part of your database, by backing it up. The backup strategy for your recovery catalog database should be part of your overall backup and recovery strategy.</p>
+<p>Back up the recovery catalog with the same frequency that you back up a target database. For example, if you make a weekly whole database backup of a target database, then back up the recovery catalog after the backup of the target database. This backup of the recovery catalog can help you in a disaster recovery scenario. Even if you must restore the recovery catalog database with a control file autobackup, you can use the full record of backups in your restored recovery catalog database to restore the target database.</p>
+</div>
+<!-- class="sect3" -->
+<a id="i1006894"></a>
+<div id="BRADV89665" class="sect3">
+<h4 class="sect3">Choosing the Appropriate Technique for Physical Backups</h4>
+<p>When backing up the recovery catalog database, you can use RMAN to make the backups. As illustrated in <a href="#i1013751">Figure 13-1</a>, start RMAN with the <code dir="ltr">NOCATALOG</code> option so that the repository for RMAN is the control file in the catalog database.</p>
+<div id="BRADV309" class="figure">
+<p class="titleinfigure"><a id="i1013751"></a>Figure 13-1 Using the Control File as the Repository for Backups of the Recovery Catalog</p>
+<img width="496" height="332" src="img/bradv009.gif" alt="Description of Figure 13-1 follows" /><br />
+<a id="sthref1247" href="img_text/bradv009.htm">Description of "Figure 13-1 Using the Control File as the Repository for Backups of the Recovery Catalog"</a><br />
+<br /></div>
+<!-- class="figure" -->
+<p>Follow these guidelines when developing an RMAN backup strategy for the recovery catalog database:</p>
+<ul>
+<li>
+<p>Run the recovery catalog database in <code dir="ltr">ARCHIVELOG</code> mode so that you can do point-in-time recovery if needed.</p>
+</li>
+<li>
+<p>Set the retention policy to a <code dir="ltr">REDUNDANCY</code> value greater than <code dir="ltr">1</code>.</p>
+</li>
+<li>
+<p>Back up the database to two separate media (for example, disk and tape).</p>
+</li>
+<li>
+<p>Run <code dir="ltr">BACKUP</code> <code dir="ltr">DATABASE</code> <code dir="ltr">PLUS</code> <code dir="ltr">ARCHIVELOG</code> at regular intervals, to a media manager if available, or just to disk.</p>
+</li>
+<li>
+<p>Do not use another recovery catalog as the repository for the backups.</p>
+</li>
+<li>
+<p>Configure the control file autobackup feature to <code dir="ltr">ON</code>.</p>
+</li>
+</ul>
+<p>With this strategy, the control file autobackup feature ensures that the recovery catalog database can always be recovered, so long as the control file autobackup is available.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="rcmadvre.htm#i1006453">"Performing Disaster Recovery"</a> for more information for recovery with a control file autobackup</div>
+</div>
+<!-- class="sect3" -->
+<a id="i1006925"></a>
+<div id="BRADV89666" class="sect3">
+<h4 class="sect3">Separating the Recovery Catalog from the Target Database</h4>
+<p>A recovery catalog is only effective when separated from the data that it is designed to protect. Thus, you should never store a recovery catalog containing the RMAN repository for a database in the same database as the target database. Also, do not store the catalog database on the same disks as the target database.</p>
+<p>To illustrate why data separation is advised, assume that you store the catalog for database <code dir="ltr">prod1</code> in <code dir="ltr">prod1</code>. If <code dir="ltr">prod1</code> suffers a total media failure, and if the recovery catalog for <code dir="ltr">prod1</code> is also stored in <code dir="ltr">prod1</code>, then if you lose the database you also lose the recovery catalog. At this point the only option is to restore an autobackup of the control file for <code dir="ltr">prod1</code> and use it to restore and recover the database without the benefit of any information stored in the recovery catalog.</p>
+</div>
+<!-- class="sect3" -->
+<div id="BRADV89667" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1248"></a>
+<h4 class="sect3">Exporting the Recovery Catalog Data for Logical Backups</h4>
+<p>Logical backups of the RMAN recovery catalog created with the Data Pump Export utility can be a useful supplement for physical backups. If a recovery catalog database is damaged, you can use Data Pump Import to quickly reimport the exported recovery catalog data into another database and rebuild the catalog.</p>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="i1006934"></a>
+<div id="BRADV89668" class="sect2">
+<h3 class="sect2">Recovering the Recovery Catalog</h3>
+<p>Restoring and recovering the recovery catalog database is much like restoring and recovering any other database with RMAN. You can restore the control file and server parameter file for the recovery catalog database from an autobackup, then restore and perform complete recovery on the rest of the database. If you are in a situation where you are using multiple recovery catalogs, then you can also use another recovery catalog to record metadata about backups of this recovery catalog database.</p>
+<p><a id="sthref1249"></a><a id="sthref1250"></a><a id="sthref1251"></a>If recovery of the recovery catalog database through the normal Oracle recovery procedures is not possible, then you must re-create the catalog. Examples of this worst-case scenario include:</p>
+<ul>
+<li>
+<p>A recovery catalog database that has never been backed up</p>
+</li>
+<li>
+<p>A recovery catalog database that has been backed up, but cannot be recovered because the data file backups or archived logs are not available</p>
+</li>
+</ul>
+<p>You have the following options for partially re-creating the contents of the missing recovery catalog:</p>
+<ul>
+<li>
+<p>Use the <a id="sthref1252"></a><a id="sthref1253"></a><a id="sthref1254"></a><code dir="ltr">RESYNC</code> <code dir="ltr">CATALOG</code> command to update the recovery catalog with any RMAN repository information from the control file of the target database or a control file copy. Any metadata from control file records that aged out of the control file is lost.</p>
+</li>
+<li>
+<p>Issue <code dir="ltr">CATALOG START WITH...</code> commands to recatalog any available backups.</p>
+</li>
+</ul>
+<p>To minimize the likelihood of this worst-case scenario, your backup strategy should at least include backing up the recovery catalog. This technique is described in <a href="#i1006875">"Backing Up the Recovery Catalog"</a>.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink RCMRF109" href="../../backup.112/e10643/rcmsynta008.htm#RCMRF109"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for information about the <code dir="ltr">CATALOG</code> command</p>
+</li>
+<li>
+<p><a class="olink RCMRF119" href="../../backup.112/e10643/rcmsynta015.htm#RCMRF119"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for information about the <code dir="ltr">CROSSCHECK</code> command</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1006678"></a>
+<div id="BRADV182" class="sect1">
+<h2 class="sect1">Managing Stored Scripts</h2>
+<p>As explained in <a href="#CHDDCIFE">"About Stored Scripts"</a>, you can store scripts in the recovery catalog. This section explains how to create and manage stored scripts.</p>
+<a id="CHDDCIFE"></a>
+<div id="BRADV89669" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">About Stored Scripts</h3>
+<p><a id="sthref1255"></a><a id="sthref1256"></a><a id="sthref1257"></a><a id="sthref1258"></a>You can use a <a href="glossary.htm#i433542"><span class="xrefglossterm">stored script</span></a> as an alternative to a command file for managing frequently used sequences of RMAN commands.<a id="sthref1259"></a><a id="sthref1260"></a> The script is stored in the recovery catalog rather than on the file system.</p>
+<p>Stored scripts can be local or global. A local script is associated with the target database to which RMAN is connected when the script is created, and can only be executed when you are connected to that target database. A global stored script can be run against any database registered in the recovery catalog, if the RMAN client is connected to the recovery catalog and a target database.</p>
+<p>The commands allowable within the brackets of the <code dir="ltr">CREATE SCRIPT</code> command are the same commands supported within a <code dir="ltr">RUN</code> block. Any command that is legal within a <code dir="ltr">RUN</code> command is permitted in the stored script. The following commands are not legal within stored scripts: <code dir="ltr">RUN</code>, <code dir="ltr">@</code>, and <code dir="ltr">@@</code>.</p>
+<p>When specifying a script name, RMAN permits but generally does not require that you use quotes around the name of a stored script. If the name begins with a digit or is an RMAN reserved word, however, then you must put quotes around the name to use it as a stored script name. Consider avoiding stored script names that begin with nonalphabetic characters or that are the same as RMAN reserved words.</p>
+<p>Consider using a naming convention to avoid confusion between global and local stored scripts. For the <code dir="ltr">EXECUTE SCRIPT</code>, <code dir="ltr">DELETE SCRIPT</code> and <code dir="ltr">PRINT SCRIPT</code> commands, if the script name passed as an argument is not the name of a script defined for the connected target instance, then RMAN looks for a global script by the same name. For example, if the global script <code dir="ltr">global_backup</code> is in the recovery catalog, but no local stored script <code dir="ltr">global_backup</code> is defined for the target database, then the following command deletes the global script:</p>
+<pre dir="ltr">
+DELETE SCRIPT global_backup;
+</pre>
+<p>To use commands related to stored scripts, even global scripts, you must be connected to both a recovery catalog and a target database instance.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1009757"></a>
+<div id="BRADV89670" class="sect2">
+<h3 class="sect2">Creating Stored Scripts</h3>
+<p><a id="sthref1261"></a><a id="sthref1262"></a>You can use the <code dir="ltr">CREATE SCRIPT</code> command to create a stored script. If <code dir="ltr">GLOBAL</code> is specified, then a global script with this name must not exist in the recovery catalog. If <code dir="ltr">GLOBAL</code> is not specified, then a local script must not exist with the same name for the same target database. You can also use the <code dir="ltr">REPLACE SCRIPT</code> to create a script or update an existing script.</p>
+<p class="subhead2"><a id="BRADV310"></a>To create a stored script:</p>
+<ol>
+<li>
+<p>Start RMAN and connect to a target database and recovery catalog (if used).</p>
+</li>
+<li>
+<p><a id="sthref1263"></a><a id="sthref1264"></a>Run the <code dir="ltr">CREATE</code> <code dir="ltr">SCRIPT</code> command.</p>
+<p>The following example illustrates creation of a local script:</p>
+<pre dir="ltr">
+CREATE SCRIPT full_backup 
+{     
+  BACKUP DATABASE PLUS ARCHIVELOG;
+  DELETE OBSOLETE;
+}
+</pre>
+<p>For a global script, the syntax is similar:</p>
+<pre dir="ltr">
+CREATE GLOBAL SCRIPT global_full_backup 
+{     
+  BACKUP DATABASE PLUS ARCHIVELOG;
+  DELETE OBSOLETE;
+}
+</pre>
+<p>Optionally, you can provide a <code dir="ltr">COMMENT</code> with descriptive information:</p>
+<pre dir="ltr">
+CREATE GLOBAL SCRIPT global_full_backup 
+COMMENT 'use only with ARCHIVELOG mode databases'
+{     
+  BACKUP DATABASE PLUS ARCHIVELOG;
+  DELETE OBSOLETE;
+}
+</pre>
+<p>You can also create a script by reading its contents from a text file. The file must begin with a left brace (<code dir="ltr">{</code>) character, contain a series of commands valid within a <code dir="ltr">RUN</code> block, and end with a right brace (<code dir="ltr">}</code>) character. Otherwise, a syntax error is signalled, just as if the commands were entered at the keyboard.</p>
+<pre dir="ltr">
+CREATE SCRIPT full_backup 
+  FROM FILE '/tmp/my_script_file.txt';
+</pre></li>
+<li>
+<p>Examine the output.</p>
+<p>If no errors are displayed, then RMAN successfully created the script and stored in the recovery catalog.</p>
+</li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink RCMRF909" href="../../backup.112/e10643/rcmcomma004.htm#RCMRF909"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for the list of RMAN reserved words</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1009743"></a>
+<div id="BRADV89671" class="sect2">
+<h3 class="sect2">Replacing Stored Scripts</h3>
+<p><a id="sthref1265"></a><a id="sthref1266"></a>To update stored scripts, use the <code dir="ltr">REPLACE</code> <code dir="ltr">SCRIPT</code> command. If you are replacing a local script, then you must be connected to the target database that you connected to when you created the script. If the script does not exist, then RMAN creates it.</p>
+<p class="subhead2"><a id="BRADV311"></a>To replace a stored script:</p>
+<ol>
+<li>
+<p>Start RMAN and connect to a target database and recovery catalog (if used).</p>
+</li>
+<li>
+<p>Execute <code dir="ltr">REPLACE SCRIPT</code>.</p>
+<p>This following example updates the script <code dir="ltr">full_backup</code> with new contents:</p>
+<pre dir="ltr">
+REPLACE SCRIPT full_backup 
+{
+  BACKUP DATABASE PLUS ARCHIVELOG;
+}
+</pre>
+<p>You can update global scripts by specifying the <code dir="ltr">GLOBAL</code> keyword as follows:</p>
+<pre dir="ltr">
+REPLACE GLOBAL SCRIPT global_full_backup 
+COMMENT 'A script for full backup to be used with any database'
+{
+  BACKUP AS BACKUPSET DATABASE PLUS ARCHIVELOG;
+}
+</pre>
+<p>As with <code dir="ltr">CREATE SCRIPT</code>, you can update a local or global stored script from a text file with the following form of the command:</p>
+<pre dir="ltr">
+REPLACE GLOBAL SCRIPT global_full_backup 
+  FROM FILE '/tmp/my_script_file.txt';
+</pre></li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink RCMRF145" href="../../backup.112/e10643/rcmsynta2005.htm#RCMRF145"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for <code dir="ltr">REPLACE</code> <code dir="ltr">SCRIPT</code> command syntax</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1010064"></a>
+<div id="BRADV89672" class="sect2">
+<h3 class="sect2">Executing Stored Scripts</h3>
+<p><a id="sthref1267"></a><a id="sthref1268"></a>Use the <code dir="ltr">EXECUTE SCRIPT</code> command to run a stored script. If <code dir="ltr">GLOBAL</code> is specified, then a global script with this name must exist in the recovery catalog; otherwise, RMAN returns error <code dir="ltr">RMAN-06004</code>. If <code dir="ltr">GLOBAL</code> is not specified, then RMAN searches for a local stored script defined for the current target database. If no local script with this name is found, then RMAN searches for a global script by the same name and executes it if one is found.</p>
+<p class="subhead2"><a id="BRADV312"></a>To execute a stored script:</p>
+<ol>
+<li>
+<p>Start RMAN and connect to a target database and recovery catalog (if used).</p>
+</li>
+<li>
+<p>If needed, use <code dir="ltr">SHOW</code> to examine your configured channels.</p>
+<p>Your script uses the automatic channels configured at the time you execute the script. Use <code dir="ltr">ALLOCATE</code> <code dir="ltr">CHANNEL</code> commands in the script if you must override the configured channels. Because of the <code dir="ltr">RUN</code> block, if an RMAN command in the script fails, subsequent RMAN commands in the script do not execute.</p>
+</li>
+<li>
+<p>Run <code dir="ltr">EXECUTE</code> <code dir="ltr">SCRIPT</code>. This command requires a <code dir="ltr">RUN</code> block, as shown in the following example:</p>
+<pre dir="ltr">
+RUN 
+{ 
+  EXECUTE SCRIPT full_backup; 
+}
+</pre>
+<p>The preceding command invokes a local script if one exists with the name specified. If no local script is found, but there is a global script with the name specified, then RMAN executes the global script.</p>
+<p>You can also use <code dir="ltr">EXECUTE GLOBAL SCRIPT</code> to control which script is invoked if a local and a global script have the same name. If there is no local script called <code dir="ltr">global_full_backup</code>, the following two commands have the same effect:</p>
+<pre dir="ltr">
+RUN 
+{
+  EXECUTE GLOBAL SCRIPT global_full_backup;
+}
+
+RUN
+{ 
+  EXECUTE SCRIPT global_full_backup; 
+}
+</pre></li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink RCMRF127" href="../../backup.112/e10643/rcmsynta021.htm#RCMRF127"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for <code dir="ltr">EXECUTE</code> <code dir="ltr">SCRIPT</code> command syntax</div>
+</div>
+<!-- class="sect2" -->
+<a id="CHDBDEAH"></a>
+<div id="BRADV89673" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Creating and Executing Dynamic Stored Scripts</h3>
+<p><a id="sthref1269"></a><a id="sthref1270"></a>You can specify substitution variables in the <a class="olink RCMRF118" href="../../backup.112/e10643/rcmsynta014.htm#RCMRF118"><code dir="ltr">CREATE SCRIPT</code></a> command. When you start RMAN on the command line, the <code dir="ltr">USING</code> clause specifies one or more values for use in substitution variables in a command file. As in SQL*Plus, <code dir="ltr">&amp;1</code> indicates where to place the first value, <code dir="ltr">&amp;2</code> indicates where to place the second value, and so on.</p>
+<p class="subhead2"><a id="BRADV313"></a>To create and use a dynamic stored script:</p>
+<ol>
+<li>
+<p><a id="sthref1271"></a>Create a command file that contains a <code dir="ltr">CREATE SCRIPT</code> statement with substitution variables for values that must be dynamically updated.</p>
+<p>The following example uses substitution variables for the name of the tape set, for a string in the <code dir="ltr">FORMAT</code> specification, and for the name of the restore point.</p>
+<pre dir="ltr">
+CREATE SCRIPT quarterly { 
+  ALLOCATE CHANNEL c1
+    DEVICE TYPE sbt
+    PARMS 'ENV=(OB_MEDIA_FAMILY=&amp;1)';
+  BACKUP
+    TAG &amp;2
+    FORMAT '/disk2/bck/&amp;1%U.bck'
+    KEEP FOREVER
+    RESTORE POINT &amp;3
+    DATABASE;
+}
+</pre></li>
+<li>
+<p>Connect RMAN to a target database (which must be mounted or open) and recovery catalog, specifying the initial values for the recovery catalog script.</p>
+<p>For example, enter the following command:</p>
+<pre dir="ltr">
+% rman TARGET / CATALOG rman@catdb USING arc_backup bck0906 FY06Q3
+</pre>
+<p>A recovery catalog is required for <code dir="ltr">KEEP FOREVER</code>, but is not required for any other <code dir="ltr">KEEP</code> option.</p>
+</li>
+<li>
+<p>Run the command file created in the first step to create the stored script.</p>
+<p>For example, run the <code dir="ltr">/tmp/catscript.rman</code> command file as follows:</p>
+<pre dir="ltr">
+<a id="CHDJHDDJ"></a>
+RMAN&gt; @/tmp/catscript.rman
+</pre>
+<p>This step creates but does not execute the stored script.</p>
+</li>
+<li>
+<p>Every quarter, execute the stored script, passing values for the substitution variables.</p>
+<p>The following example executes the recovery catalog script named <code dir="ltr">quarterly</code>. The example specifies <code dir="ltr">arc_backup</code> as the name of the media family (set of tapes), <code dir="ltr">bck1206</code> as part of the <code dir="ltr">FORMAT</code> string and <code dir="ltr">FY06Q4</code> as the name of the restore point.</p>
+<pre dir="ltr">
+<a id="CHDFAFDC"></a>
+RUN
+{ 
+  EXECUTE SCRIPT quarterly 
+    USING arc_backup
+          bck1206
+          FY06Q4;
+}
+</pre></li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a href="rcmbckba.htm#CHDHAFHJ">"Making Database Backups for Long-Term Storage"</a></div>
+</div>
+<!-- class="sect2" -->
+<a id="i1010043"></a>
+<div id="BRADV89674" class="sect2">
+<h3 class="sect2">Printing Stored Scripts</h3>
+<p><a id="sthref1272"></a><a id="sthref1273"></a><a id="sthref1274"></a>The <code dir="ltr">PRINT</code> <code dir="ltr">SCRIPT</code> command displays a stored script or writes it out to a file.</p>
+<p class="subhead2"><a id="BRADV314"></a>To print stored scripts:</p>
+<ol>
+<li>
+<p>Start RMAN and connect to a target database and recovery catalog.</p>
+</li>
+<li>
+<p>Run the <code dir="ltr">PRINT SCRIPT</code> command as follows:</p>
+<pre dir="ltr">
+PRINT SCRIPT full_backup;
+</pre>
+<p>To send the contents of a script to a file, use this form of the command:</p>
+<pre dir="ltr">
+PRINT SCRIPT full_backup 
+  TO FILE '/tmp/my_script_file.txt';
+</pre>
+<p>For global scripts, the analogous syntax would be as follows:</p>
+<pre dir="ltr">
+PRINT GLOBAL SCRIPT global_full_backup;
+PRINT GLOBAL SCRIPT global_full_backup 
+  TO FILE '/tmp/my_script_file.txt';
+</pre></li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1"><span class="bold">See Also</span>:</p>
+<a class="olink RCMRF136" href="../../backup.112/e10643/rcmsynta028.htm#RCMRF136"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for <code dir="ltr">PRINT</code> <code dir="ltr">SCRIPT</code> command syntax</div>
+</div>
+<!-- class="sect2" -->
+<div id="BRADV89675" class="sect2"><a id="sthref1275"></a>
+<h3 class="sect2">Listing Stored Script Names</h3>
+<p><a id="sthref1276"></a>Use the <code dir="ltr">LIST ... SCRIPT NAMES</code> command to display the names of scripts defined in the recovery catalog. <code dir="ltr">LIST GLOBAL SCRIPT NAMES</code> and <code dir="ltr">LIST ALL SCRIPT NAMES</code> are the only commands that work when RMAN is connected to a recovery catalog without connecting to a target instance; the other forms of the <code dir="ltr">LIST ... SCRIPT NAMES</code> command require a recovery catalog connection.</p>
+<p class="subhead2"><a id="BRADV315"></a>To list stored script names:</p>
+<ol>
+<li>
+<p>Start RMAN and connect to a target database and recovery catalog.</p>
+</li>
+<li>
+<p>Run the <code dir="ltr">LIST ... SCRIPT NAMES</code> command.</p>
+<p>For example, run the following command to list the names of all global and local scripts that can be executed for the currently connected target database:</p>
+<pre dir="ltr">
+LIST SCRIPT NAMES;
+</pre>
+<p>The following example lists <span class="italic">only</span> global script names:</p>
+<pre dir="ltr">
+LIST GLOBAL SCRIPT NAMES;
+</pre>
+<p>To list the names of all scripts stored in the current recovery catalog, including global scripts and local scripts for all target databases registered in the recovery catalog, use the following form of the command:</p>
+<pre dir="ltr">
+LIST ALL SCRIPT NAMES;
+</pre>
+<p>For each script listed, the output indicates which target database the script is defined for (or whether a script is global).</p>
+</li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink RCMRF132" href="../../backup.112/e10643/rcmsynta027.htm#RCMRF132"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for <code dir="ltr">LIST</code> <code dir="ltr">SCRIPT NAMES</code> command syntax and output format</div>
+</div>
+<!-- class="sect2" -->
+<a id="i1011158"></a>
+<div id="BRADV89676" class="sect2">
+<h3 class="sect2">Deleting Stored Scripts</h3>
+<p>Use the <code dir="ltr">DELETE GLOBAL SCRIPT</code> command to delete a stored script from the recovery catalog.</p>
+<p class="subhead2"><a id="BRADV316"></a>To delete a stored script:</p>
+<ol>
+<li>
+<p>Start RMAN and connect to a target database and recovery catalog.</p>
+</li>
+<li>
+<p>Enter the <code dir="ltr">DELETE SCRIPT</code> command.</p>
+<p>If you use <code dir="ltr">DELETE SCRIPT</code> without <code dir="ltr">GLOBAL</code>, and there is no stored script for the target database with the specified name, then RMAN looks for a global stored script by the specified name and deletes the global script if it exists. For example, suppose you enter the following command:</p>
+<pre dir="ltr">
+<span class="bold"><a id="sthref1277"></a></span>DELETE SCRIPT 'global_full_backup';
+</pre>
+<p>In this case, RMAN looks for a script <code dir="ltr">global_full_backup</code> defined for the connected target database, and if it did not find one, it searches the global scripts for a script called <code dir="ltr">global_full_backup</code> and delete that script.</p>
+<p>To delete a global stored script, use <code dir="ltr">DELETE GLOBAL SCRIPT</code>:</p>
+<pre dir="ltr">
+<span class="bold"><a id="sthref1278"></a></span>DELETE GLOBAL SCRIPT 'global_full_backup';
+</pre></li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink RCMRF122" href="../../backup.112/e10643/rcmsynta017.htm#RCMRF122"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for <code dir="ltr">DELETE</code> <code dir="ltr">SCRIPT</code> command syntax</div>
+</div>
+<!-- class="sect2" -->
+<div id="BRADV89677" class="sect2"><a id="sthref1279"></a>
+<h3 class="sect2">Executing a Stored Script at RMAN Startup</h3>
+<p><a id="sthref1280"></a>To run the RMAN client and start a stored script in the recovery catalog on startup, use the <code dir="ltr">SCRIPT</code> argument when starting the RMAN client. For example, you could enter the following command to execute script <code dir="ltr">/tmp/fbkp.cmd</code>:</p>
+<pre dir="ltr">
+% rman TARGET / CATALOG rman@catdb SCRIPT '/tmp/fbkp.cmd';
+</pre>
+<p>You must connect to a recovery catalog, which contains the stored script, and target database, to which the script applies, when starting the RMAN client.</p>
+<p>If local and global stored scripts are defined with the same name, then RMAN always executes the local script.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink RCMRF111" href="../../backup.112/e10643/rcmsynta2011.htm#RCMRF111"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for full RMAN client command line syntax</div>
+</div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="CHDDGDHF"></a>
+<div id="BRADV89678" class="sect1"><!-- infolevel="all" infotype="General" -->
+<h2 class="sect1">Maintaining a Recovery Catalog</h2>
+<p>This section describes various management and maintenance tasks. This section contains the following topics:</p>
+<ul>
+<li>
+<p><a href="#CHDEFHGD">About Recovery Catalog Maintenance</a></p>
+</li>
+<li>
+<p><a href="#i1006518">Resynchronizing the Recovery Catalog</a></p>
+</li>
+<li>
+<p><a href="#CHDHEDDG">Updating the Recovery Catalog After Changing a DB_UNIQUE_NAME</a></p>
+</li>
+<li>
+<p><a href="#i1006420">Unregistering a Target Database from the Recovery Catalog</a></p>
+</li>
+<li>
+<p><a href="#CIHIJCJB">Resetting the Database Incarnation in the Recovery Catalog</a></p>
+</li>
+<li>
+<p><a href="#i1007125">Upgrading the Recovery Catalog</a></p>
+</li>
+<li>
+<p><a href="#CHDGEHCG">Importing and Moving a Recovery Catalog</a></p>
+</li>
+</ul>
+<a id="CHDEFHGD"></a>
+<div id="BRADV89679" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">About Recovery Catalog Maintenance</h3>
+<p>After you have created a recovery catalog and registered your target databases, you must maintain this catalog. For example, you must run the <a href="glossary.htm#CHDJGAGC"><span class="xrefglossterm">RMAN maintenance commands</span></a>, which are explained in <a href="rcmmaint.htm#h1016888">Chapter 12, "Maintaining RMAN Backups and Repository&nbsp;Records"</a>, to update backup records and to delete backups that are no longer needed. You must perform this type of maintenance regardless of whether you use RMAN with a recovery catalog. Other types of maintenance, such as upgrading a recovery catalog schema, are specific to use of RMAN with a recovery catalog.</p>
+<p>If you use a recovery catalog in a Data Guard environment, then special considerations apply for backups and database files recorded in the catalog. See <a href="rcmarchi.htm#CHDHJFAB">"RMAN File Management in a Data Guard Environment"</a> for an explanation of when backups are accessible to RMAN and how RMAN maintenance commands work with accessible backups.</p>
+</div>
+<!-- class="sect2" -->
+<a id="i1006518"></a>
+<div id="BRADV181" class="sect2">
+<h3 class="sect2">Resynchronizing the Recovery Catalog</h3>
+<p>When RMAN performs a <a href="glossary.htm#i433443"><span class="xrefglossterm">resynchronization</span></a>, it compares the recovery catalog to either the current or backup control file of the target database and updates the catalog with metadata that is missing or changed<a id="sthref1281"></a><a id="sthref1282"></a><a id="sthref1283"></a><a id="sthref1284"></a><a id="sthref1285"></a><a id="sthref1286"></a>. Most RMAN commands perform a resynchronization automatically when the target control file is mounted and the catalog is available. In a Data Guard environment, RMAN can perform a <a href="glossary.htm#CHDGJHBB"><span class="xrefglossterm">reverse resynchronization</span></a> to update a database control file with metadata from the catalog.</p>
+<a id="i1006552"></a>
+<div id="BRADV89680" class="sect3">
+<h4 class="sect3">About Resynchronization of the Recovery Catalog</h4>
+<p><a id="sthref1287"></a><a id="sthref1288"></a><a id="sthref1289"></a>Resynchronization of the recovery catalog ensures that the metadata that RMAN obtains from the control file stays current. Resynchronizations can be full or partial.</p>
+<p>In a <a href="glossary.htm#i433189"><span class="xrefglossterm">partial resynchronization</span></a>, RMAN reads the current control file of the target database to update changed metadata about new backups, new archived redo logs, and so on. RMAN does not resynchronize metadata about the database physical schema.</p>
+<p>In a <a href="glossary.htm#i432671"><span class="xrefglossterm">full resynchronization</span></a>, RMAN updates all changed records, including those for the database schema. RMAN performs a full resynchronization after structural changes to database (adding or dropping database files, creating new incarnation, and so on) or after changes to the RMAN persistent configuration.</p>
+<p>RMAN creates a <a id="sthref1290"></a><a id="sthref1291"></a><a href="glossary.htm#i433510"><span class="xrefglossterm">snapshot control file</span></a>, which is a temporary backup control file, when it performs a full resynchronization. The database ensures that only one RMAN session accesses a snapshot control file at any point in time. RMAN creates the snapshot control file in an operating system-specific location on the target database host. You can specify the name and location of the snapshot control file, as explained in <a href="rcmconfa.htm#i1015609">"Configuring the Snapshot Control File Location"</a>.</p>
+<p>This snapshot control file ensures that RMAN has a consistent view of the control file. Because the control file is intended for short-term use, it is not registered in the catalog. RMAN records the control file checkpoint in the recovery catalog to indicate the currency of the catalog.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink RCMRF150" href="../../backup.112/e10643/rcmsynta2009.htm#RCMRF150"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for more information about the <code dir="ltr">RESYNC</code> command</div>
+<div id="BRADV89681" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref1292"></a>
+<h5 class="sect4">Recovery Catalog Resynchronization in a Data Guard Environment</h5>
+<p>RMAN only automatically resynchronizes the recovery catalog with a database when connected to this database as <code dir="ltr">TARGET</code>. Thus, RMAN does not automatically resynchronize every database in a Data Guard environment when connected as <code dir="ltr">TARGET</code> to one database in the environment. You can use the <code dir="ltr">RESYNC CATALOG FROM DB_UNIQUE_NAME</code> command to manually resynchronize the recovery catalog with a database in the Data Guard environment.</p>
+<p>For an example of a manual resynchronization, assume that RMAN is connected as <code dir="ltr">TARGET</code> to production database <code dir="ltr">prod</code>, and that you have used <code dir="ltr">CONFIGURE</code> to create a configuration for <code dir="ltr">dgprod3</code>. If you run <code dir="ltr">RESYNC CATALOG FROM DB_UNIQUE_NAME dgprod3</code>, then RMAN resynchronizes the recovery catalog with the <code dir="ltr">dgprod3</code> control file. In this case RMAN performs both a normal resynchronization, in which metadata flows from the <code dir="ltr">dgprod3</code> control file to the catalog, and a <a href="glossary.htm#CHDGJHBB"><span class="xrefglossterm">reverse resynchronization</span></a>. In a reverse resynchronization, RMAN uses the persistent configurations in the recovery catalog to update the <code dir="ltr">dgprod3</code> control file.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink SBYDB" href="../../server.112/e41134/toc.htm"><span class="italic">Oracle Data Guard Concepts and Administration</span></a></div>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<a id="i1013660"></a>
+<div id="BRADV89682" class="sect3">
+<h4 class="sect3">Deciding When to Resynchronize the Recovery Catalog</h4>
+<p>RMAN automatically resynchronizes the recovery catalog when RMAN is connected to a target database and recovery catalog and you have executed RMAN commands. Thus, you should not need to manually run the <code dir="ltr">RESYNC</code> <code dir="ltr">CATALOG</code> command very often. The following sections describe situations requiring a manual catalog resynchronization.</p>
+<div id="BRADV89683" class="sect4"><a id="sthref1293"></a>
+<h5 class="sect4">Resynchronizing After the Recovery Catalog is Unavailable</h5>
+<p>If the recovery catalog is unavailable when you issue RMAN commands that cause a partial resynchronization, then open the catalog database later and resynchronize it manually with the <code dir="ltr">RESYNC</code> <code dir="ltr">CATALOG</code> command.</p>
+<p>For example, the target database may be in New York while the recovery catalog database is in Japan. You may not want to make daily backups of the target database in <code dir="ltr">CATALOG</code> mode, to avoid depending on the availability of a geographically distant database. In such a case you could connect to the catalog as often as feasible and run the <code dir="ltr">RESYNC</code> <code dir="ltr">CATALOG</code> command.</p>
+</div>
+<!-- class="sect4" -->
+<div id="BRADV89684" class="sect4"><a id="sthref1294"></a>
+<h5 class="sect4">Resynchronizing in ARCHIVELOG Mode When You Back Up Infrequently</h5>
+<p>Assume that a target database runs in <code dir="ltr">ARCHIVELOG</code> mode. Also assume that you do the following:</p>
+<ul>
+<li>
+<p>Back up the database infrequently (for example, hundreds of redo logs are archived between database backups)</p>
+</li>
+<li>
+<p>Generate a high number of log switches every day (for example, 1000 switches between catalog resynchronizations)</p>
+</li>
+</ul>
+<p>In this case, you may want to manually resynchronize the recovery catalog regularly because the recovery catalog is <span class="italic">not</span> updated automatically when a redo log switch occurs or when a redo log is archived. The database stores metadata about redo log switches and archived redo logs only in the control file. You must periodically resynchronize to propagate this information into the recovery catalog.</p>
+<p>How frequently you must resynchronize the recovery catalog depends on the rate at which the database archives redo logs. The cost of the operation is proportional to the number of records in the control file that have been inserted or changed since the previous resynchronization. If no records have been inserted or changed, then the cost of resynchronization is very low; if many records have been inserted or changed, then the resynchronization is more time-consuming.</p>
+</div>
+<!-- class="sect4" -->
+<div id="BRADV89686" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref1295"></a>
+<h5 class="sect4">Resynchronizing After Configuring a Standby Database</h5>
+<p>You can create or change an RMAN configuration for a standby database even when not connected to this database as <code dir="ltr">TARGET</code>. You perform this task with the <code dir="ltr">CONFIGURE DB_UNIQUE_NAME</code> or <code dir="ltr">CONFIGURE ... FOR DB_UNIQUE_NAME</code> command. As explained in <a href="#i1006630">"Manually Resynchronizing the Recovery Catalog"</a>, you can resynchronize the standby database manually to update the control file of the standby database.</p>
+</div>
+<!-- class="sect4" -->
+<a id="CIHECBCG"></a>
+<div id="BRADV89687" class="sect4">
+<h5 class="sect4">Resynchronizing the Recovery Catalog Before Control File Records Age Out</h5>
+<p>Your goal is to ensure that the metadata in the recovery catalog is current. Because the recovery catalog obtains its metadata from the target control file, the currency of the data in the catalog depends on the currency of the data in the control file. You must make sure that the backup metadata in the control file is recorded in the catalog before it is overwritten with new records.</p>
+<p>The <code dir="ltr">CONTROL_FILE_RECORD_KEEP_TIME</code> initialization parameter determines the minimum number of days that records are retained in the control file before they are candidates for being overwritten. Thus, you must ensure that you resynchronize the recovery catalog with the control file records before these records are erased. You should perform either of the following actions at intervals less than the <code dir="ltr">CONTROL_FILE_RECORD_KEEP_TIME</code> setting:</p>
+<ul>
+<li>
+<p>Make a backup, thereby performing an implicit resynchronization of the recovery catalog</p>
+</li>
+<li>
+<p>Manually resynchronize the recovery catalog with the <code dir="ltr">RESYNC</code> <code dir="ltr">CATALOG</code> command</p>
+</li>
+</ul>
+<p>Make sure that <code dir="ltr"><a id="sthref1296"></a>CONTROL_FILE_RECORD_KEEP_TIME</code> is longer than the interval between backups or resynchronizations. Otherwise, control file records could be reused before they are propagated to the recovery catalog. An extra week is a safe margin in most circumstances.</p>
+<div class="infoboxnotewarn">
+<p class="notep1">Caution:</p>
+Never set <code dir="ltr">CONTROL_FILE_RECORD_KEEP_TIME</code> to <code dir="ltr">0</code>. If you do, then backup records may be overwritten in the control file before RMAN can add them to the catalog.</div>
+<p>One problem can arise if the control file becomes too large. <a id="sthref1297"></a><a id="sthref1298"></a>The size of the target database control file grows depending on the number of:</p>
+<ul>
+<li>
+<p>Backups that you perform</p>
+</li>
+<li>
+<p>Archived redo logs that the database generates</p>
+</li>
+<li>
+<p>Days that this information is stored in the control file</p>
+</li>
+</ul>
+<p>If the control file grows so large that it can no longer expand because it has reached either the maximum number of blocks or the maximum number of records, then the database may overwrite the oldest records even if their age is less than the <code dir="ltr">CONTROL_FILE_RECORD_KEEP_TIME</code> setting. In this case, the database writes a message to the alert log. If you discover that this situation occurs frequently, then reducing the value of <code dir="ltr">CONTROL_FILE_RECORD_KEEP_TIME</code> and increase the frequency of resynchronizations.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink REFRN10020" href="../../server.112/e40402/initparams036.htm#REFRN10020"><span class="italic">Oracle Database Reference</span></a> for more information about the <code dir="ltr">CONTROL_FILE_RECORD_KEEP_TIME</code> parameter</p>
+</li>
+<li>
+<p><a class="olink ADMIN006" href="../../server.112/e25494/control.htm#ADMIN006"><span class="italic">Oracle Database Administrator's Guide</span></a> for more detailed information on other aspects of control file management</p>
+</li>
+<li>
+<p><a href="rcmmaint.htm#i1007330">"Preventing the Loss of Control File Records"</a> to learn how to monitor the overwriting of control file records</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<a id="i1006630"></a>
+<div id="BRADV89688" class="sect3">
+<h4 class="sect3">Manually Resynchronizing the Recovery Catalog</h4>
+<p><a id="sthref1299"></a><a id="sthref1300"></a><a id="sthref1301"></a>Use <code dir="ltr">RESYNC</code> <code dir="ltr">CATALOG</code> to force a full resynchronization of the recovery catalog with a target database control file. You can specify a database unique name with <code dir="ltr">RESYNC FROM DB_UNIQUE_NAME</code> or <code dir="ltr">ALL</code>, depending on whether you want to resynchronize a specific database or all databases in the Data Guard environment. Typically, you would perform this operation after you have run the <code dir="ltr">CONFIGURE</code> command for a standby database, but have not yet connected to this standby database.</p>
+<ol>
+<li>
+<p>Start RMAN and connect to a target database and recovery catalog.</p>
+</li>
+<li>
+<p>Mount or open the target database:</p>
+<pre dir="ltr">
+STARTUP MOUNT;
+</pre></li>
+<li>
+<p>Resynchronize the recovery catalog.</p>
+<p>Run the <code dir="ltr">RESYNC</code> <code dir="ltr">CATALOG</code> command at the RMAN prompt as follows:</p>
+<pre dir="ltr">
+RESYNC CATALOG;
+</pre>
+<p>The following example resynchronizes the control file of <code dir="ltr">standby1</code>:</p>
+<pre dir="ltr">
+RESYNC CATALOG FROM DB_UNIQUE_NAME standby1;
+</pre>
+<p>The following variation resynchronizes the control files for all databases in the Data Guard environment:</p>
+<pre dir="ltr">
+RESYNC CATALOG FROM DB_UNIQUE_NAME ALL;
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink RCMRF150" href="../../backup.112/e10643/rcmsynta2009.htm#RCMRF150"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for <code dir="ltr">RESYNC</code> <code dir="ltr">CATALOG</code> command syntax</p>
+</li>
+<li>
+<p><a class="olink SBYDB04700" href="../../server.112/e41134/rman.htm#SBYDB04700"><span class="italic">Oracle Data Guard Concepts and Administration</span></a> to learn how to configure the RMAN environment for use with a standby database</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CHDHEDDG"></a>
+<div id="BRADV89690" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Updating the Recovery Catalog After Changing a DB_UNIQUE_NAME</h3>
+<p>You may decide to change the <code dir="ltr">DB_UNIQUE_NAME</code> of a database in a <a id="sthref1302"></a>Data Guard environment. In this case, you can run <a id="sthref1303"></a>the <code dir="ltr">CHANGE DB_UNIQUE_NAME</code> command to associate the metadata stored in recovery catalog for the old <code dir="ltr">DB_UNIQUE_NAME</code> to the new <code dir="ltr">DB_UNIQUE_NAME</code>. The <code dir="ltr">CHANGE DB_UNIQUE_NAME</code> command does not actually change the <code dir="ltr">DB_UNIQUE_NAME</code> of the database itself. Instead, it updates the catalog metadata for the database whose unique name has been or will be changed.</p>
+<p>The following procedure assumes that the <code dir="ltr">DB_UNIQUE_NAME</code> of the primary database is <code dir="ltr">prodny</code>, and that you have changed the <code dir="ltr">DB_UNIQUE_NAME</code> of a standby database from <code dir="ltr">prodsf1</code> to <code dir="ltr">prodsf2</code>. You can use the same procedure after changing the <code dir="ltr">DB_UNIQUE_NAME</code> of a <span class="italic">primary</span> database, except in Step <a href="#CHDCACIA">1</a> connect RMAN as <code dir="ltr">TARGET</code> to a standby database instead of a primary database.</p>
+<p class="subhead2"><a id="BRADV317"></a>To update the recovery catalog after a <code dir="ltr">DB_UNIQUE_NAME</code> is changed:</p>
+<ol>
+<li id="CHDCACIA">
+<p>Connect RMAN to the <span class="italic">primary</span> database as <code dir="ltr">TARGET</code> and also to the recovery catalog. For example, enter the following commands:</p>
+<pre dir="ltr">
+% rman
+RMAN&gt; CONNECT CATALOG catowner@catdb
+
+recovery catalog database Password: <span class="italic">password</span>
+connected to recovery catalog database
+
+RMAN&gt; CONNECT TARGET SYS@prodny
+
+target database Password: <span class="italic">password</span>
+connected to target database: PRODNY (DBID=39525561)
+</pre></li>
+<li>
+<p>List the <code dir="ltr">DB_UNQUE_NAME</code> values known to the recovery catalog.</p>
+<p>Run the following <code dir="ltr">LIST</code> command:</p>
+<pre dir="ltr">
+RMAN&gt; LIST DB_UNIQUE_NAME OF DATABASE;
+</pre></li>
+<li id="CHDBDJCA">
+<p>Change the <code dir="ltr">DB_UNIQUE_NAME</code> in the RMAN metadata.</p>
+<p>The following example changes the database unique name from standby database <code dir="ltr">prodsf1</code> to <code dir="ltr">prodsf2</code>:</p>
+<pre dir="ltr">
+RMAN&gt; CHANGE DB_UNIQUE_NAME FROM prodsf1 TO prodsf2;
+</pre></li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="i1006420"></a>
+<div id="BRADV89691" class="sect2">
+<h3 class="sect2">Unregistering a Target Database from the Recovery Catalog</h3>
+<p><a id="sthref1304"></a><a id="sthref1305"></a><a id="sthref1306"></a><a id="sthref1307"></a><a id="sthref1308"></a>You can use the <code dir="ltr">UNREGISTER DATABASE</code> command to unregister a database from the recovery catalog. When a database is unregistered from the recovery catalog, all RMAN repository records in the recovery catalog are lost. The database can be registered again, but the recovery catalog records for that database are then based on the contents of the control file at the time of reregistration. Records older than the <code dir="ltr">CONTROLFILE_RECORD_KEEP_TIME</code> setting in the target database control file are lost. Stored scripts, which are not stored in the control file, are also lost.</p>
+<div id="BRADV89692" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1309"></a>
+<h4 class="sect3">Unregistering a Target Database When Not in a Data Guard Environment</h4>
+<p>This scenario assumes that you are not using the recovery catalog to store metadata for primary and standby databases.</p>
+<p class="subhead2"><a id="BRADV318"></a>To unregister a database:</p>
+<ol>
+<li>
+<p>Start RMAN and connect as <code dir="ltr">TARGET</code> to the database to unregister. Also connect to the recovery catalog.</p>
+<p>It is not necessary to connect to the target database, but if you do not, then you must specify the name of the target database in the <code dir="ltr">UNREGISTER</code> command. If multiple databases have the same name in the recovery catalog, then you must create a <code dir="ltr">RUN</code> block around the command and use <code dir="ltr">SET DBID</code> to set the DBID for the database.</p>
+</li>
+<li>
+<p>Make a note of the DBID as displayed by RMAN at startup.</p>
+<p>For example, RMAN outputs a line of the following form when it connects to a target database that is open:</p>
+<pre dir="ltr">
+connected to target database: PROD (DBID=39525561)
+</pre></li>
+<li>
+<p>As a precaution, it may be useful to list all of the backups recorded in the recovery catalog using <code dir="ltr">LIST BACKUP SUMMARY</code> and <code dir="ltr">LIST COPY SUMMARY</code>. This way, you can recatalog backups not known to the control file if you later decide to reregister the database.</p>
+</li>
+<li>
+<p>If your intention is to actually delete all backups of the database completely, then run <code dir="ltr">DELETE</code> statements to delete all existing backups. Do not delete all backups if your intention is only to remove the database from the recovery catalog and rely on the control file to store the RMAN metadata for this database.</p>
+<p>The following commands illustrate how to delete backups:</p>
+<pre dir="ltr">
+DELETE BACKUP DEVICE TYPE sbt;
+DELETE BACKUP DEVICE TYPE DISK;
+DELETE COPY;
+</pre>
+<p>RMAN lists the backups that it intends to delete and prompts for confirmation before deleting them.</p>
+</li>
+<li>
+<p>Run the <code dir="ltr">UNREGISTER</code> <code dir="ltr">DATABASE</code> command. For example:</p>
+<pre dir="ltr">
+UNREGISTER DATABASE;
+</pre>
+<p>RMAN displays the database name and DBID, and prompts you for a confirmation:</p>
+<pre dir="ltr">
+database name is "RDBMS" and DBID is 931696259
+ 
+Do you really want to unregister the database (enter YES or NO)? yes
+</pre>
+<p>When the process is complete, RMAN outputs the following message:</p>
+<pre dir="ltr">
+database unregistered from the recovery catalog
+</pre></li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<a id="CHDEDDJE"></a>
+<div id="BRADV89693" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Unregistering a Standby Database</h4>
+<p>The <code dir="ltr">UNREGISTER</code> command supports a <code dir="ltr">DB_UNIQUE_NAME</code> clause for use in a Data Guard environment. You can use this clause to remove metadata for a specific database.</p>
+<p>The recovery catalog associates a backup with a particular database. When you unregister a database, RMAN updates the database name for these backup files to <code dir="ltr">null</code>. Thus, the backups are still recorded but have no owner. You can execute the <code dir="ltr">CHANGE ... RESET DB_UNIQUE_NAME</code> command to associate ownership of the currently ownerless backups to a different database. If you specify <code dir="ltr">INCLUDING BACKUPS</code> on the <code dir="ltr">UNREGISTER</code> command, then RMAN removes the backup metadata for the unregistered database as well.</p>
+<p>In this scenario, assume that primary database <code dir="ltr">lnx3</code> has an associated standby database <code dir="ltr">standby</code>. You want to unregister the standby database.</p>
+<p class="subhead2"><a id="BRADV319"></a>To unregister a standby database:</p>
+<ol>
+<li>
+<p>Start RMAN and connect as <code dir="ltr">TARGET</code> to the <span class="italic">primary</span> database. Also, connect RMAN to a recovery catalog.</p>
+<p>For example, enter the following commands:</p>
+<pre dir="ltr">
+% rman
+RMAN&gt; CONNECT TARGET SYS@lnx3
+
+target database Password: <span class="italic">password</span>
+connected to target database: LNX3 (DBID=781317675)
+
+RMAN&gt; CONNECT CATALOG rman@catdb
+</pre></li>
+<li>
+<p>List the database unique names.</p>
+<p>For example, execute the <code dir="ltr">LIST DB_UNIQUE_NAME</code> command as follows:</p>
+<pre dir="ltr">
+RMAN&gt; LIST DB_UNIQUE_NAME OF DATABASE;
+
+List of Databases
+DB Key  DB Name DB ID             Database Role   Db_unique_name
+------- ------- ----------------- --------------- ------------------
+1       LNX3    781317675         STANDBY         STANDBY
+1       LNX3    781317675         PRIMARY         LNX3
+</pre></li>
+<li>
+<p>Run the <code dir="ltr">UNREGISTER</code> <code dir="ltr">DB_UNIQUE_NAME</code> command.</p>
+<p>For example, execute the <code dir="ltr">UNREGISTER</code> command as follows to unregister database <code dir="ltr">standby</code>:</p>
+<pre dir="ltr">
+RMAN&gt; UNREGISTER DB_UNIQUE_NAME standby;
+</pre>
+<p>RMAN displays the database name and DBID, and prompts you for a confirmation:</p>
+<pre dir="ltr">
+database db_unique_name is "standby", db_name is "LNX3" and DBID is 781317675
+ 
+Do you really want to unregister the database (enter YES or NO)? yes
+</pre>
+<p>When the process is complete, RMAN outputs the following message:</p>
+<pre dir="ltr">
+database with db_unique_name standby unregistered from the recovery catalog
+</pre></li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CIHIJCJB"></a>
+<div id="BRADV89694" class="sect2">
+<h3 class="sect2">Resetting the Database Incarnation in the Recovery Catalog</h3>
+<p><a id="sthref1310"></a>As explained in <a href="rcmrvcon.htm#BGBBAJII">"Database Incarnations"</a>, you create an <a href="glossary.htm#i432741"><span class="xrefglossterm">incarnation</span></a> of the database when you open the database with the <code dir="ltr">RESETLOGS</code> option. You can access a record of the new incarnation in the <a id="sthref1311"></a><code dir="ltr">V$DATABASE_INCARNATION</code> view.</p>
+<p><a id="sthref1312"></a><a id="sthref1313"></a>If you open the database with the <code dir="ltr">RESETLOGS</code> option, then a new database incarnation record is automatically created in the recovery catalog. The database also implicitly and automatically issues a <code dir="ltr">RESET</code> <code dir="ltr">DATABASE</code> command, which specifies that this new incarnation of the database is the current incarnation. All subsequent backups and log archiving done by the target database is associated with the new database incarnation.</p>
+<p>Whenever RMAN returns the database to an SCN before the current <code dir="ltr">RESETLOGS</code> SCN, using either <code dir="ltr">RESTORE</code> and <code dir="ltr">RECOVER</code> or <code dir="ltr">FLASHBACK DATABASE</code>, the <a id="CHDCCDFH"></a><code dir="ltr">RESET DATABASE TO INCARNATION</code> command is required. However, you do not need to execute <code dir="ltr">RESET DATABASE TO INCARNATION</code> explicitly in the following scenarios because RMAN runs the command implicitly with Flashback.</p>
+<ul>
+<li>
+<p><a id="sthref1314"></a>You use <code dir="ltr">FLASHBACK DATABASE</code> to rewind the database to an SCN in the <a href="glossary.htm#CHDEEABB"><span class="xrefglossterm">direct ancestral path</span></a> (see <a href="rcmrvcon.htm#BGBBAJII">"Database Incarnations"</a> for an explanation of the direct ancestral path).</p>
+</li>
+<li>
+<p>You use <code dir="ltr">FLASHBACK DATABASE</code> to rewind the database to a <a href="glossary.htm#CHDEBAAG"><span class="xrefglossterm">restore point</span></a>.</p>
+</li>
+</ul>
+<p>The following procedure explains how to reset the database incarnation when recovering through a <code dir="ltr">RESETLOGS</code>.</p>
+<p class="subhead2"><a id="BRADV320"></a>To reset the recovery catalog to an older incarnation for media recovery:<a id="sthref1315"></a><a id="sthref1316"></a><a id="sthref1317"></a><a id="sthref1318"></a><a id="sthref1319"></a><a id="sthref1320"></a><a id="sthref1321"></a></p>
+<ol>
+<li>
+<p>Determine the incarnation key of the desired database incarnation. Obtain the incarnation key value by issuing a <code dir="ltr">LIST</code> command:</p>
+<pre dir="ltr">
+LIST INCARNATION OF DATABASE trgt;
+
+List of Database Incarnations
+DB Key  Inc Key   DB Name   DB ID       STATUS     Reset SCN    Reset Time
+------- -------   -------   ------      -------    ----------   ----------
+1       2         TRGT      1224038686  PARENT     1            02-JUL-02
+1       582       TRGT      1224038686  CURRENT    59727        10-JUL-02
+
+</pre>
+<p>The incarnation key is listed in the <code dir="ltr">Inc Key</code> column.</p>
+</li>
+<li>
+<p>Reset the database to the old incarnation. For example, enter:</p>
+<pre dir="ltr">
+RESET DATABASE TO INCARNATION 2;
+</pre></li>
+<li>
+<p>If the control file of the previous incarnation is available and mounted, then skip to Step 6 of this procedure. Otherwise, shut down the database and start it without mounting. For example:</p>
+<pre dir="ltr">
+SHUTDOWN IMMEDIATE
+STARTUP NOMOUNT
+</pre></li>
+<li>
+<p>Restore a control file from the old incarnation. If you have a control file tagged, then specify the tag. Otherwise, you can run the <code dir="ltr">SET</code> <code dir="ltr">UNTIL</code> command, as in this example:</p>
+<pre dir="ltr">
+RUN 
+{
+  SET UNTIL 'SYSDATE-45';
+  RESTORE CONTROLFILE; # only if current control file is not available
+}
+</pre></li>
+<li>
+<p>Mount the restored control file:</p>
+<pre dir="ltr">
+ALTER DATABASE MOUNT;
+</pre></li>
+<li>
+<p>Run <code dir="ltr">RESTORE</code> and <code dir="ltr">RECOVER</code> commands to restore and recover the database files from the prior incarnation, then open the database with the <code dir="ltr">RESETLOGS</code> option. For example, enter:</p>
+<pre dir="ltr">
+RESTORE DATABASE;
+RECOVER DATABASE;
+ALTER DATABASE OPEN RESETLOGS;
+</pre>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink RCMRF148" href="../../backup.112/e10643/rcmsynta2007.htm#RCMRF148"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for <code dir="ltr">RESET</code> <code dir="ltr">DATABASE</code> syntax, <a class="olink RCMRF132" href="../../backup.112/e10643/rcmsynta027.htm#RCMRF132"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for <code dir="ltr">LIST</code> syntax</div>
+</li>
+</ol>
+</div>
+<!-- class="sect2" -->
+<a id="i1007125"></a>
+<div id="BRADV188" class="sect2">
+<h3 class="sect2">Upgrading the Recovery Catalog</h3>
+<p><a id="sthref1322"></a>This section explains what a recovery catalog upgrade is and when you must do it.</p>
+<a id="CHDGHHIJ"></a>
+<div id="BRADV89695" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">About Recovery Catalog Upgrades</h4>
+<p>If you use a version of the recovery catalog schema that is older than that required by the RMAN client, then you must upgrade it. The compatibility matrix in <a class="olink RCMRF005" href="../../backup.112/e10643/compat001.htm#RCMRF005"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> explains which schema versions are compatible with which versions of RMAN. For example, you must upgrade the catalog if you use an Oracle Database 11<span class="italic">g</span> RMAN client with a release 10.2 version of the recovery catalog schema.<a id="sthref1323"></a><a id="sthref1324"></a><a id="sthref1325"></a><a id="sthref1326"></a></p>
+<p>The Oracle Database 10<span class="italic">g</span>R1 version of the recovery catalog schema requires the <code dir="ltr">CREATE TYPE</code> privilege. If you created the recovery catalog owner in a release before 10<span class="italic">g</span>R1, and if you granted the <code dir="ltr">RECOVERY_CATALOG_OWNER</code> role when it did not include the <code dir="ltr">CREATE TYPE</code> privilege, then you must grant <code dir="ltr">CREATE TYPE</code> to this user explicitly before upgrading the catalog.</p>
+<p>You receive an error when issuing <code dir="ltr">UPGRADE</code> <code dir="ltr">CATALOG</code> if the recovery catalog is at a version greater than that required by the RMAN client. RMAN permits the <code dir="ltr">UPGRADE</code> <code dir="ltr">CATALOG</code> command to be run if the recovery catalog is current and does not require upgrading, however, so that you can re-create packages at any time if necessary. Check the message log for error messages generated during the upgrade.</p>
+<div id="BRADV89696" class="sect4"><!-- infolevel="all" infotype="General" --><a id="sthref1327"></a>
+<h5 class="sect4">Special Considerations in a Data Guard Environment</h5>
+<p>Assume that you upgrade the recovery catalog schema to Oracle Database 11<span class="italic">g</span> in a Data Guard environment. When RMAN connects to a standby database, it automatically registers the new database information and resynchronizes to obtain the file names from the control file.</p>
+<p>During the resynchronization, RMAN associates the names with the target database name. Because the recovery catalog contains historical metadata, some records in the catalog are not known to the control file. For example, the <code dir="ltr">standby1</code> control file does not know about all backups made on <code dir="ltr">primary1</code>. The database unique names for these old records is <code dir="ltr">null</code>. As explained in <a href="#CHDEFHGD">"About Recovery Catalog Maintenance"</a>, you can use <code dir="ltr">CROSSCHECK</code> to fix these records.</p>
+</div>
+<!-- class="sect4" --></div>
+<!-- class="sect3" -->
+<a id="i1008941"></a>
+<div id="BRADV11032" class="sect3">
+<h4 class="sect3">Determining the Schema Version of the Recovery Catalog</h4>
+<p>The schema version of the recovery catalog is stored in the recovery catalog itself. The information is important in case you maintain multiple databases of different versions in your production system, and must determine whether the catalog schema version is usable with a specific target database version.</p>
+<p class="subhead2"><a id="BRADV321"></a>To determine the schema version of the recovery catalog:</p>
+<ol>
+<li>
+<p>Start SQL*Plus and connect to the recovery catalog database as the catalog owner.</p>
+</li>
+<li>
+<p>Query the <code dir="ltr">RCVER</code> table to obtain the schema version, as in the following example (sample output included):</p>
+<pre dir="ltr">
+SELECT *
+FROM   rcver;
+
+VERSION
+------------
+10.02.00
+</pre></li>
+</ol>
+<p>If the table displays multiple rows, then the highest version in the <code dir="ltr">RCVER</code> table is the current catalog schema version. The table stores only the major version numbers and not the patch numbers. For example, assume that the <code dir="ltr">rcver</code> table displays the following rows:</p>
+<pre dir="ltr">
+VERSION
+------------
+08.01.07
+09.00.01
+10.02.00
+</pre>
+<p>These rows indicate that the catalog was created with a release 8.1.7 executable, then upgraded to release 9.0.1, and finally upgraded to release 10.2.0. The current version of the catalog schema is 10.2.0.</p>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink RCMRF005" href="../../backup.112/e10643/compat001.htm#RCMRF005"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for the complete set of compatibility rules governing the RMAN environment</div>
+</div>
+<!-- class="sect3" -->
+<div id="BRADV89697" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1328"></a>
+<h4 class="sect3">Using the UPGRADE CATALOG Command</h4>
+<p>This scenario assumes that you are upgrading a recovery catalog schema to the current version.</p>
+<p class="subhead2"><a id="BRADV322"></a>To upgrade the recovery catalog:</p>
+<ol>
+<li>
+<p>If you created the recovery catalog owner in a release before 10<span class="italic">g</span>R1, and if the <code dir="ltr">RECOVERY_CATALOG_OWNER</code> role did not include the <code dir="ltr">CREATE TYPE</code> privilege, then grant it.</p>
+<p>For example, start SQL*Plus and connect to the recovery catalog database with administrator privileges. You can then execute the following <code dir="ltr">GRANT</code> statement:</p>
+<pre dir="ltr">
+SQL&gt; GRANT CREATE TYPE TO rman;
+SQL&gt; EXIT;
+</pre></li>
+<li>
+<p>Start RMAN and connect RMAN to the recovery catalog database.</p>
+</li>
+<li>
+<p>Run the <code dir="ltr">UPGRADE</code> <code dir="ltr">CATALOG</code> command:</p>
+<pre dir="ltr">
+RMAN&gt; UPGRADE CATALOG;
+
+recovery catalog owner is rman 
+enter UPGRADE CATALOG command again to confirm catalog upgrade 
+</pre></li>
+<li>
+<p>Run the <code dir="ltr">UPDATE</code> <code dir="ltr">CATALOG</code> command again to confirm:</p>
+<pre dir="ltr">
+RMAN&gt; UPGRADE CATALOG;
+
+recovery catalog upgraded to version 11.01.00
+DBMS_RCVMAN package upgraded to version 11.01.00
+DBMS_RCVCAT package upgraded to version 11.01.00
+</pre></li>
+</ol>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<ul>
+<li>
+<p><a class="olink RCMRF161" href="../../backup.112/e10643/rcmsynta2023.htm#RCMRF161"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for <code dir="ltr">UPGRADE</code> <code dir="ltr">CATALOG</code> command syntax</p>
+</li>
+<li>
+<p><a class="olink RCMRF908" href="../../backup.112/e10643/compat.htm#RCMRF908"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for information about recovery catalog compatibility</p>
+</li>
+<li>
+<p><a class="olink UPGRD" href="../../server.112/e23633/toc.htm"><span class="italic">Oracle Database Upgrade Guide</span></a> for complete compatibility and migration information</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" -->
+<a id="CHDGEHCG"></a>
+<div id="BRADV89698" class="sect2"><!-- infolevel="all" infotype="General" -->
+<h3 class="sect2">Importing and Moving a Recovery Catalog</h3>
+<p><a id="sthref1329"></a>You can use <a id="sthref1330"></a><a id="sthref1331"></a>the <code dir="ltr">IMPORT CATALOG</code> command in RMAN to merge one recovery catalog schema into another. This command is useful in the following situations:</p>
+<ul>
+<li>
+<p>You have multiple recovery catalog schemas for different versions of the database. You want to merge all existing schemas into one without losing backup metadata.</p>
+</li>
+<li>
+<p>You want to move a recovery catalog from one database to another database.</p>
+</li>
+</ul>
+<div id="BRADV89699" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1332"></a>
+<h4 class="sect3">About Recovery Catalog Imports</h4>
+<p>When using <code dir="ltr">IMPORT CATALOG</code>, the <span class="glossaryterm">source catalog schema</span> is the catalog schema that you want to import into a different schema. The <span class="glossaryterm">destination catalog schema</span> is the catalog schema into which you intend to import the source catalog schema.</p>
+<p>By default, RMAN imports metadata from all target databases registered in the source recovery catalog. Optionally, you can specify the list of database IDs to be imported from the source catalog schema.</p>
+<p>By default, RMAN unregisters the imported databases from the source catalog schema after a successful import. To indicate whether the unregister was successful, RMAN prints messages before and after unregistering the merged databases. You can also specify the <code dir="ltr">NO UNREGISTER</code> option to specify that the databases should not be unregistered from the destination catalog.</p>
+<p>A <a id="sthref1333"></a><a href="glossary.htm#i433542"><span class="xrefglossterm">stored script</span></a> is either global or local. It is possible for global scripts, but not local scripts, to have name conflicts during import because the destination schema contains the script name. In this case, RMAN renames the global script name to <code dir="ltr">COPY OF</code> <code dir="ltr"><span class="codeinlineitalic">script_name</span></code>. For example, RMAN renames <code dir="ltr">bp_cmd</code> to <code dir="ltr">COPY OF bp_cmd</code>.</p>
+<p>If the renamed global script is still not unique, then RMAN renames it to <code dir="ltr">COPY(2) OF</code> <code dir="ltr"><span class="codeinlineitalic">script_name</span></code>. If this script name also exists, then RMAN renames the script to <code dir="ltr">COPY(3) OF</code> <code dir="ltr"><span class="codeinlineitalic">script_name</span></code>. RMAN continues the <code dir="ltr">COPY(</code><code dir="ltr"><span class="codeinlineitalic">n</span></code><code dir="ltr">) OF</code> pattern until the script is uniquely named.</p>
+</div>
+<!-- class="sect3" -->
+<div id="BRADV89700" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1334"></a>
+<h4 class="sect3">Prerequisites for Importing a Recovery Catalog</h4>
+<p>As shown in compatibility matrix in <a class="olink RCMRF005" href="../../backup.112/e10643/compat001.htm#RCMRF005"><span class="italic">Oracle Database Backup and Recovery Reference</span></a>, a target database, recovery catalog database, and recovery catalog schema can be at different database versions. The recommended practice is to import all existing recovery catalogs into a single recovery catalog at the latest version of the recovery catalog schema. <a href="#i1008941">"Determining the Schema Version of the Recovery Catalog"</a> explains how to determine the catalog version. Check the compatibility matrix to determine which schema versions are compatible in your environment.</p>
+<p>When using <code dir="ltr">IMPORT CATALOG</code>, the version of the source recovery catalog schema must be equal to the current version of the RMAN executable with which you run the command. If the source catalog schema is a <span class="italic">lower</span> version, then upgrade it to the current version before importing the schema. <a href="#i1007125">"Upgrading the Recovery Catalog"</a> explains how to upgrade. If the source recovery catalog schema is a <span class="italic">higher</span> version, then retry the import with a higher version RMAN executable.</p>
+<p>No database can be registered in both the source and destination catalog schema. If a database is currently registered in both catalog schemas, then unregister the database from source catalog schema before performing the import.</p>
+</div>
+<!-- class="sect3" -->
+<a id="CHDCACCB"></a>
+<div id="BRADV89701" class="sect3"><!-- infolevel="all" infotype="General" -->
+<h4 class="sect3">Importing a Recovery Catalog</h4>
+<p>When importing one recovery catalog into another, no connection to a target database is necessary. RMAN only needs connectivity to the source and destination catalogs.</p>
+<p>In this example, database <code dir="ltr">srcdb</code> contains a 10.2 recovery catalog schema owned by user <code dir="ltr">102cat</code>, while database <code dir="ltr">destdb</code> contains an 11.1 recovery catalog schema owned by user <code dir="ltr">111cat</code>.</p>
+<p class="subhead2"><a id="BRADV323"></a>To import a recovery catalog:</p>
+<ol>
+<li>
+<p>Start RMAN and connect as <code dir="ltr">CATALOG</code> to the destination recovery catalog schema. For example:</p>
+<pre dir="ltr">
+% rman
+RMAN&gt; CONNECT CATALOG 111cat@destdb;
+</pre></li>
+<li>
+<p>Import the source recovery catalog schema, specifying the connection string for the source catalog.</p>
+<p>For example, enter the following command to import the catalog owned by <code dir="ltr">102cat</code> on database <code dir="ltr">srcdb</code>:</p>
+<pre dir="ltr">
+IMPORT CATALOG 102cat@srcdb;
+</pre>
+<p>A variation is to import metadata for a subset of the target databases registered in the source catalog. You can specify the databases by DBID or database name, as shown in the following examples:</p>
+<pre dir="ltr">
+IMPORT CATALOG 102cat@srcdb DBID=1423241, 1423242;
+IMPORT CATALOG 102cat@srcdb DB_NAME=prod3, prod4;
+</pre></li>
+<li>
+<p>Optionally, connect to a target database to check that the metadata was successfully imported. For example, the following commands connect to database <code dir="ltr">prod1</code> as <code dir="ltr">TARGET</code> and list all backups for this database:</p>
+<pre dir="ltr">
+LIST BACKUP;
+</pre></li>
+</ol>
+</div>
+<!-- class="sect3" -->
+<div id="BRADV89702" class="sect3"><!-- infolevel="all" infotype="General" --><a id="sthref1335"></a>
+<h4 class="sect3">Moving a Recovery Catalog</h4>
+<p><a id="sthref1336"></a>The procedure for moving a recovery catalog from one database to another is a variation of the procedure for importing a catalog. In this scenario, the source database is the database containing the existing recovery catalog, while the destination database will contain the moved recovery catalog.</p>
+<p>To move a recovery catalog from the source database to the destination database:</p>
+<ol>
+<li>
+<p>Create a recovery catalog on the destination database, but do not register any databases in the new catalog.</p>
+<p><a href="#i1013599">"Creating a Recovery Catalog"</a> explains how to perform this task.</p>
+</li>
+<li>
+<p>Import the source catalog into the catalog created in the preceding step.</p>
+<p><a href="#CHDCACCB">"Importing a Recovery Catalog"</a> explains how to perform this task.</p>
+</li>
+</ol>
+</div>
+<!-- class="sect3" --></div>
+<!-- class="sect2" --></div>
+<!-- class="sect1" -->
+<a id="i1007186"></a>
+<div id="BRADV189" class="sect1">
+<h2 class="sect1">Dropping a Recovery Catalog</h2>
+<p><a id="sthref1337"></a><a id="sthref1338"></a><a id="sthref1339"></a><a id="sthref1340"></a>The <code dir="ltr">DROP</code> <code dir="ltr">CATALOG</code> command removes those objects that were created by the <code dir="ltr">CREATE CATALOG</code> command. If the user who owns the recovery catalog also owns objects that were <span class="italic">not</span> created by <code dir="ltr">CREATE CATALOG</code>, then the <code dir="ltr">DROP CATALOG</code> command does not remove these objects.</p>
+<p>If you drop a recovery catalog, and if you have no backups of the recovery catalog schema, then backups of all target databases registered in this catalog may become unusable. However, the control file of every target database still retains a record of recent backups of this database.</p>
+<p>The <code dir="ltr">DROP</code> <code dir="ltr">CATALOG</code> command is not appropriate for unregistering a single database from a recovery catalog that has multiple target databases registered. Dropping the recovery catalog deletes the recovery catalog record of backups for all target databases registered in the catalog.</p>
+<p class="subhead2"><a id="BRADV324"></a>To drop a recovery catalog schema:</p>
+<ol>
+<li>
+<p>Start RMAN and connect to a target database and recovery catalog. Connect to the recovery catalog as the owner of the catalog schema to be dropped.</p>
+<p>The following example connects to a recovery catalog as user <code dir="ltr">catowner</code>:</p>
+<pre dir="ltr">
+% rman TARGET / CATALOG catowner@catdb
+</pre></li>
+<li>
+<p>Run the <code dir="ltr">DROP</code> <code dir="ltr">CATALOG</code> command:</p>
+<pre dir="ltr">
+DROP CATALOG;
+
+recovery catalog owner is catowner
+enter DROP CATALOG command again to confirm catalog removal
+</pre></li>
+<li>
+<p>Run the <code dir="ltr">DROP</code> <code dir="ltr">CATALOG</code> command again to confirm:</p>
+<pre dir="ltr">
+DROP CATALOG;
+</pre>
+<div class="infobox-note">
+<p class="notep1">Note:</p>
+Even after you drop the recovery catalog, the control file still contains records about the backups. To purge RMAN repository records from the control file, re-create the control file.</div>
+<div class="infoboxnotealso">
+<p class="notep1">See Also:</p>
+<a class="olink RCMRF125" href="../../backup.112/e10643/rcmsynta018.htm#RCMRF125"><span class="italic">Oracle Database Backup and Recovery Reference</span></a> for <code dir="ltr">DROP</code> <code dir="ltr">CATALOG</code> command syntax, and <a href="#i1006420">"Unregistering a Target Database from the Recovery Catalog"</a> to learn how to unregister a database from the catalog</div>
+</li>
+</ol>
+</div>
+<!-- class="sect1" --></div>
+<!-- class="chapter" --></div>
+<!-- class="ind" -->
+<!-- Start Footer -->
+</div>
+<!-- add extra wrapper close div-->
+<footer><!--
+<hr />
+<table class="cellalignment1933">
+<tr>
+<td class="cellalignment1942">
+<table class="cellalignment1938">
+<tr>
+<td class="cellalignment1937"><a href="rcmmaint.htm"><img width="24" height="24" src="../../dcommon/gifs/leftnav.gif" alt="Go to previous page" /><br />
+<span class="icon">Previous</span></a></td>
+<td class="cellalignment1937"><a href="part_dia.htm"><img width="24" height="24" src="../../dcommon/gifs/rightnav.gif" alt="Go to next page" /><br />
+<span class="icon">Next</span></a></td>
+</tr>
+</table>
+</td>
+<td class="cellalignment-copyrightlogo"><img width="144" height="18" src="../../dcommon/gifs/oracle.gif" alt="Oracle" /><br />
+Copyright&nbsp;&copy;&nbsp;2003, 2015,&nbsp;Oracle&nbsp;and/or&nbsp;its&nbsp;affiliates.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+<a href="../../dcommon/html/cpyr.htm">Legal Notices</a></td>
+<td class="cellalignment1944">
+<table class="cellalignment1936">
+<tr>
+<td class="cellalignment1937"><a href="../../index.htm"><img width="24" height="24" src="../../dcommon/gifs/doclib.gif" alt="Go to Documentation Home" /><br />
+<span class="icon">Home</span></a></td>
+<td class="cellalignment1937"><a href="../../nav/portal_booklist.htm"><img width="24" height="24" src="../../dcommon/gifs/booklist.gif" alt="Go to Book List" /><br />
+<span class="icon">Book List</span></a></td>
+<td class="cellalignment1937"><a href="toc.htm"><img width="24" height="24" src="../../dcommon/gifs/toc.gif" alt="Go to Table of Contents" /><br />
+<span class="icon">Contents</span></a></td>
+<td class="cellalignment1937"><a href="index.htm"><img width="24" height="24" src="../../dcommon/gifs/index.gif" alt="Go to Index" /><br />
+<span class="icon">Index</span></a></td>
+<td class="cellalignment1937"><a href="../../nav/mindx.htm"><img width="24" height="24" src="../../dcommon/gifs/masterix.gif" alt="Go to Master Index" /><br />
+<span class="icon">Master Index</span></a></td>
+<td class="cellalignment1937"><a href="../../dcommon/html/feedback.htm"><img width="24" height="24" src="../../dcommon/gifs/feedbck2.gif" alt="Go to Feedback page" /><br />
+<span class="icon">Contact Us</span></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+--></footer>
+<noscript>
+<p>Scripting on this page enhances content navigation, but does not change the content in any way.</p>
+</noscript>
+</body>
+</html>
