@@ -1,0 +1,1 @@
+sqlplus sys/lisi2018@orcl as sysdba
