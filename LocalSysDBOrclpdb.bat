@@ -1,1 +1,1 @@
-sqlplus sys/lisi2018@orclpdb as sysdba
+sqlplus system/lisi2018@orclpdb as sysdba
